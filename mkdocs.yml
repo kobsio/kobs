@@ -1,0 +1,38 @@
+site_name: kobs
+site_description: Kubernetes Observability Platform
+repo_name: kobsio/kobs
+repo_url: https://github.com/kobsio/kobs
+edit_uri: https://github.com/kobsio/kobs/edit/main/docs/
+copyright: Copyright © 2021 Rico Berger
+
+theme:
+  name: material
+  language: en
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    logo: material/kubernetes
+  include_search_page: false
+  search_index_only: true
+
+nav:
+  - Home: index.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+
+extra:
+  social:
+    - icon: material/web
+      link: https://kobs.io
+    - icon: fontawesome/brands/github
+      link: https://github.com/kobsio/kobs
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/r/kobsio/kobs
+
+extra_css:
+  - stylesheets/extra.css

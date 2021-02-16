@@ -1,0 +1,7 @@
+.github
+.vscode
+app/build
+app/node_modules
+bin
+deploy
+docs

@@ -1,0 +1,59 @@
+syntax = "proto3";
+package clusters;
+
+option go_package = "github.com/kobsio/kobs/pkg/generated/proto";
+
+// Clusters is the service to execute requests against all loaded Kubernetes clusters. The service can be used to get
+// all clusters, the namespaces for clusters and various Kubernetes resources.
+service Clusters {
+  rpc GetClusters(GetClustersRequest) returns (GetClustersResponse) {}
+  rpc GetNamespaces(GetNamespacesRequest) returns (GetNamespacesResponse) {}
+  rpc GetResources(GetResourcesRequest) returns (GetResourcesResponse) {}
+}
+
+// GetClustersRequest is the request to get all loaded Kubernetes clusters via the GetClusters method.
+message GetClustersRequest {}
+
+// GetClustersResponse is the response for a GetClusters request. It contains a clusers field, which contains the names
+// of all clusters.
+message GetClustersResponse {
+  repeated string clusters = 1;
+}
+
+// GetNamespacesRequest is the request to get all namespaces via the GetNamespaces method. It must contain a list of
+// clusters, for which the namespaces should be returned.
+message GetNamespacesRequest {
+  repeated string clusters = 1;
+}
+
+// GetNamespacesResponse is the response for a GetNamespaces request, which contains a list of all namespaces for the
+// given clusters.
+message GetNamespacesResponse {
+  repeated string namespaces = 1;
+}
+
+// GetResourcesRequest is the request to get a specific resource for multiple clusters and namespaces. It contains the
+// Kubernetes API endpoint for the resource and a list of clusters and namespaces. It is also possible to specify a
+// parameter, which can be used to set a labelSelector or fieldSelector for the request.
+message GetResourcesRequest {
+  repeated string clusters = 1;
+  repeated string namespaces = 2;
+  string path = 3;
+  string resource = 4;
+  string paramName = 5;
+  string param = 6;
+}
+
+// GetResourcesResponse is the response for a GetResources request, which contains a list of resources. The resources
+// are returned by cluster and namespace.
+message GetResourcesResponse {
+  repeated Resources resources = 1;
+}
+
+// Resources is the structure for a list of resources for a cluster and a namespaces. The resourceList string contains
+// the JSON string for the list type of a resource (e.g. PodList).
+message Resources {
+  string cluster = 1;
+  string namespace = 2;
+  string resourceList = 3;
+}

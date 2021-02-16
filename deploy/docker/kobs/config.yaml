@@ -1,0 +1,9 @@
+clusters:
+  providers:
+    - provider: kubeconfig
+      kubeconfig:
+        path: ${HOME}/.kube/config
+  defaultDatasources:
+    metrics: prometheus
+    logs: elasticsearch
+    traces: jaeger

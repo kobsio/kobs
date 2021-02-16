@@ -1,0 +1,33 @@
+/* #root
+ * The root element of the page is the parent div container of the React app. To make the page component take up the
+ * full height of the viewport, we have to add height: 100%; to all ancestor elements of the page component. */
+#root {
+  height: 100%;
+}
+
+/* kobs-home-item
+ * The items on the home page are clickable, so we have to set the correct cursor style */
+.kobs-home-item {
+  cursor: pointer;
+}
+
+/* kobs-drawer-pagesection
+ * When we use a PageSection component within a Drawer component, we have to explicit set the height of the PageSection
+ * to 100%. */
+.kobs-drawer-pagesection {
+  min-height: 100%;
+}
+
+/* kobs-drawer-actions
+ * Customize the drawer actions. For example we remove the padding from the action buttons, so that they are displayed
+ * in one line with the drawer title. */
+.kobs-drawer-actions button {
+  padding: 0;
+}
+
+/* kobs-code
+ **/
+.kobs-code {
+  max-width: 100%;
+  overflow-x: scroll;
+}

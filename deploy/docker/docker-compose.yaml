@@ -1,0 +1,26 @@
+version: '3'
+services:
+  kobs:
+    container_name: kobs
+    build:
+      context: .
+      dockerfile: ./cmd/kobs/Dockerfile
+    image: kobs
+    volumes:
+      - ./kobs/config.yaml:/kobs/config.yaml
+      - $HOME/.kube/config:/.kube/config
+    ports:
+      - 15219:15219
+      - 15220:15220
+      - 15221:15221
+    command:
+      --log.level=trace
+  envoy:
+    container_name: envoy
+    image: envoyproxy/envoy:v1.17.0
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - 15222:15222
+    depends_on:
+      - kobs
