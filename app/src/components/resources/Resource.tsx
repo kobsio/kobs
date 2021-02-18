@@ -27,7 +27,12 @@ const Resource: React.FunctionComponent<IResourceProps> = ({ resource, columns, 
   return (
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
-        <span className="pf-m-lg pf-u-font-weight-bold">{resource.name.title}</span>
+        <span>
+          <span className="pf-c-title pf-m-lg">{resource.name.title}</span>
+          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-200">
+            {resource.namespace.title} ({resource.cluster.title})
+          </span>
+        </span>
         <DrawerActions className="kobs-drawer-actions">
           <DrawerCloseButton onClick={close} />
         </DrawerActions>
