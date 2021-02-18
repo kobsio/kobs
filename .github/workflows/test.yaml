@@ -26,8 +26,8 @@ jobs:
       - name: React UI
         run: |
           cd ./app
-          yarn lint
           yarn install
+          yarn lint
           yarn build
 
       - name: Download Dependencies
