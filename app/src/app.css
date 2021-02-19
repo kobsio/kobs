@@ -26,8 +26,23 @@
 }
 
 /* kobs-code
- **/
+ * Set the maximum width to the width of the parend component and the scrolling bahaviour, when we display code. */
 .kobs-code {
   max-width: 100%;
   overflow-x: scroll;
+}
+
+/* kobsio-pagesection-toolbar
+ * Is used to display the toolbar within a page section. For that we have to adjust the z-index, so that the toolbar is
+ * always displayed above the other components. We also remove the bottom, because the padding is already applied by the
+ * PageSection component.
+ * We also remove the padding for the ToolbarContent component, so that the ToolbarItems are aligned with the other
+ * content in the PageSection. */
+.kobsio-pagesection-toolbar {
+  padding-bottom: 0px;
+  z-index: 300;
+}
+
+.kobsio-pagesection-toolbar .pf-c-toolbar__content {
+  padding: 0px;
 }

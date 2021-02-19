@@ -97,7 +97,7 @@ const Resources: React.FunctionComponent = () => {
         <Title headingLevel="h6" size="xl">
           {resources[params.kind].title}
         </Title>
-        <p className="pf-u-mb-xl">{resources[params.kind].description}</p>
+        <p>{resources[params.kind].description}</p>
         <Filter isLoading={isLoading} onFilter={fetchResources} />
       </PageSection>
 

@@ -9,8 +9,14 @@ import {
   Select,
   SelectOption,
   SelectVariant,
+  Toolbar,
+  ToolbarContent,
+  ToolbarGroup,
+  ToolbarItem,
+  ToolbarToggleGroup,
 } from '@patternfly/react-core';
 import React, { useCallback, useEffect, useState } from 'react';
+import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
 
 import {
   GetClustersRequest,
@@ -86,6 +92,7 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
           setError('No namespaces were found.');
         } else {
           setNamespaces(tmpNamespaces);
+          setError('');
         }
       } catch (err) {
         setError(`Could not load namespaces: ${err.message}`);
@@ -106,7 +113,7 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
 
   if (error) {
     return (
-      <Flex direction={{ default: 'column' }}>
+      <Flex className="pf-u-mt-md" direction={{ default: 'column' }}>
         <FlexItem>
           <Alert
             variant={AlertVariant.danger}
@@ -126,52 +133,56 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
   }
 
   return (
-    <Flex>
-      <FlexItem>
-        <Select
-          variant={SelectVariant.typeaheadMulti}
-          typeAheadAriaLabel="Select clusters"
-          placeholderText="Select clusters"
-          onToggle={(): void => setShowClusters(!showClusters)}
-          onSelect={(e, value): void => onSelectCluster(value as string)}
-          onClear={(): void => setSelectedClusters([])}
-          selections={selectedClusters}
-          isOpen={showClusters}
-        >
-          {clusters.map((cluster, index) => (
-            <SelectOption key={index} value={cluster} />
-          ))}
-        </Select>
-      </FlexItem>
-
-      <FlexItem>
-        <Select
-          variant={SelectVariant.typeaheadMulti}
-          typeAheadAriaLabel="Select namespaces"
-          placeholderText="Select namespaces"
-          onToggle={(): void => setShowNamespaces(!showNamespaces)}
-          onSelect={(e, value): void => onSelectNamespace(value as string)}
-          onClear={(): void => setSelectedNamespaces([])}
-          selections={selectedNamespaces}
-          isOpen={showNamespaces}
-        >
-          {namespaces.map((namespace, index) => (
-            <SelectOption key={index} value={namespace} />
-          ))}
-        </Select>
-      </FlexItem>
-
-      <FlexItem>
-        <Button
-          variant={ButtonVariant.primary}
-          spinnerAriaValueText={isLoading ? 'Loading' : undefined}
-          isLoading={isLoading}
-          onClick={(): void => onFilter(selectedClusters, selectedNamespaces)}
-        >
-          Filter
-        </Button>
-      </FlexItem>
-    </Flex>
+    <Toolbar id="filter" className="kobsio-pagesection-toolbar">
+      <ToolbarContent>
+        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="lg">
+          <ToolbarGroup>
+            <ToolbarItem>
+              <Select
+                variant={SelectVariant.typeaheadMulti}
+                typeAheadAriaLabel="Select clusters"
+                placeholderText="Select clusters"
+                onToggle={(): void => setShowClusters(!showClusters)}
+                onSelect={(e, value): void => onSelectCluster(value as string)}
+                onClear={(): void => setSelectedClusters([])}
+                selections={selectedClusters}
+                isOpen={showClusters}
+              >
+                {clusters.map((cluster, index) => (
+                  <SelectOption key={index} value={cluster} />
+                ))}
+              </Select>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Select
+                variant={SelectVariant.typeaheadMulti}
+                typeAheadAriaLabel="Select namespaces"
+                placeholderText="Select namespaces"
+                onToggle={(): void => setShowNamespaces(!showNamespaces)}
+                onSelect={(e, value): void => onSelectNamespace(value as string)}
+                onClear={(): void => setSelectedNamespaces([])}
+                selections={selectedNamespaces}
+                isOpen={showNamespaces}
+              >
+                {namespaces.map((namespace, index) => (
+                  <SelectOption key={index} value={namespace} />
+                ))}
+              </Select>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                variant={ButtonVariant.primary}
+                spinnerAriaValueText={isLoading ? 'Loading' : undefined}
+                isLoading={isLoading}
+                onClick={(): void => onFilter(selectedClusters, selectedNamespaces)}
+              >
+                Filter
+              </Button>
+            </ToolbarItem>
+          </ToolbarGroup>
+        </ToolbarToggleGroup>
+      </ToolbarContent>
+    </Toolbar>
   );
 };
 
