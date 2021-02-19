@@ -1,7 +1,7 @@
 FROM --platform=linux/amd64 node:14 as app
 WORKDIR /kobs
 COPY app/package.json app/yarn.lock /kobs/
-RUN yarn install
+RUN yarn install --frozen-lockfile --network-timeout 3600000
 COPY app /kobs/
 RUN yarn build
 
