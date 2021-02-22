@@ -32,8 +32,7 @@ static_resources:
                       domains: ["*"]
                       routes:
                         - match:
-                            # prefix: "/"
-                            prefix: "/clusters.Clusters"
+                            prefix: "/clusters."
                           route:
                             cluster: api-server
                             max_stream_duration:

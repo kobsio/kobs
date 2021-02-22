@@ -2,13 +2,15 @@ import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-interface ItemProps {
+interface IItemProps {
   body: string;
   link: string;
   title: string;
 }
 
-const Item: React.FunctionComponent<ItemProps> = ({ body, link, title }: ItemProps) => {
+// Item is used to render an item in the overview page. It requires a title, body and a link. When the card is clicked,
+// the user is redirected to the provided link.
+const Item: React.FunctionComponent<IItemProps> = ({ body, link, title }: IItemProps) => {
   const history = useHistory();
 
   const handleClick = (): void => {

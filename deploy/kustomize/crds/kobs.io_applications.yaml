@@ -1,0 +1,90 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: applications.kobs.io
+spec:
+  group: kobs.io
+  names:
+    kind: Application
+    listKind: ApplicationList
+    plural: applications
+    singular: application
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      description: Application is the Application CRD, which consists of the Kubernetes
+        metadata and the Application from the protobuf definition.
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: Application is the specification for an application. This specification
+            is also used for the Kubernetes CRD as ApplicationSpec. This is also the
+            reason why we use istio.io/tools/cmd/protoc-gen-deepcopy within the code
+            generation, to generate the deepcopy function, which are required to use
+            the Application within a CRD.
+          properties:
+            cluster:
+              type: string
+            links:
+              items:
+                description: ApplicationLink is the format of a link, which can be
+                  provided within an application. A link consists of a title, which
+                  is displayed in the frontend and the link link (title=Example, link=https://example.com).
+                properties:
+                  link:
+                    type: string
+                  title:
+                    type: string
+                type: object
+              type: array
+            name:
+              type: string
+            namespace:
+              type: string
+            resources:
+              items:
+                description: ApplicationResources is the specification to retrieve
+                  all Kubernetes resources, which can be associated with the application.
+                  For that, a list of kinds (deployments, pods, statefulsets) as specified
+                  in app/src/components/resources/helpers.tsx and a selector must
+                  be set. Currently only label selector is supported, e.g. app=example.
+                properties:
+                  kinds:
+                    items:
+                      type: string
+                    type: array
+                  selector:
+                    type: string
+                type: object
+              type: array
+          type: object
+      required:
+      - spec
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

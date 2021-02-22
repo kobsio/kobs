@@ -12,14 +12,19 @@ import { IRow } from '@patternfly/react-table';
 import React from 'react';
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
-import { Resources as ProtoResources } from '../../generated/proto/clusters_pb';
-import { timeDifference } from '../../utils/helpers';
+import { Resources as ProtoResources } from 'generated/proto/clusters_pb';
+import { timeDifference } from 'utils/helpers';
 
-interface Resources {
-  [key: string]: Resource;
+// The IResources is a list of resources, which is supported by kobs.
+interface IResources {
+  [key: string]: IResource;
 }
 
-interface Resource {
+// IResource is the interface, which must be implemented by each supported resource. Each resource must provid a list of
+// columns and rows, which are used to render a table for this resource. It also must contain a title and description,
+// which is displayed in the corresponding UI. To get the resources from the Kubernetes API for a cluster the resource
+// must contain a path and a resource property.
+interface IResource {
   columns: string[];
   description: string;
   path: string;
@@ -28,7 +33,10 @@ interface Resource {
   title: string;
 }
 
-export const resources: Resources = {
+// resources is the actual list of supported resources. To generate the rows for a resource, we have to pass the result
+// from the gRPC API call to the rows function. The returned rows are mostly the same as they are also retunred by
+// kubectl.
+export const resources: IResources = {
   cronjobs: {
     columns: ['Name', 'Namespace', 'Cluster', 'Schedule', 'Suspend', 'Active', 'Last Schedule', 'Age'],
     description: 'A CronJob creates Jobs on a repeating schedule.',
@@ -364,6 +372,8 @@ export const resources: Resources = {
   },
 };
 
+// emptyState is used to display an empty state in the table for a resource, when the gRPC API call returned an error or
+// no results.
 export const emptyState = (cols: number, error: string): IRow[] => {
   return [
     {

@@ -54,6 +54,11 @@ chmod +x /usr/local/bin/protoc-gen-grpc-web
 go get google.golang.org/protobuf/cmd/protoc-gen-go@v1.25.0
 go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
 go get istio.io/tools/cmd/protoc-gen-deepcopy@v0.0.0-20210206003203-61eabd18b4e0
+```
+
+- Install the Kubernetes [code-generator](https://github.com/kubernetes/code-generator) into your `GOPATH`:
+
+```sh
 go get k8s.io/code-generator@v0.20.2
 ```
 

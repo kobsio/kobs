@@ -146,6 +146,54 @@ func (c *Clusters) GetResources(ctx context.Context, getResourcesRequest *proto.
 	}, nil
 }
 
+// GetApplications returns a list of applications for the given clusters and namespaces.
+// To generate this list, we loop over every cluster and namespace and try to get the applications for this.
+func (c *Clusters) GetApplications(ctx context.Context, getApplicationsRequest *proto.GetApplicationsRequest) (*proto.GetApplicationsResponse, error) {
+	var applications []*proto.Application
+
+	log.WithFields(logrus.Fields{"clusters": getApplicationsRequest.Clusters, "namespaces": getApplicationsRequest.Namespaces}).Tracef("Get applications.")
+
+	for _, clusterName := range getApplicationsRequest.Clusters {
+		cluster := c.getCluster(clusterName)
+		if cluster == nil {
+			return nil, fmt.Errorf("invalid cluster name")
+		}
+
+		for _, namespace := range getApplicationsRequest.Namespaces {
+			list, err := cluster.GetApplications(ctx, namespace)
+			if err != nil {
+				return nil, err
+			}
+
+			applications = append(applications, list...)
+		}
+	}
+
+	return &proto.GetApplicationsResponse{
+		Applications: applications,
+	}, nil
+}
+
+// GetApplication returns a single application with the given name in the given cluster and namespace. If there isn't,
+// such an application an error is returned.
+func (c *Clusters) GetApplication(ctx context.Context, getApplicationRequest *proto.GetApplicationRequest) (*proto.GetApplicationResponse, error) {
+	log.WithFields(logrus.Fields{"cluster": getApplicationRequest.Cluster, "namespace": getApplicationRequest.Namespace, "name": getApplicationRequest.Name}).Tracef("Get application.")
+
+	cluster := c.getCluster(getApplicationRequest.Cluster)
+	if cluster == nil {
+		return nil, fmt.Errorf("invalid cluster name")
+	}
+
+	application, err := cluster.GetApplication(ctx, getApplicationRequest.Namespace, getApplicationRequest.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.GetApplicationResponse{
+		Application: application,
+	}, nil
+}
+
 // Load loads all clusters for the given configuration.
 // The clusters can be retrieved from different providers. Currently we are supporting incluster configuration and
 // kubeconfig files. In the future it is planning to directly support GKE, EKS, AKS, etc.

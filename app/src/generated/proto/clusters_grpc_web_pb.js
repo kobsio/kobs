@@ -15,6 +15,8 @@
 const grpc = {};
 grpc.web = require('grpc-web');
 
+
+var applications_pb = require('./applications_pb.js')
 const proto = {};
 proto.clusters = require('./clusters_pb.js');
 
@@ -307,6 +309,166 @@ proto.clusters.ClustersPromiseClient.prototype.getResources =
       request,
       metadata || {},
       methodDescriptor_Clusters_GetResources);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.clusters.GetApplicationsRequest,
+ *   !proto.clusters.GetApplicationsResponse>}
+ */
+const methodDescriptor_Clusters_GetApplications = new grpc.web.MethodDescriptor(
+  '/clusters.Clusters/GetApplications',
+  grpc.web.MethodType.UNARY,
+  proto.clusters.GetApplicationsRequest,
+  proto.clusters.GetApplicationsResponse,
+  /**
+   * @param {!proto.clusters.GetApplicationsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetApplicationsResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.clusters.GetApplicationsRequest,
+ *   !proto.clusters.GetApplicationsResponse>}
+ */
+const methodInfo_Clusters_GetApplications = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.clusters.GetApplicationsResponse,
+  /**
+   * @param {!proto.clusters.GetApplicationsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetApplicationsResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.clusters.GetApplicationsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.clusters.GetApplicationsResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.clusters.GetApplicationsResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.clusters.ClustersClient.prototype.getApplications =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/clusters.Clusters/GetApplications',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetApplications,
+      callback);
+};
+
+
+/**
+ * @param {!proto.clusters.GetApplicationsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.clusters.GetApplicationsResponse>}
+ *     Promise that resolves to the response
+ */
+proto.clusters.ClustersPromiseClient.prototype.getApplications =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/clusters.Clusters/GetApplications',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetApplications);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.clusters.GetApplicationRequest,
+ *   !proto.clusters.GetApplicationResponse>}
+ */
+const methodDescriptor_Clusters_GetApplication = new grpc.web.MethodDescriptor(
+  '/clusters.Clusters/GetApplication',
+  grpc.web.MethodType.UNARY,
+  proto.clusters.GetApplicationRequest,
+  proto.clusters.GetApplicationResponse,
+  /**
+   * @param {!proto.clusters.GetApplicationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetApplicationResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.clusters.GetApplicationRequest,
+ *   !proto.clusters.GetApplicationResponse>}
+ */
+const methodInfo_Clusters_GetApplication = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.clusters.GetApplicationResponse,
+  /**
+   * @param {!proto.clusters.GetApplicationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetApplicationResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.clusters.GetApplicationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.clusters.GetApplicationResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.clusters.GetApplicationResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.clusters.ClustersClient.prototype.getApplication =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/clusters.Clusters/GetApplication',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetApplication,
+      callback);
+};
+
+
+/**
+ * @param {!proto.clusters.GetApplicationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.clusters.GetApplicationResponse>}
+ *     Promise that resolves to the response
+ */
+proto.clusters.ClustersPromiseClient.prototype.getApplication =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/clusters.Clusters/GetApplication',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetApplication);
 };
 
 

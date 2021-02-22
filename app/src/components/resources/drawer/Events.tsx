@@ -15,14 +15,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { CoreV1EventList } from '@kubernetes/client-node';
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
-import { GetResourcesRequest, GetResourcesResponse } from '../../generated/proto/clusters_pb';
-import { ClustersPromiseClient } from '../../generated/proto/clusters_grpc_web_pb';
-import { apiURL } from '../../utils/constants';
-import { timeDifference } from '../../utils/helpers';
+import { GetResourcesRequest, GetResourcesResponse } from 'generated/proto/clusters_pb';
+import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
+import { apiURL } from 'utils/constants';
+import { timeDifference } from 'utils/helpers';
 
 const clustersService = new ClustersPromiseClient(apiURL, null, null);
 
-const emptyState = [
+// noEventsState is used when the gRPC API call doesn't returned any events for the provided resource.
+const noEventsState = [
   {
     cells: [
       {
@@ -49,10 +50,14 @@ interface IEventsProps {
   name: string;
 }
 
+// Events is the component to display the events for a resource. The resource is identified by the cluster, namespace
+// and name. The event must contain the involvedObject.name=<NAME> to be listed for a resource.
 const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, name }: IEventsProps) => {
   const [error, setError] = useState<string>('');
-  const [events, setEvents] = useState<IRow[]>(emptyState);
+  const [events, setEvents] = useState<IRow[]>(noEventsState);
 
+  // fetchEvents is used to fetch all events to the provided resource. When the API returnes a list of resources, this
+  // list is transformed into a the IRow interface, so we can display the events within the Table component.
   const fetchEvents = useCallback(async () => {
     try {
       const getResourcesRequest = new GetResourcesRequest();
@@ -83,7 +88,7 @@ const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, nam
 
         setEvents(tmpEvents);
       } else {
-        setEvents(emptyState);
+        setEvents(noEventsState);
       }
     } catch (err) {
       setError(err.message);
@@ -94,9 +99,11 @@ const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, nam
     fetchEvents();
   }, [fetchEvents]);
 
+  // When an error occurrs during the API call we show an Alert component, which the error message instead of the table.
+  // The alert also contains a retry button, so that a user can rerun the API call.
   if (error) {
     return (
-      <Flex className="pf-u-pt-md pf-u-pb-md " direction={{ default: 'column' }}>
+      <Flex direction={{ default: 'column' }}>
         <FlexItem>
           <Alert
             variant={AlertVariant.danger}
@@ -112,7 +119,7 @@ const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, nam
   }
 
   return (
-    <Flex className="pf-u-mt-xl" direction={{ default: 'column' }}>
+    <Flex direction={{ default: 'column' }}>
       <FlexItem>
         <Table
           aria-label="events"

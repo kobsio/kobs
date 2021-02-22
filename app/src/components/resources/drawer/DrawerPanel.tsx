@@ -12,34 +12,38 @@ import React, { useState } from 'react';
 import { IRow } from '@patternfly/react-table';
 import yaml from 'js-yaml';
 
-import Events from './Events';
-import Yaml from './Yaml';
+import Events from 'components/resources/drawer/Events';
+import Title from 'components/shared/Title';
+import Yaml from 'components/resources/drawer/Yaml';
 
 interface IResourceProps {
   resource: IRow;
-  columns: string[];
   close: () => void;
 }
 
-const Resource: React.FunctionComponent<IResourceProps> = ({ resource, columns, close }: IResourceProps) => {
+// DrawerPanel is the drawer panel component for the resources page. It is used to display a selected resource. The user
+// can choose between different tabs: The "Yaml" tab displayes the yaml manifest for the selected resource and the
+// "Events" tab displayes all events for the selected resource. The component also needs a close function, which is used
+// to hide the drawer.
+const DrawerPanel: React.FunctionComponent<IResourceProps> = ({ resource, close }: IResourceProps) => {
   const [activeTabKey, setActiveTabKey] = useState<string>('yaml');
 
   return (
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
-        <span>
-          <span className="pf-c-title pf-m-lg">{resource.name.title}</span>
-          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-200">
-            {resource.namespace.title} ({resource.cluster.title})
-          </span>
-        </span>
+        <Title
+          title={resource.name.title}
+          subtitle={`${resource.namespace.title} (${resource.cluster.title})`}
+          size="lg"
+        />
         <DrawerActions className="kobs-drawer-actions">
-          <DrawerCloseButton onClick={close} />
+          <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>
 
       <DrawerPanelBody className="kobs-drawer-panel-body">
         <Tabs
+          mountOnEnter={true}
           isFilled={true}
           activeKey={activeTabKey}
           onSelect={(event, tabIndex): void => setActiveTabKey(tabIndex.toString())}
@@ -56,4 +60,4 @@ const Resource: React.FunctionComponent<IResourceProps> = ({ resource, columns, 
   );
 };
 
-export default Resource;
+export default DrawerPanel;

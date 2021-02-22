@@ -2,6 +2,7 @@
 // file: clusters.proto
 
 import * as jspb from "google-protobuf";
+import * as applications_pb from "./applications_pb";
 
 export class GetClustersRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
@@ -176,6 +177,106 @@ export namespace Resources {
     cluster: string,
     namespace: string,
     resourcelist: string,
+  }
+}
+
+export class GetApplicationsRequest extends jspb.Message {
+  clearClustersList(): void;
+  getClustersList(): Array<string>;
+  setClustersList(value: Array<string>): void;
+  addClusters(value: string, index?: number): string;
+
+  clearNamespacesList(): void;
+  getNamespacesList(): Array<string>;
+  setNamespacesList(value: Array<string>): void;
+  addNamespaces(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetApplicationsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetApplicationsRequest): GetApplicationsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetApplicationsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetApplicationsRequest;
+  static deserializeBinaryFromReader(message: GetApplicationsRequest, reader: jspb.BinaryReader): GetApplicationsRequest;
+}
+
+export namespace GetApplicationsRequest {
+  export type AsObject = {
+    clustersList: Array<string>,
+    namespacesList: Array<string>,
+  }
+}
+
+export class GetApplicationsResponse extends jspb.Message {
+  clearApplicationsList(): void;
+  getApplicationsList(): Array<applications_pb.Application>;
+  setApplicationsList(value: Array<applications_pb.Application>): void;
+  addApplications(value?: applications_pb.Application, index?: number): applications_pb.Application;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetApplicationsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetApplicationsResponse): GetApplicationsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetApplicationsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetApplicationsResponse;
+  static deserializeBinaryFromReader(message: GetApplicationsResponse, reader: jspb.BinaryReader): GetApplicationsResponse;
+}
+
+export namespace GetApplicationsResponse {
+  export type AsObject = {
+    applicationsList: Array<applications_pb.Application.AsObject>,
+  }
+}
+
+export class GetApplicationRequest extends jspb.Message {
+  getCluster(): string;
+  setCluster(value: string): void;
+
+  getNamespace(): string;
+  setNamespace(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetApplicationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetApplicationRequest): GetApplicationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetApplicationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetApplicationRequest;
+  static deserializeBinaryFromReader(message: GetApplicationRequest, reader: jspb.BinaryReader): GetApplicationRequest;
+}
+
+export namespace GetApplicationRequest {
+  export type AsObject = {
+    cluster: string,
+    namespace: string,
+    name: string,
+  }
+}
+
+export class GetApplicationResponse extends jspb.Message {
+  hasApplication(): boolean;
+  clearApplication(): void;
+  getApplication(): applications_pb.Application | undefined;
+  setApplication(value?: applications_pb.Application): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetApplicationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetApplicationResponse): GetApplicationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetApplicationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetApplicationResponse;
+  static deserializeBinaryFromReader(message: GetApplicationResponse, reader: jspb.BinaryReader): GetApplicationResponse;
+}
+
+export namespace GetApplicationResponse {
+  export type AsObject = {
+    application?: applications_pb.Application.AsObject,
   }
 }
 
