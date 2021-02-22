@@ -3,12 +3,16 @@ package clusters;
 
 option go_package = "github.com/kobsio/kobs/pkg/generated/proto";
 
+import "applications.proto";
+
 // Clusters is the service to execute requests against all loaded Kubernetes clusters. The service can be used to get
 // all clusters, the namespaces for clusters and various Kubernetes resources.
 service Clusters {
   rpc GetClusters(GetClustersRequest) returns (GetClustersResponse) {}
   rpc GetNamespaces(GetNamespacesRequest) returns (GetNamespacesResponse) {}
   rpc GetResources(GetResourcesRequest) returns (GetResourcesResponse) {}
+  rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse) {}
+  rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {}
 }
 
 // GetClustersRequest is the request to get all loaded Kubernetes clusters via the GetClusters method.
@@ -56,4 +60,29 @@ message Resources {
   string cluster = 1;
   string namespace = 2;
   string resourceList = 3;
+}
+
+// GetApplicationsRequest is the message formate to get a list of applications. To get a list of applications the
+// clusters and namespaces for which the applications should be retrieved must be specified.
+message GetApplicationsRequest {
+  repeated string clusters = 1;
+  repeated string namespaces = 2;
+}
+
+// GetApplicationsResponse is the response for a GetApplications request, which returns a list of applications.
+message GetApplicationsResponse {
+  repeated Application applications = 1;
+}
+
+// GetApplicationRequest is the format to get a single application. Each application can be identified by the cluster,
+// namespace and name of the application.
+message GetApplicationRequest {
+  string cluster = 1;
+  string namespace = 2;
+  string name = 3;
+}
+
+// GetApplicationResponse is the response for a GetApplication request, which returns a single application.
+message GetApplicationResponse {
+  Application application = 1;
 }

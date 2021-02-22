@@ -25,9 +25,11 @@
   padding: 0;
 }
 
-/* kobs-code
- * Set the maximum width to the width of the parend component and the scrolling bahaviour, when we display code. */
-.kobs-code {
+/* kobs-drawer-panel-body
+ * Is used to modify the style of the drawer panel body. For example we have to set the maximum width for tabs used
+ * within the drawer and apply some margin for the top and bottom of the tabs content. */
+.kobs-drawer-panel-body .pf-c-tab-content {
+  margin: 16px 0px;
   max-width: 100%;
   overflow-x: scroll;
 }

@@ -23,18 +23,21 @@ import {
   GetClustersResponse,
   GetNamespacesRequest,
   GetNamespacesResponse,
-} from '../../generated/proto/clusters_pb';
-import { ClustersPromiseClient } from '../../generated/proto/clusters_grpc_web_pb';
-import { apiURL } from '../../utils/constants';
+} from 'generated/proto/clusters_pb';
+import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
+import { apiURL } from 'utils/constants';
 
 const clustersService = new ClustersPromiseClient(apiURL, null, null);
 
-interface FilterProps {
+interface IFilterProps {
   isLoading: boolean;
   onFilter: (clusters: string[], namespaces: string[]) => void;
 }
 
-const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: FilterProps) => {
+// Filter is the component to display the cluster and namespace filter. It accepts a onFilter function, which is
+// executed, when the user clicks the filter button. Besides this function is also accepts an loading identicator, which
+// shows a spinner within the filter button, when it is true.
+const Filter: React.FunctionComponent<IFilterProps> = ({ isLoading, onFilter }: IFilterProps) => {
   const [showClusters, setShowClusters] = useState<boolean>(false);
   const [showNamespaces, setShowNamespaces] = useState<boolean>(false);
   const [clusters, setClusters] = useState<string[]>([]);
@@ -43,6 +46,8 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
   const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>([]);
   const [error, setError] = useState<string>('');
 
+  // onSelectCluster is executed, when a cluster is selected. When the cluster isn't in the list of selected clusters,
+  // the cluster is added to this list. When the cluster is already in this list, it is removed.
   const onSelectCluster = (cluster: string): void => {
     if (selectedClusters.includes(cluster)) {
       setSelectedClusters(selectedClusters.filter((item) => item !== cluster));
@@ -51,6 +56,8 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
     }
   };
 
+  // onSelectNamespace is executed, when a namespace is selected. When the namespace isn't in the list of selected
+  // namespaces, the namespace is added to this list. When the namespace is already in this list, it is removed.
   const onSelectNamespace = (namespace: string): void => {
     if (selectedNamespaces.includes(namespace)) {
       setSelectedNamespaces(selectedNamespaces.filter((item) => item !== namespace));
@@ -59,6 +66,8 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
     }
   };
 
+  // getClusters is executed, when the component is rendered the first time. It is used to retrieve the complete list of
+  // clusters from the gRPC API. It also sets the first cluster from this list as the selected cluster.
   const getClusters = useCallback(async () => {
     try {
       const getClustersRequest = new GetClustersRequest();
@@ -76,6 +85,8 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
     }
   }, []);
 
+  // getNamespaces is executed, when the list of selected clusters changed, to retrieve all namespaces for the list of
+  // selected clusters.
   const getNamespaces = useCallback(async () => {
     if (selectedClusters.length > 0) {
       try {
@@ -111,6 +122,8 @@ const Filter: React.FunctionComponent<FilterProps> = ({ isLoading, onFilter }: F
     getNamespaces();
   }, [getNamespaces]);
 
+  // When an error occured during the API calls, we render an Alert instead of the components for filtering. The alert
+  // component contains a link to retry the failed API call.
   if (error) {
     return (
       <Flex className="pf-u-mt-md" direction={{ default: 'column' }}>

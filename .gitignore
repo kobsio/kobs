@@ -3,3 +3,6 @@ bin
 
 # Temporary files for code generation
 tmp
+
+# application.yaml which contains a list of Application CRs for local testing.
+application.yaml

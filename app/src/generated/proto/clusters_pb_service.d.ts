@@ -31,11 +31,31 @@ type ClustersGetResources = {
   readonly responseType: typeof clusters_pb.GetResourcesResponse;
 };
 
+type ClustersGetApplications = {
+  readonly methodName: string;
+  readonly service: typeof Clusters;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof clusters_pb.GetApplicationsRequest;
+  readonly responseType: typeof clusters_pb.GetApplicationsResponse;
+};
+
+type ClustersGetApplication = {
+  readonly methodName: string;
+  readonly service: typeof Clusters;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof clusters_pb.GetApplicationRequest;
+  readonly responseType: typeof clusters_pb.GetApplicationResponse;
+};
+
 export class Clusters {
   static readonly serviceName: string;
   static readonly GetClusters: ClustersGetClusters;
   static readonly GetNamespaces: ClustersGetNamespaces;
   static readonly GetResources: ClustersGetResources;
+  static readonly GetApplications: ClustersGetApplications;
+  static readonly GetApplication: ClustersGetApplication;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -96,6 +116,24 @@ export class ClustersClient {
   getResources(
     requestMessage: clusters_pb.GetResourcesRequest,
     callback: (error: ServiceError|null, responseMessage: clusters_pb.GetResourcesResponse|null) => void
+  ): UnaryResponse;
+  getApplications(
+    requestMessage: clusters_pb.GetApplicationsRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationsResponse|null) => void
+  ): UnaryResponse;
+  getApplications(
+    requestMessage: clusters_pb.GetApplicationsRequest,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationsResponse|null) => void
+  ): UnaryResponse;
+  getApplication(
+    requestMessage: clusters_pb.GetApplicationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationResponse|null) => void
+  ): UnaryResponse;
+  getApplication(
+    requestMessage: clusters_pb.GetApplicationRequest,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationResponse|null) => void
   ): UnaryResponse;
 }
 

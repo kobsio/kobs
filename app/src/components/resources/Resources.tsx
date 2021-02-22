@@ -13,22 +13,28 @@ import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { GetResourcesRequest, GetResourcesResponse } from '../../generated/proto/clusters_pb';
-import { emptyState, resources } from './helpers';
-import { ClustersPromiseClient } from '../../generated/proto/clusters_grpc_web_pb';
-import Filter from './Filter';
-import Resource from './Resource';
-import { apiURL } from '../../utils/constants';
+import { GetResourcesRequest, GetResourcesResponse } from 'generated/proto/clusters_pb';
+import { emptyState, resources } from 'components/resources/shared/helpers';
+import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
+import DrawerPanel from 'components/resources/drawer/DrawerPanel';
+import Filter from 'components/resources/shared/Filter';
+import { apiURL } from 'utils/constants';
 
 const clustersService = new ClustersPromiseClient(apiURL, null, null);
 
-interface ResourcesParams {
+interface IResourcesParams {
   kind: string;
 }
 
+// Resources is the page to display a table of resources for a list of clusters and namespaces. The resource is
+// determined by the kind parameter from the URL. If the kind could not be found in the list of resources, we show the
+// user an error. If the kind is valid the user can select a list of clusters and namespaces and gets a table with all
+// matching resources as result.
+// When the user selects a row with a resource a drawer for this resource is shown. The drawer contains the yaml
+// manifest for this resource and a list of events.
 const Resources: React.FunctionComponent = () => {
   const history = useHistory();
-  const params = useParams<ResourcesParams>();
+  const params = useParams<IResourcesParams>();
 
   const columns = resources.hasOwnProperty(params.kind)
     ? resources[params.kind].columns
@@ -41,6 +47,9 @@ const Resources: React.FunctionComponent = () => {
     history.push('/');
   };
 
+  // fetchResources is the function to fetch all resources for a list of clusters and namespaces. The function is passed
+  // to the Filter component via the onFilter property. The returned items are converted into the IRow interface, which
+  // is then displayed in the Table component.
   const fetchResources = async (clusters: string[], namespaces: string[]): Promise<void> => {
     try {
       if (clusters.length === 0 || namespaces.length === 0) {
@@ -74,6 +83,9 @@ const Resources: React.FunctionComponent = () => {
     }
   };
 
+  // When the user doesn't provide a valid resource, we show an Alert. The alert contains a link to the overview page,
+  // so that the user can select a valid resource. Maybe we can also display a list of the most resources or resources
+  // which the user might have meant.
   if (!resources.hasOwnProperty(params.kind)) {
     return (
       <PageSection variant={PageSectionVariants.default}>
@@ -105,11 +117,7 @@ const Resources: React.FunctionComponent = () => {
         <DrawerContent
           panelContent={
             selectedResource ? (
-              <Resource
-                resource={selectedResource}
-                columns={columns}
-                close={(): void => setSelectedResource(undefined)}
-              />
+              <DrawerPanel resource={selectedResource} close={(): void => setSelectedResource(undefined)} />
             ) : undefined
           }
         >

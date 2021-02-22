@@ -1,5 +1,5 @@
 // timeDifference calculates the difference of two given timestamps and returns a human readable string for the
-// difference.
+// difference. It is used to get the same style for the age of resources like it is displayed by kubectl.
 export const timeDifference = (current: number, previous: number): string => {
   const msPerMinute = 60 * 1000;
   const msPerHour = msPerMinute * 60;

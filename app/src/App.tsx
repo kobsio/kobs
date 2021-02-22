@@ -6,23 +6,26 @@ import '@patternfly/react-core/dist/styles/base.css';
 import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/patternfly/patternfly-addons.css';
 
-import Applications from './components/applications/Applications';
-import Logo from './components/menu/Logo';
-import Overview from './components/overview/Overview';
-import Resources from './components/resources/Resources';
+import Application from 'components/applications/Application';
+import Applications from 'components/applications/Applications';
+import HeaderLogo from 'components/shared/HeaderLogo';
+import Overview from 'components/overview/Overview';
+import Resources from 'components/resources/Resources';
 
-import './app.css';
+import 'app.css';
 
+// App is used to set all routes for the react-router and the header for all pages.
 const App: React.FunctionComponent = () => {
-  const Header = <PageHeader logo={<Logo />} />;
+  const Header = <PageHeader logo={<HeaderLogo />} />;
 
   return (
     <Router>
       <Page header={Header}>
         <Switch>
-          <Route exact path="/" component={Overview} />
-          <Route exact path="/applications" component={Applications} />
-          <Route exact path="/resources/:kind" component={Resources} />
+          <Route exact={true} path="/" component={Overview} />
+          <Route exact={true} path="/applications" component={Applications} />
+          <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
+          <Route exact={true} path="/resources/:kind" component={Resources} />
         </Switch>
       </Page>
     </Router>
