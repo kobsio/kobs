@@ -1,3 +1,3 @@
-// package: clusters
+// package: applications
 // file: applications.proto
 

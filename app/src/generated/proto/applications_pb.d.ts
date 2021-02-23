@@ -1,4 +1,4 @@
-// package: clusters
+// package: applications
 // file: applications.proto
 
 import * as jspb from "google-protobuf";
