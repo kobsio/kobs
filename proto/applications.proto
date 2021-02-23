@@ -1,5 +1,5 @@
 syntax = "proto3";
-package clusters;
+package applications;
 
 option go_package = "github.com/kobsio/kobs/pkg/generated/proto";
 

@@ -1830,17 +1830,17 @@ proto.clusters.GetApplicationsResponse.serializeBinaryToWriter = function(messag
 
 
 /**
- * repeated Application applications = 1;
- * @return {!Array<!proto.clusters.Application>}
+ * repeated applications.Application applications = 1;
+ * @return {!Array<!proto.applications.Application>}
  */
 proto.clusters.GetApplicationsResponse.prototype.getApplicationsList = function() {
-  return /** @type{!Array<!proto.clusters.Application>} */ (
+  return /** @type{!Array<!proto.applications.Application>} */ (
     jspb.Message.getRepeatedWrapperField(this, applications_pb.Application, 1));
 };
 
 
 /**
- * @param {!Array<!proto.clusters.Application>} value
+ * @param {!Array<!proto.applications.Application>} value
  * @return {!proto.clusters.GetApplicationsResponse} returns this
 */
 proto.clusters.GetApplicationsResponse.prototype.setApplicationsList = function(value) {
@@ -1849,12 +1849,12 @@ proto.clusters.GetApplicationsResponse.prototype.setApplicationsList = function(
 
 
 /**
- * @param {!proto.clusters.Application=} opt_value
+ * @param {!proto.applications.Application=} opt_value
  * @param {number=} opt_index
- * @return {!proto.clusters.Application}
+ * @return {!proto.applications.Application}
  */
 proto.clusters.GetApplicationsResponse.prototype.addApplications = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.clusters.Application, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.applications.Application, opt_index);
 };
 
 
@@ -2172,17 +2172,17 @@ proto.clusters.GetApplicationResponse.serializeBinaryToWriter = function(message
 
 
 /**
- * optional Application application = 1;
- * @return {?proto.clusters.Application}
+ * optional applications.Application application = 1;
+ * @return {?proto.applications.Application}
  */
 proto.clusters.GetApplicationResponse.prototype.getApplication = function() {
-  return /** @type{?proto.clusters.Application} */ (
+  return /** @type{?proto.applications.Application} */ (
     jspb.Message.getWrapperField(this, applications_pb.Application, 1));
 };
 
 
 /**
- * @param {?proto.clusters.Application|undefined} value
+ * @param {?proto.applications.Application|undefined} value
  * @return {!proto.clusters.GetApplicationResponse} returns this
 */
 proto.clusters.GetApplicationResponse.prototype.setApplication = function(value) {
