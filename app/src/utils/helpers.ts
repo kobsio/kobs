@@ -20,3 +20,11 @@ export const timeDifference = (current: number, previous: number): string => {
     return Math.round(elapsed / msPerYear) + 'y';
   }
 };
+
+// formatTime formats an given timestamp in a uniform way accross the kobs UI.
+export const formatTime = (timestamp: number): string => {
+  const d = new Date(timestamp * 1000);
+  return `${d.getFullYear()}-${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${(
+    '0' + d.getHours()
+  ).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`;
+};

@@ -14,8 +14,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var applications_pb = require('./applications_pb.js');
-goog.object.extend(proto, applications_pb);
+var application_pb = require('./application_pb.js');
+goog.object.extend(proto, application_pb);
 goog.exportSymbol('proto.clusters.GetApplicationRequest', null, global);
 goog.exportSymbol('proto.clusters.GetApplicationResponse', null, global);
 goog.exportSymbol('proto.clusters.GetApplicationsRequest', null, global);
@@ -1747,7 +1747,7 @@ proto.clusters.GetApplicationsResponse.prototype.toObject = function(opt_include
 proto.clusters.GetApplicationsResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     applicationsList: jspb.Message.toObjectList(msg.getApplicationsList(),
-    applications_pb.Application.toObject, includeInstance)
+    application_pb.Application.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -1785,8 +1785,8 @@ proto.clusters.GetApplicationsResponse.deserializeBinaryFromReader = function(ms
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new applications_pb.Application;
-      reader.readMessage(value,applications_pb.Application.deserializeBinaryFromReader);
+      var value = new application_pb.Application;
+      reader.readMessage(value,application_pb.Application.deserializeBinaryFromReader);
       msg.addApplications(value);
       break;
     default:
@@ -1823,24 +1823,24 @@ proto.clusters.GetApplicationsResponse.serializeBinaryToWriter = function(messag
     writer.writeRepeatedMessage(
       1,
       f,
-      applications_pb.Application.serializeBinaryToWriter
+      application_pb.Application.serializeBinaryToWriter
     );
   }
 };
 
 
 /**
- * repeated applications.Application applications = 1;
- * @return {!Array<!proto.applications.Application>}
+ * repeated application.Application applications = 1;
+ * @return {!Array<!proto.application.Application>}
  */
 proto.clusters.GetApplicationsResponse.prototype.getApplicationsList = function() {
-  return /** @type{!Array<!proto.applications.Application>} */ (
-    jspb.Message.getRepeatedWrapperField(this, applications_pb.Application, 1));
+  return /** @type{!Array<!proto.application.Application>} */ (
+    jspb.Message.getRepeatedWrapperField(this, application_pb.Application, 1));
 };
 
 
 /**
- * @param {!Array<!proto.applications.Application>} value
+ * @param {!Array<!proto.application.Application>} value
  * @return {!proto.clusters.GetApplicationsResponse} returns this
 */
 proto.clusters.GetApplicationsResponse.prototype.setApplicationsList = function(value) {
@@ -1849,12 +1849,12 @@ proto.clusters.GetApplicationsResponse.prototype.setApplicationsList = function(
 
 
 /**
- * @param {!proto.applications.Application=} opt_value
+ * @param {!proto.application.Application=} opt_value
  * @param {number=} opt_index
- * @return {!proto.applications.Application}
+ * @return {!proto.application.Application}
  */
 proto.clusters.GetApplicationsResponse.prototype.addApplications = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.applications.Application, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.application.Application, opt_index);
 };
 
 
@@ -2089,7 +2089,7 @@ proto.clusters.GetApplicationResponse.prototype.toObject = function(opt_includeI
  */
 proto.clusters.GetApplicationResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    application: (f = msg.getApplication()) && applications_pb.Application.toObject(includeInstance, f)
+    application: (f = msg.getApplication()) && application_pb.Application.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -2127,8 +2127,8 @@ proto.clusters.GetApplicationResponse.deserializeBinaryFromReader = function(msg
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new applications_pb.Application;
-      reader.readMessage(value,applications_pb.Application.deserializeBinaryFromReader);
+      var value = new application_pb.Application;
+      reader.readMessage(value,application_pb.Application.deserializeBinaryFromReader);
       msg.setApplication(value);
       break;
     default:
@@ -2165,24 +2165,24 @@ proto.clusters.GetApplicationResponse.serializeBinaryToWriter = function(message
     writer.writeMessage(
       1,
       f,
-      applications_pb.Application.serializeBinaryToWriter
+      application_pb.Application.serializeBinaryToWriter
     );
   }
 };
 
 
 /**
- * optional applications.Application application = 1;
- * @return {?proto.applications.Application}
+ * optional application.Application application = 1;
+ * @return {?proto.application.Application}
  */
 proto.clusters.GetApplicationResponse.prototype.getApplication = function() {
-  return /** @type{?proto.applications.Application} */ (
-    jspb.Message.getWrapperField(this, applications_pb.Application, 1));
+  return /** @type{?proto.application.Application} */ (
+    jspb.Message.getWrapperField(this, application_pb.Application, 1));
 };
 
 
 /**
- * @param {?proto.applications.Application|undefined} value
+ * @param {?proto.application.Application|undefined} value
  * @return {!proto.clusters.GetApplicationResponse} returns this
 */
 proto.clusters.GetApplicationResponse.prototype.setApplication = function(value) {

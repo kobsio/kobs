@@ -38,6 +38,12 @@ static_resources:
                             max_stream_duration:
                               grpc_timeout_header_max: 0s
                         - match:
+                            prefix: "/datasources."
+                          route:
+                            cluster: api-server
+                            max_stream_duration:
+                              grpc_timeout_header_max: 0s
+                        - match:
                             prefix: "/"
                           route:
                             cluster: app-server

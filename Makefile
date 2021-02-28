@@ -20,11 +20,14 @@ generate: generate-proto generate-crd
 .PHONY: generate-proto
 generate-proto:
 	@protoc --proto_path=proto --go_out=pkg/generated/proto --go_opt=paths=source_relative --go-grpc_out=pkg/generated/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/generated/proto --js_out=import_style=commonjs:app/src/generated/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/generated/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/generated/proto proto/clusters.proto
-	@protoc --proto_path=proto --go_out=pkg/generated/proto --go_opt=paths=source_relative --go-grpc_out=pkg/generated/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/generated/proto --js_out=import_style=commonjs:app/src/generated/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/generated/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/generated/proto proto/applications.proto
+	@protoc --proto_path=proto --go_out=pkg/generated/proto --go_opt=paths=source_relative --go-grpc_out=pkg/generated/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/generated/proto --js_out=import_style=commonjs:app/src/generated/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/generated/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/generated/proto proto/datasources.proto
+	@protoc --proto_path=proto --go_out=pkg/generated/proto --go_opt=paths=source_relative --go-grpc_out=pkg/generated/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/generated/proto --js_out=import_style=commonjs:app/src/generated/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/generated/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/generated/proto proto/application.proto
 	@rm -rf ./pkg/generated/proto/clusters_deepcopy.gen.go
-	@rm -rf ./pkg/generated/proto/applications_deepcopy.gen.go
+	@rm -rf ./pkg/generated/proto/datasources_deepcopy.gen.go
+	@rm -rf ./pkg/generated/proto/application_deepcopy.gen.go
 	@mv ./pkg/generated/proto/github.com/kobsio/kobs/pkg/generated/proto/clusters_deepcopy.gen.go ./pkg/generated/proto
-	@mv ./pkg/generated/proto/github.com/kobsio/kobs/pkg/generated/proto/applications_deepcopy.gen.go ./pkg/generated/proto
+	@mv ./pkg/generated/proto/github.com/kobsio/kobs/pkg/generated/proto/datasources_deepcopy.gen.go ./pkg/generated/proto
+	@mv ./pkg/generated/proto/github.com/kobsio/kobs/pkg/generated/proto/application_deepcopy.gen.go ./pkg/generated/proto
 	@rm -rf ./pkg/generated/proto/github.com
 
 .PHONY: generate-crd

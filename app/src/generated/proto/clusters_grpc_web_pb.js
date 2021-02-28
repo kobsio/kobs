@@ -16,7 +16,7 @@ const grpc = {};
 grpc.web = require('grpc-web');
 
 
-var applications_pb = require('./applications_pb.js')
+var application_pb = require('./application_pb.js')
 const proto = {};
 proto.clusters = require('./clusters_pb.js');
 

@@ -14,8 +14,8 @@ import React, { useState } from 'react';
 
 import { GetApplicationsRequest, GetApplicationsResponse } from 'generated/proto/clusters_pb';
 import { apiURL, applicationsDescription } from 'utils/constants';
-import { Application } from 'generated/proto/applications_pb';
-import Card from 'components/applications/details/Card';
+import { Application } from 'generated/proto/application_pb';
+import Card from 'components/applications/overview/Card';
 import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
 import DrawerPanel from 'components/applications/details/DrawerPanel';
 import Filter from 'components/resources/shared/Filter';

@@ -2,7 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionToggle } from '@pa
 import React, { useState } from 'react';
 import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon';
 
-import { Application } from 'generated/proto/applications_pb';
+import { Application } from 'generated/proto/application_pb';
 import NotDefined from 'components/applications/details/NotDefined';
 import Resource from 'components/applications/details/resources/Resource';
 import { resources } from 'components/resources/shared/helpers';

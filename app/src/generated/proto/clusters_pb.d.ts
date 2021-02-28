@@ -2,7 +2,7 @@
 // file: clusters.proto
 
 import * as jspb from "google-protobuf";
-import * as applications_pb from "./applications_pb";
+import * as application_pb from "./application_pb";
 
 export class GetClustersRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
@@ -210,9 +210,9 @@ export namespace GetApplicationsRequest {
 
 export class GetApplicationsResponse extends jspb.Message {
   clearApplicationsList(): void;
-  getApplicationsList(): Array<applications_pb.Application>;
-  setApplicationsList(value: Array<applications_pb.Application>): void;
-  addApplications(value?: applications_pb.Application, index?: number): applications_pb.Application;
+  getApplicationsList(): Array<application_pb.Application>;
+  setApplicationsList(value: Array<application_pb.Application>): void;
+  addApplications(value?: application_pb.Application, index?: number): application_pb.Application;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetApplicationsResponse.AsObject;
@@ -226,7 +226,7 @@ export class GetApplicationsResponse extends jspb.Message {
 
 export namespace GetApplicationsResponse {
   export type AsObject = {
-    applicationsList: Array<applications_pb.Application.AsObject>,
+    applicationsList: Array<application_pb.Application.AsObject>,
   }
 }
 
@@ -261,8 +261,8 @@ export namespace GetApplicationRequest {
 export class GetApplicationResponse extends jspb.Message {
   hasApplication(): boolean;
   clearApplication(): void;
-  getApplication(): applications_pb.Application | undefined;
-  setApplication(value?: applications_pb.Application): void;
+  getApplication(): application_pb.Application | undefined;
+  setApplication(value?: application_pb.Application): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetApplicationResponse.AsObject;
@@ -276,7 +276,7 @@ export class GetApplicationResponse extends jspb.Message {
 
 export namespace GetApplicationResponse {
   export type AsObject = {
-    application?: applications_pb.Application.AsObject,
+    application?: application_pb.Application.AsObject,
   }
 }
 
