@@ -14,7 +14,8 @@ import {
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Application } from 'generated/proto/applications_pb';
+import { Application } from 'generated/proto/application_pb';
+import Metrics from 'components/applications/details/metrics/Metrics';
 import Resources from 'components/applications/details/resources/Resources';
 import Title from 'components/shared/Title';
 
@@ -66,7 +67,14 @@ const DrawerPanel: React.FunctionComponent<IDrawerPanelProps> = ({ application, 
           onSelect={(event, tabIndex): void => setActiveTabKey(tabIndex.toString())}
         >
           <Tab eventKey="resources" title={<TabTitleText>Resources</TabTitleText>}>
-            <Resources application={application} />
+            <div>
+              <Resources application={application} />
+            </div>
+          </Tab>
+          <Tab eventKey="metrics" title={<TabTitleText>Metrics</TabTitleText>}>
+            <div>
+              <Metrics application={application} />
+            </div>
           </Tab>
         </Tabs>
       </DrawerPanelBody>

@@ -7,3 +7,9 @@ clusters:
     metrics: prometheus
     logs: elasticsearch
     traces: jaeger
+
+datasources:
+  - name: prometheus
+    type: prometheus
+    prometheus:
+      address: http://localhost:9090

@@ -9,6 +9,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/api"
 	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/datasources/datasource"
 	"github.com/kobsio/kobs/pkg/app"
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/version"
@@ -20,7 +21,8 @@ import (
 
 // Config is the complete configuration for kobs.
 type Config struct {
-	Clusters clusters.Config `yaml:"clusters"`
+	Clusters    clusters.Config     `yaml:"clusters"`
+	Datasources []datasource.Config `yaml:"datasources"`
 }
 
 var (
@@ -125,7 +127,7 @@ func main() {
 	}
 	go appServer.Start()
 
-	apiServer, err := api.New(config.Clusters)
+	apiServer, err := api.New(config.Clusters, config.Datasources)
 	if err != nil {
 		log.WithError(err).Fatalf("Could not create API server.")
 	}

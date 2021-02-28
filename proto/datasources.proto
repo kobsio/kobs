@@ -1,0 +1,101 @@
+syntax = "proto3";
+package datasources;
+
+option go_package = "github.com/kobsio/kobs/pkg/generated/proto";
+
+import "application.proto";
+
+// Datasources implements the service for all datasource related requests. The service provides some general functions,
+// like returning the type of a datasource for a given name. The service is also responsible for the implementation of
+// the datasource specific functions.
+service Datasources {
+  rpc GetDatasource(GetDatasourceRequest) returns (GetDatasourceResponse) {}
+  rpc GetVariables(GetVariablesRequest) returns (GetVariablesResponse) {}
+  rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
+  rpc GetLogs(GetLogsRequest) returns (GetLogsResponse) {}
+  rpc GetTraces(GetTracesRequest) returns (GetTracesResponse) {}
+}
+
+// GetDatasourceRequest is the request message to get the type of a datasource. Each datasource can be identified by
+// it's name, so that only the name is required in this request.
+message GetDatasourceRequest {
+  string name = 1;
+}
+
+// GetDatasourceResponse is the response for a GetDatasource request. At the moment this only returns the type of the,
+// datasource, but it can be extended later with other properties for a datasource.
+// This request should never return any confidential properties of a datasource like username / password, which is
+// required for the authentication against the datasource.
+message GetDatasourceResponse {
+  string name = 1;
+  string type = 2;
+}
+
+// GetVariablesRequest is the request data needed to get all variables for the metrics view of an application. The
+// request contains various options for the datasource (like start/end time) and the variables of an application. It
+// also contains the name of the datasource, which should be used.
+message GetVariablesRequest {
+  string name = 1;
+  DatasourceOptions options = 2;
+  repeated application.ApplicationMetricsVariable variables = 3;
+}
+
+// GetVariablesResponse is the response for a GetVariables request, it contains the variables of the application, with
+// the values and value field.
+message GetVariablesResponse {
+  repeated application.ApplicationMetricsVariable variables = 1;
+}
+
+// GetMetricsRequest is the structure of a call to get a time series for a chart. It must contain the name of the
+// datasource, options like the start/end time and the user defined queries for the chart.
+message GetMetricsRequest {
+  string name = 1;
+  DatasourceOptions options = 2;
+  repeated application.ApplicationMetricsVariable variables = 3;
+  repeated application.ApplicationMetricsQuery queries = 4;
+}
+
+// GetMetricsResponse is the response for a GetMetrics request. It contains the data needed to render the chart in the
+// React UI.
+message GetMetricsResponse {
+  repeated DatasourceMetrics metrics = 1;
+}
+
+message GetLogsRequest {
+  string name = 1;
+  DatasourceOptions options = 2;
+}
+
+message GetLogsResponse {}
+
+message GetTracesRequest {
+  string name = 1;
+  DatasourceOptions options = 2;
+}
+
+message GetTracesResponse {}
+
+// DatasourceOptions contains various options, which are need to get metrics, logs and traces across different
+// datasources. These can be general options like start time, end time and datasource specific options like the
+// resolution for Prometheus series.
+message DatasourceOptions {
+  int64 timeStart = 1;
+  int64 timeEnd = 2;
+  string resolution = 3;
+}
+
+// DatasourceMetrics contains the label and all data points for a metric. It also contains the minimum and maximum value
+// of all data points.
+message DatasourceMetrics {
+  string label = 1;
+  double min = 2;
+  double max = 3;
+  repeated DatasourceMetricsData data = 4;
+}
+
+// DatasourceMetricsData is one data point for a metric. Each data point contains a timestamp and a value, where x is
+// the timestamp and y is the value.
+message DatasourceMetricsData {
+  int64 x = 1;
+  double y = 2;
+}

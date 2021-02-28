@@ -3,7 +3,7 @@ package clusters;
 
 option go_package = "github.com/kobsio/kobs/pkg/generated/proto";
 
-import "applications.proto";
+import "application.proto";
 
 // Clusters is the service to execute requests against all loaded Kubernetes clusters. The service can be used to get
 // all clusters, the namespaces for clusters and various Kubernetes resources.
@@ -71,7 +71,7 @@ message GetApplicationsRequest {
 
 // GetApplicationsResponse is the response for a GetApplications request, which returns a list of applications.
 message GetApplicationsResponse {
-  repeated applications.Application applications = 1;
+  repeated application.Application applications = 1;
 }
 
 // GetApplicationRequest is the format to get a single application. Each application can be identified by the cluster,
@@ -84,5 +84,5 @@ message GetApplicationRequest {
 
 // GetApplicationResponse is the response for a GetApplication request, which returns a single application.
 message GetApplicationResponse {
-  applications.Application application = 1;
+  application.Application application = 1;
 }

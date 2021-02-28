@@ -5,6 +5,7 @@ import React from 'react';
 import '@patternfly/react-core/dist/styles/base.css';
 import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/patternfly/patternfly-addons.css';
+import '@patternfly/patternfly/patternfly-charts.css';
 
 import Application from 'components/applications/Application';
 import Applications from 'components/applications/Applications';

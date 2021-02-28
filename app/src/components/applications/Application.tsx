@@ -16,8 +16,9 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { GetApplicationRequest, GetApplicationResponse } from 'generated/proto/clusters_pb';
-import { Application } from 'generated/proto/applications_pb';
+import { Application } from 'generated/proto/application_pb';
 import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
+import Metrics from 'components/applications/details/metrics/Metrics';
 import Resources from 'components/applications/details/resources/Resources';
 import Title from 'components/shared/Title';
 import { apiURL } from 'utils/constants';
@@ -40,6 +41,7 @@ const Applications: React.FunctionComponent = () => {
   const [error, setError] = useState<string>('');
   const [activeTabKey, setActiveTabKey] = useState<string>('resources');
   const refResourcesContent = useRef<HTMLElement>(null);
+  const refMetricsContent = useRef<HTMLElement>(null);
 
   const goToOverview = (): void => {
     history.push('/');
@@ -98,7 +100,7 @@ const Applications: React.FunctionComponent = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection className="kobsio-pagesection-tabs" variant={PageSectionVariants.light}>
         <Title
           title={application.getName()}
           subtitle={`${application.getNamespace()} (${application.getCluster()})`}
@@ -126,12 +128,24 @@ const Applications: React.FunctionComponent = () => {
             tabContentId="refResources"
             tabContentRef={refResourcesContent}
           />
+          <Tab
+            eventKey="metrics"
+            title={<TabTitleText>Metrics</TabTitleText>}
+            tabContentId="refMetrics"
+            tabContentRef={refMetricsContent}
+          />
         </Tabs>
       </PageSection>
 
       <PageSection variant={PageSectionVariants.default}>
-        <TabContent eventKey={0} id="refResources" ref={refResourcesContent} aria-label="Resources">
-          <Resources application={application} />
+        <TabContent eventKey="resources" id="refResources" ref={refResourcesContent} aria-label="Resources">
+          <div>
+            <Resources application={application} />
+          </div>
+        </TabContent>
+        <TabContent eventKey="metrics" id="refMetrics" ref={refMetricsContent} aria-label="Metrics">
+          {/* We have to check if the refMetricsContent is not null, because otherwise the Metrics component will be shown below the resources component. */}
+          <div>{refMetricsContent.current ? <Metrics application={application} /> : null}</div>
         </TabContent>
       </PageSection>
     </React.Fragment>

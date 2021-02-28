@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/datasources"
+	"github.com/kobsio/kobs/pkg/api/datasources/datasource"
 	"github.com/kobsio/kobs/pkg/generated/proto"
 
 	"github.com/sirupsen/logrus"
@@ -48,7 +50,7 @@ func (s *Server) Stop() {
 }
 
 // New return a new API server.
-func New(clustersConfig clusters.Config) (*Server, error) {
+func New(clustersConfig clusters.Config, datasourcesConfig []datasource.Config) (*Server, error) {
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		return nil, err
@@ -59,9 +61,15 @@ func New(clustersConfig clusters.Config) (*Server, error) {
 		return nil, err
 	}
 
+	d, err := datasources.Load(datasourcesConfig)
+	if err != nil {
+		return nil, err
+	}
+
 	grpcServer := grpc.NewServer()
 	reflection.Register(grpcServer)
 	proto.RegisterClustersServer(grpcServer, c)
+	proto.RegisterDatasourcesServer(grpcServer, d)
 
 	return &Server{
 		listener: listener,
