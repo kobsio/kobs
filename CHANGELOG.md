@@ -18,3 +18,5 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#1](https://github.com/kobsio/kobs/pull/1): Fix mobile layout for the cluster and namespace filter by using a Toolbar instead of FlexItems.
 
 ### Changed
+
+- [#7](https://github.com/kobsio/kobs/pull/7): Share datasource options between components and allow sharing of URLs.

@@ -7,16 +7,14 @@ import {
   List,
   ListItem,
   ListVariant,
-  Tab,
-  TabTitleText,
-  Tabs,
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import Tabs, { DEFAULT_TAB } from 'components/applications/details/Tabs';
 import { Application } from 'generated/proto/application_pb';
-import Metrics from 'components/applications/details/metrics/Metrics';
-import Resources from 'components/applications/details/resources/Resources';
+import DetailsLink from 'components/applications/details/DetailsLink';
+import TabsContent from 'components/applications/details/TabsContent';
 import Title from 'components/shared/Title';
 
 interface IDrawerPanelProps {
@@ -27,7 +25,9 @@ interface IDrawerPanelProps {
 // DrawerPanel is the drawer panel for an application. It is used to display application details in the applications
 // page. The details contains information for resources, metrics, logs and traces.
 const DrawerPanel: React.FunctionComponent<IDrawerPanelProps> = ({ application, close }: IDrawerPanelProps) => {
-  const [activeTabKey, setActiveTabKey] = useState<string>('resources');
+  const [tab, setTab] = useState<string>(DEFAULT_TAB);
+  const refResourcesContent = useRef<HTMLElement>(null);
+  const refMetricsContent = useRef<HTMLElement>(null);
 
   return (
     <DrawerPanelContent minSize="50%">
@@ -45,11 +45,7 @@ const DrawerPanel: React.FunctionComponent<IDrawerPanelProps> = ({ application, 
       <DrawerPanelBody className="kobs-drawer-panel-body">
         <List variant={ListVariant.inline}>
           <ListItem>
-            <Link
-              to={`/applications/${application.getCluster()}/${application.getNamespace()}/${application.getName()}`}
-            >
-              Details
-            </Link>
+            <DetailsLink application={application} />
           </ListItem>
           {application.getLinksList().map((link, index) => (
             <ListItem key={index}>
@@ -61,22 +57,18 @@ const DrawerPanel: React.FunctionComponent<IDrawerPanelProps> = ({ application, 
         </List>
 
         <Tabs
-          mountOnEnter={true}
-          isFilled={true}
-          activeKey={activeTabKey}
-          onSelect={(event, tabIndex): void => setActiveTabKey(tabIndex.toString())}
-        >
-          <Tab eventKey="resources" title={<TabTitleText>Resources</TabTitleText>}>
-            <div>
-              <Resources application={application} />
-            </div>
-          </Tab>
-          <Tab eventKey="metrics" title={<TabTitleText>Metrics</TabTitleText>}>
-            <div>
-              <Metrics application={application} />
-            </div>
-          </Tab>
-        </Tabs>
+          tab={tab}
+          setTab={(t: string): void => setTab(t)}
+          refResourcesContent={refResourcesContent}
+          refMetricsContent={refMetricsContent}
+        />
+
+        <TabsContent
+          application={application}
+          tab={tab}
+          refResourcesContent={refResourcesContent}
+          refMetricsContent={refMetricsContent}
+        />
       </DrawerPanelBody>
     </DrawerPanelContent>
   );

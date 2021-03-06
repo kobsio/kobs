@@ -18,22 +18,23 @@ import { apiURL } from 'utils/constants';
 const datasourcesService = new DatasourcesPromiseClient(apiURL, null, null);
 
 interface IMetricsProps {
+  datasourceOptions: IDatasourceOptions;
+  setDatasourceOptions: (options: IDatasourceOptions) => void;
   application: Application;
 }
 
 // Metrics the metrics component is used to display the metrics for an application. The metrics view consist of a
 // toolbar, to display variables and different datasource specific options for the queries. It also contains a charts
 // view, to display all user defined charts.
-const Metrics: React.FunctionComponent<IMetricsProps> = ({ application }: IMetricsProps) => {
+const Metrics: React.FunctionComponent<IMetricsProps> = ({
+  datasourceOptions,
+  setDatasourceOptions,
+  application,
+}: IMetricsProps) => {
   const metrics = application.getMetrics();
 
   const [datasourceName, setDatasourceName] = useState<string>('');
   const [datasourceType, setDatasourceType] = useState<string>('');
-  const [datasourceOptions, setDatasourceOptions] = useState<IDatasourceOptions>({
-    resolution: '',
-    timeEnd: Math.floor(Date.now() / 1000),
-    timeStart: Math.floor(Date.now() / 1000) - 3600,
-  });
   const [variables, setVariables] = useState<IApplicationMetricsVariable[]>(
     metrics ? convertApplicationMetricsVariablesFromProto(metrics.getVariablesList()) : [],
   );
@@ -105,7 +106,7 @@ const Metrics: React.FunctionComponent<IMetricsProps> = ({ application }: IMetri
         datasourcenName={datasourceName}
         datasourceType={datasourceType}
         datasourceOptions={datasourceOptions}
-        setDatasourceOptions={(opts): void => setDatasourceOptions(opts)}
+        setDatasourceOptions={setDatasourceOptions}
         variables={variables}
         setVariables={(vars): void => setVariables(vars)}
       />
