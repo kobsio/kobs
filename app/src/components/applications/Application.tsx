@@ -7,19 +7,15 @@ import {
   ListVariant,
   PageSection,
   PageSectionVariants,
-  Tab,
-  TabContent,
-  TabTitleText,
-  Tabs,
 } from '@patternfly/react-core';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { GetApplicationRequest, GetApplicationResponse } from 'generated/proto/clusters_pb';
+import Tabs, { DEFAULT_TAB } from 'components/applications/details/Tabs';
 import { Application } from 'generated/proto/application_pb';
 import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
-import Metrics from 'components/applications/details/metrics/Metrics';
-import Resources from 'components/applications/details/resources/Resources';
+import TabsContent from 'components/applications/details/TabsContent';
 import Title from 'components/shared/Title';
 import { apiURL } from 'utils/constants';
 
@@ -39,7 +35,8 @@ const Applications: React.FunctionComponent = () => {
   const params = useParams<IApplicationsParams>();
   const [application, setApplication] = useState<Application | undefined>(undefined);
   const [error, setError] = useState<string>('');
-  const [activeTabKey, setActiveTabKey] = useState<string>('resources');
+
+  const [tab, setTab] = useState<string>(DEFAULT_TAB);
   const refResourcesContent = useRef<HTMLElement>(null);
   const refMetricsContent = useRef<HTMLElement>(null);
 
@@ -116,37 +113,20 @@ const Applications: React.FunctionComponent = () => {
           ))}
         </List>
         <Tabs
-          className="pf-u-mt-md"
-          mountOnEnter={true}
-          isFilled={true}
-          activeKey={activeTabKey}
-          onSelect={(event, tabIndex): void => setActiveTabKey(tabIndex.toString())}
-        >
-          <Tab
-            eventKey="resources"
-            title={<TabTitleText>Resources</TabTitleText>}
-            tabContentId="refResources"
-            tabContentRef={refResourcesContent}
-          />
-          <Tab
-            eventKey="metrics"
-            title={<TabTitleText>Metrics</TabTitleText>}
-            tabContentId="refMetrics"
-            tabContentRef={refMetricsContent}
-          />
-        </Tabs>
+          tab={tab}
+          setTab={(t: string): void => setTab(t)}
+          refResourcesContent={refResourcesContent}
+          refMetricsContent={refMetricsContent}
+        />
       </PageSection>
 
       <PageSection variant={PageSectionVariants.default}>
-        <TabContent eventKey="resources" id="refResources" ref={refResourcesContent} aria-label="Resources">
-          <div>
-            <Resources application={application} />
-          </div>
-        </TabContent>
-        <TabContent eventKey="metrics" id="refMetrics" ref={refMetricsContent} aria-label="Metrics">
-          {/* We have to check if the refMetricsContent is not null, because otherwise the Metrics component will be shown below the resources component. */}
-          <div>{refMetricsContent.current ? <Metrics application={application} /> : null}</div>
-        </TabContent>
+        <TabsContent
+          application={application}
+          tab={tab}
+          refResourcesContent={refResourcesContent}
+          refMetricsContent={refMetricsContent}
+        />
       </PageSection>
     </React.Fragment>
   );
