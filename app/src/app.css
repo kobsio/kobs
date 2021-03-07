@@ -63,8 +63,12 @@
   width: 100%;
 }
 
-/* kobsio-options-list-item
- * Apply some padding between the list items for smaller screens. */
+/* kobsio-options-list
+ * Do not center the items vertically and apply some padding between the list items for smaller screens. */
+.kobsio-options-list {
+  align-items: flex-start;
+}
+
 .kobsio-options-list-item {
   padding-bottom: 16px;
 }

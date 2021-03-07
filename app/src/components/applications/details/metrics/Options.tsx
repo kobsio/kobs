@@ -11,7 +11,7 @@ import {
   SimpleListItem,
   TextInput,
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IDatasourceOptions } from 'utils/proto';
 import { formatTime } from 'utils/helpers';
@@ -25,19 +25,29 @@ interface IOptionsProps {
 // Options is the component, where the user can select various options for the current view. The user can select a time
 // range for all queries via the quick select option or he can specify a start and end time via the input fields. Later
 // we can also display datasource specific options within the modal component.
-const Options: React.FunctionComponent<IOptionsProps> = ({ options, setOptions }: IOptionsProps) => {
+const Options: React.FunctionComponent<IOptionsProps> = ({ type, options, setOptions }: IOptionsProps) => {
   const [show, setShow] = useState<boolean>(false);
   const [timeStart, setTimeStart] = useState<string>(formatTime(options.timeStart));
   const [timeEnd, setTimeEnd] = useState<string>(formatTime(options.timeEnd));
   const [timeStartError, setTimeStartError] = useState<string>('');
   const [timeEndError, setTimeEndError] = useState<string>('');
 
+  const [resolution, setResolution] = useState<string>(options.resolution);
+
   // apply parses the value of the start and end input fields. If the user provided a correct data/time format, we
   // change the start and end time to the new values. If the string couldn't be parsed, the user will see an error below
   // the corresponding input field.
   const apply = (): void => {
+    // Get a new date object for the users current timezone. This allows us to ignore the timezone, while parsing the
+    // provided time string. The parsed date object will be in UTC, to transform the parsed date into the users timezone
+    // we have to add the minutes between UTC and the users timezon (getTimezoneOffset()).
+    const d = new Date();
+
     const parsedTimeStart = new Date(timeStart.replace(' ', 'T') + 'Z');
     const parsedTimeEnd = new Date(timeEnd.replace(' ', 'T') + 'Z');
+
+    parsedTimeStart.setMinutes(parsedTimeStart.getMinutes() + d.getTimezoneOffset());
+    parsedTimeEnd.setMinutes(parsedTimeEnd.getMinutes() + d.getTimezoneOffset());
 
     if (parsedTimeStart.toString() === 'Invalid Date') {
       setTimeStartError('Invalid time format.');
@@ -50,8 +60,9 @@ const Options: React.FunctionComponent<IOptionsProps> = ({ options, setOptions }
       setTimeEndError('');
       setOptions({
         ...options,
-        timeEnd: parsedTimeStart.getTime() / 1000,
-        timeStart: parsedTimeStart.getTime() / 1000,
+        resolution: resolution,
+        timeEnd: Math.floor(parsedTimeEnd.getTime() / 1000),
+        timeStart: Math.floor(parsedTimeStart.getTime() / 1000),
       });
       setShow(false);
     }
@@ -62,11 +73,20 @@ const Options: React.FunctionComponent<IOptionsProps> = ({ options, setOptions }
   const quick = (seconds: number): void => {
     setOptions({
       ...options,
+      resolution: resolution,
       timeEnd: Math.floor(Date.now() / 1000),
       timeStart: Math.floor(Date.now() / 1000) - seconds,
     });
     setShow(false);
   };
+
+  // useEffect is used to update the UI, every time a dasource options changes.
+  useEffect(() => {
+    setTimeStart(formatTime(options.timeStart));
+    setTimeEnd(formatTime(options.timeEnd));
+
+    setResolution(options.resolution);
+  }, [options.timeEnd, options.timeStart, options.resolution]);
 
   return (
     <React.Fragment>
@@ -88,14 +108,14 @@ const Options: React.FunctionComponent<IOptionsProps> = ({ options, setOptions }
           </Button>,
         ]}
       >
-        <Level hasGutter={true}>
+        <Level className="kobsio-options-list" hasGutter={true}>
           <LevelItem className="kobsio-options-list-item">
             <Form>
               <FormGroup
                 label="Start Time"
                 isRequired={false}
                 fieldId="options-time-start"
-                helperTextInvalid="Age has to be a number"
+                helperTextInvalid={timeStartError}
                 validated={timeStartError ? 'error' : undefined}
               >
                 <TextInput
@@ -113,7 +133,7 @@ const Options: React.FunctionComponent<IOptionsProps> = ({ options, setOptions }
                 label="End Time"
                 isRequired={false}
                 fieldId="options-time-end"
-                helperTextInvalid="Age has to be a number"
+                helperTextInvalid={timeEndError}
                 validated={timeEndError ? 'error' : undefined}
               >
                 <TextInput
@@ -151,6 +171,22 @@ const Options: React.FunctionComponent<IOptionsProps> = ({ options, setOptions }
               <SimpleListItem onClick={(): void => quick(31536000)}>Last 1 Year</SimpleListItem>
             </SimpleList>
           </LevelItem>
+          {type === 'prometheus' ? (
+            <LevelItem className="kobsio-options-list-item">
+              <Form>
+                <FormGroup label="Resolution" isRequired={false} fieldId="options-resolution">
+                  <TextInput
+                    type="text"
+                    id="options-resolution"
+                    name="options-resolution"
+                    placeholder="1m"
+                    value={resolution}
+                    onChange={(value): void => setResolution(value)}
+                  />
+                </FormGroup>
+              </Form>
+            </LevelItem>
+          ) : null}
         </Level>
       </Modal>
     </React.Fragment>
