@@ -6,3 +6,7 @@ export const apiURL = process.env.NODE_ENV === 'production' ? '' : 'http://local
 // applicationsDescription is the description, which is displayed in the UI for the Application CR. Similar to other
 // resources, this should be a short description of the Application CR and for what it is used.
 export const applicationsDescription = 'Applications are a Custom Resource for kobs.';
+
+// datasourcesDescription is the description, which is displayed in the UI on the datasources card on the overview page
+// and the datasources page.
+export const datasourcesDescription = 'Datasources are used to retrieve metrics, logs or traces for an Application.';

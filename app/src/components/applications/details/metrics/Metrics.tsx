@@ -56,9 +56,14 @@ const Metrics: React.FunctionComponent<IMetricsProps> = ({
           null,
         );
 
-        setDatasourceName(getDatasourceResponse.getName());
-        setDatasourceType(getDatasourceResponse.getType());
-        setError('');
+        const datasource = getDatasourceResponse.getDatasource();
+        if (datasource) {
+          setDatasourceName(datasource.getName());
+          setDatasourceType(datasource.getType());
+          setError('');
+        } else {
+          throw new Error('Datasource is not defined.');
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -113,6 +118,7 @@ const Metrics: React.FunctionComponent<IMetricsProps> = ({
 
       <Charts
         datasourceName={datasourceName}
+        datasourceType={datasourceType}
         datasourceOptions={datasourceOptions}
         variables={variables}
         charts={metrics.getChartsList()}

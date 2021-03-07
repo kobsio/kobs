@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DatasourcesClient interface {
+	GetDatasources(ctx context.Context, in *GetDatasourcesRequest, opts ...grpc.CallOption) (*GetDatasourcesResponse, error)
 	GetDatasource(ctx context.Context, in *GetDatasourceRequest, opts ...grpc.CallOption) (*GetDatasourceResponse, error)
 	GetVariables(ctx context.Context, in *GetVariablesRequest, opts ...grpc.CallOption) (*GetVariablesResponse, error)
 	GetMetrics(ctx context.Context, in *GetMetricsRequest, opts ...grpc.CallOption) (*GetMetricsResponse, error)
@@ -31,6 +32,15 @@ type datasourcesClient struct {
 
 func NewDatasourcesClient(cc grpc.ClientConnInterface) DatasourcesClient {
 	return &datasourcesClient{cc}
+}
+
+func (c *datasourcesClient) GetDatasources(ctx context.Context, in *GetDatasourcesRequest, opts ...grpc.CallOption) (*GetDatasourcesResponse, error) {
+	out := new(GetDatasourcesResponse)
+	err := c.cc.Invoke(ctx, "/datasources.Datasources/GetDatasources", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *datasourcesClient) GetDatasource(ctx context.Context, in *GetDatasourceRequest, opts ...grpc.CallOption) (*GetDatasourceResponse, error) {
@@ -82,6 +92,7 @@ func (c *datasourcesClient) GetTraces(ctx context.Context, in *GetTracesRequest,
 // All implementations must embed UnimplementedDatasourcesServer
 // for forward compatibility
 type DatasourcesServer interface {
+	GetDatasources(context.Context, *GetDatasourcesRequest) (*GetDatasourcesResponse, error)
 	GetDatasource(context.Context, *GetDatasourceRequest) (*GetDatasourceResponse, error)
 	GetVariables(context.Context, *GetVariablesRequest) (*GetVariablesResponse, error)
 	GetMetrics(context.Context, *GetMetricsRequest) (*GetMetricsResponse, error)
@@ -94,6 +105,9 @@ type DatasourcesServer interface {
 type UnimplementedDatasourcesServer struct {
 }
 
+func (UnimplementedDatasourcesServer) GetDatasources(context.Context, *GetDatasourcesRequest) (*GetDatasourcesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDatasources not implemented")
+}
 func (UnimplementedDatasourcesServer) GetDatasource(context.Context, *GetDatasourceRequest) (*GetDatasourceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDatasource not implemented")
 }
@@ -120,6 +134,24 @@ type UnsafeDatasourcesServer interface {
 
 func RegisterDatasourcesServer(s grpc.ServiceRegistrar, srv DatasourcesServer) {
 	s.RegisterService(&Datasources_ServiceDesc, srv)
+}
+
+func _Datasources_GetDatasources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDatasourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatasourcesServer).GetDatasources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/datasources.Datasources/GetDatasources",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatasourcesServer).GetDatasources(ctx, req.(*GetDatasourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Datasources_GetDatasource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -219,6 +251,10 @@ var Datasources_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "datasources.Datasources",
 	HandlerType: (*DatasourcesServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetDatasources",
+			Handler:    _Datasources_GetDatasources_Handler,
+		},
 		{
 			MethodName: "GetDatasource",
 			Handler:    _Datasources_GetDatasource_Handler,

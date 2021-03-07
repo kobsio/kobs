@@ -10,6 +10,15 @@ var Datasources = (function () {
   return Datasources;
 }());
 
+Datasources.GetDatasources = {
+  methodName: "GetDatasources",
+  service: Datasources,
+  requestStream: false,
+  responseStream: false,
+  requestType: datasources_pb.GetDatasourcesRequest,
+  responseType: datasources_pb.GetDatasourcesResponse
+};
+
 Datasources.GetDatasource = {
   methodName: "GetDatasource",
   service: Datasources,
@@ -61,6 +70,37 @@ function DatasourcesClient(serviceHost, options) {
   this.serviceHost = serviceHost;
   this.options = options || {};
 }
+
+DatasourcesClient.prototype.getDatasources = function getDatasources(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Datasources.GetDatasources, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
 
 DatasourcesClient.prototype.getDatasource = function getDatasource(requestMessage, metadata, callback) {
   if (arguments.length === 2) {

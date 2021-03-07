@@ -32,6 +32,24 @@ func (d *Datasources) getDatasource(name string) datasource.Datasource {
 	return nil
 }
 
+// GetDatasources returns all configured datasources. For that we are looping through the datasources convert our
+// internal datastructur to the protobuf message format.
+func (d *Datasources) GetDatasources(ctx context.Context, getDatasourcesRequest *proto.GetDatasourcesRequest) (*proto.GetDatasourcesResponse, error) {
+	var datasources []*proto.Datasource
+
+	for _, ds := range d.datasources {
+		n, t := ds.GetDatasource()
+		datasources = append(datasources, &proto.Datasource{
+			Name: n,
+			Type: t,
+		})
+	}
+
+	return &proto.GetDatasourcesResponse{
+		Datasources: datasources,
+	}, nil
+}
+
 // GetDatasource implements the GetDatasource from the Datasources service. It will return the name and type of a
 // datasource by name. If no datasource for the given name could be found and error is returned.
 func (d *Datasources) GetDatasource(ctx context.Context, getDatasourceRequest *proto.GetDatasourceRequest) (*proto.GetDatasourceResponse, error) {
@@ -45,8 +63,10 @@ func (d *Datasources) GetDatasource(ctx context.Context, getDatasourceRequest *p
 	n, t := ds.GetDatasource()
 
 	return &proto.GetDatasourceResponse{
-		Name: n,
-		Type: t,
+		Datasource: &proto.Datasource{
+			Name: n,
+			Type: t,
+		},
 	}, nil
 }
 
@@ -80,13 +100,14 @@ func (d *Datasources) GetMetrics(ctx context.Context, getMetricsRequest *proto.G
 		return nil, fmt.Errorf("invalid datasource name")
 	}
 
-	metrics, err := ds.GetMetrics(ctx, getMetricsRequest.Options, getMetricsRequest.Variables, getMetricsRequest.Queries)
+	metrics, interpolatedQueries, err := ds.GetMetrics(ctx, getMetricsRequest.Options, getMetricsRequest.Variables, getMetricsRequest.Queries)
 	if err != nil {
 		return nil, err
 	}
 
 	return &proto.GetMetricsResponse{
-		Metrics: metrics,
+		Metrics:             metrics,
+		InterpolatedQueries: interpolatedQueries,
 	}, nil
 }
 

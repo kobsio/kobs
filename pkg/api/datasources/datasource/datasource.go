@@ -27,7 +27,7 @@ type Config struct {
 type Datasource interface {
 	GetDatasource() (string, string)
 	GetVariables(ctx context.Context, options *proto.DatasourceOptions, variables []*proto.ApplicationMetricsVariable) ([]*proto.ApplicationMetricsVariable, error)
-	GetMetrics(ctx context.Context, options *proto.DatasourceOptions, variables []*proto.ApplicationMetricsVariable, queries []*proto.ApplicationMetricsQuery) ([]*proto.DatasourceMetrics, error)
+	GetMetrics(ctx context.Context, options *proto.DatasourceOptions, variables []*proto.ApplicationMetricsVariable, queries []*proto.ApplicationMetricsQuery) ([]*proto.DatasourceMetrics, []string, error)
 	GetLogs(ctx context.Context, options *proto.DatasourceOptions) error
 	GetTraces(ctx context.Context, options *proto.DatasourceOptions) error
 }

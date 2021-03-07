@@ -1,8 +1,8 @@
 import { Divider, Gallery, GalleryItem, PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
 import React from 'react';
 
+import { applicationsDescription, datasourcesDescription } from 'utils/constants';
 import Item from 'components/overview/gallery/Item';
-import { applicationsDescription } from 'utils/constants';
 import { resources } from 'components/resources/shared/helpers';
 
 // Overview is the root component of kobs. It is used to render a list of pages, which can be used by the user. The
@@ -23,6 +23,9 @@ const Overview: React.FunctionComponent = () => {
         <Gallery hasGutter={true}>
           <GalleryItem>
             <Item title="Applications" body={applicationsDescription} link="/applications" />
+          </GalleryItem>
+          <GalleryItem>
+            <Item title="Datasources" body={datasourcesDescription} link="/datasources" />
           </GalleryItem>
         </Gallery>
       </PageSection>

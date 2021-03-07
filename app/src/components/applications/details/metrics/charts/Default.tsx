@@ -24,6 +24,7 @@ export interface IDefaultProps {
   type: string;
   unit: string;
   stacked: boolean;
+  disableLegend?: boolean;
   metrics: DatasourceMetrics[];
 }
 
@@ -37,7 +38,13 @@ export interface IDefaultProps {
 //
 // NOTE: Currently it is not possible to select a single time series in the chart. This should be changed in the future,
 // by using an interactive legend: https://www.patternfly.org/v4/charts/legend-chart#interactive-legend
-const Default: React.FunctionComponent<IDefaultProps> = ({ type, unit, stacked, metrics }: IDefaultProps) => {
+const Default: React.FunctionComponent<IDefaultProps> = ({
+  type,
+  unit,
+  stacked,
+  disableLegend,
+  metrics,
+}: IDefaultProps) => {
   const refChart = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
@@ -83,8 +90,8 @@ const Default: React.FunctionComponent<IDefaultProps> = ({ type, unit, stacked, 
         }
         height={height}
         legendData={legendData}
-        legendPosition="bottom"
-        padding={{ bottom: 60, left: 60, right: 0, top: 0 }}
+        legendPosition={disableLegend ? undefined : 'bottom'}
+        padding={{ bottom: disableLegend ? 0 : 60, left: 60, right: 0, top: 0 }}
         scale={{ x: 'time', y: 'linear' }}
         themeColor={ChartThemeColor.multiOrdered}
         width={width}

@@ -1,4 +1,13 @@
-import { Alert, AlertActionLink, AlertVariant, Card, CardBody, CardTitle } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertActionLink,
+  AlertVariant,
+  Card,
+  CardActions,
+  CardBody,
+  CardHeader,
+  CardHeaderMain,
+} from '@patternfly/react-core';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { DatasourceMetrics, GetMetricsRequest, GetMetricsResponse } from 'generated/proto/datasources_pb';
@@ -8,6 +17,7 @@ import {
   convertApplicationMetricsVariablesToProto,
   convertDatasourceOptionsToProto,
 } from 'utils/proto';
+import Actions from 'components/applications/details/metrics/charts/Actions';
 import { ApplicationMetricsChart } from 'generated/proto/application_pb';
 import { DatasourcesPromiseClient } from 'generated/proto/datasources_grpc_web_pb';
 import DefaultChart from 'components/applications/details/metrics/charts/Default';
@@ -19,6 +29,7 @@ const datasourcesService = new DatasourcesPromiseClient(apiURL, null, null);
 
 interface IChartProps {
   datasourceName: string;
+  datasourceType: string;
   datasourceOptions: IDatasourceOptions;
   variables: IApplicationMetricsVariable[];
   chart: ApplicationMetricsChart;
@@ -27,11 +38,13 @@ interface IChartProps {
 // Chart component is used to fetch the data for an chart and to render the chart within a Card component.
 const Chart: React.FunctionComponent<IChartProps> = ({
   datasourceName,
+  datasourceType,
   datasourceOptions,
   variables,
   chart,
 }: IChartProps) => {
   const [data, setData] = useState<DatasourceMetrics[]>([]);
+  const [interpolatedQueries, setInterpolatedQueries] = useState<string[]>([]);
   const [error, setError] = useState<string>('');
 
   // fetchData fetchs the data for a chart. If the gRPC call returns an error, we catch the error and set the
@@ -47,6 +60,7 @@ const Chart: React.FunctionComponent<IChartProps> = ({
 
         const getMetricsResponse: GetMetricsResponse = await datasourcesService.getMetrics(getMetricsRequest, null);
 
+        setInterpolatedQueries(getMetricsResponse.getInterpolatedqueriesList());
         setData(getMetricsResponse.getMetricsList());
         setError('');
       }
@@ -63,7 +77,9 @@ const Chart: React.FunctionComponent<IChartProps> = ({
   if (error) {
     return (
       <Card isFlat={true}>
-        <CardTitle>{chart.getTitle()}</CardTitle>
+        <CardHeader>
+          <CardHeaderMain>{chart.getTitle()}</CardHeaderMain>
+        </CardHeader>
         <CardBody>
           <Alert
             variant={AlertVariant.danger}
@@ -87,7 +103,9 @@ const Chart: React.FunctionComponent<IChartProps> = ({
   if (data.length === 0) {
     return (
       <Card isFlat={true}>
-        <CardTitle>{chart.getTitle()}</CardTitle>
+        <CardHeader>
+          <CardHeaderMain>{chart.getTitle()}</CardHeaderMain>
+        </CardHeader>
         <CardBody>
           <EmptyStateSpinner />
         </CardBody>
@@ -97,7 +115,17 @@ const Chart: React.FunctionComponent<IChartProps> = ({
 
   return (
     <Card isFlat={true}>
-      <CardTitle>{chart.getTitle()}</CardTitle>
+      <CardHeader>
+        <CardHeaderMain>{chart.getTitle()}</CardHeaderMain>
+        <CardActions>
+          <Actions
+            datasourceName={datasourceName}
+            datasourceType={datasourceType}
+            datasourceOptions={datasourceOptions}
+            interpolatedQueries={interpolatedQueries}
+          />
+        </CardActions>
+      </CardHeader>
       <CardBody>
         {chart.getType() === 'sparkline' ? (
           <SparklineChart unit={chart.getUnit()} metrics={data} />

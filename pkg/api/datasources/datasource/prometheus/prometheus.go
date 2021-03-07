@@ -119,7 +119,7 @@ func (p *Prometheus) GetVariables(ctx context.Context, options *proto.Datasource
 // all variables. Then we are looping through the list of variables, replacing the variables with the selected value and
 // run the PromQL against the configured Prometheus instance. In the last step we transform the result, so that it can
 // be used in the React UI.
-func (p *Prometheus) GetMetrics(ctx context.Context, options *proto.DatasourceOptions, variables []*proto.ApplicationMetricsVariable, queries []*proto.ApplicationMetricsQuery) ([]*proto.DatasourceMetrics, error) {
+func (p *Prometheus) GetMetrics(ctx context.Context, options *proto.DatasourceOptions, variables []*proto.ApplicationMetricsVariable, queries []*proto.ApplicationMetricsQuery) ([]*proto.DatasourceMetrics, []string, error) {
 	var selectedVariableValues map[string]string
 	selectedVariableValues = make(map[string]string, len(variables))
 
@@ -132,7 +132,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, options *proto.DatasourceOp
 	}
 
 	if options == nil {
-		return nil, fmt.Errorf("options are missing")
+		return nil, nil, fmt.Errorf("options are missing")
 	}
 
 	steps := getSteps(options.TimeStart, options.TimeEnd)
@@ -150,23 +150,26 @@ func (p *Prometheus) GetMetrics(ctx context.Context, options *proto.DatasourceOp
 	}
 
 	var metrics []*proto.DatasourceMetrics
+	var interpolatedQueries []string
 
 	for _, query := range queries {
 		interpolatedQuery, err := queryInterpolation(query.Query, selectedVariableValues)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
+
+		interpolatedQueries = append(interpolatedQueries, interpolatedQuery)
 
 		log.WithFields(logrus.Fields{"query": interpolatedQuery, "start": r.Start, "end": r.End}).Tracef("Query time series.")
 
 		result, _, err := p.v1api.QueryRange(ctx, interpolatedQuery, r)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		streams, ok := result.(model.Matrix)
 		if !ok {
-			return nil, err
+			return nil, nil, err
 		}
 
 		for _, stream := range streams {
@@ -210,6 +213,10 @@ func (p *Prometheus) GetMetrics(ctx context.Context, options *proto.DatasourceOp
 					Data:  data,
 				})
 			} else {
+				if label == "" {
+					label = stream.Metric.String()
+				}
+
 				metrics = append(metrics, &proto.DatasourceMetrics{
 					Label: label,
 					Min:   min,
@@ -220,7 +227,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, options *proto.DatasourceOp
 		}
 	}
 
-	return metrics, nil
+	return metrics, interpolatedQueries, nil
 }
 
 // GetLogs is not implemented for Prometheus.

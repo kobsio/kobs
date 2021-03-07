@@ -4,12 +4,12 @@ clusters:
       kubeconfig:
         path: ${HOME}/.kube/config
   defaultDatasources:
-    metrics: prometheus
+    metrics: Prometheus
     logs: elasticsearch
     traces: jaeger
 
 datasources:
-  - name: prometheus
+  - name: Prometheus
     type: prometheus
     prometheus:
       address: http://localhost:9090
