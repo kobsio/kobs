@@ -75,6 +75,86 @@ proto.datasources.DatasourcesPromiseClient =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.datasources.GetDatasourcesRequest,
+ *   !proto.datasources.GetDatasourcesResponse>}
+ */
+const methodDescriptor_Datasources_GetDatasources = new grpc.web.MethodDescriptor(
+  '/datasources.Datasources/GetDatasources',
+  grpc.web.MethodType.UNARY,
+  proto.datasources.GetDatasourcesRequest,
+  proto.datasources.GetDatasourcesResponse,
+  /**
+   * @param {!proto.datasources.GetDatasourcesRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.datasources.GetDatasourcesResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.datasources.GetDatasourcesRequest,
+ *   !proto.datasources.GetDatasourcesResponse>}
+ */
+const methodInfo_Datasources_GetDatasources = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.datasources.GetDatasourcesResponse,
+  /**
+   * @param {!proto.datasources.GetDatasourcesRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.datasources.GetDatasourcesResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.datasources.GetDatasourcesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.datasources.GetDatasourcesResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.datasources.GetDatasourcesResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.datasources.DatasourcesClient.prototype.getDatasources =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/datasources.Datasources/GetDatasources',
+      request,
+      metadata || {},
+      methodDescriptor_Datasources_GetDatasources,
+      callback);
+};
+
+
+/**
+ * @param {!proto.datasources.GetDatasourcesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.datasources.GetDatasourcesResponse>}
+ *     Promise that resolves to the response
+ */
+proto.datasources.DatasourcesPromiseClient.prototype.getDatasources =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/datasources.Datasources/GetDatasources',
+      request,
+      metadata || {},
+      methodDescriptor_Datasources_GetDatasources);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.datasources.GetDatasourceRequest,
  *   !proto.datasources.GetDatasourceResponse>}
  */

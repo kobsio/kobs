@@ -4,6 +4,68 @@
 import * as jspb from "google-protobuf";
 import * as application_pb from "./application_pb";
 
+export class Datasource extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getType(): string;
+  setType(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Datasource.AsObject;
+  static toObject(includeInstance: boolean, msg: Datasource): Datasource.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Datasource, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Datasource;
+  static deserializeBinaryFromReader(message: Datasource, reader: jspb.BinaryReader): Datasource;
+}
+
+export namespace Datasource {
+  export type AsObject = {
+    name: string,
+    type: string,
+  }
+}
+
+export class GetDatasourcesRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetDatasourcesRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetDatasourcesRequest): GetDatasourcesRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetDatasourcesRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetDatasourcesRequest;
+  static deserializeBinaryFromReader(message: GetDatasourcesRequest, reader: jspb.BinaryReader): GetDatasourcesRequest;
+}
+
+export namespace GetDatasourcesRequest {
+  export type AsObject = {
+  }
+}
+
+export class GetDatasourcesResponse extends jspb.Message {
+  clearDatasourcesList(): void;
+  getDatasourcesList(): Array<Datasource>;
+  setDatasourcesList(value: Array<Datasource>): void;
+  addDatasources(value?: Datasource, index?: number): Datasource;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetDatasourcesResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetDatasourcesResponse): GetDatasourcesResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetDatasourcesResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetDatasourcesResponse;
+  static deserializeBinaryFromReader(message: GetDatasourcesResponse, reader: jspb.BinaryReader): GetDatasourcesResponse;
+}
+
+export namespace GetDatasourcesResponse {
+  export type AsObject = {
+    datasourcesList: Array<Datasource.AsObject>,
+  }
+}
+
 export class GetDatasourceRequest extends jspb.Message {
   getName(): string;
   setName(value: string): void;
@@ -25,11 +87,10 @@ export namespace GetDatasourceRequest {
 }
 
 export class GetDatasourceResponse extends jspb.Message {
-  getName(): string;
-  setName(value: string): void;
-
-  getType(): string;
-  setType(value: string): void;
+  hasDatasource(): boolean;
+  clearDatasource(): void;
+  getDatasource(): Datasource | undefined;
+  setDatasource(value?: Datasource): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetDatasourceResponse.AsObject;
@@ -43,8 +104,7 @@ export class GetDatasourceResponse extends jspb.Message {
 
 export namespace GetDatasourceResponse {
   export type AsObject = {
-    name: string,
-    type: string,
+    datasource?: Datasource.AsObject,
   }
 }
 
@@ -146,6 +206,11 @@ export class GetMetricsResponse extends jspb.Message {
   setMetricsList(value: Array<DatasourceMetrics>): void;
   addMetrics(value?: DatasourceMetrics, index?: number): DatasourceMetrics;
 
+  clearInterpolatedqueriesList(): void;
+  getInterpolatedqueriesList(): Array<string>;
+  setInterpolatedqueriesList(value: Array<string>): void;
+  addInterpolatedqueries(value: string, index?: number): string;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetMetricsResponse.AsObject;
   static toObject(includeInstance: boolean, msg: GetMetricsResponse): GetMetricsResponse.AsObject;
@@ -159,6 +224,7 @@ export class GetMetricsResponse extends jspb.Message {
 export namespace GetMetricsResponse {
   export type AsObject = {
     metricsList: Array<DatasourceMetrics.AsObject>,
+    interpolatedqueriesList: Array<string>,
   }
 }
 

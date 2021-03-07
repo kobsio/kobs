@@ -7,41 +7,19 @@ import { IDatasourceOptions } from 'utils/proto';
 import Metrics from 'components/applications/details/metrics/Metrics';
 import Resources from 'components/applications/details/resources/Resources';
 
-// IParsedDatasourceOptions is the interface for the parsed query parameters. It must contain the same keys as the
-// IDatasourceOptions options, but all keys must be of type string.
-interface IParsedDatasourceOptions {
-  resolution: string;
-  timeEnd: string;
-  timeStart: string;
-}
-
 // datasourceOptionsFromLocationSearch is used to parse all query parameters during the first rendering of the
 // TabsContent component. When the parameters are not set we return some default options for the datasources. Because it
 // could happen that only some parameters are set via location.search, we have to check each property if it contains a
 // valid value. If this is the case we are overwriting the default value.
 const datasourceOptionsFromLocationSearch = (): IDatasourceOptions => {
-  const search = window.location.search;
-  const options: IDatasourceOptions = {
-    resolution: '',
-    timeEnd: Math.floor(Date.now() / 1000),
-    timeStart: Math.floor(Date.now() / 1000) - 3600,
+  const params = new URLSearchParams(window.location.search);
+  return {
+    resolution: params.get('resolution') ? (params.get('resolution') as string) : '',
+    timeEnd: params.get('timeEnd') ? parseInt(params.get('timeEnd') as string) : Math.floor(Date.now() / 1000),
+    timeStart: params.get('timeStart')
+      ? parseInt(params.get('timeStart') as string)
+      : Math.floor(Date.now() / 1000) - 3600,
   };
-
-  if (search !== '') {
-    try {
-      const parsedOptions: IParsedDatasourceOptions = JSON.parse(
-        '{"' + search.substr(1).replace(/&/g, '", "').replace(/=/g, '": "') + '"}',
-      );
-
-      if (parsedOptions.resolution) options.resolution = parsedOptions.resolution;
-      if (parsedOptions.timeEnd) options.timeEnd = parseInt(parsedOptions.timeEnd);
-      if (parsedOptions.timeStart) options.timeStart = parseInt(parsedOptions.timeStart);
-    } catch (err) {
-      return options;
-    }
-  }
-
-  return options;
 };
 
 // createSearch creates a string, which can be used within the history.push function as search parameter. For that we

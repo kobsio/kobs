@@ -4,6 +4,15 @@
 import * as datasources_pb from "./datasources_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
+type DatasourcesGetDatasources = {
+  readonly methodName: string;
+  readonly service: typeof Datasources;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof datasources_pb.GetDatasourcesRequest;
+  readonly responseType: typeof datasources_pb.GetDatasourcesResponse;
+};
+
 type DatasourcesGetDatasource = {
   readonly methodName: string;
   readonly service: typeof Datasources;
@@ -51,6 +60,7 @@ type DatasourcesGetTraces = {
 
 export class Datasources {
   static readonly serviceName: string;
+  static readonly GetDatasources: DatasourcesGetDatasources;
   static readonly GetDatasource: DatasourcesGetDatasource;
   static readonly GetVariables: DatasourcesGetVariables;
   static readonly GetMetrics: DatasourcesGetMetrics;
@@ -90,6 +100,15 @@ export class DatasourcesClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
+  getDatasources(
+    requestMessage: datasources_pb.GetDatasourcesRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: datasources_pb.GetDatasourcesResponse|null) => void
+  ): UnaryResponse;
+  getDatasources(
+    requestMessage: datasources_pb.GetDatasourcesRequest,
+    callback: (error: ServiceError|null, responseMessage: datasources_pb.GetDatasourcesResponse|null) => void
+  ): UnaryResponse;
   getDatasource(
     requestMessage: datasources_pb.GetDatasourceRequest,
     metadata: grpc.Metadata,

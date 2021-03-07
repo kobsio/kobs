@@ -9,6 +9,7 @@ import "application.proto";
 // like returning the type of a datasource for a given name. The service is also responsible for the implementation of
 // the datasource specific functions.
 service Datasources {
+  rpc GetDatasources(GetDatasourcesRequest) returns (GetDatasourcesResponse) {}
   rpc GetDatasource(GetDatasourceRequest) returns (GetDatasourceResponse) {}
   rpc GetVariables(GetVariablesRequest) returns (GetVariablesResponse) {}
   rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
@@ -16,19 +17,35 @@ service Datasources {
   rpc GetTraces(GetTracesRequest) returns (GetTracesResponse) {}
 }
 
+// Datasource represents a datasource, with all public fields. At the moment this is only the name and the type of the
+// datasource, but it can be extended later. The name of a datasource can be seen as an ID and must be unique accross
+// all datasources.
+// This message should never contain any confidential properties of a datasource like username / password, which is
+// required for the authentication against the datasource.
+message Datasource {
+  string name = 1;
+  string type = 2;
+}
+
+// GetDatasourcesRequest is the request message to get a list of all datasources. This doesn't require any field.
+message GetDatasourcesRequest {}
+
+// GetDatasourcesResponse is the response for a GetDatasources call. It returns all loaded datasources.
+message GetDatasourcesResponse {
+  repeated Datasource datasources = 1;
+}
+
+
 // GetDatasourceRequest is the request message to get the type of a datasource. Each datasource can be identified by
 // it's name, so that only the name is required in this request.
 message GetDatasourceRequest {
   string name = 1;
 }
 
-// GetDatasourceResponse is the response for a GetDatasource request. At the moment this only returns the type of the,
-// datasource, but it can be extended later with other properties for a datasource.
-// This request should never return any confidential properties of a datasource like username / password, which is
-// required for the authentication against the datasource.
+// GetDatasourceResponse is the response for a GetDatasource request. It returns a single datasource, with all public
+// fields.
 message GetDatasourceResponse {
-  string name = 1;
-  string type = 2;
+  Datasource datasource = 1;
 }
 
 // GetVariablesRequest is the request data needed to get all variables for the metrics view of an application. The
@@ -59,6 +76,7 @@ message GetMetricsRequest {
 // React UI.
 message GetMetricsResponse {
   repeated DatasourceMetrics metrics = 1;
+  repeated string interpolatedQueries = 2;
 }
 
 message GetLogsRequest {

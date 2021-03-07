@@ -7,6 +7,7 @@ import Chart from 'components/applications/details/metrics/Chart';
 
 interface IChartsProps {
   datasourceName: string;
+  datasourceType: string;
   datasourceOptions: IDatasourceOptions;
   variables: IApplicationMetricsVariable[];
   charts: ApplicationMetricsChart[];
@@ -17,6 +18,7 @@ interface IChartsProps {
 // for each chart. If the width is below this value each chart will be rendered accross the complete width of the grid.
 const Charts: React.FunctionComponent<IChartsProps> = ({
   datasourceName,
+  datasourceType,
   datasourceOptions,
   variables,
   charts,
@@ -51,6 +53,7 @@ const Charts: React.FunctionComponent<IChartsProps> = ({
             ) : (
               <Chart
                 datasourceName={datasourceName}
+                datasourceType={datasourceType}
                 datasourceOptions={datasourceOptions}
                 variables={variables}
                 chart={chart}

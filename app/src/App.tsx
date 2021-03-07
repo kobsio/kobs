@@ -9,6 +9,8 @@ import '@patternfly/patternfly/patternfly-charts.css';
 
 import Application from 'components/applications/Application';
 import Applications from 'components/applications/Applications';
+import Datasource from 'components/datasources/Datasource';
+import Datasources from 'components/datasources/Datasources';
 import HeaderLogo from 'components/shared/HeaderLogo';
 import Overview from 'components/overview/Overview';
 import Resources from 'components/resources/Resources';
@@ -26,6 +28,8 @@ const App: React.FunctionComponent = () => {
           <Route exact={true} path="/" component={Overview} />
           <Route exact={true} path="/applications" component={Applications} />
           <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
+          <Route exact={true} path="/datasources" component={Datasources} />
+          <Route exact={true} path="/datasources/:type/:name" component={Datasource} />
           <Route exact={true} path="/resources/:kind" component={Resources} />
         </Switch>
       </Page>
