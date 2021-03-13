@@ -232,10 +232,18 @@ export class GetLogsRequest extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
+  getScrollid(): string;
+  setScrollid(value: string): void;
+
   hasOptions(): boolean;
   clearOptions(): void;
   getOptions(): DatasourceOptions | undefined;
   setOptions(value?: DatasourceOptions): void;
+
+  hasQuery(): boolean;
+  clearQuery(): void;
+  getQuery(): application_pb.ApplicationLogsQuery | undefined;
+  setQuery(value?: application_pb.ApplicationLogsQuery): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetLogsRequest.AsObject;
@@ -250,11 +258,30 @@ export class GetLogsRequest extends jspb.Message {
 export namespace GetLogsRequest {
   export type AsObject = {
     name: string,
+    scrollid: string,
     options?: DatasourceOptions.AsObject,
+    query?: application_pb.ApplicationLogsQuery.AsObject,
   }
 }
 
 export class GetLogsResponse extends jspb.Message {
+  getHits(): number;
+  setHits(value: number): void;
+
+  getTook(): number;
+  setTook(value: number): void;
+
+  getScrollid(): string;
+  setScrollid(value: string): void;
+
+  getLogs(): string;
+  setLogs(value: string): void;
+
+  clearBucketsList(): void;
+  getBucketsList(): Array<DatasourceLogsBucket>;
+  setBucketsList(value: Array<DatasourceLogsBucket>): void;
+  addBuckets(value?: DatasourceLogsBucket, index?: number): DatasourceLogsBucket;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetLogsResponse.AsObject;
   static toObject(includeInstance: boolean, msg: GetLogsResponse): GetLogsResponse.AsObject;
@@ -267,6 +294,11 @@ export class GetLogsResponse extends jspb.Message {
 
 export namespace GetLogsResponse {
   export type AsObject = {
+    hits: number,
+    took: number,
+    scrollid: string,
+    logs: string,
+    bucketsList: Array<DatasourceLogsBucket.AsObject>,
   }
 }
 
@@ -392,6 +424,30 @@ export class DatasourceMetricsData extends jspb.Message {
 }
 
 export namespace DatasourceMetricsData {
+  export type AsObject = {
+    x: number,
+    y: number,
+  }
+}
+
+export class DatasourceLogsBucket extends jspb.Message {
+  getX(): number;
+  setX(value: number): void;
+
+  getY(): number;
+  setY(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DatasourceLogsBucket.AsObject;
+  static toObject(includeInstance: boolean, msg: DatasourceLogsBucket): DatasourceLogsBucket.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DatasourceLogsBucket, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DatasourceLogsBucket;
+  static deserializeBinaryFromReader(message: DatasourceLogsBucket, reader: jspb.BinaryReader): DatasourceLogsBucket;
+}
+
+export namespace DatasourceLogsBucket {
   export type AsObject = {
     x: number,
     y: number,

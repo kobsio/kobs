@@ -111,6 +111,28 @@ func (d *Datasources) GetMetrics(ctx context.Context, getMetricsRequest *proto.G
 	}, nil
 }
 
+func (d *Datasources) GetLogs(ctx context.Context, getLogsRequest *proto.GetLogsRequest) (*proto.GetLogsResponse, error) {
+	log.WithFields(logrus.Fields{"name": getLogsRequest.Name}).Tracef("Get metrics.")
+
+	ds := d.getDatasource(getLogsRequest.Name)
+	if ds == nil {
+		return nil, fmt.Errorf("invalid datasource name")
+	}
+
+	hits, took, scrollID, logs, buckets, err := ds.GetLogs(ctx, getLogsRequest.ScrollID, getLogsRequest.Options, getLogsRequest.Query)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.GetLogsResponse{
+		Hits:     hits,
+		Took:     took,
+		ScrollID: scrollID,
+		Logs:     logs,
+		Buckets:  buckets,
+	}, nil
+}
+
 // Load loads all given datasources from the configuration, so that we can use them within the datasources gRPC service.
 func Load(config []datasource.Config) (*Datasources, error) {
 	var datasources []datasource.Datasource

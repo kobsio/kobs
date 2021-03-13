@@ -4,7 +4,7 @@ import { DatasourceOptions } from 'generated/proto/datasources_pb';
 // IDatasourceOptions must implement the DatasourceOptions message format from the datasources.proto file. It is used,
 // to enable the usage of DatasourceOptions message formate within a React State.
 export interface IDatasourceOptions {
-  resolution: string;
+  resolution?: string;
   timeEnd: number;
   timeStart: number;
 }
@@ -15,7 +15,7 @@ export const convertDatasourceOptionsToProto = (options: IDatasourceOptions): Da
   const datasourceOptions = new DatasourceOptions();
   datasourceOptions.setTimestart(options.timeStart);
   datasourceOptions.setTimeend(options.timeEnd);
-  datasourceOptions.setResolution(options.resolution);
+  datasourceOptions.setResolution(options.resolution ? options.resolution : '');
 
   return datasourceOptions;
 };

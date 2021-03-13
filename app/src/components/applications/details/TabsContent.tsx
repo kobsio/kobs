@@ -4,6 +4,7 @@ import { TabContent } from '@patternfly/react-core';
 
 import { Application } from 'generated/proto/application_pb';
 import { IDatasourceOptions } from 'utils/proto';
+import Logs from 'components/applications/details/logs/Logs';
 import Metrics from 'components/applications/details/metrics/Metrics';
 import Resources from 'components/applications/details/resources/Resources';
 
@@ -43,6 +44,7 @@ interface ITabsContent {
   tab: string;
   refResourcesContent: React.RefObject<HTMLElement>;
   refMetricsContent: React.RefObject<HTMLElement>;
+  refLogsContent: React.RefObject<HTMLElement>;
 }
 
 // TabsContent renders the content for a selected tab from the Tabs component. We also manage the datasource options,
@@ -54,6 +56,7 @@ const TabsContent: React.FunctionComponent<ITabsContent> = ({
   tab,
   refResourcesContent,
   refMetricsContent,
+  refLogsContent,
 }: ITabsContent) => {
   const history = useHistory();
   const location = useLocation();
@@ -71,6 +74,7 @@ const TabsContent: React.FunctionComponent<ITabsContent> = ({
   return (
     <React.Fragment>
       <TabContent
+        className="kobsio-tab-content"
         eventKey="resources"
         id="refResources"
         activeKey={tab}
@@ -81,11 +85,39 @@ const TabsContent: React.FunctionComponent<ITabsContent> = ({
           <Resources application={application} />
         </div>
       </TabContent>
-      <TabContent eventKey="metrics" id="refMetrics" activeKey={tab} ref={refMetricsContent} aria-label="Metrics">
+
+      <TabContent
+        className="kobsio-tab-content"
+        eventKey="metrics"
+        id="refMetrics"
+        activeKey={tab}
+        ref={refMetricsContent}
+        aria-label="Metrics"
+      >
         {/* We have to check if the refMetricsContent is not null, because otherwise the Metrics component will be shown below the resources component. */}
         <div>
           {refMetricsContent.current ? (
             <Metrics
+              datasourceOptions={datasourceOptions}
+              setDatasourceOptions={changeDatasourceOptions}
+              application={application}
+            />
+          ) : null}
+        </div>
+      </TabContent>
+
+      <TabContent
+        className="kobsio-tab-content"
+        eventKey="logs"
+        id="refLogs"
+        activeKey={tab}
+        ref={refLogsContent}
+        aria-label="Logs"
+      >
+        {/* We have to check if the refLogsContent is not null, because otherwise the Logs component will be shown below the resources component. */}
+        <div>
+          {refLogsContent.current ? (
+            <Logs
               datasourceOptions={datasourceOptions}
               setDatasourceOptions={changeDatasourceOptions}
               application={application}

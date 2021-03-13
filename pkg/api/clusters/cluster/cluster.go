@@ -132,6 +132,10 @@ func (c *Cluster) GetApplications(ctx context.Context, namespace string) ([]*pro
 			application.Metrics.Datasource = c.options.datasources.Metrics
 		}
 
+		if application.Logs != nil && application.Logs.Datasource == "" {
+			application.Logs.Datasource = c.options.datasources.Logs
+		}
+
 		applications = append(applications, application)
 	}
 
@@ -154,6 +158,10 @@ func (c *Cluster) GetApplication(ctx context.Context, namespace, name string) (*
 
 	if application.Metrics != nil && application.Metrics.Datasource == "" {
 		application.Metrics.Datasource = c.options.datasources.Metrics
+	}
+
+	if application.Logs != nil && application.Logs.Datasource == "" {
+		application.Logs.Datasource = c.options.datasources.Logs
 	}
 
 	return application, nil

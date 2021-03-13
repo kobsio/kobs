@@ -2,6 +2,17 @@ import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
+// ILogos is the interface for the datasource logos.
+interface ILogos {
+  [key: string]: string;
+}
+
+// logos is an object, with the datasource types as key and the image path for that datasource as logo.
+const logos: ILogos = {
+  elasticsearch: '/img/datasources/elasticsearch.png',
+  prometheus: '/img/datasources/prometheus.png',
+};
+
 interface IItemProps {
   name: string;
   type: string;
@@ -21,7 +32,9 @@ const Item: React.FunctionComponent<IItemProps> = ({ name, type, link }: IItemPr
   return (
     <Card className="kobs-home-item" isHoverable={true} onClick={handleClick}>
       <CardTitle>{name}</CardTitle>
-      <CardBody>{type === 'prometheus' ? <img src="/img/datasources/prometheus.png" alt={type} /> : null}</CardBody>
+      <CardBody>
+        <img src={logos[type]} alt={type} />
+      </CardBody>
     </Card>
   );
 };

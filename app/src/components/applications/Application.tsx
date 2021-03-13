@@ -39,6 +39,7 @@ const Applications: React.FunctionComponent = () => {
   const [tab, setTab] = useState<string>(DEFAULT_TAB);
   const refResourcesContent = useRef<HTMLElement>(null);
   const refMetricsContent = useRef<HTMLElement>(null);
+  const refLogsContent = useRef<HTMLElement>(null);
 
   const goToOverview = (): void => {
     history.push('/');
@@ -117,6 +118,7 @@ const Applications: React.FunctionComponent = () => {
           setTab={(t: string): void => setTab(t)}
           refResourcesContent={refResourcesContent}
           refMetricsContent={refMetricsContent}
+          refLogsContent={refLogsContent}
         />
       </PageSection>
 
@@ -126,6 +128,7 @@ const Applications: React.FunctionComponent = () => {
           tab={tab}
           refResourcesContent={refResourcesContent}
           refMetricsContent={refMetricsContent}
+          refLogsContent={refLogsContent}
         />
       </PageSection>
     </React.Fragment>

@@ -34,6 +34,7 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
           component={
             <Link
               to={`/datasources/${datasourceType}/${datasourceName}?query=${query}&resolution=${datasourceOptions.resolution}&timeEnd=${datasourceOptions.timeEnd}&timeStart=${datasourceOptions.timeStart}`}
+              target="_blank"
             >
               Explore {query}
             </Link>

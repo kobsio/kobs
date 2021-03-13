@@ -567,10 +567,16 @@ func (x *ApplicationMetricsQuery) GetLabel() string {
 	return ""
 }
 
+// ApplicationLogs defines the structure of the logs section of an application. To get the logs of an application we
+// need a datasource field with the name of the datasource. This field will be set to the configured logs datasource for
+// a cluster, when the user doesn't provide the field. The second field is a list of queries, for the application.
 type ApplicationLogs struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Datasource string                  `protobuf:"bytes,1,opt,name=datasource,proto3" json:"datasource,omitempty"`
+	Queries    []*ApplicationLogsQuery `protobuf:"bytes,2,rep,name=queries,proto3" json:"queries,omitempty"`
 }
 
 func (x *ApplicationLogs) Reset() {
@@ -605,6 +611,86 @@ func (*ApplicationLogs) Descriptor() ([]byte, []int) {
 	return file_application_proto_rawDescGZIP(), []int{7}
 }
 
+func (x *ApplicationLogs) GetDatasource() string {
+	if x != nil {
+		return x.Datasource
+	}
+	return ""
+}
+
+func (x *ApplicationLogs) GetQueries() []*ApplicationLogsQuery {
+	if x != nil {
+		return x.Queries
+	}
+	return nil
+}
+
+// ApplicationLogsQuery represents a single query for an application. A query is identified by a name, a query and a
+// list of fields, which should be shown in the results table. If the fields list is empty, we show the complete
+// document in the table.
+type ApplicationLogsQuery struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name   string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Query  string   `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty"`
+	Fields []string `protobuf:"bytes,3,rep,name=fields,proto3" json:"fields,omitempty"`
+}
+
+func (x *ApplicationLogsQuery) Reset() {
+	*x = ApplicationLogsQuery{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_application_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApplicationLogsQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApplicationLogsQuery) ProtoMessage() {}
+
+func (x *ApplicationLogsQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_application_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApplicationLogsQuery.ProtoReflect.Descriptor instead.
+func (*ApplicationLogsQuery) Descriptor() ([]byte, []int) {
+	return file_application_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ApplicationLogsQuery) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ApplicationLogsQuery) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+func (x *ApplicationLogsQuery) GetFields() []string {
+	if x != nil {
+		return x.Fields
+	}
+	return nil
+}
+
 type ApplicationTraces struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -614,7 +700,7 @@ type ApplicationTraces struct {
 func (x *ApplicationTraces) Reset() {
 	*x = ApplicationTraces{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_application_proto_msgTypes[8]
+		mi := &file_application_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -627,7 +713,7 @@ func (x *ApplicationTraces) String() string {
 func (*ApplicationTraces) ProtoMessage() {}
 
 func (x *ApplicationTraces) ProtoReflect() protoreflect.Message {
-	mi := &file_application_proto_msgTypes[8]
+	mi := &file_application_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -640,7 +726,7 @@ func (x *ApplicationTraces) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApplicationTraces.ProtoReflect.Descriptor instead.
 func (*ApplicationTraces) Descriptor() ([]byte, []int) {
-	return file_application_proto_rawDescGZIP(), []int{8}
+	return file_application_proto_rawDescGZIP(), []int{9}
 }
 
 var File_application_proto protoreflect.FileDescriptor
@@ -723,12 +809,24 @@ var file_application_proto_rawDesc = []byte{
 	0x65, 0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62,
 	0x65, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x22,
-	0x11, 0x0a, 0x0f, 0x41, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f,
-	0x67, 0x73, 0x22, 0x13, 0x0a, 0x11, 0x41, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x54, 0x72, 0x61, 0x63, 0x65, 0x73, 0x42, 0x2c, 0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6b, 0x6f, 0x62, 0x73, 0x69, 0x6f, 0x2f, 0x6b, 0x6f, 0x62,
-	0x73, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x67, 0x65, 0x6e, 0x65, 0x72, 0x61, 0x74, 0x65, 0x64, 0x2f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x0a, 0x0f, 0x41, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f,
+	0x67, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x64, 0x61, 0x74, 0x61, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x64, 0x61, 0x74, 0x61, 0x73, 0x6f, 0x75, 0x72,
+	0x63, 0x65, 0x12, 0x3b, 0x0a, 0x07, 0x71, 0x75, 0x65, 0x72, 0x69, 0x65, 0x73, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x2e, 0x41, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f, 0x67,
+	0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x07, 0x71, 0x75, 0x65, 0x72, 0x69, 0x65, 0x73, 0x22,
+	0x58, 0x0a, 0x14, 0x41, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f,
+	0x67, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x71,
+	0x75, 0x65, 0x72, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x71, 0x75, 0x65, 0x72,
+	0x79, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x22, 0x13, 0x0a, 0x11, 0x41, 0x70, 0x70,
+	0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x72, 0x61, 0x63, 0x65, 0x73, 0x42, 0x2c,
+	0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6b, 0x6f, 0x62,
+	0x73, 0x69, 0x6f, 0x2f, 0x6b, 0x6f, 0x62, 0x73, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x67, 0x65, 0x6e,
+	0x65, 0x72, 0x61, 0x74, 0x65, 0x64, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -743,7 +841,7 @@ func file_application_proto_rawDescGZIP() []byte {
 	return file_application_proto_rawDescData
 }
 
-var file_application_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_application_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_application_proto_goTypes = []interface{}{
 	(*Application)(nil),                // 0: application.Application
 	(*ApplicationLink)(nil),            // 1: application.ApplicationLink
@@ -753,23 +851,25 @@ var file_application_proto_goTypes = []interface{}{
 	(*ApplicationMetricsChart)(nil),    // 5: application.ApplicationMetricsChart
 	(*ApplicationMetricsQuery)(nil),    // 6: application.ApplicationMetricsQuery
 	(*ApplicationLogs)(nil),            // 7: application.ApplicationLogs
-	(*ApplicationTraces)(nil),          // 8: application.ApplicationTraces
+	(*ApplicationLogsQuery)(nil),       // 8: application.ApplicationLogsQuery
+	(*ApplicationTraces)(nil),          // 9: application.ApplicationTraces
 }
 var file_application_proto_depIdxs = []int32{
-	1, // 0: application.Application.links:type_name -> application.ApplicationLink
-	2, // 1: application.Application.resources:type_name -> application.ApplicationResources
-	3, // 2: application.Application.metrics:type_name -> application.ApplicationMetrics
-	7, // 3: application.Application.logs:type_name -> application.ApplicationLogs
-	8, // 4: application.Application.traces:type_name -> application.ApplicationTraces
-	5, // 5: application.ApplicationMetrics.health:type_name -> application.ApplicationMetricsChart
-	4, // 6: application.ApplicationMetrics.variables:type_name -> application.ApplicationMetricsVariable
-	5, // 7: application.ApplicationMetrics.charts:type_name -> application.ApplicationMetricsChart
-	6, // 8: application.ApplicationMetricsChart.queries:type_name -> application.ApplicationMetricsQuery
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	1,  // 0: application.Application.links:type_name -> application.ApplicationLink
+	2,  // 1: application.Application.resources:type_name -> application.ApplicationResources
+	3,  // 2: application.Application.metrics:type_name -> application.ApplicationMetrics
+	7,  // 3: application.Application.logs:type_name -> application.ApplicationLogs
+	9,  // 4: application.Application.traces:type_name -> application.ApplicationTraces
+	5,  // 5: application.ApplicationMetrics.health:type_name -> application.ApplicationMetricsChart
+	4,  // 6: application.ApplicationMetrics.variables:type_name -> application.ApplicationMetricsVariable
+	5,  // 7: application.ApplicationMetrics.charts:type_name -> application.ApplicationMetricsChart
+	6,  // 8: application.ApplicationMetricsChart.queries:type_name -> application.ApplicationMetricsQuery
+	8,  // 9: application.ApplicationLogs.queries:type_name -> application.ApplicationLogsQuery
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_application_proto_init() }
@@ -875,6 +975,18 @@ func file_application_proto_init() {
 			}
 		}
 		file_application_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApplicationLogsQuery); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_application_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ApplicationTraces); i {
 			case 0:
 				return &v.state
@@ -893,7 +1005,7 @@ func file_application_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_application_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

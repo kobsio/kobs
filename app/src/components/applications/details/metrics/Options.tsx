@@ -32,7 +32,7 @@ const Options: React.FunctionComponent<IOptionsProps> = ({ type, options, setOpt
   const [timeStartError, setTimeStartError] = useState<string>('');
   const [timeEndError, setTimeEndError] = useState<string>('');
 
-  const [resolution, setResolution] = useState<string>(options.resolution);
+  const [resolution, setResolution] = useState<string>(options.resolution ? options.resolution : '');
 
   // apply parses the value of the start and end input fields. If the user provided a correct data/time format, we
   // change the start and end time to the new values. If the string couldn't be parsed, the user will see an error below
@@ -85,7 +85,7 @@ const Options: React.FunctionComponent<IOptionsProps> = ({ type, options, setOpt
     setTimeStart(formatTime(options.timeStart));
     setTimeEnd(formatTime(options.timeEnd));
 
-    setResolution(options.resolution);
+    setResolution(options.resolution ? options.resolution : '');
   }, [options.timeEnd, options.timeStart, options.resolution]);
 
   return (
