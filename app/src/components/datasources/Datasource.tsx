@@ -2,6 +2,7 @@ import { Alert, AlertActionLink, AlertVariant, PageSection, PageSectionVariants 
 import { useHistory, useParams } from 'react-router-dom';
 import React from 'react';
 
+import Elasticsearch from 'components/datasources/elasticsearch/Elasticsearch';
 import Prometheus from 'components/datasources/prometheus/Prometheus';
 
 interface IDatasourceParams {
@@ -21,6 +22,10 @@ const Datasource: React.FunctionComponent = () => {
 
   if (params.type === 'prometheus') {
     return <Prometheus name={params.name} />;
+  }
+
+  if (params.type === 'elasticsearch') {
+    return <Elasticsearch name={params.name} />;
   }
 
   // When the provided datasource type, isn't valid, the user will see the following error, with an action to go back to

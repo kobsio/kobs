@@ -9,6 +9,7 @@ interface ITabsParams {
   setTab(tab: string): void;
   refResourcesContent: React.RefObject<HTMLElement>;
   refMetricsContent: React.RefObject<HTMLElement>;
+  refLogsContent: React.RefObject<HTMLElement>;
 }
 
 // Tabs renders the tabs header, which are used by the user to select a section he wants to view for an application.
@@ -19,6 +20,7 @@ const Tabs: React.FunctionComponent<ITabsParams> = ({
   setTab,
   refResourcesContent,
   refMetricsContent,
+  refLogsContent,
 }: ITabsParams) => {
   return (
     <PatternflyTabs
@@ -39,6 +41,12 @@ const Tabs: React.FunctionComponent<ITabsParams> = ({
         title={<TabTitleText>Metrics</TabTitleText>}
         tabContentId="refMetrics"
         tabContentRef={refMetricsContent}
+      />
+      <Tab
+        eventKey="logs"
+        title={<TabTitleText>Logs</TabTitleText>}
+        tabContentId="refLogs"
+        tabContentRef={refLogsContent}
       />
     </PatternflyTabs>
   );

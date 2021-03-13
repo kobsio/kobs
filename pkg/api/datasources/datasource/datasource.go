@@ -3,6 +3,7 @@ package datasource
 import (
 	"context"
 
+	"github.com/kobsio/kobs/pkg/api/datasources/datasource/elasticsearch"
 	"github.com/kobsio/kobs/pkg/api/datasources/datasource/prometheus"
 	"github.com/kobsio/kobs/pkg/generated/proto"
 
@@ -16,9 +17,10 @@ var (
 // Config is the configuration for a datasource. Each datasource must contain a name and type. Each datasource also
 // contains a type specific configuration.
 type Config struct {
-	Name       string            `yaml:"name"`
-	Type       string            `yaml:"type"`
-	Prometheus prometheus.Config `yaml:"prometheus"`
+	Name          string               `yaml:"name"`
+	Type          string               `yaml:"type"`
+	Prometheus    prometheus.Config    `yaml:"prometheus"`
+	Elasticsearch elasticsearch.Config `yaml:"elasticsearch"`
 }
 
 // Datasource is the interface, which must be implemented by each datasource. Also when a datasource doesn't support
@@ -28,7 +30,7 @@ type Datasource interface {
 	GetDatasource() (string, string)
 	GetVariables(ctx context.Context, options *proto.DatasourceOptions, variables []*proto.ApplicationMetricsVariable) ([]*proto.ApplicationMetricsVariable, error)
 	GetMetrics(ctx context.Context, options *proto.DatasourceOptions, variables []*proto.ApplicationMetricsVariable, queries []*proto.ApplicationMetricsQuery) ([]*proto.DatasourceMetrics, []string, error)
-	GetLogs(ctx context.Context, options *proto.DatasourceOptions) error
+	GetLogs(ctx context.Context, scrollID string, options *proto.DatasourceOptions, query *proto.ApplicationLogsQuery) (int64, int64, string, string, []*proto.DatasourceLogsBucket, error)
 	GetTraces(ctx context.Context, options *proto.DatasourceOptions) error
 }
 
@@ -39,6 +41,9 @@ func New(config Config) (Datasource, error) {
 	case "prometheus":
 		log.WithFields(logrus.Fields{"name": config.Name, "type": config.Type}).Debugf("Load datasource.")
 		return prometheus.New(config.Name, config.Prometheus)
+	case "elasticsearch":
+		log.WithFields(logrus.Fields{"name": config.Name, "type": config.Type}).Debugf("Load datasource.")
+		return elasticsearch.New(config.Name, config.Elasticsearch)
 	default:
 		log.WithFields(logrus.Fields{"type": config.Type}).Warnf("Invalid datasource.")
 		return nil, nil

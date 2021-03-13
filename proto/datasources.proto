@@ -79,12 +79,25 @@ message GetMetricsResponse {
   repeated string interpolatedQueries = 2;
 }
 
+// GetLogsRequest is the structure of a call to get the logs for a query. It must contain the name of the datasource,
+// an optional scroll id, which can be used for pagination, the datasource options and a query.
 message GetLogsRequest {
   string name = 1;
-  DatasourceOptions options = 2;
+  string scrollID = 2;
+  DatasourceOptions options = 3;
+  application.ApplicationLogsQuery query = 4;
 }
 
-message GetLogsResponse {}
+// GetLogsResponse is the response for a GetLogs call. It contains the hits (number of documentes), the time, which was
+// needed to execute the query and a scroll id for pagination. It also contains all logs as single string, which must
+// be parsed in the frontend and a list of buckets, for the logs chart.
+message GetLogsResponse {
+  int64 hits = 1;
+  int64 took = 2;
+  string scrollID = 3;
+  string logs = 4;
+  repeated DatasourceLogsBucket buckets = 5;
+}
 
 message GetTracesRequest {
   string name = 1;
@@ -116,4 +129,11 @@ message DatasourceMetrics {
 message DatasourceMetricsData {
   int64 x = 1;
   double y = 2;
+}
+
+// DatasourceLogsBucket is one bucket for the logs bar chart. Each bucket must contain a timestamp (x value) and the
+// number of log lines for this timestamp (y value).
+message DatasourceLogsBucket {
+  int64 x = 1;
+  int64 y = 2;
 }

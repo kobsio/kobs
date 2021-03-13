@@ -3,10 +3,10 @@ package prometheus
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/api/datasources/datasource/shared"
 	"github.com/kobsio/kobs/pkg/generated/proto"
 
 	"github.com/prometheus/client_golang/api"
@@ -25,27 +25,6 @@ type Config struct {
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	Token    string `yaml:"token"`
-}
-
-type basicAuthTransport struct {
-	Transport http.RoundTripper
-	username  string
-	password  string
-}
-
-type tokenAuthTransporter struct {
-	Transport http.RoundTripper
-	token     string
-}
-
-func (bat basicAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.SetBasicAuth(bat.username, bat.password)
-	return bat.Transport.RoundTrip(req)
-}
-
-func (tat tokenAuthTransporter) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.Header.Set("Authorization", "Bearer "+tat.token)
-	return tat.Transport.RoundTrip(req)
 }
 
 // Prometheus implements the Prometheus datasource.
@@ -231,8 +210,8 @@ func (p *Prometheus) GetMetrics(ctx context.Context, options *proto.DatasourceOp
 }
 
 // GetLogs is not implemented for Prometheus.
-func (p *Prometheus) GetLogs(ctx context.Context, options *proto.DatasourceOptions) error {
-	return fmt.Errorf("logs interface isn't implemented for prometheus")
+func (p *Prometheus) GetLogs(ctx context.Context, scrollID string, options *proto.DatasourceOptions, query *proto.ApplicationLogsQuery) (int64, int64, string, string, []*proto.DatasourceLogsBucket, error) {
+	return 0, 0, "", "", nil, fmt.Errorf("logs interface isn't implemented for prometheus")
 }
 
 // GetTraces is not implemented for Prometheus.
@@ -244,20 +223,20 @@ func (p *Prometheus) GetTraces(ctx context.Context, options *proto.DatasourceOpt
 // a Prometheus API client. We also set the round tripper for basic or token authentication, when the settings are
 // provided.
 func New(name string, config Config) (*Prometheus, error) {
-	roundTripper := api.DefaultRoundTripper
+	roundTripper := shared.DefaultRoundTripper
 
 	if config.Username != "" && config.Password != "" {
-		roundTripper = basicAuthTransport{
+		roundTripper = shared.BasicAuthTransport{
 			Transport: roundTripper,
-			username:  config.Username,
-			password:  config.Password,
+			Username:  config.Username,
+			Password:  config.Password,
 		}
 	}
 
 	if config.Token != "" {
-		roundTripper = tokenAuthTransporter{
+		roundTripper = shared.TokenAuthTransporter{
 			Transport: roundTripper,
-			token:     config.Token,
+			Token:     config.Token,
 		}
 	}
 

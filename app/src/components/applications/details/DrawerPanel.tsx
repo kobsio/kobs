@@ -28,6 +28,7 @@ const DrawerPanel: React.FunctionComponent<IDrawerPanelProps> = ({ application, 
   const [tab, setTab] = useState<string>(DEFAULT_TAB);
   const refResourcesContent = useRef<HTMLElement>(null);
   const refMetricsContent = useRef<HTMLElement>(null);
+  const refLogsContent = useRef<HTMLElement>(null);
 
   return (
     <DrawerPanelContent minSize="50%">
@@ -61,6 +62,7 @@ const DrawerPanel: React.FunctionComponent<IDrawerPanelProps> = ({ application, 
           setTab={(t: string): void => setTab(t)}
           refResourcesContent={refResourcesContent}
           refMetricsContent={refMetricsContent}
+          refLogsContent={refLogsContent}
         />
 
         <TabsContent
@@ -68,6 +70,7 @@ const DrawerPanel: React.FunctionComponent<IDrawerPanelProps> = ({ application, 
           tab={tab}
           refResourcesContent={refResourcesContent}
           refMetricsContent={refMetricsContent}
+          refLogsContent={refLogsContent}
         />
       </DrawerPanelBody>
     </DrawerPanelContent>

@@ -87,6 +87,11 @@
   height: 300px;
 }
 
+.kobsio-chart-container-default-small {
+  width: 100%;
+  height: 200px;
+}
+
 .kobsio-chart-container-sparkline {
   width: 100%;
   height: 150px;
@@ -103,4 +108,17 @@
   font-size: 24px;
   position: absolute;
   text-align: center
+}
+
+/* kobsis-table-wrapper
+ * Wrap a table component, so it looks nice within a page, but allow scrolling so the user can see all the data. */
+.kobsis-table-wrapper {
+  max-width: 100%;
+  overflow-x: scroll;
+}
+
+/* kobsio-tab-content
+ * Set a min height of 100% for the tab content. */
+.kobsio-tab-content {
+  min-height: 100%;
 }

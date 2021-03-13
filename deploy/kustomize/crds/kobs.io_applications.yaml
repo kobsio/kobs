@@ -54,6 +54,32 @@ spec:
                 type: object
               type: array
             logs:
+              description: ApplicationLogs defines the structure of the logs section
+                of an application. To get the logs of an application we need a datasource
+                field with the name of the datasource. This field will be set to the
+                configured logs datasource for a cluster, when the user doesn't provide
+                the field. The second field is a list of queries, for the application.
+              properties:
+                datasource:
+                  type: string
+                queries:
+                  items:
+                    description: ApplicationLogsQuery represents a single query for
+                      an application. A query is identified by a name, a query and
+                      a list of fields, which should be shown in the results table.
+                      If the fields list is empty, we show the complete document in
+                      the table.
+                    properties:
+                      fields:
+                        items:
+                          type: string
+                        type: array
+                      name:
+                        type: string
+                      query:
+                        type: string
+                    type: object
+                  type: array
               type: object
             metrics:
               description: ApplicationMetrics defines the structure of the metrics

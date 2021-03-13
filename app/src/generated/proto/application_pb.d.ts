@@ -258,6 +258,14 @@ export namespace ApplicationMetricsQuery {
 }
 
 export class ApplicationLogs extends jspb.Message {
+  getDatasource(): string;
+  setDatasource(value: string): void;
+
+  clearQueriesList(): void;
+  getQueriesList(): Array<ApplicationLogsQuery>;
+  setQueriesList(value: Array<ApplicationLogsQuery>): void;
+  addQueries(value?: ApplicationLogsQuery, index?: number): ApplicationLogsQuery;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ApplicationLogs.AsObject;
   static toObject(includeInstance: boolean, msg: ApplicationLogs): ApplicationLogs.AsObject;
@@ -270,6 +278,38 @@ export class ApplicationLogs extends jspb.Message {
 
 export namespace ApplicationLogs {
   export type AsObject = {
+    datasource: string,
+    queriesList: Array<ApplicationLogsQuery.AsObject>,
+  }
+}
+
+export class ApplicationLogsQuery extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getQuery(): string;
+  setQuery(value: string): void;
+
+  clearFieldsList(): void;
+  getFieldsList(): Array<string>;
+  setFieldsList(value: Array<string>): void;
+  addFields(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ApplicationLogsQuery.AsObject;
+  static toObject(includeInstance: boolean, msg: ApplicationLogsQuery): ApplicationLogsQuery.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ApplicationLogsQuery, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ApplicationLogsQuery;
+  static deserializeBinaryFromReader(message: ApplicationLogsQuery, reader: jspb.BinaryReader): ApplicationLogsQuery;
+}
+
+export namespace ApplicationLogsQuery {
+  export type AsObject = {
+    name: string,
+    query: string,
+    fieldsList: Array<string>,
   }
 }
 

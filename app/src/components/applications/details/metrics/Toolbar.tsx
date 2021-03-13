@@ -33,7 +33,6 @@ interface IToolbarProps {
   setDatasourceOptions: (options: IDatasourceOptions) => void;
   variables: IApplicationMetricsVariable[];
   setVariables: (variables: IApplicationMetricsVariable[]) => void;
-  isDrawer?: boolean;
 }
 
 // Toolbar component displays a list of all variables and an options field. The variables are displayed via a dropdown
