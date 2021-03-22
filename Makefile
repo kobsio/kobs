@@ -5,6 +5,8 @@ REPO        ?= github.com/kobsio/kobs
 REVISION    ?= $(shell git rev-parse HEAD)
 VERSION     ?= $(shell git describe --tags)
 
+PLUGINS ?= $(shell find ./proto -name '*.proto' | sed -e 's/^.\/proto\///' | sed -e 's/.proto//')
+
 .PHONY: build
 build:
 	@go build -ldflags "-X ${REPO}/pkg/version.Version=${VERSION} \
@@ -19,28 +21,26 @@ generate: generate-proto generate-crd
 
 .PHONY: generate-proto
 generate-proto:
-	@protoc --proto_path=proto --go_out=pkg/generated/proto --go_opt=paths=source_relative --go-grpc_out=pkg/generated/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/generated/proto --js_out=import_style=commonjs:app/src/generated/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/generated/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/generated/proto proto/clusters.proto
-	@protoc --proto_path=proto --go_out=pkg/generated/proto --go_opt=paths=source_relative --go-grpc_out=pkg/generated/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/generated/proto --js_out=import_style=commonjs:app/src/generated/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/generated/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/generated/proto proto/datasources.proto
-	@protoc --proto_path=proto --go_out=pkg/generated/proto --go_opt=paths=source_relative --go-grpc_out=pkg/generated/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/generated/proto --js_out=import_style=commonjs:app/src/generated/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/generated/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/generated/proto proto/application.proto
-	@rm -rf ./pkg/generated/proto/clusters_deepcopy.gen.go
-	@rm -rf ./pkg/generated/proto/datasources_deepcopy.gen.go
-	@rm -rf ./pkg/generated/proto/application_deepcopy.gen.go
-	@mv ./pkg/generated/proto/github.com/kobsio/kobs/pkg/generated/proto/clusters_deepcopy.gen.go ./pkg/generated/proto
-	@mv ./pkg/generated/proto/github.com/kobsio/kobs/pkg/generated/proto/datasources_deepcopy.gen.go ./pkg/generated/proto
-	@mv ./pkg/generated/proto/github.com/kobsio/kobs/pkg/generated/proto/application_deepcopy.gen.go ./pkg/generated/proto
-	@rm -rf ./pkg/generated/proto/github.com
+	for plugin in $(PLUGINS); do \
+		mkdir -p pkg/api/plugins/$$plugin/proto; \
+		mkdir -p app/src/proto; \
+		protoc --proto_path=proto --go_out=pkg/api/plugins/$$plugin/proto --go_opt=paths=source_relative --go-grpc_out=pkg/api/plugins/$$plugin/proto --go-grpc_opt=paths=source_relative --deepcopy_out=pkg/api/plugins/$$plugin/proto --js_out=import_style=commonjs:app/src/proto --plugin=protoc-gen-ts=app/node_modules/.bin/protoc-gen-ts --ts_out=service=grpc-web:app/src/proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:app/src/proto proto/$$plugin.proto; \
+		rm -rf ./pkg/api/plugins/$$plugin/proto/$$plugin\_deepcopy.gen.go; \
+		mv ./pkg/api/plugins/$$plugin/proto/github.com/kobsio/kobs/pkg/api/plugins/$$plugin/proto/$$plugin\_deepcopy.gen.go ./pkg/api/plugins/$$plugin/proto; \
+		rm -rf ./pkg/api/plugins/$$plugin/proto/github.com; \
+	done
 
 .PHONY: generate-crd
 generate-crd:
-	@${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/generated github.com/kobsio/kobs/pkg/api/kubernetes/apis application:v1alpha1 --output-base ./tmp
-	@rm -rf ./pkg/api/kubernetes/apis/application/v1alpha1/zz_generated.deepcopy.go
-	@rm -rf ./pkg/generated/clientset
-	@rm -rf ./pkg/generated/informers
-	@rm -rf ./pkg/generated/listers
-	@mv ./tmp/github.com/kobsio/kobs/pkg/api/kubernetes/apis/application/v1alpha1/zz_generated.deepcopy.go ./pkg/api/kubernetes/apis/application/v1alpha1
-	@mv ./tmp/github.com/kobsio/kobs/pkg/generated/clientset ./pkg/generated/clientset
-	@mv ./tmp/github.com/kobsio/kobs/pkg/generated/informers ./pkg/generated/informers
-	@mv ./tmp/github.com/kobsio/kobs/pkg/generated/listers ./pkg/generated/listers
+	@${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/api/plugins/application github.com/kobsio/kobs/pkg/api/plugins/application/apis application:v1alpha1 --output-base ./tmp
+	@rm -rf ./pkg/api/plugins/application/apis/application/v1alpha1/zz_generated.deepcopy.go
+	@rm -rf ./pkg/api/plugins/application/clientset
+	@rm -rf ./pkg/api/plugins/application/informers
+	@rm -rf ./pkg/api/plugins/application/listers
+	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/apis/application/v1alpha1/zz_generated.deepcopy.go ./pkg/api/plugins/application/apis/application/v1alpha1
+	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/clientset ./pkg/api/plugins/application/clientset
+	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/informers ./pkg/api/plugins/application/informers
+	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/listers ./pkg/api/plugins/application/listers
 	@rm -rf ./tmp
 	-controller-gen "crd:trivialVersions=true" paths="./..." output:crd:artifacts:config=deploy/kustomize/crds
 

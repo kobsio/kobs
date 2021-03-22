@@ -34,7 +34,7 @@ The following section explains various suggestions and procedures to note during
 ### Prerequisites
 
 - It is strongly recommended that you use macOS or Linux distributions for development.
-- You have Go 1.15.0 or newer installed.
+- You have Go 1.16.0 or newer installed.
 - You have Node.js 14.0.0 or newer installed.
 - For the React UI, you will need a working NodeJS environment and the Yarn package manager to compile the Web UI assets.
 
