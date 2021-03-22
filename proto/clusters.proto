@@ -1,7 +1,7 @@
 syntax = "proto3";
 package clusters;
 
-option go_package = "github.com/kobsio/kobs/pkg/generated/proto";
+option go_package = "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto";
 
 import "application.proto";
 
@@ -10,6 +10,7 @@ import "application.proto";
 service Clusters {
   rpc GetClusters(GetClustersRequest) returns (GetClustersResponse) {}
   rpc GetNamespaces(GetNamespacesRequest) returns (GetNamespacesResponse) {}
+  rpc GetCRDs(GetCRDsRequest) returns (GetCRDsResponse) {}
   rpc GetResources(GetResourcesRequest) returns (GetResourcesResponse) {}
   rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse) {}
   rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {}
@@ -34,6 +35,16 @@ message GetNamespacesRequest {
 // given clusters.
 message GetNamespacesResponse {
   repeated string namespaces = 1;
+}
+
+// GetCRDsRequest is the message format to get all Custom Resource Definitions. The message doesn't require any field.
+message GetCRDsRequest {}
+
+// GetCRDsResponse is the response for a GetCRDs call. It contains a list of all Custom Resource Definitions accross all
+// loaded clusters. CRDs which are available in multiple clusters are deduplicated, so that the array contains each CRD
+// only once.
+message GetCRDsResponse {
+  repeated CRD crds = 1;
 }
 
 // GetResourcesRequest is the request to get a specific resource for multiple clusters and namespaces. It contains the
@@ -85,4 +96,27 @@ message GetApplicationRequest {
 // GetApplicationResponse is the response for a GetApplication request, which returns a single application.
 message GetApplicationResponse {
   application.Application application = 1;
+}
+
+// CRD is the format of a Custom Resource Definition. Each CRD must contain a path and resource, which are used for the
+// API request to retrieve all CRs for a CRD. It also must contain a title (kind), an optional description, the scope of
+// the CRs (namespaced vs. cluster) and an optional list of columns with the fields, which should be shown in the
+// frontend table.
+message CRD {
+  string path = 1;
+  string resource = 2;
+  string title = 3;
+  string description = 4;
+  string scope = 5;
+  repeated CRDColumn columns = 6;
+}
+
+// CRDColumn is a single column for the CRD. A column has the same fields as the additionalPrinterColumns from the CRD
+// specs. This means each column contains a description, name, a type to formate the value returned by the given
+// jsonPath.
+message CRDColumn {
+  string description = 1;
+  string jsonPath = 2;
+  string name = 3;
+  string type = 4;
 }

@@ -7,62 +7,57 @@ import {
   ListVariant,
   PageSection,
   PageSectionVariants,
+  Spinner,
 } from '@patternfly/react-core';
-import { Link, useHistory, useParams } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
-import { GetApplicationRequest, GetApplicationResponse } from 'generated/proto/clusters_pb';
-import Tabs, { DEFAULT_TAB } from 'components/applications/details/Tabs';
-import { Application } from 'generated/proto/application_pb';
-import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
-import TabsContent from 'components/applications/details/TabsContent';
-import Title from 'components/shared/Title';
+import { ClustersPromiseClient, GetApplicationRequest, GetApplicationResponse } from 'proto/clusters_grpc_web_pb';
+import ApplicationTabs from 'components/applications/ApplicationTabs';
+import ApplicationTabsContent from 'components/applications/ApplicationTabsContent';
+import { Application as IApplication } from 'proto/application_pb';
+import Title from 'components/Title';
 import { apiURL } from 'utils/constants';
 
-const clustersService = new ClustersPromiseClient(apiURL, null, null);
+interface IDataState {
+  application?: IApplication.AsObject;
+  error: string;
+  isLoading: boolean;
+}
 
 interface IApplicationsParams {
   cluster: string;
   namespace: string;
   name: string;
 }
+// clustersService is the Clusters gRPC service, which is used to get an application.
+const clustersService = new ClustersPromiseClient(apiURL, null, null);
 
-// Applications is the page component to show a single application. The application is determined by the provided page
-// params. When the application could not be loaded an error is shown. If the application was successfully loaded, we
-// show the same components as in the tabs from the Applications drawer.
-const Applications: React.FunctionComponent = () => {
+const Application: React.FunctionComponent = () => {
   const history = useHistory();
   const params = useParams<IApplicationsParams>();
-  const [application, setApplication] = useState<Application | undefined>(undefined);
-  const [error, setError] = useState<string>('');
+  const [data, setData] = useState<IDataState>({ application: undefined, error: '', isLoading: true });
 
-  const [tab, setTab] = useState<string>(DEFAULT_TAB);
+  const [activeTab, setActiveTab] = useState<string>('resources');
   const refResourcesContent = useRef<HTMLElement>(null);
-  const refMetricsContent = useRef<HTMLElement>(null);
-  const refLogsContent = useRef<HTMLElement>(null);
 
-  const goToOverview = (): void => {
-    history.push('/');
-  };
-
-  // fetchApplication is used to fetch the application from the gRPC API. This is done every time the page paramertes
-  // change. When there is an error during the fetch, the user will see the error.
   const fetchApplication = useCallback(async () => {
     try {
+      setData({ application: undefined, error: '', isLoading: true });
+
       const getApplicationRequest = new GetApplicationRequest();
       getApplicationRequest.setCluster(params.cluster);
       getApplicationRequest.setNamespace(params.namespace);
       getApplicationRequest.setName(params.name);
 
-      const getApplicationsResponse: GetApplicationResponse = await clustersService.getApplication(
+      const getApplicationResponse: GetApplicationResponse = await clustersService.getApplication(
         getApplicationRequest,
         null,
       );
 
-      setError('');
-      setApplication(getApplicationsResponse.getApplication());
+      setData({ application: getApplicationResponse.toObject().application, error: '', isLoading: false });
     } catch (err) {
-      setError(err.message);
+      setData({ application: undefined, error: err.message, isLoading: false });
     }
   }, [params.cluster, params.namespace, params.name]);
 
@@ -70,69 +65,61 @@ const Applications: React.FunctionComponent = () => {
     fetchApplication();
   }, [fetchApplication]);
 
-  if (!application) {
-    return null;
+  if (data.isLoading) {
+    return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
   }
 
-  // If there is an error, we will show it to the user. The user then has the option to retry the failed API call or to
-  // go to the overview page.
-  if (error) {
+  if (data.error || !data.application) {
     return (
-      <PageSection variant={PageSectionVariants.default}>
-        <Alert
-          variant={AlertVariant.danger}
-          isInline={false}
-          title="Application was not found"
-          actionLinks={
-            <React.Fragment>
-              <AlertActionLink onClick={fetchApplication}>Retry</AlertActionLink>
-              <AlertActionLink onClick={goToOverview}>Overview</AlertActionLink>
-            </React.Fragment>
-          }
-        >
-          <p>{error}</p>
-        </Alert>
-      </PageSection>
+      <Alert
+        style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
+        variant={AlertVariant.danger}
+        title="Could not get application"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
+            <AlertActionLink onClick={fetchApplication}>Retry</AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>{data.error ? data.error : 'Application is undefined'}</p>
+      </Alert>
     );
   }
 
   return (
     <React.Fragment>
-      <PageSection className="kobsio-pagesection-tabs" variant={PageSectionVariants.light}>
+      <PageSection style={{ paddingBottom: '0px' }} variant={PageSectionVariants.light}>
         <Title
-          title={application.getName()}
-          subtitle={`${application.getNamespace()} (${application.getCluster()})`}
+          title={data.application.name}
+          subtitle={`${data.application.namespace} (${data.application.cluster})`}
           size="xl"
         />
-        <List variant={ListVariant.inline}>
-          {application.getLinksList().map((link, index) => (
-            <ListItem key={index}>
-              <Link target="_blank" to={link.getLink}>
-                {link.getTitle()}
-              </Link>
-            </ListItem>
-          ))}
-        </List>
-        <Tabs
-          tab={tab}
-          setTab={(t: string): void => setTab(t)}
-          refResourcesContent={refResourcesContent}
-          refMetricsContent={refMetricsContent}
-          refLogsContent={refLogsContent}
-        />
+        {data.application.details ? (
+          <div>
+            <p>{data.application.details.description}</p>
+            <List variant={ListVariant.inline}>
+              {data.application.details.linksList.map((link, index) => (
+                <ListItem key={index}>
+                  <a href={link.link} rel="noreferrer" target="_blank">
+                    {link.title}
+                  </a>
+                </ListItem>
+              ))}
+            </List>
+          </div>
+        ) : null}
+        <ApplicationTabs activeTab={activeTab} setTab={setActiveTab} refResourcesContent={refResourcesContent} />
       </PageSection>
 
-      <PageSection variant={PageSectionVariants.default}>
-        <TabsContent
-          application={application}
-          tab={tab}
-          refResourcesContent={refResourcesContent}
-          refMetricsContent={refMetricsContent}
-          refLogsContent={refLogsContent}
-        />
-      </PageSection>
+      <ApplicationTabsContent
+        application={data.application}
+        activeTab={activeTab}
+        isInDrawer={false}
+        refResourcesContent={refResourcesContent}
+      />
     </React.Fragment>
   );
 };
 
-export default Applications;
+export default Application;

@@ -4,68 +4,63 @@ import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  Gallery,
-  GalleryItem,
   PageSection,
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { GetApplicationsRequest, GetApplicationsResponse } from 'generated/proto/clusters_pb';
-import { apiURL, applicationsDescription } from 'utils/constants';
-import { Application } from 'generated/proto/application_pb';
-import Card from 'components/applications/overview/Card';
-import { ClustersPromiseClient } from 'generated/proto/clusters_grpc_web_pb';
-import DrawerPanel from 'components/applications/details/DrawerPanel';
-import Filter from 'components/resources/shared/Filter';
+import { ClustersPromiseClient, GetApplicationsRequest, GetApplicationsResponse } from 'proto/clusters_grpc_web_pb';
+import { Application } from 'proto/application_pb';
+import ApplicationDetails from 'components/applications/ApplicationDetails';
+import ApplicationGallery from 'components/applications/ApplicationGallery';
+import ApplicationsToolbar from 'components/applications/ApplicationsToolbar';
+import { apiURL } from 'utils/constants';
+import { applicationsDescription } from 'utils/constants';
 
+// clustersService is the Clusters gRPC service, which is used to get a list of resources.
 const clustersService = new ClustersPromiseClient(apiURL, null, null);
 
-// Applications displays a list of applications (defined via the Application CRD). The applications can be filtered by
-// cluster and namespace.
-// When a application is selected it is shown in a drawer with some additional details, like resources, metrics, logs
-// and traces.
+export interface IScope {
+  clusters: string[];
+  namespaces: string[];
+}
+
+// Applications is the page to display a list of selected applications. To get the applications the user can select a
+// scope (list of clusters and namespaces).
 const Applications: React.FunctionComponent = () => {
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [selectedApplication, setSelectedApplication] = useState<Application | undefined>(undefined);
+  const [scope, setScope] = useState<IScope | undefined>(undefined);
+  const [applications, setApplications] = useState<Application.AsObject[]>([]);
+  const [selectedApplication, setSelectedApplication] = useState<Application.AsObject | undefined>(undefined);
   const [error, setError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // fetchApplications is the function to fetch all applications for a list of clusters and namespaces from the gRPC
-  // API. The function is used via the onFilter property of the Filter component.
-  const fetchApplications = async (clusters: string[], namespaces: string[]): Promise<void> => {
-    try {
-      if (clusters.length === 0 || namespaces.length === 0) {
-        throw new Error('You must select a cluster and a namespace');
-      } else {
-        setIsLoading(true);
-
+  // fetchApplications is used to fetch a list of applications. To get the list of applications the user has to select
+  // a list of clusters and namespaces.
+  const fetchApplications = useCallback(async () => {
+    if (scope && scope.clusters.length > 0 && scope.namespaces.length > 0) {
+      try {
         const getApplicationsRequest = new GetApplicationsRequest();
-        getApplicationsRequest.setClustersList(clusters);
-        getApplicationsRequest.setNamespacesList(namespaces);
+        getApplicationsRequest.setClustersList(scope.clusters);
+        getApplicationsRequest.setNamespacesList(scope.namespaces);
 
         const getApplicationsResponse: GetApplicationsResponse = await clustersService.getApplications(
           getApplicationsRequest,
           null,
         );
 
-        const tmpApplications = getApplicationsResponse.getApplicationsList();
-
-        if (tmpApplications.length > 0) {
-          setError('');
-          setApplications(tmpApplications);
-        } else {
-          setError('No applications were found, adjust the cluster and namespace filter.');
-        }
-
-        setIsLoading(false);
+        setApplications(getApplicationsResponse.toObject().applicationsList);
+        setError('');
+      } catch (err) {
+        setError(err.message);
       }
-    } catch (err) {
-      setError(err.message);
-      setIsLoading(false);
     }
-  };
+  }, [scope]);
+
+  // useEffect is used to call the fetchApplications function every time the list of clusters and namespaces (scope),
+  // changes.
+  useEffect(() => {
+    fetchApplications();
+  }, [fetchApplications]);
 
   return (
     <React.Fragment>
@@ -74,31 +69,39 @@ const Applications: React.FunctionComponent = () => {
           Applications
         </Title>
         <p>{applicationsDescription}</p>
-        <Filter isLoading={isLoading} onFilter={fetchApplications} />
+        <ApplicationsToolbar setScope={setScope} />
       </PageSection>
 
       <Drawer isExpanded={selectedApplication !== undefined}>
         <DrawerContent
           panelContent={
             selectedApplication ? (
-              <DrawerPanel application={selectedApplication} close={(): void => setSelectedApplication(undefined)} />
+              <ApplicationDetails
+                application={selectedApplication}
+                close={(): void => setSelectedApplication(undefined)}
+              />
             ) : undefined
           }
         >
           <DrawerContentBody>
-            <PageSection className="kobs-drawer-pagesection" variant={PageSectionVariants.default}>
-              {error ? (
-                <Alert variant={AlertVariant.danger} isInline={false} title="Could not load applications">
+            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+              {!scope ? (
+                <Alert variant={AlertVariant.info} title="Select clusters and namespaces">
+                  <p>Select a list of clusters and namespaces from the toolbar.</p>
+                </Alert>
+              ) : scope.clusters.length === 0 || scope.namespaces.length === 0 ? (
+                <Alert variant={AlertVariant.danger} title="Select clusters and namespaces">
+                  <p>
+                    You have to select a minimum of one cluster and namespace from the toolbar to search for
+                    applications.
+                  </p>
+                </Alert>
+              ) : error ? (
+                <Alert variant={AlertVariant.danger} title="Applications were not fetched">
                   <p>{error}</p>
                 </Alert>
               ) : (
-                <Gallery hasGutter={true}>
-                  {applications.map((application, index) => (
-                    <GalleryItem key={index}>
-                      <Card application={application} select={setSelectedApplication} />
-                    </GalleryItem>
-                  ))}
-                </Gallery>
+                <ApplicationGallery applications={applications} selectApplication={setSelectedApplication} />
               )}
             </PageSection>
           </DrawerContentBody>

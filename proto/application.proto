@@ -1,103 +1,41 @@
 syntax = "proto3";
 package application;
 
-option go_package = "github.com/kobsio/kobs/pkg/generated/proto";
+option go_package = "github.com/kobsio/kobs/pkg/api/plugins/application/proto";
 
 // Application is the specification for an application. This specification is also used for the Kubernetes CRD as
-// ApplicationSpec.
-// This is also the reason why we use istio.io/tools/cmd/protoc-gen-deepcopy within the code generation, to generate the
-// deepcopy function, which are required to use the Application within a CRD.
+// ApplicationSpec.  This is also the reason why we use istio.io/tools/cmd/protoc-gen-deepcopy within the code
+// generation, to generate the deepcopy function, which are required to use the Application within a CRD.
+// Each Application contains a cluster, namespace and name, which are automitic determinded, when the Application is
+// retrieved from the Kubernetes API.
 message Application {
   string cluster = 1;
   string namespace = 2;
   string name = 3;
-  repeated ApplicationLink links = 4;
-  repeated ApplicationResources resources = 5;
-  ApplicationMetrics metrics = 6;
-  ApplicationLogs logs = 7;
-  ApplicationTraces traces = 8;
+  Details details = 4;
+  repeated Resources resources = 5;
 }
 
-// ApplicationLink is the format of a link, which can be provided within an application. A link consists of a title,
-// which is displayed in the frontend and the link link (title=Example, link=https://example.com).
-message ApplicationLink {
+// Details contains some details for the Application, which are set by the user in the Custom Resource. Each Application
+// can contain a description and a list of links.
+message Details {
+  string description = 1;
+  repeated Link links = 2;
+}
+
+// Link is the format of a link, which can be provided within an Application. A link consists of a title, which is
+// displayed in the frontend and the link, which is used within the href attribute (title=Example,
+// link=https://example.com).
+message Link {
   string title = 1;
   string link = 2;
 }
 
-// ApplicationResources is the specification to retrieve all Kubernetes resources, which can be associated with the
-// application. For that, a list of kinds (deployments, pods, statefulsets) as specified in
-// app/src/components/resources/helpers.tsx and a selector must be set. Currently only label selector is supported,
-// e.g. app=example.
-message ApplicationResources {
+// Resources is a list of resources, which can be associated with the Application. For each selector
+// (e.g. app=prometheus) a list of resources can be specified. These kinds are the plural of the standard Kubernetes
+// resources (e.g. pods, cronjobs. deployments, ...) or for CRDs resource.path
+// (e.g. vaultsecrets.ricoberger.de/v1alpha1).
+message Resources {
   repeated string kinds = 1;
   string selector = 2;
 }
-
-// ApplicationMetrics defines the structure of the metrics section of an application. It contains the name of the
-// datasource, which is the same as the metrics datasource for a cluster, when the user doesn't set this field in the
-// Application CR. It also contains a list of variables and charts.
-// The health field can contain a single chart, which is used to display the health of an application in the
-// applications overview.
-message ApplicationMetrics {
-  string datasource = 1;
-  ApplicationMetricsChart health = 2;
-  repeated ApplicationMetricsVariable variables = 3;
-  repeated ApplicationMetricsChart charts = 4;
-}
-
-// ApplicationMetricsVariable specifies a variable, which can be used within the charts. A variable must contain a name,
-// a label and a query. It also can set the allowAll field to true, which will include an "All" option in the variables
-// values.
-// The values and value field must not be provided by the user. These fields will be set by the GetVariables call. If a
-// user provide a "value", we will try to use it as the selected value.
-message ApplicationMetricsVariable {
-  string name = 1;
-  string label = 2;
-  string query = 3;
-  bool allowAll = 4;
-  repeated string values = 5;
-  string value = 6;
-}
-
-// ApplicationMetricsChart represents a chart for the metrics view. A chart must contain a title, a type (line, area,
-// bar chart, etc.). It can also contain a unit for the y axis. If the stacked option is set to true all series for the
-// chart will be stacked. The size parameter can be used to define the width of a chart for large screens. We are using
-// a 12 column grid to display the charts, so the number must be between 1 and 12. The last option is a list of queries,
-// which are executed against the datasource (e.g. For Prometheus this will be a list of PromQL queries).
-message ApplicationMetricsChart {
-  string title = 1;
-  string type = 2;
-  string unit = 3;
-  bool stacked = 4;
-  int64 size = 5;
-  repeated ApplicationMetricsQuery queries = 6;
-}
-
-// ApplicationMetricsQuery presents a single query to get the data, which should be shown in the chart for the metrics
-// section. A query consists of a query string (e.g. PromQL) and a lable. The query and the label can contain variables
-// via Go templating syntax (e.g. {{ .VARIABLE-NAME }}). For Prometheus the label can also contain a label from the
-// returned series with the same syntax (e.g. {{ .SERIES-LABEL }}).
-message ApplicationMetricsQuery {
-  string query = 1;
-  string label = 2;
-}
-
-// ApplicationLogs defines the structure of the logs section of an application. To get the logs of an application we
-// need a datasource field with the name of the datasource. This field will be set to the configured logs datasource for
-// a cluster, when the user doesn't provide the field. The second field is a list of queries, for the application.
-message ApplicationLogs {
-  string datasource = 1;
-  repeated ApplicationLogsQuery queries = 2;
-}
-
-// ApplicationLogsQuery represents a single query for an application. A query is identified by a name, a query and a
-// list of fields, which should be shown in the results table. If the fields list is empty, we show the complete
-// document in the table.
-message ApplicationLogsQuery {
-  string name = 1;
-  string query = 2;
-  repeated string fields = 3;
-}
-
-message ApplicationTraces {}

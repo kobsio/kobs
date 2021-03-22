@@ -7,6 +7,6 @@ export const apiURL = process.env.NODE_ENV === 'production' ? '' : 'http://local
 // resources, this should be a short description of the Application CR and for what it is used.
 export const applicationsDescription = 'Applications are a Custom Resource for kobs.';
 
-// datasourcesDescription is the description, which is displayed in the UI on the datasources card on the overview page
-// and the datasources page.
-export const datasourcesDescription = 'Datasources are used to retrieve metrics, logs or traces for an Application.';
+// resourcesDescription is the description, which is displayed in the UI on the resources card on the overview page
+// and the resources page.
+export const resourcesDescription = 'Resources are all available Kubernetes resources.';

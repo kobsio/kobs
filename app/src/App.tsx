@@ -1,5 +1,5 @@
-import { Page, PageHeader } from '@patternfly/react-core';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Brand, Page, PageHeader } from '@patternfly/react-core';
+import { Link, Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import React from 'react';
 
 import '@patternfly/react-core/dist/styles/base.css';
@@ -9,31 +9,31 @@ import '@patternfly/patternfly/patternfly-charts.css';
 
 import Application from 'components/applications/Application';
 import Applications from 'components/applications/Applications';
-import Datasource from 'components/datasources/Datasource';
-import Datasources from 'components/datasources/Datasources';
-import HeaderLogo from 'components/shared/HeaderLogo';
-import Overview from 'components/overview/Overview';
+import { ClustersContextProvider } from 'context/ClustersContext';
+import Home from 'components/Home';
 import Resources from 'components/resources/Resources';
 
 import 'app.css';
 
 // App is used to set all routes for the react-router and the header for all pages.
 const App: React.FunctionComponent = () => {
-  const Header = <PageHeader logo={<HeaderLogo />} />;
+  const Header = (
+    <PageHeader logoComponent={Link} logoProps={{ to: '/' }} logo={<Brand src="/img/header-logo.png" alt="kobs" />} />
+  );
 
   return (
-    <Router>
-      <Page header={Header}>
-        <Switch>
-          <Route exact={true} path="/" component={Overview} />
-          <Route exact={true} path="/applications" component={Applications} />
-          <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
-          <Route exact={true} path="/datasources" component={Datasources} />
-          <Route exact={true} path="/datasources/:type/:name" component={Datasource} />
-          <Route exact={true} path="/resources/:kind" component={Resources} />
-        </Switch>
-      </Page>
-    </Router>
+    <ClustersContextProvider>
+      <Router>
+        <Page header={Header}>
+          <Switch>
+            <Route exact={true} path="/" component={Home} />
+            <Route exact={true} path="/applications" component={Applications} />
+            <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
+            <Route exact={true} path="/resources" component={Resources} />
+          </Switch>
+        </Page>
+      </Router>
+    </ClustersContextProvider>
   );
 };
 
