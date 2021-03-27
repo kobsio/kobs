@@ -6,6 +6,7 @@ package proto
 import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
+	_ "github.com/kobsio/kobs/pkg/api/plugins/plugins/proto"
 	math "math"
 )
 

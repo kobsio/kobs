@@ -2,33 +2,25 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/kobsio/kobs/pkg/api"
-	"github.com/kobsio/kobs/pkg/api/plugins/clusters"
 	"github.com/kobsio/kobs/pkg/app"
+	"github.com/kobsio/kobs/pkg/config"
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/version"
 
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
-	"gopkg.in/yaml.v2"
 )
-
-// Config is the complete configuration for kobs.
-type Config struct {
-	Clusters clusters.Config `yaml:"clusters"`
-}
 
 var (
 	log         = logrus.WithFields(logrus.Fields{"package": "main"})
 	configFile  string
 	logFormat   string
 	logLevel    string
-	module      string
 	showVersion bool
 )
 
@@ -83,19 +75,10 @@ func main() {
 		logrus.SetReportCaller(true)
 	}
 
-	// Load the configuration for kobs. Most of the configuration options are available as command-line flag, but we
-	// also need some more complex configuration options, which can be set via a config file in yaml format. The
-	// configuration file can contain environment variables in the following format:
-	// "${NAME_OF_THE_ENVIRONMENT_VARIABLE}".
-	configContent, err := ioutil.ReadFile(configFile)
+	// Load the configuration for kobs from the provided configuration file.
+	cfg, err := config.Load(configFile)
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"config": configFile}).Fatalf("Could not read configuration file.")
-	}
-
-	configContent = []byte(os.ExpandEnv(string(configContent)))
-	config := &Config{}
-	if err := yaml.Unmarshal(configContent, config); err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"config": configFile}).Fatalf("Could not parse configuration file.")
+		log.WithError(err).WithFields(logrus.Fields{"config": configFile}).Fatalf("Could not load configuration file.")
 	}
 
 	// When the version value is set to "true" (--version) we will print the version information for kobs. After we
@@ -117,15 +100,15 @@ func main() {
 
 	// Initialize each component and start it in it's own goroutine, so that the main goroutine is only used as listener
 	// for terminal signals, to initialize the graceful shutdown of the components.
-	// The appServer is the kobs application server, which serves the React frontend and the health endpoint. The metrics server is
-	// used to serve the kobs metrics.
+	// The appServer is the kobs application server, which serves the React frontend and the health endpoint. The
+	// metrics server is used to serve the kobs metrics.
 	appServer, err := app.New()
 	if err != nil {
 		log.WithError(err).Fatalf("Could not create application server.")
 	}
 	go appServer.Start()
 
-	apiServer, err := api.New(config.Clusters)
+	apiServer, err := api.New(cfg)
 	if err != nil {
 		log.WithError(err).Fatalf("Could not create API server.")
 	}

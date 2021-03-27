@@ -1,0 +1,38 @@
+syntax = "proto3";
+package plugins;
+
+option go_package = "github.com/kobsio/kobs/pkg/api/plugins/plugins/proto";
+
+import "prometheus.proto";
+import "elasticsearch.proto";
+
+// Plugins is the service to get all configured and loaded plugins.
+service Plugins {
+  rpc GetPlugins(GetPluginsRequest) returns (GetPluginsResponse) {}
+}
+
+// GetPluginsRequest is the request to get all loaded plugins via the GetPlugins method.
+message GetPluginsRequest {}
+
+// GetPluginsResponse is the response for a GetPlugins request. It contains a plugins with their name and type.
+message GetPluginsResponse {
+  repeated PluginShort plugins = 1;
+}
+
+// PluginShort represents a single plugin. Each plugin can be identified by his name and type. This is the least
+// necessary data we need in our React UI to associate the name of a plugin with the correct component. As an optional
+// property, a plugin can also have a description.
+message PluginShort {
+  string name = 1;
+  string description = 2;
+  string type = 3;
+}
+
+// Plugin is the plugin formate, which can be used within the Application CR. Each plugin requires a name. The plugin
+// specific fields like "prometheus", "elasticsearch" and "jaeger" are mutually exclusive and containing the data, which
+// is needed to use the plugin within a Application CR.
+message Plugin {
+  string name = 1;
+  prometheus.Spec prometheus = 2;
+  elasticsearch.Spec elasticsearch = 3;
+}

@@ -14,6 +14,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var plugins_pb = require('./plugins_pb.js');
+goog.object.extend(proto, plugins_pb);
 goog.exportSymbol('proto.application.Application', null, global);
 goog.exportSymbol('proto.application.Details', null, global);
 goog.exportSymbol('proto.application.Link', null, global);
@@ -108,7 +110,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.application.Application.repeatedFields_ = [5];
+proto.application.Application.repeatedFields_ = [5,6];
 
 
 
@@ -146,7 +148,9 @@ proto.application.Application.toObject = function(includeInstance, msg) {
     name: jspb.Message.getFieldWithDefault(msg, 3, ""),
     details: (f = msg.getDetails()) && proto.application.Details.toObject(includeInstance, f),
     resourcesList: jspb.Message.toObjectList(msg.getResourcesList(),
-    proto.application.Resources.toObject, includeInstance)
+    proto.application.Resources.toObject, includeInstance),
+    pluginsList: jspb.Message.toObjectList(msg.getPluginsList(),
+    plugins_pb.Plugin.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -204,6 +208,11 @@ proto.application.Application.deserializeBinaryFromReader = function(msg, reader
       var value = new proto.application.Resources;
       reader.readMessage(value,proto.application.Resources.deserializeBinaryFromReader);
       msg.addResources(value);
+      break;
+    case 6:
+      var value = new plugins_pb.Plugin;
+      reader.readMessage(value,plugins_pb.Plugin.deserializeBinaryFromReader);
+      msg.addPlugins(value);
       break;
     default:
       reader.skipField();
@@ -269,6 +278,14 @@ proto.application.Application.serializeBinaryToWriter = function(message, writer
       5,
       f,
       proto.application.Resources.serializeBinaryToWriter
+    );
+  }
+  f = message.getPluginsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      6,
+      f,
+      plugins_pb.Plugin.serializeBinaryToWriter
     );
   }
 };
@@ -400,6 +417,44 @@ proto.application.Application.prototype.addResources = function(opt_value, opt_i
  */
 proto.application.Application.prototype.clearResourcesList = function() {
   return this.setResourcesList([]);
+};
+
+
+/**
+ * repeated plugins.Plugin plugins = 6;
+ * @return {!Array<!proto.plugins.Plugin>}
+ */
+proto.application.Application.prototype.getPluginsList = function() {
+  return /** @type{!Array<!proto.plugins.Plugin>} */ (
+    jspb.Message.getRepeatedWrapperField(this, plugins_pb.Plugin, 6));
+};
+
+
+/**
+ * @param {!Array<!proto.plugins.Plugin>} value
+ * @return {!proto.application.Application} returns this
+*/
+proto.application.Application.prototype.setPluginsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 6, value);
+};
+
+
+/**
+ * @param {!proto.plugins.Plugin=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.plugins.Plugin}
+ */
+proto.application.Application.prototype.addPlugins = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 6, opt_value, proto.plugins.Plugin, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.application.Application} returns this
+ */
+proto.application.Application.prototype.clearPluginsList = function() {
+  return this.setPluginsList([]);
 };
 
 

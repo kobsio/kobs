@@ -4,8 +4,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/kobsio/kobs/pkg/api/plugins/clusters"
-	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
+	"github.com/kobsio/kobs/pkg/api/plugins/plugins"
+	"github.com/kobsio/kobs/pkg/config"
 
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
@@ -49,20 +49,15 @@ func (s *Server) Stop() {
 
 // New return a new API server. For the we have to create a new gRPC server and register all services, like the clusters
 // service and all services for the configured plugins.
-func New(clustersConfig clusters.Config) (*Server, error) {
+func New(cfg *config.Config) (*Server, error) {
 	listener, err := net.Listen("tcp", address)
-	if err != nil {
-		return nil, err
-	}
-
-	c, err := clusters.Load(clustersConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	grpcServer := grpc.NewServer()
 	reflection.Register(grpcServer)
-	clustersProto.RegisterClustersServer(grpcServer, c)
+	plugins.Register(cfg, grpcServer)
 
 	return &Server{
 		listener: listener,

@@ -2,6 +2,7 @@
 // file: application.proto
 
 import * as jspb from "google-protobuf";
+import * as plugins_pb from "./plugins_pb";
 
 export class Application extends jspb.Message {
   getCluster(): string;
@@ -23,6 +24,11 @@ export class Application extends jspb.Message {
   setResourcesList(value: Array<Resources>): void;
   addResources(value?: Resources, index?: number): Resources;
 
+  clearPluginsList(): void;
+  getPluginsList(): Array<plugins_pb.Plugin>;
+  setPluginsList(value: Array<plugins_pb.Plugin>): void;
+  addPlugins(value?: plugins_pb.Plugin, index?: number): plugins_pb.Plugin;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Application.AsObject;
   static toObject(includeInstance: boolean, msg: Application): Application.AsObject;
@@ -40,6 +46,7 @@ export namespace Application {
     name: string,
     details?: Details.AsObject,
     resourcesList: Array<Resources.AsObject>,
+    pluginsList: Array<plugins_pb.Plugin.AsObject>,
   }
 }
 
