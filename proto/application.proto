@@ -3,6 +3,8 @@ package application;
 
 option go_package = "github.com/kobsio/kobs/pkg/api/plugins/application/proto";
 
+import "plugins.proto";
+
 // Application is the specification for an application. This specification is also used for the Kubernetes CRD as
 // ApplicationSpec.  This is also the reason why we use istio.io/tools/cmd/protoc-gen-deepcopy within the code
 // generation, to generate the deepcopy function, which are required to use the Application within a CRD.
@@ -14,6 +16,7 @@ message Application {
   string name = 3;
   Details details = 4;
   repeated Resources resources = 5;
+  repeated plugins.Plugin plugins = 6;
 }
 
 // Details contains some details for the Application, which are set by the user in the Custom Resource. Each Application

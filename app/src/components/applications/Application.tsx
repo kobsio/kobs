@@ -9,12 +9,12 @@ import {
   PageSectionVariants,
   Spinner,
 } from '@patternfly/react-core';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import ApplicationTabsContent, { IMountedTabs } from 'components/applications/ApplicationTabsContent';
 import { ClustersPromiseClient, GetApplicationRequest, GetApplicationResponse } from 'proto/clusters_grpc_web_pb';
 import ApplicationTabs from 'components/applications/ApplicationTabs';
-import ApplicationTabsContent from 'components/applications/ApplicationTabsContent';
 import { Application as IApplication } from 'proto/application_pb';
 import Title from 'components/Title';
 import { apiURL } from 'utils/constants';
@@ -30,6 +30,7 @@ interface IApplicationsParams {
   namespace: string;
   name: string;
 }
+
 // clustersService is the Clusters gRPC service, which is used to get an application.
 const clustersService = new ClustersPromiseClient(apiURL, null, null);
 
@@ -39,8 +40,21 @@ const Application: React.FunctionComponent = () => {
   const [data, setData] = useState<IDataState>({ application: undefined, error: '', isLoading: true });
 
   const [activeTab, setActiveTab] = useState<string>('resources');
+  const [mountedTabs, setMountedTabs] = useState<IMountedTabs>({});
   const refResourcesContent = useRef<HTMLElement>(null);
+  const [refPluginsContent, setRefPluginsContent] = useState<React.RefObject<HTMLElement>[] | undefined>(
+    data.application ? data.application.pluginsList.map(() => createRef<HTMLElement>()) : undefined,
+  );
 
+  // changeActiveTab sets the active tab and adds the name of the selected tab to the mountedTabs object. This object is
+  // used to only load data, when a component is mounted the first time.
+  const changeActiveTab = (tab: string): void => {
+    setActiveTab(tab);
+    setMountedTabs({ ...mountedTabs, [tab]: true });
+  };
+
+  // fetchApplication fetches a single application by the provided cluster, namespace and name. These properties are
+  // provided via parameters in the current URL.
   const fetchApplication = useCallback(async () => {
     try {
       setData({ application: undefined, error: '', isLoading: true });
@@ -64,6 +78,14 @@ const Application: React.FunctionComponent = () => {
   useEffect(() => {
     fetchApplication();
   }, [fetchApplication]);
+
+  // Since the application isn't defined on the first rendering of this component, we have to create the references for
+  // the plugin tabs each time the application is updated.
+  useEffect(() => {
+    if (data.application) {
+      setRefPluginsContent(data.application.pluginsList.map(() => createRef<HTMLElement>()));
+    }
+  }, [data.application]);
 
   if (data.isLoading) {
     return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
@@ -109,14 +131,23 @@ const Application: React.FunctionComponent = () => {
             </List>
           </div>
         ) : null}
-        <ApplicationTabs activeTab={activeTab} setTab={setActiveTab} refResourcesContent={refResourcesContent} />
+
+        <ApplicationTabs
+          activeTab={activeTab}
+          setTab={changeActiveTab}
+          plugins={data.application.pluginsList}
+          refResourcesContent={refResourcesContent}
+          refPluginsContent={refPluginsContent}
+        />
       </PageSection>
 
       <ApplicationTabsContent
         application={data.application}
         activeTab={activeTab}
+        mountedTabs={mountedTabs}
         isInDrawer={false}
         refResourcesContent={refResourcesContent}
+        refPluginsContent={refPluginsContent}
       />
     </React.Fragment>
   );

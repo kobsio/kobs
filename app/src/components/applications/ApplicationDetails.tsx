@@ -8,12 +8,12 @@ import {
   ListItem,
   ListVariant,
 } from '@patternfly/react-core';
-import React, { useRef, useState } from 'react';
+import React, { createRef, useEffect, useRef, useState } from 'react';
 
+import ApplicationTabsContent, { IMountedTabs } from 'components/applications/ApplicationTabsContent';
 import { Application } from 'proto/application_pb';
 import ApplicationDetailsLink from 'components/applications/ApplicationDetailsLink';
 import ApplicationTabs from 'components/applications/ApplicationTabs';
-import ApplicationTabsContent from 'components/applications/ApplicationTabsContent';
 import Title from 'components/Title';
 
 interface IApplicationDetailsProps {
@@ -27,7 +27,22 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
   close,
 }: IApplicationDetailsProps) => {
   const [activeTab, setActiveTab] = useState<string>('resources');
+  const [mountedTabs, setMountedTabs] = useState<IMountedTabs>({});
   const refResourcesContent = useRef<HTMLElement>(null);
+  const [refPluginsContent, setRefPluginsContent] = useState<React.RefObject<HTMLElement>[]>(
+    application.pluginsList.map(() => createRef<HTMLElement>()),
+  );
+
+  // changeActiveTab sets the active tab and adds the name of the selected tab to the mountedTabs object. This object is
+  // used to only load data, when a component is mounted the first time.
+  const changeActiveTab = (tab: string): void => {
+    setActiveTab(tab);
+    setMountedTabs({ ...mountedTabs, [tab]: true });
+  };
+
+  useEffect(() => {
+    setRefPluginsContent(application.pluginsList.map(() => createRef<HTMLElement>()));
+  }, [application.pluginsList]);
 
   return (
     <DrawerPanelContent minSize="50%">
@@ -57,12 +72,22 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
             </List>
           </div>
         ) : null}
-        <ApplicationTabs activeTab={activeTab} setTab={setActiveTab} refResourcesContent={refResourcesContent} />
+
+        <ApplicationTabs
+          activeTab={activeTab}
+          setTab={changeActiveTab}
+          plugins={application.pluginsList}
+          refResourcesContent={refResourcesContent}
+          refPluginsContent={refPluginsContent}
+        />
+
         <ApplicationTabsContent
           application={application}
           activeTab={activeTab}
+          mountedTabs={mountedTabs}
           isInDrawer={true}
           refResourcesContent={refResourcesContent}
+          refPluginsContent={refPluginsContent}
         />
       </DrawerPanelBody>
     </DrawerPanelContent>

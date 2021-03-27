@@ -1,0 +1,51 @@
+syntax = "proto3";
+package plugins.elasticsearch;
+
+option go_package = "github.com/kobsio/kobs/pkg/api/plugins/elasticsearch/proto";
+
+// Elasticsearch service to get logs from a configured Elasticsearch instance.
+service Elasticsearch {
+  rpc GetLogs(GetLogsRequest) returns (GetLogsResponse) {}
+}
+
+// GetLogsRequest is the structure of a call to get the logs for a query. It must contain the name of the datasource,
+// an optional scroll id, which can be used for pagination, the time range and a query.
+message GetLogsRequest {
+  string name = 1;
+  string scrollID = 2;
+  int64 timeStart = 3;
+  int64 timeEnd = 4;
+  Query query = 5;
+}
+
+// GetLogsResponse is the response for a GetLogs call. It contains the hits (number of documentes), the time, which was
+// needed to execute the query and a scroll id for pagination. It also contains all logs as single string, which must
+// be parsed in the frontend and a list of buckets, to visulize the distribution of the logs in the selected time range.
+message GetLogsResponse {
+  string scrollID = 1;
+  int64 hits = 2;
+  int64 took = 3;
+  string logs = 4;
+  repeated Bucket buckets = 5;
+}
+
+// Bucket is one bucket for the logs bar chart. Each bucket must contain a timestamp (x value) and the number of log
+// lines for this timestamp (y value).
+message Bucket {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+// Spec implements the specification for an application. This field is then used in the Application CR and contains, all
+// possible fields, which can be used by a user to work with their logs in Elasticsaerch.
+message Spec {
+  repeated Query queries = 2;
+}
+
+// Query represents a single query for an application. A query is identified by a name, a query and a list of fields,
+// which should be shown in the results table. If the fields list is empty, we show the complete document in the table.
+message Query {
+  string name = 1;
+  string query = 2;
+  repeated string fields = 3;
+}

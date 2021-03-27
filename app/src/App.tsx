@@ -11,6 +11,8 @@ import Application from 'components/applications/Application';
 import Applications from 'components/applications/Applications';
 import { ClustersContextProvider } from 'context/ClustersContext';
 import Home from 'components/Home';
+import Plugins from 'components/plugins/PluginPage';
+import { PluginsContextProvider } from 'context/PluginsContext';
 import Resources from 'components/resources/Resources';
 
 import 'app.css';
@@ -23,16 +25,19 @@ const App: React.FunctionComponent = () => {
 
   return (
     <ClustersContextProvider>
-      <Router>
-        <Page header={Header}>
-          <Switch>
-            <Route exact={true} path="/" component={Home} />
-            <Route exact={true} path="/applications" component={Applications} />
-            <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
-            <Route exact={true} path="/resources" component={Resources} />
-          </Switch>
-        </Page>
-      </Router>
+      <PluginsContextProvider>
+        <Router>
+          <Page header={Header}>
+            <Switch>
+              <Route exact={true} path="/" component={Home} />
+              <Route exact={true} path="/applications" component={Applications} />
+              <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
+              <Route exact={true} path="/resources" component={Resources} />
+              <Route exact={true} path="/plugins/:name" component={Plugins} />
+            </Switch>
+          </Page>
+        </Router>
+      </PluginsContextProvider>
     </ClustersContextProvider>
   );
 };

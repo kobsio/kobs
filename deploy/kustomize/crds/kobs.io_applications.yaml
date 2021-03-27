@@ -68,6 +68,121 @@ spec:
               type: string
             namespace:
               type: string
+            plugins:
+              items:
+                description: Plugin is the plugin formate, which can be used within
+                  the Application CR. Each plugin requires a name. The plugin specific
+                  fields like "prometheus", "elasticsearch" and "jaeger" are mutually
+                  exclusive and containing the data, which is needed to use the plugin
+                  within a Application CR.
+                properties:
+                  elasticsearch:
+                    description: Spec implements the specification for an application.
+                      This field is then used in the Application CR and contains,
+                      all possible fields, which can be used by a user to work with
+                      their logs in Elasticsaerch.
+                    properties:
+                      queries:
+                        items:
+                          description: Query represents a single query for an application.
+                            A query is identified by a name, a query and a list of
+                            fields, which should be shown in the results table. If
+                            the fields list is empty, we show the complete document
+                            in the table.
+                          properties:
+                            fields:
+                              items:
+                                type: string
+                              type: array
+                            name:
+                              type: string
+                            query:
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  name:
+                    type: string
+                  prometheus:
+                    description: Spec implements the specification for an application.
+                      This field is then used in the Application CR and contains,
+                      all possible fields, which can be used by a user to work with
+                      variables and charts for their data in Prometheus.
+                    properties:
+                      charts:
+                        items:
+                          description: Chart represents a chart for the metrics view.
+                            A chart must contain a title, a type (line, area,  bar
+                            chart, etc.). It can also contain a unit for the y axis.
+                            If the stacked option is set to true all series for the
+                            chart will be stacked. The size parameter can be used
+                            to define the width of a chart for large screens. We are
+                            using a 12 column grid to display the charts, so the number
+                            must be between 1 and 12. The last option is a list of
+                            queries, which are executed against the datasource (e.g.
+                            For Prometheus this will be a list of PromQL queries).
+                          properties:
+                            queries:
+                              items:
+                                description: Query presents a single query to get
+                                  the data, which should be shown in the chart for
+                                  the metrics section. A query consists of a query
+                                  string (e.g. PromQL) and a lable. The query and
+                                  the label can contain variables via Go templating
+                                  syntax (e.g. {{ .VARIABLE-NAME }}). For Prometheus
+                                  the label can also contain a label from the returned
+                                  series with the same syntax (e.g. {{ .SERIES-LABEL
+                                  }}).
+                                properties:
+                                  label:
+                                    type: string
+                                  query:
+                                    type: string
+                                type: object
+                              type: array
+                            size:
+                              format: int64
+                              type: integer
+                            stacked:
+                              type: boolean
+                            title:
+                              type: string
+                            type:
+                              type: string
+                            unit:
+                              type: string
+                          type: object
+                        type: array
+                      variables:
+                        items:
+                          description: Variable specifies a variable, which can be
+                            used within the charts. A variable must contain a name,
+                            a label and a query. It also can set the allowAll field
+                            to true, which will include an "All" option in the variables
+                            values. The values and value field must not be provided
+                            by the user. These fields will be set by the GetVariables
+                            call. If a user provide a "value", we will try to use
+                            it as the selected value.
+                          properties:
+                            allowAll:
+                              type: boolean
+                            label:
+                              type: string
+                            name:
+                              type: string
+                            query:
+                              type: string
+                            value:
+                              type: string
+                            values:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        type: array
+                    type: object
+                type: object
+              type: array
             resources:
               items:
                 description: Resources is a list of resources, which can be associated

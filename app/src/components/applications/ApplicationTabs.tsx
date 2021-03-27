@@ -1,19 +1,25 @@
 import { Tab, TabTitleText, Tabs } from '@patternfly/react-core';
 import React from 'react';
 
-interface IApplicationTabsParams {
+import { Plugin } from 'proto/plugins_pb';
+
+interface IApplicationTabsProps {
   activeTab: string;
   setTab(tab: string): void;
+  plugins: Plugin.AsObject[];
   refResourcesContent: React.RefObject<HTMLElement>;
+  refPluginsContent: React.RefObject<HTMLElement>[] | undefined;
 }
 
 // ApplicationTabs is the component to render all tabs for an application. An application always contains a tab for
 // resources and a dynamic list of plugins.
-const ApplicationTabs: React.FunctionComponent<IApplicationTabsParams> = ({
+const ApplicationTabs: React.FunctionComponent<IApplicationTabsProps> = ({
   activeTab,
   setTab,
+  plugins,
   refResourcesContent,
-}: IApplicationTabsParams) => {
+  refPluginsContent,
+}: IApplicationTabsProps) => {
   return (
     <Tabs
       className="pf-u-mt-md"
@@ -27,6 +33,16 @@ const ApplicationTabs: React.FunctionComponent<IApplicationTabsParams> = ({
         tabContentId="refResources"
         tabContentRef={refResourcesContent}
       />
+
+      {plugins.map((plugin, index) => (
+        <Tab
+          key={index}
+          eventKey={`refPlugin-${index}`}
+          title={<TabTitleText>{plugin.name}</TabTitleText>}
+          tabContentId={`refPlugin-${index}`}
+          tabContentRef={refPluginsContent ? refPluginsContent[index] : undefined}
+        />
+      ))}
     </Tabs>
   );
 };
