@@ -5,6 +5,7 @@ option go_package = "github.com/kobsio/kobs/pkg/api/plugins/plugins/proto";
 
 import "prometheus.proto";
 import "elasticsearch.proto";
+import "jaeger.proto";
 
 // Plugins is the service to get all configured and loaded plugins.
 service Plugins {
@@ -35,4 +36,5 @@ message Plugin {
   string name = 1;
   prometheus.Spec prometheus = 2;
   elasticsearch.Spec elasticsearch = 3;
+  jaeger.Spec jaeger = 4;
 }

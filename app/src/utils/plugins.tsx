@@ -2,10 +2,12 @@ import React from 'react';
 
 import ElasticsearchPage from 'plugins/elasticsearch/ElasticsearchPage';
 import ElasticsearchPlugin from 'plugins/elasticsearch/ElasticsearchPlugin';
+import JaegerPage from 'plugins/jaeger/JaegerPage';
+import JaegerPlugin from 'plugins/jaeger/JaegerPlugin';
 import PrometheusPage from 'plugins/prometheus/PrometheusPage';
 import PrometheusPlugin from 'plugins/prometheus/PrometheusPlugin';
 
-import { Plugin as IProtoPlugin } from 'proto/plugins_pb';
+import { Plugin as IProtoPlugin } from 'proto/plugins_grpc_web_pb';
 
 // IPluginPageProps is the interface for the properties, which are passed to the page implementation of a plugin. This
 // is the name and the description of the plugin.
@@ -43,6 +45,10 @@ export const plugins: IPlugins = {
   elasticsearch: {
     page: ElasticsearchPage,
     plugin: ElasticsearchPlugin,
+  },
+  jaeger: {
+    page: JaegerPage,
+    plugin: JaegerPlugin,
   },
   prometheus: {
     page: PrometheusPage,

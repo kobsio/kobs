@@ -17,7 +17,7 @@ const Title: React.FunctionComponent<ITitleProps> = ({ title, subtitle, size }: 
   return (
     <span>
       <span className={`pf-c-title pf-m-${size}`}>{title}</span>
-      <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-200">{subtitle}</span>
+      <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{subtitle}</span>
     </span>
   );
 };

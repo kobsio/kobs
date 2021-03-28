@@ -6,6 +6,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters"
 	"github.com/kobsio/kobs/pkg/api/plugins/elasticsearch"
+	"github.com/kobsio/kobs/pkg/api/plugins/jaeger"
 	"github.com/kobsio/kobs/pkg/api/plugins/prometheus"
 
 	"gopkg.in/yaml.v2"
@@ -16,6 +17,7 @@ type Config struct {
 	Clusters      clusters.Config        `yaml:"clusters"`
 	Prometheus    []prometheus.Config    `yaml:"prometheus"`
 	Elasticsearch []elasticsearch.Config `yaml:"elasticsearch"`
+	Jaeger        []jaeger.Config        `yaml:"jaeger"`
 }
 
 // Load the configuration for kobs. Most of the configuration options are available as command-line flag, but we also

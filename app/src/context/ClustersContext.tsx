@@ -1,9 +1,14 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { GetCRDsRequest, GetCRDsResponse, GetClustersRequest, GetClustersResponse } from 'proto/clusters_pb';
+import {
+  ClustersPromiseClient,
+  GetCRDsRequest,
+  GetCRDsResponse,
+  GetClustersRequest,
+  GetClustersResponse,
+} from 'proto/clusters_grpc_web_pb';
 import { IResources, customResourceDefinition } from 'utils/resources';
-import { ClustersPromiseClient } from 'proto/clusters_grpc_web_pb';
 import { apiURL } from 'utils/constants';
 
 // clustersService is the Clusters gRPC service, which is used to get all clusters and Custom Resource Definitions.

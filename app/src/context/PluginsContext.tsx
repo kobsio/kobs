@@ -1,8 +1,7 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { GetPluginsRequest, GetPluginsResponse, PluginShort } from 'proto/plugins_pb';
-import { PluginsPromiseClient } from 'proto/plugins_grpc_web_pb';
+import { GetPluginsRequest, GetPluginsResponse, PluginShort, PluginsPromiseClient } from 'proto/plugins_grpc_web_pb';
 import { apiURL } from 'utils/constants';
 
 // pluginsService is the Plugins gRPC service, which is used to get all configured plugins.

@@ -21,9 +21,9 @@ elasticsearch:
     token:
 
 jaeger:
-  - name:
-    description:
-    address:
+  - name: Jaeger
+    description: Jaeger can be used for the traces of your application.
+    address: http://localhost:16686
     username:
     password:
     token:

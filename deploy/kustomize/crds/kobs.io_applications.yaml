@@ -101,6 +101,22 @@ spec:
                           type: object
                         type: array
                     type: object
+                  jaeger:
+                    properties:
+                      queries:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                            operation:
+                              type: string
+                            service:
+                              type: string
+                            tags:
+                              type: string
+                          type: object
+                        type: array
+                    type: object
                   name:
                     type: string
                   prometheus:

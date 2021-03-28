@@ -33,7 +33,7 @@ const App: React.FunctionComponent = () => {
               <Route exact={true} path="/applications" component={Applications} />
               <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
               <Route exact={true} path="/resources" component={Resources} />
-              <Route exact={true} path="/plugins/:name" component={Plugins} />
+              <Route exact={false} path="/plugins/:name" component={Plugins} />
             </Switch>
           </Page>
         </Router>
