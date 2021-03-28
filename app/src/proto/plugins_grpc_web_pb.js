@@ -19,6 +19,8 @@ grpc.web = require('grpc-web');
 var prometheus_pb = require('./prometheus_pb.js')
 
 var elasticsearch_pb = require('./elasticsearch_pb.js')
+
+var jaeger_pb = require('./jaeger_pb.js')
 const proto = {};
 proto.plugins = require('./plugins_pb.js');
 

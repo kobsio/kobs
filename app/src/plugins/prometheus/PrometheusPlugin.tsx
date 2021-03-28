@@ -1,6 +1,5 @@
 import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
 import React, { useCallback, useEffect, useState } from 'react';
-import ChartAreaIcon from '@patternfly/react-icons/dist/js/icons/chart-area-icon';
 
 import {
   GetVariablesRequest,
@@ -87,7 +86,7 @@ const PrometheusPlugin: React.FunctionComponent<IPluginProps> = ({
         title="Prometheus properties are missing"
         description="The Prometheus properties are missing in your CR for this application. Visit the documentation to learn more on how to use the Prometheus plugin in an Application CR."
         documentation="https://kobs.io"
-        icon={ChartAreaIcon}
+        type="prometheus"
       />
     );
   }

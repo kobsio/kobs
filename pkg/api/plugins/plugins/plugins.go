@@ -6,6 +6,7 @@ import (
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters"
 	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
 	"github.com/kobsio/kobs/pkg/api/plugins/elasticsearch"
+	"github.com/kobsio/kobs/pkg/api/plugins/jaeger"
 	pluginsProto "github.com/kobsio/kobs/pkg/api/plugins/plugins/proto"
 	"github.com/kobsio/kobs/pkg/api/plugins/prometheus"
 	"github.com/kobsio/kobs/pkg/config"
@@ -62,9 +63,16 @@ func Register(cfg *config.Config, grpcServer *grpc.Server) error {
 		return err
 	}
 
+	jaegerInstances, err := jaeger.Register(cfg.Jaeger, grpcServer)
+	if err != nil {
+		log.WithError(err).WithFields(logrus.Fields{"plugin": "jaeger"}).Errorf("Failed to register Jaeger plugin.")
+		return err
+	}
+
 	var plugins []*pluginsProto.PluginShort
 	plugins = append(plugins, prometheusInstances...)
 	plugins = append(plugins, elasticsearchInstances...)
+	plugins = append(plugins, jaegerInstances...)
 
 	pluginsProto.RegisterPluginsServer(grpcServer, &Plugins{
 		plugins: plugins,

@@ -1,12 +1,11 @@
-import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, Title } from '@patternfly/react-core';
+import { Brand, Button, EmptyState, EmptyStateBody, EmptyStateIcon, Title } from '@patternfly/react-core';
 import React from 'react';
 
 interface IPluginDataMissingProps {
   title: string;
   description: string;
   documentation: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: React.ComponentType<any>;
+  type: string;
 }
 
 // PluginDataMissing is the component, which is displayed when the user defines a plugin in an Application CR, but the
@@ -15,12 +14,16 @@ interface IPluginDataMissingProps {
 const PluginDataMissing: React.FunctionComponent<IPluginDataMissingProps> = ({
   title,
   description,
-  icon,
   documentation,
+  type,
 }: IPluginDataMissingProps) => {
+  const PluginIcon: React.FunctionComponent = () => {
+    return <Brand src={`/img/plugins/${type}.png`} alt="Logo" width="128px" />;
+  };
+
   return (
     <EmptyState>
-      <EmptyStateIcon icon={icon} />
+      <EmptyStateIcon variant="container" component={PluginIcon} />
       <Title headingLevel="h4" size="lg">
         {title}
       </Title>

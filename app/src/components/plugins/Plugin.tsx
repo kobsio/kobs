@@ -2,7 +2,7 @@ import { Alert, AlertVariant } from '@patternfly/react-core';
 import React, { useContext } from 'react';
 
 import { IPluginsContext, PluginsContext } from 'context/PluginsContext';
-import { Plugin as IPlugin } from 'proto/plugins_pb';
+import { Plugin as IPlugin } from 'proto/plugins_grpc_web_pb';
 import { plugins } from 'utils/plugins';
 
 interface IPluginProps {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ListIcon from '@patternfly/react-icons/dist/js/icons/list-icon';
 
 import ElasticsearchLogs from 'plugins/elasticsearch/ElasticsearchLogs';
 import ElasticsearchPluginToolbar from 'plugins/elasticsearch/ElasticsearchPluginToolbar';
@@ -45,7 +44,7 @@ const ElasticsearchPlugin: React.FunctionComponent<IPluginProps> = ({
         title="Elasticsearch properties are missing"
         description="The Elasticsearch properties are missing in your CR for this application. Visit the documentation to learn more on how to use the Elasticsearch plugin in an Application CR."
         documentation="https://kobs.io"
-        icon={ListIcon}
+        type="elasticsearch"
       />
     );
   }

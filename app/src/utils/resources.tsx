@@ -13,7 +13,7 @@ import { JSONPath } from 'jsonpath-plus';
 import React from 'react';
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
-import { CRD, Resources as ProtoResources } from 'proto/clusters_pb';
+import { CRD, Resources as ProtoResources } from 'proto/clusters_grpc_web_pb';
 import { timeDifference } from 'utils/helpers';
 
 // TScope is the scope of a resource, which can be namespaced or cluster.

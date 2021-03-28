@@ -1,7 +1,7 @@
 import { Tab, TabTitleText, Tabs } from '@patternfly/react-core';
 import React from 'react';
 
-import { Plugin } from 'proto/plugins_pb';
+import { Plugin } from 'proto/plugins_grpc_web_pb';
 
 interface IApplicationTabsProps {
   activeTab: string;

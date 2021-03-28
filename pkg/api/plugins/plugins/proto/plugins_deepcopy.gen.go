@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
 	_ "github.com/kobsio/kobs/pkg/api/plugins/elasticsearch/proto"
+	_ "github.com/kobsio/kobs/pkg/api/plugins/jaeger/proto"
 	_ "github.com/kobsio/kobs/pkg/api/plugins/prometheus/proto"
 	math "math"
 )
