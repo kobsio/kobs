@@ -1,5 +1,5 @@
 import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 
 import { ClustersPromiseClient, GetResourcesRequest, GetResourcesResponse } from 'proto/clusters_grpc_web_pb';
 import { IResource, emptyState } from 'utils/resources';
@@ -77,4 +77,6 @@ const ResourcesListItem: React.FunctionComponent<IResourcesListItemProps> = ({
   );
 };
 
-export default ResourcesListItem;
+export default memo(ResourcesListItem, () => {
+  return true;
+});
