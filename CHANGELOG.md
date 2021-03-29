@@ -16,6 +16,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#10](https://github.com/kobsio/kobs/pull/10): Add Elasticsearch as datasource for Application logs.
 - [#12](https://github.com/kobsio/kobs/pull/12): :warning: *Breaking change:* :warning: Add plugin system and readd Prometheus and Elasticsearch as plugins.
 - [#13](https://github.com/kobsio/kobs/pull/13): Add Jaeger plugin to show traces for an Application and to compare traces.
+- [#16](https://github.com/kobsio/kobs/pull/16): Add support for multiple queries in the Prometheus plugin page.
 
 ### Fixed
 

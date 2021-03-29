@@ -131,7 +131,7 @@ const PrometheusPage: React.FunctionComponent<IPluginPageProps> = ({ name, descr
             <p>{data.error}</p>
           </Alert>
         ) : (
-          <PrometheusPageData metrics={data.metrics} />
+          <PrometheusPageData metrics={data.metrics} queries={options.queries} />
         )}
       </PageSection>
     </React.Fragment>

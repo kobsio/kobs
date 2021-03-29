@@ -15,6 +15,7 @@ import PrometheusChartDefault from 'plugins/prometheus/PrometheusChartDefault';
 
 interface IPrometheusPageDataProps {
   metrics: Metrics.AsObject[];
+  queries: string[];
 }
 
 // PrometheusPageData is used to render the fetched metrics, for the user provided queries. By default the corresponding
@@ -22,6 +23,7 @@ interface IPrometheusPageDataProps {
 // metrics. A user can also decided, how he wants to see his data: As line vs. area chart or unstacked vs. stacked.
 const PrometheusPageData: React.FunctionComponent<IPrometheusPageDataProps> = ({
   metrics,
+  queries,
 }: IPrometheusPageDataProps) => {
   const [type, setType] = useState<string>('line');
   const [stacked, setStacked] = useState<boolean>(false);
@@ -79,7 +81,7 @@ const PrometheusPageData: React.FunctionComponent<IPrometheusPageDataProps> = ({
               onClick={(): void => select(metric)}
               isActive={selectedMetrics.length === 1 && selectedMetrics[0].label === metric.label}
             >
-              {metric.label}
+              {metric.label === '{}' && metrics.length === queries.length ? queries[index] : metric.label}
               <span style={{ float: 'right' }}>{metric.dataList[metric.dataList.length - 1].y}</span>
             </SimpleListItem>
           ))}
