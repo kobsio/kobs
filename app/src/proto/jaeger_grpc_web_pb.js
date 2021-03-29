@@ -74,6 +74,86 @@ proto.plugins.jaeger.JaegerPromiseClient =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.plugins.jaeger.GetServicesRequest,
+ *   !proto.plugins.jaeger.GetServicesResponse>}
+ */
+const methodDescriptor_Jaeger_GetServices = new grpc.web.MethodDescriptor(
+  '/plugins.jaeger.Jaeger/GetServices',
+  grpc.web.MethodType.UNARY,
+  proto.plugins.jaeger.GetServicesRequest,
+  proto.plugins.jaeger.GetServicesResponse,
+  /**
+   * @param {!proto.plugins.jaeger.GetServicesRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.jaeger.GetServicesResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.plugins.jaeger.GetServicesRequest,
+ *   !proto.plugins.jaeger.GetServicesResponse>}
+ */
+const methodInfo_Jaeger_GetServices = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.plugins.jaeger.GetServicesResponse,
+  /**
+   * @param {!proto.plugins.jaeger.GetServicesRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.jaeger.GetServicesResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.plugins.jaeger.GetServicesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.plugins.jaeger.GetServicesResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.plugins.jaeger.GetServicesResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.plugins.jaeger.JaegerClient.prototype.getServices =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/plugins.jaeger.Jaeger/GetServices',
+      request,
+      metadata || {},
+      methodDescriptor_Jaeger_GetServices,
+      callback);
+};
+
+
+/**
+ * @param {!proto.plugins.jaeger.GetServicesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.plugins.jaeger.GetServicesResponse>}
+ *     Promise that resolves to the response
+ */
+proto.plugins.jaeger.JaegerPromiseClient.prototype.getServices =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/plugins.jaeger.Jaeger/GetServices',
+      request,
+      metadata || {},
+      methodDescriptor_Jaeger_GetServices);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.plugins.jaeger.GetOperationsRequest,
  *   !proto.plugins.jaeger.GetOperationsResponse>}
  */

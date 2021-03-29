@@ -5,9 +5,18 @@ option go_package = "github.com/kobsio/kobs/pkg/api/plugins/jaeger/proto";
 
 // Jaeger is the service to get traces from a configured Jaeger instance.
 service Jaeger {
+  rpc GetServices(GetServicesRequest) returns (GetServicesResponse) {}
   rpc GetOperations(GetOperationsRequest) returns (GetOperationsResponse) {}
   rpc GetTraces(GetTracesRequest) returns (GetTracesResponse) {}
   rpc GetTrace(GetTraceRequest) returns (GetTraceResponse) {}
+}
+
+message GetServicesRequest {
+  string name = 1;
+}
+
+message GetServicesResponse {
+  repeated string services = 1;
 }
 
 message GetOperationsRequest {
@@ -16,7 +25,6 @@ message GetOperationsRequest {
 }
 
 message GetOperationsResponse {
-  repeated string services = 1;
   repeated Operation operations = 2;
 }
 

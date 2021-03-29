@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JaegerClient interface {
+	GetServices(ctx context.Context, in *GetServicesRequest, opts ...grpc.CallOption) (*GetServicesResponse, error)
 	GetOperations(ctx context.Context, in *GetOperationsRequest, opts ...grpc.CallOption) (*GetOperationsResponse, error)
 	GetTraces(ctx context.Context, in *GetTracesRequest, opts ...grpc.CallOption) (*GetTracesResponse, error)
 	GetTrace(ctx context.Context, in *GetTraceRequest, opts ...grpc.CallOption) (*GetTraceResponse, error)
@@ -29,6 +30,15 @@ type jaegerClient struct {
 
 func NewJaegerClient(cc grpc.ClientConnInterface) JaegerClient {
 	return &jaegerClient{cc}
+}
+
+func (c *jaegerClient) GetServices(ctx context.Context, in *GetServicesRequest, opts ...grpc.CallOption) (*GetServicesResponse, error) {
+	out := new(GetServicesResponse)
+	err := c.cc.Invoke(ctx, "/plugins.jaeger.Jaeger/GetServices", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *jaegerClient) GetOperations(ctx context.Context, in *GetOperationsRequest, opts ...grpc.CallOption) (*GetOperationsResponse, error) {
@@ -62,6 +72,7 @@ func (c *jaegerClient) GetTrace(ctx context.Context, in *GetTraceRequest, opts .
 // All implementations must embed UnimplementedJaegerServer
 // for forward compatibility
 type JaegerServer interface {
+	GetServices(context.Context, *GetServicesRequest) (*GetServicesResponse, error)
 	GetOperations(context.Context, *GetOperationsRequest) (*GetOperationsResponse, error)
 	GetTraces(context.Context, *GetTracesRequest) (*GetTracesResponse, error)
 	GetTrace(context.Context, *GetTraceRequest) (*GetTraceResponse, error)
@@ -72,6 +83,9 @@ type JaegerServer interface {
 type UnimplementedJaegerServer struct {
 }
 
+func (UnimplementedJaegerServer) GetServices(context.Context, *GetServicesRequest) (*GetServicesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServices not implemented")
+}
 func (UnimplementedJaegerServer) GetOperations(context.Context, *GetOperationsRequest) (*GetOperationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOperations not implemented")
 }
@@ -92,6 +106,24 @@ type UnsafeJaegerServer interface {
 
 func RegisterJaegerServer(s grpc.ServiceRegistrar, srv JaegerServer) {
 	s.RegisterService(&Jaeger_ServiceDesc, srv)
+}
+
+func _Jaeger_GetServices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServicesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JaegerServer).GetServices(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/plugins.jaeger.Jaeger/GetServices",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JaegerServer).GetServices(ctx, req.(*GetServicesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Jaeger_GetOperations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -155,6 +187,10 @@ var Jaeger_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "plugins.jaeger.Jaeger",
 	HandlerType: (*JaegerServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetServices",
+			Handler:    _Jaeger_GetServices_Handler,
+		},
 		{
 			MethodName: "GetOperations",
 			Handler:    _Jaeger_GetOperations_Handler,

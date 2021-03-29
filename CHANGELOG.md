@@ -21,6 +21,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#1](https://github.com/kobsio/kobs/pull/1): Fix mobile layout for the cluster and namespace filter by using a Toolbar instead of FlexItems.
 - [#9](https://github.com/kobsio/kobs/pull/9): Fix time parsing for the datasource options.
+- [#14](https://github.com/kobsio/kobs/pull/14): Fix loading of Jaeger services, when a user opend the Jaeger plugin, where the `service` query parameter was already present.
 
 ### Changed
 

@@ -4,6 +4,15 @@
 import * as jaeger_pb from "./jaeger_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
+type JaegerGetServices = {
+  readonly methodName: string;
+  readonly service: typeof Jaeger;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof jaeger_pb.GetServicesRequest;
+  readonly responseType: typeof jaeger_pb.GetServicesResponse;
+};
+
 type JaegerGetOperations = {
   readonly methodName: string;
   readonly service: typeof Jaeger;
@@ -33,6 +42,7 @@ type JaegerGetTrace = {
 
 export class Jaeger {
   static readonly serviceName: string;
+  static readonly GetServices: JaegerGetServices;
   static readonly GetOperations: JaegerGetOperations;
   static readonly GetTraces: JaegerGetTraces;
   static readonly GetTrace: JaegerGetTrace;
@@ -70,6 +80,15 @@ export class JaegerClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
+  getServices(
+    requestMessage: jaeger_pb.GetServicesRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: jaeger_pb.GetServicesResponse|null) => void
+  ): UnaryResponse;
+  getServices(
+    requestMessage: jaeger_pb.GetServicesRequest,
+    callback: (error: ServiceError|null, responseMessage: jaeger_pb.GetServicesResponse|null) => void
+  ): UnaryResponse;
   getOperations(
     requestMessage: jaeger_pb.GetOperationsRequest,
     metadata: grpc.Metadata,
