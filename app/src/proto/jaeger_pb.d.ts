@@ -3,6 +3,48 @@
 
 import * as jspb from "google-protobuf";
 
+export class GetServicesRequest extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetServicesRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetServicesRequest): GetServicesRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetServicesRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetServicesRequest;
+  static deserializeBinaryFromReader(message: GetServicesRequest, reader: jspb.BinaryReader): GetServicesRequest;
+}
+
+export namespace GetServicesRequest {
+  export type AsObject = {
+    name: string,
+  }
+}
+
+export class GetServicesResponse extends jspb.Message {
+  clearServicesList(): void;
+  getServicesList(): Array<string>;
+  setServicesList(value: Array<string>): void;
+  addServices(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetServicesResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetServicesResponse): GetServicesResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetServicesResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetServicesResponse;
+  static deserializeBinaryFromReader(message: GetServicesResponse, reader: jspb.BinaryReader): GetServicesResponse;
+}
+
+export namespace GetServicesResponse {
+  export type AsObject = {
+    servicesList: Array<string>,
+  }
+}
+
 export class GetOperationsRequest extends jspb.Message {
   getName(): string;
   setName(value: string): void;
@@ -28,11 +70,6 @@ export namespace GetOperationsRequest {
 }
 
 export class GetOperationsResponse extends jspb.Message {
-  clearServicesList(): void;
-  getServicesList(): Array<string>;
-  setServicesList(value: Array<string>): void;
-  addServices(value: string, index?: number): string;
-
   clearOperationsList(): void;
   getOperationsList(): Array<Operation>;
   setOperationsList(value: Array<Operation>): void;
@@ -50,7 +87,6 @@ export class GetOperationsResponse extends jspb.Message {
 
 export namespace GetOperationsResponse {
   export type AsObject = {
-    servicesList: Array<string>,
     operationsList: Array<Operation.AsObject>,
   }
 }

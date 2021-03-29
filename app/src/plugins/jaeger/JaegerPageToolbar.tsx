@@ -15,7 +15,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
-import { GetOperationsRequest, GetOperationsResponse, JaegerPromiseClient } from 'proto/jaeger_grpc_web_pb';
+import {
+  GetOperationsRequest,
+  GetOperationsResponse,
+  GetServicesRequest,
+  GetServicesResponse,
+  JaegerPromiseClient,
+} from 'proto/jaeger_grpc_web_pb';
 import Options, { IAdditionalFields } from 'components/Options';
 import { IJaegerOptions } from 'plugins/jaeger/helpers';
 import JaegerPageToolbarSelect from 'plugins/jaeger/JaegerPageToolbarSelect';
@@ -82,23 +88,36 @@ const JaegerPageToolbar: React.FunctionComponent<IJaegerPageToolbarProps> = ({
     }
   };
 
-  // fetchOperations is used to retrieve the operations for the given service or if no service is specified also a list
-  // of services.
+  // fetchServices is used to retrieve the services from Jaeger.
+  const fetchServices = useCallback(async (): Promise<void> => {
+    try {
+      const getServicesRequest = new GetServicesRequest();
+      getServicesRequest.setName(name);
+
+      const getServicesResponse: GetServicesResponse = await jaegerService.getServices(getServicesRequest, null);
+      const { servicesList } = getServicesResponse.toObject();
+
+      setData({ error: '', operations: [], services: servicesList });
+    } catch (err) {
+      setData({ error: err.message, operations: [], services: [] });
+    }
+  }, [name]);
+
+  // fetchOperations is used to retrieve the operations for the given service. We only can fetch the operations, when a
+  // user has selected an service.
   const fetchOperations = useCallback(async (): Promise<void> => {
     try {
-      const getOperationsRequest = new GetOperationsRequest();
-      getOperationsRequest.setName(name);
-      getOperationsRequest.setService(options.service);
+      if (options.service !== '') {
+        const getOperationsRequest = new GetOperationsRequest();
+        getOperationsRequest.setName(name);
+        getOperationsRequest.setService(options.service);
 
-      const getOperationsResponse: GetOperationsResponse = await jaegerService.getOperations(
-        getOperationsRequest,
-        null,
-      );
-      const { servicesList, operationsList } = getOperationsResponse.toObject();
+        const getOperationsResponse: GetOperationsResponse = await jaegerService.getOperations(
+          getOperationsRequest,
+          null,
+        );
+        const { operationsList } = getOperationsResponse.toObject();
 
-      if (servicesList.length > 0) {
-        setData({ error: '', operations: operationsList.map((operation) => operation.name), services: servicesList });
-      } else {
         setData((d) => {
           return { ...d, error: '', operations: operationsList.map((operation) => operation.name) };
         });
@@ -108,7 +127,12 @@ const JaegerPageToolbar: React.FunctionComponent<IJaegerPageToolbarProps> = ({
     }
   }, [name, options.service]);
 
-  // useEffect is used to call the fetchOperations function everytime the Jaeger the service is changed are changed.
+  // useEffect is used to call the fetchServices function.
+  useEffect(() => {
+    fetchServices();
+  }, [fetchServices]);
+
+  // useEffect is used to call the fetchOperations function everytime the Jaeger service is changed are changed.
   useEffect(() => {
     fetchOperations();
   }, [fetchOperations]);
@@ -137,6 +161,7 @@ const JaegerPageToolbar: React.FunctionComponent<IJaegerPageToolbarProps> = ({
           <ToolbarGroup style={{ width: '100%' }}>
             <ToolbarItem style={{ width: '100%' }}>
               <JaegerPageToolbarSelect
+                isOperations={false}
                 placeholder="Select service"
                 items={data.services}
                 selectedItem={options.service}
@@ -145,10 +170,13 @@ const JaegerPageToolbar: React.FunctionComponent<IJaegerPageToolbarProps> = ({
             </ToolbarItem>
             <ToolbarItem style={{ width: '100%' }}>
               <JaegerPageToolbarSelect
+                isOperations={true}
                 placeholder="Select operation"
                 items={data.operations}
                 selectedItem={options.operation}
-                selectItem={(item: string): void => setOptions({ ...options, operation: item })}
+                selectItem={(item: string): void =>
+                  setOptions({ ...options, operation: item === 'All Operations' ? '' : item })
+                }
               />
             </ToolbarItem>
             <ToolbarItem variant="label">Tags</ToolbarItem>

@@ -28,7 +28,7 @@ const JaegerSpanLogs: React.FunctionComponent<IJaegerSpanLogsProps> = ({ logs }:
             isExpanded={expanded.includes(`logs-accordion-${index}`)}
             id={`resources-toggle-${index}`}
           >
-            {formatTraceTime(log.timestamp)} ()
+            {formatTraceTime(log.timestamp)}
           </AccordionToggle>
           <AccordionContent
             id={`resources-content-${index}`}

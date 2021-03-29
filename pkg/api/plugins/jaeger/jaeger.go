@@ -105,6 +105,36 @@ func (j *Jaeger) getInstace(name string) *Instance {
 	return nil
 }
 
+func (j *Jaeger) GetServices(ctx context.Context, getServicesRequest *jaegerProto.GetServicesRequest) (*jaegerProto.GetServicesResponse, error) {
+	if getServicesRequest == nil {
+		return nil, fmt.Errorf("request data is missing")
+	}
+
+	instance := j.getInstace(getServicesRequest.Name)
+	if instance == nil {
+		return nil, fmt.Errorf("invalid name for Jaeger plugin")
+	}
+
+	log.Tracef("GetServices")
+
+	body, err := instance.doRequest("/api/services")
+	if err != nil {
+		return nil, err
+	}
+
+	var response ResponseDataServices
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	log.WithFields(logrus.Fields{"count": len(response.Data)}).Tracef("GetServices retrieved services")
+
+	return &jaegerProto.GetServicesResponse{
+		Services: response.Data,
+	}, nil
+}
+
 func (j *Jaeger) GetOperations(ctx context.Context, getOperationsRequest *jaegerProto.GetOperationsRequest) (*jaegerProto.GetOperationsResponse, error) {
 	if getOperationsRequest == nil {
 		return nil, fmt.Errorf("request data is missing")
@@ -115,31 +145,13 @@ func (j *Jaeger) GetOperations(ctx context.Context, getOperationsRequest *jaeger
 		return nil, fmt.Errorf("invalid name for Jaeger plugin")
 	}
 
-	log.WithFields(logrus.Fields{"service": getOperationsRequest.Service}).Tracef("GetOperations")
-
-	var services []string
-	var service string
 	if getOperationsRequest.Service == "" {
-		body, err := instance.doRequest("/api/services")
-		if err != nil {
-			return nil, err
-		}
-
-		var response ResponseDataServices
-		err = json.Unmarshal(body, &response)
-		if err != nil {
-			return nil, err
-		}
-
-		services = response.Data
-		service = services[0]
-
-		log.WithFields(logrus.Fields{"count": len(services)}).Tracef("GetOperations retrieved services")
-	} else {
-		service = getOperationsRequest.Service
+		return nil, fmt.Errorf("serivce is missing")
 	}
 
-	body, err := instance.doRequest(fmt.Sprintf("/api/operations?service=%s", service))
+	log.WithFields(logrus.Fields{"service": getOperationsRequest.Service}).Tracef("GetOperations")
+
+	body, err := instance.doRequest(fmt.Sprintf("/api/operations?service=%s", getOperationsRequest.Service))
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +165,6 @@ func (j *Jaeger) GetOperations(ctx context.Context, getOperationsRequest *jaeger
 	log.WithFields(logrus.Fields{"count": len(response.Data)}).Tracef("GetOperations retrieved operations")
 
 	return &jaegerProto.GetOperationsResponse{
-		Services:   services,
 		Operations: response.Data,
 	}, nil
 }

@@ -10,6 +10,15 @@ var Jaeger = (function () {
   return Jaeger;
 }());
 
+Jaeger.GetServices = {
+  methodName: "GetServices",
+  service: Jaeger,
+  requestStream: false,
+  responseStream: false,
+  requestType: jaeger_pb.GetServicesRequest,
+  responseType: jaeger_pb.GetServicesResponse
+};
+
 Jaeger.GetOperations = {
   methodName: "GetOperations",
   service: Jaeger,
@@ -43,6 +52,37 @@ function JaegerClient(serviceHost, options) {
   this.serviceHost = serviceHost;
   this.options = options || {};
 }
+
+JaegerClient.prototype.getServices = function getServices(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Jaeger.GetServices, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
 
 JaegerClient.prototype.getOperations = function getOperations(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
