@@ -1,6 +1,9 @@
 import {
   Button,
   ButtonVariant,
+  Flex,
+  FlexItem,
+  InputGroup,
   TextArea,
   Toolbar,
   ToolbarContent,
@@ -10,6 +13,8 @@ import {
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import MinusIcon from '@patternfly/react-icons/dist/js/icons/minus-icon';
+import PlusIcon from '@patternfly/react-icons/dist/js/icons/plus-icon';
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
 import Options, { IAdditionalFields } from 'components/Options';
@@ -37,6 +42,18 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
     timeEnd: timeEnd,
     timeStart: timeStart,
   });
+
+  const addQuery = (): void => {
+    const tmpQueries = [...data.queries];
+    tmpQueries.push('');
+    setData({ ...data, queries: tmpQueries });
+  };
+
+  const removeQuery = (index: number): void => {
+    const tmpQueries = [...data.queries];
+    tmpQueries.splice(index, 1);
+    setData({ ...data, queries: tmpQueries });
+  };
 
   // changeQuery changes the value of a single query.
   const changeQuery = (index: number, value: string): void => {
@@ -77,15 +94,32 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
         <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
           <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
             <ToolbarItem style={{ width: '100%' }}>
-              <TextArea
-                aria-label="PromQL Query"
-                resizeOrientation="vertical"
-                rows={1}
-                type="text"
-                value={data.queries[0]}
-                onChange={(value): void => changeQuery(0, value)}
-                onKeyDown={onEnter}
-              />
+              <Flex style={{ width: '100%' }} direction={{ default: 'column' }} grow={{ default: 'grow' }}>
+                {data.queries.map((query, index) => (
+                  <FlexItem key={index}>
+                    <InputGroup>
+                      <TextArea
+                        aria-label={`PromQL Query ${index}`}
+                        resizeOrientation="vertical"
+                        rows={1}
+                        type="text"
+                        value={query}
+                        onChange={(value): void => changeQuery(index, value)}
+                        onKeyDown={onEnter}
+                      />
+                      {index === 0 ? (
+                        <Button variant={ButtonVariant.control} onClick={addQuery}>
+                          <PlusIcon />
+                        </Button>
+                      ) : (
+                        <Button variant={ButtonVariant.control} onClick={(): void => removeQuery(index)}>
+                          <MinusIcon />
+                        </Button>
+                      )}
+                    </InputGroup>
+                  </FlexItem>
+                ))}
+              </Flex>
             </ToolbarItem>
             <ToolbarItem>
               <Options
