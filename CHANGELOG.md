@@ -18,6 +18,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#13](https://github.com/kobsio/kobs/pull/13): Add Jaeger plugin to show traces for an Application and to compare traces.
 - [#16](https://github.com/kobsio/kobs/pull/16): Add support for multiple queries in the Prometheus plugin page.
 - [#18](https://github.com/kobsio/kobs/pull/18): Add metrics and logs for the gRPC server.
+- [#19](https://github.com/kobsio/kobs/pull/19): Use multiple colors in the Jaeger plugin. Each service in a trace has a unique color now, which is used for the charts.
 
 ### Fixed
 

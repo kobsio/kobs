@@ -1,7 +1,14 @@
 import { Badge, Card, CardActions, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
+import ExclamationIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import React from 'react';
 
-import { ITrace, formatTraceTime, getDuration, getSpansPerServices } from 'plugins/jaeger/helpers';
+import {
+  ITrace,
+  doesTraceContainsError,
+  formatTraceTime,
+  getDuration,
+  getSpansPerServices,
+} from 'plugins/jaeger/helpers';
 import JaegerTrace from 'plugins/jaeger/JaegerTrace';
 
 interface IJaegerTracesTraceProps {
@@ -38,8 +45,16 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
     >
       <CardHeader>
         <CardTitle>
-          {rootSpanService}: {rootSpan.operationName}{' '}
-          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{trace.traceID}</span>
+          {rootSpanService}: {rootSpan.operationName}
+          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+            {trace.traceID}
+            {doesTraceContainsError(trace) ? (
+              <ExclamationIcon
+                className="pf-u-ml-sm pf-u-font-size-sm"
+                style={{ color: 'var(--pf-global--danger-color--100)' }}
+              />
+            ) : null}
+          </span>
         </CardTitle>
         <CardActions>
           <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{getDuration(trace.spans)}ms</span>
@@ -51,7 +66,7 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
         </Badge>
 
         {getSpansPerServices(trace).map((service, index) => (
-          <Badge className="pf-u-ml-sm" key={index} isRead={false}>
+          <Badge key={index} className="pf-u-ml-sm" style={{ backgroundColor: service.color }}>
             {service.service} ({service.spans})
           </Badge>
         ))}

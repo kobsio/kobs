@@ -181,7 +181,7 @@ func (j *Jaeger) GetTraces(ctx context.Context, getTracesRequest *jaegerProto.Ge
 
 	log.WithFields(logrus.Fields{"service": getTracesRequest.Service, "operation": getTracesRequest.Operation, "tags": getTracesRequest.Tags}).Tracef("GetTraces")
 
-	body, err := instance.doRequest(fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d", getTracesRequest.TimeEnd*1000000, getTracesRequest.Limit, getTracesRequest.MaxDuration, getTracesRequest.MinDuration, getTracesRequest.Operation, getTracesRequest.Service, getTracesRequest.TimeStart*1000000))
+	body, err := instance.doRequest(fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d&tags=%s", getTracesRequest.TimeEnd*1000000, getTracesRequest.Limit, getTracesRequest.MaxDuration, getTracesRequest.MinDuration, getTracesRequest.Operation, getTracesRequest.Service, getTracesRequest.TimeStart*1000000, getTracesRequest.Tags))
 	if err != nil {
 		return nil, err
 	}
