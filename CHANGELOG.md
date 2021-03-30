@@ -17,6 +17,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#12](https://github.com/kobsio/kobs/pull/12): :warning: *Breaking change:* :warning: Add plugin system and readd Prometheus and Elasticsearch as plugins.
 - [#13](https://github.com/kobsio/kobs/pull/13): Add Jaeger plugin to show traces for an Application and to compare traces.
 - [#16](https://github.com/kobsio/kobs/pull/16): Add support for multiple queries in the Prometheus plugin page.
+- [#18](https://github.com/kobsio/kobs/pull/18): Add metrics and logs for the gRPC server.
 
 ### Fixed
 

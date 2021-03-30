@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 )
@@ -55,6 +56,7 @@ func (s *Server) Stop() {
 // New return a new metrics server.
 func New() *Server {
 	router := http.NewServeMux()
+	router.Handle("/metrics", promhttp.Handler())
 
 	return &Server{
 		&http.Server{
