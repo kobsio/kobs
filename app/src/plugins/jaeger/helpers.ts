@@ -1,3 +1,5 @@
+import { ChartThemeColor, getDarkThemeColors } from '@patternfly/react-charts';
+
 import { formatTime } from 'utils/helpers';
 
 export interface IKeyValue {
@@ -14,6 +16,7 @@ export interface ILog {
 export interface IProcess {
   serviceName: string;
   tags: IKeyValue[];
+  color?: string;
 }
 
 export interface IProcesses {
@@ -73,6 +76,7 @@ export interface IJaegerOptions extends ITimes {
 
 // IServiceSpans is the interface to get the number of spans per service.
 export interface IServiceSpans {
+  color: string;
   service: string;
   spans: number;
 }
@@ -106,6 +110,9 @@ export const getOptionsFromSearch = (search: string): IJaegerOptions => {
 export const getSpansPerServices = (trace: ITrace): IServiceSpans[] => {
   const services: IServiceSpans[] = Object.keys(trace.processes).map((process) => {
     return {
+      color: trace.processes[process].color
+        ? (trace.processes[process].color as string)
+        : 'var(--pf-global--primary-color--100)',
       service: trace.processes[process].serviceName,
       spans: trace.spans.filter((span) => span.processID === process).length,
     };
@@ -164,4 +171,65 @@ export const createSpansTree = (spans: ISpan[], traceStartTime: number, duration
   }
 
   return roots;
+};
+
+// colors is an array of all supported colors for the Jaeger processes.
+const colors = getDarkThemeColors(ChartThemeColor.multiOrdered).area.colorScale;
+
+// addColorForProcesses add a color to each process in all the given traces.
+export const addColorForProcesses = (traces: ITrace[]): ITrace[] => {
+  for (let i = 0; i < traces.length; i++) {
+    Object.keys(traces[i].processes).map(
+      (key, index) => (traces[i].processes[key].color = colors[index % colors.length]),
+    );
+  }
+
+  return traces;
+};
+
+// ITags is the interface for our temporary json object for the user specified tags.
+interface ITags {
+  [key: string]: string;
+}
+
+// encodeTags encodes the user specified tags string into the correct format for the Jaeger API. The user has to provide
+// the tags in the following form 'http.status_code=500 http.method=POST'. We will transform this into a json object of
+// the following form: '{"http.status_code":"500","http.method":"POST"}'. The encoded string is then used for the API
+// request.
+export const encodeTags = (tags: string): string => {
+  const t = tags.split(' ');
+  const jsonTags: ITags = {};
+
+  for (let i = 0; i < t.length; i++) {
+    const keyValue = t[i].split('=');
+    if (keyValue.length === 2) {
+      jsonTags[keyValue[0]] = keyValue[1];
+    }
+  }
+
+  return encodeURIComponent(JSON.stringify(jsonTags));
+};
+
+// doesSpanContainsError returns true, when the given span contains a tag error=true. This is used to show the user a
+// problematic span, whithout the need to check all tags.
+export const doesSpanContainsError = (span: ISpan): boolean => {
+  for (let i = 0; i < span.tags.length; i++) {
+    if (span.tags[i].key === 'error' && span.tags[i].value === true) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// doesTraceContainsError returns true, when a span of the given trace contains a tag error=true. This is used to show
+// the user a problematic trace, whithout the need to check all tags of all spans.
+export const doesTraceContainsError = (trace: ITrace): boolean => {
+  for (let i = 0; i < trace.spans.length; i++) {
+    if (doesSpanContainsError(trace.spans[i])) {
+      return true;
+    }
+  }
+
+  return false;
 };

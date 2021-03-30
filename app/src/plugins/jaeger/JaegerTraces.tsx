@@ -2,7 +2,7 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { GetTracesRequest, GetTracesResponse, JaegerPromiseClient } from 'proto/jaeger_grpc_web_pb';
-import { IJaegerOptions, ITrace } from 'plugins/jaeger/helpers';
+import { IJaegerOptions, ITrace, addColorForProcesses, encodeTags } from 'plugins/jaeger/helpers';
 import JaegerTracesChart from 'plugins/jaeger/JaegerTracesChart';
 import JaegerTracesTrace from 'plugins/jaeger/JaegerTracesTrace';
 import { apiURL } from 'utils/constants';
@@ -54,14 +54,14 @@ const JaegerTraces: React.FunctionComponent<IJaegerTracesProps> = ({
       getTracesRequest.setMinduration(minDuration);
       getTracesRequest.setOperation(operation);
       getTracesRequest.setService(service);
-      getTracesRequest.setTags(tags);
+      getTracesRequest.setTags(encodeTags(tags));
       getTracesRequest.setTimeend(timeEnd);
       getTracesRequest.setTimestart(timeStart);
 
       const getTracesResponse: GetTracesResponse = await jaegerService.getTraces(getTracesRequest, null);
       const traces = JSON.parse(getTracesResponse.toObject().traces).data;
 
-      setData({ error: '', isLoading: false, traces: traces });
+      setData({ error: '', isLoading: false, traces: addColorForProcesses(traces) });
     } catch (err) {
       setData({ error: err.message, isLoading: false, traces: [] });
     }

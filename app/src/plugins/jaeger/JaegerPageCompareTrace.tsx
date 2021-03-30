@@ -13,7 +13,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { GetTraceRequest, GetTraceResponse, JaegerPromiseClient } from 'proto/jaeger_grpc_web_pb';
-import { ITrace, formatTraceTime, getDuration } from 'plugins/jaeger/helpers';
+import { ITrace, addColorForProcesses, formatTraceTime, getDuration } from 'plugins/jaeger/helpers';
 import JaegerSpans from 'plugins/jaeger/JaegerSpans';
 import { apiURL } from 'utils/constants';
 
@@ -53,7 +53,7 @@ const JaegerPageCompareTrace: React.FunctionComponent<IJaegerPageCompareTracePro
       const getTraceResponse: GetTraceResponse = await jaegerService.getTrace(getTraceRequest, null);
       const trace = JSON.parse(getTraceResponse.toObject().traces).data;
 
-      setData({ error: '', isLoading: false, trace: trace.length === 1 ? trace[0] : undefined });
+      setData({ error: '', isLoading: false, trace: trace.length === 1 ? addColorForProcesses(trace)[0] : undefined });
     } catch (err) {
       setData({ error: err.message, isLoading: false, trace: undefined });
     }

@@ -21,7 +21,7 @@ const JaegerSpans: React.FunctionComponent<IJaegerSpansProps> = ({ trace }: IJae
         <CardBody>
           <div style={{ height: `100px`, position: 'relative' }}>
             {spans.map((span, index) => (
-              <JaegerSpansChart key={index} span={span} height={100 / trace.spans.length} />
+              <JaegerSpansChart key={index} span={span} processes={trace.processes} height={100 / trace.spans.length} />
             ))}
           </div>
         </CardBody>

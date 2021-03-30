@@ -1,7 +1,8 @@
 import { AccordionContent, AccordionItem, AccordionToggle, Badge } from '@patternfly/react-core';
 import React, { useState } from 'react';
+import ExclamationIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
-import { IProcesses, ISpan } from 'plugins/jaeger/helpers';
+import { IProcesses, ISpan, doesSpanContainsError } from 'plugins/jaeger/helpers';
 import JaegerSpanLogs from 'plugins/jaeger/JaegerSpanLogs';
 
 import 'plugins/jaeger/jaeger.css';
@@ -27,7 +28,9 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
     >
       <span
         style={{
-          backgroundColor: 'var(--pf-global--primary-color--100)',
+          backgroundColor: processes[span.processID].color
+            ? processes[span.processID].color
+            : 'var(--pf-global--primary-color--100)',
           height: '5px',
           left: `${span.offset}%`,
           position: 'absolute',
@@ -50,7 +53,15 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
           <span>
             {processes[span.processID].serviceName}: {span.operationName}
           </span>
-          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{span.spanID}</span>
+          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+            {span.spanID}
+            {doesSpanContainsError(span) ? (
+              <ExclamationIcon
+                className="pf-u-ml-sm pf-u-font-size-sm"
+                style={{ color: 'var(--pf-global--danger-color--100)' }}
+              />
+            ) : null}
+          </span>
           <span className="pf-u-font-size-sm pf-u-color-400" style={{ float: 'right' }}>
             {span.duration / 1000}ms
           </span>
