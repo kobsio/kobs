@@ -12,22 +12,27 @@ import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
 import { ClustersContext, IClusterContext } from 'context/ClustersContext';
-import { IScope } from 'components/applications/Applications';
 import ToolbarItemClusters from 'components/resources/ToolbarItemClusters';
 import ToolbarItemNamespaces from 'components/resources/ToolbarItemNamespaces';
 
 interface IApplicationsToolbarProps {
-  setScope: (scope: IScope) => void;
+  clusters: string[];
+  namespaces: string[];
+  changeData: (clusters: string[], namespaces: string[]) => void;
 }
 
 // ApplicationsToolbar is the toolbar, where the user can select a list of clusters and namespaces. When the user clicks
 // the search button the setScope function is called with the list of selected clusters and namespaces.
 const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = ({
-  setScope,
+  clusters,
+  namespaces,
+  changeData,
 }: IApplicationsToolbarProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
-  const [selectedClusters, setSelectedClusters] = useState<string[]>([clustersContext.clusters[0]]);
-  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>([]);
+  const [selectedClusters, setSelectedClusters] = useState<string[]>(
+    clusters.length > 0 ? clusters : [clustersContext.clusters[0]],
+  );
+  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(namespaces);
 
   // selectCluster adds/removes the given cluster to the list of selected clusters. When the cluster value is an empty
   // string the selected clusters list is cleared.
@@ -80,12 +85,7 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
               <Button
                 variant={ButtonVariant.primary}
                 icon={<SearchIcon />}
-                onClick={(): void =>
-                  setScope({
-                    clusters: selectedClusters,
-                    namespaces: selectedNamespaces,
-                  })
-                }
+                onClick={(): void => changeData(selectedClusters, selectedNamespaces)}
               >
                 Search
               </Button>

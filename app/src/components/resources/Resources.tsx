@@ -49,18 +49,12 @@ const Resources: React.FunctionComponent = () => {
         >
           <DrawerContentBody>
             <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-              {!resources ? (
+              {!resources ||
+              resources.clusters.length === 0 ||
+              resources.namespaces.length === 0 ||
+              resources.resources.length === 0 ? (
                 <Alert variant={AlertVariant.info} title="Select clusters, resources and namespaces">
                   <p>Select a list of clusters, resources and namespaces from the toolbar.</p>
-                </Alert>
-              ) : resources.clusters.length === 0 ||
-                resources.namespaces.length === 0 ||
-                resources.resources.length === 0 ? (
-                <Alert variant={AlertVariant.danger} title="Select clusters, resources and namespaces">
-                  <p>
-                    You have to select a minimum of one cluster, resource and namespace from the toolbar to search for
-                    resources.
-                  </p>
                 </Alert>
               ) : (
                 <ResourcesList resources={resources} selectResource={setSelectedResource} />
