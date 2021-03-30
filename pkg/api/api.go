@@ -7,6 +7,8 @@ import (
 	"github.com/kobsio/kobs/pkg/api/plugins/plugins"
 	"github.com/kobsio/kobs/pkg/config"
 
+	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"google.golang.org/grpc"
@@ -55,7 +57,18 @@ func New(cfg *config.Config) (*Server, error) {
 		return nil, err
 	}
 
-	grpcServer := grpc.NewServer()
+	logrusEntry := logrus.NewEntry(logrus.StandardLogger())
+
+	grpcServer := grpc.NewServer(
+		grpc.ChainStreamInterceptor(
+			grpc_logrus.StreamServerInterceptor(logrusEntry),
+			grpc_prometheus.StreamServerInterceptor,
+		),
+		grpc.ChainUnaryInterceptor(
+			grpc_logrus.UnaryServerInterceptor(logrusEntry),
+			grpc_prometheus.UnaryServerInterceptor,
+		),
+	)
 	reflection.Register(grpcServer)
 	plugins.Register(cfg, grpcServer)
 
