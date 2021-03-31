@@ -11,7 +11,7 @@ import {
 import { IRow } from '@patternfly/react-table';
 import { JSONPath } from 'jsonpath-plus';
 import React from 'react';
-import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
+import { SearchIcon } from '@patternfly/react-icons';
 
 import { CRD, Resources as ProtoResources } from 'proto/clusters_grpc_web_pb';
 import { timeDifference } from 'utils/helpers';

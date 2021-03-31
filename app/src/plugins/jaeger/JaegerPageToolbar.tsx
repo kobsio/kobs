@@ -11,9 +11,8 @@ import {
   ToolbarItem,
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
+import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useCallback, useEffect, useState } from 'react';
-import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
-import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
 import {
   GetOperationsRequest,
@@ -145,7 +144,7 @@ const JaegerPageToolbar: React.FunctionComponent<IJaegerPageToolbarProps> = ({
         title="Could not get services and operations"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={fetchOperations}>Retry</AlertActionLink>
+            <AlertActionLink onClick={fetchServices}>Retry</AlertActionLink>
           </React.Fragment>
         }
       >

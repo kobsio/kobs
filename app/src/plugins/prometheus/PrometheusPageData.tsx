@@ -45,7 +45,7 @@ const PrometheusPageData: React.FunctionComponent<IPrometheusPageDataProps> = ({
   }
 
   return (
-    <Card isFlat={true}>
+    <Card>
       <CardBody>
         <Flex>
           <FlexItem>

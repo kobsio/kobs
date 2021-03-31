@@ -11,11 +11,8 @@ import {
   ToolbarItem,
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
+import { FilterIcon, MinusIcon, PlusIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
-import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
-import MinusIcon from '@patternfly/react-icons/dist/js/icons/minus-icon';
-import PlusIcon from '@patternfly/react-icons/dist/js/icons/plus-icon';
-import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
 import Options, { IAdditionalFields } from 'components/Options';
 import { IPrometheusOptions } from 'plugins/prometheus/helpers';

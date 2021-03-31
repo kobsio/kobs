@@ -1,7 +1,7 @@
 import { Grid, GridItem } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import CloseIcon from '@patternfly/react-icons/dist/js/icons/close-icon';
+import { CloseIcon } from '@patternfly/react-icons';
 
 import JaegerPageCompareInput from 'plugins/jaeger/JaegerPageCompareInput';
 import JaegerPageCompareTrace from 'plugins/jaeger/JaegerPageCompareTrace';

@@ -107,7 +107,7 @@ const PrometheusPluginChart: React.FunctionComponent<IPrometheusPluginChartProps
   }, [fetchData]);
 
   return (
-    <Card isFlat={true}>
+    <Card>
       <CardHeader>
         <CardHeaderMain>{chart.title}</CardHeaderMain>
         <CardActions>

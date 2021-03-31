@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import {
+  Card,
   Select,
   SelectOption,
   SelectOptionObject,
@@ -10,7 +10,8 @@ import {
   ToolbarItem,
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
-import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import React, { useState } from 'react';
+import { FilterIcon } from '@patternfly/react-icons';
 
 import Options, { IAdditionalFields } from 'components/Options';
 import { Query } from 'proto/elasticsearch_grpc_web_pb';
@@ -61,32 +62,34 @@ const ElasticsearchPluginToolbar: React.FunctionComponent<IElasticsearchPluginTo
   };
 
   return (
-    <Toolbar id="elasticsearch-toolbar">
-      <ToolbarContent>
-        <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
-            <ToolbarItem style={{ width: '100%' }}>
-              <Select
-                variant={SelectVariant.single}
-                typeAheadAriaLabel={`Select query`}
-                placeholderText={`Select query`}
-                onToggle={(): void => setShow(!show)}
-                onSelect={onSelect}
-                selections={queryName}
-                isOpen={show}
-              >
-                {queries.map((query, index) => (
-                  <SelectOption key={index} value={query.name} description={query.query} />
-                ))}
-              </Select>
-            </ToolbarItem>
-            <ToolbarItem>
-              <Options pTimeEnd={timeEnd} pTimeStart={timeStart} setValues={changeOptions} />
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
-    </Toolbar>
+    <Card>
+      <Toolbar id="elasticsearch-toolbar">
+        <ToolbarContent>
+          <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
+            <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
+              <ToolbarItem style={{ width: '100%' }}>
+                <Select
+                  variant={SelectVariant.single}
+                  typeAheadAriaLabel={`Select query`}
+                  placeholderText={`Select query`}
+                  onToggle={(): void => setShow(!show)}
+                  onSelect={onSelect}
+                  selections={queryName}
+                  isOpen={show}
+                >
+                  {queries.map((query, index) => (
+                    <SelectOption key={index} value={query.name} description={query.query} />
+                  ))}
+                </Select>
+              </ToolbarItem>
+              <ToolbarItem>
+                <Options pTimeEnd={timeEnd} pTimeStart={timeStart} setValues={changeOptions} />
+              </ToolbarItem>
+            </ToolbarGroup>
+          </ToolbarToggleGroup>
+        </ToolbarContent>
+      </Toolbar>
+    </Card>
   );
 };
 

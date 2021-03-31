@@ -1,6 +1,8 @@
 import { Badge, Card, CardActions, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
-import ExclamationIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { ExclamationIcon } from '@patternfly/react-icons';
 import React from 'react';
+
+import LinkWrapper from 'components/LinkWrapper';
 
 import {
   ITrace,
@@ -13,14 +15,12 @@ import JaegerTrace from 'plugins/jaeger/JaegerTrace';
 
 interface IJaegerTracesTraceProps {
   name: string;
-  isInDrawer: boolean;
   trace: ITrace;
-  setTrace: (trace: React.ReactNode) => void;
+  setTrace?: (trace: React.ReactNode) => void;
 }
 
 const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
   name,
-  isInDrawer,
   trace,
   setTrace,
 }: IJaegerTracesTraceProps) => {
@@ -28,19 +28,15 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
   const rootSpanProcess = trace.processes[rootSpan.processID];
   const rootSpanService = rootSpanProcess.serviceName;
 
-  const openTrace = (): void => {
-    window.open(`/plugins/${name}/trace/${trace.traceID}`, '_blank');
-  };
-
-  return (
+  const card = (
     <Card
-      isFlat={true}
+      style={{ cursor: 'pointer' }}
       isCompact={true}
       isHoverable={true}
       onClick={
-        isInDrawer
-          ? (): void => openTrace()
-          : (): void => setTrace(<JaegerTrace name={name} trace={trace} close={(): void => setTrace(undefined)} />)
+        setTrace
+          ? (): void => setTrace(<JaegerTrace name={name} trace={trace} close={(): void => setTrace(undefined)} />)
+          : undefined
       }
     >
       <CardHeader>
@@ -75,6 +71,12 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
       </CardBody>
     </Card>
   );
+
+  if (!setTrace) {
+    return <LinkWrapper link={`/plugins/${name}/trace/${trace.traceID}`}>{card}</LinkWrapper>;
+  }
+
+  return card;
 };
 
 export default JaegerTracesTrace;

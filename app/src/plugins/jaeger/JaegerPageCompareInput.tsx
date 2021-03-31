@@ -1,6 +1,6 @@
 import { Button, ButtonVariant, InputGroup, InputGroupText, TextInput } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
+import { SearchIcon } from '@patternfly/react-icons';
 
 interface IJaegerPageCompareInputProps {
   changeCompareTrace: (traceID: string) => void;

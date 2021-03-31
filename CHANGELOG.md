@@ -32,3 +32,4 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#7](https://github.com/kobsio/kobs/pull/7): Share datasource options between components and allow sharing of URLs.
 - [#11](https://github.com/kobsio/kobs/pull/11): :warning: *Breaking change:* :warning: Refactor cluster and application handling.
 - [#17](https://github.com/kobsio/kobs/pull/17): Use location to load applications, which allows user to share their applications view.
+- [#20](https://github.com/kobsio/kobs/pull/20): Rework usage of icons, links handling and drawer layout.

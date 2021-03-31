@@ -7,9 +7,8 @@ import {
   ToolbarItem,
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
+import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useContext, useState } from 'react';
-import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
-import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
 import { ClustersContext, IClusterContext } from 'context/ClustersContext';
 import { IResources } from 'components/resources/Resources';

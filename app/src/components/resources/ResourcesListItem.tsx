@@ -13,7 +13,7 @@ interface IResourcesListItemProps {
   namespaces: string[];
   resource: IResource;
   selector: string;
-  selectResource: (resource: IRow) => void;
+  selectResource?: (resource: IRow) => void;
 }
 
 // ResourcesListItem is the table for a single resource. To get the resources the component needs a list of clusters,
@@ -72,7 +72,7 @@ const ResourcesListItem: React.FunctionComponent<IResourcesListItemProps> = ({
       rows={rows}
     >
       <TableHeader />
-      <TableBody onRowClick={(e, row, props, data): void => selectResource(row)} />
+      <TableBody onRowClick={selectResource ? (e, row, props, data): void => selectResource(row) : undefined} />
     </Table>
   );
 };

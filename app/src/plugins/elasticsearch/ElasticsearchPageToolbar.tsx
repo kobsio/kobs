@@ -8,9 +8,8 @@ import {
   ToolbarItem,
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
+import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
-import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
-import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
 
 import Options, { IAdditionalFields } from 'components/Options';
 import { IElasticsearchOptions } from 'plugins/elasticsearch/helpers';

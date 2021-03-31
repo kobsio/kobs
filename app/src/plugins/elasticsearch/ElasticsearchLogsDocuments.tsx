@@ -1,4 +1,5 @@
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { Card } from '@patternfly/react-core';
 import React from 'react';
 
 import { IDocument, formatTimeWrapper, getProperty } from 'plugins/elasticsearch/helpers';
@@ -18,7 +19,7 @@ const ElasticsearchLogsDocuments: React.FunctionComponent<IElasticsearchLogsDocu
   select,
 }: IElasticsearchLogsDocumentsProps) => {
   return (
-    <div style={{ maxWidth: '100%', overflowX: 'scroll' }}>
+    <Card style={{ maxWidth: '100%', overflowX: 'scroll' }}>
       <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={false}>
         <Thead>
           <Tr>
@@ -47,7 +48,7 @@ const ElasticsearchLogsDocuments: React.FunctionComponent<IElasticsearchLogsDocu
           ))}
         </Tbody>
       </TableComposable>
-    </div>
+    </Card>
   );
 };
 

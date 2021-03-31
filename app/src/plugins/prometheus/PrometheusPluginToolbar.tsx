@@ -1,5 +1,5 @@
-import { Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem, ToolbarToggleGroup } from '@patternfly/react-core';
-import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import { Card, Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem, ToolbarToggleGroup } from '@patternfly/react-core';
+import { FilterIcon } from '@patternfly/react-icons';
 import React from 'react';
 
 import { ITimes } from 'plugins/prometheus/helpers';
@@ -35,37 +35,39 @@ const PrometheusPluginToolbar: React.FunctionComponent<IPrometheusPluginToolbarP
   };
 
   return (
-    <Toolbar id="prometheus-toolbar">
-      <ToolbarContent>
-        <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          {variables ? (
-            <ToolbarGroup>
-              <ToolbarItem>
-                {variables.map((variable, index) => (
-                  <ToolbarItem key={index}>
-                    <PrometheusVariable
-                      variable={variable}
-                      selectValue={(value: string): void => onSelectVariableValue(value, index)}
-                    />
-                  </ToolbarItem>
-                ))}
+    <Card>
+      <Toolbar id="prometheus-toolbar">
+        <ToolbarContent>
+          <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
+            {variables ? (
+              <ToolbarGroup>
+                <ToolbarItem>
+                  {variables.map((variable, index) => (
+                    <ToolbarItem key={index}>
+                      <PrometheusVariable
+                        variable={variable}
+                        selectValue={(value: string): void => onSelectVariableValue(value, index)}
+                      />
+                    </ToolbarItem>
+                  ))}
+                </ToolbarItem>
+              </ToolbarGroup>
+            ) : null}
+            <ToolbarGroup style={{ width: '100%' }}>
+              <ToolbarItem alignment={{ default: 'alignRight' }}>
+                <Options
+                  pTimeEnd={times.timeEnd}
+                  pTimeStart={times.timeStart}
+                  setValues={(additionalFields, timeEnd, timeStart): void =>
+                    setTimes({ timeEnd: timeEnd, timeStart: timeStart })
+                  }
+                />
               </ToolbarItem>
             </ToolbarGroup>
-          ) : null}
-          <ToolbarGroup style={{ width: '100%' }}>
-            <ToolbarItem alignment={{ default: 'alignRight' }}>
-              <Options
-                pTimeEnd={times.timeEnd}
-                pTimeStart={times.timeStart}
-                setValues={(additionalFields, timeEnd, timeStart): void =>
-                  setTimes({ timeEnd: timeEnd, timeStart: timeStart })
-                }
-              />
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
-    </Toolbar>
+          </ToolbarToggleGroup>
+        </ToolbarContent>
+      </Toolbar>
+    </Card>
   );
 };
 
