@@ -20,11 +20,10 @@ export interface IPluginPageProps {
 // the name and description of the plugin. We also pass the complete plugin structure to this component. The component
 // is then responsible to use the correct property from the plugin structure.
 export interface IPluginProps {
-  isInDrawer: boolean;
   name: string;
   description: string;
   plugin: IProtoPlugin.AsObject;
-  showDetails: (panelContent: React.ReactNode) => void;
+  showDetails?: (panelContent: React.ReactNode) => void;
 }
 
 // IPlugin is the interface for a single plugin implementation. Each plugin must implement a plugin component, which can

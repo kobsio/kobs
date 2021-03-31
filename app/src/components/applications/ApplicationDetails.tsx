@@ -49,6 +49,7 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
       <DrawerHead>
         <Title title={application.name} subtitle={`${application.namespace} (${application.cluster})`} size="lg" />
         <DrawerActions style={{ padding: 0 }}>
+          <ApplicationDetailsLink application={application} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>
@@ -59,9 +60,6 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
             <p>{application.details.description}</p>
 
             <List variant={ListVariant.inline}>
-              <ListItem>
-                <ApplicationDetailsLink application={application} />
-              </ListItem>
               {application.details.linksList.map((link, index) => (
                 <ListItem key={index}>
                   <a href={link.link} rel="noreferrer" target="_blank">
@@ -89,6 +87,8 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
           refResourcesContent={refResourcesContent}
           refPluginsContent={refPluginsContent}
         />
+
+        <p>&nbsp;</p>
       </DrawerPanelBody>
     </DrawerPanelContent>
   );

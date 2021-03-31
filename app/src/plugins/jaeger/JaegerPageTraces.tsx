@@ -65,7 +65,6 @@ const JaegerPageTraces: React.FunctionComponent<IPluginPageProps> = ({ name, des
                 <JaegerTraces
                   name={name}
                   queryName=""
-                  isInDrawer={false}
                   limit={options.limit}
                   maxDuration={options.maxDuration}
                   minDuration={options.minDuration}

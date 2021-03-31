@@ -36,8 +36,7 @@ interface IDataState {
 interface IElasticsearchLogsProps extends IElasticsearchOptions {
   name: string;
   queryName: string;
-  isInDrawer: boolean;
-  setDocument: (document: React.ReactNode) => void;
+  setDocument?: (document: React.ReactNode) => void;
   setScrollID: (scrollID: string) => void;
   selectField?: (field: string) => void;
 }
@@ -47,7 +46,6 @@ interface IElasticsearchLogsProps extends IElasticsearchOptions {
 const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
   name,
   queryName,
-  isInDrawer,
   fields,
   query,
   scrollID,
@@ -155,7 +153,6 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
     return (
       <Alert
         variant={AlertVariant.danger}
-        isInline={isInDrawer}
         title="Could not get logs"
         actionLinks={
           <React.Fragment>

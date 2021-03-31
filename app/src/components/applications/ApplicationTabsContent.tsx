@@ -44,7 +44,7 @@ const ApplicationTabsContent: React.FunctionComponent<IApplicationTabsContent> =
 
   const pageSection = (
     <PageSection
-      style={isInDrawer ? { minHeight: '100%', paddingLeft: '0px', paddingRight: '0px' } : { minHeight: '100%' }}
+      style={{ minHeight: '100%' }}
       variant={isInDrawer ? PageSectionVariants.light : PageSectionVariants.default}
     >
       <TabContent
@@ -61,10 +61,13 @@ const ApplicationTabsContent: React.FunctionComponent<IApplicationTabsContent> =
             namespaces: [application.namespace],
             resources: application.resourcesList,
           }}
-          selectResource={(resource: IRow): void =>
+          selectResource={
             isInDrawer
-              ? setPanelContent(undefined)
-              : setPanelContent(<ResourceDetails resource={resource} close={(): void => setPanelContent(undefined)} />)
+              ? undefined
+              : (resource: IRow): void =>
+                  setPanelContent(
+                    <ResourceDetails resource={resource} close={(): void => setPanelContent(undefined)} />,
+                  )
           }
         />
       </TabContent>
@@ -82,11 +85,8 @@ const ApplicationTabsContent: React.FunctionComponent<IApplicationTabsContent> =
           <div>
             {mountedTabs[`refPlugin-${index}`] ? (
               <Plugin
-                isInDrawer={isInDrawer}
                 plugin={plugin}
-                showDetails={(details: React.ReactNode): void =>
-                  isInDrawer ? setPanelContent(undefined) : setPanelContent(details)
-                }
+                showDetails={isInDrawer ? undefined : (details: React.ReactNode): void => setPanelContent(details)}
               />
             ) : null}
           </div>

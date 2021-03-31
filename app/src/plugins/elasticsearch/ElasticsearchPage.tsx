@@ -88,7 +88,6 @@ const ElasticsearchPage: React.FunctionComponent<IPluginPageProps> = ({ name, de
                 <ElasticsearchLogs
                   name={name}
                   queryName=""
-                  isInDrawer={false}
                   fields={options.fields}
                   query={options.query}
                   scrollID={options.scrollID}

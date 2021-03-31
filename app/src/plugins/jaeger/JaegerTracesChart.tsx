@@ -23,14 +23,10 @@ interface ILabels {
 }
 
 interface IJaegerTracesChartProps {
-  isInDrawer: boolean;
   traces: ITrace[];
 }
 
-const JaegerTracesChart: React.FunctionComponent<IJaegerTracesChartProps> = ({
-  isInDrawer,
-  traces,
-}: IJaegerTracesChartProps) => {
+const JaegerTracesChart: React.FunctionComponent<IJaegerTracesChartProps> = ({ traces }: IJaegerTracesChartProps) => {
   const refChart = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
@@ -64,7 +60,7 @@ const JaegerTracesChart: React.FunctionComponent<IJaegerTracesChartProps> = ({
   });
 
   return (
-    <Card isFlat={true} isCompact={true}>
+    <Card isCompact={true}>
       <CardBody>
         <div style={{ height: '200px', width: '100%' }} ref={refChart}>
           <Chart

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import {
+  Card,
   Select,
   SelectOption,
   SelectOptionObject,
@@ -10,7 +10,8 @@ import {
   ToolbarItem,
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
-import FilterIcon from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import React, { useState } from 'react';
+import { FilterIcon } from '@patternfly/react-icons';
 
 import Options, { IAdditionalFields } from 'components/Options';
 import { Query } from 'proto/jaeger_grpc_web_pb';
@@ -64,62 +65,64 @@ const JaegerPluginToolbar: React.FunctionComponent<IJaegerPluginToolbarProps> = 
   };
 
   return (
-    <Toolbar id="jaeger-toolbar">
-      <ToolbarContent>
-        <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
-            <ToolbarItem style={{ width: '100%' }}>
-              <Select
-                variant={SelectVariant.single}
-                typeAheadAriaLabel={`Select query`}
-                placeholderText={`Select query`}
-                onToggle={(): void => setShow(!show)}
-                onSelect={onSelect}
-                selections={queryName}
-                isOpen={show}
-              >
-                {queries.map((query, index) => (
-                  <SelectOption
-                    key={index}
-                    value={query.name}
-                    description={`${query.service}${query.operation ? `: ${query.operation}` : ''}${
-                      query.tags ? ` (${query.tags})` : ''
-                    }`}
-                  />
-                ))}
-              </Select>
-            </ToolbarItem>
-            <ToolbarItem>
-              <Options
-                pAdditionalFields={[
-                  {
-                    label: 'Limit',
-                    name: 'limit',
-                    placeholder: '20',
-                    value: limit,
-                  },
-                  {
-                    label: 'Max Duration',
-                    name: 'maxDuration',
-                    placeholder: '100ms',
-                    value: maxDuration,
-                  },
-                  {
-                    label: 'Min Duration',
-                    name: 'minDuration',
-                    placeholder: '100ms',
-                    value: minDuration,
-                  },
-                ]}
-                pTimeEnd={timeEnd}
-                pTimeStart={timeStart}
-                setValues={changeAddtionalOptions}
-              />
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
-    </Toolbar>
+    <Card>
+      <Toolbar id="jaeger-toolbar">
+        <ToolbarContent>
+          <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
+            <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
+              <ToolbarItem style={{ width: '100%' }}>
+                <Select
+                  variant={SelectVariant.single}
+                  typeAheadAriaLabel={`Select query`}
+                  placeholderText={`Select query`}
+                  onToggle={(): void => setShow(!show)}
+                  onSelect={onSelect}
+                  selections={queryName}
+                  isOpen={show}
+                >
+                  {queries.map((query, index) => (
+                    <SelectOption
+                      key={index}
+                      value={query.name}
+                      description={`${query.service}${query.operation ? `: ${query.operation}` : ''}${
+                        query.tags ? ` (${query.tags})` : ''
+                      }`}
+                    />
+                  ))}
+                </Select>
+              </ToolbarItem>
+              <ToolbarItem>
+                <Options
+                  pAdditionalFields={[
+                    {
+                      label: 'Limit',
+                      name: 'limit',
+                      placeholder: '20',
+                      value: limit,
+                    },
+                    {
+                      label: 'Max Duration',
+                      name: 'maxDuration',
+                      placeholder: '100ms',
+                      value: maxDuration,
+                    },
+                    {
+                      label: 'Min Duration',
+                      name: 'minDuration',
+                      placeholder: '100ms',
+                      value: minDuration,
+                    },
+                  ]}
+                  pTimeEnd={timeEnd}
+                  pTimeStart={timeStart}
+                  setValues={changeAddtionalOptions}
+                />
+              </ToolbarItem>
+            </ToolbarGroup>
+          </ToolbarToggleGroup>
+        </ToolbarContent>
+      </Toolbar>
+    </Card>
   );
 };
 

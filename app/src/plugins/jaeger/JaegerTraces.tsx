@@ -19,14 +19,12 @@ interface IDataState {
 interface IJaegerTracesProps extends IJaegerOptions {
   name: string;
   queryName: string;
-  isInDrawer: boolean;
-  setTrace: (trace: React.ReactNode) => void;
+  setTrace?: (trace: React.ReactNode) => void;
 }
 
 const JaegerTraces: React.FunctionComponent<IJaegerTracesProps> = ({
   name,
   queryName,
-  isInDrawer,
   limit,
   maxDuration,
   minDuration,
@@ -82,7 +80,6 @@ const JaegerTraces: React.FunctionComponent<IJaegerTracesProps> = ({
     return (
       <Alert
         variant={AlertVariant.danger}
-        isInline={isInDrawer}
         title="Could not get traces"
         actionLinks={
           <React.Fragment>
@@ -97,7 +94,7 @@ const JaegerTraces: React.FunctionComponent<IJaegerTracesProps> = ({
 
   return (
     <React.Fragment>
-      <JaegerTracesChart isInDrawer={isInDrawer} traces={data.traces} />
+      <JaegerTracesChart traces={data.traces} />
 
       <p>&nbsp;</p>
       <p>&nbsp;</p>
@@ -105,7 +102,7 @@ const JaegerTraces: React.FunctionComponent<IJaegerTracesProps> = ({
 
       {data.traces.map((trace, index) => (
         <React.Fragment key={index}>
-          <JaegerTracesTrace name={name} isInDrawer={isInDrawer} trace={trace} setTrace={setTrace} />
+          <JaegerTracesTrace name={name} trace={trace} setTrace={setTrace} />
           <p>&nbsp;</p>
         </React.Fragment>
       ))}

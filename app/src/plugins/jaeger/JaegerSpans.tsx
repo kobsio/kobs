@@ -17,11 +17,16 @@ const JaegerSpans: React.FunctionComponent<IJaegerSpansProps> = ({ trace }: IJae
 
   return (
     <React.Fragment>
-      <Card isFlat={true}>
+      <Card>
         <CardBody>
-          <div style={{ height: `100px`, position: 'relative' }}>
+          <div style={{ height: `${trace.spans.length > 20 ? 100 : trace.spans.length * 5}px`, position: 'relative' }}>
             {spans.map((span, index) => (
-              <JaegerSpansChart key={index} span={span} processes={trace.processes} height={100 / trace.spans.length} />
+              <JaegerSpansChart
+                key={index}
+                span={span}
+                processes={trace.processes}
+                height={trace.spans.length > 20 ? 100 / trace.spans.length : 5}
+              />
             ))}
           </div>
         </CardBody>
@@ -29,11 +34,13 @@ const JaegerSpans: React.FunctionComponent<IJaegerSpansProps> = ({ trace }: IJae
 
       <p>&nbsp;</p>
 
-      <Accordion asDefinitionList={false}>
-        {spans.map((span, index) => (
-          <JaegerSpan key={index} span={span} processes={trace.processes} padding={16} />
-        ))}
-      </Accordion>
+      <Card>
+        <Accordion asDefinitionList={false}>
+          {spans.map((span, index) => (
+            <JaegerSpan key={index} span={span} processes={trace.processes} padding={16} />
+          ))}
+        </Accordion>
+      </Card>
     </React.Fragment>
   );
 };

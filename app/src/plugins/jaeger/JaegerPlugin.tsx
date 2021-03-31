@@ -9,7 +9,6 @@ import PluginDataMissing from 'components/plugins/PluginDataMissing';
 // ElasticsearchPlugin is the plugin component for the Elasticsearch plugin. It renders a toolbar, which allows a user
 // to select the specified queries for an application.
 const ElasticsearchPlugin: React.FunctionComponent<IPluginProps> = ({
-  isInDrawer,
   name,
   description,
   plugin,
@@ -77,7 +76,6 @@ const ElasticsearchPlugin: React.FunctionComponent<IPluginProps> = ({
         <JaegerTraces
           name={name}
           queryName={options.queryName}
-          isInDrawer={isInDrawer}
           limit={options.limit}
           maxDuration={options.maxDuration}
           minDuration={options.minDuration}

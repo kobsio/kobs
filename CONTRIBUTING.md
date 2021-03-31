@@ -243,13 +243,11 @@ export default <PLUGIN-NAME>Page;
 
 ```tsx
 import React from 'react';
-import ListIcon from '@patternfly/react-icons/dist/js/icons/list-icon';
 
 import { IPluginProps } from 'utils/plugins';
 import PluginDataMissing from 'components/plugins/PluginDataMissing';
 
 const <PLUGIN-NAME>Plugin: React.FunctionComponent<IPluginProps> = ({
-  isInDrawer,
   name,
   description,
   plugin,
@@ -261,7 +259,7 @@ const <PLUGIN-NAME>Plugin: React.FunctionComponent<IPluginProps> = ({
         title="<PLUGIN-NAME> properties are missing"
         description="The <PLUGIN-NAME> properties are missing in your CR for this application. Visit the documentation to learn more on how to use the <PLUGIN-NAME> plugin in an Application CR."
         documentation="https://kobs.io"
-        icon={ListIcon}
+        type="<PLUGIN-TYPE>"
       />
     );
   }

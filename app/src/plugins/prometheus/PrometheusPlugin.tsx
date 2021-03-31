@@ -19,12 +19,7 @@ import { apiURL } from 'utils/constants';
 const prometheusService = new PrometheusPromiseClient(apiURL, null, null);
 
 // PrometheusPlugin is the component, which is used for the Prometheus plugin, within the plugin view.
-const PrometheusPlugin: React.FunctionComponent<IPluginProps> = ({
-  isInDrawer,
-  name,
-  description,
-  plugin,
-}: IPluginProps) => {
+const PrometheusPlugin: React.FunctionComponent<IPluginProps> = ({ name, description, plugin }: IPluginProps) => {
   const [error, setError] = useState<string>('');
   const [times, setTimes] = useState<ITimes>({
     timeEnd: Math.floor(Date.now() / 1000),
@@ -95,7 +90,6 @@ const PrometheusPlugin: React.FunctionComponent<IPluginProps> = ({
     return (
       <Alert
         variant={AlertVariant.danger}
-        isInline={isInDrawer}
         title="Could not load variables"
         actionLinks={
           <React.Fragment>

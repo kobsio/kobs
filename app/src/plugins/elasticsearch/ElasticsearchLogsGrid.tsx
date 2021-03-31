@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
+import { Button, ButtonVariant, Card, CardBody, Grid, GridItem } from '@patternfly/react-core';
 import React from 'react';
 
 import { Bucket } from 'proto/elasticsearch_grpc_web_pb';
@@ -22,7 +22,7 @@ interface IElasticsearchLogsGridProps {
   timeEnd: number;
   timeStart: number;
   took: number;
-  setDocument: (document: React.ReactNode) => void;
+  setDocument?: (document: React.ReactNode) => void;
   setScrollID: (scrollID: string) => void;
   selectField?: (field: string) => void;
 }
@@ -80,8 +80,11 @@ const ElasticsearchLogsGrid: React.FunctionComponent<IElasticsearchLogsGridProps
           <ElasticsearchLogsDocuments
             selectedFields={selectedFields}
             documents={documents}
-            select={(doc: IDocument): void =>
-              setDocument(<ElasticsearchLogsDocument document={doc} close={(): void => setDocument(undefined)} />)
+            select={
+              setDocument
+                ? (doc: IDocument): void =>
+                    setDocument(<ElasticsearchLogsDocument document={doc} close={(): void => setDocument(undefined)} />)
+                : undefined
             }
           />
         ) : null}
@@ -89,9 +92,13 @@ const ElasticsearchLogsGrid: React.FunctionComponent<IElasticsearchLogsGridProps
         <p>&nbsp;</p>
 
         {scrollID !== '' && documents.length > 0 ? (
-          <Button variant={ButtonVariant.primary} isBlock={true} onClick={(): void => setScrollID(scrollID)}>
-            Load more
-          </Button>
+          <Card isCompact={true}>
+            <CardBody>
+              <Button variant={ButtonVariant.primary} isBlock={true} onClick={(): void => setScrollID(scrollID)}>
+                Load more
+              </Button>
+            </CardBody>
+          </Card>
         ) : null}
       </GridItem>
     </Grid>

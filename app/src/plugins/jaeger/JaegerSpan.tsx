@@ -1,6 +1,6 @@
 import { AccordionContent, AccordionItem, AccordionToggle, Badge } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import ExclamationIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { ExclamationIcon } from '@patternfly/react-icons';
 
 import { IProcesses, ISpan, doesSpanContainsError } from 'plugins/jaeger/helpers';
 import JaegerSpanLogs from 'plugins/jaeger/JaegerSpanLogs';

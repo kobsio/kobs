@@ -1,4 +1,4 @@
-import { SimpleList, SimpleListItem } from '@patternfly/react-core';
+import { Card, SimpleList, SimpleListGroup, SimpleListItem } from '@patternfly/react-core';
 import React from 'react';
 
 export interface IElasticsearchLogsFieldsProps {
@@ -15,32 +15,34 @@ const ElasticsearchLogsFields: React.FunctionComponent<IElasticsearchLogsFieldsP
   selectedFields,
   selectField,
 }: IElasticsearchLogsFieldsProps) => {
+  if (selectedFields.length === 0 && fields.length === 0) {
+    return null;
+  }
+
   return (
-    <React.Fragment>
-      {selectedFields.length > 0 ? <p className="pf-u-font-size-xs pf-u-color-400">Selected Fields</p> : null}
+    <Card>
+      <SimpleList aria-label="Fields" isControlled={false}>
+        {selectedFields.length > 0 ? (
+          <SimpleListGroup title="Selected Fields">
+            {selectedFields.map((selectedField, index) => (
+              <SimpleListItem key={index} onClick={(): void => selectField(selectedField)} isActive={false}>
+                {selectedField}
+              </SimpleListItem>
+            ))}
+          </SimpleListGroup>
+        ) : null}
 
-      {selectedFields.length > 0 ? (
-        <SimpleList aria-label="Selected Fields" isControlled={false}>
-          {selectedFields.map((selectedField, index) => (
-            <SimpleListItem key={index} onClick={(): void => selectField(selectedField)} isActive={false}>
-              {selectedField}
-            </SimpleListItem>
-          ))}
-        </SimpleList>
-      ) : null}
-
-      {fields.length > 0 ? <p className="pf-u-font-size-xs pf-u-color-400">Fields</p> : null}
-
-      {fields.length > 0 ? (
-        <SimpleList aria-label="Fields" isControlled={false}>
-          {fields.map((field, index) => (
-            <SimpleListItem key={index} onClick={(): void => selectField(field)} isActive={false}>
-              {field}
-            </SimpleListItem>
-          ))}
-        </SimpleList>
-      ) : null}
-    </React.Fragment>
+        {fields.length > 0 ? (
+          <SimpleListGroup title="Fields">
+            {fields.map((field, index) => (
+              <SimpleListItem key={index} onClick={(): void => selectField(field)} isActive={false}>
+                {field}
+              </SimpleListItem>
+            ))}
+          </SimpleListGroup>
+        ) : null}
+      </SimpleList>
+    </Card>
   );
 };
 

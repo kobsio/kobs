@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { Application } from 'proto/application_pb';
+import DrawerLink from 'components/DrawerLink';
 
 interface IApplicationDetailsLinkProps {
   application: Application.AsObject;
@@ -23,7 +24,7 @@ const ApplicationDetailsLink: React.FunctionComponent<IApplicationDetailsLinkPro
     setLink(`/applications/${application.cluster}/${application.namespace}/${application.name}${location.search}`);
   }, [application, location.search]);
 
-  return <Link to={link}>Details</Link>;
+  return <DrawerLink link={link} />;
 };
 
 export default ApplicationDetailsLink;
