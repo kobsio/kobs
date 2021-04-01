@@ -17,7 +17,20 @@ theme:
   search_index_only: true
 
 nav:
-  - Home: index.md
+  - Introduction: index.md
+  - Installation:
+      - Helm: installation/helm.md
+      - Kustomize: installation/kustomize.md
+  - Clusters: clusters/clusters.md
+  - Resources:
+      - Kubernetes Objects: resources/kubernetes-objects.md
+      - Applications: resources/applications.md
+  - Plugins:
+      - Getting started: plugins/getting-started.md
+      - Prometheus: plugins/prometheus.md
+      - Elasticsearch: plugins/elasticsearch.md
+      - Jaeger: plugins/jaeger.md
+  - Contributing: contributing/contributing.md
 
 plugins:
   - search
