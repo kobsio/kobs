@@ -1,0 +1,66 @@
+name: Helm
+
+on:
+  push:
+    paths:
+      - 'deploy/helm/**'
+
+jobs:
+  helm:
+    name: Helm Chart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Lint
+        run: |
+          helm lint deploy/helm/kobs
+
+      - name: Template
+        run: |
+          helm template kobs -n observability deploy/helm/kobs
+
+      - name: Install
+        run: |
+          kind create cluster
+          sleep 60s
+          kubectl create namespace observability
+          sleep 10s
+          helm install --namespace observability kobs deploy/helm/kobs
+
+      - name: Configure SSH
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Configure Git
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          git config --global user.email "admin@kobs.io" && git config --global user.name "kobsio"
+
+      - name: Package Helm Chart
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          helm package ./deploy/helm/kobs
+
+      - name: Clone Helm Repository
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          git clone git@github.com:kobsio/helm-repository.git
+
+      - name: Update Helm Repository
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          mv kobs* ./helm-repository/ && helm repo index helm-repository/ --url https://kobsio.github.io/helm-repository/
+
+      - name: Commit Changes
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          cd helm-repository/ && git add . && git commit -m "Add new release for kobs"
+
+      - name: Push Changes
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          cd helm-repository/ && git push

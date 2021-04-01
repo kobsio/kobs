@@ -1,0 +1,8 @@
+apiVersion: v2
+name: kobs
+description: Kubernetes Observability Platform
+type: application
+home: https://kobs.io
+icon: https://kobs.io/TODO.svg
+version: 0.1.0
+appVersion: 0.0.1
