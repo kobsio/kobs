@@ -1,0 +1,178 @@
+# Default values for kobs.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicas: 1
+
+## Specify a list of image pull secrets, to avoid the DockerHub rate limit or to pull the kobs/enovy image from a
+## private registry.
+## See: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+imagePullSecrets: []
+  # - name: regcred
+
+## Specify security settings for the created Pods. To set the security settings for the kobs or envoy Container use the
+## corresponding "securityContext" field.
+## See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+##
+podSecurityContext: {}
+  # fsGroup: 2000
+
+## Specify a map of key-value pairs, to assign the Pods to a specific set of nodes.
+## See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+##
+nodeSelector: {}
+
+## Specify the tolerations for the kobs Pods.
+## See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+##
+tolerations: []
+
+## Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods.
+## See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+
+kobs:
+  image:
+    repository: kobsio/kobs
+    tag: main
+    pullPolicy: IfNotPresent
+
+  ##  Specify security settings for the kobs Container. They override settings made at the Pod level via the
+  ## "podSecurityContext" when there is overlap.
+  ## See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ##
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  ## We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This
+  ## also increases chances charts run on environments with little resources, such as Minikube. If you do want to
+  ## specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after
+  ## 'resources:'.
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  ## Specify additional environment variables for the kobs container.
+  ##
+  env: []
+
+  ## Specify some settings like log level, log format, etc. for kobs.
+  ##
+  settings:
+    logLevel: info
+    logFormat: plain
+
+  ## Set the content of the config.yaml file, which is used by kobs. The configuration file is used to specify the
+  ## cluster providers and the configuration for the plugins.
+  ##
+  config: |
+    clusters:
+      providers:
+        - provider: incluster
+          incluster:
+            name: kobs
+
+## Enable the Envoy sidecar. This is required, because kobs uses gRPC Web for the API requests and Envoy translates the
+## HTTP requests from the frontend into gRPC requests.
+## The Envoy sidecar can be disabled, when you handle the gRPC requests at another level, e.g. Ingress.
+##
+envoy:
+  enabled: true
+
+  image:
+    repository: envoyproxy/envoy
+    tag: v1.17.0
+    pullPolicy: IfNotPresent
+
+  ##  Specify security settings for the kobs Container. They override settings made at the Pod level via the
+  ## "podSecurityContext" when there is overlap.
+  ## See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ##
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  ## We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This
+  ## also increases chances charts run on environments with little resources, such as Minikube. If you do want to
+  ## specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after
+  ## 'resources:'.
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+## Specifies whether a service account should be created.
+## See: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##
+serviceAccount:
+  create: true
+
+  ## Annotations to add to the service account
+  ##
+  annotations: {}
+
+  ## The name of the service account to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  ##
+  name:
+
+## Specifies whether a cluster role and cluster role binding should be created.
+## The create cluster role and cluster role binding allows kobs read access to all resources.
+## See: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+##
+rbac:
+  create: true
+  # The name of the cluster role and cluster role binding to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name:
+
+## Specifies whether the custom resource definitions for kobs should be created.
+## The custom resource definitions are used to extend the functionality of kobs.
+##
+crd:
+  create: true
+
+## Set the type for the created service: ClusterIP, NodePort, LoadBalancer.
+## See: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+##
+service:
+  type: ClusterIP
+
+## Create an Ingress to expose kobs.
+## See: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "kobs.fullname" . }}-test-connection"
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "kobs.fullname" . }}:15222/health']
+  restartPolicy: Never

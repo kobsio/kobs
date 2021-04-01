@@ -20,6 +20,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#18](https://github.com/kobsio/kobs/pull/18): Add metrics and logs for the gRPC server.
 - [#19](https://github.com/kobsio/kobs/pull/19): Use multiple colors in the Jaeger plugin. Each service in a trace has a unique color now, which is used for the charts.
 - [#21](https://github.com/kobsio/kobs/pull/21): Add preview for Applications via plugins.
+- [#22](https://github.com/kobsio/kobs/pull/22): Add Helm chart.
 
 ### Fixed
 
