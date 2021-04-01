@@ -499,7 +499,8 @@ proto.application.Details.toObject = function(includeInstance, msg) {
   var f, obj = {
     description: jspb.Message.getFieldWithDefault(msg, 1, ""),
     linksList: jspb.Message.toObjectList(msg.getLinksList(),
-    proto.application.Link.toObject, includeInstance)
+    proto.application.Link.toObject, includeInstance),
+    plugin: (f = msg.getPlugin()) && plugins_pb.Plugin.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -545,6 +546,11 @@ proto.application.Details.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.application.Link.deserializeBinaryFromReader);
       msg.addLinks(value);
       break;
+    case 3:
+      var value = new plugins_pb.Plugin;
+      reader.readMessage(value,plugins_pb.Plugin.deserializeBinaryFromReader);
+      msg.setPlugin(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -587,6 +593,14 @@ proto.application.Details.serializeBinaryToWriter = function(message, writer) {
       2,
       f,
       proto.application.Link.serializeBinaryToWriter
+    );
+  }
+  f = message.getPlugin();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      plugins_pb.Plugin.serializeBinaryToWriter
     );
   }
 };
@@ -645,6 +659,43 @@ proto.application.Details.prototype.addLinks = function(opt_value, opt_index) {
  */
 proto.application.Details.prototype.clearLinksList = function() {
   return this.setLinksList([]);
+};
+
+
+/**
+ * optional plugins.Plugin plugin = 3;
+ * @return {?proto.plugins.Plugin}
+ */
+proto.application.Details.prototype.getPlugin = function() {
+  return /** @type{?proto.plugins.Plugin} */ (
+    jspb.Message.getWrapperField(this, plugins_pb.Plugin, 3));
+};
+
+
+/**
+ * @param {?proto.plugins.Plugin|undefined} value
+ * @return {!proto.application.Details} returns this
+*/
+proto.application.Details.prototype.setPlugin = function(value) {
+  return jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.application.Details} returns this
+ */
+proto.application.Details.prototype.clearPlugin = function() {
+  return this.setPlugin(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.application.Details.prototype.hasPlugin = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

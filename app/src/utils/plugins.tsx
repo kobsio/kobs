@@ -2,10 +2,12 @@ import React from 'react';
 
 import ElasticsearchPage from 'plugins/elasticsearch/ElasticsearchPage';
 import ElasticsearchPlugin from 'plugins/elasticsearch/ElasticsearchPlugin';
+import ElasticsearchPreview from 'plugins/elasticsearch/ElasticsearchPreview';
 import JaegerPage from 'plugins/jaeger/JaegerPage';
 import JaegerPlugin from 'plugins/jaeger/JaegerPlugin';
 import PrometheusPage from 'plugins/prometheus/PrometheusPage';
 import PrometheusPlugin from 'plugins/prometheus/PrometheusPlugin';
+import PrometheusPreview from 'plugins/prometheus/PrometheusPreview';
 
 import { Plugin as IProtoPlugin } from 'proto/plugins_grpc_web_pb';
 
@@ -31,6 +33,7 @@ export interface IPluginProps {
 export interface IPlugin {
   page: React.FunctionComponent<IPluginPageProps>;
   plugin: React.FunctionComponent<IPluginProps>;
+  preview?: React.FunctionComponent<IPluginProps>;
 }
 
 // IPlugins is the interface for a list of plugins. The key of this interface is the plugin type and must correspond
@@ -44,6 +47,7 @@ export const plugins: IPlugins = {
   elasticsearch: {
     page: ElasticsearchPage,
     plugin: ElasticsearchPlugin,
+    preview: ElasticsearchPreview,
   },
   jaeger: {
     page: JaegerPage,
@@ -52,5 +56,6 @@ export const plugins: IPlugins = {
   prometheus: {
     page: PrometheusPage,
     plugin: PrometheusPlugin,
+    preview: PrometheusPreview,
   },
 };

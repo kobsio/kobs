@@ -59,6 +59,11 @@ export class Details extends jspb.Message {
   setLinksList(value: Array<Link>): void;
   addLinks(value?: Link, index?: number): Link;
 
+  hasPlugin(): boolean;
+  clearPlugin(): void;
+  getPlugin(): plugins_pb.Plugin | undefined;
+  setPlugin(value?: plugins_pb.Plugin): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Details.AsObject;
   static toObject(includeInstance: boolean, msg: Details): Details.AsObject;
@@ -73,6 +78,7 @@ export namespace Details {
   export type AsObject = {
     description: string,
     linksList: Array<Link.AsObject>,
+    plugin?: plugins_pb.Plugin.AsObject,
   }
 }
 

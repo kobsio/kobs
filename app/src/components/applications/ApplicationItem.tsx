@@ -2,6 +2,7 @@ import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
 import { Application } from 'proto/application_pb';
+import Preview from 'components/plugins/Preview';
 
 interface IApplicationItemProps {
   application: Application.AsObject;
@@ -19,7 +20,13 @@ const ApplicationItem: React.FunctionComponent<IApplicationItemProps> = ({
     <Card style={{ cursor: 'pointer' }} isHoverable={true} onClick={(): void => selectApplication(application)}>
       <CardTitle>{application.name}</CardTitle>
       <CardBody>
-        {application.details ? application.details.description : `${application.namespace} (${application.cluster})`}
+        {application.details && application.details.plugin ? (
+          <Preview plugin={application.details.plugin} />
+        ) : application.details ? (
+          application.details.description
+        ) : (
+          `${application.namespace} (${application.cluster})`
+        )}
       </CardBody>
     </Card>
   );

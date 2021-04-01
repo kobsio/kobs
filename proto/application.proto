@@ -24,6 +24,7 @@ message Application {
 message Details {
   string description = 1;
   repeated Link links = 2;
+  plugins.Plugin plugin = 3;
 }
 
 // Link is the format of a link, which can be provided within an Application. A link consists of a title, which is

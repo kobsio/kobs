@@ -77,6 +77,15 @@ const ResourcesListItem: React.FunctionComponent<IResourcesListItemProps> = ({
   );
 };
 
-export default memo(ResourcesListItem, () => {
-  return true;
+export default memo(ResourcesListItem, (prevProps, nextProps) => {
+  if (
+    JSON.stringify(prevProps.clusters) === JSON.stringify(nextProps.clusters) &&
+    JSON.stringify(prevProps.namespaces) === JSON.stringify(nextProps.namespaces) &&
+    JSON.stringify(prevProps.resource) === JSON.stringify(nextProps.resource) &&
+    prevProps.selector === nextProps.selector
+  ) {
+    return true;
+  }
+
+  return false;
 });
