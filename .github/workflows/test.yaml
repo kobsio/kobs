@@ -2,6 +2,21 @@ name: Test
 
 on:
   push:
+    paths-ignore:
+      - '.github/**'
+      - '.vscode/**'
+      - 'deploy/**'
+      - 'docs/**'
+      - '.dockerignore'
+      - '.editorconfig'
+      - '.gitattributes'
+      - '.gitignore'
+      - 'CHANGELOG.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'mkdocs.yml'
+      - 'README.md'
 
 jobs:
   test:

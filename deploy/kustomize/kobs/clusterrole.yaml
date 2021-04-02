@@ -1,0 +1,23 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kobs
+  labels:
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - 'get'
+      - 'watch'
+      - 'list'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - 'get'
+      - 'watch'
+      - 'list'

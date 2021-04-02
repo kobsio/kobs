@@ -1,0 +1,88 @@
+---
+apiVersion: kobs.io/v1alpha1
+kind: Application
+metadata:
+  name: productpage
+  namespace: bookinfo
+spec:
+  details:
+    description: The productpage microservice calls the details and reviews microservices to populate the page.
+    links:
+      - title: Website
+        link: https://istio.io/latest/docs/examples/bookinfo/
+      - title: GitHub
+        link: https://github.com/istio/istio/tree/master/samples/bookinfo
+    plugin:
+      name: Prometheus
+      prometheus:
+        charts:
+          - title: Incoming Success Rate
+            unit: "%"
+            queries:
+              - label: Incoming Success Rate
+                query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])) * 100
+  resources:
+    - kinds: ["deployments", "pods"]
+      selector: app=productpage
+  plugins:
+    - name: Prometheus
+      prometheus:
+        charts:
+          - title: Incoming Request Volume
+            type: sparkline
+            unit: ops/s
+            size: 6
+            queries:
+              - label: Incoming Request Volume
+                query: round(sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])), 0.001)
+          - title: Incoming Success Rate
+            type: sparkline
+            unit: "%"
+            size: 6
+            queries:
+              - label: Incoming Success Rate
+                query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])) * 100
+          - title: Divider
+            type: divider
+          - title: Request Duration
+            type: line
+            unit: ms
+            size: 12
+            queries:
+              - label: P50
+                query: (histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[1m])) by (le)) / 1000)
+              - label: P90
+                query: (histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[1m])) by (le)) / 1000)
+              - label: P99
+                query: (histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[1m])) by (le)) / 1000)
+          - title: Incoming Requests By Source And Response Code
+            type: line
+            unit: ops/s
+            size: 6
+            queries:
+              - label: "{{ .source_workload }}.{{ .source_workload_namespace }} : {{ .response_code }} (🔐 mTLS)"
+                query: round(sum(irate(istio_requests_total{connection_security_policy="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",reporter="destination"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
+              - label: "{{ .source_workload }}.{{ .source_workload_namespace }} : {{ .response_code }}"
+                query: round(sum(irate(istio_requests_total{connection_security_policy!="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",reporter="destination"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
+          - title: Incoming Success Rate (non-5xx responses) By Source
+            type: line
+            unit: "%"
+            size: 6
+            queries:
+              - label: "{{ .source_workload }}.{{ .source_workload_namespace }} (🔐 mTLS)"
+                query: sum(irate(istio_requests_total{reporter="destination",connection_security_policy="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",response_code!~"5.*"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",connection_security_policy="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])) by (source_workload, source_workload_namespace) * 100
+              - label: "{{ .source_workload }}.{{ .source_workload_namespace }}"
+                query: sum(irate(istio_requests_total{reporter="destination",connection_security_policy!="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",response_code!~"5.*"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",connection_security_policy!="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])) by (source_workload, source_workload_namespace) * 100
+    - name: Elasticsearch
+      elasticsearch:
+        queries:
+          - name: All Logs
+            query: "kubernetes.namespace: bookinfo AND kubernetes.labels.app: productpage"
+          - name: All istio-proxy Logs
+            query: "kubernetes.namespace: bookinfo AND kubernetes.labels.app: productpage AND kubernetes.container.name: istio-proxy"
+            fields: ["kubernetes.pod.name", "content.protocol", "content.method", "content.path", "content.response_code", "content.duration"]
+    - name: Jaeger
+      jaeger:
+        queries:
+          - name: All Traces
+            service: productpage.bookinfo

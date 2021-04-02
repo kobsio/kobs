@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kobs
+  namespace: observability
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "15221"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kobs
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+data:
+  config.yaml: |
+    clusters:
+      providers:
+        - provider: incluster
+          incluster:
+            name: kobs-demo
+
+    prometheus:
+      - name: Prometheus
+        description: Prometheus can be used for the metrics of your application.
+        address: http://prometheus:9090
+        username:
+        password:
+        token:
+
+    elasticsearch:
+      - name: Elasticsearch
+        description: Elasticsearch can be used for the logs of your application.
+        address: http://elasticsearch-es-http:9200
+        username:
+        password:
+        token:
+
+    jaeger:
+      - name: Jaeger
+        description: Jaeger can be used for the traces of your application.
+        address: http://tracing:80/jaeger
+        username:
+        password:
+        token:

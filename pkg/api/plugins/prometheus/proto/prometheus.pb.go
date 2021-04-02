@@ -674,8 +674,7 @@ func (x *Chart) GetQueries() []*Query {
 
 // Query presents a single query to get the data, which should be shown in the chart for the metrics section. A query
 // consists of a query string (e.g. PromQL) and a lable. The query and the label can contain variables via Go templating
-// syntax (e.g. {{ .VARIABLE-NAME }}). For Prometheus the label can also contain a label from the returned series with
-// the same syntax (e.g. {{ .SERIES-LABEL }}).
+// syntax. For Prometheus the label can also contain a label from the returned series with the same syntax.
 type Query struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

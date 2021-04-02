@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kobs
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kobs
+      app.kubernetes.io/instance: kobs
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kobs
+        app.kubernetes.io/instance: kobs
+    spec:
+      serviceAccountName: kobs
+      containers:
+        - name: kobs
+          image: "kobsio/kobs:main"
+          imagePullPolicy: IfNotPresent
+          args:
+            - --log.level=info
+            - --log.format=plain
+          ports:
+            - name: http-web
+              containerPort: 15219
+              protocol: TCP
+            - name: grpc-api
+              containerPort: 15220
+              protocol: TCP
+            - name: http-metrics
+              containerPort: 15221
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http-web
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http-web
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          volumeMounts:
+            - name: config
+              mountPath: /kobs/config.yaml
+              subPath: config.yaml
+              readOnly: true
+        - name: envoy
+          image: "envoyproxy/envoy:v1.17.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http-envoy
+              containerPort: 15222
+              protocol: TCP
+            - name: http-admin
+              containerPort: 9901
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http-admin
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-admin
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: kobs
