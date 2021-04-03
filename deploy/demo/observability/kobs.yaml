@@ -32,22 +32,13 @@ data:
       - name: Prometheus
         description: Prometheus can be used for the metrics of your application.
         address: http://prometheus:9090
-        username:
-        password:
-        token:
 
     elasticsearch:
       - name: Elasticsearch
         description: Elasticsearch can be used for the logs of your application.
         address: http://elasticsearch-es-http:9200
-        username:
-        password:
-        token:
 
     jaeger:
       - name: Jaeger
         description: Jaeger can be used for the traces of your application.
         address: http://tracing:80/jaeger
-        username:
-        password:
-        token:

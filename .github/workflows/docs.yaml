@@ -25,5 +25,8 @@ jobs:
       - name: Install Material for MkDocs
         run: pip install mkdocs-material
 
+      - name: Install PyMdown Extensions
+        run: pip install pymdown-extensions
+
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
