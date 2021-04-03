@@ -1,3 +1,5 @@
+import { V1LabelSelector } from '@kubernetes/client-node';
+
 // timeDifference calculates the difference of two given timestamps and returns a human readable string for the
 // difference. It is used to get the same style for the age of resources like it is displayed by kubectl.
 export const timeDifference = (current: number, previous: number): string => {
@@ -27,4 +29,26 @@ export const formatTime = (timestamp: number): string => {
   return `${d.getFullYear()}-${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${(
     '0' + d.getHours()
   ).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`;
+};
+
+// getLabelSelector returns the given label selector as string, so that it can be used within the React UI.
+export const getLabelSelector = (labelSelector: V1LabelSelector | undefined): string => {
+  if (!labelSelector) {
+    return '';
+  }
+
+  if (labelSelector.matchLabels) {
+    return Object.keys(labelSelector.matchLabels)
+      .map(
+        (key) =>
+          `${key}=${
+            labelSelector.matchLabels && labelSelector.matchLabels.hasOwnProperty(key)
+              ? labelSelector.matchLabels[key]
+              : ''
+          }`,
+      )
+      .join(', ');
+  }
+
+  return '';
 };

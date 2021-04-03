@@ -78,7 +78,7 @@ const ElasticsearchPreviewChart: React.FunctionComponent<IElasticsearchPreviewCh
     <React.Fragment>
       <div className="pf-u-font-size-lg pf-u-text-nowrap pf-u-text-truncate">{data.hits} Hits</div>
       {query.name ? (
-        <div className="pf-u-font-size-sm pf-u-color-400  pf-u-text-nowrap pf-u-text-truncates">{query.name}</div>
+        <div className="pf-u-font-size-sm pf-u-color-400 pf-u-text-nowrap pf-u-text-truncate">{query.name}</div>
       ) : null}
 
       <div style={{ height: '75px', position: 'relative', width: '100%' }} ref={refChart}>

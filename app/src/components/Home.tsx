@@ -20,16 +20,11 @@ const Home: React.FunctionComponent = () => {
             title="Applications"
             body={applicationsDescription}
             link="/applications"
-            icon="/img/plugins/kobs.png"
+            icon="/img/plugins/applications.png"
           />
         </GalleryItem>
         <GalleryItem>
-          <HomeItem
-            title="Resources"
-            body={resourcesDescription}
-            link="/resources"
-            icon="/img/plugins/kubernetes.png"
-          />
+          <HomeItem title="Resources" body={resourcesDescription} link="/resources" icon="/img/plugins/resources.png" />
         </GalleryItem>
 
         {pluginsContext.plugins.length === 0 ? (

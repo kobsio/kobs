@@ -93,7 +93,7 @@ const JaegerPageCompareTrace: React.FunctionComponent<IJaegerPageCompareTracePro
       <Grid>
         <GridItem span={headerComponent ? 9 : 12}>
           <PageSection style={{ height: '100%' }} variant={PageSectionVariants.light}>
-            <Title headingLevel="h6" size="xl">
+            <Title className="pf-u-text-nowrap pf-u-text-truncate" headingLevel="h6" size="xl">
               {data.trace.processes[data.trace.spans[0].processID].serviceName}: {data.trace.spans[0].operationName}{' '}
               <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{data.trace.traceID}</span>
             </Title>

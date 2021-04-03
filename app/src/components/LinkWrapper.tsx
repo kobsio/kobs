@@ -10,12 +10,12 @@ interface ILinkWrapperProps {
 // which should navigate the user to another location. This is to prefer over an onClick handler, so that the user can
 // decide if he wants the link in a new tab or not.
 const LinkWrapper: React.FunctionComponent<ILinkWrapperProps> = ({ children, link }: ILinkWrapperProps) => {
+  if (link.startsWith('http')) {
+    return <div onClick={(): Window | null => window.open(link, '_blank')}>{children}</div>;
+  }
+
   return (
-    <Link
-      to={link}
-      target={link.startsWith('http') ? '_blank' : undefined}
-      style={{ color: 'inherit', textDecoration: 'inherit' }}
-    >
+    <Link to={link} style={{ color: 'inherit', textDecoration: 'inherit' }}>
       {children}
     </Link>
   );
