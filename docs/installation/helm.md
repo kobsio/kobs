@@ -7,14 +7,14 @@
 To install kobs using Helm you have to add our Helm repository:
 
 ```sh
-helm repo add kobsio https://kobsio.github.io/helm-repository
+helm repo add kobs https://helm.kobs.io
 helm repo list
 ```
 
 When you have added the Helm repository, you can install kobs:
 
 ```sh
-helm install kobs kobsio/kobs
+helm install kobs kobs/kobs
 ```
 
 When the installation was successful you shoud see a message like the following:
@@ -38,13 +38,13 @@ To update the Helm repository and to show all available versions of the Helm cha
 
 ```sh
 helm repo update
-helm search repo -l kobsio/
+helm search repo -l kobs/
 ```
 
 To update your deployed Helm chart run:
 
 ```sh
-helm upgrade kobs kobsio/kobs
+helm upgrade kobs kobs/kobs
 ```
 
 ## Values

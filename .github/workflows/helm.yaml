@@ -53,7 +53,7 @@ jobs:
       - name: Update Helm Repository
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          mv kobs* ./helm-repository/ && helm repo index helm-repository/ --url https://kobsio.github.io/helm-repository/
+          mv kobs* ./helm-repository/ && helm repo index helm-repository/ --url https://helm.kobs.io/
 
       - name: Commit Changes
         if: ${{ github.ref == 'refs/heads/main' }}
