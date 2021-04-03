@@ -3,6 +3,6 @@ name: kobs
 description: Kubernetes Observability Platform
 type: application
 home: https://kobs.io
-icon: https://kobs.io/TODO.svg
-version: 0.1.0
+icon: https://kobs.io/assets/images/logo.svg
+version: 0.1.1
 appVersion: 0.0.1

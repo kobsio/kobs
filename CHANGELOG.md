@@ -37,3 +37,4 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#11](https://github.com/kobsio/kobs/pull/11): :warning: *Breaking change:* :warning: Refactor cluster and application handling.
 - [#17](https://github.com/kobsio/kobs/pull/17): Use location to load applications, which allows user to share their applications view.
 - [#20](https://github.com/kobsio/kobs/pull/20): Rework usage of icons, links handling and drawer layout.
+- [#25](https://github.com/kobsio/kobs/pull/25): Change the URL for the Helm repository to [helm.kobs.io](https://helm.kobs.io).
