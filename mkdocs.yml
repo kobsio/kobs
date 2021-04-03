@@ -11,19 +11,38 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-  icon:
-    logo: material/kubernetes
+  favicon: assets/images/favicon.png
+  logo: assets/images/logo.png
   include_search_page: false
   search_index_only: true
 
 nav:
-  - Home: index.md
+  - Introduction: index.md
+  - Installation:
+      - Helm: installation/helm.md
+      - Kustomize: installation/kustomize.md
+      - Demo: installation/demo.md
+  - Configuration:
+      - Getting Started: configuration/getting-started.md
+      - Clusters: configuration/clusters.md
+      - Plugins: configuration/plugins.md
+  - Resources:
+      - Resources: resources/resources.md
+      - Applications: resources/applications.md
+  - Plugins:
+      - Getting Started: plugins/getting-started.md
+      - Elasticsearch: plugins/elasticsearch.md
+      - Jaeger: plugins/jaeger.md
+      - Prometheus: plugins/prometheus.md
+  - Contributing: contributing/contributing.md
 
 plugins:
   - search
 
 markdown_extensions:
   - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
 
 extra:
   social:
@@ -35,4 +54,4 @@ extra:
       link: https://hub.docker.com/r/kobsio/kobs
 
 extra_css:
-  - stylesheets/extra.css
+  - assets/stylesheets/extra.css

@@ -1,31 +1,52 @@
----
-apiVersion: kobs.io/v1alpha1
-kind: Application
-metadata:
-  name: reviews
-  namespace: bookinfo
-spec:
-  details:
-    description: The reviews microservice contains book reviews. It also calls the ratings microservice.
-    links:
-      - title: Website
-        link: https://istio.io/latest/docs/examples/bookinfo/
-      - title: GitHub
-        link: https://github.com/istio/istio/tree/master/samples/bookinfo
-      - title: Application CR
-        link: https://github.com/kobsio/kobs/blob/main/deploy/demo/bookinfo/reviews-application.yaml
-    plugin:
-      name: Prometheus
-      prometheus:
-        charts:
-          - title: Incoming Success Rate
-            unit: "%"
-            queries:
-              - label: Incoming Success Rate
-                query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"reviews-.*",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"reviews-.*"}[5m])) * 100
-  resources:
-    - kinds: ["deployments", "pods"]
-      selector: app=reviews
+# Prometheus
+
+The Prometheus plugin can be used to retrieve metrics from a configured Prometheus instance.
+
+![Query](assets/prometheus-query.png)
+
+![Queries](assets/prometheus-queries.png)
+
+## Specification
+
+The following specification can be used, within an application.
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| variables | [[]Variable](#variable) | A list of variables, which can be used to filter the results in the charts. | No |
+| charts | [[]Chart](#chart) | A list of charts for the Prometheus plugin page. | Yes |
+
+### Variable
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | The name of the variable. The name can the be used in other queries, via the Go templating syntax: `{{ .VARIABLENAME }}`. | Yes |
+| label | string | The Prometheus label, which should be used for the possible variable values. | Yes |
+| query | string | The query which should be used to get the variable values. | Yes |
+| allowAll | boolean | When this is `true` an additional value `All` is added, which contains a regular expression with all values of the variable. | No |
+
+### Chart
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| title | string | The title of the chart. | Yes |
+| type | string | The type of the chart. Must be `sparkline`, `line`, `area` or `bar`. The special type `divider` can be used to add a horizontal divider between the charts. | Yes |
+| unit | string | An optional unit for the y axis of the chart. | No |
+| stacked | boolean | When this is `true` all time series in the chart will be stacked. | No |
+| size | number | An optional size for the chart. Must be a number between `1` and `12`. This is used to customize the grid of charts in the Prometheus tab. | No |
+| queries | [[]Query](#query) | A list of queries, which are used to get the data for the chart. | Yes |
+
+### Query
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| query | string | The PromQL query. The query can use the value of a variable via the Go templating syntax: `{{ .VARIABLENAME }}`. | Yes |
+| label | string | The label the results. The label can use the value of a variable or a label of the returned time series, e.g. `{{ .response_code }}`. | Yes |
+
+## Example
+
+The following example will display five charts.
+
+```yaml
   plugins:
     - name: Prometheus
       prometheus:
@@ -80,16 +101,6 @@ spec:
                 query: sum(irate(istio_requests_total{reporter="destination",connection_security_policy="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}",response_code!~"5.*"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",connection_security_policy="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}"}[5m])) by (source_workload, source_workload_namespace) * 100
               - label: "{{ .source_workload }}.{{ .source_workload_namespace }}"
                 query: sum(irate(istio_requests_total{reporter="destination",connection_security_policy!="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}",response_code!~"5.*"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",connection_security_policy!="mutual_tls",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}"}[5m])) by (source_workload, source_workload_namespace) * 100
-    - name: Elasticsearch
-      elasticsearch:
-        queries:
-          - name: All Logs
-            query: "kubernetes.namespace: bookinfo AND kubernetes.labels.app: reviews"
-          - name: All istio-proxy Logs
-            query: "kubernetes.namespace: bookinfo AND kubernetes.labels.app: reviews AND kubernetes.container.name: istio-proxy"
-            fields: ["kubernetes.pod.name", "content.protocol", "content.method", "content.path", "content.response_code", "content.duration"]
-    - name: Jaeger
-      jaeger:
-        queries:
-          - name: All Traces
-            service: reviews.bookinfo
+```
+
+![Example](assets/prometheus-example.png)

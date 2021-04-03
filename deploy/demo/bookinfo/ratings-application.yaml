@@ -12,6 +12,8 @@ spec:
         link: https://istio.io/latest/docs/examples/bookinfo/
       - title: GitHub
         link: https://github.com/istio/istio/tree/master/samples/bookinfo
+      - title: Application CR
+        link: https://github.com/kobsio/kobs/blob/main/deploy/demo/bookinfo/ratings-application.yaml
     plugin:
       name: Prometheus
       prometheus:

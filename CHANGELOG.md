@@ -22,6 +22,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#21](https://github.com/kobsio/kobs/pull/21): Add preview for Applications via plugins.
 - [#22](https://github.com/kobsio/kobs/pull/22): Add Helm chart.
 - [#23](https://github.com/kobsio/kobs/pull/23): Add Kustomize files and demo.
+- [#24](https://github.com/kobsio/kobs/pull/24): Add documentation.
 
 ### Fixed
 
