@@ -1,12 +1,31 @@
 import { Bullseye, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core';
 import {
+  CoreV1EventList,
+  V1ClusterRoleBindingList,
+  V1ClusterRoleList,
+  V1ConfigMapList,
   V1DaemonSetList,
   V1DeploymentList,
+  V1EndpointsList,
+  V1IngressList,
   V1JobList,
+  V1NetworkPolicyList,
+  V1NodeList,
+  V1PersistentVolumeClaimList,
+  V1PersistentVolumeList,
   V1PodList,
   V1ReplicaSetList,
+  V1RoleBindingList,
+  V1RoleList,
+  V1SecretList,
+  V1ServiceAccountList,
+  V1ServiceList,
   V1StatefulSetList,
+  V1StorageClassList,
   V1beta1CronJobList,
+  V1beta1PodDisruptionBudgetList,
+  V1beta1PodSecurityPolicyList,
+  V2beta1HorizontalPodAutoscalerList,
 } from '@kubernetes/client-node';
 import { IRow } from '@patternfly/react-table';
 import { JSONPath } from 'jsonpath-plus';
@@ -14,10 +33,19 @@ import React from 'react';
 import { SearchIcon } from '@patternfly/react-icons';
 
 import { CRD, Resources as ProtoResources } from 'proto/clusters_grpc_web_pb';
-import { timeDifference } from 'utils/helpers';
+import { getLabelSelector, timeDifference } from 'utils/helpers';
 
 // TScope is the scope of a resource, which can be namespaced or cluster.
 export type TScope = 'Namespaced' | 'Cluster';
+
+export interface IResourceGroups {
+  [key: string]: IResourceGroup;
+}
+
+export interface IResourceGroup {
+  name: string;
+  resources: IResources;
+}
 
 // The IResources is a list of resources, which is supported by kobs.
 export interface IResources {
@@ -43,6 +71,7 @@ export interface IResource {
 // result from the gRPC API call to the rows function. The returned rows are mostly the same as they are also retunred
 // by kubectl.
 const resources: IResources = {
+  // eslint-disable-next-line sort-keys
   cronjobs: {
     columns: ['Name', 'Namespace', 'Cluster', 'Schedule', 'Suspend', 'Active', 'Last Schedule', 'Age'],
     description: 'A CronJob creates Jobs on a repeating schedule.',
@@ -389,6 +418,809 @@ const resources: IResources = {
     },
     scope: 'Namespaced',
     title: 'Stateful Sets',
+  },
+  // eslint-disable-next-line sort-keys
+  endpoints: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Endpoints', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'endpoints',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const enpointList: V1EndpointsList = JSON.parse(result.getResourcelist());
+        for (const endpoint of enpointList.items) {
+          const age =
+            endpoint.metadata && endpoint.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(endpoint.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+          const ep: string[] = [];
+          if (endpoint.subsets) {
+            for (const subset of endpoint.subsets) {
+              const ips = subset.addresses?.map((address) => address.ip);
+              if (ips) {
+                ep.push(...ips);
+              }
+            }
+          }
+
+          rows.push({
+            cells: [endpoint.metadata?.name, result.getNamespace(), result.getCluster(), ep.join(', '), age],
+            props: endpoint,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Endpoints',
+  },
+  horizontalpodautoscalers: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Reference', 'Min. Pods', 'Max. Pods', 'Replicas', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/autoscaling/v2beta1',
+    resource: 'horizontalpodautoscalers',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const hpaList: V2beta1HorizontalPodAutoscalerList = JSON.parse(result.getResourcelist());
+        for (const hpa of hpaList.items) {
+          const reference =
+            hpa.spec && hpa.spec.scaleTargetRef
+              ? `${hpa.spec.scaleTargetRef.kind}/${hpa.spec.scaleTargetRef.name}`
+              : '';
+          const minPods = hpa.spec && hpa.spec.minReplicas ? hpa.spec.minReplicas : '';
+          const maxPods = hpa.spec && hpa.spec.maxReplicas ? hpa.spec.maxReplicas : '';
+          const replicas =
+            hpa.status && hpa.status.currentReplicas
+              ? `${hpa.status.currentReplicas}${hpa.status.desiredReplicas ? `/${hpa.status.desiredReplicas}` : ''}`
+              : '';
+          const age =
+            hpa.metadata && hpa.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(hpa.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [
+              hpa.metadata?.name,
+              result.getNamespace(),
+              result.getCluster(),
+              reference,
+              minPods,
+              maxPods,
+              replicas,
+              age,
+            ],
+            props: hpa,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Horizontal Pod Autoscalers',
+  },
+  ingresses: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Hosts', 'Adress', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/extensions/v1beta1',
+    resource: 'ingresses',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const ingressList: V1IngressList = JSON.parse(result.getResourcelist());
+        for (const ingress of ingressList.items) {
+          const hosts = ingress.spec?.rules?.map((rule) => rule.host);
+          const address =
+            ingress.status &&
+            ingress.status.loadBalancer &&
+            ingress.status.loadBalancer.ingress &&
+            ingress.status.loadBalancer.ingress.length > 0 &&
+            ingress.status.loadBalancer.ingress[0].ip
+              ? ingress.status.loadBalancer.ingress[0].ip
+              : '';
+          const age =
+            ingress.metadata && ingress.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(ingress.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [
+              ingress.metadata?.name,
+              result.getNamespace(),
+              result.getCluster(),
+              hosts ? hosts.join(', ') : '',
+              address,
+              age,
+            ],
+            props: ingress,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Ingresses',
+  },
+  networkpolicies: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Pod Selector', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/networking.k8s.io/v1',
+    resource: 'networkpolicies',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const networkPolicyList: V1NetworkPolicyList = JSON.parse(result.getResourcelist());
+        for (const networkPolicy of networkPolicyList.items) {
+          const podSelector = getLabelSelector(networkPolicy.spec?.podSelector);
+          const age =
+            networkPolicy.metadata && networkPolicy.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(networkPolicy.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [networkPolicy.metadata?.name, result.getNamespace(), result.getCluster(), podSelector, age],
+            props: networkPolicy,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Network Policies',
+  },
+  services: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Type', 'Cluster IP', 'External IP', 'Port(s)', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'services',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const serviceList: V1ServiceList = JSON.parse(result.getResourcelist());
+        for (const service of serviceList.items) {
+          const type = service.spec ? service.spec.type : '';
+          const clusterIP = service.spec && service.spec.clusterIP ? service.spec.clusterIP : '';
+          const externalIPs =
+            service.status && service.status.loadBalancer && service.status.loadBalancer.ingress
+              ? service.status.loadBalancer.ingress.map((ingress) => (ingress.ip ? ingress.ip : '')).join(', ')
+              : '';
+          const ports =
+            service.spec && service.spec.ports
+              ? service.spec.ports
+                  .map(
+                    (port) =>
+                      `${port.port}${port.protocol ? `/${port.protocol}` : ''} (${port.name}${
+                        port.appProtocol ? `/${port.appProtocol}` : ''
+                      })`,
+                  )
+                  .join(', ')
+              : '';
+          const age =
+            service.metadata && service.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(service.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [
+              service.metadata?.name,
+              result.getNamespace(),
+              result.getCluster(),
+              type,
+              clusterIP,
+              externalIPs,
+              ports,
+              age,
+            ],
+            props: service,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Services',
+  },
+  // eslint-disable-next-line sort-keys
+  configmaps: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Data', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'configmaps',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const configMapList: V1ConfigMapList = JSON.parse(result.getResourcelist());
+        for (const configMap of configMapList.items) {
+          const age =
+            configMap.metadata && configMap.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(configMap.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [
+              configMap.metadata?.name,
+              result.getNamespace(),
+              result.getCluster(),
+              configMap.data ? Object.keys(configMap.data).length : 0,
+              age,
+            ],
+            props: configMap,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Config Maps',
+  },
+  persistentvolumeclaims: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Status', 'Volume', 'Capacity', 'Access Modes', 'Storage Class', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'persistentvolumeclaims',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const pvcList: V1PersistentVolumeClaimList = JSON.parse(result.getResourcelist());
+        for (const pvc of pvcList.items) {
+          const status = pvc.status && pvc.status.phase ? pvc.status.phase : '';
+          const volume = pvc.spec && pvc.spec.volumeName ? pvc.spec.volumeName : '';
+          const capacity =
+            pvc.status && pvc.status.capacity && pvc.status.capacity.storage ? pvc.status.capacity.storage : '';
+          const accessMode = pvc.spec && pvc.spec.accessModes ? pvc.spec.accessModes.join(', ') : '';
+          const storageClass = pvc.spec && pvc.spec.storageClassName ? pvc.spec.storageClassName : '';
+          const age =
+            pvc.metadata && pvc.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(pvc.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [
+              pvc.metadata?.name,
+              result.getNamespace(),
+              result.getCluster(),
+              status,
+              volume,
+              capacity,
+              accessMode,
+              storageClass,
+              age,
+            ],
+            props: pvc,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Persistent Volume Claims',
+  },
+  persistentvolumes: {
+    columns: [
+      'Name',
+      'Cluster',
+      'Capacity',
+      'Access Modes',
+      'Reclaim Policy',
+      'Status',
+      'Claim',
+      'Storage Class',
+      'Reason',
+      'Age',
+    ],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'persistentvolumes',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const persistentVolumeList: V1PersistentVolumeList = JSON.parse(result.getResourcelist());
+        for (const persistentVolume of persistentVolumeList.items) {
+          const capacity =
+            persistentVolume.spec && persistentVolume.spec.capacity ? persistentVolume.spec.capacity : '';
+          const accessMode =
+            persistentVolume.spec && persistentVolume.spec.accessModes
+              ? persistentVolume.spec.accessModes.join(', ')
+              : '';
+          const reclaimPolicy =
+            persistentVolume.spec && persistentVolume.spec.persistentVolumeReclaimPolicy
+              ? persistentVolume.spec.persistentVolumeReclaimPolicy
+              : '';
+          const status = persistentVolume.status && persistentVolume.status.phase ? persistentVolume.status.phase : '';
+          const claim =
+            persistentVolume.spec && persistentVolume.spec.claimRef
+              ? `${persistentVolume.spec.claimRef.namespace}/${persistentVolume.spec.claimRef.name}`
+              : '';
+          const storageClass =
+            persistentVolume.spec && persistentVolume.spec.storageClassName
+              ? persistentVolume.spec.storageClassName
+              : '';
+          const reason =
+            persistentVolume.status && persistentVolume.status.reason ? persistentVolume.status.reason : '';
+          const age =
+            persistentVolume.metadata && persistentVolume.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(persistentVolume.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [
+              persistentVolume.metadata?.name,
+              result.getCluster(),
+              capacity,
+              accessMode,
+              reclaimPolicy,
+              status,
+              claim,
+              storageClass,
+              reason,
+              age,
+            ],
+            props: persistentVolume,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Cluster',
+    title: 'Persistent Volumes',
+  },
+  poddisruptionbudgets: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Min. Available', 'Max. Unavailable', 'Allowed Disruptions', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/policy/v1beta1',
+    resource: 'poddisruptionbudgets',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const pdbList: V1beta1PodDisruptionBudgetList = JSON.parse(result.getResourcelist());
+        for (const pdb of pdbList.items) {
+          const minAvailable = pdb.spec && pdb.spec.minAvailable ? pdb.spec.minAvailable : '';
+          const maxUnavailable = pdb.spec && pdb.spec.maxUnavailable ? pdb.spec.maxUnavailable : '';
+          const allowedDisruptions = pdb.status && pdb.status.disruptionsAllowed ? pdb.status.disruptionsAllowed : '';
+          const age =
+            pdb.metadata && pdb.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(pdb.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [
+              pdb.metadata?.name,
+              result.getNamespace(),
+              result.getCluster(),
+              minAvailable,
+              maxUnavailable,
+              allowedDisruptions,
+              age,
+            ],
+            props: pdb,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Pod Disruption Budgets',
+  },
+  secrets: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Type', 'Data', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'secrets',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const secretList: V1SecretList = JSON.parse(result.getResourcelist());
+        for (const secret of secretList.items) {
+          const type = secret.type ? secret.type : '';
+          const data = secret.data ? Object.keys(secret.data).length : '';
+          const age =
+            secret.metadata && secret.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(secret.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [secret.metadata?.name, result.getNamespace(), result.getCluster(), type, data, age],
+            props: secret,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Secrets',
+  },
+  serviceaccounts: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Secrets', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'serviceaccounts',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const serviceAccountList: V1ServiceAccountList = JSON.parse(result.getResourcelist());
+        for (const serviceAccount of serviceAccountList.items) {
+          const secrets = serviceAccount.secrets ? serviceAccount.secrets.length : '';
+          const age =
+            serviceAccount.metadata && serviceAccount.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(serviceAccount.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [serviceAccount.metadata?.name, result.getNamespace(), result.getCluster(), secrets, age],
+            props: serviceAccount,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Service Accounts',
+  },
+  storageclasses: {
+    columns: [
+      'Name',
+      'Cluster',
+      'Provisioner',
+      'Reclaim Policy',
+      'Volume Binding Mode',
+      'Allow Volume Expansion',
+      'Age',
+    ],
+    description: '',
+    isCRD: false,
+    path: '/apis/storage.k8s.io/v1',
+    resource: 'storageclasses',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const storageClassList: V1StorageClassList = JSON.parse(result.getResourcelist());
+        for (const storageClass of storageClassList.items) {
+          const provisioner = storageClass.provisioner;
+          const reclaimPolicy = storageClass.reclaimPolicy ? storageClass.reclaimPolicy : '';
+          const volumeBindingMode = storageClass.volumeBindingMode ? storageClass.volumeBindingMode : '';
+          const allowVolumeExpansion = storageClass.allowVolumeExpansion ? 'true' : 'false';
+          const age =
+            storageClass.metadata && storageClass.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(storageClass.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [
+              storageClass.metadata?.name,
+              result.getCluster(),
+              provisioner,
+              reclaimPolicy,
+              volumeBindingMode,
+              allowVolumeExpansion,
+              age,
+            ],
+            props: storageClass,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Cluster',
+    title: 'Storage Classes',
+  },
+  // eslint-disable-next-line sort-keys
+  clusterrolebindings: {
+    columns: ['Name', 'Cluster', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/rbac.authorization.k8s.io/v1',
+    resource: 'clusterrolebindings',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const clusterRoleBindingsList: V1ClusterRoleBindingList = JSON.parse(result.getResourcelist());
+        for (const clusterRoleBindings of clusterRoleBindingsList.items) {
+          const age =
+            clusterRoleBindings.metadata && clusterRoleBindings.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(clusterRoleBindings.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [clusterRoleBindings.metadata?.name, result.getCluster(), age],
+            props: clusterRoleBindings,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Cluster',
+    title: 'Cluster Role Bindings',
+  },
+  clusterroles: {
+    columns: ['Name', 'Cluster', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/rbac.authorization.k8s.io/v1',
+    resource: 'clusterroles',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const clusterRoleList: V1ClusterRoleList = JSON.parse(result.getResourcelist());
+        for (const clusterRole of clusterRoleList.items) {
+          const age =
+            clusterRole.metadata && clusterRole.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(clusterRole.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [clusterRole.metadata?.name, result.getCluster(), age],
+            props: clusterRole,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Cluster',
+    title: 'Cluster Roles',
+  },
+  rolebindings: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/rbac.authorization.k8s.io/v1',
+    resource: 'rolebindings',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const roleBindingList: V1RoleBindingList = JSON.parse(result.getResourcelist());
+        for (const roleBinding of roleBindingList.items) {
+          const age =
+            roleBinding.metadata && roleBinding.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(roleBinding.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [roleBinding.metadata?.name, result.getNamespace(), result.getCluster(), age],
+            props: roleBinding,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Role Bindings',
+  },
+  roles: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/apis/rbac.authorization.k8s.io/v1',
+    resource: 'roles',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const roleList: V1RoleList = JSON.parse(result.getResourcelist());
+        for (const role of roleList.items) {
+          const age =
+            role.metadata && role.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(role.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [role.metadata?.name, result.getNamespace(), result.getCluster(), age],
+            props: role,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Roles',
+  },
+  // eslint-disable-next-line sort-keys
+  events: {
+    columns: ['Name', 'Namespace', 'Cluster', 'Last Seen', 'Type', 'Reason', 'Object', 'Message'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'events',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const eventList: CoreV1EventList = JSON.parse(result.getResourcelist());
+        for (const event of eventList.items) {
+          rows.push({
+            cells: [
+              event.metadata?.name,
+              result.getNamespace(),
+              result.getCluster(),
+              event.lastTimestamp
+                ? timeDifference(new Date().getTime(), new Date(event.lastTimestamp.toString()).getTime())
+                : '-',
+              event.type,
+              event.reason,
+              `${event.involvedObject.kind}/${event.involvedObject.name}`,
+              event.message,
+            ],
+            props: event,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Namespaced',
+    title: 'Events',
+  },
+  nodes: {
+    columns: ['Name', 'Cluster', 'Status', 'Version', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'nodes',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const nodeList: V1NodeList = JSON.parse(result.getResourcelist());
+        for (const node of nodeList.items) {
+          const status: string[] = [];
+          if (node.status && node.status.conditions) {
+            for (const condition of node.status.conditions) {
+              if (condition.status === 'True') {
+                status.push(condition.type);
+              }
+            }
+          }
+
+          const version =
+            node.status && node.status.nodeInfo && node.status.nodeInfo.kubeletVersion
+              ? node.status.nodeInfo.kubeletVersion
+              : '';
+          const age =
+            node.metadata && node.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(node.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [node.metadata?.name, result.getCluster(), status.join(', '), version, age],
+            props: node,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Cluster',
+    title: 'Nodes',
+  },
+  podsecuritypolicies: {
+    columns: [
+      'Name',
+      'Cluster',
+      'Privileged',
+      'Capabilities',
+      'SELinux',
+      'Run As User',
+      'FS Group',
+      'Supplemental Groups',
+      'Read Only Root FS',
+      'Volumes',
+      'Age',
+    ],
+    description: '',
+    isCRD: false,
+    path: '/apis/policy/v1beta1',
+    resource: 'podsecuritypolicies',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const pspList: V1beta1PodSecurityPolicyList = JSON.parse(result.getResourcelist());
+        for (const psp of pspList.items) {
+          const privileged = psp.spec && psp.spec.privileged ? 'true' : 'false';
+          const capabilities = psp.spec && psp.spec.allowedCapabilities ? psp.spec.allowedCapabilities.join(', ') : '';
+          const seLinux = psp.spec && psp.spec.seLinux && psp.spec.seLinux.rule ? psp.spec.seLinux.rule : '';
+          const runAsUser = psp.spec && psp.spec.runAsUser && psp.spec.runAsUser.rule ? psp.spec.runAsUser.rule : '';
+          const fsGroup = psp.spec && psp.spec.fsGroup && psp.spec.fsGroup.rule ? psp.spec.fsGroup.rule : '';
+          const supplementalGroups =
+            psp.spec && psp.spec.supplementalGroups && psp.spec.supplementalGroups.rule
+              ? psp.spec.supplementalGroups.rule
+              : '';
+          const readOnlyRootFS = psp.spec && psp.spec.readOnlyRootFilesystem ? 'true' : 'false';
+          const volumes = psp.spec && psp.spec.volumes ? psp.spec.volumes.join(', ') : '';
+          const age =
+            psp.metadata && psp.metadata.creationTimestamp
+              ? timeDifference(new Date().getTime(), new Date(psp.metadata.creationTimestamp.toString()).getTime())
+              : '-';
+
+          rows.push({
+            cells: [
+              psp.metadata?.name,
+              result.getCluster(),
+              privileged,
+              capabilities,
+              seLinux,
+              runAsUser,
+              fsGroup,
+              supplementalGroups,
+              readOnlyRootFS,
+              volumes,
+              age,
+            ],
+            props: psp,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Cluster',
+    title: 'Pod Security Policies',
   },
 };
 
