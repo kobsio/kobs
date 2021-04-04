@@ -60,7 +60,7 @@ helm upgrade kobs kobs/kobs
 | `tolerations` | Specify the tolerations for the kobs Pods. | `[]` |
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
 | `kobs.image.repository` | The repository for the Docker image. | `kobsio/kobs` |
-| `kobs.image.tag` | The tag of the Docker image which should be used. | `main` |
+| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.1.0` |
 | `kobs.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
 | `kobs.securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `kobs.resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
