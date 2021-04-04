@@ -10,6 +10,14 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+### Fixed
+
+### Changed
+
+## [v0.1.0](https://github.com/kobsio/kobs/releases/tag/v0.1.0) (2021-04-04)
+
+### Added
+
 - [#4](https://github.com/kobsio/kobs/pull/4): Add Custom Resource Definition for Applications.
 - [#6](https://github.com/kobsio/kobs/pull/6): Add Prometheus as datasource for Application metrics.
 - [#8](https://github.com/kobsio/kobs/pull/8): Add new page to directly query a configured Prometheus datasource.

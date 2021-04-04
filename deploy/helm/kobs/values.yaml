@@ -39,7 +39,7 @@ affinity: {}
 kobs:
   image:
     repository: kobsio/kobs
-    tag: main
+    tag: v0.1.0
     pullPolicy: IfNotPresent
 
   ## Specify security settings for the kobs Container. They override settings made at the Pod level via the
