@@ -22,7 +22,7 @@ spec:
       serviceAccountName: kobs
       containers:
         - name: kobs
-          image: "kobsio/kobs:main"
+          image: "kobsio/kobs:0.1.0"
           imagePullPolicy: IfNotPresent
           args:
             - --log.level=info

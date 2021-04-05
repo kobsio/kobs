@@ -13,6 +13,7 @@ spec:
       name: http
   selector:
     app: reviews
+
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -21,6 +22,7 @@ metadata:
   namespace: bookinfo
   labels:
     account: reviews
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -65,6 +67,7 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -109,6 +112,7 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
+
 ---
 apiVersion: apps/v1
 kind: Deployment

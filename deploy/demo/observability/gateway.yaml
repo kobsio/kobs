@@ -4,6 +4,8 @@ kind: Gateway
 metadata:
   name: kobs-gateway
   namespace: observability
+  labels:
+    app: kobs
 spec:
   selector:
     istio: ingressgateway
@@ -20,6 +22,8 @@ kind: VirtualService
 metadata:
   name: kobs
   namespace: observability
+  labels:
+    app: kobs
 spec:
   hosts:
     - kobs.demo

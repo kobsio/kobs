@@ -18,19 +18,26 @@ import (
 )
 
 var (
-	log           = logrus.WithFields(logrus.Fields{"package": "clusters"})
-	cacheDuration string
+	log                     = logrus.WithFields(logrus.Fields{"package": "clusters"})
+	cacheDurationNamespaces string
+	cacheDurationTopology   string
 )
 
 // init is used to define all command-line flags for the clusters package. Currently this is only the cache duration,
 // which is used to cache the namespaces for a cluster.
 func init() {
-	defaultCacheDuration := "5m"
-	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION") != "" {
-		defaultCacheDuration = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION")
+	defaultCacheDurationNamespaces := "5m"
+	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES") != "" {
+		defaultCacheDurationNamespaces = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES")
 	}
 
-	flag.StringVar(&cacheDuration, "clusters.cache-duration", defaultCacheDuration, "The duration, for how long requests should be cached.")
+	defaultCacheDurationTopology := "60m"
+	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY") != "" {
+		defaultCacheDurationTopology = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY")
+	}
+
+	flag.StringVar(&cacheDurationNamespaces, "clusters.cache-duration.namespaces", defaultCacheDurationNamespaces, "The duration, for how long requests to get the list of namespaces should be cached.")
+	flag.StringVar(&cacheDurationTopology, "clusters.cache-duration.topology", defaultCacheDurationTopology, "The duration, for how long the topology data should be cached.")
 }
 
 // Config is the configuration required to load all clusters.
@@ -43,6 +50,8 @@ type Config struct {
 type Clusters struct {
 	clustersProto.UnimplementedClustersServer
 	clusters []*cluster.Cluster
+	edges    []*clustersProto.Edge
+	nodes    []*clustersProto.Node
 }
 
 func (c *Clusters) getCluster(name string) *cluster.Cluster {
@@ -253,6 +262,56 @@ func (c *Clusters) GetApplication(ctx context.Context, getApplicationRequest *cl
 	}, nil
 }
 
+// GetApplicationsTopology returns the topology for the given list of clusters and namespaces. We add an additional node
+// for each cluster and namespace. These nodes are used to group the applications by the cluster and namespace.
+func (c *Clusters) GetApplicationsTopology(ctx context.Context, getApplicationsTopologyRequest *clustersProto.GetApplicationsTopologyRequest) (*clustersProto.GetApplicationsTopologyResponse, error) {
+	var edges []*clustersProto.Edge
+	var nodes []*clustersProto.Node
+
+	for _, clusterName := range getApplicationsTopologyRequest.Clusters {
+		nodes = append(nodes, &clustersProto.Node{
+			Id:        clusterName,
+			Label:     clusterName,
+			Type:      "cluster",
+			Parent:    "",
+			Cluster:   clusterName,
+			Namespace: "",
+			Name:      "",
+		})
+
+		for _, namespace := range getApplicationsTopologyRequest.Namespaces {
+			nodes = append(nodes, &clustersProto.Node{
+				Id:        clusterName + "-" + namespace,
+				Label:     namespace,
+				Type:      "namespace",
+				Parent:    clusterName,
+				Cluster:   clusterName,
+				Namespace: namespace,
+				Name:      "",
+			})
+
+			for _, edge := range c.edges {
+				if (edge.SourceCluster == clusterName && edge.SourceNamespace == namespace) || (edge.TargetCluster == clusterName && edge.TargetNamespace == namespace) {
+					edges = appendEdgeIfMissing(edges, edge)
+				}
+			}
+		}
+	}
+
+	for _, edge := range edges {
+		for _, node := range c.nodes {
+			if node.Id == edge.Source || node.Id == edge.Target {
+				nodes = appendNodeIfMissing(nodes, node)
+			}
+		}
+	}
+
+	return &clustersProto.GetApplicationsTopologyResponse{
+		Edges: edges,
+		Nodes: nodes,
+	}, nil
+}
+
 // Load loads all clusters for the given configuration.
 // The clusters can be retrieved from different providers. Currently we are supporting incluster configuration and
 // kubeconfig files. In the future it is planning to directly support GKE, EKS, AKS, etc.
@@ -270,7 +329,7 @@ func Load(config Config) (*Clusters, error) {
 		}
 	}
 
-	d, err := time.ParseDuration(cacheDuration)
+	d, err := time.ParseDuration(cacheDurationNamespaces)
 	if err != nil {
 		return nil, err
 	}
@@ -279,7 +338,11 @@ func Load(config Config) (*Clusters, error) {
 		c.SetOptions(d)
 	}
 
-	return &Clusters{
+	cs := &Clusters{
 		clusters: clusters,
-	}, nil
+	}
+
+	go cs.generateTopology()
+
+	return cs, nil
 }

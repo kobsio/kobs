@@ -24,6 +24,11 @@ export class Application extends jspb.Message {
   setResourcesList(value: Array<Resources>): void;
   addResources(value?: Resources, index?: number): Resources;
 
+  clearDependenciesList(): void;
+  getDependenciesList(): Array<Dependency>;
+  setDependenciesList(value: Array<Dependency>): void;
+  addDependencies(value?: Dependency, index?: number): Dependency;
+
   clearPluginsList(): void;
   getPluginsList(): Array<plugins_pb.Plugin>;
   setPluginsList(value: Array<plugins_pb.Plugin>): void;
@@ -46,6 +51,7 @@ export namespace Application {
     name: string,
     details?: Details.AsObject,
     resourcesList: Array<Resources.AsObject>,
+    dependenciesList: Array<Dependency.AsObject>,
     pluginsList: Array<plugins_pb.Plugin.AsObject>,
   }
 }
@@ -129,6 +135,38 @@ export namespace Resources {
   export type AsObject = {
     kindsList: Array<string>,
     selector: string,
+  }
+}
+
+export class Dependency extends jspb.Message {
+  getCluster(): string;
+  setCluster(value: string): void;
+
+  getNamespace(): string;
+  setNamespace(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Dependency.AsObject;
+  static toObject(includeInstance: boolean, msg: Dependency): Dependency.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Dependency, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Dependency;
+  static deserializeBinaryFromReader(message: Dependency, reader: jspb.BinaryReader): Dependency;
+}
+
+export namespace Dependency {
+  export type AsObject = {
+    cluster: string,
+    namespace: string,
+    name: string,
+    description: string,
   }
 }
 

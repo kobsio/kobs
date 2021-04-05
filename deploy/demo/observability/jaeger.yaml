@@ -51,6 +51,7 @@ spec:
       volumes:
         - name: data
           emptyDir: {}
+
 ---
 apiVersion: v1
 kind: Service
@@ -68,8 +69,8 @@ spec:
       targetPort: 16686
   selector:
     app: jaeger
+
 ---
-# Jaeger implements the Zipkin API. To support swapping out the tracing backend, we use a Service named Zipkin.
 apiVersion: v1
 kind: Service
 metadata:
@@ -84,6 +85,7 @@ spec:
       name: http-query
   selector:
     app: jaeger
+
 ---
 apiVersion: v1
 kind: Service

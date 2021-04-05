@@ -38,13 +38,11 @@ spec:
         automountServiceAccountToken: true
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirstWithHostNet
-        hostNetwork: true # Allows to provide richer host metadata
+        hostNetwork: true
         containers:
           - name: filebeat
             securityContext:
               runAsUser: 0
-              # If using Red Hat OpenShift uncomment this:
-              #privileged: true
             volumeMounts:
               - name: varlogcontainers
                 mountPath: /var/log/containers
@@ -67,6 +65,7 @@ spec:
           - name: varlibdockercontainers
             hostPath:
               path: /var/lib/docker/containers
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -83,12 +82,14 @@ rules:
       - get
       - watch
       - list
+
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: filebeat
   namespace: observability
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

@@ -8,43 +8,38 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { ClustersPromiseClient, GetApplicationsRequest, GetApplicationsResponse } from 'proto/clusters_grpc_web_pb';
 import { Application } from 'proto/application_pb';
 import ApplicationDetails from 'components/applications/ApplicationDetails';
-import ApplicationGallery from 'components/applications/ApplicationGallery';
+import ApplicationsGallery from 'components/applications/ApplicationsGallery';
 import ApplicationsToolbar from 'components/applications/ApplicationsToolbar';
-import { apiURL } from 'utils/constants';
+import ApplicationsTopology from 'components/applications/ApplicationsTopology';
 import { applicationsDescription } from 'utils/constants';
+
+interface IDataState {
+  clusters: string[];
+  namespaces: string[];
+  view: string;
+}
 
 // getDataFromSearch returns the clusters and namespaces for the state from a given search location.
 export const getDataFromSearch = (search: string): IDataState => {
   const params = new URLSearchParams(search);
   const clusters = params.getAll('cluster');
   const namespaces = params.getAll('namespace');
+  const view = params.get('view');
 
   return {
-    applications: [],
     clusters: clusters,
-    error: '',
     namespaces: namespaces,
+    view: view ? view : 'gallery',
   };
 };
 
-// clustersService is the Clusters gRPC service, which is used to get a list of resources.
-const clustersService = new ClustersPromiseClient(apiURL, null, null);
-
-export interface IDataState {
-  applications: Application.AsObject[];
-  clusters: string[];
-  error: string;
-  namespaces: string[];
-}
-
 // Applications is the page to display a list of selected applications. To get the applications the user can select a
-// list of clusters and namespaces.
+// list of clusters and namespaces. The applications can be displayed in a gallery view or in a topology view.
 const Applications: React.FunctionComponent = () => {
   const history = useHistory();
   const location = useLocation();
@@ -53,58 +48,20 @@ const Applications: React.FunctionComponent = () => {
 
   // changeData is used to set the provided list of clusters and namespaces as query parameters for the current URL, so
   // that a user can share his search with other users.
-  const changeData = (clusters: string[], namespaces: string[]): void => {
+  const changeData = (clusters: string[], namespaces: string[], view: string): void => {
     const c = clusters.map((cluster) => `&cluster=${cluster}`);
     const n = namespaces.map((namespace) => `&namespace=${namespace}`);
 
     history.push({
       pathname: location.pathname,
-      search: `?${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
+      search: `?view=${view}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
     });
   };
 
-  // fetchApplications is used to fetch a list of applications. To get the list of applications the user has to select
-  // a list of clusters and namespaces.
-  const fetchApplications = useCallback(async (d: IDataState) => {
-    try {
-      if (d.clusters.length > 0 && d.namespaces.length > 0) {
-        const getApplicationsRequest = new GetApplicationsRequest();
-        getApplicationsRequest.setClustersList(d.clusters);
-        getApplicationsRequest.setNamespacesList(d.namespaces);
-
-        const getApplicationsResponse: GetApplicationsResponse = await clustersService.getApplications(
-          getApplicationsRequest,
-          null,
-        );
-
-        setData({
-          applications: getApplicationsResponse.toObject().applicationsList,
-          clusters: d.clusters,
-          error: '',
-          namespaces: d.namespaces,
-        });
-      } else {
-        setData({
-          applications: [],
-          clusters: d.clusters,
-          error: '',
-          namespaces: d.namespaces,
-        });
-      }
-    } catch (err) {
-      setData({
-        applications: [],
-        clusters: d.clusters,
-        error: err.message,
-        namespaces: d.namespaces,
-      });
-    }
-  }, []);
-
-  // useEffect is used to trigger the fetchApplications function, everytime the location.search parameter changes.
+  // useEffect is used to change the data state everytime the location.search parameter changes.
   useEffect(() => {
-    fetchApplications(getDataFromSearch(location.search));
-  }, [location.search, fetchApplications]);
+    setData(getDataFromSearch(location.search));
+  }, [location.search]);
 
   return (
     <React.Fragment>
@@ -113,7 +70,12 @@ const Applications: React.FunctionComponent = () => {
           Applications
         </Title>
         <p>{applicationsDescription}</p>
-        <ApplicationsToolbar clusters={data.clusters} namespaces={data.namespaces} changeData={changeData} />
+        <ApplicationsToolbar
+          clusters={data.clusters}
+          namespaces={data.namespaces}
+          view={data.view}
+          changeData={changeData}
+        />
       </PageSection>
 
       <Drawer isExpanded={selectedApplication !== undefined}>
@@ -128,17 +90,23 @@ const Applications: React.FunctionComponent = () => {
           }
         >
           <DrawerContentBody>
-            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+            <PageSection style={{ height: '100%', minHeight: '100%' }} variant={PageSectionVariants.default}>
               {data.clusters.length === 0 || data.namespaces.length === 0 ? (
                 <Alert variant={AlertVariant.info} title="Select clusters and namespaces">
                   <p>Select a list of clusters and namespaces from the toolbar.</p>
                 </Alert>
-              ) : data.error ? (
-                <Alert variant={AlertVariant.danger} title="Applications were not fetched">
-                  <p>{data.error}</p>
-                </Alert>
+              ) : data.view === 'topology' ? (
+                <ApplicationsTopology
+                  clusters={data.clusters}
+                  namespaces={data.namespaces}
+                  selectApplication={setSelectedApplication}
+                />
               ) : (
-                <ApplicationGallery applications={data.applications} selectApplication={setSelectedApplication} />
+                <ApplicationsGallery
+                  clusters={data.clusters}
+                  namespaces={data.namespaces}
+                  selectApplication={setSelectedApplication}
+                />
               )}
             </PageSection>
           </DrawerContentBody>

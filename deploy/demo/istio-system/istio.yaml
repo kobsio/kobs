@@ -1,3 +1,4 @@
+---
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -6,19 +7,12 @@ metadata:
 spec:
   hub: docker.io/istio
   tag: 1.9.2
-
-  # You may override parts of meshconfig by uncommenting the following lines.
   meshConfig:
     defaultConfig:
       proxyMetadata: {}
     enablePrometheusMerge: true
     accessLogFile: /dev/stdout
     accessLogEncoding: JSON
-    # Opt-out of global http2 upgrades.
-    # Destination rule is used to opt-in.
-    # h2_upgrade_policy: DO_NOT_UPGRADE
-
-  # Traffic management feature
   components:
     base:
       enabled: true
@@ -31,8 +25,6 @@ spec:
             patches:
               - path: spec.minAvailable
                 value: 0
-
-    # Istio Gateway feature
     ingressGateways:
       - name: istio-ingressgateway
         enabled: true
@@ -66,17 +58,10 @@ spec:
     egressGateways:
       - name: istio-egressgateway
         enabled: false
-
-    # Istio CNI feature
     cni:
       enabled: false
-
-    # istiod remote configuration wwhen istiod isn't installed on the cluster
     istiodRemote:
       enabled: false
-
-  # Global values passed through to helm global.yaml.
-  # Please keep this in sync with manifests/charts/global.yaml
   values:
     global:
       istioNamespace: istio-system
@@ -120,8 +105,6 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-      # Specify image pull policy if default behavior isn't desired.
-      # Default behavior: latest images will be Always else IfNotPresent.
       imagePullPolicy: ""
       operatorManageWebhooks: false
       tracer:
@@ -176,7 +159,6 @@ spec:
       enableProtocolSniffingForInbound: true
       deploymentLabels:
       configMap: true
-
     telemetry:
       enabled: true
       v2:
@@ -192,10 +174,8 @@ spec:
           monitoring: false
           topology: false
           configOverride: {}
-
     istiodRemote:
       injectionURL: ""
-
     gateways:
       istio-egressgateway:
         zvpn: {}
@@ -210,7 +190,6 @@ spec:
           - name: egressgateway-ca-certs
             secretName: istio-egressgateway-ca-certs
             mountPath: /etc/istio/egressgateway-ca-certs
-
       istio-ingressgateway:
         autoscaleEnabled: true
         type: LoadBalancer

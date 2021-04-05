@@ -70,7 +70,7 @@ The following example will display five charts.
             queries:
               - label: Incoming Success Rate
                 query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}"}[5m])) * 100
-          - title: Divider
+          - title: Details
             type: divider
           - title: Request Duration
             type: line

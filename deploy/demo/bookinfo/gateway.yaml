@@ -4,9 +4,11 @@ kind: Gateway
 metadata:
   name: bookinfo-gateway
   namespace: bookinfo
+  labels:
+    app: productpage
 spec:
   selector:
-    istio: ingressgateway # use istio default controller
+    istio: ingressgateway
   servers:
     - port:
         number: 80
@@ -20,6 +22,8 @@ kind: VirtualService
 metadata:
   name: bookinfo
   namespace: bookinfo
+  labels:
+    app: productpage
 spec:
   hosts:
     - bookinfo.demo

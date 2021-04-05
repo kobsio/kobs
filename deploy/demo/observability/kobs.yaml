@@ -11,6 +11,17 @@ spec:
         sidecar.istio.io/inject: "false"
         prometheus.io/scrape: "true"
         prometheus.io/port: "15221"
+    spec:
+      containers:
+        - name: kobs
+          image: localhost:5000/kobs:dev # "kobsio/kobs:0.1.0"
+          imagePullPolicy: Always
+          env:
+            - name: KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES
+              value: 1m
+            - name: KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY
+              value: 1m
+
 ---
 apiVersion: v1
 kind: ConfigMap

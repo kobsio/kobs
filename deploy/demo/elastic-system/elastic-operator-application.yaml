@@ -1,0 +1,30 @@
+---
+apiVersion: kobs.io/v1alpha1
+kind: Application
+metadata:
+  name: elastic-operator
+  namespace: elastic-system
+spec:
+  details:
+    links:
+      - title: Website
+        link: https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html
+      - title: GitHub
+        link: https://github.com/elastic/cloud-on-k8s
+      - title: Application CR
+        link: https://github.com/kobsio/kobs/blob/main/deploy/demo/elastic-system/elastic-operator-application.yaml
+    plugin:
+      name: Elasticsearch
+      elasticsearch:
+        queries:
+          - name: All Logs
+            query: "kubernetes.namespace: elastic-system"
+  resources:
+    - kinds: ["statefulsets", "pods"]
+      selector: control-plane=elastic-operator
+  plugins:
+    - name: Elasticsearch
+      elasticsearch:
+        queries:
+          - name: All Logs
+            query: "kubernetes.namespace: elastic-system"

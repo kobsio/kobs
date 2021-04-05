@@ -1,6 +1,8 @@
 import {
   Button,
   ButtonVariant,
+  ToggleGroup,
+  ToggleGroupItem,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -17,7 +19,8 @@ import ToolbarItemNamespaces from 'components/resources/ToolbarItemNamespaces';
 interface IApplicationsToolbarProps {
   clusters: string[];
   namespaces: string[];
-  changeData: (clusters: string[], namespaces: string[]) => void;
+  view: string;
+  changeData: (clusters: string[], namespaces: string[], view: string) => void;
 }
 
 // ApplicationsToolbar is the toolbar, where the user can select a list of clusters and namespaces. When the user clicks
@@ -25,6 +28,7 @@ interface IApplicationsToolbarProps {
 const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = ({
   clusters,
   namespaces,
+  view,
   changeData,
 }: IApplicationsToolbarProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
@@ -32,6 +36,7 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
     clusters.length > 0 ? clusters : [clustersContext.clusters[0]],
   );
   const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(namespaces);
+  const [selectedView, setSelectedView] = useState<string>(view ? view : 'gallery');
 
   // selectCluster adds/removes the given cluster to the list of selected clusters. When the cluster value is an empty
   // string the selected clusters list is cleared.
@@ -81,10 +86,24 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
               />
             </ToolbarItem>
             <ToolbarItem>
+              <ToggleGroup aria-label="View">
+                <ToggleGroupItem
+                  text="Gallery"
+                  isSelected={selectedView === 'gallery'}
+                  onChange={(): void => setSelectedView('gallery')}
+                />
+                <ToggleGroupItem
+                  text="Topology"
+                  isSelected={selectedView === 'topology'}
+                  onChange={(): void => setSelectedView('topology')}
+                />
+              </ToggleGroup>
+            </ToolbarItem>
+            <ToolbarItem>
               <Button
                 variant={ButtonVariant.primary}
                 icon={<SearchIcon />}
-                onClick={(): void => changeData(selectedClusters, selectedNamespaces)}
+                onClick={(): void => changeData(selectedClusters, selectedNamespaces, selectedView)}
               >
                 Search
               </Button>
