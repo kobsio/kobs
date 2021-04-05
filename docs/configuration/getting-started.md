@@ -11,7 +11,8 @@ The following command-line arguments and environment variables are available.
 | `--api.address` | `KOBS_API_ADDRESS` | The address, where the API server is listen on. | `:15220` |
 | `--app.address` | `KOBS_APP_ADDRESS` | The address, where the Application server is listen on. | `:15219` |
 | `--app.assets` | `KOBS_APP_ASSETS` | The location of the assets directory. | `app/build` |
-| `--clusters.cache-duration` | `KOBS_CLUSTERS_CACHE_DURATION` | The duration, for how long requests should be cached. | `5m` |
+| `--clusters.cache-duration.namespaces` | `KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES` | The duration, for how long requests to get the list of namespaces should be cached. | `5m` |
+| `--clusters.cache-duration.topology` | `KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY` | The duration, for how long the topology data should be cached. | `60m` |
 | `--config` | `KOBS_CONFIG` | Name of the configuration file.  | `config.yaml` |
 | `--log.format` | `KOBS_LOG_FORMAT` | Set the output format of the logs. Must be `plain` or `json`.  | `plain` |
 | `--log.level` | `KOBS_LOG_LEVEL` | Set the log level. Must be `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`.  | `info` |

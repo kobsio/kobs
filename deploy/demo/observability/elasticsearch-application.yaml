@@ -1,0 +1,35 @@
+---
+apiVersion: kobs.io/v1alpha1
+kind: Application
+metadata:
+  name: elasticsearch
+  namespace: observability
+spec:
+  details:
+    links:
+      - title: Website
+        link: https://www.elastic.co/de/elasticsearch/
+      - title: GitHub
+        link: https://github.com/elastic/elasticsearch
+      - title: Application CR
+        link: https://github.com/kobsio/kobs/blob/main/deploy/demo/observability/elasticsearch-application.yaml
+    plugin:
+      name: Elasticsearch
+      elasticsearch:
+        queries:
+          - name: All Logs
+            query: "kubernetes.namespace: observability AND kubernetes.labels.app: elasticsearch"
+  resources:
+    - kinds: ["statefulsets", "pods"]
+      selector: elasticsearch.k8s.elastic.co/cluster-name=elasticsearch
+    - kinds: ["elasticsearches.elasticsearch.k8s.elastic.co/v1"]
+  dependencies:
+    - name: elastic-operator
+      namespace: elastic-system
+      description: The Elasticsearch Cluster is managed by the Elastic Operator
+  plugins:
+    - name: Elasticsearch
+      elasticsearch:
+        queries:
+          - name: All Logs
+            query: "kubernetes.namespace: observability AND kubernetes.labels.app: elasticsearch"

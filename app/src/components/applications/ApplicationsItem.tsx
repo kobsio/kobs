@@ -4,18 +4,18 @@ import React from 'react';
 import { Application } from 'proto/application_pb';
 import Preview from 'components/plugins/Preview';
 
-interface IApplicationItemProps {
+interface IApplicationsItemProps {
   application: Application.AsObject;
   selectApplication: (application: Application.AsObject) => void;
 }
 
-// ApplicationItem renders a single application in a Card component. With the title of the application and the
+// ApplicationsItem renders a single application in a Card component. With the title of the application and the
 // description of the application. If the user doesn't provide a description, we just show the namespace and cluster of
 // the application in the card body.
-const ApplicationItem: React.FunctionComponent<IApplicationItemProps> = ({
+const ApplicationsItem: React.FunctionComponent<IApplicationsItemProps> = ({
   application,
   selectApplication,
-}: IApplicationItemProps) => {
+}: IApplicationsItemProps) => {
   return (
     <Card style={{ cursor: 'pointer' }} isHoverable={true} onClick={(): void => selectApplication(application)}>
       <CardTitle>{application.name}</CardTitle>
@@ -32,4 +32,4 @@ const ApplicationItem: React.FunctionComponent<IApplicationItemProps> = ({
   );
 };
 
-export default ApplicationItem;
+export default ApplicationsItem;

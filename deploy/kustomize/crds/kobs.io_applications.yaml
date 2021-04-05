@@ -43,6 +43,27 @@ spec:
           properties:
             cluster:
               type: string
+            dependencies:
+              items:
+                description: Dependency is an application, which can be identified
+                  by the cluster, namespace and name. One application can have, multiple
+                  other applications as dependencies. When an application defines
+                  another application as dependency, we can render a topology chart
+                  for these application, to visulize the dependencies between applications.
+                  The dependency can also contain a description, which can be used
+                  to explain why the referenced application is a dependency in the
+                  current application.
+                properties:
+                  cluster:
+                    type: string
+                  description:
+                    type: string
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                type: object
+              type: array
             details:
               description: Details contains some details for the Application, which
                 are set by the user in the Custom Resource. Each Application can contain

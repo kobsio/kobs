@@ -552,5 +552,85 @@ proto.clusters.ClustersPromiseClient.prototype.getApplication =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.clusters.GetApplicationsTopologyRequest,
+ *   !proto.clusters.GetApplicationsTopologyResponse>}
+ */
+const methodDescriptor_Clusters_GetApplicationsTopology = new grpc.web.MethodDescriptor(
+  '/clusters.Clusters/GetApplicationsTopology',
+  grpc.web.MethodType.UNARY,
+  proto.clusters.GetApplicationsTopologyRequest,
+  proto.clusters.GetApplicationsTopologyResponse,
+  /**
+   * @param {!proto.clusters.GetApplicationsTopologyRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetApplicationsTopologyResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.clusters.GetApplicationsTopologyRequest,
+ *   !proto.clusters.GetApplicationsTopologyResponse>}
+ */
+const methodInfo_Clusters_GetApplicationsTopology = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.clusters.GetApplicationsTopologyResponse,
+  /**
+   * @param {!proto.clusters.GetApplicationsTopologyRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetApplicationsTopologyResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.clusters.GetApplicationsTopologyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.clusters.GetApplicationsTopologyResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.clusters.GetApplicationsTopologyResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.clusters.ClustersClient.prototype.getApplicationsTopology =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/clusters.Clusters/GetApplicationsTopology',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetApplicationsTopology,
+      callback);
+};
+
+
+/**
+ * @param {!proto.clusters.GetApplicationsTopologyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.clusters.GetApplicationsTopologyResponse>}
+ *     Promise that resolves to the response
+ */
+proto.clusters.ClustersPromiseClient.prototype.getApplicationsTopology =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/clusters.Clusters/GetApplicationsTopology',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetApplicationsTopology);
+};
+
+
 module.exports = proto.clusters;
 

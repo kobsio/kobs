@@ -58,6 +58,15 @@ type ClustersGetApplication = {
   readonly responseType: typeof clusters_pb.GetApplicationResponse;
 };
 
+type ClustersGetApplicationsTopology = {
+  readonly methodName: string;
+  readonly service: typeof Clusters;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof clusters_pb.GetApplicationsTopologyRequest;
+  readonly responseType: typeof clusters_pb.GetApplicationsTopologyResponse;
+};
+
 export class Clusters {
   static readonly serviceName: string;
   static readonly GetClusters: ClustersGetClusters;
@@ -66,6 +75,7 @@ export class Clusters {
   static readonly GetResources: ClustersGetResources;
   static readonly GetApplications: ClustersGetApplications;
   static readonly GetApplication: ClustersGetApplication;
+  static readonly GetApplicationsTopology: ClustersGetApplicationsTopology;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -153,6 +163,15 @@ export class ClustersClient {
   getApplication(
     requestMessage: clusters_pb.GetApplicationRequest,
     callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationResponse|null) => void
+  ): UnaryResponse;
+  getApplicationsTopology(
+    requestMessage: clusters_pb.GetApplicationsTopologyRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationsTopologyResponse|null) => void
+  ): UnaryResponse;
+  getApplicationsTopology(
+    requestMessage: clusters_pb.GetApplicationsTopologyRequest,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationsTopologyResponse|null) => void
   ): UnaryResponse;
 }
 

@@ -23,6 +23,7 @@ In the following you can found the specification for the Application CRD. On the
 | name | string | The name of the application. This field should only provided, when the Application CR has another name then the application should have. | No |
 | details | [Details](#details) | Details for the application. | No |
 | resources | [[]Resource](#resource) | Select resources, which are related to the application. | No |
+| dependencies | [[]Dependency](#dependency) | Add other applications as dependencies for this application. This can be used to render a topology graph for your applications | No |
 | plugins | [[]Plugin](../plugins/getting-started.md#specification) | No |
 
 ### Details
@@ -85,6 +86,19 @@ spec:
 
     A Custom Resource can be specified in the following form `<name>.<group>/<version>` (e.g. `vaultsecrets.ricoberger.de/v1alpha1`).
 
+### Dependency
+
+Dependencies can be used to render a topology graph for all your applications. For that your have to add other applications as dependencies to the Application CR.
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| cluster | string | Cluster of the application, which should be added as dependency. If this field is omitted kobs will look in the same cluster for the application. | No |
+| namespace | string | Namespace of the application, which should be added as dependency. If this field is omitted kobs will look in the same namespace for the application. | No |
+| name | string | Name of the application, which should be added as dependency. | Yes |
+| description | string | The description can be used to explain, why this application is a dependency of the current application. | No |
+
+![Topology](assets/applications-topology.png)
+
 ## Example
 
 The following Application CR is used in the [demo](../installation/demo.md) to display the resources, metrics, logs and traces for the reviews service of the Bookinfo Application.
@@ -141,7 +155,7 @@ spec:
             queries:
               - label: Incoming Success Rate
                 query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"{{ .Workload }}"}[5m])) * 100
-          - title: Divider
+          - title: Details
             type: divider
           - title: Request Duration
             type: line

@@ -10,7 +10,7 @@ spec:
     plural: istiooperators
     singular: istiooperator
     shortNames:
-    - iop
+      - iop
   scope: Namespaced
   subresources:
     status: {}
@@ -40,7 +40,6 @@ spec:
             https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
           type: object
   versions:
-  - name: v1alpha1
-    served: true
-    storage: true
----
+    - name: v1alpha1
+      served: true
+      storage: true

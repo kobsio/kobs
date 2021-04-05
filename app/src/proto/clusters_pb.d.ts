@@ -392,3 +392,163 @@ export namespace CRDColumn {
   }
 }
 
+export class GetApplicationsTopologyRequest extends jspb.Message {
+  clearClustersList(): void;
+  getClustersList(): Array<string>;
+  setClustersList(value: Array<string>): void;
+  addClusters(value: string, index?: number): string;
+
+  clearNamespacesList(): void;
+  getNamespacesList(): Array<string>;
+  setNamespacesList(value: Array<string>): void;
+  addNamespaces(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetApplicationsTopologyRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetApplicationsTopologyRequest): GetApplicationsTopologyRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetApplicationsTopologyRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetApplicationsTopologyRequest;
+  static deserializeBinaryFromReader(message: GetApplicationsTopologyRequest, reader: jspb.BinaryReader): GetApplicationsTopologyRequest;
+}
+
+export namespace GetApplicationsTopologyRequest {
+  export type AsObject = {
+    clustersList: Array<string>,
+    namespacesList: Array<string>,
+  }
+}
+
+export class GetApplicationsTopologyResponse extends jspb.Message {
+  clearEdgesList(): void;
+  getEdgesList(): Array<Edge>;
+  setEdgesList(value: Array<Edge>): void;
+  addEdges(value?: Edge, index?: number): Edge;
+
+  clearNodesList(): void;
+  getNodesList(): Array<Node>;
+  setNodesList(value: Array<Node>): void;
+  addNodes(value?: Node, index?: number): Node;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetApplicationsTopologyResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetApplicationsTopologyResponse): GetApplicationsTopologyResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetApplicationsTopologyResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetApplicationsTopologyResponse;
+  static deserializeBinaryFromReader(message: GetApplicationsTopologyResponse, reader: jspb.BinaryReader): GetApplicationsTopologyResponse;
+}
+
+export namespace GetApplicationsTopologyResponse {
+  export type AsObject = {
+    edgesList: Array<Edge.AsObject>,
+    nodesList: Array<Node.AsObject>,
+  }
+}
+
+export class Edge extends jspb.Message {
+  getLabel(): string;
+  setLabel(value: string): void;
+
+  getType(): string;
+  setType(value: string): void;
+
+  getSource(): string;
+  setSource(value: string): void;
+
+  getSourcecluster(): string;
+  setSourcecluster(value: string): void;
+
+  getSourcenamespace(): string;
+  setSourcenamespace(value: string): void;
+
+  getSourcename(): string;
+  setSourcename(value: string): void;
+
+  getTarget(): string;
+  setTarget(value: string): void;
+
+  getTargetcluster(): string;
+  setTargetcluster(value: string): void;
+
+  getTargetnamespace(): string;
+  setTargetnamespace(value: string): void;
+
+  getTargetname(): string;
+  setTargetname(value: string): void;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Edge.AsObject;
+  static toObject(includeInstance: boolean, msg: Edge): Edge.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Edge, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Edge;
+  static deserializeBinaryFromReader(message: Edge, reader: jspb.BinaryReader): Edge;
+}
+
+export namespace Edge {
+  export type AsObject = {
+    label: string,
+    type: string,
+    source: string,
+    sourcecluster: string,
+    sourcenamespace: string,
+    sourcename: string,
+    target: string,
+    targetcluster: string,
+    targetnamespace: string,
+    targetname: string,
+    description: string,
+  }
+}
+
+export class Node extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getLabel(): string;
+  setLabel(value: string): void;
+
+  getType(): string;
+  setType(value: string): void;
+
+  getParent(): string;
+  setParent(value: string): void;
+
+  getCluster(): string;
+  setCluster(value: string): void;
+
+  getNamespace(): string;
+  setNamespace(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Node.AsObject;
+  static toObject(includeInstance: boolean, msg: Node): Node.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Node, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Node;
+  static deserializeBinaryFromReader(message: Node, reader: jspb.BinaryReader): Node;
+}
+
+export namespace Node {
+  export type AsObject = {
+    id: string,
+    label: string,
+    type: string,
+    parent: string,
+    cluster: string,
+    namespace: string,
+    name: string,
+  }
+}
+

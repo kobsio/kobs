@@ -1,5 +1,4 @@
 ---
-# Source: eck-operator/templates/operator-namespace.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -8,8 +7,8 @@ metadata:
     name: elastic-system
     control-plane: elastic-operator
     app.kubernetes.io/version: "1.5.0"
+
 ---
-# Source: eck-operator/templates/service-account.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -18,8 +17,8 @@ metadata:
   labels:
     control-plane: elastic-operator
     app.kubernetes.io/version: "1.5.0"
+
 ---
-# Source: eck-operator/templates/webhook.yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -28,8 +27,8 @@ metadata:
   labels:
     control-plane: elastic-operator
     app.kubernetes.io/version: "1.5.0"
+
 ---
-# Source: eck-operator/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -55,8 +54,8 @@ data:
     validate-storage-class: true
     enable-webhook: true
     webhook-name: elastic-webhook.k8s.elastic.co
+
 ---
-# Source: eck-operator/charts/eck-operator-crds/templates/all-crds.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -340,8 +339,8 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+
 ---
-# Source: eck-operator/charts/eck-operator-crds/templates/all-crds.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -914,8 +913,8 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+
 ---
-# Source: eck-operator/charts/eck-operator-crds/templates/all-crds.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -1221,8 +1220,8 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+
 ---
-# Source: eck-operator/charts/eck-operator-crds/templates/all-crds.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -2515,8 +2514,8 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+
 ---
-# Source: eck-operator/charts/eck-operator-crds/templates/all-crds.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -3037,8 +3036,8 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+
 ---
-# Source: eck-operator/charts/eck-operator-crds/templates/all-crds.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -3582,8 +3581,8 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+
 ---
-# Source: eck-operator/templates/cluster-roles.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -3750,8 +3749,8 @@ rules:
   - update
   - patch
   - delete
+
 ---
-# Source: eck-operator/templates/cluster-roles.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -3778,8 +3777,8 @@ rules:
 - apiGroups: ["beat.k8s.elastic.co"]
   resources: ["beats"]
   verbs: ["get", "list", "watch"]
+
 ---
-# Source: eck-operator/templates/cluster-roles.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -3805,8 +3804,8 @@ rules:
 - apiGroups: ["beat.k8s.elastic.co"]
   resources: ["beats"]
   verbs: ["create", "delete", "deletecollection", "patch", "update"]
+
 ---
-# Source: eck-operator/templates/role-bindings.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -3822,8 +3821,8 @@ subjects:
 - kind: ServiceAccount
   name: elastic-operator
   namespace: elastic-system
+
 ---
-# Source: eck-operator/templates/webhook.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -3839,8 +3838,8 @@ spec:
     targetPort: 9443
   selector:
     control-plane: elastic-operator
+
 ---
-# Source: eck-operator/templates/statefulset.yaml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -3914,8 +3913,8 @@ spec:
         secret:
           defaultMode: 420
           secretName: elastic-webhook-server-cert
+
 ---
-# Source: eck-operator/templates/webhook.yaml
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -4104,4 +4103,3 @@ webhooks:
     - UPDATE
     resources:
     - kibanas
-

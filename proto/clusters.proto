@@ -14,6 +14,7 @@ service Clusters {
   rpc GetResources(GetResourcesRequest) returns (GetResourcesResponse) {}
   rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse) {}
   rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {}
+  rpc GetApplicationsTopology(GetApplicationsTopologyRequest) returns (GetApplicationsTopologyResponse) {}
 }
 
 // GetClustersRequest is the request to get all loaded Kubernetes clusters via the GetClusters method.
@@ -119,4 +120,49 @@ message CRDColumn {
   string jsonPath = 2;
   string name = 3;
   string type = 4;
+}
+
+// GetApplicationsTopologyRequest is the request data to get the data needed to render the topology graph. The user must
+// specify a list of clusters and namespaces in order to render the topology chart.
+message GetApplicationsTopologyRequest {
+  repeated string clusters = 1;
+  repeated string namespaces = 2;
+}
+
+// GetApplicationsTopologyResponse is the response for the GetApplicationsTopology call. It contains all the edges and
+// nodes for the given list of clusters and namespaces. The nodes are a list of clusters, namespaces and applications.
+// An edge represents a dependency between two applications.
+message GetApplicationsTopologyResponse {
+  repeated Edge edges = 1;
+  repeated Node nodes = 2;
+}
+
+// Edge is the message format, which represents a single dependency. It contains a label, type ("dependency") the data
+// for the source and target node and an optional description, which can be set by a user in the Application CR.
+message Edge {
+  string label = 1;
+  string type = 2;
+  string source = 3;
+  string sourceCluster = 4;
+  string sourceNamespace = 5;
+  string sourceName = 6;
+  string target = 7;
+  string targetCluster = 8;
+  string targetNamespace = 9;
+  string targetName = 10;
+  string description = 11;
+}
+
+// Node is the message format for a single node. It contains a id ("<cluster>-<namespace>-<application>"), label, type
+// ("cluster", "namespace" or "application"), a parent, which is the namespace for an application and the cluster for a
+// namespace node. The cluster, namespace and name fields are used to identify a application and load the application
+// details, when a user selects the corresponding node.
+message Node {
+  string id = 1;
+  string label = 2;
+  string type = 3;
+  string parent = 4;
+  string cluster = 5;
+  string namespace = 6;
+  string name = 7;
 }

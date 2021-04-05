@@ -13,6 +13,7 @@ spec:
       name: http
   selector:
     app: ratings
+
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -21,6 +22,7 @@ metadata:
   namespace: bookinfo
   labels:
     account: ratings
+
 ---
 apiVersion: apps/v1
 kind: Deployment

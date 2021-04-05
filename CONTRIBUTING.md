@@ -153,6 +153,8 @@ docker run -it --rm --name envoy -p 15222:15222 -v $(pwd)/deploy/docker/envoy/en
 
 When you want to run kobs inside your Kubernetes cluster, please checkout the Documentation at [kobs.io](https://kobs.io).
 
+**Using the demo application:** If you want to test your changes against the demo application take a look at [https://kobs.io/installation/demo/#development-using-the-demo](https://kobs.io/installation/demo/#development-using-the-demo).
+
 ## Add a new Plugin
 
 To add a new plugin to kobs, you have to create a `proto/<PLUGIN-NAME>.proto`. Our [Makefile](./Makefile) will the handle the code generation for your plugin.

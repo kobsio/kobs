@@ -24,6 +24,7 @@ type ClustersClient interface {
 	GetResources(ctx context.Context, in *GetResourcesRequest, opts ...grpc.CallOption) (*GetResourcesResponse, error)
 	GetApplications(ctx context.Context, in *GetApplicationsRequest, opts ...grpc.CallOption) (*GetApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*GetApplicationResponse, error)
+	GetApplicationsTopology(ctx context.Context, in *GetApplicationsTopologyRequest, opts ...grpc.CallOption) (*GetApplicationsTopologyResponse, error)
 }
 
 type clustersClient struct {
@@ -88,6 +89,15 @@ func (c *clustersClient) GetApplication(ctx context.Context, in *GetApplicationR
 	return out, nil
 }
 
+func (c *clustersClient) GetApplicationsTopology(ctx context.Context, in *GetApplicationsTopologyRequest, opts ...grpc.CallOption) (*GetApplicationsTopologyResponse, error) {
+	out := new(GetApplicationsTopologyResponse)
+	err := c.cc.Invoke(ctx, "/clusters.Clusters/GetApplicationsTopology", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClustersServer is the server API for Clusters service.
 // All implementations must embed UnimplementedClustersServer
 // for forward compatibility
@@ -98,6 +108,7 @@ type ClustersServer interface {
 	GetResources(context.Context, *GetResourcesRequest) (*GetResourcesResponse, error)
 	GetApplications(context.Context, *GetApplicationsRequest) (*GetApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*GetApplicationResponse, error)
+	GetApplicationsTopology(context.Context, *GetApplicationsTopologyRequest) (*GetApplicationsTopologyResponse, error)
 	mustEmbedUnimplementedClustersServer()
 }
 
@@ -122,6 +133,9 @@ func (UnimplementedClustersServer) GetApplications(context.Context, *GetApplicat
 }
 func (UnimplementedClustersServer) GetApplication(context.Context, *GetApplicationRequest) (*GetApplicationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetApplication not implemented")
+}
+func (UnimplementedClustersServer) GetApplicationsTopology(context.Context, *GetApplicationsTopologyRequest) (*GetApplicationsTopologyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetApplicationsTopology not implemented")
 }
 func (UnimplementedClustersServer) mustEmbedUnimplementedClustersServer() {}
 
@@ -244,6 +258,24 @@ func _Clusters_GetApplication_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Clusters_GetApplicationsTopology_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetApplicationsTopologyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClustersServer).GetApplicationsTopology(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clusters.Clusters/GetApplicationsTopology",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClustersServer).GetApplicationsTopology(ctx, req.(*GetApplicationsTopologyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Clusters_ServiceDesc is the grpc.ServiceDesc for Clusters service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,6 +306,10 @@ var Clusters_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetApplication",
 			Handler:    _Clusters_GetApplication_Handler,
+		},
+		{
+			MethodName: "GetApplicationsTopology",
+			Handler:    _Clusters_GetApplicationsTopology_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
