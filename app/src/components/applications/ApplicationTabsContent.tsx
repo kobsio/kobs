@@ -56,9 +56,9 @@ const ApplicationTabsContent: React.FunctionComponent<IApplicationTabsContent> =
         aria-label="Resources"
       >
         <ResourcesList
+          defaultNamespaces={[application.namespace]}
           resources={{
             clusters: [application.cluster],
-            namespaces: [application.namespace],
             resources: application.resourcesList,
           }}
           selectResource={

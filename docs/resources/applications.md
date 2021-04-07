@@ -78,8 +78,9 @@ spec:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
+| namespaces | []string | A list of namespace, for which the resources should be loaded. By default this will be the same namespace as for the application. | No |
 | kinds | []string | A list of the resource types, which should be loaded by the specified selector. | Yes |
-| selector | string | A label selector, which is used to load the correct resources (e.g. `app=reviews`). | Yes |
+| selector | string | A label selector, which is used to load the correct resources (e.g. `app=reviews`). | No |
 
 !!! note
     The following strings can be used as kinds: *cronjobs*, *daemonsets*, *deployments*, *jobs*, *pods*, *replicasets*, *statefulsets*, *endpoints*, *horizontalpodautoscalers*, *ingresses*, *networkpolicies*, *services*, *configmaps*, *persistentvolumeclaims*, *persistentvolumes*, *poddisruptionbudgets*, *secrets*, *serviceaccounts*, *storageclasses*, *clusterrolebindings*, *clusterroles*, *rolebindings*, *roles*, *events*, *nodes*, *podsecuritypolicies*.

@@ -9,6 +9,7 @@ import {
   V1EndpointsList,
   V1IngressList,
   V1JobList,
+  V1NamespaceList,
   V1NetworkPolicyList,
   V1NodeList,
   V1PersistentVolumeClaimList,
@@ -1115,6 +1116,39 @@ const resources: IResources = {
     },
     scope: 'Namespaced',
     title: 'Events',
+  },
+  namespaces: {
+    columns: ['Name', 'Cluster', 'Status', 'Age'],
+    description: '',
+    isCRD: false,
+    path: '/api/v1',
+    resource: 'namespaces',
+    rows: (results: ProtoResources[]): IRow[] => {
+      const rows: IRow[] = [];
+
+      for (const result of results) {
+        const namespaceList: V1NamespaceList = JSON.parse(result.getResourcelist());
+        for (const namespace of namespaceList.items) {
+          const status = namespace.status && namespace.status.phase ? namespace.status.phase : '';
+          const age =
+            namespace.metadata && namespace.metadata.creationTimestamp
+              ? timeDifference(
+                  new Date().getTime(),
+                  new Date(namespace.metadata.creationTimestamp.toString()).getTime(),
+                )
+              : '-';
+
+          rows.push({
+            cells: [namespace.metadata?.name, result.getCluster(), status, age],
+            props: namespace,
+          });
+        }
+      }
+
+      return rows;
+    },
+    scope: 'Cluster',
+    title: 'Namespaces',
   },
   nodes: {
     columns: ['Name', 'Cluster', 'Status', 'Version', 'Age'],

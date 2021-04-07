@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: kobs
-          image: localhost:5000/kobs:dev # "kobsio/kobs:0.1.0"
+          image: "kobsio/kobs:0.1.0"
           imagePullPolicy: Always
           env:
             - name: KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES

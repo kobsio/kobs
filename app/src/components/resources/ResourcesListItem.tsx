@@ -69,7 +69,11 @@ const ResourcesListItem: React.FunctionComponent<IResourcesListItemProps> = ({
       borders={false}
       isStickyHeader={true}
       cells={resource.columns}
-      rows={rows}
+      rows={
+        rows.length > 0 && rows[0].cells?.length === resource.columns.length
+          ? rows
+          : emptyState(resource.columns.length, '')
+      }
     >
       <TableHeader />
       <TableBody onRowClick={selectResource ? (e, row, props, data): void => selectResource(row) : undefined} />

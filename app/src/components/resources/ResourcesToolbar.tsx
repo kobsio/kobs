@@ -107,8 +107,7 @@ const ResourcesToolbar: React.FunctionComponent<IResourcesToolbarProps> = ({
                 onClick={(): void =>
                   setResources({
                     clusters: selectedClusters,
-                    namespaces: selectedNamespaces,
-                    resources: [{ kindsList: selectedResources, selector: '' }],
+                    resources: [{ kindsList: selectedResources, namespacesList: selectedNamespaces, selector: '' }],
                   })
                 }
               >

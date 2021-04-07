@@ -354,8 +354,14 @@ spec:
                   list of resources can be specified. These kinds are the plural of
                   the standard Kubernetes resources (e.g. pods, cronjobs. deployments,
                   ...) or for CRDs resource.path (e.g. vaultsecrets.ricoberger.de/v1alpha1).
+                  The list of namespaces is optional and if not provided the namespace
+                  of the Application will be used to get the resources.
                 properties:
                   kinds:
+                    items:
+                      type: string
+                    type: array
+                  namespaces:
                     items:
                       type: string
                     type: array
