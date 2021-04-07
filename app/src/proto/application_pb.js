@@ -940,7 +940,7 @@ proto.application.Link.prototype.setLink = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.application.Resources.repeatedFields_ = [1];
+proto.application.Resources.repeatedFields_ = [1,2];
 
 
 
@@ -973,8 +973,9 @@ proto.application.Resources.prototype.toObject = function(opt_includeInstance) {
  */
 proto.application.Resources.toObject = function(includeInstance, msg) {
   var f, obj = {
-    kindsList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f,
-    selector: jspb.Message.getFieldWithDefault(msg, 2, "")
+    namespacesList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f,
+    kindsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
+    selector: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -1013,9 +1014,13 @@ proto.application.Resources.deserializeBinaryFromReader = function(msg, reader) 
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.addKinds(value);
+      msg.addNamespaces(value);
       break;
     case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addKinds(value);
+      break;
+    case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setSelector(value);
       break;
@@ -1048,17 +1053,24 @@ proto.application.Resources.prototype.serializeBinary = function() {
  */
 proto.application.Resources.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getKindsList();
+  f = message.getNamespacesList();
   if (f.length > 0) {
     writer.writeRepeatedString(
       1,
       f
     );
   }
+  f = message.getKindsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      2,
+      f
+    );
+  }
   f = message.getSelector();
   if (f.length > 0) {
     writer.writeString(
-      2,
+      3,
       f
     );
   }
@@ -1066,10 +1078,10 @@ proto.application.Resources.serializeBinaryToWriter = function(message, writer) 
 
 
 /**
- * repeated string kinds = 1;
+ * repeated string namespaces = 1;
  * @return {!Array<string>}
  */
-proto.application.Resources.prototype.getKindsList = function() {
+proto.application.Resources.prototype.getNamespacesList = function() {
   return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 1));
 };
 
@@ -1078,7 +1090,7 @@ proto.application.Resources.prototype.getKindsList = function() {
  * @param {!Array<string>} value
  * @return {!proto.application.Resources} returns this
  */
-proto.application.Resources.prototype.setKindsList = function(value) {
+proto.application.Resources.prototype.setNamespacesList = function(value) {
   return jspb.Message.setField(this, 1, value || []);
 };
 
@@ -1088,8 +1100,45 @@ proto.application.Resources.prototype.setKindsList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.application.Resources} returns this
  */
-proto.application.Resources.prototype.addKinds = function(value, opt_index) {
+proto.application.Resources.prototype.addNamespaces = function(value, opt_index) {
   return jspb.Message.addToRepeatedField(this, 1, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.application.Resources} returns this
+ */
+proto.application.Resources.prototype.clearNamespacesList = function() {
+  return this.setNamespacesList([]);
+};
+
+
+/**
+ * repeated string kinds = 2;
+ * @return {!Array<string>}
+ */
+proto.application.Resources.prototype.getKindsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 2));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.application.Resources} returns this
+ */
+proto.application.Resources.prototype.setKindsList = function(value) {
+  return jspb.Message.setField(this, 2, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.application.Resources} returns this
+ */
+proto.application.Resources.prototype.addKinds = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
 };
 
 
@@ -1103,11 +1152,11 @@ proto.application.Resources.prototype.clearKindsList = function() {
 
 
 /**
- * optional string selector = 2;
+ * optional string selector = 3;
  * @return {string}
  */
 proto.application.Resources.prototype.getSelector = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -1116,7 +1165,7 @@ proto.application.Resources.prototype.getSelector = function() {
  * @return {!proto.application.Resources} returns this
  */
 proto.application.Resources.prototype.setSelector = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

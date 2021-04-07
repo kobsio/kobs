@@ -39,10 +39,12 @@ message Link {
 // Resources is a list of resources, which can be associated with the Application. For each selector
 // (e.g. app=prometheus) a list of resources can be specified. These kinds are the plural of the standard Kubernetes
 // resources (e.g. pods, cronjobs. deployments, ...) or for CRDs resource.path
-// (e.g. vaultsecrets.ricoberger.de/v1alpha1).
+// (e.g. vaultsecrets.ricoberger.de/v1alpha1). The list of namespaces is optional and if not provided the namespace of
+// the Application will be used to get the resources.
 message Resources {
-  repeated string kinds = 1;
-  string selector = 2;
+  repeated string namespaces = 1;
+  repeated string kinds = 2;
+  string selector = 3;
 }
 
 // Dependency is an application, which can be identified by the cluster, namespace and name. One application can have,

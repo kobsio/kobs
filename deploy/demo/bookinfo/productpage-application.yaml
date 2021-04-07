@@ -24,7 +24,7 @@ spec:
               - label: Incoming Success Rate
                 query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])) * 100
   resources:
-    - kinds: ["deployments", "pods", "gateways.networking.istio.io/v1alpha3", "virtualservices.networking.istio.io/v1alpha3"]
+    - kinds: ["deployments", "pods", "gateways.networking.istio.io/v1beta1", "virtualservices.networking.istio.io/v1beta1"]
       selector: app=productpage
   dependencies:
     - name: details

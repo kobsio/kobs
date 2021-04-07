@@ -177,15 +177,15 @@ func (c *Cluster) loadCRDs() {
 		}
 
 		for _, crd := range crdList.Items {
-			if len(crd.Spec.Versions) > 0 {
+			for _, version := range crd.Spec.Versions {
 				var description string
-				if crd.Spec.Versions[0].Schema != nil && crd.Spec.Versions[0].Schema.OpenAPIV3Schema != nil {
-					description = crd.Spec.Versions[0].Schema.OpenAPIV3Schema.Description
+				if version.Schema != nil && version.Schema.OpenAPIV3Schema != nil {
+					description = version.Schema.OpenAPIV3Schema.Description
 				}
 
 				var columns []*clustersProto.CRDColumn
-				if crd.Spec.Versions[0].AdditionalPrinterColumns != nil {
-					for _, column := range crd.Spec.Versions[0].AdditionalPrinterColumns {
+				if version.AdditionalPrinterColumns != nil {
+					for _, column := range version.AdditionalPrinterColumns {
 						columns = append(columns, &clustersProto.CRDColumn{
 							Description: column.Description,
 							JsonPath:    column.JSONPath,
@@ -196,7 +196,7 @@ func (c *Cluster) loadCRDs() {
 				}
 
 				c.crds = append(c.crds, &clustersProto.CRD{
-					Path:        fmt.Sprintf("%s/%s", crd.Spec.Group, crd.Spec.Versions[0].Name),
+					Path:        fmt.Sprintf("%s/%s", crd.Spec.Group, version.Name),
 					Resource:    crd.Spec.Names.Plural,
 					Title:       crd.Spec.Names.Kind,
 					Description: description,

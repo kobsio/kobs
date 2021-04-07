@@ -113,6 +113,11 @@ export namespace Link {
 }
 
 export class Resources extends jspb.Message {
+  clearNamespacesList(): void;
+  getNamespacesList(): Array<string>;
+  setNamespacesList(value: Array<string>): void;
+  addNamespaces(value: string, index?: number): string;
+
   clearKindsList(): void;
   getKindsList(): Array<string>;
   setKindsList(value: Array<string>): void;
@@ -133,6 +138,7 @@ export class Resources extends jspb.Message {
 
 export namespace Resources {
   export type AsObject = {
+    namespacesList: Array<string>,
     kindsList: Array<string>,
     selector: string,
   }
