@@ -22,7 +22,7 @@ The following specification can be used, within an application.
 | ----- | ---- | ----------- | -------- |
 | name | string | A name for the query. | Yes |
 | service | string | The service to retrieve traces for. | Yes |
-| operations | string | An optional operation to retrieve traces for. | No |
+| operation | string | An optional operation to retrieve traces for. | No |
 | tags | string | Tags, which the traces must be contain. | No |
 
 For example the following query specification will display all traces for the `reviews.bookinfo` service.

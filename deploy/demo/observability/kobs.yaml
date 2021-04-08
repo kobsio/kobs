@@ -16,6 +16,8 @@ spec:
         - name: kobs
           image: "kobsio/kobs:0.1.0"
           imagePullPolicy: Always
+          args:
+            - --log.level=trace
           env:
             - name: KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES
               value: 1m
