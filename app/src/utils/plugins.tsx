@@ -8,8 +8,40 @@ import JaegerPlugin from 'plugins/jaeger/JaegerPlugin';
 import PrometheusPage from 'plugins/prometheus/PrometheusPage';
 import PrometheusPlugin from 'plugins/prometheus/PrometheusPlugin';
 import PrometheusPreview from 'plugins/prometheus/PrometheusPreview';
+import { jsonToProto as elasticsearchJsonToProto } from 'plugins/elasticsearch/helpers';
+import { jsonToProto as jaegerJsonToProto } from 'plugins/jaeger/helpers';
+import { jsonToProto as prometheusJsonToProto } from 'plugins/prometheus/helpers';
 
 import { Plugin as IProtoPlugin } from 'proto/plugins_grpc_web_pb';
+
+// jsonToProto is a simple json to protobuf converter function, which can be used instead of the jsonToProto function
+// defined by every plugin. So that we can also try to render the plugin, when it doesn't specify a jsonToProto
+// function.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+// const jsonToProto = (json: any): IProtoPlugin.AsObject | undefined => {
+//   for (const [field] of Object.entries(json)) {
+//     if (typeof json[field] === 'object') {
+//       if (Array.isArray(json[field])) {
+//         json[`${field.toLowerCase()}List`] = jsonToProto(json[field]);
+//         delete json[field];
+//       } else {
+//         if (field.toLowerCase() !== field) {
+//           json[field.toLowerCase()] = jsonToProto(json[field]);
+//           delete json[field];
+//         } else {
+//           json[field] = jsonToProto(json[field]);
+//         }
+//       }
+//     } else {
+//       if (field.toLowerCase() !== field) {
+//         json[field.toLowerCase()] = json[field];
+//         delete json[field];
+//       }
+//     }
+//   }
+
+//   return json as IProtoPlugin.AsObject;
+// };
 
 // IPluginPageProps is the interface for the properties, which are passed to the page implementation of a plugin. This
 // is the name and the description of the plugin.
@@ -31,6 +63,8 @@ export interface IPluginProps {
 // IPlugin is the interface for a single plugin implementation. Each plugin must implement a plugin component, which can
 // be used within an application and a page, which can be used to retrieve data of this plugin withour an application.
 export interface IPlugin {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  jsonToProto: (json: any) => IProtoPlugin.AsObject | undefined;
   page: React.FunctionComponent<IPluginPageProps>;
   plugin: React.FunctionComponent<IPluginProps>;
   preview?: React.FunctionComponent<IPluginProps>;
@@ -45,15 +79,18 @@ export interface IPlugins {
 // plugins is the list of all supported plugins.
 export const plugins: IPlugins = {
   elasticsearch: {
+    jsonToProto: elasticsearchJsonToProto,
     page: ElasticsearchPage,
     plugin: ElasticsearchPlugin,
     preview: ElasticsearchPreview,
   },
   jaeger: {
+    jsonToProto: jaegerJsonToProto,
     page: JaegerPage,
     plugin: JaegerPlugin,
   },
   prometheus: {
+    jsonToProto: prometheusJsonToProto,
     page: PrometheusPage,
     plugin: PrometheusPlugin,
     preview: PrometheusPreview,

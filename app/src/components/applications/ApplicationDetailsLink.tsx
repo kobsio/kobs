@@ -21,7 +21,7 @@ const ApplicationDetailsLink: React.FunctionComponent<IApplicationDetailsLinkPro
   );
 
   useEffect(() => {
-    setLink(`/applications/${application.cluster}/${application.namespace}/${application.name}${location.search}`);
+    setLink(`/applications/${application.cluster}/${application.namespace}/${application.name}`);
   }, [application, location.search]);
 
   return <DrawerLink link={link} />;

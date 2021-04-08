@@ -1,3 +1,5 @@
+import { Query, Spec } from 'proto/elasticsearch_grpc_web_pb';
+import { Plugin } from 'proto/plugins_grpc_web_pb';
 import { formatTime } from 'utils/helpers';
 
 // ITimes is the interface for a start and end time.
@@ -83,4 +85,35 @@ export const getProperty = (obj: any, key: string): string | number => {
 // corresponding timestamp representation, which we need for the formatTime function.
 export const formatTimeWrapper = (time: string): string => {
   return formatTime(Math.floor(new Date(time).getTime() / 1000));
+};
+
+// jsonToProto is used to convert a json object into the protobuf message format for the Prometheus plugin. This is
+// needed, so that users can use the plugin within resources, where the plugin specs are specified as json object.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
+  if (!json.elasticsearch || !json.elasticsearch.queries || !Array.isArray(json.elasticsearch.queries)) {
+    return undefined;
+  }
+
+  const queries: Query[] = [];
+  for (const query of json.elasticsearch.queries) {
+    if (query.name && query.query) {
+      const q = new Query();
+      q.setName(query.name);
+      q.setQuery(query.query);
+      q.setFieldsList(query.fields && Array.isArray(query.fields) ? query.fields : []);
+      queries.push(q);
+    } else {
+      return undefined;
+    }
+  }
+
+  const elasticsearch = new Spec();
+  elasticsearch.setQueriesList(queries);
+
+  const plugin = new Plugin();
+  plugin.setName(json.name);
+  plugin.setElasticsearch(elasticsearch);
+
+  return plugin.toObject();
 };

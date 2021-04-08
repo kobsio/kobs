@@ -10,3 +10,10 @@ export const applicationsDescription = 'Applications are a Custom Resource for k
 // resourcesDescription is the description, which is displayed in the UI on the resources card on the overview page
 // and the resources page.
 export const resourcesDescription = 'Resources are all available Kubernetes resources.';
+
+// applicationAnnotation is the key for the annotation, which allows a user to specify a list of applications within a
+// resource
+export const applicationAnnotation = 'kobs.io/applications';
+
+// pluginAnnotation is the key for the annotation, which allows a user to specify a list of plugins within a resource.
+export const pluginAnnotation = 'kobs.io/plugins';

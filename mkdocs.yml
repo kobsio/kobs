@@ -34,7 +34,10 @@ nav:
       - Elasticsearch: plugins/elasticsearch.md
       - Jaeger: plugins/jaeger.md
       - Prometheus: plugins/prometheus.md
-  - Contributing: contributing/contributing.md
+  - Contributing:
+      - Getting Started: contributing/getting-started.md
+      - Add a Plugin: contributing/add-a-plugin.md
+      - Development using the Demo: contributing/development-using-the-demo.md
 
 plugins:
   - search

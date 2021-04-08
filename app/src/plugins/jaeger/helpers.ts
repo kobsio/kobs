@@ -1,5 +1,7 @@
 import { ChartThemeColor, getDarkThemeColors } from '@patternfly/react-charts';
 
+import { Query, Spec } from 'proto/jaeger_grpc_web_pb';
+import { Plugin } from 'proto/plugins_grpc_web_pb';
 import { formatTime } from 'utils/helpers';
 
 export interface IKeyValue {
@@ -232,4 +234,36 @@ export const doesTraceContainsError = (trace: ITrace): boolean => {
   }
 
   return false;
+};
+
+// jsonToProto is used to convert a json object into the protobuf message format for the Prometheus plugin. This is
+// needed, so that users can use the plugin within resources, where the plugin specs are specified as json object.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
+  if (!json.jaeger || !json.jaeger.queries || !Array.isArray(json.jaeger.queries)) {
+    return undefined;
+  }
+
+  const queries: Query[] = [];
+  for (const query of json.jaeger.queries) {
+    if (query.name && query.service) {
+      const q = new Query();
+      q.setName(query.name);
+      q.setService(query.service);
+      q.setOperation(query.operation ? query.operation : '');
+      q.setTags(query.tags ? query.tags : '');
+      queries.push(q);
+    } else {
+      return undefined;
+    }
+  }
+
+  const jaeger = new Spec();
+  jaeger.setQueriesList(queries);
+
+  const plugin = new Plugin();
+  plugin.setName(json.name);
+  plugin.setJaeger(jaeger);
+
+  return plugin.toObject();
 };
