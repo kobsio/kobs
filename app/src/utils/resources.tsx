@@ -325,7 +325,7 @@ const resources: IResources = {
               restarts,
               age,
             ],
-            props: pod,
+            props: { apiVersion: 'v1', kind: 'Pod', ...pod },
           });
         }
       }

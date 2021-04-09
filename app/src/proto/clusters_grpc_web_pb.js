@@ -395,6 +395,86 @@ proto.clusters.ClustersPromiseClient.prototype.getResources =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.clusters.GetLogsRequest,
+ *   !proto.clusters.GetLogsResponse>}
+ */
+const methodDescriptor_Clusters_GetLogs = new grpc.web.MethodDescriptor(
+  '/clusters.Clusters/GetLogs',
+  grpc.web.MethodType.UNARY,
+  proto.clusters.GetLogsRequest,
+  proto.clusters.GetLogsResponse,
+  /**
+   * @param {!proto.clusters.GetLogsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetLogsResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.clusters.GetLogsRequest,
+ *   !proto.clusters.GetLogsResponse>}
+ */
+const methodInfo_Clusters_GetLogs = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.clusters.GetLogsResponse,
+  /**
+   * @param {!proto.clusters.GetLogsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetLogsResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.clusters.GetLogsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.clusters.GetLogsResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.clusters.GetLogsResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.clusters.ClustersClient.prototype.getLogs =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/clusters.Clusters/GetLogs',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetLogs,
+      callback);
+};
+
+
+/**
+ * @param {!proto.clusters.GetLogsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.clusters.GetLogsResponse>}
+ *     Promise that resolves to the response
+ */
+proto.clusters.ClustersPromiseClient.prototype.getLogs =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/clusters.Clusters/GetLogs',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetLogs);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.clusters.GetApplicationsRequest,
  *   !proto.clusters.GetApplicationsResponse>}
  */

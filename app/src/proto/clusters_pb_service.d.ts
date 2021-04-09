@@ -40,6 +40,15 @@ type ClustersGetResources = {
   readonly responseType: typeof clusters_pb.GetResourcesResponse;
 };
 
+type ClustersGetLogs = {
+  readonly methodName: string;
+  readonly service: typeof Clusters;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof clusters_pb.GetLogsRequest;
+  readonly responseType: typeof clusters_pb.GetLogsResponse;
+};
+
 type ClustersGetApplications = {
   readonly methodName: string;
   readonly service: typeof Clusters;
@@ -73,6 +82,7 @@ export class Clusters {
   static readonly GetNamespaces: ClustersGetNamespaces;
   static readonly GetCRDs: ClustersGetCRDs;
   static readonly GetResources: ClustersGetResources;
+  static readonly GetLogs: ClustersGetLogs;
   static readonly GetApplications: ClustersGetApplications;
   static readonly GetApplication: ClustersGetApplication;
   static readonly GetApplicationsTopology: ClustersGetApplicationsTopology;
@@ -145,6 +155,15 @@ export class ClustersClient {
   getResources(
     requestMessage: clusters_pb.GetResourcesRequest,
     callback: (error: ServiceError|null, responseMessage: clusters_pb.GetResourcesResponse|null) => void
+  ): UnaryResponse;
+  getLogs(
+    requestMessage: clusters_pb.GetLogsRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetLogsResponse|null) => void
+  ): UnaryResponse;
+  getLogs(
+    requestMessage: clusters_pb.GetLogsRequest,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetLogsResponse|null) => void
   ): UnaryResponse;
   getApplications(
     requestMessage: clusters_pb.GetApplicationsRequest,

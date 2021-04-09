@@ -190,6 +190,72 @@ export namespace GetResourcesResponse {
   }
 }
 
+export class GetLogsRequest extends jspb.Message {
+  getCluster(): string;
+  setCluster(value: string): void;
+
+  getNamespace(): string;
+  setNamespace(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getContainer(): string;
+  setContainer(value: string): void;
+
+  getRegex(): string;
+  setRegex(value: string): void;
+
+  getSince(): number;
+  setSince(value: number): void;
+
+  getPrevious(): boolean;
+  setPrevious(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetLogsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetLogsRequest): GetLogsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetLogsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetLogsRequest;
+  static deserializeBinaryFromReader(message: GetLogsRequest, reader: jspb.BinaryReader): GetLogsRequest;
+}
+
+export namespace GetLogsRequest {
+  export type AsObject = {
+    cluster: string,
+    namespace: string,
+    name: string,
+    container: string,
+    regex: string,
+    since: number,
+    previous: boolean,
+  }
+}
+
+export class GetLogsResponse extends jspb.Message {
+  clearLogsList(): void;
+  getLogsList(): Array<string>;
+  setLogsList(value: Array<string>): void;
+  addLogs(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetLogsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetLogsResponse): GetLogsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetLogsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetLogsResponse;
+  static deserializeBinaryFromReader(message: GetLogsResponse, reader: jspb.BinaryReader): GetLogsResponse;
+}
+
+export namespace GetLogsResponse {
+  export type AsObject = {
+    logsList: Array<string>,
+  }
+}
+
 export class Resources extends jspb.Message {
   getCluster(): string;
   setCluster(value: string): void;

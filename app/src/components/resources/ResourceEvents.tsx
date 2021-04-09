@@ -1,4 +1,4 @@
-import { Flex, FlexItem } from '@patternfly/react-core';
+import { Card, Flex, FlexItem } from '@patternfly/react-core';
 import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import React, { useCallback, useEffect, useState } from 'react';
 import { CoreV1EventList } from '@kubernetes/client-node';
@@ -70,21 +70,23 @@ const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, nam
   }, [fetchEvents]);
 
   return (
-    <Flex direction={{ default: 'column' }}>
-      <FlexItem>
-        <Table
-          aria-label="events"
-          variant="compact"
-          borders={false}
-          isStickyHeader={false}
-          cells={['Last seen', 'Type', 'Reason', 'Message']}
-          rows={events}
-        >
-          <TableHeader />
-          <TableBody />
-        </Table>
-      </FlexItem>
-    </Flex>
+    <Card>
+      <Flex direction={{ default: 'column' }}>
+        <FlexItem>
+          <Table
+            aria-label="events"
+            variant="compact"
+            borders={false}
+            isStickyHeader={false}
+            cells={['Last seen', 'Type', 'Reason', 'Message']}
+            rows={events}
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
+        </FlexItem>
+      </Flex>
+    </Card>
   );
 };
 
