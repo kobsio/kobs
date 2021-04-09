@@ -210,6 +210,27 @@ func (c *Clusters) GetResources(ctx context.Context, getResourcesRequest *cluste
 	}, nil
 }
 
+// GetLogs returns the log line for the given pod, which is identified by the cluster, namespace and name.
+func (c *Clusters) GetLogs(ctx context.Context, getLogsRequest *clustersProto.GetLogsRequest) (*clustersProto.GetLogsResponse, error) {
+	log.WithFields(logrus.Fields{"cluster": getLogsRequest.Cluster, "namespace": getLogsRequest.Namespace, "pod": getLogsRequest.Name, "container": getLogsRequest.Container, "regex": getLogsRequest.Regex, "since": getLogsRequest.Since, "previous": getLogsRequest.Previous}).Tracef("GetLogs")
+
+	cluster := c.getCluster(getLogsRequest.Cluster)
+	if cluster == nil {
+		return nil, fmt.Errorf("invalid cluster name")
+	}
+
+	logs, err := cluster.GetLogs(ctx, getLogsRequest.Namespace, getLogsRequest.Name, getLogsRequest.Container, getLogsRequest.Regex, getLogsRequest.Since, getLogsRequest.Previous)
+	if err != nil {
+		return nil, err
+	}
+
+	log.WithFields(logrus.Fields{"count": len(logs)}).Tracef("GetLogs")
+
+	return &clustersProto.GetLogsResponse{
+		Logs: logs,
+	}, nil
+}
+
 // GetApplications returns a list of applications for the given clusters and namespaces.
 // To generate this list, we loop over every cluster and namespace and try to get the applications for this.
 func (c *Clusters) GetApplications(ctx context.Context, getApplicationsRequest *clustersProto.GetApplicationsRequest) (*clustersProto.GetApplicationsResponse, error) {

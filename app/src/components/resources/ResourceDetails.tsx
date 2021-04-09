@@ -2,6 +2,7 @@ import {
   Alert,
   AlertVariant,
   Button,
+  Card,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
@@ -28,6 +29,7 @@ import Editor from 'components/Editor';
 import { Plugin as IPlugin } from 'proto/plugins_grpc_web_pb';
 import Plugin from 'components/plugins/Plugin';
 import ResourceEvents from 'components/resources/ResourceEvents';
+import ResourceLogs from 'components/resources/ResourceLogs';
 import Title from 'components/Title';
 import { plugins as pluginsDefinition } from 'utils/plugins';
 
@@ -189,7 +191,9 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
         >
           <Tab eventKey="yaml" title={<TabTitleText>Yaml</TabTitleText>}>
             <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
-              <Editor value={yaml.dump(resource.props)} mode="yaml" readOnly={true} />
+              <Card>
+                <Editor value={yaml.dump(resource.props)} mode="yaml" readOnly={true} />
+              </Card>
             </div>
           </Tab>
           <Tab eventKey="events" title={<TabTitleText>Events</TabTitleText>}>
@@ -201,6 +205,20 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
               />
             </div>
           </Tab>
+
+          {resource.props && resource.props.apiVersion === 'v1' && resource.props.kind === 'Pod' ? (
+            <Tab eventKey="logs" title={<TabTitleText>Logs</TabTitleText>}>
+              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+                <ResourceLogs
+                  cluster={resource.cluster.title}
+                  namespace={resource.namespace ? resource.namespace.title : ''}
+                  name={resource.name.title}
+                  pod={resource.props}
+                />
+              </div>
+            </Tab>
+          ) : null}
+
           {pluginsError ? (
             <Tab eventKey="plugins" title={<TabTitleText>Plugins</TabTitleText>}>
               <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>

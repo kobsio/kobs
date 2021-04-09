@@ -13,6 +13,7 @@ import (
 	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
 
 	"github.com/sirupsen/logrus"
+	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -107,6 +108,41 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, path, resource, p
 	}
 
 	return string(res), nil
+}
+
+// GetLogs returns the logs for a Pod.  The Pod is identified by the namespace and name. Before we return the logs,
+// we filter them by the provided regular expression.
+// Before we check each log line against the regular expression provided by a user, we check that a regular expression
+// was provided. If not we just return the logs from the Kubernetes API request splitted by the newline character. If a
+// regular expression was provided, we compile it and then loop through all lines and check each line against the regex.
+// When a line matches the regex it is added to the slice of log lines, which are returned then.
+func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container, regex string, since int64, previous bool) ([]string, error) {
+	res, err := c.clientset.CoreV1().Pods(namespace).GetLogs(name, &corev1.PodLogOptions{
+		Container:    container,
+		SinceSeconds: &since,
+		Previous:     previous,
+	}).DoRaw(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if regex == "" {
+		return strings.Split(string(res), "\n"), nil
+	}
+
+	reg, err := regexp.Compile(regex)
+	if err != nil {
+		return nil, err
+	}
+
+	var logs []string
+	for _, line := range strings.Split(string(res), "\n") {
+		if reg.MatchString(line) {
+			logs = append(logs, line)
+		}
+	}
+
+	return logs, nil
 }
 
 // GetApplications returns a list of applications gor the given namespace. It also adds the cluster, namespace and

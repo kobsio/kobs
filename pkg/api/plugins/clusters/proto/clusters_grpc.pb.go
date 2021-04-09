@@ -22,6 +22,7 @@ type ClustersClient interface {
 	GetNamespaces(ctx context.Context, in *GetNamespacesRequest, opts ...grpc.CallOption) (*GetNamespacesResponse, error)
 	GetCRDs(ctx context.Context, in *GetCRDsRequest, opts ...grpc.CallOption) (*GetCRDsResponse, error)
 	GetResources(ctx context.Context, in *GetResourcesRequest, opts ...grpc.CallOption) (*GetResourcesResponse, error)
+	GetLogs(ctx context.Context, in *GetLogsRequest, opts ...grpc.CallOption) (*GetLogsResponse, error)
 	GetApplications(ctx context.Context, in *GetApplicationsRequest, opts ...grpc.CallOption) (*GetApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*GetApplicationResponse, error)
 	GetApplicationsTopology(ctx context.Context, in *GetApplicationsTopologyRequest, opts ...grpc.CallOption) (*GetApplicationsTopologyResponse, error)
@@ -71,6 +72,15 @@ func (c *clustersClient) GetResources(ctx context.Context, in *GetResourcesReque
 	return out, nil
 }
 
+func (c *clustersClient) GetLogs(ctx context.Context, in *GetLogsRequest, opts ...grpc.CallOption) (*GetLogsResponse, error) {
+	out := new(GetLogsResponse)
+	err := c.cc.Invoke(ctx, "/clusters.Clusters/GetLogs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *clustersClient) GetApplications(ctx context.Context, in *GetApplicationsRequest, opts ...grpc.CallOption) (*GetApplicationsResponse, error) {
 	out := new(GetApplicationsResponse)
 	err := c.cc.Invoke(ctx, "/clusters.Clusters/GetApplications", in, out, opts...)
@@ -106,6 +116,7 @@ type ClustersServer interface {
 	GetNamespaces(context.Context, *GetNamespacesRequest) (*GetNamespacesResponse, error)
 	GetCRDs(context.Context, *GetCRDsRequest) (*GetCRDsResponse, error)
 	GetResources(context.Context, *GetResourcesRequest) (*GetResourcesResponse, error)
+	GetLogs(context.Context, *GetLogsRequest) (*GetLogsResponse, error)
 	GetApplications(context.Context, *GetApplicationsRequest) (*GetApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*GetApplicationResponse, error)
 	GetApplicationsTopology(context.Context, *GetApplicationsTopologyRequest) (*GetApplicationsTopologyResponse, error)
@@ -127,6 +138,9 @@ func (UnimplementedClustersServer) GetCRDs(context.Context, *GetCRDsRequest) (*G
 }
 func (UnimplementedClustersServer) GetResources(context.Context, *GetResourcesRequest) (*GetResourcesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetResources not implemented")
+}
+func (UnimplementedClustersServer) GetLogs(context.Context, *GetLogsRequest) (*GetLogsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLogs not implemented")
 }
 func (UnimplementedClustersServer) GetApplications(context.Context, *GetApplicationsRequest) (*GetApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetApplications not implemented")
@@ -222,6 +236,24 @@ func _Clusters_GetResources_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Clusters_GetLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLogsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClustersServer).GetLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clusters.Clusters/GetLogs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClustersServer).GetLogs(ctx, req.(*GetLogsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Clusters_GetApplications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetApplicationsRequest)
 	if err := dec(in); err != nil {
@@ -298,6 +330,10 @@ var Clusters_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetResources",
 			Handler:    _Clusters_GetResources_Handler,
+		},
+		{
+			MethodName: "GetLogs",
+			Handler:    _Clusters_GetLogs_Handler,
 		},
 		{
 			MethodName: "GetApplications",

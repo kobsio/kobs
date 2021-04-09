@@ -46,6 +46,15 @@ Clusters.GetResources = {
   responseType: clusters_pb.GetResourcesResponse
 };
 
+Clusters.GetLogs = {
+  methodName: "GetLogs",
+  service: Clusters,
+  requestStream: false,
+  responseStream: false,
+  requestType: clusters_pb.GetLogsRequest,
+  responseType: clusters_pb.GetLogsResponse
+};
+
 Clusters.GetApplications = {
   methodName: "GetApplications",
   service: Clusters,
@@ -178,6 +187,37 @@ ClustersClient.prototype.getResources = function getResources(requestMessage, me
     callback = arguments[1];
   }
   var client = grpc.unary(Clusters.GetResources, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ClustersClient.prototype.getLogs = function getLogs(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Clusters.GetLogs, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

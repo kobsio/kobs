@@ -12,6 +12,7 @@ service Clusters {
   rpc GetNamespaces(GetNamespacesRequest) returns (GetNamespacesResponse) {}
   rpc GetCRDs(GetCRDsRequest) returns (GetCRDsResponse) {}
   rpc GetResources(GetResourcesRequest) returns (GetResourcesResponse) {}
+  rpc GetLogs(GetLogsRequest) returns (GetLogsResponse) {}
   rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse) {}
   rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {}
   rpc GetApplicationsTopology(GetApplicationsTopologyRequest) returns (GetApplicationsTopologyResponse) {}
@@ -64,6 +65,25 @@ message GetResourcesRequest {
 // are returned by cluster and namespace.
 message GetResourcesResponse {
   repeated Resources resources = 1;
+}
+
+// GetLogsRequest is the request message to get the logs for a Pod. For this we need a cluster, namespace and name to
+// identify the Pod, an optional regular expression to filter the returned lines and a duration since when the logs
+// should be returned.
+message GetLogsRequest {
+  string cluster = 1;
+  string namespace = 2;
+  string name = 3;
+  string container = 4;
+  string regex = 5;
+  int64 since = 6;
+  bool previous = 7;
+}
+
+// GetLogsResponse is the response format for a GetLogs call, it just contains an list of log lines for the given input
+// data.
+message GetLogsResponse {
+  repeated string logs = 1;
 }
 
 // Resources is the structure for a list of resources for a cluster and a namespaces. The resourceList string contains
