@@ -16,6 +16,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#33](https://github.com/kobsio/kobs/pull/33): Fix the topology graph, which crashes, when an Application has a dependency to an Application, which doesn't exists.
+
 ### Changed
 
 - [#30](https://github.com/kobsio/kobs/pull/30): Support multiple versions of a CRD and allow the specification of namespaces in the Applications resources list.

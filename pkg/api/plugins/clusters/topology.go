@@ -80,7 +80,17 @@ func (c *Clusters) generateTopology() {
 			}
 		}
 
-		c.edges = edges
+		// Loop through all edges and remove the edge, when the source or target node doesn't exists. This is needed, so
+		// that we only have edges were the source and target nodes exists, because the topology component in the React
+		// UI will crash when it founds an edge but no corresponding node.
+		var filterEdges []*clustersProto.Edge
+		for _, edge := range edges {
+			if doesNodeExists(nodes, edge.Source) && doesNodeExists(nodes, edge.Target) {
+				filterEdges = append(filterEdges, edge)
+			}
+		}
+
+		c.edges = filterEdges
 		c.nodes = nodes
 
 		time.Sleep(sleep)
@@ -107,4 +117,15 @@ func appendNodeIfMissing(nodes []*clustersProto.Node, node *clustersProto.Node) 
 	}
 
 	return append(nodes, node)
+}
+
+// doesNodeExists checks if the given node id exists in a slice of node.
+func doesNodeExists(nodes []*clustersProto.Node, nodeID string) bool {
+	for _, node := range nodes {
+		if node.Id == nodeID {
+			return true
+		}
+	}
+
+	return false
 }
