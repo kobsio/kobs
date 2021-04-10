@@ -9,9 +9,9 @@ import (
 
 	applicationProto "github.com/kobsio/kobs/pkg/api/plugins/application/proto"
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters/cluster"
-	"github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
 	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters/provider"
+	teamProto "github.com/kobsio/kobs/pkg/api/plugins/team/proto"
 
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
@@ -21,6 +21,7 @@ var (
 	log                     = logrus.WithFields(logrus.Fields{"package": "clusters"})
 	cacheDurationNamespaces string
 	cacheDurationTopology   string
+	cacheDurationTeams      string
 )
 
 // init is used to define all command-line flags for the clusters package. Currently this is only the cache duration,
@@ -36,8 +37,14 @@ func init() {
 		defaultCacheDurationTopology = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY")
 	}
 
+	defaultCacheDurationTeams := "60m"
+	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEAMS") != "" {
+		defaultCacheDurationTeams = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEAMS")
+	}
+
 	flag.StringVar(&cacheDurationNamespaces, "clusters.cache-duration.namespaces", defaultCacheDurationNamespaces, "The duration, for how long requests to get the list of namespaces should be cached.")
 	flag.StringVar(&cacheDurationTopology, "clusters.cache-duration.topology", defaultCacheDurationTopology, "The duration, for how long the topology data should be cached.")
+	flag.StringVar(&cacheDurationTeams, "clusters.cache-duration.teams", defaultCacheDurationTeams, "The duration, for how long the teams data should be cached.")
 }
 
 // Config is the configuration required to load all clusters.
@@ -52,6 +59,7 @@ type Clusters struct {
 	clusters []*cluster.Cluster
 	edges    []*clustersProto.Edge
 	nodes    []*clustersProto.Node
+	teams    []Team
 }
 
 func (c *Clusters) getCluster(name string) *cluster.Cluster {
@@ -167,7 +175,7 @@ func (c *Clusters) GetCRDs(ctx context.Context, getCRDsRequest *clustersProto.Ge
 func (c *Clusters) GetResources(ctx context.Context, getResourcesRequest *clustersProto.GetResourcesRequest) (*clustersProto.GetResourcesResponse, error) {
 	log.WithFields(logrus.Fields{"clusters": getResourcesRequest.Clusters, "namespaces": getResourcesRequest.Namespaces, "resource": getResourcesRequest.Resource, "path": getResourcesRequest.Path, "paramName": getResourcesRequest.ParamName, "param": getResourcesRequest.Param}).Tracef("GetResources")
 
-	var resources []*proto.Resources
+	var resources []*clustersProto.Resources
 
 	for _, clusterName := range getResourcesRequest.Clusters {
 		cluster := c.getCluster(clusterName)
@@ -283,6 +291,76 @@ func (c *Clusters) GetApplication(ctx context.Context, getApplicationRequest *cl
 	}, nil
 }
 
+// GetTeams returns all teams. Since this is only used to render the page which shows all teams, we just return the
+// name, description and logo of each team.
+func (c *Clusters) GetTeams(ctx context.Context, getTeamsRequest *clustersProto.GetTeamsRequest) (*clustersProto.GetTeamsResponse, error) {
+	log.Tracef("GetTeams")
+
+	var teams []*teamProto.Team
+
+	for _, team := range c.teams {
+		teams = append(teams, &teamProto.Team{
+			Name:        team.Name,
+			Description: team.Description,
+			Logo:        team.Logo,
+		})
+	}
+
+	log.WithFields(logrus.Fields{"count": len(teams)}).Tracef("GetTeams")
+
+	return &clustersProto.GetTeamsResponse{
+		Teams: teams,
+	}, nil
+}
+
+// GetTeam returns a single team. Each team is identified by his name. This also means that each team name must be
+// unique across clusters and namespaces.We use the generated list of teams to identify where we find the Team CR for
+// the given team name. Then we return the CR. We also use the list of teams, to get all applications, which can be
+// associated with the team and return them within the team.
+// Since we are using the generated list of teams, it is possible that a team can not be found directly after it is
+// created. The reason for this is that we cache the teams for the specified cache duration via the
+// --clusters.cache-duration.teams flag (default 60m). We do this because it can become expensive to generate the list
+// of teams, when the number of teams and applications grows.
+func (c *Clusters) GetTeam(ctx context.Context, getTeamRequest *clustersProto.GetTeamRequest) (*clustersProto.GetTeamResponse, error) {
+	log.WithFields(logrus.Fields{"name": getTeamRequest.Name}).Tracef("GetTeam")
+
+	teamShort := getTeamData(c.teams, getTeamRequest.Name)
+	if teamShort == nil {
+		return nil, fmt.Errorf("invalid team name")
+	}
+
+	cluster := c.getCluster(teamShort.Cluster)
+	if cluster == nil {
+		return nil, fmt.Errorf("invalid cluster name")
+	}
+
+	team, err := cluster.GetTeam(ctx, teamShort.Namespace, getTeamRequest.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	var applications []*applicationProto.Application
+
+	for _, applicationShort := range teamShort.Applications {
+		applicationCluster := c.getCluster(applicationShort.Cluster)
+		if cluster == nil {
+			return nil, fmt.Errorf("invalid cluster name")
+		}
+
+		application, err := applicationCluster.GetApplication(ctx, applicationShort.Namespace, applicationShort.Name)
+		if err != nil {
+			continue
+		}
+
+		applications = append(applications, application)
+	}
+
+	return &clustersProto.GetTeamResponse{
+		Team:         team,
+		Applications: applications,
+	}, nil
+}
+
 // GetApplicationsTopology returns the topology for the given list of clusters and namespaces. We add an additional node
 // for each cluster and namespace. These nodes are used to group the applications by the cluster and namespace.
 func (c *Clusters) GetApplicationsTopology(ctx context.Context, getApplicationsTopologyRequest *clustersProto.GetApplicationsTopologyRequest) (*clustersProto.GetApplicationsTopologyResponse, error) {
@@ -364,6 +442,7 @@ func Load(config Config) (*Clusters, error) {
 	}
 
 	go cs.generateTopology()
+	go cs.generateTeams()
 
 	return cs, nil
 }

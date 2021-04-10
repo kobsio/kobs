@@ -5,6 +5,8 @@ metadata:
   name: reviews
   namespace: bookinfo
 spec:
+  teams:
+    - squad-resident-evil
   details:
     description: The reviews microservice contains book reviews. It also calls the ratings microservice.
     links:

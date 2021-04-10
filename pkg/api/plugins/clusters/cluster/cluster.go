@@ -11,6 +11,8 @@ import (
 	applicationClientsetVersioned "github.com/kobsio/kobs/pkg/api/plugins/application/clientset/versioned"
 	applicationProto "github.com/kobsio/kobs/pkg/api/plugins/application/proto"
 	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
+	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/plugins/team/clientset/versioned"
+	teamProto "github.com/kobsio/kobs/pkg/api/plugins/team/proto"
 
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -30,6 +32,7 @@ type Cluster struct {
 	cache                Cache
 	clientset            *kubernetes.Clientset
 	applicationClientset *applicationClientsetVersioned.Clientset
+	teamClientset        *teamClientsetVersioned.Clientset
 	options              Options
 	name                 string
 	crds                 []*clustersProto.CRD
@@ -188,6 +191,49 @@ func (c *Cluster) GetApplication(ctx context.Context, namespace, name string) (*
 	return application, nil
 }
 
+// GetTeams returns a list of teams. Since teams must be unique accross clusters and namespace, we ignore the namespace
+// parameter in the request and always request all teams in the cluster.
+func (c *Cluster) GetTeams(ctx context.Context) ([]*teamProto.Team, error) {
+	teamsList, err := c.teamClientset.KobsV1alpha1().Teams("").List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	var teams []*teamProto.Team
+
+	for _, teamItem := range teamsList.Items {
+		if teamItem.Spec == nil {
+			continue
+		}
+
+		team := teamItem.Spec
+		team.Cluster = c.name
+		team.Namespace = teamItem.Namespace
+		team.Name = teamItem.Name
+
+		teams = append(teams, team)
+	}
+
+	return teams, nil
+}
+
+// GetTeam returns a team for the given namespace and name. After the team is retrieved we replace the cluster,
+// namespace and name in the spec of the Team CR. This is needed, so that the user doesn't have to provide the name
+// field and we can find the team later again.
+func (c *Cluster) GetTeam(ctx context.Context, namespace, name string) (*teamProto.Team, error) {
+	teamCR, err := c.teamClientset.KobsV1alpha1().Teams(namespace).Get(ctx, name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	team := teamCR.Spec
+	team.Cluster = c.name
+	team.Namespace = namespace
+	team.Name = name
+
+	return team, nil
+}
+
 // loadCRDs retrieves all CRDs from the Kubernetes API of this cluster. Then the CRDs are transformed into our internal
 // CRD format and saved within the cluster. Since this function is only called once after a cluster was loaded, we call
 // it in a endless loop until it succeeds.
@@ -263,11 +309,18 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 		return nil, err
 	}
 
+	teamClientset, err := teamClientsetVersioned.NewForConfig(restConfig)
+	if err != nil {
+		log.WithError(err).Debugf("Could not create team clientset.")
+		return nil, err
+	}
+
 	name = strings.Trim(slugifyRe.ReplaceAllString(strings.ToLower(name), "-"), "-")
 
 	c := &Cluster{
 		clientset:            clientset,
 		applicationClientset: applicationClientset,
+		teamClientset:        teamClientset,
 		name:                 name,
 	}
 

@@ -29,6 +29,7 @@ nav:
   - Resources:
       - Resources: resources/resources.md
       - Applications: resources/applications.md
+      - Teams: resources/teams.md
   - Plugins:
       - Getting Started: plugins/getting-started.md
       - Elasticsearch: plugins/elasticsearch.md

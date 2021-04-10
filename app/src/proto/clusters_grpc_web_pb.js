@@ -17,6 +17,8 @@ grpc.web = require('grpc-web');
 
 
 var application_pb = require('./application_pb.js')
+
+var team_pb = require('./team_pb.js')
 const proto = {};
 proto.clusters = require('./clusters_pb.js');
 
@@ -709,6 +711,166 @@ proto.clusters.ClustersPromiseClient.prototype.getApplicationsTopology =
       request,
       metadata || {},
       methodDescriptor_Clusters_GetApplicationsTopology);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.clusters.GetTeamsRequest,
+ *   !proto.clusters.GetTeamsResponse>}
+ */
+const methodDescriptor_Clusters_GetTeams = new grpc.web.MethodDescriptor(
+  '/clusters.Clusters/GetTeams',
+  grpc.web.MethodType.UNARY,
+  proto.clusters.GetTeamsRequest,
+  proto.clusters.GetTeamsResponse,
+  /**
+   * @param {!proto.clusters.GetTeamsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetTeamsResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.clusters.GetTeamsRequest,
+ *   !proto.clusters.GetTeamsResponse>}
+ */
+const methodInfo_Clusters_GetTeams = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.clusters.GetTeamsResponse,
+  /**
+   * @param {!proto.clusters.GetTeamsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetTeamsResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.clusters.GetTeamsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.clusters.GetTeamsResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.clusters.GetTeamsResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.clusters.ClustersClient.prototype.getTeams =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/clusters.Clusters/GetTeams',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetTeams,
+      callback);
+};
+
+
+/**
+ * @param {!proto.clusters.GetTeamsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.clusters.GetTeamsResponse>}
+ *     Promise that resolves to the response
+ */
+proto.clusters.ClustersPromiseClient.prototype.getTeams =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/clusters.Clusters/GetTeams',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetTeams);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.clusters.GetTeamRequest,
+ *   !proto.clusters.GetTeamResponse>}
+ */
+const methodDescriptor_Clusters_GetTeam = new grpc.web.MethodDescriptor(
+  '/clusters.Clusters/GetTeam',
+  grpc.web.MethodType.UNARY,
+  proto.clusters.GetTeamRequest,
+  proto.clusters.GetTeamResponse,
+  /**
+   * @param {!proto.clusters.GetTeamRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetTeamResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.clusters.GetTeamRequest,
+ *   !proto.clusters.GetTeamResponse>}
+ */
+const methodInfo_Clusters_GetTeam = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.clusters.GetTeamResponse,
+  /**
+   * @param {!proto.clusters.GetTeamRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetTeamResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.clusters.GetTeamRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.clusters.GetTeamResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.clusters.GetTeamResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.clusters.ClustersClient.prototype.getTeam =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/clusters.Clusters/GetTeam',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetTeam,
+      callback);
+};
+
+
+/**
+ * @param {!proto.clusters.GetTeamRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.clusters.GetTeamResponse>}
+ *     Promise that resolves to the response
+ */
+proto.clusters.ClustersPromiseClient.prototype.getTeam =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/clusters.Clusters/GetTeam',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetTeam);
 };
 
 

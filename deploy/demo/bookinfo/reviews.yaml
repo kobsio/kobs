@@ -44,6 +44,8 @@ spec:
         app: reviews
         version: v1
       annotations:
+        kobs.io/teams: |
+          ["squad-resident-evil"]
         kobs.io/applications: |
           [{"name": "reviews"}]
         kobs.io/plugins: |
@@ -139,6 +141,8 @@ spec:
         app: reviews
         version: v2
       annotations:
+        kobs.io/teams: |
+          ["squad-resident-evil"]
         kobs.io/applications: |
           [{"name": "reviews"}]
         kobs.io/plugins: |
@@ -234,6 +238,8 @@ spec:
         app: reviews
         version: v3
       annotations:
+        kobs.io/teams: |
+          ["squad-resident-evil"]
         kobs.io/applications: |
           [{"name": "reviews"}]
         kobs.io/plugins: |

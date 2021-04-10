@@ -5,6 +5,10 @@ metadata:
   name: productpage
   namespace: bookinfo
 spec:
+  teams:
+    - squad-diablo
+    - squad-resident-evil
+    - squad-call-of-duty
   details:
     description: The productpage microservice calls the details and reviews microservices to populate the page.
     links:

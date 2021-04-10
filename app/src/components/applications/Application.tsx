@@ -15,6 +15,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import ApplicationTabsContent, { IMountedTabs } from 'components/applications/ApplicationTabsContent';
 import { ClustersPromiseClient, GetApplicationRequest, GetApplicationResponse } from 'proto/clusters_grpc_web_pb';
 import ApplicationTabs from 'components/applications/ApplicationTabs';
+import ExternalLink from 'components/ExternalLink';
 import { Application as IApplication } from 'proto/application_pb';
 import Title from 'components/Title';
 import { apiURL } from 'utils/constants';
@@ -123,9 +124,7 @@ const Application: React.FunctionComponent = () => {
             <List variant={ListVariant.inline}>
               {data.application.details.linksList.map((link, index) => (
                 <ListItem key={index}>
-                  <a href={link.link} rel="noreferrer" target="_blank">
-                    {link.title}
-                  </a>
+                  <ExternalLink title={link.title} link={link.link} />
                 </ListItem>
               ))}
             </List>

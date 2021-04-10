@@ -2,7 +2,7 @@ import { Gallery, GalleryItem, PageSection, PageSectionVariants } from '@pattern
 import React, { useContext } from 'react';
 
 import { IPluginsContext, PluginsContext } from 'context/PluginsContext';
-import { applicationsDescription, resourcesDescription } from 'utils/constants';
+import { applicationsDescription, resourcesDescription, teamsDescription } from 'utils/constants';
 import HomeItem from 'components/HomeItem';
 
 // Home is the root component of kobs. It is used to render a list of pages, which can be used by the user. The items
@@ -16,6 +16,10 @@ const Home: React.FunctionComponent = () => {
     <PageSection variant={PageSectionVariants.default}>
       <Gallery hasGutter={true}>
         <GalleryItem>
+          <HomeItem title="Teams" body={teamsDescription} link="/teams" icon="/img/plugins/teams.png" />
+        </GalleryItem>
+
+        <GalleryItem>
           <HomeItem
             title="Applications"
             body={applicationsDescription}
@@ -23,6 +27,7 @@ const Home: React.FunctionComponent = () => {
             icon="/img/plugins/applications.png"
           />
         </GalleryItem>
+
         <GalleryItem>
           <HomeItem title="Resources" body={resourcesDescription} link="/resources" icon="/img/plugins/resources.png" />
         </GalleryItem>

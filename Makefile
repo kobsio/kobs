@@ -6,6 +6,7 @@ REVISION    ?= $(shell git rev-parse HEAD)
 VERSION     ?= $(shell git describe --tags)
 
 PLUGINS ?= $(shell find ./proto -name '*.proto' | sed -e 's/^.\/proto\///' | sed -e 's/.proto//')
+CRDS    ?= application team
 
 .PHONY: build
 build:
@@ -17,7 +18,7 @@ build:
 		-o ./bin/kobs ./cmd/kobs;
 
 .PHONY: generate
-generate: generate-proto generate-crd
+generate: generate-proto generate-crds
 
 .PHONY: generate-proto
 generate-proto:
@@ -30,19 +31,21 @@ generate-proto:
 		rm -rf ./pkg/api/plugins/$$plugin/proto/github.com; \
 	done
 
-.PHONY: generate-crd
-generate-crd:
-	@${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/api/plugins/application github.com/kobsio/kobs/pkg/api/plugins/application/apis application:v1alpha1 --output-base ./tmp
-	@rm -rf ./pkg/api/plugins/application/apis/application/v1alpha1/zz_generated.deepcopy.go
-	@rm -rf ./pkg/api/plugins/application/clientset
-	@rm -rf ./pkg/api/plugins/application/informers
-	@rm -rf ./pkg/api/plugins/application/listers
-	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/apis/application/v1alpha1/zz_generated.deepcopy.go ./pkg/api/plugins/application/apis/application/v1alpha1
-	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/clientset ./pkg/api/plugins/application/clientset
-	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/informers ./pkg/api/plugins/application/informers
-	@mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/application/listers ./pkg/api/plugins/application/listers
-	@rm -rf ./tmp
-	-controller-gen "crd:trivialVersions=true" paths="./..." output:crd:artifacts:config=deploy/kustomize/crds
+.PHONY: generate-crds
+generate-crds:
+	for crd in $(CRDS); do \
+		${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/api/plugins/$$crd github.com/kobsio/kobs/pkg/api/plugins/$$crd/apis $$crd:v1alpha1 --output-base ./tmp; \
+		rm -rf ./pkg/api/plugins/$$crd/apis/$$crd/v1alpha1/zz_generated.deepcopy.go; \
+		rm -rf ./pkg/api/plugins/$$crd/clientset; \
+		rm -rf ./pkg/api/plugins/$$crd/informers; \
+		rm -rf ./pkg/api/plugins/$$crd/listers; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/$$crd/apis/$$crd/v1alpha1/zz_generated.deepcopy.go ./pkg/api/plugins/$$crd/apis/$$crd/v1alpha1; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/$$crd/clientset ./pkg/api/plugins/$$crd/clientset; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/$$crd/informers ./pkg/api/plugins/$$crd/informers; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/api/plugins/$$crd/listers ./pkg/api/plugins/$$crd/listers; \
+		rm -rf ./tmp; \
+	done
+	-controller-gen "crd:crdVersions={v1},trivialVersions=true" paths="./..." output:crd:artifacts:config=deploy/kustomize/crds; \
 
 .PHONY: release-major
 release-major:

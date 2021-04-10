@@ -4,6 +4,7 @@ package clusters;
 option go_package = "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto";
 
 import "application.proto";
+import "team.proto";
 
 // Clusters is the service to execute requests against all loaded Kubernetes clusters. The service can be used to get
 // all clusters, the namespaces for clusters and various Kubernetes resources.
@@ -16,6 +17,8 @@ service Clusters {
   rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse) {}
   rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {}
   rpc GetApplicationsTopology(GetApplicationsTopologyRequest) returns (GetApplicationsTopologyResponse) {}
+  rpc GetTeams(GetTeamsRequest) returns (GetTeamsResponse) {}
+  rpc GetTeam(GetTeamRequest) returns (GetTeamResponse) {}
 }
 
 // GetClustersRequest is the request to get all loaded Kubernetes clusters via the GetClusters method.
@@ -185,4 +188,26 @@ message Node {
   string cluster = 5;
   string namespace = 6;
   string name = 7;
+}
+
+// GetTeamsRequest is the message format to get a list of all teams. It doesn't require any parameters.
+message GetTeamsRequest {}
+
+// GetTeamsResponse is the response format for a GetTeams request. It contains a list of all Team CRs. Since the Team CR
+// can become very large, we just return the name, description and logo field.
+message GetTeamsResponse {
+  repeated team.Team teams = 1;
+}
+
+// GetTeamRequest is the message format to get a single team. For that the name of the team is required. The name is
+// enough, because all teams must be unique accross clusters and namespaces.
+message GetTeamRequest {
+  string name = 2;
+}
+
+// GetTeamResponse is the response format of a GetTeam request. It contains the corresponding Team CR and a list of
+// applications for this team.
+message GetTeamResponse {
+  team.Team team = 1;
+  repeated application.Application applications = 2;
 }

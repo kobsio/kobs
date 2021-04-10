@@ -82,6 +82,24 @@ Clusters.GetApplicationsTopology = {
   responseType: clusters_pb.GetApplicationsTopologyResponse
 };
 
+Clusters.GetTeams = {
+  methodName: "GetTeams",
+  service: Clusters,
+  requestStream: false,
+  responseStream: false,
+  requestType: clusters_pb.GetTeamsRequest,
+  responseType: clusters_pb.GetTeamsResponse
+};
+
+Clusters.GetTeam = {
+  methodName: "GetTeam",
+  service: Clusters,
+  requestStream: false,
+  responseStream: false,
+  requestType: clusters_pb.GetTeamRequest,
+  responseType: clusters_pb.GetTeamResponse
+};
+
 exports.Clusters = Clusters;
 
 function ClustersClient(serviceHost, options) {
@@ -311,6 +329,68 @@ ClustersClient.prototype.getApplicationsTopology = function getApplicationsTopol
     callback = arguments[1];
   }
   var client = grpc.unary(Clusters.GetApplicationsTopology, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ClustersClient.prototype.getTeams = function getTeams(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Clusters.GetTeams, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ClustersClient.prototype.getTeam = function getTeam(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Clusters.GetTeam, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

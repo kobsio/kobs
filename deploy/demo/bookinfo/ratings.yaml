@@ -44,6 +44,8 @@ spec:
         app: ratings
         version: v1
       annotations:
+        kobs.io/teams: |
+          ["squad-call-of-duty"]
         kobs.io/applications: |
           [{"name": "ratings"}]
         kobs.io/plugins: |

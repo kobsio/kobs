@@ -13,6 +13,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#29](https://github.com/kobsio/kobs/pull/29): Add a new dependencies section to the Application CR. These dependencies are used to show a topology graph for all Applications.
 - [#31](https://github.com/kobsio/kobs/pull/31): Add plugin support for Kubernetes resources.
 - [#32](https://github.com/kobsio/kobs/pull/32): Add support for container logs via the Kubernetes API.
+- [#34](https://github.com/kobsio/kobs/pull/34): Add a new Custom Resource Definition for Teams. Teams can be used to define the ownership for Applications and other Kubernetes resources. :warning: *Breaking change:* :warning: We are now using the `apiextensions.k8s.io/v1` API for the Custom Resource Definitions of kobs.
 
 ### Fixed
 
