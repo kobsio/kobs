@@ -12,6 +12,7 @@ The following command-line arguments and environment variables are available.
 | `--app.address` | `KOBS_APP_ADDRESS` | The address, where the Application server is listen on. | `:15219` |
 | `--app.assets` | `KOBS_APP_ASSETS` | The location of the assets directory. | `app/build` |
 | `--clusters.cache-duration.namespaces` | `KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES` | The duration, for how long requests to get the list of namespaces should be cached. | `5m` |
+| `--clusters.cache-duration.teams` | `KOBS_CLUSTERS_CACHE_DURATION_TEAMS` | The duration, for how long the teams data should be cached. | `60m` |
 | `--clusters.cache-duration.topology` | `KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY` | The duration, for how long the topology data should be cached. | `60m` |
 | `--config` | `KOBS_CONFIG` | Name of the configuration file.  | `config.yaml` |
 | `--log.format` | `KOBS_LOG_FORMAT` | Set the output format of the logs. Must be `plain` or `json`.  | `plain` |

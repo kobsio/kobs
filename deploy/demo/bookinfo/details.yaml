@@ -44,6 +44,8 @@ spec:
         app: details
         version: v1
       annotations:
+        kobs.io/teams: |
+          ["squad-diablo"]
         kobs.io/applications: |
           [{"name": "details"}]
         kobs.io/plugins: |

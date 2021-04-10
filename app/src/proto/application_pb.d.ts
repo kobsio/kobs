@@ -19,6 +19,11 @@ export class Application extends jspb.Message {
   getDetails(): Details | undefined;
   setDetails(value?: Details): void;
 
+  clearTeamsList(): void;
+  getTeamsList(): Array<string>;
+  setTeamsList(value: Array<string>): void;
+  addTeams(value: string, index?: number): string;
+
   clearResourcesList(): void;
   getResourcesList(): Array<Resources>;
   setResourcesList(value: Array<Resources>): void;
@@ -50,6 +55,7 @@ export namespace Application {
     namespace: string,
     name: string,
     details?: Details.AsObject,
+    teamsList: Array<string>,
     resourcesList: Array<Resources.AsObject>,
     dependenciesList: Array<Dependency.AsObject>,
     pluginsList: Array<plugins_pb.Plugin.AsObject>,

@@ -20,12 +20,31 @@ Next to the yaml representation, you find a seconde tab events, which shows all 
 
 ## Annotations
 
-You can extend your resources with additional information for kobs, by using annotations. This allows you to specify applications and plugins for your Kubernetes objects like Pods, Deployments, etc.
+You can extend your resources with additional information for kobs, by using annotations. This allows you to specify teams, applications and plugins for your Kubernetes objects like Pods, Deployments, etc.
 
 | Annotations | Format | Description |
 | ----------- | ------ | ----------- |
+| `kobs.io/teams` | `["team1", "team2"]` | Specify a list of teams, which own the resource. |
 | `kobs.io/applications` | `[{"name": "application1"}, {"namespace": "namespace2", "name": "applications2"}]` | Specify a list of applications. You have to provide the name of the application and an optional namespace. If the namespace is not specified, the namespace of the resource will be used. |
 | `kobs.io/plugin` | [[]Plugin](../plugins/getting-started.md#specification) | A list of plugins in the same format as it is used for applications. |
+
+### Teams
+
+Specify a list of teams within the `kobs.io/teams` annotation. The list contains an array of team names.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage-v1
+  namespace: bookinfo
+  labels:
+    app: productpage
+    version: v1
+  annotations:
+    kobs.io/teams: |
+      ["squad-diablo", "squad-resident-evil", "squad-call-of-duty"]
+```
 
 ### Applications
 

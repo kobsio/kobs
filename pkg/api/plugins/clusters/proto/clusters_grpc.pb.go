@@ -26,6 +26,8 @@ type ClustersClient interface {
 	GetApplications(ctx context.Context, in *GetApplicationsRequest, opts ...grpc.CallOption) (*GetApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*GetApplicationResponse, error)
 	GetApplicationsTopology(ctx context.Context, in *GetApplicationsTopologyRequest, opts ...grpc.CallOption) (*GetApplicationsTopologyResponse, error)
+	GetTeams(ctx context.Context, in *GetTeamsRequest, opts ...grpc.CallOption) (*GetTeamsResponse, error)
+	GetTeam(ctx context.Context, in *GetTeamRequest, opts ...grpc.CallOption) (*GetTeamResponse, error)
 }
 
 type clustersClient struct {
@@ -108,6 +110,24 @@ func (c *clustersClient) GetApplicationsTopology(ctx context.Context, in *GetApp
 	return out, nil
 }
 
+func (c *clustersClient) GetTeams(ctx context.Context, in *GetTeamsRequest, opts ...grpc.CallOption) (*GetTeamsResponse, error) {
+	out := new(GetTeamsResponse)
+	err := c.cc.Invoke(ctx, "/clusters.Clusters/GetTeams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clustersClient) GetTeam(ctx context.Context, in *GetTeamRequest, opts ...grpc.CallOption) (*GetTeamResponse, error) {
+	out := new(GetTeamResponse)
+	err := c.cc.Invoke(ctx, "/clusters.Clusters/GetTeam", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClustersServer is the server API for Clusters service.
 // All implementations must embed UnimplementedClustersServer
 // for forward compatibility
@@ -120,6 +140,8 @@ type ClustersServer interface {
 	GetApplications(context.Context, *GetApplicationsRequest) (*GetApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*GetApplicationResponse, error)
 	GetApplicationsTopology(context.Context, *GetApplicationsTopologyRequest) (*GetApplicationsTopologyResponse, error)
+	GetTeams(context.Context, *GetTeamsRequest) (*GetTeamsResponse, error)
+	GetTeam(context.Context, *GetTeamRequest) (*GetTeamResponse, error)
 	mustEmbedUnimplementedClustersServer()
 }
 
@@ -150,6 +172,12 @@ func (UnimplementedClustersServer) GetApplication(context.Context, *GetApplicati
 }
 func (UnimplementedClustersServer) GetApplicationsTopology(context.Context, *GetApplicationsTopologyRequest) (*GetApplicationsTopologyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetApplicationsTopology not implemented")
+}
+func (UnimplementedClustersServer) GetTeams(context.Context, *GetTeamsRequest) (*GetTeamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTeams not implemented")
+}
+func (UnimplementedClustersServer) GetTeam(context.Context, *GetTeamRequest) (*GetTeamResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTeam not implemented")
 }
 func (UnimplementedClustersServer) mustEmbedUnimplementedClustersServer() {}
 
@@ -308,6 +336,42 @@ func _Clusters_GetApplicationsTopology_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Clusters_GetTeams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTeamsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClustersServer).GetTeams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clusters.Clusters/GetTeams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClustersServer).GetTeams(ctx, req.(*GetTeamsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Clusters_GetTeam_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTeamRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClustersServer).GetTeam(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clusters.Clusters/GetTeam",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClustersServer).GetTeam(ctx, req.(*GetTeamRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Clusters_ServiceDesc is the grpc.ServiceDesc for Clusters service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -346,6 +410,14 @@ var Clusters_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetApplicationsTopology",
 			Handler:    _Clusters_GetApplicationsTopology_Handler,
+		},
+		{
+			MethodName: "GetTeams",
+			Handler:    _Clusters_GetTeams_Handler,
+		},
+		{
+			MethodName: "GetTeam",
+			Handler:    _Clusters_GetTeam_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

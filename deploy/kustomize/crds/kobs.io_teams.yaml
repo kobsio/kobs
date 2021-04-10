@@ -1,0 +1,74 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: teams.kobs.io
+spec:
+  group: kobs.io
+  names:
+    kind: Team
+    listKind: TeamList
+    plural: teams
+    singular: team
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Team is the Team CRD, which consists of the Kubernetes metadata
+          and the Team from the protobuf  definition.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Team is used as spec for the Team CRD. A team has a name
+              (name of the custom resource), a description, a logo and links.
+            properties:
+              cluster:
+                type: string
+              description:
+                type: string
+              links:
+                items:
+                  description: Link is used to render a link for a team. Each link
+                    must contain a title and the link, which is used in the href attribute
+                    in the frontend.
+                  properties:
+                    link:
+                      type: string
+                    title:
+                      type: string
+                  type: object
+                type: array
+              logo:
+                type: string
+              name:
+                type: string
+              namespace:
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

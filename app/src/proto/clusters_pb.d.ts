@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as application_pb from "./application_pb";
+import * as team_pb from "./team_pb";
 
 export class GetClustersRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
@@ -615,6 +616,92 @@ export namespace Node {
     cluster: string,
     namespace: string,
     name: string,
+  }
+}
+
+export class GetTeamsRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTeamsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTeamsRequest): GetTeamsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTeamsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTeamsRequest;
+  static deserializeBinaryFromReader(message: GetTeamsRequest, reader: jspb.BinaryReader): GetTeamsRequest;
+}
+
+export namespace GetTeamsRequest {
+  export type AsObject = {
+  }
+}
+
+export class GetTeamsResponse extends jspb.Message {
+  clearTeamsList(): void;
+  getTeamsList(): Array<team_pb.Team>;
+  setTeamsList(value: Array<team_pb.Team>): void;
+  addTeams(value?: team_pb.Team, index?: number): team_pb.Team;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTeamsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTeamsResponse): GetTeamsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTeamsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTeamsResponse;
+  static deserializeBinaryFromReader(message: GetTeamsResponse, reader: jspb.BinaryReader): GetTeamsResponse;
+}
+
+export namespace GetTeamsResponse {
+  export type AsObject = {
+    teamsList: Array<team_pb.Team.AsObject>,
+  }
+}
+
+export class GetTeamRequest extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTeamRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTeamRequest): GetTeamRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTeamRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTeamRequest;
+  static deserializeBinaryFromReader(message: GetTeamRequest, reader: jspb.BinaryReader): GetTeamRequest;
+}
+
+export namespace GetTeamRequest {
+  export type AsObject = {
+    name: string,
+  }
+}
+
+export class GetTeamResponse extends jspb.Message {
+  hasTeam(): boolean;
+  clearTeam(): void;
+  getTeam(): team_pb.Team | undefined;
+  setTeam(value?: team_pb.Team): void;
+
+  clearApplicationsList(): void;
+  getApplicationsList(): Array<application_pb.Application>;
+  setApplicationsList(value: Array<application_pb.Application>): void;
+  addApplications(value?: application_pb.Application, index?: number): application_pb.Application;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTeamResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTeamResponse): GetTeamResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTeamResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTeamResponse;
+  static deserializeBinaryFromReader(message: GetTeamResponse, reader: jspb.BinaryReader): GetTeamResponse;
+}
+
+export namespace GetTeamResponse {
+  export type AsObject = {
+    team?: team_pb.Team.AsObject,
+    applicationsList: Array<application_pb.Application.AsObject>,
   }
 }
 

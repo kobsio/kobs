@@ -1,0 +1,14 @@
+---
+apiVersion: kobs.io/v1alpha1
+kind: Team
+metadata:
+  name: squad-resident-evil
+  namespace: observability
+spec:
+  description: Productpage and Ratings
+  logo: https://kobs.io/installation/assets/squad-resident-evil.png
+  links:
+    - title: Website
+      link: https://istio.io/latest/docs/examples/bookinfo/
+    - title: GitHub
+      link: https://github.com/istio/istio/tree/master/samples/bookinfo

@@ -1,0 +1,14 @@
+---
+apiVersion: kobs.io/v1alpha1
+kind: Team
+metadata:
+  name: squad-call-of-duty
+  namespace: observability
+spec:
+  description: Productpage and Ratings
+  logo: https://kobs.io/installation/assets/squad-call-of-duty.png
+  links:
+    - title: Website
+      link: https://istio.io/latest/docs/examples/bookinfo/
+    - title: GitHub
+      link: https://github.com/istio/istio/tree/master/samples/bookinfo

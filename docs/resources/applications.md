@@ -18,9 +18,7 @@ In the following you can found the specification for the Application CRD. On the
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| cluster | string | The name of the cluster for this application. This field should only provided, when the Application CR is not in the same cluster as the related service. | No |
-| namespace | string | The namespace for this application. This field should only provided, when the Application CR is not in the same namespace as the related service. | No |
-| name | string | The name of the application. This field should only provided, when the Application CR has another name then the application should have. | No |
+| teams | []string | A list of teams to define the ownership for the application. | No |
 | details | [Details](#details) | Details for the application. | No |
 | resources | [[]Resource](#resource) | Select resources, which are related to the application. | No |
 | dependencies | [[]Dependency](#dependency) | Add other applications as dependencies for this application. This can be used to render a topology graph for your applications | No |

@@ -5,6 +5,8 @@ metadata:
   name: ratings
   namespace: bookinfo
 spec:
+  teams:
+    - squad-call-of-duty
   details:
     description: The ratings microservice contains book ranking information that accompanies a book review.
     links:

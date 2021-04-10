@@ -76,6 +76,24 @@ type ClustersGetApplicationsTopology = {
   readonly responseType: typeof clusters_pb.GetApplicationsTopologyResponse;
 };
 
+type ClustersGetTeams = {
+  readonly methodName: string;
+  readonly service: typeof Clusters;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof clusters_pb.GetTeamsRequest;
+  readonly responseType: typeof clusters_pb.GetTeamsResponse;
+};
+
+type ClustersGetTeam = {
+  readonly methodName: string;
+  readonly service: typeof Clusters;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof clusters_pb.GetTeamRequest;
+  readonly responseType: typeof clusters_pb.GetTeamResponse;
+};
+
 export class Clusters {
   static readonly serviceName: string;
   static readonly GetClusters: ClustersGetClusters;
@@ -86,6 +104,8 @@ export class Clusters {
   static readonly GetApplications: ClustersGetApplications;
   static readonly GetApplication: ClustersGetApplication;
   static readonly GetApplicationsTopology: ClustersGetApplicationsTopology;
+  static readonly GetTeams: ClustersGetTeams;
+  static readonly GetTeam: ClustersGetTeam;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -191,6 +211,24 @@ export class ClustersClient {
   getApplicationsTopology(
     requestMessage: clusters_pb.GetApplicationsTopologyRequest,
     callback: (error: ServiceError|null, responseMessage: clusters_pb.GetApplicationsTopologyResponse|null) => void
+  ): UnaryResponse;
+  getTeams(
+    requestMessage: clusters_pb.GetTeamsRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetTeamsResponse|null) => void
+  ): UnaryResponse;
+  getTeams(
+    requestMessage: clusters_pb.GetTeamsRequest,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetTeamsResponse|null) => void
+  ): UnaryResponse;
+  getTeam(
+    requestMessage: clusters_pb.GetTeamRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetTeamResponse|null) => void
+  ): UnaryResponse;
+  getTeam(
+    requestMessage: clusters_pb.GetTeamRequest,
+    callback: (error: ServiceError|null, responseMessage: clusters_pb.GetTeamResponse|null) => void
   ): UnaryResponse;
 }
 

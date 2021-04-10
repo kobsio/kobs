@@ -44,6 +44,8 @@ spec:
         app: productpage
         version: v1
       annotations:
+        kobs.io/teams: |
+          ["squad-diablo", "squad-resident-evil", "squad-call-of-duty"]
         kobs.io/applications: |
           [{"name": "productpage"}]
         kobs.io/plugins: |

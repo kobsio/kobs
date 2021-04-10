@@ -2,6 +2,7 @@ import {
   Alert,
   AlertVariant,
   Button,
+  ButtonVariant,
   Card,
   DescriptionList,
   DescriptionListDescription,
@@ -17,14 +18,14 @@ import {
   Tabs,
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
+import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { IRow } from '@patternfly/react-table';
 import { JSONPath } from 'jsonpath-plus';
 import { Link } from 'react-router-dom';
-import { TopologyIcon } from '@patternfly/react-icons';
 import yaml from 'js-yaml';
 
 import { IPluginsContext, PluginsContext } from 'context/PluginsContext';
-import { applicationAnnotation, pluginAnnotation } from 'utils/constants';
+import { applicationAnnotation, pluginAnnotation, teamAnnotation } from 'utils/constants';
 import Editor from 'components/Editor';
 import { Plugin as IPlugin } from 'proto/plugins_grpc_web_pb';
 import Plugin from 'components/plugins/Plugin';
@@ -87,8 +88,10 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
 
   let applications: IApplications[] = [];
+  let teams: string[] = [];
   const plugins: IPlugin.AsObject[] = [];
   let applicationsError = '';
+  let teamsError = '';
   let pluginsError = '';
 
   try {
@@ -102,6 +105,19 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
     }
   } catch (err) {
     applicationsError = err.message;
+  }
+
+  try {
+    if (
+      resource.props &&
+      resource.props.metadata &&
+      resource.props.metadata.annotations &&
+      resource.props.metadata.annotations[teamAnnotation]
+    ) {
+      teams = JSON.parse(resource.props.metadata.annotations[teamAnnotation], resource.props);
+    }
+  } catch (err) {
+    teamsError = err.message;
   }
 
   try {
@@ -158,26 +174,47 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
             <Alert variant={AlertVariant.danger} title="Could not parse applications annotation">
               <p>{applicationsError}</p>
             </Alert>
-          ) : applications.length > 0 ? (
+          ) : teamsError ? (
+            <Alert variant={AlertVariant.danger} title="Could not parse teams annotation">
+              <p>{teamsError}</p>
+            </Alert>
+          ) : applications.length > 0 || teams.length > 0 ? (
             <DescriptionList isHorizontal={true} isAutoFit={true}>
-              <DescriptionListGroup>
-                <DescriptionListTerm>Applications</DescriptionListTerm>
-                <DescriptionListDescription>
-                  {applications.map((application, index) => (
-                    <Link
-                      key={index}
-                      to={`/applications/${resource.cluster.title}/${
-                        application.namespace ? application.namespace : resource.namespace.title
-                      }/${application.name}`}
-                    >
-                      <Button variant="link" isInline={true} icon={<TopologyIcon />}>
-                        {application.name}
-                      </Button>
-                      <br />
-                    </Link>
-                  ))}
-                </DescriptionListDescription>
-              </DescriptionListGroup>
+              {applications.length > 0 ? (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Applications</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {applications.map((application, index) => (
+                      <Link
+                        key={index}
+                        to={`/applications/${resource.cluster.title}/${
+                          application.namespace ? application.namespace : resource.namespace.title
+                        }/${application.name}`}
+                      >
+                        <Button variant={ButtonVariant.link} isInline={true} icon={<TopologyIcon />}>
+                          {application.name}
+                        </Button>
+                        <br />
+                      </Link>
+                    ))}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              ) : null}
+              {teams.length > 0 ? (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Teams</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {teams.map((team, index) => (
+                      <Link key={index} to={`/teams/${team}`}>
+                        <Button variant={ButtonVariant.link} isInline={true} icon={<UsersIcon />}>
+                          {team}
+                        </Button>
+                        <br />
+                      </Link>
+                    ))}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              ) : null}
             </DescriptionList>
           ) : null}
         </div>

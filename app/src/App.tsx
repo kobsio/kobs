@@ -14,6 +14,8 @@ import Home from 'components/Home';
 import Plugins from 'components/plugins/PluginPage';
 import { PluginsContextProvider } from 'context/PluginsContext';
 import Resources from 'components/resources/Resources';
+import Team from 'components/teams/Team';
+import Teams from 'components/teams/Teams';
 
 import 'app.css';
 
@@ -30,6 +32,8 @@ const App: React.FunctionComponent = () => {
           <Page header={Header}>
             <Switch>
               <Route exact={true} path="/" component={Home} />
+              <Route exact={true} path="/teams" component={Teams} />
+              <Route exact={true} path="/teams/:name" component={Team} />
               <Route exact={true} path="/applications" component={Applications} />
               <Route exact={true} path="/applications/:cluster/:namespace/:name" component={Application} />
               <Route exact={true} path="/resources" component={Resources} />

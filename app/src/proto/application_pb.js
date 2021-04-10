@@ -132,7 +132,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.application.Application.repeatedFields_ = [5,6,7];
+proto.application.Application.repeatedFields_ = [5,6,7,8];
 
 
 
@@ -169,6 +169,7 @@ proto.application.Application.toObject = function(includeInstance, msg) {
     namespace: jspb.Message.getFieldWithDefault(msg, 2, ""),
     name: jspb.Message.getFieldWithDefault(msg, 3, ""),
     details: (f = msg.getDetails()) && proto.application.Details.toObject(includeInstance, f),
+    teamsList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f,
     resourcesList: jspb.Message.toObjectList(msg.getResourcesList(),
     proto.application.Resources.toObject, includeInstance),
     dependenciesList: jspb.Message.toObjectList(msg.getDependenciesList(),
@@ -229,16 +230,20 @@ proto.application.Application.deserializeBinaryFromReader = function(msg, reader
       msg.setDetails(value);
       break;
     case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addTeams(value);
+      break;
+    case 6:
       var value = new proto.application.Resources;
       reader.readMessage(value,proto.application.Resources.deserializeBinaryFromReader);
       msg.addResources(value);
       break;
-    case 6:
+    case 7:
       var value = new proto.application.Dependency;
       reader.readMessage(value,proto.application.Dependency.deserializeBinaryFromReader);
       msg.addDependencies(value);
       break;
-    case 7:
+    case 8:
       var value = new plugins_pb.Plugin;
       reader.readMessage(value,plugins_pb.Plugin.deserializeBinaryFromReader);
       msg.addPlugins(value);
@@ -301,10 +306,17 @@ proto.application.Application.serializeBinaryToWriter = function(message, writer
       proto.application.Details.serializeBinaryToWriter
     );
   }
+  f = message.getTeamsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      5,
+      f
+    );
+  }
   f = message.getResourcesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      5,
+      6,
       f,
       proto.application.Resources.serializeBinaryToWriter
     );
@@ -312,7 +324,7 @@ proto.application.Application.serializeBinaryToWriter = function(message, writer
   f = message.getDependenciesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      6,
+      7,
       f,
       proto.application.Dependency.serializeBinaryToWriter
     );
@@ -320,7 +332,7 @@ proto.application.Application.serializeBinaryToWriter = function(message, writer
   f = message.getPluginsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      7,
+      8,
       f,
       plugins_pb.Plugin.serializeBinaryToWriter
     );
@@ -420,12 +432,49 @@ proto.application.Application.prototype.hasDetails = function() {
 
 
 /**
- * repeated Resources resources = 5;
+ * repeated string teams = 5;
+ * @return {!Array<string>}
+ */
+proto.application.Application.prototype.getTeamsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 5));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.application.Application} returns this
+ */
+proto.application.Application.prototype.setTeamsList = function(value) {
+  return jspb.Message.setField(this, 5, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.application.Application} returns this
+ */
+proto.application.Application.prototype.addTeams = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 5, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.application.Application} returns this
+ */
+proto.application.Application.prototype.clearTeamsList = function() {
+  return this.setTeamsList([]);
+};
+
+
+/**
+ * repeated Resources resources = 6;
  * @return {!Array<!proto.application.Resources>}
  */
 proto.application.Application.prototype.getResourcesList = function() {
   return /** @type{!Array<!proto.application.Resources>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.application.Resources, 5));
+    jspb.Message.getRepeatedWrapperField(this, proto.application.Resources, 6));
 };
 
 
@@ -434,7 +483,7 @@ proto.application.Application.prototype.getResourcesList = function() {
  * @return {!proto.application.Application} returns this
 */
 proto.application.Application.prototype.setResourcesList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 5, value);
+  return jspb.Message.setRepeatedWrapperField(this, 6, value);
 };
 
 
@@ -444,7 +493,7 @@ proto.application.Application.prototype.setResourcesList = function(value) {
  * @return {!proto.application.Resources}
  */
 proto.application.Application.prototype.addResources = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.application.Resources, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 6, opt_value, proto.application.Resources, opt_index);
 };
 
 
@@ -458,12 +507,12 @@ proto.application.Application.prototype.clearResourcesList = function() {
 
 
 /**
- * repeated Dependency dependencies = 6;
+ * repeated Dependency dependencies = 7;
  * @return {!Array<!proto.application.Dependency>}
  */
 proto.application.Application.prototype.getDependenciesList = function() {
   return /** @type{!Array<!proto.application.Dependency>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.application.Dependency, 6));
+    jspb.Message.getRepeatedWrapperField(this, proto.application.Dependency, 7));
 };
 
 
@@ -472,7 +521,7 @@ proto.application.Application.prototype.getDependenciesList = function() {
  * @return {!proto.application.Application} returns this
 */
 proto.application.Application.prototype.setDependenciesList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 6, value);
+  return jspb.Message.setRepeatedWrapperField(this, 7, value);
 };
 
 
@@ -482,7 +531,7 @@ proto.application.Application.prototype.setDependenciesList = function(value) {
  * @return {!proto.application.Dependency}
  */
 proto.application.Application.prototype.addDependencies = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 6, opt_value, proto.application.Dependency, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.application.Dependency, opt_index);
 };
 
 
@@ -496,12 +545,12 @@ proto.application.Application.prototype.clearDependenciesList = function() {
 
 
 /**
- * repeated plugins.Plugin plugins = 7;
+ * repeated plugins.Plugin plugins = 8;
  * @return {!Array<!proto.plugins.Plugin>}
  */
 proto.application.Application.prototype.getPluginsList = function() {
   return /** @type{!Array<!proto.plugins.Plugin>} */ (
-    jspb.Message.getRepeatedWrapperField(this, plugins_pb.Plugin, 7));
+    jspb.Message.getRepeatedWrapperField(this, plugins_pb.Plugin, 8));
 };
 
 
@@ -510,7 +559,7 @@ proto.application.Application.prototype.getPluginsList = function() {
  * @return {!proto.application.Application} returns this
 */
 proto.application.Application.prototype.setPluginsList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 7, value);
+  return jspb.Message.setRepeatedWrapperField(this, 8, value);
 };
 
 
@@ -520,7 +569,7 @@ proto.application.Application.prototype.setPluginsList = function(value) {
  * @return {!proto.plugins.Plugin}
  */
 proto.application.Application.prototype.addPlugins = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.plugins.Plugin, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 8, opt_value, proto.plugins.Plugin, opt_index);
 };
 
 

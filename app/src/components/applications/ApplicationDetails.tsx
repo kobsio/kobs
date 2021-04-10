@@ -1,4 +1,6 @@
 import {
+  Button,
+  ButtonVariant,
   DrawerActions,
   DrawerCloseButton,
   DrawerHead,
@@ -9,11 +11,14 @@ import {
   ListVariant,
 } from '@patternfly/react-core';
 import React, { createRef, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { UsersIcon } from '@patternfly/react-icons';
 
 import ApplicationTabsContent, { IMountedTabs } from 'components/applications/ApplicationTabsContent';
 import { Application } from 'proto/application_pb';
 import ApplicationDetailsLink from 'components/applications/ApplicationDetailsLink';
 import ApplicationTabs from 'components/applications/ApplicationTabs';
+import ExternalLink from 'components/ExternalLink';
 import Title from 'components/Title';
 
 interface IApplicationDetailsProps {
@@ -60,11 +65,18 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
             <p>{application.details.description}</p>
 
             <List variant={ListVariant.inline}>
+              {application.teamsList.map((team, index) => (
+                <ListItem key={index}>
+                  <Link key={index} to={`/teams/${team}`}>
+                    <Button variant={ButtonVariant.link} isInline={true} icon={<UsersIcon />}>
+                      {team}
+                    </Button>
+                  </Link>
+                </ListItem>
+              ))}
               {application.details.linksList.map((link, index) => (
                 <ListItem key={index}>
-                  <a href={link.link} rel="noreferrer" target="_blank">
-                    {link.title}
-                  </a>
+                  <ExternalLink title={link.title} link={link.link} />
                 </ListItem>
               ))}
             </List>

@@ -5,6 +5,8 @@ metadata:
   name: details
   namespace: bookinfo
 spec:
+  teams:
+    - squad-diablo
   details:
     description: The details microservice contains book information.
     links:

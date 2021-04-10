@@ -15,9 +15,10 @@ message Application {
   string namespace = 2;
   string name = 3;
   Details details = 4;
-  repeated Resources resources = 5;
-  repeated Dependency dependencies = 6;
-  repeated plugins.Plugin plugins = 7;
+  repeated string teams = 5;
+  repeated Resources resources = 6;
+  repeated Dependency dependencies = 7;
+  repeated plugins.Plugin plugins = 8;
 }
 
 // Details contains some details for the Application, which are set by the user in the Custom Resource. Each Application
