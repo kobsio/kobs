@@ -13,6 +13,7 @@ Plugins can also be used within an Application CR to enhance the information for
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | name | string | The name of the plugin as it is defined in the [configuration file](../configuration/plugins.md). | Yes |
+| displayName | string | An optional name for the plugin tab, which should be displayed instead of the plugin name. | No |
 | elasticsearch | [Elasticsearch](elasticsearch.md#specification) (oneof) | Elasticsearch configuration for the application. | Yes |
 | jaeger | [Jaeger](jaeger.md#specification) (oneof) | Jaeger configuration for the application. | Yes |
 | prometheus | [Prometheus](prometheus.md#specification) (oneof) | Prometheus configuration for the application. | Yes |

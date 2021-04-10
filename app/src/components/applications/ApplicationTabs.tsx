@@ -38,7 +38,7 @@ const ApplicationTabs: React.FunctionComponent<IApplicationTabsProps> = ({
         <Tab
           key={index}
           eventKey={`refPlugin-${index}`}
-          title={<TabTitleText>{plugin.name}</TabTitleText>}
+          title={<TabTitleText>{plugin.displayname ? plugin.displayname : plugin.name}</TabTitleText>}
           tabContentId={`refPlugin-${index}`}
           tabContentRef={refPluginsContent ? refPluginsContent[index] : undefined}
         />
