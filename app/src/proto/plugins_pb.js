@@ -592,6 +592,7 @@ proto.plugins.Plugin.prototype.toObject = function(opt_includeInstance) {
 proto.plugins.Plugin.toObject = function(includeInstance, msg) {
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    displayname: jspb.Message.getFieldWithDefault(msg, 2, ""),
     prometheus: (f = msg.getPrometheus()) && prometheus_pb.Spec.toObject(includeInstance, f),
     elasticsearch: (f = msg.getElasticsearch()) && elasticsearch_pb.Spec.toObject(includeInstance, f),
     jaeger: (f = msg.getJaeger()) && jaeger_pb.Spec.toObject(includeInstance, f)
@@ -636,16 +637,20 @@ proto.plugins.Plugin.deserializeBinaryFromReader = function(msg, reader) {
       msg.setName(value);
       break;
     case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDisplayname(value);
+      break;
+    case 3:
       var value = new prometheus_pb.Spec;
       reader.readMessage(value,prometheus_pb.Spec.deserializeBinaryFromReader);
       msg.setPrometheus(value);
       break;
-    case 3:
+    case 4:
       var value = new elasticsearch_pb.Spec;
       reader.readMessage(value,elasticsearch_pb.Spec.deserializeBinaryFromReader);
       msg.setElasticsearch(value);
       break;
-    case 4:
+    case 5:
       var value = new jaeger_pb.Spec;
       reader.readMessage(value,jaeger_pb.Spec.deserializeBinaryFromReader);
       msg.setJaeger(value);
@@ -686,10 +691,17 @@ proto.plugins.Plugin.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getDisplayname();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
   f = message.getPrometheus();
   if (f != null) {
     writer.writeMessage(
-      2,
+      3,
       f,
       prometheus_pb.Spec.serializeBinaryToWriter
     );
@@ -697,7 +709,7 @@ proto.plugins.Plugin.serializeBinaryToWriter = function(message, writer) {
   f = message.getElasticsearch();
   if (f != null) {
     writer.writeMessage(
-      3,
+      4,
       f,
       elasticsearch_pb.Spec.serializeBinaryToWriter
     );
@@ -705,7 +717,7 @@ proto.plugins.Plugin.serializeBinaryToWriter = function(message, writer) {
   f = message.getJaeger();
   if (f != null) {
     writer.writeMessage(
-      4,
+      5,
       f,
       jaeger_pb.Spec.serializeBinaryToWriter
     );
@@ -732,12 +744,30 @@ proto.plugins.Plugin.prototype.setName = function(value) {
 
 
 /**
- * optional prometheus.Spec prometheus = 2;
+ * optional string displayName = 2;
+ * @return {string}
+ */
+proto.plugins.Plugin.prototype.getDisplayname = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.plugins.Plugin} returns this
+ */
+proto.plugins.Plugin.prototype.setDisplayname = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional prometheus.Spec prometheus = 3;
  * @return {?proto.plugins.prometheus.Spec}
  */
 proto.plugins.Plugin.prototype.getPrometheus = function() {
   return /** @type{?proto.plugins.prometheus.Spec} */ (
-    jspb.Message.getWrapperField(this, prometheus_pb.Spec, 2));
+    jspb.Message.getWrapperField(this, prometheus_pb.Spec, 3));
 };
 
 
@@ -746,7 +776,7 @@ proto.plugins.Plugin.prototype.getPrometheus = function() {
  * @return {!proto.plugins.Plugin} returns this
 */
 proto.plugins.Plugin.prototype.setPrometheus = function(value) {
-  return jspb.Message.setWrapperField(this, 2, value);
+  return jspb.Message.setWrapperField(this, 3, value);
 };
 
 
@@ -764,17 +794,17 @@ proto.plugins.Plugin.prototype.clearPrometheus = function() {
  * @return {boolean}
  */
 proto.plugins.Plugin.prototype.hasPrometheus = function() {
-  return jspb.Message.getField(this, 2) != null;
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
 /**
- * optional elasticsearch.Spec elasticsearch = 3;
+ * optional elasticsearch.Spec elasticsearch = 4;
  * @return {?proto.plugins.elasticsearch.Spec}
  */
 proto.plugins.Plugin.prototype.getElasticsearch = function() {
   return /** @type{?proto.plugins.elasticsearch.Spec} */ (
-    jspb.Message.getWrapperField(this, elasticsearch_pb.Spec, 3));
+    jspb.Message.getWrapperField(this, elasticsearch_pb.Spec, 4));
 };
 
 
@@ -783,7 +813,7 @@ proto.plugins.Plugin.prototype.getElasticsearch = function() {
  * @return {!proto.plugins.Plugin} returns this
 */
 proto.plugins.Plugin.prototype.setElasticsearch = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
@@ -801,17 +831,17 @@ proto.plugins.Plugin.prototype.clearElasticsearch = function() {
  * @return {boolean}
  */
 proto.plugins.Plugin.prototype.hasElasticsearch = function() {
-  return jspb.Message.getField(this, 3) != null;
+  return jspb.Message.getField(this, 4) != null;
 };
 
 
 /**
- * optional jaeger.Spec jaeger = 4;
+ * optional jaeger.Spec jaeger = 5;
  * @return {?proto.plugins.jaeger.Spec}
  */
 proto.plugins.Plugin.prototype.getJaeger = function() {
   return /** @type{?proto.plugins.jaeger.Spec} */ (
-    jspb.Message.getWrapperField(this, jaeger_pb.Spec, 4));
+    jspb.Message.getWrapperField(this, jaeger_pb.Spec, 5));
 };
 
 
@@ -820,7 +850,7 @@ proto.plugins.Plugin.prototype.getJaeger = function() {
  * @return {!proto.plugins.Plugin} returns this
 */
 proto.plugins.Plugin.prototype.setJaeger = function(value) {
-  return jspb.Message.setWrapperField(this, 4, value);
+  return jspb.Message.setWrapperField(this, 5, value);
 };
 
 
@@ -838,7 +868,7 @@ proto.plugins.Plugin.prototype.clearJaeger = function() {
  * @return {boolean}
  */
 proto.plugins.Plugin.prototype.hasJaeger = function() {
-  return jspb.Message.getField(this, 4) != null;
+  return jspb.Message.getField(this, 5) != null;
 };
 
 

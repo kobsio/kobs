@@ -93,6 +93,8 @@ spec:
                       are mutually exclusive and containing the data, which is needed
                       to use the plugin within a Application CR.
                     properties:
+                      displayName:
+                        type: string
                       elasticsearch:
                         description: Spec implements the specification for an application.
                           This field is then used in the Application CR and contains,
@@ -228,6 +230,8 @@ spec:
                     exclusive and containing the data, which is needed to use the
                     plugin within a Application CR.
                   properties:
+                    displayName:
+                      type: string
                     elasticsearch:
                       description: Spec implements the specification for an application.
                         This field is then used in the Application CR and contains,

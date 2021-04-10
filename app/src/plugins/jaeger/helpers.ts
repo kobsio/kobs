@@ -263,6 +263,7 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
 
   const plugin = new Plugin();
   plugin.setName(json.name);
+  plugin.setDisplayname(json.displayName ? json.displayName : '');
   plugin.setJaeger(jaeger);
 
   return plugin.toObject();

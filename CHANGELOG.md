@@ -22,6 +22,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#30](https://github.com/kobsio/kobs/pull/30): Support multiple versions of a CRD and allow the specification of namespaces in the Applications resources list.
+- [#35](https://github.com/kobsio/kobs/pull/35): Add new field `displayName` for plugins, to overwrite the name which is displayed for a plugin tab in the frontend.
 
 ## [v0.1.0](https://github.com/kobsio/kobs/releases/tag/v0.1.0) (2021-04-04)
 

@@ -34,7 +34,8 @@ message PluginShort {
 // is needed to use the plugin within a Application CR.
 message Plugin {
   string name = 1;
-  prometheus.Spec prometheus = 2;
-  elasticsearch.Spec elasticsearch = 3;
-  jaeger.Spec jaeger = 4;
+  string displayName = 2;
+  prometheus.Spec prometheus = 3;
+  elasticsearch.Spec elasticsearch = 4;
+  jaeger.Spec jaeger = 5;
 }

@@ -76,6 +76,9 @@ export class Plugin extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
+  getDisplayname(): string;
+  setDisplayname(value: string): void;
+
   hasPrometheus(): boolean;
   clearPrometheus(): void;
   getPrometheus(): prometheus_pb.Spec | undefined;
@@ -104,6 +107,7 @@ export class Plugin extends jspb.Message {
 export namespace Plugin {
   export type AsObject = {
     name: string,
+    displayname: string,
     prometheus?: prometheus_pb.Spec.AsObject,
     elasticsearch?: elasticsearch_pb.Spec.AsObject,
     jaeger?: jaeger_pb.Spec.AsObject,

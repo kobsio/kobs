@@ -266,7 +266,11 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
             </Tab>
           ) : plugins.length > 0 ? (
             plugins.map((plugin, index) => (
-              <Tab key={index} eventKey={`plugin_${index}`} title={<TabTitleText>{plugin.name}</TabTitleText>}>
+              <Tab
+                key={index}
+                eventKey={`plugin_${index}`}
+                title={<TabTitleText>{plugin.displayname ? plugin.displayname : plugin.name}</TabTitleText>}
+              >
                 <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
                   <Plugin plugin={plugin} showDetails={undefined} />
                 </div>
