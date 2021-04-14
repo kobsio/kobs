@@ -27,3 +27,15 @@ jaeger:
     username:
     password:
     token:
+
+kiali:
+  - name: Kiali
+    description: Service mesh management for Istio.
+    address: http://localhost:20001
+    username:
+    password:
+    token:
+    traffic:
+      enabled: true
+      failure: 95
+      degraded: 99
