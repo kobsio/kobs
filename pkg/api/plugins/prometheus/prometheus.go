@@ -40,7 +40,7 @@ type Instance struct {
 	v1api v1.API
 }
 
-func (p *Prometheus) getInstace(name string) *Instance {
+func (p *Prometheus) getInstance(name string) *Instance {
 	for _, i := range p.instances {
 		if i.name == name {
 			return i
@@ -59,7 +59,7 @@ func (p *Prometheus) GetVariables(ctx context.Context, getVariablesRequest *prom
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := p.getInstace(getVariablesRequest.Name)
+	instance := p.getInstance(getVariablesRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
@@ -122,7 +122,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := p.getInstace(getMetricsRequest.Name)
+	instance := p.getInstance(getMetricsRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
