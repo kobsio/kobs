@@ -17,6 +17,9 @@ import {
   TabTitleText,
   Tabs,
 } from '@patternfly/react-core';
+
+import { ResourceOverview } from './ResourceOverview';
+
 import React, { useContext, useState } from 'react';
 import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { IRow } from '@patternfly/react-table';
@@ -84,7 +87,8 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
   resource,
   close,
 }: IResourceDetailsProps) => {
-  const [activeTab, setActiveTab] = useState<string>('yaml');
+  const [activeTab, setActiveTab] = useState<string>('overview');
+
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
 
   let applications: IApplications[] = [];
@@ -226,6 +230,9 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
           isFilled={true}
           mountOnEnter={true}
         >
+          <Tab eventKey="overview" title={<TabTitleText>Overview</TabTitleText>}>
+            <ResourceOverview resource={resource} />
+          </Tab>
           <Tab eventKey="yaml" title={<TabTitleText>Yaml</TabTitleText>}>
             <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
               <Card>
