@@ -41,8 +41,8 @@ The following section explains various suggestions and procedures to note during
 
 kobs uses protocol buffers. When you modify the `.proto` files, you need the following dependencies to generate the Go and JavaScript code:
 
-- [Protocol Buffers](https://github.com/protocolbuffers/protobuf): Download the latest `protoc` binary from the [releases](https://github.com/protocolbuffers/protobuf/releases)
-- [gRPC Web](https://github.com/grpc/grpc-web): The plugin is used to generate the code for the React UI. Download the plugin for your system from the [releases](https://github.com/grpc/grpc-web/releases) page and install it:
+- [Protocol Buffers](https://github.com/protocolbuffers/protobuf): Download the latest `protoc` binary from the [releases](https://github.com/protocolbuffers/protobuf/releases). Under macOS you can also use brew to install protobuf with `brew install protobuf`.
+- [gRPC Web](https://github.com/grpc/grpc-web): The plugin is used to generate the code for the React UI. Under macOS you can use brew to install gRPC Web with `brew install protoc-gen-grpc-web`. You can also download the plugin for your system from the [releases](https://github.com/grpc/grpc-web/releases) page and install it:
 
 ```sh
 mv ~/Downloads/protoc-gen-grpc-web-1.2.1-darwin-x86_64 /usr/local/bin/protoc-gen-grpc-web
@@ -76,7 +76,7 @@ kobs consists of three components:
 The React UI lives in the `app` folder. The following commands are available for development:
 
 - `yarn install`: Installs all dependencies.
-- `yarn serve`: Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `yarn start`: Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 - `yarn build`: Builds the app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance.
 
 We are using [ESLint](https://eslint.org) and [Prettier](https://prettier.io) for linting and automatic code formation. When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the React UI.
@@ -93,11 +93,11 @@ When you run the kobs binary, it will use the following ports:
 
 | Port | Description | Command-Line Flag |
 | ---- | ----------- | ----------------- |
-| `15219` | Serves the React UI and the `/health` endpoint. This requires that you have built the React UI once via `yarn build`. If you havn't built the React UI, you can skip serving the fronend by setting `--app.assets=""`. | `--app.address` |
+| `15219` | Serves the React UI and the `/health` endpoint. This requires that you have built the React UI once via `yarn build`. If you haven't built the React UI, you can skip serving the fronend by setting `--app.assets=""`. | `--app.address` |
 | `15220` | Provides the gRPC server. | `--api.address` |
 | `15221` | Serves kobs internal metrics. | `--metrics.address` |
 
-When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the kobs server. You can also adjust set the log level to `trace` via the `--log.level` flag, for more useful output during development.
+When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the kobs server. You can also adjust the log level to `trace` via the `--log.level` flag, for more useful output during development.
 
 When you add a new package and want to output some log lines make sure that you are not using `logrus` directly. Instead you should add a new `log` variable, which contains the package name:
 
@@ -139,7 +139,7 @@ make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml
 docker run -it --rm --name envoy -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
 ```
 
-The third option can be used, when you havn't Go and Node.js installed on your system and you want to use Docker instead. The React UI will be available via [http://localhost:15222](http://localhost:15222):
+The third option can be used when you do not have Go and Node.js installed on your system and you want to use Docker instead. The React UI will be available via [http://localhost:15222](http://localhost:15222):
 
 ```sh
 # With Docker Compose
