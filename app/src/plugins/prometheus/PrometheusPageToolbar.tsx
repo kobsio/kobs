@@ -4,7 +4,7 @@ import {
   Flex,
   FlexItem,
   InputGroup,
-  TextArea,
+  // TextArea,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -16,6 +16,7 @@ import React, { useState } from 'react';
 
 import Options, { IAdditionalFields } from 'components/Options';
 import { IPrometheusOptions } from 'plugins/prometheus/helpers';
+import { PrometheusAutocomplete } from './PrometheusAutocomplete';
 
 // IPrometheusPageToolbarProps is the interface for all properties, which can be passed to the PrometheusPageToolbar
 // component. This are all available Prometheus options and a function to write changes to these properties back to the
@@ -53,11 +54,11 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
   };
 
   // changeQuery changes the value of a single query.
-  const changeQuery = (index: number, value: string): void => {
-    const tmpQueries = [...data.queries];
-    tmpQueries[index] = value;
-    setData({ ...data, queries: tmpQueries });
-  };
+  // const changeQuery = (index: number, value: string): void => {
+  //   const tmpQueries = [...data.queries];
+  //   tmpQueries[index] = value;
+  //   setData({ ...data, queries: tmpQueries });
+  // };
 
   // changeOptions changes the Prometheus options. This function is passed to the shared Options component.
   const changeOptions = (
@@ -78,12 +79,12 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
   // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we will not add a newline.
   // Instead of this we are calling the setOptions function to trigger the search. To enter a newline the user has to
   // use "SHIFT" + "ENTER".
-  const onEnter = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
-    if (e?.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      setOptions(data);
-    }
-  };
+  // const onEnter = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
+  //   if (e?.key === 'Enter' && !e.shiftKey) {
+  //     e.preventDefault();
+  //     setOptions(data);
+  //   }
+  // };
 
   return (
     <Toolbar id="prometheus-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
@@ -95,15 +96,16 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
                 {data.queries.map((query, index) => (
                   <FlexItem key={index}>
                     <InputGroup>
-                      <TextArea
-                        aria-label={`PromQL Query ${index}`}
-                        resizeOrientation="vertical"
-                        rows={1}
-                        type="text"
-                        value={query}
-                        onChange={(value): void => changeQuery(index, value)}
-                        onKeyDown={onEnter}
-                      />
+                      <PrometheusAutocomplete />
+                      {/*<TextArea*/}
+                      {/*  aria-label={`PromQL Query ${index}`}*/}
+                      {/*  resizeOrientation="vertical"*/}
+                      {/*  rows={1}*/}
+                      {/*  type="text"*/}
+                      {/*  value={query}*/}
+                      {/*  onChange={(value): void => changeQuery(index, value)}*/}
+                      {/*  onKeyDown={onEnter}*/}
+                      {/*/>*/}
                       {index === 0 ? (
                         <Button variant={ButtonVariant.control} onClick={addQuery}>
                           <PlusIcon />
