@@ -95,7 +95,7 @@ type Jaeger struct {
 	instances []*Instance
 }
 
-func (j *Jaeger) getInstace(name string) *Instance {
+func (j *Jaeger) getInstance(name string) *Instance {
 	for _, i := range j.instances {
 		if i.name == name {
 			return i
@@ -110,7 +110,7 @@ func (j *Jaeger) GetServices(ctx context.Context, getServicesRequest *jaegerProt
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := j.getInstace(getServicesRequest.Name)
+	instance := j.getInstance(getServicesRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Jaeger plugin")
 	}
@@ -140,7 +140,7 @@ func (j *Jaeger) GetOperations(ctx context.Context, getOperationsRequest *jaeger
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := j.getInstace(getOperationsRequest.Name)
+	instance := j.getInstance(getOperationsRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Jaeger plugin")
 	}
@@ -174,7 +174,7 @@ func (j *Jaeger) GetTraces(ctx context.Context, getTracesRequest *jaegerProto.Ge
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := j.getInstace(getTracesRequest.Name)
+	instance := j.getInstance(getTracesRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Jaeger plugin")
 	}
@@ -196,7 +196,7 @@ func (j *Jaeger) GetTrace(ctx context.Context, getTraceRequest *jaegerProto.GetT
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := j.getInstace(getTraceRequest.Name)
+	instance := j.getInstance(getTraceRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Jaeger plugin")
 	}
