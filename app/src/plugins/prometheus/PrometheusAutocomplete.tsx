@@ -1,10 +1,36 @@
-import React, { useState } from 'react';
+import { MetricLookupRequest, MetricLookupResponse } from 'proto/prometheus_pb';
+import React, { useCallback, useEffect, useState } from 'react';
+import { PrometheusPromiseClient } from 'proto/prometheus_grpc_web_pb';
 import { TextArea } from '@patternfly/react-core';
+import { apiURL } from 'utils/constants';
 
-const results = ['up', 'kube_node_info'];
+const MetricNames = ({ results }: { results: string[] }): JSX.Element | null => {
+  return results.length === 0 ? null : (
+    <div className="pf-c-search-input__menu">
+      <ul className="pf-c-search-input__menu-list">
+        {results.map((result: string) => {
+          return (
+            <li className="pf-c-search-input__menu-list-item" key={result}>
+              <button className="pf-c-search-input__menu-item" type="button">
+                <span className="pf-c-search-input__menu-item-text">{result}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
 
-export const PrometheusAutocomplete = (): JSX.Element => {
+interface IPrometheusAutocomplete {
+  name: string;
+}
+
+export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomplete> = ({
+  name,
+}: IPrometheusAutocomplete): JSX.Element => {
   const [query, setQuery] = useState('');
+  const [data, setData] = useState<string[]>([]);
 
   // changeQuery changes the value of a single query.
   // const changeQuery = (index?: number, value?: string): void => {
@@ -22,49 +48,28 @@ export const PrometheusAutocomplete = (): JSX.Element => {
     // }
   };
 
-  const metricNames = (): JSX.Element => (
-    <div className="pf-c-search-input__menu">
-      <ul className="pf-c-search-input__menu-list">
-        {results.map((result: string) => {
-          return (
-            <li className="pf-c-search-input__menu-list-item" key={result}>
-              <button className="pf-c-search-input__menu-item" type="button">
-                <span className="pf-c-search-input__menu-item-text">{result}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-
   // fetchData is used to retrieve the metrics for the given queries in the selected time range with the selected
   // resolution.
-  // const fetchData = useCallback(async (): Promise<void> => {
-  //   try {
-  //     if (options.queries && options.queries.length > 0 && options.queries[0] !== '') {
-  //       setData({ error: '', isLoading: true, metrics: [] });
-  //
-  //       const queries: Query[] = [];
-  //       for (const q of options.queries) {
-  //         const query = new Query();
-  //         query.setQuery(q);
-  //         queries.push(query);
-  //       }
-  //
-  //       const metricLookupRequest = new MetricLookupRequest();
-  //       metricLookupRequest.setName(name);
-  //       metricLookupRequest.setMatcher(options.queries[0]);
-  //       const metricLookupResponse: MetricLookupResponse = await prometheusService.metricLookup(
-  //         metricLookupRequest,
-  //         null,
-  //       );
-  //       console.log(metricLookupResponse.getNamesList());
-  //     }
-  //   } catch (err) {
-  //     setData({ error: err.message, isLoading: false, metrics: [] });
-  //   }
-  // }, [name, options]);
+  const fetchData = useCallback(async (): Promise<void> => {
+    try {
+      const metricLookupRequest = new MetricLookupRequest();
+      const prometheusService = new PrometheusPromiseClient(apiURL, null, null);
+      metricLookupRequest.setName(name);
+      metricLookupRequest.setMatcher(query);
+      const metricLookupResponse: MetricLookupResponse = await prometheusService.metricLookup(
+        metricLookupRequest,
+        null,
+      );
+      debugger;
+      setData(metricLookupResponse.toObject().namesList);
+    } catch (err) {
+      setData([]);
+    }
+  }, [name, query]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div className="pf-c-search-input">
@@ -74,8 +79,7 @@ export const PrometheusAutocomplete = (): JSX.Element => {
           {/*  <i className="fas fa-search fa-fw" aria-hidden="true"></i>*/}
           {/*</span>*/}
           <TextArea
-            // className="pf-c-search-input__text-input"
-            // aria-label={`PromQL Query ${index}`}
+            aria-label="PromQL Query"
             resizeOrientation="vertical"
             rows={1}
             type="text"
@@ -97,7 +101,7 @@ export const PrometheusAutocomplete = (): JSX.Element => {
           </span>
         </span>
       </div>
-      {metricNames() ? <div />}
+      <MetricNames results={data} />
     </div>
   );
 };

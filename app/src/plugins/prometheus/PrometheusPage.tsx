@@ -118,6 +118,7 @@ const PrometheusPage: React.FunctionComponent<IPluginPageProps> = ({ name, descr
         </Title>
         <p>{description}</p>
         <PrometheusPageToolbar
+          name={name}
           queries={options.queries}
           resolution={options.resolution}
           timeEnd={options.timeEnd}

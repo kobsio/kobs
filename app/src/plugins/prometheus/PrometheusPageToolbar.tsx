@@ -15,7 +15,6 @@ import { FilterIcon, MinusIcon, PlusIcon, SearchIcon } from '@patternfly/react-i
 import React, { useState } from 'react';
 
 import Options, { IAdditionalFields } from 'components/Options';
-import { Autocomplete } from '../../components/Autocomplete';
 import { IPrometheusOptions } from 'plugins/prometheus/helpers';
 import { PrometheusAutocomplete } from './PrometheusAutocomplete';
 
@@ -23,12 +22,14 @@ import { PrometheusAutocomplete } from './PrometheusAutocomplete';
 // component. This are all available Prometheus options and a function to write changes to these properties back to the
 // parent component.
 interface IPrometheusPageToolbarProps extends IPrometheusOptions {
+  name: string;
   setOptions: (data: IPrometheusOptions) => void;
 }
 
 // PrometheusPageToolbar is the toolbar for the Prometheus plugin page. It allows a user to specify query and to select
 // a start time, end time and resolution for the query.
 const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps> = ({
+  name,
   queries,
   resolution,
   timeEnd,
@@ -97,7 +98,7 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
                 {data.queries.map((query, index) => (
                   <FlexItem key={index}>
                     <InputGroup>
-                      <PrometheusAutocomplete />
+                      <PrometheusAutocomplete name={name} />
                       {/*<TextArea*/}
                       {/*  aria-label={`PromQL Query ${index}`}*/}
                       {/*  resizeOrientation="vertical"*/}
