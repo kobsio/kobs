@@ -17,6 +17,7 @@ import React, { useState } from 'react';
 import Options, { IAdditionalFields } from 'components/Options';
 import { Autocomplete } from '../../components/Autocomplete';
 import { IPrometheusOptions } from 'plugins/prometheus/helpers';
+import { PrometheusAutocomplete } from './PrometheusAutocomplete';
 
 // IPrometheusPageToolbarProps is the interface for all properties, which can be passed to the PrometheusPageToolbar
 // component. This are all available Prometheus options and a function to write changes to these properties back to the
@@ -96,7 +97,7 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
                 {data.queries.map((query, index) => (
                   <FlexItem key={index}>
                     <InputGroup>
-                      <Autocomplete />
+                      <PrometheusAutocomplete />
                       {/*<TextArea*/}
                       {/*  aria-label={`PromQL Query ${index}`}*/}
                       {/*  resizeOrientation="vertical"*/}
