@@ -239,7 +239,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 }
 
 func (p *Prometheus) MetricLookup(ctx context.Context, metricsLookupRequest *prometheusProto.MetricLookupRequest) (*prometheusProto.MetricLookupResponse, error) {
-	instance := p.getInstace(metricsLookupRequest.Name)
+	instance := p.getInstance(metricsLookupRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
