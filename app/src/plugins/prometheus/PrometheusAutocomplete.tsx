@@ -4,48 +4,28 @@ import { PrometheusPromiseClient } from 'proto/prometheus_grpc_web_pb';
 import { TextArea } from '@patternfly/react-core';
 import { apiURL } from 'utils/constants';
 
-const MetricNames = ({ results }: { results: string[] }): JSX.Element | null => {
-  return results.length === 0 ? null : (
-    <div className="pf-c-search-input__menu">
-      <ul className="pf-c-search-input__menu-list">
-        {results.map((result: string) => {
-          return (
-            <li className="pf-c-search-input__menu-list-item" key={result}>
-              <button className="pf-c-search-input__menu-item" type="button">
-                <span className="pf-c-search-input__menu-item-text">{result}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-};
-
 interface IPrometheusAutocomplete {
   name: string;
+  query: string;
+  setQuery: (q: string) => void;
+  onEnter: (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined) => void;
 }
 
 export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomplete> = ({
   name,
+  query,
+  setQuery,
+  onEnter,
 }: IPrometheusAutocomplete): JSX.Element => {
-  const [query, setQuery] = useState('');
   const [data, setData] = useState<string[]>([]);
+  const [inputFocused, setInputFocused] = useState(false);
 
-  // changeQuery changes the value of a single query.
-  // const changeQuery = (index?: number, value?: string): void => {
-  //   // const tmpQueries = [...data.queries];
-  //   // tmpQueries[index] = value;
-  //   // setData({ ...data, queries: tmpQueries });
-  // };
-  // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we will not add a newline.
-  // Instead of this we are calling the setOptions function to trigger the search. To enter a newline the user has to
-  // use "SHIFT" + "ENTER".
-  const onEnter = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
-    // if (e?.key === 'Enter' && !e.shiftKey) {
-    //   e.preventDefault();
-    //   setOptions(data);
-    // }
+  const onFocus = (): void => {
+    setInputFocused(true);
+  };
+
+  const onBlur = (): void => {
+    setInputFocused(false);
   };
 
   // fetchData is used to retrieve the metrics for the given queries in the selected time range with the selected
@@ -60,7 +40,6 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
         metricLookupRequest,
         null,
       );
-      debugger;
       setData(metricLookupResponse.toObject().namesList);
     } catch (err) {
       setData([]);
@@ -72,12 +51,9 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
   }, [fetchData]);
 
   return (
-    <div className="pf-c-search-input">
+    <div className="pf-c-search-input" style={{ width: '100%' }}>
       <div className="pf-c-search-input__bar">
         <span className="pf-c-search-input__text">
-          {/*<span className="pf-c-search-input__icon">*/}
-          {/*  <i className="fas fa-search fa-fw" aria-hidden="true"></i>*/}
-          {/*</span>*/}
           <TextArea
             aria-label="PromQL Query"
             resizeOrientation="vertical"
@@ -86,6 +62,8 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
             value={query}
             onChange={(value): void => setQuery(value)}
             onKeyDown={onEnter}
+            onFocus={onFocus}
+            onBlur={onBlur}
           />
         </span>
         <span className="pf-c-search-input__utilities">
@@ -101,7 +79,27 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
           </span>
         </span>
       </div>
-      <MetricNames results={data} />
+      {inputFocused && data.length > 0 && (
+        <div className="pf-c-search-input__menu">
+          <ul className="pf-c-search-input__menu-list">
+            {data.map((result: string) => {
+              return (
+                <li className="pf-c-search-input__menu-list-item" key={result}>
+                  <button
+                    className="pf-c-search-input__menu-item"
+                    type="button"
+                    onMouseDown={(): void => {
+                      setQuery(result);
+                    }}
+                  >
+                    <span className="pf-c-search-input__menu-item-text">{result}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
