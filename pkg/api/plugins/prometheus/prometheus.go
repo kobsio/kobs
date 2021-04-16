@@ -36,8 +36,10 @@ type Prometheus struct {
 }
 
 type Instance struct {
-	name  string
-	v1api v1.API
+	name                 string
+	metricNames          model.LabelValues
+	lastMetricNamesFetch time.Time
+	v1api                v1.API
 }
 
 func (p *Prometheus) getInstace(name string) *Instance {
@@ -242,13 +244,21 @@ func (p *Prometheus) MetricLookup(ctx context.Context, metricsLookupRequest *pro
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
 
-	result, _, err := instance.v1api.LabelValues(ctx, model.MetricNameLabel, nil, time.Unix(0, 0), time.Now())
-	if err != nil {
-		return nil, err
+	// Fetch metric names if last fetch was more then a minute ago
+	if instance.lastMetricNamesFetch.Add(time.Minute).Before(time.Now()) {
+		var err error
+		instance.metricNames, _, err = instance.v1api.LabelValues(ctx, model.MetricNameLabel, nil, time.Unix(0, 0), time.Now())
+		if err != nil {
+			return nil, err
+		}
+		instance.lastMetricNamesFetch = time.Now()
+		log.Debugf("Refreshed metricNames.")
+	} else {
+		log.Debugf("Using cached metricNames.")
 	}
 
 	var names []string
-	for _, name := range result {
+	for _, name := range instance.metricNames {
 		if strings.Contains(string(name), metricsLookupRequest.Matcher) {
 			names = append(names, string(name))
 		}
