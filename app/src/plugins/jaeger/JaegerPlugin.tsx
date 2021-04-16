@@ -35,7 +35,7 @@ const ElasticsearchPlugin: React.FunctionComponent<IPluginProps> = ({
       <PluginDataMissing
         title="Jaeger properties are missing"
         description="The Jaeger properties are missing in your CR for this application. Visit the documentation to learn more on how to use the Jaeger plugin in an Application CR."
-        documentation="https://kobs.io"
+        documentation="https://kobs.io/plugins/jaeger/"
         type="jaeger"
       />
     );

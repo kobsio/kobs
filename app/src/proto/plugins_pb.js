@@ -20,6 +20,8 @@ var elasticsearch_pb = require('./elasticsearch_pb.js');
 goog.object.extend(proto, elasticsearch_pb);
 var jaeger_pb = require('./jaeger_pb.js');
 goog.object.extend(proto, jaeger_pb);
+var opsgenie_pb = require('./opsgenie_pb.js');
+goog.object.extend(proto, opsgenie_pb);
 goog.exportSymbol('proto.plugins.GetPluginsRequest', null, global);
 goog.exportSymbol('proto.plugins.GetPluginsResponse', null, global);
 goog.exportSymbol('proto.plugins.Plugin', null, global);
@@ -595,7 +597,8 @@ proto.plugins.Plugin.toObject = function(includeInstance, msg) {
     displayname: jspb.Message.getFieldWithDefault(msg, 2, ""),
     prometheus: (f = msg.getPrometheus()) && prometheus_pb.Spec.toObject(includeInstance, f),
     elasticsearch: (f = msg.getElasticsearch()) && elasticsearch_pb.Spec.toObject(includeInstance, f),
-    jaeger: (f = msg.getJaeger()) && jaeger_pb.Spec.toObject(includeInstance, f)
+    jaeger: (f = msg.getJaeger()) && jaeger_pb.Spec.toObject(includeInstance, f),
+    opsgenie: (f = msg.getOpsgenie()) && opsgenie_pb.Spec.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -654,6 +657,11 @@ proto.plugins.Plugin.deserializeBinaryFromReader = function(msg, reader) {
       var value = new jaeger_pb.Spec;
       reader.readMessage(value,jaeger_pb.Spec.deserializeBinaryFromReader);
       msg.setJaeger(value);
+      break;
+    case 6:
+      var value = new opsgenie_pb.Spec;
+      reader.readMessage(value,opsgenie_pb.Spec.deserializeBinaryFromReader);
+      msg.setOpsgenie(value);
       break;
     default:
       reader.skipField();
@@ -720,6 +728,14 @@ proto.plugins.Plugin.serializeBinaryToWriter = function(message, writer) {
       5,
       f,
       jaeger_pb.Spec.serializeBinaryToWriter
+    );
+  }
+  f = message.getOpsgenie();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      opsgenie_pb.Spec.serializeBinaryToWriter
     );
   }
 };
@@ -869,6 +885,43 @@ proto.plugins.Plugin.prototype.clearJaeger = function() {
  */
 proto.plugins.Plugin.prototype.hasJaeger = function() {
   return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional opsgenie.Spec opsgenie = 6;
+ * @return {?proto.plugins.opsgenie.Spec}
+ */
+proto.plugins.Plugin.prototype.getOpsgenie = function() {
+  return /** @type{?proto.plugins.opsgenie.Spec} */ (
+    jspb.Message.getWrapperField(this, opsgenie_pb.Spec, 6));
+};
+
+
+/**
+ * @param {?proto.plugins.opsgenie.Spec|undefined} value
+ * @return {!proto.plugins.Plugin} returns this
+*/
+proto.plugins.Plugin.prototype.setOpsgenie = function(value) {
+  return jspb.Message.setWrapperField(this, 6, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.plugins.Plugin} returns this
+ */
+proto.plugins.Plugin.prototype.clearOpsgenie = function() {
+  return this.setOpsgenie(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.plugins.Plugin.prototype.hasOpsgenie = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 

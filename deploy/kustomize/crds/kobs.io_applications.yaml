@@ -138,6 +138,25 @@ spec:
                         type: object
                       name:
                         type: string
+                      opsgenie:
+                        description: Spec implements the specification for an application.
+                          This field is then used in the Application CR and contains,
+                          all possible fields, which can be used by a user to work
+                          with Opsgenie.
+                        properties:
+                          queries:
+                            items:
+                              description: Query represents a single query for an
+                                application. A query is identified by a name and a
+                                query.
+                              properties:
+                                name:
+                                  type: string
+                                query:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
                       prometheus:
                         description: Spec implements the specification for an application.
                           This field is then used in the Application CR and contains,
@@ -275,6 +294,24 @@ spec:
                       type: object
                     name:
                       type: string
+                    opsgenie:
+                      description: Spec implements the specification for an application.
+                        This field is then used in the Application CR and contains,
+                        all possible fields, which can be used by a user to work with
+                        Opsgenie.
+                      properties:
+                        queries:
+                          items:
+                            description: Query represents a single query for an application.
+                              A query is identified by a name and a query.
+                            properties:
+                              name:
+                                type: string
+                              query:
+                                type: string
+                            type: object
+                          type: array
+                      type: object
                     prometheus:
                       description: Spec implements the specification for an application.
                         This field is then used in the Application CR and contains,

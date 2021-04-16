@@ -42,7 +42,7 @@ const ElasticsearchPlugin: React.FunctionComponent<IPluginProps> = ({
       <PluginDataMissing
         title="Elasticsearch properties are missing"
         description="The Elasticsearch properties are missing in your CR for this application. Visit the documentation to learn more on how to use the Elasticsearch plugin in an Application CR."
-        documentation="https://kobs.io"
+        documentation="https://kobs.io/plugins/elasticsearch/"
         type="elasticsearch"
       />
     );

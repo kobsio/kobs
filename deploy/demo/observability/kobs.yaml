@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: kobs
-          image: "kobsio/kobs:0.1.0"
+          image: kobsio/kobs:main
           imagePullPolicy: Always
           args:
             - --log.level=trace

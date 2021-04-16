@@ -34,6 +34,7 @@ nav:
       - Getting Started: plugins/getting-started.md
       - Elasticsearch: plugins/elasticsearch.md
       - Jaeger: plugins/jaeger.md
+      - Opsgenie: plugins/opsgenie.md
       - Prometheus: plugins/prometheus.md
   - Contributing:
       - Getting Started: contributing/getting-started.md
