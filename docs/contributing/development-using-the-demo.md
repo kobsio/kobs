@@ -29,3 +29,9 @@ Finally you can check if the kobs Pod is using your image, with the following co
 ```sh
 k get pods -n observability -l app.kubernetes.io/name=kobs -o yaml | grep "image: localhost:5000/kobs:dev"
 ```
+
+If you make changes to the CRDs for kobs you can deploy them using the following command:
+
+```sh
+kustomize build deploy/kustomize/crds | kubectl apply -f -
+```

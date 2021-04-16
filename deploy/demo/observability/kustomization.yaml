@@ -2,7 +2,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../kustomize
+  - ../../kustomize/kobs
   - elasticsearch-application.yaml
   - elasticsearch.yaml
   - filebeat.yaml
@@ -13,5 +13,8 @@ resources:
   - namespace.yaml
   - prometheus-application.yaml
   - prometheus.yaml
+  - squad-call-of-duty-team.yaml
+  - squad-diablo-team.yaml
+  - squad-resident-evil-team.yaml
 patchesStrategicMerge:
   - kobs.yaml

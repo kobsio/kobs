@@ -85,7 +85,7 @@ type ResponseError struct {
 	Status int `json:"status"`
 }
 
-func (e *Elasticsearch) getInstace(name string) *Instance {
+func (e *Elasticsearch) getInstance(name string) *Instance {
 	for _, i := range e.instances {
 		if i.name == name {
 			return i
@@ -100,7 +100,7 @@ func (e *Elasticsearch) GetLogs(ctx context.Context, getLogsRequest *elasticsear
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := e.getInstace(getLogsRequest.Name)
+	instance := e.getInstance(getLogsRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}

@@ -1,0 +1,74 @@
+syntax = "proto3";
+package plugins.opsgenie;
+
+option go_package = "github.com/kobsio/kobs/pkg/api/plugins/opsgenie/proto";
+
+// Opsgenie is the service to get alerts from a configured Opsgenie instance.
+service Opsgenie {
+  rpc GetAlerts(GetAlertsRequest) returns (GetAlertsResponse) {}
+  rpc GetAlert(GetAlertRequest) returns (GetAlertResponse) {}
+}
+
+// GetAlertsRequest is the format for the call to get alerts from Opsgenie. This requires the name of the configured
+// Opsgenie instance and a Opsgenie query.
+// See: https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/
+message GetAlertsRequest {
+  string name = 1;
+  string query = 2;
+}
+
+// GetAlertsResponse is the response format for a GetAlerts call. It contains a list of alert.
+message GetAlertsResponse {
+  repeated Alert alerts = 1;
+}
+
+// GetAlertRequest is the message format to get a single alert. Each alert can be identified by the Opsgenie instance
+// and it's unique ID.
+message GetAlertRequest {
+  string name = 1;
+  string id = 2;
+}
+
+// GetAlertResponse is the response format for a GetAlert call. It contains a single alert.
+message GetAlertResponse {
+  Alert alert = 1;
+}
+
+// Alert is the structure of an Opsgenie alert. It contains the same fields as the response of the Opsgenie API. When
+// the alert is used within the GetAlert function it also contains the description, details and a list of responders.
+// These fields are omitted for the GetAlerts call.
+message Alert {
+  string id = 1;
+  string tinyId = 2;
+  string alias = 3;
+  string message = 4;
+  string status = 5;
+  bool acknowledged = 6;
+  bool isSeen = 7;
+  repeated string tags = 8;
+  bool snoozed = 9;
+  int64 snoozedUntil = 10;
+  int64 count = 11;
+  int64 lastOccuredAt = 12;
+  int64 createdAt = 13;
+  int64 updatedAt = 14;
+  string source = 15;
+  string owner = 16;
+  string priority = 17;
+  repeated string responders = 18;
+  string description = 19;
+	map<string, string> details = 20;
+}
+
+
+// Spec implements the specification for an application. This field is then used in the Application CR and contains, all
+// possible fields, which can be used by a user to work with Opsgenie.
+message Spec {
+  repeated Query queries = 2;
+}
+
+// Query represents a single query for an application. A query is identified by a name and a query.
+message Query {
+  string name = 1;
+  string query = 2;
+}

@@ -51,6 +51,17 @@ jaeger:
 | password | string | Password to access a Jaeger instance via basic authentication. | No |
 | token | string | Token to access a Jaeger instance via token based authentication. | No |
 
+## Opsgenie
+
+The following configuration can be used to access the Opsgenie API.
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Opsgenie instance. | Yes |
+| descriptions | string | Description of the Opsgenie instance. | No |
+| apiKey | string | API Key for the Opsgenie API. More information can be found at [API key management](https://support.atlassian.com/opsgenie/docs/api-key-management/). | Yes |
+| apiUrl | string | API URL for the Opsgenie API. Must be `api.opsgenie.com` or `api.eu.opsgenie.com`. | Yes |
+
 ## Prometheus
 
 The following configuration can be used to access a Prometheus instance, which is running in the same cluster as kobs.
