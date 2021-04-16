@@ -111,13 +111,32 @@ The Go code is formatted using [`gofmt`](https://golang.org/cmd/gofmt/).
 
 #### Envoy
 
-Because the API is served via [gRPC](https://grpc.io) and we are using [gRPC-Web](https://grpc.io/docs/platforms/web/) in the React UI, you have to run [Envoy](https://www.envoyproxy.io). The Envoy configuration for development can be found in the [envoy.yaml](./deploy/docker/envoy/envoy.yaml) file. To start Envoy in a Docker container you can use the following command:
+Because the API is served via [gRPC](https://grpc.io) and we are using [gRPC-Web](https://grpc.io/docs/platforms/web/) in the React UI, you have to run [Envoy](https://www.envoyproxy.io). The Envoy configuration for development can be found in the [envoy.yaml](./deploy/docker/envoy/envoy.yaml) file.
+
+The Envoy Proxy will accept connection on port `15222` and forwards them to port `15220`. Envoy also serves the React UI from port `15219` via port `15222`.
+
+##### Mac
+
+To start Envoy in a Docker container you can use the following command:
 
 ```sh
 docker run -it --rm --name envoy -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
 ```
 
-The Envoy Proxy will accept connection on port `15222` and forwards them to port `15220`. Envoy also serves the React UI from port `15219` via port `15222`.
+##### Linux
+
+When running on Linux, you've to adjust the `envoy.yaml` (beacuse DNS name `host.docker.internal` is only available on Mac).
+
+```sh
+sed -i 's/host.docker.internal/localhost/' deploy/docker/envoy/envoy.yaml
+```
+
+Now start the Docker container with following command:
+
+```sh
+docker run -it --rm --name envoy --net=host -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
+```
+
 
 ### Run kobs
 
