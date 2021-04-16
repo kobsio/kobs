@@ -7,6 +7,7 @@ option go_package = "github.com/kobsio/kobs/pkg/api/plugins/prometheus/proto";
 service Prometheus {
   rpc GetVariables(GetVariablesRequest) returns (GetVariablesResponse) {}
   rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
+  rpc MetricLookup(MetricLookupRequest) returns (MetricLookupResponse) {}
 }
 
 // GetVariablesRequest is the request data needed to get all variables for the metrics view of an application. The
@@ -42,6 +43,17 @@ message GetMetricsRequest {
 message GetMetricsResponse {
   repeated Metrics metrics = 1;
   repeated string interpolatedQueries = 2;
+}
+
+// MetricLookupRequest
+message MetricLookupRequest {
+  string name = 1;
+  string matcher = 2;
+}
+
+// MetricLookupResponse
+message MetricLookupResponse {
+  repeated string names = 1;
 }
 
 // Metrics contains the label and all data points for a metric. It also contains the minimum and maximum value of all

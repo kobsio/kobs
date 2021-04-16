@@ -231,5 +231,85 @@ proto.plugins.prometheus.PrometheusPromiseClient.prototype.getMetrics =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.plugins.prometheus.MetricLookupRequest,
+ *   !proto.plugins.prometheus.MetricLookupResponse>}
+ */
+const methodDescriptor_Prometheus_MetricLookup = new grpc.web.MethodDescriptor(
+  '/plugins.prometheus.Prometheus/MetricLookup',
+  grpc.web.MethodType.UNARY,
+  proto.plugins.prometheus.MetricLookupRequest,
+  proto.plugins.prometheus.MetricLookupResponse,
+  /**
+   * @param {!proto.plugins.prometheus.MetricLookupRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.prometheus.MetricLookupResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.plugins.prometheus.MetricLookupRequest,
+ *   !proto.plugins.prometheus.MetricLookupResponse>}
+ */
+const methodInfo_Prometheus_MetricLookup = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.plugins.prometheus.MetricLookupResponse,
+  /**
+   * @param {!proto.plugins.prometheus.MetricLookupRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.prometheus.MetricLookupResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.plugins.prometheus.MetricLookupRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.plugins.prometheus.MetricLookupResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.plugins.prometheus.MetricLookupResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.plugins.prometheus.PrometheusClient.prototype.metricLookup =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/plugins.prometheus.Prometheus/MetricLookup',
+      request,
+      metadata || {},
+      methodDescriptor_Prometheus_MetricLookup,
+      callback);
+};
+
+
+/**
+ * @param {!proto.plugins.prometheus.MetricLookupRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.plugins.prometheus.MetricLookupResponse>}
+ *     Promise that resolves to the response
+ */
+proto.plugins.prometheus.PrometheusPromiseClient.prototype.metricLookup =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/plugins.prometheus.Prometheus/MetricLookup',
+      request,
+      metadata || {},
+      methodDescriptor_Prometheus_MetricLookup);
+};
+
+
 module.exports = proto.plugins.prometheus;
 

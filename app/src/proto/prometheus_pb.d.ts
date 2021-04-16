@@ -135,6 +135,52 @@ export namespace GetMetricsResponse {
   }
 }
 
+export class MetricLookupRequest extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getMatcher(): string;
+  setMatcher(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MetricLookupRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: MetricLookupRequest): MetricLookupRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MetricLookupRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MetricLookupRequest;
+  static deserializeBinaryFromReader(message: MetricLookupRequest, reader: jspb.BinaryReader): MetricLookupRequest;
+}
+
+export namespace MetricLookupRequest {
+  export type AsObject = {
+    name: string,
+    matcher: string,
+  }
+}
+
+export class MetricLookupResponse extends jspb.Message {
+  clearNamesList(): void;
+  getNamesList(): Array<string>;
+  setNamesList(value: Array<string>): void;
+  addNames(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MetricLookupResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: MetricLookupResponse): MetricLookupResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MetricLookupResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MetricLookupResponse;
+  static deserializeBinaryFromReader(message: MetricLookupResponse, reader: jspb.BinaryReader): MetricLookupResponse;
+}
+
+export namespace MetricLookupResponse {
+  export type AsObject = {
+    namesList: Array<string>,
+  }
+}
+
 export class Metrics extends jspb.Message {
   getLabel(): string;
   setLabel(value: string): void;

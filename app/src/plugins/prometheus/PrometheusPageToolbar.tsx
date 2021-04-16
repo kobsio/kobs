@@ -4,7 +4,6 @@ import {
   Flex,
   FlexItem,
   InputGroup,
-  TextArea,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -16,17 +15,20 @@ import React, { useState } from 'react';
 
 import Options, { IAdditionalFields } from 'components/Options';
 import { IPrometheusOptions } from 'plugins/prometheus/helpers';
+import { PrometheusAutocomplete } from './PrometheusAutocomplete';
 
 // IPrometheusPageToolbarProps is the interface for all properties, which can be passed to the PrometheusPageToolbar
 // component. This are all available Prometheus options and a function to write changes to these properties back to the
 // parent component.
 interface IPrometheusPageToolbarProps extends IPrometheusOptions {
+  name: string;
   setOptions: (data: IPrometheusOptions) => void;
 }
 
 // PrometheusPageToolbar is the toolbar for the Prometheus plugin page. It allows a user to specify query and to select
 // a start time, end time and resolution for the query.
 const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps> = ({
+  name,
   queries,
   resolution,
   timeEnd,
@@ -95,14 +97,11 @@ const PrometheusPageToolbar: React.FunctionComponent<IPrometheusPageToolbarProps
                 {data.queries.map((query, index) => (
                   <FlexItem key={index}>
                     <InputGroup>
-                      <TextArea
-                        aria-label={`PromQL Query ${index}`}
-                        resizeOrientation="vertical"
-                        rows={1}
-                        type="text"
-                        value={query}
-                        onChange={(value): void => changeQuery(index, value)}
-                        onKeyDown={onEnter}
+                      <PrometheusAutocomplete
+                        name={name}
+                        query={query}
+                        setQuery={(value): void => changeQuery(index, value)}
+                        onEnter={onEnter}
                       />
                       {index === 0 ? (
                         <Button variant={ButtonVariant.control} onClick={addQuery}>

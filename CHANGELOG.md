@@ -15,6 +15,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#32](https://github.com/kobsio/kobs/pull/32): Add support for container logs via the Kubernetes API.
 - [#34](https://github.com/kobsio/kobs/pull/34): Add a new Custom Resource Definition for Teams. Teams can be used to define the ownership for Applications and other Kubernetes resources. :warning: *Breaking change:* :warning: We are now using the `apiextensions.k8s.io/v1` API for the Custom Resource Definitions of kobs.
 - [#39](https://github.com/kobsio/kobs/pull/39): Add Opsgenie plugin to view alerts within an Application.
+- [#40](https://github.com/kobsio/kobs/pull/39): Prometheus plugin metric name suggestions.
 
 ### Fixed
 
