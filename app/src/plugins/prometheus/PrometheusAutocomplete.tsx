@@ -19,6 +19,8 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
 }: IPrometheusAutocomplete): JSX.Element => {
   const [data, setData] = useState<string[]>([]);
   const [inputFocused, setInputFocused] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [hoveringMetricNamesList, setHovering] = useState(false);
 
   const onFocus = (): void => {
     setInputFocused(true);
@@ -26,6 +28,28 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
 
   const onBlur = (): void => {
     setInputFocused(false);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
+    if (e?.key === 'ArrowUp') {
+      if (selectedIndex === 0) {
+        setSelectedIndex(data.length - 1);
+      } else {
+        setSelectedIndex(selectedIndex - 1);
+      }
+    } else if (e?.key === 'ArrowDown') {
+      if (selectedIndex + 1 === data.length) {
+        setSelectedIndex(0);
+      } else {
+        setSelectedIndex(selectedIndex + 1);
+      }
+    } else if (e?.key === 'Enter' && selectedIndex > -1) {
+      e.preventDefault();
+      setQuery(data[selectedIndex]);
+      setSelectedIndex(-1);
+    } else {
+      onEnter(e);
+    }
   };
 
   // fetchData is used to retrieve the metrics for the given queries in the selected time range with the selected
@@ -61,7 +85,7 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
             type="text"
             value={query}
             onChange={(value): void => setQuery(value)}
-            onKeyDown={onEnter}
+            onKeyDown={onKeyDown}
             onFocus={onFocus}
             onBlur={onBlur}
           />
@@ -79,17 +103,29 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
           </span>
         </span>
       </div>
-      {inputFocused && data.length > 0 && (
-        <div className="pf-c-search-input__menu">
+      {/* Show metric name suggestions only if there are results and the result is not equal to current text value */}
+      {inputFocused && data.length > 0 && !(data.length === 1 && data[0] === query) && (
+        <div
+          className="pf-c-search-input__menu"
+          onMouseEnter={(): void => setHovering(true)}
+          onMouseLeave={(): void => setHovering(false)}
+        >
           <ul className="pf-c-search-input__menu-list">
-            {data.map((result: string) => {
+            {data.map((result: string, index) => {
               return (
-                <li className="pf-c-search-input__menu-list-item" key={result}>
+                <li
+                  className="pf-c-search-input__menu-list-item"
+                  key={result}
+                  style={
+                    selectedIndex === index && !hoveringMetricNamesList ? { backgroundColor: '#f0f0f0' } : undefined
+                  }
+                >
                   <button
                     className="pf-c-search-input__menu-item"
                     type="button"
                     onMouseDown={(): void => {
                       setQuery(result);
+                      setHovering(false);
                     }}
                   >
                     <span className="pf-c-search-input__menu-item-text">{result}</span>
