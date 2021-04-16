@@ -5,6 +5,7 @@ import * as jspb from "google-protobuf";
 import * as prometheus_pb from "./prometheus_pb";
 import * as elasticsearch_pb from "./elasticsearch_pb";
 import * as jaeger_pb from "./jaeger_pb";
+import * as opsgenie_pb from "./opsgenie_pb";
 
 export class GetPluginsRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
@@ -94,6 +95,11 @@ export class Plugin extends jspb.Message {
   getJaeger(): jaeger_pb.Spec | undefined;
   setJaeger(value?: jaeger_pb.Spec): void;
 
+  hasOpsgenie(): boolean;
+  clearOpsgenie(): void;
+  getOpsgenie(): opsgenie_pb.Spec | undefined;
+  setOpsgenie(value?: opsgenie_pb.Spec): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Plugin.AsObject;
   static toObject(includeInstance: boolean, msg: Plugin): Plugin.AsObject;
@@ -111,6 +117,7 @@ export namespace Plugin {
     prometheus?: prometheus_pb.Spec.AsObject,
     elasticsearch?: elasticsearch_pb.Spec.AsObject,
     jaeger?: jaeger_pb.Spec.AsObject,
+    opsgenie?: opsgenie_pb.Spec.AsObject,
   }
 }
 

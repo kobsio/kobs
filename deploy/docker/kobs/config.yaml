@@ -27,3 +27,9 @@ jaeger:
     username:
     password:
     token:
+
+opsgenie:
+  - name: Opsgenie
+    description: On-call and alert management to keep services always on.
+    apiUrl: api.eu.opsgenie.com
+    apiKey: ${OPSGENIE_API_KEY}

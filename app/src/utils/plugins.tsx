@@ -5,11 +5,14 @@ import ElasticsearchPlugin from 'plugins/elasticsearch/ElasticsearchPlugin';
 import ElasticsearchPreview from 'plugins/elasticsearch/ElasticsearchPreview';
 import JaegerPage from 'plugins/jaeger/JaegerPage';
 import JaegerPlugin from 'plugins/jaeger/JaegerPlugin';
+import OpsgeniePage from 'plugins/opsgenie/OpsgeniePage';
+import OpsgeniePlugin from 'plugins/opsgenie/OpsgeniePlugin';
 import PrometheusPage from 'plugins/prometheus/PrometheusPage';
 import PrometheusPlugin from 'plugins/prometheus/PrometheusPlugin';
 import PrometheusPreview from 'plugins/prometheus/PrometheusPreview';
 import { jsonToProto as elasticsearchJsonToProto } from 'plugins/elasticsearch/helpers';
 import { jsonToProto as jaegerJsonToProto } from 'plugins/jaeger/helpers';
+import { jsonToProto as opsgenieJsonToProto } from 'plugins/opsgenie/helpers';
 import { jsonToProto as prometheusJsonToProto } from 'plugins/prometheus/helpers';
 
 import { Plugin as IProtoPlugin } from 'proto/plugins_grpc_web_pb';
@@ -88,6 +91,11 @@ export const plugins: IPlugins = {
     jsonToProto: jaegerJsonToProto,
     page: JaegerPage,
     plugin: JaegerPlugin,
+  },
+  opsgenie: {
+    jsonToProto: opsgenieJsonToProto,
+    page: OpsgeniePage,
+    plugin: OpsgeniePlugin,
   },
   prometheus: {
     jsonToProto: prometheusJsonToProto,

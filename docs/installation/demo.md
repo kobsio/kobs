@@ -35,9 +35,11 @@ To use the cluster you can switch your `kubectl` context using `kubectl cluster-
 
 ## Install all Services
 
-Now we can install the Istio Operator and Istio. We are using Istio to get some nice Prometheus metrics for the Bookinfo Application and for the integration with Jaeger to get some traces. To install the Operator and Istio run the following commands:
+Now we can deploy the CRDs and install the Istio Operator and Istio. We are using Istio to get some nice Prometheus metrics for the Bookinfo Application and for the integration with Jaeger to get some traces. To install the Operator and Istio run the following commands:
 
 ```sh
+kustomize build github.com/kobsio/kobs/deploy/kustomize/crds | kubectl apply -f -
+
 kustomize build github.com/kobsio/kobs/deploy/demo/istio-operator | kubectl apply -f -
 kustomize build github.com/kobsio/kobs/deploy/demo/istio-system | kubectl apply -f -
 ```

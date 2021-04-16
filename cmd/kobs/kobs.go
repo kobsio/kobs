@@ -62,7 +62,9 @@ func main() {
 	if logFormat == "json" {
 		logrus.SetFormatter(&logrus.JSONFormatter{})
 	} else {
-		logrus.SetFormatter(&logrus.TextFormatter{})
+		logrus.SetFormatter(&logrus.TextFormatter{
+			FullTimestamp: true,
+		})
 	}
 
 	lvl, err := logrus.ParseLevel(logLevel)
