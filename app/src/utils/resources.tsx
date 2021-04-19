@@ -71,7 +71,7 @@ export interface IResource {
 // resources is the list of Kubernetes standard resources. To generate the rows for a resource, we have to pass the
 // result from the gRPC API call to the rows function. The returned rows are mostly the same as they are also retunred
 // by kubectl.
-const resources: IResources = {
+export const resources: IResources = {
   // eslint-disable-next-line sort-keys
   cronjobs: {
     columns: ['Name', 'Namespace', 'Cluster', 'Schedule', 'Suspend', 'Active', 'Last Schedule', 'Age'],
@@ -108,7 +108,7 @@ const resources: IResources = {
               lastSchedule,
               age,
             ],
-            props: cronJob,
+            props: { apiVersion: 'batch/v1beta1', kind: 'CronJob', ...cronJob },
           });
         }
       }
@@ -172,7 +172,7 @@ const resources: IResources = {
               nodeSelector.join(', '),
               age,
             ],
-            props: daemonSet,
+            props: { apiVersion: 'apps/v1', kind: 'DaemonSet', ...daemonSet },
           });
         }
       }
@@ -216,7 +216,7 @@ const resources: IResources = {
               available,
               age,
             ],
-            props: deployment,
+            props: { apiVersion: 'apps/v1', kind: 'Deployment', ...deployment },
           });
         }
       }
@@ -262,7 +262,7 @@ const resources: IResources = {
               duration,
               age,
             ],
-            props: job,
+            props: { apiVersion: 'batch/v1', kind: 'Job', ...job },
           });
         }
       }
@@ -410,7 +410,7 @@ const resources: IResources = {
               upToDate,
               age,
             ],
-            props: statefulSet,
+            props: { apiVersion: 'apps/v1', kind: 'StatefulSet', ...statefulSet },
           });
         }
       }

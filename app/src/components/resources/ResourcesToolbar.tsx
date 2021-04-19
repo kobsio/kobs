@@ -17,18 +17,27 @@ import ToolbarItemNamespaces from 'components/resources/ToolbarItemNamespaces';
 import ToolbarItemResources from 'components/resources/ToolbarItemResources';
 
 interface IResourcesToolbarProps {
+  resources: IResources;
   setResources: (resources: IResources) => void;
 }
 
 // ResourcesToolbar is the toolbar where the user can select a list of clusters, namespaces and resource. When the user
 // clicks the search button the setResources function is called with the selected clusters, namespaces and resources.
 const ResourcesToolbar: React.FunctionComponent<IResourcesToolbarProps> = ({
+  resources,
   setResources,
 }: IResourcesToolbarProps) => {
+  const initialResources = resources.resources.length === 1 ? resources.resources[0] : undefined;
   const clustersContext = useContext<IClusterContext>(ClustersContext);
-  const [selectedClusters, setSelectedClusters] = useState<string[]>([clustersContext.clusters[0]]);
-  const [selectedResources, setSelectedResources] = useState<string[]>([]);
-  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>([]);
+  const [selectedClusters, setSelectedClusters] = useState<string[]>(
+    resources.clusters.length > 0 ? resources.clusters : [clustersContext.clusters[0]],
+  );
+  const [selectedResources, setSelectedResources] = useState<string[]>(
+    initialResources ? initialResources.kindsList : [],
+  );
+  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(
+    initialResources ? initialResources.namespacesList : [],
+  );
 
   // selectCluster adds/removes the given cluster to the list of selected clusters. When the cluster value is an empty
   // string the selected clusters list is cleared.

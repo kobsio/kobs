@@ -31,6 +31,8 @@ import { Plugin as IPlugin } from 'proto/plugins_grpc_web_pb';
 import Plugin from 'components/plugins/Plugin';
 import ResourceEvents from 'components/resources/ResourceEvents';
 import ResourceLogs from 'components/resources/ResourceLogs';
+import ResourceOverview from 'components/resources/ResourceOverview';
+import ResourcePods from 'components/resources/ResourcePods';
 import Title from 'components/Title';
 import { plugins as pluginsDefinition } from 'utils/plugins';
 
@@ -65,6 +67,27 @@ const interpolate = (str: string, resource: any, interpolator: string[] = ['<<',
     .join('');
 };
 
+// getSelector is used to get the label selector for various resources as string. The returned string can be used in
+// a Kubernetes API request to get the all pods, which are matching the label selector.
+const getSelector = (resource: IRow): string => {
+  if (resource.props && resource.props.apiVersion && resource.props.kind) {
+    if (
+      (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'Deployment') ||
+      (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'DaemonSet') ||
+      (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'StatefulSet') ||
+      (resource.props.apiVersion === 'batch/v1' && resource.props.kind === 'Job')
+    ) {
+      return resource.props?.spec?.selector?.matchLabels
+        ? Object.keys(resource.props.spec.selector.matchLabels)
+            .map((key) => `${key}=${resource.props.spec.selector.matchLabels[key]}`)
+            .join(',')
+        : '';
+    }
+  }
+
+  return '';
+};
+
 interface IApplications {
   namespace?: string;
   name: string;
@@ -84,8 +107,10 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
   resource,
   close,
 }: IResourceDetailsProps) => {
-  const [activeTab, setActiveTab] = useState<string>('yaml');
+  const [activeTab, setActiveTab] = useState<string>('overview');
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
+
+  const podSelector = getSelector(resource);
 
   let applications: IApplications[] = [];
   let teams: string[] = [];
@@ -226,6 +251,12 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
           isFilled={true}
           mountOnEnter={true}
         >
+          <Tab eventKey="overview" title={<TabTitleText>Overview</TabTitleText>}>
+            <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+              <ResourceOverview resource={resource} />
+            </div>
+          </Tab>
+
           <Tab eventKey="yaml" title={<TabTitleText>Yaml</TabTitleText>}>
             <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
               <Card>
@@ -233,6 +264,7 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
               </Card>
             </div>
           </Tab>
+
           <Tab eventKey="events" title={<TabTitleText>Events</TabTitleText>}>
             <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
               <ResourceEvents
@@ -251,6 +283,18 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
                   namespace={resource.namespace ? resource.namespace.title : ''}
                   name={resource.name.title}
                   pod={resource.props}
+                />
+              </div>
+            </Tab>
+          ) : null}
+
+          {podSelector ? (
+            <Tab eventKey="pods" title={<TabTitleText>Pods</TabTitleText>}>
+              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+                <ResourcePods
+                  cluster={resource.cluster.title}
+                  namespace={resource.namespace ? resource.namespace.title : ''}
+                  selector={podSelector}
                 />
               </div>
             </Tab>
