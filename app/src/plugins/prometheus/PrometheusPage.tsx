@@ -13,8 +13,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import {
   GetMetricsRequest,
   GetMetricsResponse,
-  MetricLookupRequest,
-  MetricLookupResponse,
   Metrics,
   PrometheusPromiseClient,
   Query,
@@ -81,15 +79,6 @@ const PrometheusPage: React.FunctionComponent<IPluginPageProps> = ({ name, descr
         getMetricsRequest.setTimestart(options.timeStart);
         getMetricsRequest.setResolution(options.resolution);
         getMetricsRequest.setQueriesList(queries);
-
-        const metricLookupRequest = new MetricLookupRequest();
-        metricLookupRequest.setName(name);
-        metricLookupRequest.setMatcher(options.queries[0]);
-        const metricLookupResponse: MetricLookupResponse = await prometheusService.metricLookup(
-          metricLookupRequest,
-          null,
-        );
-        console.log(metricLookupResponse.getNamesList());
 
         const getMetricsResponse: GetMetricsResponse = await prometheusService.getMetrics(getMetricsRequest, null);
         setData({ error: '', isLoading: false, metrics: getMetricsResponse.toObject().metricsList });
