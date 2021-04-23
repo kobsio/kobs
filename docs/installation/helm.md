@@ -60,7 +60,7 @@ helm upgrade kobs kobs/kobs
 | `tolerations` | Specify the tolerations for the kobs Pods. | `[]` |
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
 | `kobs.image.repository` | The repository for the Docker image. | `kobsio/kobs` |
-| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.1.0` |
+| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.2.0` |
 | `kobs.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
 | `kobs.securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `kobs.resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
@@ -74,6 +74,11 @@ helm upgrade kobs kobs/kobs
 | `envoy.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
 | `envoy.securityContext` | Specify security settings for the envoy Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `envoy.resources` | Set cpu and memory requests and limits for the envoy container. | `{}` |
+| `istio.virtualService.create` | Specifies whether a VirtualService should be created. | `false` |
+| `istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |
+| `istio.virtualService.hosts` | A list of hosts for the VirtualService. | `[]` |
+| `istio.virtualService.timeout` | Timeout for gRPC requests. | `300s` |
+| `istio.virtualService.additionalRoutes` | A list of additional routes for the VirtualService. | `[]` |
 | `serviceAccount.create` | Specifies whether a service account should be created. | `true` |
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
 | `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `""` |

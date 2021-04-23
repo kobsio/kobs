@@ -10,6 +10,14 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+### Fixed
+
+### Changed
+
+## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
+
+### Added
+
 - [#29](https://github.com/kobsio/kobs/pull/29): Add a new dependencies section to the Application CR. These dependencies are used to show a topology graph for all Applications.
 - [#31](https://github.com/kobsio/kobs/pull/31): Add plugin support for Kubernetes resources.
 - [#32](https://github.com/kobsio/kobs/pull/32): Add support for container logs via the Kubernetes API.
@@ -17,6 +25,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#39](https://github.com/kobsio/kobs/pull/39): Add Opsgenie plugin to view alerts within an Application.
 - [#40](https://github.com/kobsio/kobs/pull/40): Add metric name suggestions for Prometheus plugin.
 - [#41](https://github.com/kobsio/kobs/pull/41): Add overview and Pods tab for resource details.
+- [#42](https://github.com/kobsio/kobs/pull/42): Add VirtualService specification for Istio to the Helm chart.
 
 ### Fixed
 

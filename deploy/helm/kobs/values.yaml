@@ -39,7 +39,7 @@ affinity: {}
 kobs:
   image:
     repository: kobsio/kobs
-    tag: v0.1.0
+    tag: v0.2.0
     pullPolicy: IfNotPresent
 
   ## Specify security settings for the kobs Container. They override settings made at the Pod level via the
@@ -123,6 +123,28 @@ envoy:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
+
+## If you are using Istio you can disable the Envoy sidecar in the Helm chart and use the Istio to get gRPC web working.
+##
+istio:
+  ## Create a VirtualService, with the correct routes for the gRPC API and the React UI for kobs. You can provide a list
+  ## of gateways and hosts for the VirtualService.
+  ##
+  virtualService:
+    create: false
+
+    gateways: []
+      # - gateway
+
+    hosts: []
+      # - chart-example.local
+
+    timeout: 300s
+
+    ## You can also add your own routes to the VirtualService. This can be used to add an oauth2-proxy to handle the
+    ## authentication for the dashboard.
+    ##
+    additionalRoutes: []
 
 ## Specifies whether a service account should be created.
 ## See: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
