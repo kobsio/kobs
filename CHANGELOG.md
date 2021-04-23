@@ -12,6 +12,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#43](https://github.com/kobsio/kobs/pull/43): Fix `hosts` and `gateways` list for VirtualService in the Helm chart.
+
 ### Changed
 
 ## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
