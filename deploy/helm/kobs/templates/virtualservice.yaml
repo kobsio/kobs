@@ -1,0 +1,63 @@
+{{- if .Values.istio.virtualService.create -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "kobs.fullname" . }}
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+spec:
+{{- with .Values.istio.hosts }}
+  hosts:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+{{- with .Values.istio.gateways }}
+  gateways:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  http:
+    {{- toYaml .Values.istio.virtualService.additionalRoutes | nindent 4 }}
+    - match:
+        - uri:
+            prefix: /clusters.
+        - uri:
+            prefix: /plugins.
+      route:
+        - destination:
+            host: {{ include "kobs.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+            port:
+              number: 15220
+      corsPolicy:
+        allowOrigin:
+          - "*"
+        allowMethods:
+          - GET
+          - PUT
+          - DELETE
+          - POST
+          - OPTIONS
+        allowHeaders:
+          - keep-alive
+          - user-agent
+          - cache-control
+          - content-type
+          - content-transfer-encoding
+          - custom-header-1
+          - x-accept-content-transfer-encoding
+          - x-accept-response-streaming
+          - x-user-agent
+          - x-grpc-web
+          - grpc-timeout
+        maxAge: 1728s
+        exposeHeaders:
+          - custom-header-1
+          - grpc-status
+          - grpc-message
+        allowCredentials: true
+      timeout: {{ .Values.istio.virtualService.timeout }}
+    - route:
+        - destination:
+            host: {{ include "kobs.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+            port:
+              number: 15219
+      timeout: 60s
+{{- end }}

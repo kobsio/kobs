@@ -12,9 +12,9 @@ spec:
       protocol: TCP
       name: http-web
     - port: 15220
-      targetPort: grpc-api
+      targetPort: grpc-web
       protocol: TCP
-      name: grpc-api
+      name: grpc-web
     - port: 15221
       targetPort: http-metrics
       protocol: TCP
