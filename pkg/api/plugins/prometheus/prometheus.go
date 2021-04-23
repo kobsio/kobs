@@ -238,20 +238,25 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 	}, nil
 }
 
+// MetricLookup returns all label values for a configured Prometheus instance. These labels are used to show the user a
+// list of suggestions for his entered query.
 func (p *Prometheus) MetricLookup(ctx context.Context, metricsLookupRequest *prometheusProto.MetricLookupRequest) (*prometheusProto.MetricLookupResponse, error) {
 	instance := p.getInstance(metricsLookupRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
 
+	now := time.Now()
+
 	// Fetch metric names if last fetch was more then a minute ago
-	if instance.lastMetricNamesFetch.Add(time.Minute).Before(time.Now()) {
+	if instance.lastMetricNamesFetch.Add(1 * time.Hour).Before(now) {
 		var err error
-		instance.metricNames, _, err = instance.v1api.LabelValues(ctx, model.MetricNameLabel, nil, time.Unix(0, 0), time.Now())
+		instance.metricNames, _, err = instance.v1api.LabelValues(ctx, model.MetricNameLabel, nil, now.Add(-1*time.Hour), now)
 		if err != nil {
 			return nil, err
 		}
-		instance.lastMetricNamesFetch = time.Now()
+
+		instance.lastMetricNamesFetch = now
 		log.Debugf("Refreshed metricNames.")
 	} else {
 		log.Debugf("Using cached metricNames.")
