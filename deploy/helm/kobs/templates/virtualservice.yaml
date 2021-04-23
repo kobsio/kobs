@@ -6,11 +6,11 @@ metadata:
   labels:
     {{- include "kobs.labels" . | nindent 4 }}
 spec:
-{{- with .Values.istio.hosts }}
+{{- with .Values.istio.virtualService.hosts }}
   hosts:
     {{- toYaml . | nindent 4 }}
 {{- end }}
-{{- with .Values.istio.gateways }}
+{{- with .Values.istio.virtualService.gateways }}
   gateways:
     {{- toYaml . | nindent 4 }}
 {{- end }}
