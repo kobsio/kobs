@@ -127,11 +127,9 @@ func (o *Opsgenie) GetAlert(ctx context.Context, getAlertRequest *opsgenieProto.
 			IdentifierType:  team.Id,
 			IdentifierValue: responder.Id,
 		})
-		if err != nil {
-			return nil, err
+		if err == nil {
+			responders = append(responders, teamRes.Name)
 		}
-
-		responders = append(responders, teamRes.Name)
 	}
 
 	return &opsgenieProto.GetAlertResponse{

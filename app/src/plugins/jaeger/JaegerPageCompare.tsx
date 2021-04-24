@@ -41,7 +41,7 @@ const JaegerPageCompare: React.FunctionComponent<IJaegerPageCompareProps> = ({ n
   return (
     <React.Fragment>
       <Grid>
-        <GridItem span={compareTrace ? 6 : 12}>
+        <GridItem sm={12} md={12} lg={compareTrace ? 6 : 12} xl={compareTrace ? 6 : 12} xl2={compareTrace ? 6 : 12}>
           <JaegerPageCompareTrace
             name={name}
             traceID={params.traceID}
@@ -50,7 +50,7 @@ const JaegerPageCompare: React.FunctionComponent<IJaegerPageCompareProps> = ({ n
         </GridItem>
 
         {compareTrace ? (
-          <GridItem span={compareTrace ? 6 : 12}>
+          <GridItem sm={12} md={12} lg={compareTrace ? 6 : 12} xl={compareTrace ? 6 : 12} xl2={compareTrace ? 6 : 12}>
             <JaegerPageCompareTrace
               name={name}
               traceID={compareTrace}

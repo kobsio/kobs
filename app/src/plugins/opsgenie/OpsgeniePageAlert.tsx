@@ -133,7 +133,9 @@ const OpsgeniePageAlert: React.FunctionComponent<IOpsgeniePageAlertProps> = ({ n
             <Card isCompact={true}>
               <CardTitle>Description</CardTitle>
               <CardBody>
-                <Text style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{data.alert.description}</Text>
+                <Text className="pf-u-text-break-word" style={{ whiteSpace: 'pre-wrap' }}>
+                  {data.alert.description}
+                </Text>
               </CardBody>
             </Card>
           </GridItem>
@@ -141,7 +143,7 @@ const OpsgeniePageAlert: React.FunctionComponent<IOpsgeniePageAlertProps> = ({ n
             <Card isCompact={true}>
               <CardTitle>Details</CardTitle>
               <CardBody>
-                <DescriptionList isHorizontal={true}>
+                <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
                   {data.alert.detailsMap.map((detail, index) => (
                     <DescriptionListGroup key={index}>
                       <DescriptionListTerm>{detail[0]}</DescriptionListTerm>

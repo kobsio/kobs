@@ -67,7 +67,7 @@ const ResourceOverview: React.FunctionComponent<IResourceOverviewProps> = ({ res
   return (
     <Card isCompact={true}>
       <CardBody>
-        <DescriptionList isHorizontal={true}>
+        <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
           {resource.name?.title && (
             <DescriptionListGroup>
               <DescriptionListTerm>Name</DescriptionListTerm>

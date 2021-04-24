@@ -90,7 +90,10 @@ const Applications: React.FunctionComponent = () => {
           }
         >
           <DrawerContentBody>
-            <PageSection style={{ height: '100%', minHeight: '100%' }} variant={PageSectionVariants.default}>
+            <PageSection
+              style={data.view === 'topology' ? { height: '100%', minHeight: '100%' } : { minHeight: '100%' }}
+              variant={PageSectionVariants.default}
+            >
               {data.clusters.length === 0 || data.namespaces.length === 0 ? (
                 <Alert variant={AlertVariant.info} title="Select clusters and namespaces">
                   <p>Select a list of clusters and namespaces from the toolbar.</p>
