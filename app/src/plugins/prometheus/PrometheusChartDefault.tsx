@@ -13,10 +13,11 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Data, Metrics } from 'proto/prometheus_grpc_web_pb';
+import { IData, transformData } from 'plugins/prometheus/helpers';
 import { formatTime } from 'utils/helpers';
 
 interface ILabels {
-  datum: Data.AsObject;
+  datum: IData;
 }
 
 export interface IPrometheusChartDefaultProps {
@@ -63,11 +64,11 @@ const PrometheusChartDefault: React.FunctionComponent<IPrometheusChartDefaultPro
   const legendData = metrics.map((metric, index) => ({ childName: `index${index}`, name: metric.label }));
   const series = metrics.map((metric, index) =>
     type === 'area' ? (
-      <ChartArea key={index} data={metric.dataList} interpolation="monotoneX" name={`index${index}`} />
+      <ChartArea key={index} data={transformData(metric.dataList)} interpolation="monotoneX" name={`index${index}`} />
     ) : type === 'bar' ? (
-      <ChartBar key={index} data={metric.dataList} name={`index${index}`} />
+      <ChartBar key={index} data={transformData(metric.dataList)} name={`index${index}`} />
     ) : (
-      <ChartLine key={index} data={metric.dataList} interpolation="monotoneX" name={`index${index}`} />
+      <ChartLine key={index} data={transformData(metric.dataList)} interpolation="monotoneX" name={`index${index}`} />
     ),
   );
 
@@ -77,7 +78,7 @@ const PrometheusChartDefault: React.FunctionComponent<IPrometheusChartDefaultPro
         containerComponent={
           <CursorVoronoiContainer
             cursorDimension="x"
-            labels={({ datum }: ILabels): string => `${datum.y} ${unit}`}
+            labels={({ datum }: ILabels): string => (datum.y ? `${datum.y} ${unit}` : 'N/A')}
             labelComponent={
               <ChartLegendTooltip
                 legendData={legendData}

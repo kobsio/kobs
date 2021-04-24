@@ -133,7 +133,7 @@ const PrometheusPluginChart: React.FunctionComponent<IPrometheusPluginChartProps
             <p>{data.error}</p>
           </Alert>
         ) : chart.type === 'sparkline' ? (
-          <PrometheusChartSparkline unit={chart.unit} metrics={data.metrics} />
+          <PrometheusChartSparkline unit={chart.unit} metrics={data.metrics} mappings={chart.mappingsMap} />
         ) : (
           <PrometheusChartDefault type={chart.type} unit={chart.unit} stacked={chart.stacked} metrics={data.metrics} />
         )}

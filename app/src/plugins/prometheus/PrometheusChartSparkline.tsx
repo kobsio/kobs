@@ -2,10 +2,22 @@ import { ChartArea, ChartGroup } from '@patternfly/react-charts';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Metrics } from 'proto/prometheus_grpc_web_pb';
+import { transformData } from 'plugins/prometheus/helpers';
+
+const getMappingValue = (value: number, mappings: [string, string][]): string => {
+  for (const mapEntry of mappings) {
+    if (mapEntry[0] === value.toString()) {
+      return mapEntry[1];
+    }
+  }
+
+  return value.toString();
+};
 
 export interface IPrometheusChartSparklineProps {
   unit: string;
   metrics: Metrics.AsObject[];
+  mappings: [string, string][];
 }
 
 // PrometheusChartSparkline displays a sparkline chart. The complete documentation for sparklines can be found in the
@@ -14,6 +26,7 @@ export interface IPrometheusChartSparklineProps {
 const PrometheusChartSparkline: React.FunctionComponent<IPrometheusChartSparklineProps> = ({
   unit,
   metrics,
+  mappings,
 }: IPrometheusChartSparklineProps) => {
   const refChart = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>(0);
@@ -33,16 +46,28 @@ const PrometheusChartSparkline: React.FunctionComponent<IPrometheusChartSparklin
     return null;
   }
 
+  let label = `${metrics[0].dataList[metrics[0].dataList.length - 1].y} ${unit}`;
+  if (mappings.length > 0) {
+    label = getMappingValue(metrics[0].dataList[metrics[0].dataList.length - 1].y, mappings);
+  }
+
   return (
     <div style={{ height: '150px', position: 'relative', width: '100%' }} ref={refChart}>
       <div style={{ fontSize: '24px', position: 'absolute', textAlign: 'center', top: '63px', width: '100%' }}>
-        {metrics[0].dataList[metrics[0].dataList.length - 1].y} {unit}
+        {label}
       </div>
-      <ChartGroup height={height} padding={0} width={width}>
-        {metrics.map((metric, index) => (
-          <ChartArea key={index} data={metric.dataList} interpolation="monotoneX" name={`index${index}`} />
-        ))}
-      </ChartGroup>
+      {mappings.length === 0 ? (
+        <ChartGroup height={height} padding={0} width={width}>
+          {metrics.map((metric, index) => (
+            <ChartArea
+              key={index}
+              data={transformData(metric.dataList)}
+              interpolation="monotoneX"
+              name={`index${index}`}
+            />
+          ))}
+        </ChartGroup>
+      ) : null}
     </div>
   );
 };

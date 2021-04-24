@@ -191,6 +191,9 @@ export class Metrics extends jspb.Message {
   getMax(): number;
   setMax(value: number): void;
 
+  getAvg(): number;
+  setAvg(value: number): void;
+
   clearDataList(): void;
   getDataList(): Array<Data>;
   setDataList(value: Array<Data>): void;
@@ -211,6 +214,7 @@ export namespace Metrics {
     label: string,
     min: number,
     max: number,
+    avg: number,
     dataList: Array<Data.AsObject>,
   }
 }
@@ -325,6 +329,8 @@ export class Chart extends jspb.Message {
   getSize(): number;
   setSize(value: number): void;
 
+  getMappingsMap(): jspb.Map<string, string>;
+  clearMappingsMap(): void;
   clearQueriesList(): void;
   getQueriesList(): Array<Query>;
   setQueriesList(value: Array<Query>): void;
@@ -347,6 +353,7 @@ export namespace Chart {
     unit: string,
     stacked: boolean,
     size: number,
+    mappingsMap: Array<[string, string]>,
     queriesList: Array<Query.AsObject>,
   }
 }
