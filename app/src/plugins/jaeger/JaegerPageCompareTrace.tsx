@@ -66,32 +66,43 @@ const JaegerPageCompareTrace: React.FunctionComponent<IJaegerPageCompareTracePro
 
   // When the loading identicator is true, we show a spinner component.
   if (data.isLoading) {
-    return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
   }
 
   // When an error occured during the execution of the fetchTrace function, we show the error in an Alert component.
   if (data.error || !data.trace) {
     return (
-      <Alert
-        style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
-        variant={AlertVariant.danger}
-        title="Could not get trace"
-        actionLinks={
-          <React.Fragment>
-            <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-            <AlertActionLink onClick={fetchTrace}>Retry</AlertActionLink>
-          </React.Fragment>
-        }
-      >
-        <p>{data.error ? data.error : 'Trace is undefined'}</p>
-      </Alert>
+      <PageSection variant={PageSectionVariants.default}>
+        <Alert
+          variant={AlertVariant.danger}
+          title="Could not get trace"
+          actionLinks={
+            <React.Fragment>
+              <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
+              <AlertActionLink onClick={fetchTrace}>Retry</AlertActionLink>
+            </React.Fragment>
+          }
+        >
+          <p>{data.error ? data.error : 'Trace is undefined'}</p>
+        </Alert>
+      </PageSection>
     );
   }
 
   return (
     <React.Fragment>
       <Grid>
-        <GridItem span={headerComponent ? 9 : 12}>
+        <GridItem
+          sm={12}
+          md={12}
+          lg={headerComponent ? 9 : 12}
+          xl={headerComponent ? 9 : 12}
+          xl2={headerComponent ? 9 : 12}
+        >
           <PageSection style={{ height: '100%' }} variant={PageSectionVariants.light}>
             <Title className="pf-u-text-nowrap pf-u-text-truncate" headingLevel="h6" size="xl">
               {data.trace.processes[data.trace.spans[0].processID].serviceName}: {data.trace.spans[0].operationName}{' '}
@@ -119,14 +130,20 @@ const JaegerPageCompareTrace: React.FunctionComponent<IJaegerPageCompareTracePro
         </GridItem>
 
         {headerComponent ? (
-          <GridItem span={headerComponent ? 3 : 12}>
+          <GridItem
+            sm={12}
+            md={12}
+            lg={headerComponent ? 3 : 12}
+            xl={headerComponent ? 3 : 12}
+            xl2={headerComponent ? 3 : 12}
+          >
             <PageSection style={{ height: '100%' }} variant={PageSectionVariants.light}>
               {headerComponent}
             </PageSection>
           </GridItem>
         ) : null}
 
-        <GridItem span={12}>
+        <GridItem sm={12} md={12} lg={12} xl={12} xl2={12}>
           <PageSection variant={PageSectionVariants.default}>
             <JaegerSpans trace={data.trace} />
           </PageSection>

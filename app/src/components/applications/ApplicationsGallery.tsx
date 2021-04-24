@@ -62,7 +62,11 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
   }, [fetchApplications]);
 
   if (data.isLoading) {
-    return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
   }
 
   if (data.error) {

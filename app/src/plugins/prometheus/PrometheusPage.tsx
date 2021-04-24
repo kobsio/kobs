@@ -118,7 +118,9 @@ const PrometheusPage: React.FunctionComponent<IPluginPageProps> = ({ name, descr
 
       <PageSection variant={PageSectionVariants.default}>
         {data.isLoading ? (
-          <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />
+          <div className="pf-u-text-align-center">
+            <Spinner />
+          </div>
         ) : data.error ? (
           <Alert
             variant={AlertVariant.danger}
