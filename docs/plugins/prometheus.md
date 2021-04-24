@@ -33,6 +33,7 @@ The following specification can be used, within an application.
 | unit | string | An optional unit for the y axis of the chart. | No |
 | stacked | boolean | When this is `true` all time series in the chart will be stacked. | No |
 | size | number | An optional size for the chart. Must be a number between `1` and `12`. This is used to customize the grid of charts in the Prometheus tab. | No |
+| legend | string | The type which should be used for the legend. Must be `bottom`, `table` or `disabled`. The default is `bottom` | No |
 | mappings | map<string, string> | Specify value mappings for your data. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 | queries | [[]Query](#query) | A list of queries, which are used to get the data for the chart. | Yes |
 

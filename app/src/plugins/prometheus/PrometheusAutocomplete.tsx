@@ -22,7 +22,7 @@ export const PrometheusAutocomplete: React.FunctionComponent<IPrometheusAutocomp
   query,
   setQuery,
   onEnter,
-}: IPrometheusAutocomplete): JSX.Element => {
+}: IPrometheusAutocomplete) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [data, setData] = useState<string[]>([]);
   const [inputFocused, setInputFocused] = useState(false);

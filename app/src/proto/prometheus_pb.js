@@ -2541,7 +2541,7 @@ proto.plugins.prometheus.Variable.prototype.setValue = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.plugins.prometheus.Chart.repeatedFields_ = [7];
+proto.plugins.prometheus.Chart.repeatedFields_ = [8];
 
 
 
@@ -2579,6 +2579,7 @@ proto.plugins.prometheus.Chart.toObject = function(includeInstance, msg) {
     unit: jspb.Message.getFieldWithDefault(msg, 3, ""),
     stacked: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
     size: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    legend: jspb.Message.getFieldWithDefault(msg, 6, ""),
     mappingsMap: (f = msg.getMappingsMap()) ? f.toObject(includeInstance, undefined) : [],
     queriesList: jspb.Message.toObjectList(msg.getQueriesList(),
     proto.plugins.prometheus.Query.toObject, includeInstance)
@@ -2639,12 +2640,16 @@ proto.plugins.prometheus.Chart.deserializeBinaryFromReader = function(msg, reade
       msg.setSize(value);
       break;
     case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLegend(value);
+      break;
+    case 7:
       var value = msg.getMappingsMap();
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
       break;
-    case 7:
+    case 8:
       var value = new proto.plugins.prometheus.Query;
       reader.readMessage(value,proto.plugins.prometheus.Query.deserializeBinaryFromReader);
       msg.addQueries(value);
@@ -2713,14 +2718,21 @@ proto.plugins.prometheus.Chart.serializeBinaryToWriter = function(message, write
       f
     );
   }
+  f = message.getLegend();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
   f = message.getMappingsMap(true);
   if (f && f.getLength() > 0) {
-    f.serializeBinary(6, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+    f.serializeBinary(7, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
   f = message.getQueriesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      7,
+      8,
       f,
       proto.plugins.prometheus.Query.serializeBinaryToWriter
     );
@@ -2819,14 +2831,32 @@ proto.plugins.prometheus.Chart.prototype.setSize = function(value) {
 
 
 /**
- * map<string, string> mappings = 6;
+ * optional string legend = 6;
+ * @return {string}
+ */
+proto.plugins.prometheus.Chart.prototype.getLegend = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.plugins.prometheus.Chart} returns this
+ */
+proto.plugins.prometheus.Chart.prototype.setLegend = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * map<string, string> mappings = 7;
  * @param {boolean=} opt_noLazyCreate Do not create the map if
  * empty, instead returning `undefined`
  * @return {!jspb.Map<string,string>}
  */
 proto.plugins.prometheus.Chart.prototype.getMappingsMap = function(opt_noLazyCreate) {
   return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 6, opt_noLazyCreate,
+      jspb.Message.getMapField(this, 7, opt_noLazyCreate,
       null));
 };
 
@@ -2841,12 +2871,12 @@ proto.plugins.prometheus.Chart.prototype.clearMappingsMap = function() {
 
 
 /**
- * repeated Query queries = 7;
+ * repeated Query queries = 8;
  * @return {!Array<!proto.plugins.prometheus.Query>}
  */
 proto.plugins.prometheus.Chart.prototype.getQueriesList = function() {
   return /** @type{!Array<!proto.plugins.prometheus.Query>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.plugins.prometheus.Query, 7));
+    jspb.Message.getRepeatedWrapperField(this, proto.plugins.prometheus.Query, 8));
 };
 
 
@@ -2855,7 +2885,7 @@ proto.plugins.prometheus.Chart.prototype.getQueriesList = function() {
  * @return {!proto.plugins.prometheus.Chart} returns this
 */
 proto.plugins.prometheus.Chart.prototype.setQueriesList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 7, value);
+  return jspb.Message.setRepeatedWrapperField(this, 8, value);
 };
 
 
@@ -2865,7 +2895,7 @@ proto.plugins.prometheus.Chart.prototype.setQueriesList = function(value) {
  * @return {!proto.plugins.prometheus.Query}
  */
 proto.plugins.prometheus.Chart.prototype.addQueries = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.plugins.prometheus.Query, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 8, opt_value, proto.plugins.prometheus.Query, opt_index);
 };
 
 

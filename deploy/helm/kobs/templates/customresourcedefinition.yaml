@@ -177,6 +177,8 @@ spec:
                                 are executed against the datasource (e.g. For Prometheus
                                 this will be a list of PromQL queries).
                               properties:
+                                legend:
+                                  type: string
                                 mappings:
                                   additionalProperties:
                                     type: string
@@ -336,6 +338,8 @@ spec:
                               datasource (e.g. For Prometheus this will be a list
                               of PromQL queries).
                             properties:
+                              legend:
+                                type: string
                               mappings:
                                 additionalProperties:
                                   type: string
