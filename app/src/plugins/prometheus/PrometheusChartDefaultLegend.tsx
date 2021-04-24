@@ -1,20 +1,10 @@
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { ChartThemeColor, getDarkThemeColors } from '@patternfly/react-charts';
 import { EyeSlashIcon, SquareIcon } from '@patternfly/react-icons';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
 
 import { Metrics } from 'proto/prometheus_grpc_web_pb';
-
-// colors is an array with all the supported colors for a chart. These are the same colors as they are used for the
-// bars, lines, areas in a chart.
-export const colors = getDarkThemeColors(ChartThemeColor.multiOrdered).area.colorScale;
-
-// getLegendColorClass returns the color class for an item in the legend. When we have more series then colors, we start
-// again with the first color.
-const getLegendColorClass = (index: number): string => {
-  return colors[index % colors.length];
-};
+import { getLegendColorClass } from 'plugins/prometheus/helpers';
 
 interface ILegendItem {
   childName: string;
@@ -29,7 +19,11 @@ export interface IPrometheusChartDefaultLegendProps {
   toogleMetric: (index: string) => void;
 }
 
-//
+// PrometheusChartDefaultLegend is the component, which renders the legend for the default Prometheus chart. The user
+// can decide between the following options: disabled, bottom and table. The bottom option is the default one.
+// NOTE: The height of the legend + the chart must be 336px. When the legend is disabled the space is completly used by
+// the chart. For the bottom and table option the legend height is 50px/80px plus a margin of 16px. The remaining space
+// is used by the chart.
 const PrometheusChartDefaultLegend: React.FunctionComponent<IPrometheusChartDefaultLegendProps> = ({
   legend,
   legendData,
