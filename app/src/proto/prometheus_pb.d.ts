@@ -329,6 +329,9 @@ export class Chart extends jspb.Message {
   getSize(): number;
   setSize(value: number): void;
 
+  getLegend(): string;
+  setLegend(value: string): void;
+
   getMappingsMap(): jspb.Map<string, string>;
   clearMappingsMap(): void;
   clearQueriesList(): void;
@@ -353,6 +356,7 @@ export namespace Chart {
     unit: string,
     stacked: boolean,
     size: number,
+    legend: string,
     mappingsMap: Array<[string, string]>,
     queriesList: Array<Query.AsObject>,
   }

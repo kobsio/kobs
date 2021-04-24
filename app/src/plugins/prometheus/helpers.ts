@@ -115,8 +115,8 @@ export interface IData {
 // transformData is used to transform the returned data from the API. This is needed because, the API returns a NaN
 // value for missing values, but Victory requires a null value.
 // See: https://formidable.com/open-source/victory/gallery/victory-line-with-null-data/
-export const transformData = (data: Data.AsObject[]): IData[] => {
+export const transformData = (data: Data.AsObject[], isHidden?: boolean): IData[] => {
   return data.map((d) => {
-    return { x: d.x, y: isNaN(d.y) ? null : d.y };
+    return { x: d.x, y: isNaN(d.y) || isHidden ? null : d.y };
   });
 };

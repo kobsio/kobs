@@ -104,8 +104,9 @@ message Chart {
   string unit = 3;
   bool stacked = 4;
   int64 size = 5;
-  map<string, string> mappings = 6;
-  repeated Query queries = 7;
+  string legend = 6;
+  map<string, string> mappings = 7;
+  repeated Query queries = 8;
 }
 
 // Query presents a single query to get the data, which should be shown in the chart for the metrics section. A query

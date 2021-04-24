@@ -68,7 +68,7 @@ const PrometheusPageData: React.FunctionComponent<IPrometheusPageDataProps> = ({
           type={type}
           unit=""
           stacked={stacked}
-          disableLegend={true}
+          legend="disabled"
           metrics={selectedMetrics.length === 0 ? metrics : selectedMetrics}
         />
 
