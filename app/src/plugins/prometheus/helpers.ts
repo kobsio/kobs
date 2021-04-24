@@ -1,3 +1,5 @@
+import { ChartThemeColor, getDarkThemeColors } from '@patternfly/react-charts';
+
 import { Chart, Data, Query, Spec, Variable } from 'proto/prometheus_grpc_web_pb';
 import { Plugin } from 'proto/plugins_grpc_web_pb';
 
@@ -119,4 +121,14 @@ export const transformData = (data: Data.AsObject[], isHidden?: boolean): IData[
   return data.map((d) => {
     return { x: d.x, y: isNaN(d.y) || isHidden ? null : d.y };
   });
+};
+
+// colors is an array with all the supported colors for a chart. These are the same colors as they are used for the
+// bars, lines and areas in a chart.
+export const colors = getDarkThemeColors(ChartThemeColor.multiOrdered).area.colorScale;
+
+// getLegendColorClass returns the color class for an item in the legend. When we have more series then colors, we start
+// again with the first color.
+export const getLegendColorClass = (index: number): string => {
+  return colors[index % colors.length];
 };

@@ -26,6 +26,7 @@ export interface IPrometheusChartDefaultProps {
   unit: string;
   stacked: boolean;
   legend: string;
+  color?: string;
   metrics: Metrics.AsObject[];
 }
 
@@ -44,6 +45,7 @@ const PrometheusChartDefault: React.FunctionComponent<IPrometheusChartDefaultPro
   unit,
   stacked,
   legend,
+  color,
   metrics,
 }: IPrometheusChartDefaultProps) => {
   const refChart = useRef<HTMLDivElement>(null);
@@ -131,7 +133,13 @@ const PrometheusChartDefault: React.FunctionComponent<IPrometheusChartDefaultPro
         >
           <ChartAxis dependentAxis={false} showGrid={false} />
           <ChartAxis dependentAxis={true} showGrid={true} label={unit} />
-          {stacked ? <ChartStack>{series}</ChartStack> : <ChartGroup>{series}</ChartGroup>}
+          {color && series.length === 1 ? (
+            <ChartGroup color={color}>{series}</ChartGroup>
+          ) : stacked ? (
+            <ChartStack>{series}</ChartStack>
+          ) : (
+            <ChartGroup color={color}>{series}</ChartGroup>
+          )}
         </Chart>
       </div>
       <PrometheusChartDefaultLegend

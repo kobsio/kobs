@@ -20,6 +20,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#46](https://github.com/kobsio/kobs/pull/46): Support multiple types for the legend in a Prometheus chart and use a custom component to render the legend.
+- [#47](https://github.com/kobsio/kobs/pull/47): Display the legend at the Prometheus page as table and use color of selected metric in chart.
 
 ## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
 
