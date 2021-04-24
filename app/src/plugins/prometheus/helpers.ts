@@ -1,4 +1,4 @@
-import { Chart, Query, Spec, Variable } from 'proto/prometheus_grpc_web_pb';
+import { Chart, Data, Query, Spec, Variable } from 'proto/prometheus_grpc_web_pb';
 import { Plugin } from 'proto/plugins_grpc_web_pb';
 
 // ITimes is the interface for a start and end time.
@@ -105,4 +105,18 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
   plugin.setPrometheus(prometheus);
 
   return plugin.toObject();
+};
+
+export interface IData {
+  x: number;
+  y: number | null;
+}
+
+// transformData is used to transform the returned data from the API. This is needed because, the API returns a NaN
+// value for missing values, but Victory requires a null value.
+// See: https://formidable.com/open-source/victory/gallery/victory-line-with-null-data/
+export const transformData = (data: Data.AsObject[]): IData[] => {
+  return data.map((d) => {
+    return { x: d.x, y: isNaN(d.y) ? null : d.y };
+  });
 };

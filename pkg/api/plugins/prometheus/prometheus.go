@@ -180,10 +180,12 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 		for _, stream := range streams {
 			var min float64
 			var max float64
+			var avg float64
 
 			var data []*prometheusProto.Data
 			for index, value := range stream.Values {
 				val := float64(value.Value)
+				avg = avg + val
 
 				if index == 0 {
 					min = val
@@ -202,6 +204,10 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 				})
 			}
 
+			if avg != 0 {
+				avg = avg / float64(len(stream.Values))
+			}
+
 			var labels map[string]string
 			labels = make(map[string]string)
 
@@ -215,6 +221,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 					Label: query.Label,
 					Min:   min,
 					Max:   max,
+					Avg:   avg,
 					Data:  data,
 				})
 			} else {
@@ -226,6 +233,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 					Label: label,
 					Min:   min,
 					Max:   max,
+					Avg:   avg,
 					Data:  data,
 				})
 			}

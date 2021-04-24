@@ -177,6 +177,10 @@ spec:
                                 are executed against the datasource (e.g. For Prometheus
                                 this will be a list of PromQL queries).
                               properties:
+                                mappings:
+                                  additionalProperties:
+                                    type: string
+                                  type: object
                                 queries:
                                   items:
                                     description: Query presents a single query to
@@ -332,6 +336,10 @@ spec:
                               datasource (e.g. For Prometheus this will be a list
                               of PromQL queries).
                             properties:
+                              mappings:
+                                additionalProperties:
+                                  type: string
+                                type: object
                               queries:
                                 items:
                                   description: Query presents a single query to get

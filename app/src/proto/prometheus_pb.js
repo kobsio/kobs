@@ -1582,7 +1582,7 @@ proto.plugins.prometheus.MetricLookupResponse.prototype.clearNamesList = functio
  * @private {!Array<number>}
  * @const
  */
-proto.plugins.prometheus.Metrics.repeatedFields_ = [4];
+proto.plugins.prometheus.Metrics.repeatedFields_ = [5];
 
 
 
@@ -1618,6 +1618,7 @@ proto.plugins.prometheus.Metrics.toObject = function(includeInstance, msg) {
     label: jspb.Message.getFieldWithDefault(msg, 1, ""),
     min: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
     max: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0),
+    avg: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
     dataList: jspb.Message.toObjectList(msg.getDataList(),
     proto.plugins.prometheus.Data.toObject, includeInstance)
   };
@@ -1669,6 +1670,10 @@ proto.plugins.prometheus.Metrics.deserializeBinaryFromReader = function(msg, rea
       msg.setMax(value);
       break;
     case 4:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setAvg(value);
+      break;
+    case 5:
       var value = new proto.plugins.prometheus.Data;
       reader.readMessage(value,proto.plugins.prometheus.Data.deserializeBinaryFromReader);
       msg.addData(value);
@@ -1723,10 +1728,17 @@ proto.plugins.prometheus.Metrics.serializeBinaryToWriter = function(message, wri
       f
     );
   }
+  f = message.getAvg();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      4,
+      f
+    );
+  }
   f = message.getDataList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      4,
+      5,
       f,
       proto.plugins.prometheus.Data.serializeBinaryToWriter
     );
@@ -1789,12 +1801,30 @@ proto.plugins.prometheus.Metrics.prototype.setMax = function(value) {
 
 
 /**
- * repeated Data data = 4;
+ * optional double avg = 4;
+ * @return {number}
+ */
+proto.plugins.prometheus.Metrics.prototype.getAvg = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 4, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.plugins.prometheus.Metrics} returns this
+ */
+proto.plugins.prometheus.Metrics.prototype.setAvg = function(value) {
+  return jspb.Message.setProto3FloatField(this, 4, value);
+};
+
+
+/**
+ * repeated Data data = 5;
  * @return {!Array<!proto.plugins.prometheus.Data>}
  */
 proto.plugins.prometheus.Metrics.prototype.getDataList = function() {
   return /** @type{!Array<!proto.plugins.prometheus.Data>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.plugins.prometheus.Data, 4));
+    jspb.Message.getRepeatedWrapperField(this, proto.plugins.prometheus.Data, 5));
 };
 
 
@@ -1803,7 +1833,7 @@ proto.plugins.prometheus.Metrics.prototype.getDataList = function() {
  * @return {!proto.plugins.prometheus.Metrics} returns this
 */
 proto.plugins.prometheus.Metrics.prototype.setDataList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 4, value);
+  return jspb.Message.setRepeatedWrapperField(this, 5, value);
 };
 
 
@@ -1813,7 +1843,7 @@ proto.plugins.prometheus.Metrics.prototype.setDataList = function(value) {
  * @return {!proto.plugins.prometheus.Data}
  */
 proto.plugins.prometheus.Metrics.prototype.addData = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 4, opt_value, proto.plugins.prometheus.Data, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.plugins.prometheus.Data, opt_index);
 };
 
 
@@ -2511,7 +2541,7 @@ proto.plugins.prometheus.Variable.prototype.setValue = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.plugins.prometheus.Chart.repeatedFields_ = [6];
+proto.plugins.prometheus.Chart.repeatedFields_ = [7];
 
 
 
@@ -2549,6 +2579,7 @@ proto.plugins.prometheus.Chart.toObject = function(includeInstance, msg) {
     unit: jspb.Message.getFieldWithDefault(msg, 3, ""),
     stacked: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
     size: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    mappingsMap: (f = msg.getMappingsMap()) ? f.toObject(includeInstance, undefined) : [],
     queriesList: jspb.Message.toObjectList(msg.getQueriesList(),
     proto.plugins.prometheus.Query.toObject, includeInstance)
   };
@@ -2608,6 +2639,12 @@ proto.plugins.prometheus.Chart.deserializeBinaryFromReader = function(msg, reade
       msg.setSize(value);
       break;
     case 6:
+      var value = msg.getMappingsMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
+         });
+      break;
+    case 7:
       var value = new proto.plugins.prometheus.Query;
       reader.readMessage(value,proto.plugins.prometheus.Query.deserializeBinaryFromReader);
       msg.addQueries(value);
@@ -2676,10 +2713,14 @@ proto.plugins.prometheus.Chart.serializeBinaryToWriter = function(message, write
       f
     );
   }
+  f = message.getMappingsMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(6, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
   f = message.getQueriesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      6,
+      7,
       f,
       proto.plugins.prometheus.Query.serializeBinaryToWriter
     );
@@ -2778,12 +2819,34 @@ proto.plugins.prometheus.Chart.prototype.setSize = function(value) {
 
 
 /**
- * repeated Query queries = 6;
+ * map<string, string> mappings = 6;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,string>}
+ */
+proto.plugins.prometheus.Chart.prototype.getMappingsMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,string>} */ (
+      jspb.Message.getMapField(this, 6, opt_noLazyCreate,
+      null));
+};
+
+
+/**
+ * Clears values from the map. The map will be non-null.
+ * @return {!proto.plugins.prometheus.Chart} returns this
+ */
+proto.plugins.prometheus.Chart.prototype.clearMappingsMap = function() {
+  this.getMappingsMap().clear();
+  return this;};
+
+
+/**
+ * repeated Query queries = 7;
  * @return {!Array<!proto.plugins.prometheus.Query>}
  */
 proto.plugins.prometheus.Chart.prototype.getQueriesList = function() {
   return /** @type{!Array<!proto.plugins.prometheus.Query>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.plugins.prometheus.Query, 6));
+    jspb.Message.getRepeatedWrapperField(this, proto.plugins.prometheus.Query, 7));
 };
 
 
@@ -2792,7 +2855,7 @@ proto.plugins.prometheus.Chart.prototype.getQueriesList = function() {
  * @return {!proto.plugins.prometheus.Chart} returns this
 */
 proto.plugins.prometheus.Chart.prototype.setQueriesList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 6, value);
+  return jspb.Message.setRepeatedWrapperField(this, 7, value);
 };
 
 
@@ -2802,7 +2865,7 @@ proto.plugins.prometheus.Chart.prototype.setQueriesList = function(value) {
  * @return {!proto.plugins.prometheus.Query}
  */
 proto.plugins.prometheus.Chart.prototype.addQueries = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 6, opt_value, proto.plugins.prometheus.Query, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.plugins.prometheus.Query, opt_index);
 };
 
 

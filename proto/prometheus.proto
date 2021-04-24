@@ -62,7 +62,8 @@ message Metrics {
   string label = 1;
   double min = 2;
   double max = 3;
-  repeated Data data = 4;
+  double avg = 4;
+  repeated Data data = 5;
 }
 
 // Data is one data point for a metric. Each data point contains a timestamp and a value, where x is the timestamp and y
@@ -103,7 +104,8 @@ message Chart {
   string unit = 3;
   bool stacked = 4;
   int64 size = 5;
-  repeated Query queries = 6;
+  map<string, string> mappings = 6;
+  repeated Query queries = 7;
 }
 
 // Query presents a single query to get the data, which should be shown in the chart for the metrics section. A query
