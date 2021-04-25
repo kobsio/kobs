@@ -282,6 +282,104 @@ func (p *Prometheus) MetricLookup(ctx context.Context, metricsLookupRequest *pro
 	}, nil
 }
 
+// GetTableData implements the GetTableData function from the Prometheus gRPC service. It takes a list of queries and
+// returns the corresponding data in a table format.
+// In the first step we parse the result of each query into a map[string]map[string]string, where the key of the first
+// map is the provided label for a query. This means the label of each querie should result in the same value, so that
+// we can join the results of the different queries. The second map holds all labels and label values. The value of the
+// query result is also added to this map with a key named "value-N". Finally we transform the
+// map[string]map[string]string is converted to the map[string]*prometheusProto.Row structure, which can be used in the
+// response.
+func (p *Prometheus) GetTableData(ctx context.Context, getTableDataRequest *prometheusProto.GetTableDataRequest) (*prometheusProto.GetTableDataResponse, error) {
+	if getTableDataRequest == nil {
+		return nil, fmt.Errorf("request data is missing")
+	}
+
+	instance := p.getInstance(getTableDataRequest.Name)
+	if instance == nil {
+		return nil, fmt.Errorf("invalid name for Prometheus plugin")
+	}
+
+	var selectedVariableValues map[string]string
+	selectedVariableValues = make(map[string]string, len(getTableDataRequest.Variables))
+
+	for _, variable := range getTableDataRequest.Variables {
+		if variable.Value == "All" {
+			selectedVariableValues[variable.Name] = strings.Join(variable.Values[1:], "|")
+		} else {
+			selectedVariableValues[variable.Name] = variable.Value
+		}
+	}
+
+	queryTime := time.Unix(getTableDataRequest.TimeEnd, 0)
+
+	var interpolatedQueries []string
+	var rows map[string]map[string]string
+	rows = make(map[string]map[string]string)
+
+	for queryIndex, query := range getTableDataRequest.Queries {
+		interpolatedQuery, err := queryInterpolation(query.Query, selectedVariableValues)
+		if err != nil {
+			return nil, err
+		}
+
+		interpolatedQueries = append(interpolatedQueries, interpolatedQuery)
+
+		log.WithFields(logrus.Fields{"query": interpolatedQuery, "time": queryTime}).Tracef("Query table data.")
+
+		result, _, err := instance.v1api.Query(ctx, interpolatedQuery, queryTime)
+		if err != nil {
+			return nil, err
+		}
+
+		streams, ok := result.(model.Vector)
+		if !ok {
+			return nil, err
+		}
+
+		for _, stream := range streams {
+			var labels map[string]string
+			labels = make(map[string]string)
+			labels[fmt.Sprintf("value-%d", queryIndex+1)] = stream.Value.String()
+
+			for key, value := range stream.Metric {
+				labels[string(key)] = string(value)
+			}
+
+			label, err := queryInterpolation(query.Label, labels)
+			if err != nil {
+				return nil, err
+			}
+
+			for key, value := range labels {
+				if _, ok := rows[label]; !ok {
+					rows[label] = make(map[string]string)
+				}
+
+				if _, ok := rows[label][key]; !ok {
+					rows[label][key] = value
+				}
+
+				rows[label][fmt.Sprintf("value-%d", queryIndex+1)] = stream.Value.String()
+			}
+		}
+	}
+
+	var convertedRows map[string]*prometheusProto.Row
+	convertedRows = make(map[string]*prometheusProto.Row)
+
+	for key, value := range rows {
+		convertedRows[key] = &prometheusProto.Row{
+			Columns: value,
+		}
+	}
+
+	return &prometheusProto.GetTableDataResponse{
+		Rows:                convertedRows,
+		InterpolatedQueries: interpolatedQueries,
+	}, nil
+}
+
 func Register(cfg []Config, grpcServer *grpc.Server) ([]*pluginsProto.PluginShort, error) {
 	log.Tracef("Register Prometheus Plugin.")
 

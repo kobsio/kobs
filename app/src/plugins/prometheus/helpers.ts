@@ -1,6 +1,6 @@
 import { ChartThemeColor, getDarkThemeColors } from '@patternfly/react-charts';
 
-import { Chart, Data, Query, Spec, Variable } from 'proto/prometheus_grpc_web_pb';
+import { Chart, Column, Data, Query, Spec, Variable } from 'proto/prometheus_grpc_web_pb';
 import { Plugin } from 'proto/plugins_grpc_web_pb';
 
 // ITimes is the interface for a start and end time.
@@ -72,6 +72,7 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
             c.setUnit(chart.unit ? chart.unit : '');
             c.setStacked(chart.stacked ? true : false);
             c.setSize(chart.size ? chart.size : 12);
+            c.setLegend(chart.legend ? chart.legend : '');
 
             const queries: Query[] = [];
             for (const query of chart.queries) {
@@ -85,7 +86,23 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
               }
             }
 
+            const columns: Column[] = [];
+            if (chart.columns) {
+              for (const column of chart.columns) {
+                if (column.name) {
+                  const c = new Column();
+                  c.setName(column.name);
+                  c.setHeader(column.header ? column.header : '');
+                  c.setUnit(column.name ? column.name : '');
+                  columns.push(c);
+                } else {
+                  return undefined;
+                }
+              }
+            }
+
             c.setQueriesList(queries);
+            c.setColumnsList(columns);
             charts.push(c);
           } else {
             return undefined;

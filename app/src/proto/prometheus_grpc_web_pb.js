@@ -311,5 +311,85 @@ proto.plugins.prometheus.PrometheusPromiseClient.prototype.metricLookup =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.plugins.prometheus.GetTableDataRequest,
+ *   !proto.plugins.prometheus.GetTableDataResponse>}
+ */
+const methodDescriptor_Prometheus_GetTableData = new grpc.web.MethodDescriptor(
+  '/plugins.prometheus.Prometheus/GetTableData',
+  grpc.web.MethodType.UNARY,
+  proto.plugins.prometheus.GetTableDataRequest,
+  proto.plugins.prometheus.GetTableDataResponse,
+  /**
+   * @param {!proto.plugins.prometheus.GetTableDataRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.prometheus.GetTableDataResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.plugins.prometheus.GetTableDataRequest,
+ *   !proto.plugins.prometheus.GetTableDataResponse>}
+ */
+const methodInfo_Prometheus_GetTableData = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.plugins.prometheus.GetTableDataResponse,
+  /**
+   * @param {!proto.plugins.prometheus.GetTableDataRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.prometheus.GetTableDataResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.plugins.prometheus.GetTableDataRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.plugins.prometheus.GetTableDataResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.plugins.prometheus.GetTableDataResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.plugins.prometheus.PrometheusClient.prototype.getTableData =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/plugins.prometheus.Prometheus/GetTableData',
+      request,
+      metadata || {},
+      methodDescriptor_Prometheus_GetTableData,
+      callback);
+};
+
+
+/**
+ * @param {!proto.plugins.prometheus.GetTableDataRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.plugins.prometheus.GetTableDataResponse>}
+ *     Promise that resolves to the response
+ */
+proto.plugins.prometheus.PrometheusPromiseClient.prototype.getTableData =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/plugins.prometheus.Prometheus/GetTableData',
+      request,
+      metadata || {},
+      methodDescriptor_Prometheus_GetTableData);
+};
+
+
 module.exports = proto.plugins.prometheus;
 
