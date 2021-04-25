@@ -11,6 +11,7 @@ import { ITrace, formatTraceTime, getDuration } from 'plugins/jaeger/helpers';
 import JaegerSpans from 'plugins/jaeger/JaegerSpans';
 import JaegerTraceDetailsLink from 'plugins/jaeger/JaegerTraceDetailsLink';
 import Title from 'components/Title';
+import { getRootSpan } from 'plugins/jaeger/helpers';
 
 export interface IJaegerTraceProps {
   name: string;
@@ -19,7 +20,11 @@ export interface IJaegerTraceProps {
 }
 
 const JaegerTrace: React.FunctionComponent<IJaegerTraceProps> = ({ name, trace, close }: IJaegerTraceProps) => {
-  const rootSpan = trace.spans[0];
+  const rootSpan = getRootSpan(trace.spans);
+  if (!rootSpan) {
+    return null;
+  }
+
   const rootSpanProcess = trace.processes[rootSpan.processID];
   const rootSpanService = rootSpanProcess.serviceName;
 
