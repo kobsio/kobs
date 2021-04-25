@@ -16,6 +16,7 @@ import { GetTraceRequest, GetTraceResponse, JaegerPromiseClient } from 'proto/ja
 import { ITrace, addColorForProcesses, formatTraceTime, getDuration } from 'plugins/jaeger/helpers';
 import JaegerSpans from 'plugins/jaeger/JaegerSpans';
 import { apiURL } from 'utils/constants';
+import { getRootSpan } from 'plugins/jaeger/helpers';
 
 // jaegerService is the gRPC service to get the traces from a Jaeger instance.
 const jaegerService = new JaegerPromiseClient(apiURL, null, null);
@@ -93,6 +94,11 @@ const JaegerPageCompareTrace: React.FunctionComponent<IJaegerPageCompareTracePro
     );
   }
 
+  const rootSpan = data.trace && data.trace.spans.length > 0 ? getRootSpan(data.trace.spans) : undefined;
+  if (!rootSpan) {
+    return null;
+  }
+
   return (
     <React.Fragment>
       <Grid>
@@ -105,7 +111,7 @@ const JaegerPageCompareTrace: React.FunctionComponent<IJaegerPageCompareTracePro
         >
           <PageSection style={{ height: '100%' }} variant={PageSectionVariants.light}>
             <Title className="pf-u-text-nowrap pf-u-text-truncate" headingLevel="h6" size="xl">
-              {data.trace.processes[data.trace.spans[0].processID].serviceName}: {data.trace.spans[0].operationName}{' '}
+              {data.trace.processes[rootSpan.processID].serviceName}: {rootSpan.operationName}
               <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{data.trace.traceID}</span>
             </Title>
             <p>

@@ -17,6 +17,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#43](https://github.com/kobsio/kobs/pull/43): Fix `hosts` and `gateways` list for VirtualService in the Helm chart.
 - [#44](https://github.com/kobsio/kobs/pull/44): Add default logo for teams, which is shown when a team doesn't provide a logo and improve metrics lookup for Prometheus plugin.
+- [#50](https://github.com/kobsio/kobs/pull/50): Fix determination of the root span in the Jaeger plugin.
 
 ### Changed
 

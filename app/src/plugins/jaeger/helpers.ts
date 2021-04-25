@@ -268,3 +268,16 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
 
   return plugin.toObject();
 };
+
+// getRootSpan returns the first span of a trace. Normally this should be the first span, but sometime it can happen,
+// that this isn't the case. So that we have to loop over the spans and then we return the first trace, which doesn't
+// have a reference.
+export const getRootSpan = (spans: ISpan[]): ISpan | undefined => {
+  for (const span of spans) {
+    if (span.references.length === 0 || span.references[0].refType !== 'CHILD_OF') {
+      return span;
+    }
+  }
+
+  return undefined;
+};
