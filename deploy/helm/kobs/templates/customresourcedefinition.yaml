@@ -177,6 +177,26 @@ spec:
                                 are executed against the datasource (e.g. For Prometheus
                                 this will be a list of PromQL queries).
                               properties:
+                                columns:
+                                  items:
+                                    description: Column is a single column for the
+                                      "table" chart type. The name must be a returned
+                                      label from the specified Prometheus queries
+                                      or a returned value. A value can be specified
+                                      via "value-1", "value-2", etc. The header value
+                                      can be used to modify the header title, when
+                                      this isn't set the name will be used for the
+                                      header. Unit allows a user to set a unit for
+                                      the column.
+                                    properties:
+                                      header:
+                                        type: string
+                                      name:
+                                        type: string
+                                      unit:
+                                        type: string
+                                    type: object
+                                  type: array
                                 legend:
                                   type: string
                                 mappings:
@@ -338,6 +358,25 @@ spec:
                               datasource (e.g. For Prometheus this will be a list
                               of PromQL queries).
                             properties:
+                              columns:
+                                items:
+                                  description: Column is a single column for the "table"
+                                    chart type. The name must be a returned label
+                                    from the specified Prometheus queries or a returned
+                                    value. A value can be specified via "value-1",
+                                    "value-2", etc. The header value can be used to
+                                    modify the header title, when this isn't set the
+                                    name will be used for the header. Unit allows
+                                    a user to set a unit for the column.
+                                  properties:
+                                    header:
+                                      type: string
+                                    name:
+                                      type: string
+                                    unit:
+                                      type: string
+                                  type: object
+                                type: array
                               legend:
                                 type: string
                               mappings:

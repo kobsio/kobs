@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Chart, Variable } from 'proto/prometheus_grpc_web_pb';
 import { ITimes } from 'plugins/prometheus/helpers';
 import PrometheusPluginChart from 'plugins/prometheus/PrometheusPluginChart';
+import PrometheusPluginTable from 'plugins/prometheus/PrometheusPluginTable';
 
 interface IPrometheusPluginChartsProps {
   name: string;
@@ -49,6 +50,8 @@ const PrometheusPluginCharts: React.FunctionComponent<IPrometheusPluginChartsPro
               <Title headingLevel="h6" size="lg">
                 {chart.title}
               </Title>
+            ) : chart.type === 'table' ? (
+              <PrometheusPluginTable name={name} times={times} variables={variables} chart={chart} />
             ) : (
               <PrometheusPluginChart name={name} times={times} variables={variables} chart={chart} />
             )}

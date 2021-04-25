@@ -181,6 +181,67 @@ export namespace MetricLookupResponse {
   }
 }
 
+export class GetTableDataRequest extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getTimeend(): number;
+  setTimeend(value: number): void;
+
+  clearVariablesList(): void;
+  getVariablesList(): Array<Variable>;
+  setVariablesList(value: Array<Variable>): void;
+  addVariables(value?: Variable, index?: number): Variable;
+
+  clearQueriesList(): void;
+  getQueriesList(): Array<Query>;
+  setQueriesList(value: Array<Query>): void;
+  addQueries(value?: Query, index?: number): Query;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTableDataRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTableDataRequest): GetTableDataRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTableDataRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTableDataRequest;
+  static deserializeBinaryFromReader(message: GetTableDataRequest, reader: jspb.BinaryReader): GetTableDataRequest;
+}
+
+export namespace GetTableDataRequest {
+  export type AsObject = {
+    name: string,
+    timeend: number,
+    variablesList: Array<Variable.AsObject>,
+    queriesList: Array<Query.AsObject>,
+  }
+}
+
+export class GetTableDataResponse extends jspb.Message {
+  getRowsMap(): jspb.Map<string, Row>;
+  clearRowsMap(): void;
+  clearInterpolatedqueriesList(): void;
+  getInterpolatedqueriesList(): Array<string>;
+  setInterpolatedqueriesList(value: Array<string>): void;
+  addInterpolatedqueries(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTableDataResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTableDataResponse): GetTableDataResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTableDataResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTableDataResponse;
+  static deserializeBinaryFromReader(message: GetTableDataResponse, reader: jspb.BinaryReader): GetTableDataResponse;
+}
+
+export namespace GetTableDataResponse {
+  export type AsObject = {
+    rowsMap: Array<[string, Row.AsObject]>,
+    interpolatedqueriesList: Array<string>,
+  }
+}
+
 export class Metrics extends jspb.Message {
   getLabel(): string;
   setLabel(value: string): void;
@@ -240,6 +301,25 @@ export namespace Data {
   export type AsObject = {
     x: number,
     y: number,
+  }
+}
+
+export class Row extends jspb.Message {
+  getColumnsMap(): jspb.Map<string, string>;
+  clearColumnsMap(): void;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Row.AsObject;
+  static toObject(includeInstance: boolean, msg: Row): Row.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Row, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Row;
+  static deserializeBinaryFromReader(message: Row, reader: jspb.BinaryReader): Row;
+}
+
+export namespace Row {
+  export type AsObject = {
+    columnsMap: Array<[string, string]>,
   }
 }
 
@@ -339,6 +419,11 @@ export class Chart extends jspb.Message {
   setQueriesList(value: Array<Query>): void;
   addQueries(value?: Query, index?: number): Query;
 
+  clearColumnsList(): void;
+  getColumnsList(): Array<Column>;
+  setColumnsList(value: Array<Column>): void;
+  addColumns(value?: Column, index?: number): Column;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Chart.AsObject;
   static toObject(includeInstance: boolean, msg: Chart): Chart.AsObject;
@@ -359,6 +444,7 @@ export namespace Chart {
     legend: string,
     mappingsMap: Array<[string, string]>,
     queriesList: Array<Query.AsObject>,
+    columnsList: Array<Column.AsObject>,
   }
 }
 
@@ -383,6 +469,34 @@ export namespace Query {
   export type AsObject = {
     query: string,
     label: string,
+  }
+}
+
+export class Column extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getHeader(): string;
+  setHeader(value: string): void;
+
+  getUnit(): string;
+  setUnit(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Column.AsObject;
+  static toObject(includeInstance: boolean, msg: Column): Column.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Column, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Column;
+  static deserializeBinaryFromReader(message: Column, reader: jspb.BinaryReader): Column;
+}
+
+export namespace Column {
+  export type AsObject = {
+    name: string,
+    header: string,
+    unit: string,
   }
 }
 

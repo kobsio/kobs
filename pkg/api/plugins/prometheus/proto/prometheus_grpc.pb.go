@@ -21,6 +21,7 @@ type PrometheusClient interface {
 	GetVariables(ctx context.Context, in *GetVariablesRequest, opts ...grpc.CallOption) (*GetVariablesResponse, error)
 	GetMetrics(ctx context.Context, in *GetMetricsRequest, opts ...grpc.CallOption) (*GetMetricsResponse, error)
 	MetricLookup(ctx context.Context, in *MetricLookupRequest, opts ...grpc.CallOption) (*MetricLookupResponse, error)
+	GetTableData(ctx context.Context, in *GetTableDataRequest, opts ...grpc.CallOption) (*GetTableDataResponse, error)
 }
 
 type prometheusClient struct {
@@ -58,6 +59,15 @@ func (c *prometheusClient) MetricLookup(ctx context.Context, in *MetricLookupReq
 	return out, nil
 }
 
+func (c *prometheusClient) GetTableData(ctx context.Context, in *GetTableDataRequest, opts ...grpc.CallOption) (*GetTableDataResponse, error) {
+	out := new(GetTableDataResponse)
+	err := c.cc.Invoke(ctx, "/plugins.prometheus.Prometheus/GetTableData", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PrometheusServer is the server API for Prometheus service.
 // All implementations must embed UnimplementedPrometheusServer
 // for forward compatibility
@@ -65,6 +75,7 @@ type PrometheusServer interface {
 	GetVariables(context.Context, *GetVariablesRequest) (*GetVariablesResponse, error)
 	GetMetrics(context.Context, *GetMetricsRequest) (*GetMetricsResponse, error)
 	MetricLookup(context.Context, *MetricLookupRequest) (*MetricLookupResponse, error)
+	GetTableData(context.Context, *GetTableDataRequest) (*GetTableDataResponse, error)
 	mustEmbedUnimplementedPrometheusServer()
 }
 
@@ -80,6 +91,9 @@ func (UnimplementedPrometheusServer) GetMetrics(context.Context, *GetMetricsRequ
 }
 func (UnimplementedPrometheusServer) MetricLookup(context.Context, *MetricLookupRequest) (*MetricLookupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MetricLookup not implemented")
+}
+func (UnimplementedPrometheusServer) GetTableData(context.Context, *GetTableDataRequest) (*GetTableDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTableData not implemented")
 }
 func (UnimplementedPrometheusServer) mustEmbedUnimplementedPrometheusServer() {}
 
@@ -148,6 +162,24 @@ func _Prometheus_MetricLookup_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Prometheus_GetTableData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTableDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusServer).GetTableData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/plugins.prometheus.Prometheus/GetTableData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusServer).GetTableData(ctx, req.(*GetTableDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Prometheus_ServiceDesc is the grpc.ServiceDesc for Prometheus service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -166,6 +198,10 @@ var Prometheus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MetricLookup",
 			Handler:    _Prometheus_MetricLookup_Handler,
+		},
+		{
+			MethodName: "GetTableData",
+			Handler:    _Prometheus_GetTableData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

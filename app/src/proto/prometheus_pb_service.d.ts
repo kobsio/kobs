@@ -31,11 +31,21 @@ type PrometheusMetricLookup = {
   readonly responseType: typeof prometheus_pb.MetricLookupResponse;
 };
 
+type PrometheusGetTableData = {
+  readonly methodName: string;
+  readonly service: typeof Prometheus;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof prometheus_pb.GetTableDataRequest;
+  readonly responseType: typeof prometheus_pb.GetTableDataResponse;
+};
+
 export class Prometheus {
   static readonly serviceName: string;
   static readonly GetVariables: PrometheusGetVariables;
   static readonly GetMetrics: PrometheusGetMetrics;
   static readonly MetricLookup: PrometheusMetricLookup;
+  static readonly GetTableData: PrometheusGetTableData;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -96,6 +106,15 @@ export class PrometheusClient {
   metricLookup(
     requestMessage: prometheus_pb.MetricLookupRequest,
     callback: (error: ServiceError|null, responseMessage: prometheus_pb.MetricLookupResponse|null) => void
+  ): UnaryResponse;
+  getTableData(
+    requestMessage: prometheus_pb.GetTableDataRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: prometheus_pb.GetTableDataResponse|null) => void
+  ): UnaryResponse;
+  getTableData(
+    requestMessage: prometheus_pb.GetTableDataRequest,
+    callback: (error: ServiceError|null, responseMessage: prometheus_pb.GetTableDataResponse|null) => void
   ): UnaryResponse;
 }
 
