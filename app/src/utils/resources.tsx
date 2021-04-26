@@ -1,4 +1,12 @@
-import { Bullseye, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core';
+import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Spinner,
+  Title,
+} from '@patternfly/react-core';
 import {
   CoreV1EventList,
   V1ClusterRoleBindingList,
@@ -1316,7 +1324,7 @@ export const customResourceDefinition = (crds: CRD.AsObject[]): IResources => {
 
 // emptyState is used to display an empty state in the table for a resource, when the gRPC API call returned an error or
 // no results.
-export const emptyState = (cols: number, error: string): IRow[] => {
+export const emptyState = (cols: number, error: string, isLoading: boolean): IRow[] => {
   return [
     {
       cells: [
@@ -1325,13 +1333,19 @@ export const emptyState = (cols: number, error: string): IRow[] => {
           title: (
             <Bullseye>
               <EmptyState variant={EmptyStateVariant.small}>
-                <EmptyStateIcon icon={SearchIcon} />
-                <Title headingLevel="h2" size="lg">
-                  No results found
-                </Title>
-                <EmptyStateBody>
-                  {error ? error : 'No results match the filter criteria. Select another cluster or namespace.'}
-                </EmptyStateBody>
+                {isLoading ? (
+                  <EmptyStateIcon variant="container" component={Spinner} />
+                ) : (
+                  <React.Fragment>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      {error ? 'An error occured' : 'No results found'}
+                    </Title>
+                    <EmptyStateBody>
+                      {error ? error : 'No results match the filter criteria. Select another cluster or namespace.'}
+                    </EmptyStateBody>
+                  </React.Fragment>
+                )}
               </EmptyState>
             </Bullseye>
           ),

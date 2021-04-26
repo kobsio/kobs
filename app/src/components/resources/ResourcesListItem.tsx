@@ -8,6 +8,12 @@ import { apiURL } from 'utils/constants';
 // clustersService is the Clusters gRPC service, which is used to get a list of resources.
 const clustersService = new ClustersPromiseClient(apiURL, null, null);
 
+interface IDataState {
+  error: string;
+  isLoading: boolean;
+  rows: IRow[];
+}
+
 interface IResourcesListItemProps {
   clusters: string[];
   namespaces: string[];
@@ -25,11 +31,13 @@ const ResourcesListItem: React.FunctionComponent<IResourcesListItemProps> = ({
   selector,
   selectResource,
 }: IResourcesListItemProps) => {
-  const [rows, setRows] = useState<IRow[]>(emptyState(resource.columns.length, ''));
+  // const [rows, setRows] = useState<IRow[]>(emptyState(resource.columns.length, ''));
+  const [data, setData] = useState<IDataState>({ error: '', isLoading: false, rows: [] });
 
   // fetchResources fetchs a list of resources for the given clusters, namespaces and an optional label selector.
   const fetchResources = useCallback(async () => {
     try {
+      setData({ error: '', isLoading: true, rows: [] });
       const getResourcesRequest = new GetResourcesRequest();
       getResourcesRequest.setClustersList(clusters);
       getResourcesRequest.setPath(resource.isCRD ? `apis/${resource.path}` : resource.path);
@@ -48,12 +56,12 @@ const ResourcesListItem: React.FunctionComponent<IResourcesListItemProps> = ({
       const tmpRows = resource.rows(getResourcesResponse.getResourcesList());
 
       if (tmpRows.length > 0) {
-        setRows(tmpRows);
+        setData({ error: '', isLoading: false, rows: tmpRows });
       } else {
-        setRows(emptyState(resource.columns.length, ''));
+        setData({ error: '', isLoading: false, rows: [] });
       }
     } catch (err) {
-      setRows(emptyState(resource.columns.length, err.message));
+      setData({ error: err.message, isLoading: false, rows: [] });
     }
   }, [clusters, namespaces, resource, selector]);
 
@@ -70,13 +78,19 @@ const ResourcesListItem: React.FunctionComponent<IResourcesListItemProps> = ({
       isStickyHeader={true}
       cells={resource.columns}
       rows={
-        rows.length > 0 && rows[0].cells?.length === resource.columns.length
-          ? rows
-          : emptyState(resource.columns.length, '')
+        data.rows.length > 0 && data.rows[0].cells?.length === resource.columns.length
+          ? data.rows
+          : emptyState(resource.columns.length, data.error, data.isLoading)
       }
     >
       <TableHeader />
-      <TableBody onRowClick={selectResource ? (e, row, props, data): void => selectResource(row) : undefined} />
+      <TableBody
+        onRowClick={
+          selectResource && data.rows.length > 0 && data.rows[0].cells?.length === resource.columns.length
+            ? (e, row, props, data): void => selectResource(row)
+            : undefined
+        }
+      />
     </Table>
   );
 };

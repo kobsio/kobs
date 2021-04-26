@@ -14,6 +14,7 @@ The following command-line arguments and environment variables are available.
 | `--clusters.cache-duration.namespaces` | `KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES` | The duration, for how long requests to get the list of namespaces should be cached. | `5m` |
 | `--clusters.cache-duration.teams` | `KOBS_CLUSTERS_CACHE_DURATION_TEAMS` | The duration, for how long the teams data should be cached. | `60m` |
 | `--clusters.cache-duration.topology` | `KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY` | The duration, for how long the topology data should be cached. | `60m` |
+| `--clusters.forbidden-resources` | `KOBS_CLUSTERS_FORBIDDEN_RESOURCES` | A list of resources, which can not be accessed via kobs. | |
 | `--config` | `KOBS_CONFIG` | Name of the configuration file.  | `config.yaml` |
 | `--log.format` | `KOBS_LOG_FORMAT` | Set the output format of the logs. Must be `plain` or `json`.  | `plain` |
 | `--log.level` | `KOBS_LOG_LEVEL` | Set the log level. Must be `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`.  | `info` |

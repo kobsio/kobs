@@ -20,7 +20,7 @@ interface IEventsProps {
 // Events is the component to display the events for a resource. The resource is identified by the cluster, namespace
 // and name. The event must contain the involvedObject.name=<NAME> to be listed for a resource.
 const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, name }: IEventsProps) => {
-  const [events, setEvents] = useState<IRow[]>(emptyState(4, ''));
+  const [events, setEvents] = useState<IRow[]>(emptyState(4, '', false));
 
   // fetchEvents is used to fetch all events to the provided resource. When the API returnes a list of resources, this
   // list is transformed into a the IRow interface, so we can display the events within the Table component.
@@ -55,13 +55,13 @@ const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, nam
 
           setEvents(tmpEvents);
         } else {
-          setEvents(emptyState(4, ''));
+          setEvents(emptyState(4, '', false));
         }
       } else {
-        setEvents(emptyState(4, ''));
+        setEvents(emptyState(4, '', false));
       }
     } catch (err) {
-      setEvents(emptyState(4, err.message));
+      setEvents(emptyState(4, err.message, false));
     }
   }, [cluster, namespace, name]);
 

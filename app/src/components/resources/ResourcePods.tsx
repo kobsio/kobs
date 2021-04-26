@@ -22,7 +22,7 @@ const ResourcePods: React.FunctionComponent<IResourcePodsProps> = ({
   namespace,
   selector,
 }: IResourcePodsProps) => {
-  const [pods, setPods] = useState<IRow[]>(emptyState(resources.pods.columns.length, ''));
+  const [pods, setPods] = useState<IRow[]>(emptyState(resources.pods.columns.length, '', false));
 
   // fetchPods fetches the pods for the given cluster, namespace and label selector.
   const fetchPods = useCallback(async () => {
@@ -41,10 +41,10 @@ const ResourcePods: React.FunctionComponent<IResourcePodsProps> = ({
       if (resourceList.length === 1) {
         setPods(resources.pods.rows(resourceList));
       } else {
-        setPods(emptyState(resources.pods.columns.length, ''));
+        setPods(emptyState(resources.pods.columns.length, '', false));
       }
     } catch (err) {
-      setPods(emptyState(resources.pods.columns.length, err.message));
+      setPods(emptyState(resources.pods.columns.length, err.message, false));
     }
   }, [cluster, namespace, selector]);
 
