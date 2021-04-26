@@ -13,7 +13,7 @@ const JaegerPage: React.FunctionComponent<IPluginPageProps> = ({ name, descripti
       <Route exact={true} path={`/plugins/${name}`}>
         <JaegerPageTraces name={name} description={description} />
       </Route>
-      <Route exact={true} path={`/plugins/${name}/trace/:traceID`}>
+      <Route exact={true} path={`/plugins/${name}/trace/:traceID?`}>
         <JaegerPageCompare name={name} />
       </Route>
     </Switch>

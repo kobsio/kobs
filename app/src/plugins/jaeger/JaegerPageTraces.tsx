@@ -6,8 +6,8 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 
 import { IJaegerOptions, getOptionsFromSearch } from 'plugins/jaeger/helpers';
 import { IPluginPageProps } from 'utils/plugins';
@@ -40,6 +40,9 @@ const JaegerPageTraces: React.FunctionComponent<IPluginPageProps> = ({ name, des
       <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h6" size="xl">
           {name}
+          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
+            <Link to={`/plugins/${name}/trace`}>Compare Traces</Link>
+          </span>
         </Title>
         <p>{description}</p>
         <JaegerPageToolbar
