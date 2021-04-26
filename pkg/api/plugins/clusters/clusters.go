@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 	"time"
 
 	applicationProto "github.com/kobsio/kobs/pkg/api/plugins/application/proto"
@@ -15,6 +16,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -22,10 +25,10 @@ var (
 	cacheDurationNamespaces string
 	cacheDurationTopology   string
 	cacheDurationTeams      string
+	forbiddenResources      []string
 )
 
-// init is used to define all command-line flags for the clusters package. Currently this is only the cache duration,
-// which is used to cache the namespaces for a cluster.
+// init is used to define all command-line flags for the clusters package.
 func init() {
 	defaultCacheDurationNamespaces := "5m"
 	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES") != "" {
@@ -42,9 +45,26 @@ func init() {
 		defaultCacheDurationTeams = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEAMS")
 	}
 
+	var defaultForbiddenResources []string
+	if os.Getenv("KOBS_CLUSTERS_FORBIDDEN_RESOURCES") != "" {
+		defaultForbiddenResources = strings.Split(os.Getenv("KOBS_CLUSTERS_FORBIDDEN_RESOURCES"), ",")
+	}
+
 	flag.StringVar(&cacheDurationNamespaces, "clusters.cache-duration.namespaces", defaultCacheDurationNamespaces, "The duration, for how long requests to get the list of namespaces should be cached.")
 	flag.StringVar(&cacheDurationTopology, "clusters.cache-duration.topology", defaultCacheDurationTopology, "The duration, for how long the topology data should be cached.")
 	flag.StringVar(&cacheDurationTeams, "clusters.cache-duration.teams", defaultCacheDurationTeams, "The duration, for how long the teams data should be cached.")
+	flag.StringArrayVar(&forbiddenResources, "clusters.forbidden-resources", defaultForbiddenResources, "A list of resources, which can not be accessed via kobs.")
+}
+
+// isForbidden checks if the requested resource was specified in the forbidden resources list.
+func isForbidden(resource string) bool {
+	for _, r := range forbiddenResources {
+		if resource == r {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Config is the configuration required to load all clusters.
@@ -181,6 +201,10 @@ func (c *Clusters) GetResources(ctx context.Context, getResourcesRequest *cluste
 		cluster := c.getCluster(clusterName)
 		if cluster == nil {
 			return nil, fmt.Errorf("invalid cluster name")
+		}
+
+		if isForbidden(getResourcesRequest.Resource) {
+			return nil, status.Error(codes.PermissionDenied, fmt.Sprintf("access for resource %s is forbidding", getResourcesRequest.Resource))
 		}
 
 		if getResourcesRequest.Namespaces == nil {

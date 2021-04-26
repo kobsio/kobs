@@ -12,6 +12,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#45](https://github.com/kobsio/kobs/pull/45): Add value mappings for `sparkline` charts in the Prometheus plugin.
 - [#49](https://github.com/kobsio/kobs/pull/49): Add new chart type `table` for Prometheus plugin, which allows a user to render the results of multiple Prometheus queries in ab table.
+- [#50](https://github.com/kobsio/kobs/pull/50): Add new command-line flag to forbid access for resources.
 
 ### Fixed
 
