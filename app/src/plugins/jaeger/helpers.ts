@@ -76,13 +76,6 @@ export interface IJaegerOptions extends ITimes {
   tags: string;
 }
 
-// IServiceSpans is the interface to get the number of spans per service.
-export interface IServiceSpans {
-  color: string;
-  service: string;
-  spans: number;
-}
-
 // getOptionsFromSearch is used to get the Jaeger options from a given search location.
 export const getOptionsFromSearch = (search: string): IJaegerOptions => {
   const params = new URLSearchParams(search);
@@ -108,9 +101,20 @@ export const getOptionsFromSearch = (search: string): IJaegerOptions => {
   };
 };
 
+// IService is the interface to get the number of spans per service.
+export interface IService {
+  color: string;
+  service: string;
+  spans: number;
+}
+
+export interface IServices {
+  [key: string]: IService;
+}
+
 // getSpansPerServices returns the number of spans per service.
-export const getSpansPerServices = (trace: ITrace): IServiceSpans[] => {
-  const services: IServiceSpans[] = Object.keys(trace.processes).map((process) => {
+export const getSpansPerServices = (trace: ITrace): IServices => {
+  const services: IService[] = Object.keys(trace.processes).map((process) => {
     return {
       color: trace.processes[process].color
         ? (trace.processes[process].color as string)
@@ -119,7 +123,20 @@ export const getSpansPerServices = (trace: ITrace): IServiceSpans[] => {
       spans: trace.spans.filter((span) => span.processID === process).length,
     };
   });
-  return services;
+
+  const uniqueServices: IServices = {};
+  for (const service of services) {
+    if (uniqueServices.hasOwnProperty(service.service)) {
+      uniqueServices[service.service] = {
+        ...uniqueServices[service.service],
+        spans: uniqueServices[service.service].spans + service.spans,
+      };
+    } else {
+      uniqueServices[service.service] = service;
+    }
+  }
+
+  return uniqueServices;
 };
 
 // getDuration returns the duration for a trace in milliseconds.
@@ -175,15 +192,34 @@ export const createSpansTree = (spans: ISpan[], traceStartTime: number, duration
   return roots;
 };
 
+// IProcessColors is the interface we use to store a map of process and colors, so that we can reuse the color for
+// processes with the same service name.
+interface IProcessColors {
+  [key: string]: string;
+}
+
 // colors is an array of all supported colors for the Jaeger processes.
 const colors = getDarkThemeColors(ChartThemeColor.multiOrdered).area.colorScale;
 
-// addColorForProcesses add a color to each process in all the given traces.
+// addColorForProcesses add a color to each process in all the given traces. If a former trace already uses a process,
+// with the same service name we reuse the former color.
 export const addColorForProcesses = (traces: ITrace[]): ITrace[] => {
+  const usedColors: IProcessColors = {};
+
   for (let i = 0; i < traces.length; i++) {
-    Object.keys(traces[i].processes).map(
-      (key, index) => (traces[i].processes[key].color = colors[index % colors.length]),
-    );
+    const processes = Object.keys(traces[i].processes);
+
+    for (let j = 0; j < processes.length; j++) {
+      const process = processes[j];
+
+      if (usedColors.hasOwnProperty(traces[i].processes[process].serviceName)) {
+        traces[i].processes[process].color = usedColors[traces[i].processes[process].serviceName];
+      } else {
+        const color = colors[j % colors.length];
+        usedColors[traces[i].processes[process].serviceName] = color;
+        traces[i].processes[process].color = color;
+      }
+    }
   }
 
   return traces;

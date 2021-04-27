@@ -32,6 +32,7 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
 
   const rootSpanProcess = trace.processes[rootSpan.processID];
   const rootSpanService = rootSpanProcess.serviceName;
+  const services = getSpansPerServices(trace);
 
   const card = (
     <Card
@@ -66,9 +67,9 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
           {trace.spans.length} Spans
         </Badge>
 
-        {getSpansPerServices(trace).map((service, index) => (
-          <Badge key={index} className="pf-u-ml-sm" style={{ backgroundColor: service.color }}>
-            {service.service} ({service.spans})
+        {Object.keys(services).map((name) => (
+          <Badge key={name} className="pf-u-ml-sm" style={{ backgroundColor: services[name].color }}>
+            {services[name].service} ({services[name].spans})
           </Badge>
         ))}
 
