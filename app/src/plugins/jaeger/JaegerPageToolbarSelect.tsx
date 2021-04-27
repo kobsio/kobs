@@ -32,6 +32,24 @@ const JaegerPageToolbarSelect: React.FunctionComponent<IJaegerPageToolbarSelectP
     setShow(false);
   };
 
+  const filter = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
+    if (e && e.target && e.target.value) {
+      return items
+        .filter((item) => item.includes(e.target.value))
+        .map((item, index) => <SelectOption key={index} value={item} />);
+    } else {
+      return isOperations && items.length > 0
+        ? [
+            <SelectOption key={-1} value="All Operations" />,
+            ...items.map((item, index) => <SelectOption key={index} value={item} />),
+          ]
+        : items.map((item, index) => <SelectOption key={index} value={item} />);
+    }
+  };
+
   const options =
     isOperations && items.length > 0
       ? [
@@ -42,10 +60,11 @@ const JaegerPageToolbarSelect: React.FunctionComponent<IJaegerPageToolbarSelectP
 
   return (
     <Select
-      variant={SelectVariant.single}
+      variant={SelectVariant.typeahead}
       typeAheadAriaLabel={placeholder}
       placeholderText={placeholder}
       onToggle={(): void => setShow(!show)}
+      onFilter={filter}
       onSelect={changeItem}
       selections={isOperations && selectedItem === '' && items.length > 0 ? 'All Operations' : selectedItem}
       isOpen={show}

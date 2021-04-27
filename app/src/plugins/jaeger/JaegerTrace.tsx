@@ -7,9 +7,10 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 
-import { ITrace, formatTraceTime, getDuration } from 'plugins/jaeger/helpers';
+import { ITrace } from 'plugins/jaeger/helpers';
 import JaegerSpans from 'plugins/jaeger/JaegerSpans';
-import JaegerTraceDetailsLink from 'plugins/jaeger/JaegerTraceDetailsLink';
+import JaegerTraceActions from 'plugins/jaeger/JaegerTraceActions';
+import JaegerTraceHeader from 'plugins/jaeger/JaegerTraceHeader';
 import Title from 'components/Title';
 import { getRootSpan } from 'plugins/jaeger/helpers';
 
@@ -33,28 +34,13 @@ const JaegerTrace: React.FunctionComponent<IJaegerTraceProps> = ({ name, trace, 
       <DrawerHead>
         <Title title={`${rootSpanService}: ${rootSpan.operationName}`} subtitle={trace.traceID} size="lg" />
         <DrawerActions style={{ padding: 0 }}>
-          <JaegerTraceDetailsLink name={name} traceID={trace.traceID} />
+          <JaegerTraceActions name={name} trace={trace} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>
 
       <DrawerPanelBody>
-        <span>
-          <span className="pf-u-color-400">Trace Start: </span>
-          <b className="pf-u-pr-md">{formatTraceTime(rootSpan.startTime)}</b>
-        </span>
-        <span>
-          <span className="pf-u-color-400">Duration: </span>
-          <b className="pf-u-pr-md">{getDuration(trace.spans)}ms</b>
-        </span>
-        <span>
-          <span className="pf-u-color-400">Services: </span>
-          <b className="pf-u-pr-md">{Object.keys(trace.processes).length}</b>
-        </span>
-        <span>
-          <span className="pf-u-color-400">Total Spans: </span>
-          <b className="pf-u-pr-md">{trace.spans.length}</b>
-        </span>
+        <JaegerTraceHeader trace={trace} rootSpan={rootSpan} />
         <p>&nbsp;</p>
         <JaegerSpans trace={trace} />
         <p>&nbsp;</p>
