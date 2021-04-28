@@ -1,19 +1,26 @@
-import { AccordionContent, AccordionItem, AccordionToggle, Badge } from '@patternfly/react-core';
+import { AccordionContent, AccordionItem, AccordionToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { ExclamationIcon } from '@patternfly/react-icons';
 
 import { IProcesses, ISpan, doesSpanContainsError } from 'plugins/jaeger/helpers';
 import JaegerSpanLogs from 'plugins/jaeger/JaegerSpanLogs';
+import JaegerTag from 'plugins/jaeger/JaegerTag';
 
 import 'plugins/jaeger/jaeger.css';
 
 export interface IJaegerSpanProps {
+  name: string;
   span: ISpan;
   processes: IProcesses;
   padding: number;
 }
 
-const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes, padding }: IJaegerSpanProps) => {
+const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({
+  name,
+  span,
+  processes,
+  padding,
+}: IJaegerSpanProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const time = (
@@ -74,9 +81,7 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
               <div className="pf-u-pb-md">
                 Process:
                 {processes[span.processID].tags.map((tag, index) => (
-                  <Badge key={index} className="pf-u-ml-sm pf-u-mb-sm" isRead={true}>
-                    {tag.key}: {tag.value}
-                  </Badge>
+                  <JaegerTag key={index} name={name} tag={tag} />
                 ))}
               </div>
             ) : null}
@@ -84,9 +89,7 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
               <div className="pf-u-pb-md">
                 Tags:
                 {span.tags.map((tag, index) => (
-                  <Badge key={index} className="pf-u-ml-sm pf-u-mb-sm" isRead={true}>
-                    {tag.key}: {tag.value}
-                  </Badge>
+                  <JaegerTag key={index} name={name} tag={tag} />
                 ))}
               </div>
             ) : null}
@@ -104,7 +107,7 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
 
       {span.childs
         ? span.childs.map((span, index) => (
-            <JaegerSpan key={index} span={span} processes={processes} padding={padding + 16} />
+            <JaegerSpan key={index} name={name} span={span} processes={processes} padding={padding + 16} />
           ))
         : null}
     </React.Fragment>

@@ -136,6 +136,12 @@ const JaegerPageToolbar: React.FunctionComponent<IJaegerPageToolbarProps> = ({
     fetchOperations();
   }, [fetchOperations]);
 
+  useEffect(() => {
+    setOptions((o) => {
+      return { ...o, tags: tags };
+    });
+  }, [tags]);
+
   if (data.error) {
     return (
       <Alert

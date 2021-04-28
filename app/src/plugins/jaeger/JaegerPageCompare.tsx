@@ -1,17 +1,9 @@
-import {
-  Bullseye,
-  Divider,
-  FileUpload,
-  Grid,
-  GridItem,
-  PageSection,
-  PageSectionVariants,
-} from '@patternfly/react-core';
+import { Grid, GridItem } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { ITrace } from 'plugins/jaeger/helpers';
-import JaegerPageCompareInput from 'plugins/jaeger/JaegerPageCompareInput';
+import JaegerPageCompareSelectTrace from 'plugins/jaeger/JaegerPageCompareSelectTrace';
 import JaegerPageCompareTrace from 'plugins/jaeger/JaegerPageCompareTrace';
 
 interface IJaegerPageCompareParams {
@@ -49,26 +41,20 @@ const JaegerPageCompare: React.FunctionComponent<IJaegerPageCompareProps> = ({ n
   // handleUpload handles the upload of a JSON file, which contains a trace. When the file upload is finished we parse
   // the content of the file and set the uploadedTrace state. This state (trace) is then passed to the first
   // JaegerPageCompareTrace so that the trace can be viewed.
-  const handleUpload = (
-    value: string | File,
-    filename: string,
-    event:
-      | React.DragEvent<HTMLElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ): void => {
-    if (typeof value === 'string') {
-      try {
-        const traceData = JSON.parse(value).data;
-        setUploadedTrace(traceData[0]);
-        history.push({
-          pathname:
-            location.pathname.slice(-1) === '/'
-              ? `${location.pathname}${traceData[0].traceID}`
-              : `${location.pathname}/${traceData[0].traceID}`,
-        });
-      } catch (err) {}
-    }
+  const handleUpload = (trace: ITrace): void => {
+    setUploadedTrace(trace);
+    history.push({
+      pathname:
+        location.pathname.slice(-1) === '/'
+          ? `${location.pathname}${trace.traceID}`
+          : `${location.pathname}/${trace.traceID}`,
+    });
+
+    // if (typeof value === 'string') {
+    //   try {
+    //     const traceData = JSON.parse(value).data;
+    //   } catch (err) {}
+    // }
   };
 
   // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
@@ -80,29 +66,7 @@ const JaegerPageCompare: React.FunctionComponent<IJaegerPageCompareProps> = ({ n
   }, [location.search]);
 
   if (!params.traceID) {
-    return (
-      <Bullseye>
-        <Grid>
-          <GridItem sm={12} md={12} lg={12} xl={12} xl2={12}>
-            <PageSection style={{ height: '100%' }} variant={PageSectionVariants.light}>
-              <JaegerPageCompareInput changeCompareTrace={changeCompareTrace} />
-              <p>&nbsp;</p>
-              <Divider />
-              <p>&nbsp;</p>
-              <FileUpload
-                id="upload-trace"
-                type="text"
-                onChange={handleUpload}
-                hideDefaultPreview={true}
-                dropzoneProps={{
-                  accept: '.json',
-                }}
-              />
-            </PageSection>
-          </GridItem>
-        </Grid>
-      </Bullseye>
-    );
+    return <JaegerPageCompareSelectTrace setTraceID={changeCompareTrace} setTrace={handleUpload} />;
   }
 
   return (
