@@ -134,7 +134,7 @@ const JaegerPageCompareTrace: React.FunctionComponent<IJaegerPageCompareTracePro
 
         <GridItem sm={12} md={12} lg={12} xl={12} xl2={12}>
           <PageSection variant={PageSectionVariants.default}>
-            <JaegerSpans trace={data.trace} />
+            <JaegerSpans name={name} trace={data.trace} />
           </PageSection>
         </GridItem>
       </Grid>

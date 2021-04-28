@@ -42,7 +42,7 @@ const JaegerTrace: React.FunctionComponent<IJaegerTraceProps> = ({ name, trace, 
       <DrawerPanelBody>
         <JaegerTraceHeader trace={trace} rootSpan={rootSpan} />
         <p>&nbsp;</p>
-        <JaegerSpans trace={trace} />
+        <JaegerSpans name={name} trace={trace} />
         <p>&nbsp;</p>
       </DrawerPanelBody>
     </DrawerPanelContent>
