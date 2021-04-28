@@ -25,7 +25,10 @@ const ElasticsearchPage: React.FunctionComponent<IPluginPageProps> = ({ name, de
   // changeOptions is used to change the options for an Elasticsearch query. Instead of directly modifying the options
   // state we change the URL parameters.
   const changeOptions = (opts: IElasticsearchOptions): void => {
-    const fields = opts.fields ? opts.fields.map((field) => `&field=${field}`) : undefined;
+    const params = new URLSearchParams(location.search);
+    const fields = opts.fields
+      ? opts.fields.map((field) => `&field=${field}`)
+      : params.getAll('field').map((field) => `&field=${field}`);
 
     history.push({
       pathname: location.pathname,

@@ -107,7 +107,7 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
           buckets: tmpLogsResponse.bucketsList,
           documents: parsedLogs,
           error: '',
-          fields: getFields(parsedLogs.slice(parsedLogs.length > 10 ? 10 : parsedLogs.length)),
+          fields: getFields(parsedLogs.length > 10 ? parsedLogs.slice(10) : parsedLogs),
           hits: tmpLogsResponse.hits,
           isLoading: false,
           scrollID: tmpLogsResponse.scrollid,
