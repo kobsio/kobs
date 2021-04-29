@@ -14,6 +14,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#49](https://github.com/kobsio/kobs/pull/49): Add new chart type `table` for Prometheus plugin, which allows a user to render the results of multiple Prometheus queries in ab table.
 - [#51](https://github.com/kobsio/kobs/pull/51): Add new command-line flag to forbid access for resources.
 - [#52](https://github.com/kobsio/kobs/pull/52): Add option to enter a single trace id in the Jaeger plugin.
+- [#56](https://github.com/kobsio/kobs/pull/56): Add actions for Elasticsearch plugin to include/exclude and toggle values in the logs view.
 
 ### Fixed
 
