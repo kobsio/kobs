@@ -38,7 +38,7 @@ const JaegerSpans: React.FunctionComponent<IJaegerSpansProps> = ({ name, trace }
       <Card>
         <Accordion asDefinitionList={false}>
           {spans.map((span, index) => (
-            <JaegerSpan key={index} name={name} span={span} processes={trace.processes} padding={16} />
+            <JaegerSpan key={index} name={name} span={span} processes={trace.processes} level={1} />
           ))}
         </Accordion>
       </Card>
