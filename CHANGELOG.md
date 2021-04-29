@@ -29,6 +29,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#47](https://github.com/kobsio/kobs/pull/47): Display the legend at the Prometheus page as table and use color of selected metric in chart.
 - [#53](https://github.com/kobsio/kobs/pull/53): Improve Jaeger plugin, by allow filtering of services and operations and adding several actions for traces.
 - [#55](https://github.com/kobsio/kobs/pull/55): Allow a user to add a tag from a span as filter in the Jaeger plugin.
+- [#57](https://github.com/kobsio/kobs/pull/57): Visualize the offset of spans in the Jaeger plugin.
 
 ## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
 
