@@ -25,6 +25,7 @@ interface IElasticsearchLogsGridProps {
   setDocument?: (document: React.ReactNode) => void;
   setScrollID: (scrollID: string) => void;
   selectField?: (field: string) => void;
+  showActions: boolean;
 }
 
 // ElasticsearchLogsGrid renders a grid, for the Elasticsearch results. The grid contains a list of fields and selected
@@ -46,6 +47,7 @@ const ElasticsearchLogsGrid: React.FunctionComponent<IElasticsearchLogsGridProps
   setDocument,
   setScrollID,
   selectField,
+  showActions,
 }: IElasticsearchLogsGridProps) => {
   // showFields is used to define if we want to show the fields list in the grid or not. If the queryName isn't present,
   // which can only happen in the page view, we show the logs. In that way we can save some space in the plugin view,
@@ -83,9 +85,16 @@ const ElasticsearchLogsGrid: React.FunctionComponent<IElasticsearchLogsGridProps
             select={
               setDocument
                 ? (doc: IDocument): void =>
-                    setDocument(<ElasticsearchLogsDocument document={doc} close={(): void => setDocument(undefined)} />)
+                    setDocument(
+                      <ElasticsearchLogsDocument
+                        document={doc}
+                        showActions={showActions}
+                        close={(): void => setDocument(undefined)}
+                      />,
+                    )
                 : undefined
             }
+            showActions={showActions}
           />
         ) : null}
 

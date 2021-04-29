@@ -74,6 +74,7 @@ const ElasticsearchPlugin: React.FunctionComponent<IPluginProps> = ({
           timeStart={options.timeStart}
           setDocument={showDetails}
           setScrollID={setScrollID}
+          showActions={false}
         />
       ) : null}
     </React.Fragment>

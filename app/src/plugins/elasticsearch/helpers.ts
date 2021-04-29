@@ -23,6 +23,12 @@ export interface IDocument {
   [key: string]: any;
 }
 
+// IKeyValue is the interface for a single field in a document, with it's key and value.
+export interface IKeyValue {
+  key: string;
+  value: string;
+}
+
 // getOptionsFromSearch is used to get the Elasticsearch options from a given search location.
 export const getOptionsFromSearch = (search: string): IElasticsearchOptions => {
   const params = new URLSearchParams(search);

@@ -39,6 +39,7 @@ interface IElasticsearchLogsProps extends IElasticsearchOptions {
   setDocument?: (document: React.ReactNode) => void;
   setScrollID: (scrollID: string) => void;
   selectField?: (field: string) => void;
+  showActions: boolean;
 }
 
 // ElasticsearchLogs is a wrapper component for the Elasticsearch results view (ElasticsearchLogsGrid), it is used to
@@ -54,6 +55,7 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
   setDocument,
   setScrollID,
   selectField,
+  showActions,
 }: IElasticsearchLogsProps) => {
   const [data, setData] = useState<IDataState>({
     buckets: [],
@@ -186,6 +188,7 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
       setDocument={setDocument}
       setScrollID={setScrollID}
       selectField={selectField}
+      showActions={showActions}
     />
   );
 };

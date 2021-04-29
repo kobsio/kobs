@@ -1,13 +1,15 @@
-import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { TableComposable, TableVariant, Tbody, Th, Thead, Tr } from '@patternfly/react-table';
 import { Card } from '@patternfly/react-core';
 import React from 'react';
 
-import { IDocument, formatTimeWrapper, getProperty } from 'plugins/elasticsearch/helpers';
+import ElasticsearchLogsDocumentsItem from 'plugins/elasticsearch/ElasticsearchLogsDocumentsItem';
+import { IDocument } from 'plugins/elasticsearch/helpers';
 
 export interface IElasticsearchLogsDocumentsProps {
   selectedFields: string[];
   documents: IDocument[];
   select?: (doc: IDocument) => void;
+  showActions: boolean;
 }
 
 // ElasticsearchLogsDocuments renders a list of documents. If the user has selected some fields, we will render the
@@ -17,6 +19,7 @@ const ElasticsearchLogsDocuments: React.FunctionComponent<IElasticsearchLogsDocu
   selectedFields,
   documents,
   select,
+  showActions,
 }: IElasticsearchLogsDocumentsProps) => {
   return (
     <Card style={{ maxWidth: '100%', overflowX: 'scroll' }}>
@@ -33,18 +36,13 @@ const ElasticsearchLogsDocuments: React.FunctionComponent<IElasticsearchLogsDocu
         </Thead>
         <Tbody>
           {documents.map((document, index) => (
-            <Tr key={index} onClick={select ? (): void => select(document) : undefined}>
-              <Td dataLabel="Time">{formatTimeWrapper(document['_source']['@timestamp'])}</Td>
-              {selectedFields.length > 0 ? (
-                selectedFields.map((selectedField, index) => (
-                  <Td key={index} dataLabel={selectedField}>
-                    {getProperty(document['_source'], selectedField)}
-                  </Td>
-                ))
-              ) : (
-                <Td dataLabel="_source">{JSON.stringify(document['_source'])}</Td>
-              )}
-            </Tr>
+            <ElasticsearchLogsDocumentsItem
+              key={index}
+              document={document}
+              selectedFields={selectedFields}
+              select={select}
+              showActions={showActions}
+            />
           ))}
         </Tbody>
       </TableComposable>

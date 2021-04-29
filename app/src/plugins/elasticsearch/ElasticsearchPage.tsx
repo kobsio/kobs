@@ -99,6 +99,7 @@ const ElasticsearchPage: React.FunctionComponent<IPluginPageProps> = ({ name, de
                   setDocument={setDocument}
                   setScrollID={setScrollID}
                   selectField={selectField}
+                  showActions={true}
                 />
               ) : null}
             </PageSection>
