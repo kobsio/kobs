@@ -14,6 +14,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var plugins_pb = require('./plugins_pb.js');
+goog.object.extend(proto, plugins_pb);
 goog.exportSymbol('proto.team.Link', null, global);
 goog.exportSymbol('proto.team.Team', null, global);
 /**
@@ -64,7 +66,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.team.Team.repeatedFields_ = [6];
+proto.team.Team.repeatedFields_ = [6,7];
 
 
 
@@ -103,7 +105,9 @@ proto.team.Team.toObject = function(includeInstance, msg) {
     description: jspb.Message.getFieldWithDefault(msg, 4, ""),
     logo: jspb.Message.getFieldWithDefault(msg, 5, ""),
     linksList: jspb.Message.toObjectList(msg.getLinksList(),
-    proto.team.Link.toObject, includeInstance)
+    proto.team.Link.toObject, includeInstance),
+    pluginsList: jspb.Message.toObjectList(msg.getPluginsList(),
+    plugins_pb.Plugin.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -164,6 +168,11 @@ proto.team.Team.deserializeBinaryFromReader = function(msg, reader) {
       var value = new proto.team.Link;
       reader.readMessage(value,proto.team.Link.deserializeBinaryFromReader);
       msg.addLinks(value);
+      break;
+    case 7:
+      var value = new plugins_pb.Plugin;
+      reader.readMessage(value,plugins_pb.Plugin.deserializeBinaryFromReader);
+      msg.addPlugins(value);
       break;
     default:
       reader.skipField();
@@ -235,6 +244,14 @@ proto.team.Team.serializeBinaryToWriter = function(message, writer) {
       6,
       f,
       proto.team.Link.serializeBinaryToWriter
+    );
+  }
+  f = message.getPluginsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      7,
+      f,
+      plugins_pb.Plugin.serializeBinaryToWriter
     );
   }
 };
@@ -365,6 +382,44 @@ proto.team.Team.prototype.addLinks = function(opt_value, opt_index) {
  */
 proto.team.Team.prototype.clearLinksList = function() {
   return this.setLinksList([]);
+};
+
+
+/**
+ * repeated plugins.Plugin plugins = 7;
+ * @return {!Array<!proto.plugins.Plugin>}
+ */
+proto.team.Team.prototype.getPluginsList = function() {
+  return /** @type{!Array<!proto.plugins.Plugin>} */ (
+    jspb.Message.getRepeatedWrapperField(this, plugins_pb.Plugin, 7));
+};
+
+
+/**
+ * @param {!Array<!proto.plugins.Plugin>} value
+ * @return {!proto.team.Team} returns this
+*/
+proto.team.Team.prototype.setPluginsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 7, value);
+};
+
+
+/**
+ * @param {!proto.plugins.Plugin=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.plugins.Plugin}
+ */
+proto.team.Team.prototype.addPlugins = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.plugins.Plugin, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.team.Team} returns this
+ */
+proto.team.Team.prototype.clearPluginsList = function() {
+  return this.setPluginsList([]);
 };
 
 
