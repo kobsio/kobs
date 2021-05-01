@@ -59,6 +59,8 @@ helm upgrade kobs kobs/kobs
 | `nodeSelector` | Specify a map of key-value pairs, to assign the Pods to a specific set of nodes. | `{}` |
 | `tolerations` | Specify the tolerations for the kobs Pods. | `[]` |
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
+| `podAnnotations` | Specify additional annotations for the created Pods. | `{}` |
+| `podLabels` | Specify additional labels for the created Pods. | `{}` |
 | `kobs.image.repository` | The repository for the Docker image. | `kobsio/kobs` |
 | `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.2.0` |
 | `kobs.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |

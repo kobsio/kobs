@@ -13,6 +13,11 @@ spec:
     metadata:
       labels:
         {{- include "kobs.selectorLabels" . | nindent 8 }}
+        {{- include "kobs.podLabels" . | nindent 8 }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{ include "kobs.podAnnotations" . | nindent 8 }}
+      {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
