@@ -36,15 +36,8 @@ type Cluster struct {
 	applicationClientset *applicationClientsetVersioned.Clientset
 	teamClientset        *teamClientsetVersioned.Clientset
 	templateClientset    *templateClientsetVersioned.Clientset
-	options              Options
 	name                 string
 	crds                 []*clustersProto.CRD
-}
-
-// Options contains various options, which could be set for a cluster. For example a user can set the cache duration for
-// loaded manifest files and the names of the datasources, which should be used within a cluster.
-type Options struct {
-	cacheDuration time.Duration
 }
 
 // Cache implements a simple caching layer, for the loaded manifest files. The goal of the caching layer is to return
@@ -52,16 +45,6 @@ type Options struct {
 type Cache struct {
 	namespaces          []string
 	namespacesLastFetch time.Time
-}
-
-// SetOptions is used to set the options for a cluster. The options are not set during the creation of a cluster, so
-// that we do not have to pass around the options through different functions.
-// We also do not know the datasources befor the cluster name is determined, so that we loop through all loaded clusters
-// and connect the datasource names with the correct cluster.
-func (c *Cluster) SetOptions(cacheDuration time.Duration) {
-	c.options = Options{
-		cacheDuration: cacheDuration,
-	}
 }
 
 // GetName returns the name of the cluster.
@@ -77,10 +60,10 @@ func (c *Cluster) GetCRDs() []*clustersProto.CRD {
 // GetNamespaces returns all namespaces for the cluster. To reduce the latency and the number of API calls, we are
 // "caching" the namespaces. This means that if a new namespace is created in a cluster, this namespaces is only shown
 // after the configured cache duration.
-func (c *Cluster) GetNamespaces(ctx context.Context) ([]string, error) {
+func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error) {
 	log.WithFields(logrus.Fields{"last fetch": c.cache.namespacesLastFetch}).Tracef("Last namespace fetch.")
 
-	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * c.options.cacheDuration)) {
+	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * cacheDuration)) {
 		log.WithFields(logrus.Fields{"cluster": c.name}).Debugf("Return namespaces from cache.")
 
 		return c.cache.namespaces, nil

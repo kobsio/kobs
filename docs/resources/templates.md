@@ -22,7 +22,7 @@ In the following you can found the specification for the Template CRD.
 | name | string | The name of the variable. | Yes |
 | description | string | A description for the variable. | Yes |
 
-## Example
+## Examples
 
 !!! note
     We collect several templates in the [`deploy/templates`](https://github.com/kobsio/kobs/blob/main/deploy/templates) folder. If you have a template, which can also be useful for others, feel free to add it to this folder.
