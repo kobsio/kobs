@@ -107,8 +107,6 @@ const Team: React.FunctionComponent = () => {
     );
   }
 
-  console.log(data.team);
-
   return (
     <React.Fragment>
       <PageSection style={{ paddingBottom: '0px' }} variant={PageSectionVariants.light}>

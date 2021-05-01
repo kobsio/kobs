@@ -13,6 +13,7 @@ import (
 	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters/provider"
 	teamProto "github.com/kobsio/kobs/pkg/api/plugins/team/proto"
+	templateProto "github.com/kobsio/kobs/pkg/api/plugins/template/proto"
 
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
@@ -25,6 +26,7 @@ var (
 	cacheDurationNamespaces string
 	cacheDurationTopology   string
 	cacheDurationTeams      string
+	cacheDurationTemplates  time.Duration
 	forbiddenResources      []string
 )
 
@@ -45,6 +47,14 @@ func init() {
 		defaultCacheDurationTeams = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEAMS")
 	}
 
+	defaultCacheDurationTemplates := time.Duration(60 * time.Minute)
+	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEMPLATES") != "" {
+		parsedCacheDurationTemplates, err := time.ParseDuration(os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEMPLATES"))
+		if err == nil {
+			defaultCacheDurationTemplates = parsedCacheDurationTemplates
+		}
+	}
+
 	var defaultForbiddenResources []string
 	if os.Getenv("KOBS_CLUSTERS_FORBIDDEN_RESOURCES") != "" {
 		defaultForbiddenResources = strings.Split(os.Getenv("KOBS_CLUSTERS_FORBIDDEN_RESOURCES"), ",")
@@ -53,6 +63,7 @@ func init() {
 	flag.StringVar(&cacheDurationNamespaces, "clusters.cache-duration.namespaces", defaultCacheDurationNamespaces, "The duration, for how long requests to get the list of namespaces should be cached.")
 	flag.StringVar(&cacheDurationTopology, "clusters.cache-duration.topology", defaultCacheDurationTopology, "The duration, for how long the topology data should be cached.")
 	flag.StringVar(&cacheDurationTeams, "clusters.cache-duration.teams", defaultCacheDurationTeams, "The duration, for how long the teams data should be cached.")
+	flag.DurationVar(&cacheDurationTemplates, "clusters.cache-duration.templates", defaultCacheDurationTemplates, "The duration, for how long the templates data should be cached.")
 	flag.StringArrayVar(&forbiddenResources, "clusters.forbidden-resources", defaultForbiddenResources, "A list of resources, which can not be accessed via kobs.")
 }
 
@@ -80,6 +91,12 @@ type Clusters struct {
 	edges    []*clustersProto.Edge
 	nodes    []*clustersProto.Node
 	teams    []Team
+	cache    Cache
+}
+
+type Cache struct {
+	templates          []*templateProto.Template
+	templatesLastFetch time.Time
 }
 
 func (c *Clusters) getCluster(name string) *cluster.Cluster {
@@ -382,6 +399,45 @@ func (c *Clusters) GetTeam(ctx context.Context, getTeamRequest *clustersProto.Ge
 	return &clustersProto.GetTeamResponse{
 		Team:         team,
 		Applications: applications,
+	}, nil
+}
+
+// GetTemplates returns a list of templates. The name of a template must be unique accross all clusters and namespace,
+// because we only use the name in the CRs and resources to identify a template. If the last fetch was before the
+// request time + the cache duration we return the cached templates. If this isn't the case and the lenght of the
+// templates slice is 0 we fetch the templates and return them to the user. If the length of the slice is larger then 0,
+// we return the cached templates, but trigger a refectch in the background.
+func (c *Clusters) GetTemplates(ctx context.Context, getTemplatesRequest *clustersProto.GetTemplatesRequest) (*clustersProto.GetTemplatesResponse, error) {
+	log.Tracef("GetTemplates")
+
+	if c.cache.templatesLastFetch.After(time.Now().Add(-1 * cacheDurationTemplates)) {
+		return &clustersProto.GetTemplatesResponse{
+			Templates: c.cache.templates,
+		}, nil
+	}
+
+	if c.cache.templates == nil {
+		templates := getTemplates(ctx, c.clusters)
+		if templates != nil {
+			c.cache.templatesLastFetch = time.Now()
+			c.cache.templates = templates
+		}
+
+		return &clustersProto.GetTemplatesResponse{
+			Templates: templates,
+		}, nil
+	}
+
+	go func() {
+		templates := getTemplates(ctx, c.clusters)
+		if templates != nil {
+			c.cache.templatesLastFetch = time.Now()
+			c.cache.templates = templates
+		}
+	}()
+
+	return &clustersProto.GetTemplatesResponse{
+		Templates: c.cache.templates,
 	}, nil
 }
 

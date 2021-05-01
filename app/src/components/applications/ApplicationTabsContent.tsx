@@ -6,13 +6,15 @@ import {
   PageSectionVariants,
   TabContent,
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { IRow } from '@patternfly/react-table';
 
+import { IPluginsContext, PluginsContext } from 'context/PluginsContext';
 import { Application } from 'proto/application_pb';
 import Plugin from 'components/plugins/Plugin';
 import ResourceDetails from 'components/resources/ResourceDetails';
 import ResourcesList from 'components/resources/ResourcesList';
+import { pluginTemplateName } from 'utils/constants';
 
 // IMountedTabs is the interface, which is used in an object, which represents all mounted tabs. With this we can
 // implement the "mountOnEnter" function from Patternfly for our tabs setup, because this function doesn't work when,
@@ -40,6 +42,7 @@ const ApplicationTabsContent: React.FunctionComponent<IApplicationTabsContent> =
   refResourcesContent,
   refPluginsContent,
 }: IApplicationTabsContent) => {
+  const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const [panelContent, setPanelContent] = useState<React.ReactNode | undefined>(undefined);
 
   const pageSection = (
@@ -85,7 +88,11 @@ const ApplicationTabsContent: React.FunctionComponent<IApplicationTabsContent> =
           <div>
             {mountedTabs[`refPlugin-${index}`] ? (
               <Plugin
-                plugin={plugin}
+                plugin={
+                  plugin.name === pluginTemplateName && plugin.template
+                    ? pluginsContext.getTemplate(plugin.template.name, plugin.template.variablesMap)
+                    : plugin
+                }
                 showDetails={isInDrawer ? undefined : (details: React.ReactNode): void => setPanelContent(details)}
               />
             ) : null}

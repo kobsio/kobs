@@ -5,6 +5,7 @@ option go_package = "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto";
 
 import "application.proto";
 import "team.proto";
+import "template.proto";
 
 // Clusters is the service to execute requests against all loaded Kubernetes clusters. The service can be used to get
 // all clusters, the namespaces for clusters and various Kubernetes resources.
@@ -19,6 +20,7 @@ service Clusters {
   rpc GetApplicationsTopology(GetApplicationsTopologyRequest) returns (GetApplicationsTopologyResponse) {}
   rpc GetTeams(GetTeamsRequest) returns (GetTeamsResponse) {}
   rpc GetTeam(GetTeamRequest) returns (GetTeamResponse) {}
+  rpc GetTemplates(GetTemplatesRequest) returns (GetTemplatesResponse) {}
 }
 
 // GetClustersRequest is the request to get all loaded Kubernetes clusters via the GetClusters method.
@@ -210,4 +212,12 @@ message GetTeamRequest {
 message GetTeamResponse {
   team.Team team = 1;
   repeated application.Application applications = 2;
+}
+
+// GetTemplatesRequest is the message format to get a list of all templates. It doesn't require any parameters.
+message GetTemplatesRequest {}
+
+// GetTemplatesResponse is the response format for a GetTemplates request. It contains a list of all Template CRs.
+message GetTemplatesResponse {
+  repeated template.Template templates = 1;
 }

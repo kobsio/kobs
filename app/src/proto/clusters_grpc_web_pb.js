@@ -19,6 +19,8 @@ grpc.web = require('grpc-web');
 var application_pb = require('./application_pb.js')
 
 var team_pb = require('./team_pb.js')
+
+var template_pb = require('./template_pb.js')
 const proto = {};
 proto.clusters = require('./clusters_pb.js');
 
@@ -871,6 +873,86 @@ proto.clusters.ClustersPromiseClient.prototype.getTeam =
       request,
       metadata || {},
       methodDescriptor_Clusters_GetTeam);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.clusters.GetTemplatesRequest,
+ *   !proto.clusters.GetTemplatesResponse>}
+ */
+const methodDescriptor_Clusters_GetTemplates = new grpc.web.MethodDescriptor(
+  '/clusters.Clusters/GetTemplates',
+  grpc.web.MethodType.UNARY,
+  proto.clusters.GetTemplatesRequest,
+  proto.clusters.GetTemplatesResponse,
+  /**
+   * @param {!proto.clusters.GetTemplatesRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetTemplatesResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.clusters.GetTemplatesRequest,
+ *   !proto.clusters.GetTemplatesResponse>}
+ */
+const methodInfo_Clusters_GetTemplates = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.clusters.GetTemplatesResponse,
+  /**
+   * @param {!proto.clusters.GetTemplatesRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.clusters.GetTemplatesResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.clusters.GetTemplatesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.clusters.GetTemplatesResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.clusters.GetTemplatesResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.clusters.ClustersClient.prototype.getTemplates =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/clusters.Clusters/GetTemplates',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetTemplates,
+      callback);
+};
+
+
+/**
+ * @param {!proto.clusters.GetTemplatesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.clusters.GetTemplatesResponse>}
+ *     Promise that resolves to the response
+ */
+proto.clusters.ClustersPromiseClient.prototype.getTemplates =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/clusters.Clusters/GetTemplates',
+      request,
+      metadata || {},
+      methodDescriptor_Clusters_GetTemplates);
 };
 
 
