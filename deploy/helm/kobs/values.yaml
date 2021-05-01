@@ -36,6 +36,14 @@ tolerations: []
 ##
 affinity: {}
 
+## Specify additional annotations for the created Pods.
+##
+podAnnotations: {}
+
+## Specify additional labels for the created Pods.
+##
+podLabels: {}
+
 kobs:
   image:
     repository: kobsio/kobs

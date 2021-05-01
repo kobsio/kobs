@@ -72,3 +72,21 @@ Create the name of the cluster role and cluster role binding to use
     {{ default "default" .Values.rbac.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Additional annotations for Pods
+*/}}
+{{- define "kobs.podAnnotations" -}}
+{{- if .Values.podAnnotations }}
+{{- toYaml .Values.podAnnotations }}
+{{- end }}
+{{- end }}
+
+{{/*
+Additional labels for Pods
+*/}}
+{{- define "kobs.podLabels" -}}
+{{- if .Values.podLabels }}
+{{- toYaml .Values.podLabels }}
+{{- end }}
+{{- end }}
