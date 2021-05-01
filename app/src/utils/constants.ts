@@ -23,3 +23,7 @@ export const teamAnnotation = 'kobs.io/teams';
 
 // pluginAnnotation is the key for the annotation, which allows a user to specify a list of plugins within a resource.
 export const pluginAnnotation = 'kobs.io/plugins';
+
+// pluginTemplateName is the special plugin name, which can be used to reference a template within the plugin section of
+// an resource.
+export const pluginTemplateName = 'Template';

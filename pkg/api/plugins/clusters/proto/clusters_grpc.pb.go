@@ -28,6 +28,7 @@ type ClustersClient interface {
 	GetApplicationsTopology(ctx context.Context, in *GetApplicationsTopologyRequest, opts ...grpc.CallOption) (*GetApplicationsTopologyResponse, error)
 	GetTeams(ctx context.Context, in *GetTeamsRequest, opts ...grpc.CallOption) (*GetTeamsResponse, error)
 	GetTeam(ctx context.Context, in *GetTeamRequest, opts ...grpc.CallOption) (*GetTeamResponse, error)
+	GetTemplates(ctx context.Context, in *GetTemplatesRequest, opts ...grpc.CallOption) (*GetTemplatesResponse, error)
 }
 
 type clustersClient struct {
@@ -128,6 +129,15 @@ func (c *clustersClient) GetTeam(ctx context.Context, in *GetTeamRequest, opts .
 	return out, nil
 }
 
+func (c *clustersClient) GetTemplates(ctx context.Context, in *GetTemplatesRequest, opts ...grpc.CallOption) (*GetTemplatesResponse, error) {
+	out := new(GetTemplatesResponse)
+	err := c.cc.Invoke(ctx, "/clusters.Clusters/GetTemplates", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClustersServer is the server API for Clusters service.
 // All implementations must embed UnimplementedClustersServer
 // for forward compatibility
@@ -142,6 +152,7 @@ type ClustersServer interface {
 	GetApplicationsTopology(context.Context, *GetApplicationsTopologyRequest) (*GetApplicationsTopologyResponse, error)
 	GetTeams(context.Context, *GetTeamsRequest) (*GetTeamsResponse, error)
 	GetTeam(context.Context, *GetTeamRequest) (*GetTeamResponse, error)
+	GetTemplates(context.Context, *GetTemplatesRequest) (*GetTemplatesResponse, error)
 	mustEmbedUnimplementedClustersServer()
 }
 
@@ -178,6 +189,9 @@ func (UnimplementedClustersServer) GetTeams(context.Context, *GetTeamsRequest) (
 }
 func (UnimplementedClustersServer) GetTeam(context.Context, *GetTeamRequest) (*GetTeamResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTeam not implemented")
+}
+func (UnimplementedClustersServer) GetTemplates(context.Context, *GetTemplatesRequest) (*GetTemplatesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTemplates not implemented")
 }
 func (UnimplementedClustersServer) mustEmbedUnimplementedClustersServer() {}
 
@@ -372,6 +386,24 @@ func _Clusters_GetTeam_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Clusters_GetTemplates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTemplatesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClustersServer).GetTemplates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clusters.Clusters/GetTemplates",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClustersServer).GetTemplates(ctx, req.(*GetTemplatesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Clusters_ServiceDesc is the grpc.ServiceDesc for Clusters service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +450,10 @@ var Clusters_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTeam",
 			Handler:    _Clusters_GetTeam_Handler,
+		},
+		{
+			MethodName: "GetTemplates",
+			Handler:    _Clusters_GetTemplates_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

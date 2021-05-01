@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 import yaml from 'js-yaml';
 
 import { IPluginsContext, PluginsContext } from 'context/PluginsContext';
-import { applicationAnnotation, pluginAnnotation, teamAnnotation } from 'utils/constants';
+import { applicationAnnotation, pluginAnnotation, pluginTemplateName, teamAnnotation } from 'utils/constants';
 import Editor from 'components/Editor';
 import { Plugin as IPlugin } from 'proto/plugins_grpc_web_pb';
 import Plugin from 'components/plugins/Plugin';
@@ -161,17 +161,30 @@ const ResourceDetails: React.FunctionComponent<IResourceDetailsProps> = ({
           throw new Error('Plugin name is missing');
         }
 
-        const pluginDetails = pluginsContext.getPluginDetails(parsedPlugin.name);
-        if (!pluginDetails) {
-          throw new Error('Plugin was not found');
-        }
+        if (parsedPlugin.name === pluginTemplateName && parsedPlugin.template) {
+          const pluginTemplate = pluginsContext.getTemplate(
+            parsedPlugin.template.name,
+            parsedPlugin.template.variables,
+          );
+          if (!pluginTemplate) {
+            throw new Error('Plugin template was not found');
+          }
 
-        const plugin = pluginsDefinition[pluginDetails.type].jsonToProto(parsedPlugin);
-        if (!plugin) {
-          throw new Error('Could not parse plugin annotation.');
-        }
+          pluginTemplate.displayname = parsedPlugin.displayName ? parsedPlugin.displayName : parsedPlugin.name;
+          plugins.push(pluginTemplate);
+        } else {
+          const pluginDetails = pluginsContext.getPluginDetails(parsedPlugin.name);
+          if (!pluginDetails) {
+            throw new Error('Plugin was not found');
+          }
 
-        plugins.push(plugin);
+          const plugin = pluginsDefinition[pluginDetails.type].jsonToProto(parsedPlugin);
+          if (!plugin) {
+            throw new Error('Could not parse plugin annotation.');
+          }
+
+          plugins.push(plugin);
+        }
       }
     }
   } catch (err) {

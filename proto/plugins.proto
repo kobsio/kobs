@@ -36,8 +36,16 @@ message PluginShort {
 message Plugin {
   string name = 1;
   string displayName = 2;
-  prometheus.Spec prometheus = 3;
-  elasticsearch.Spec elasticsearch = 4;
-  jaeger.Spec jaeger = 5;
-  opsgenie.Spec opsgenie = 6;
+  Template template = 3;
+  prometheus.Spec prometheus = 4;
+  elasticsearch.Spec elasticsearch = 5;
+  jaeger.Spec jaeger = 6;
+  opsgenie.Spec opsgenie = 7;
+}
+
+// Template is the reference for a plugin template, which can be used within a plugin. The user must provide the name
+// of the template and an optional list of variables.
+message Template {
+  string name = 1;
+  map<string, string> variables = 2;
 }

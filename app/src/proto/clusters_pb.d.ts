@@ -4,6 +4,7 @@
 import * as jspb from "google-protobuf";
 import * as application_pb from "./application_pb";
 import * as team_pb from "./team_pb";
+import * as template_pb from "./template_pb";
 
 export class GetClustersRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
@@ -702,6 +703,44 @@ export namespace GetTeamResponse {
   export type AsObject = {
     team?: team_pb.Team.AsObject,
     applicationsList: Array<application_pb.Application.AsObject>,
+  }
+}
+
+export class GetTemplatesRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTemplatesRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTemplatesRequest): GetTemplatesRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTemplatesRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTemplatesRequest;
+  static deserializeBinaryFromReader(message: GetTemplatesRequest, reader: jspb.BinaryReader): GetTemplatesRequest;
+}
+
+export namespace GetTemplatesRequest {
+  export type AsObject = {
+  }
+}
+
+export class GetTemplatesResponse extends jspb.Message {
+  clearTemplatesList(): void;
+  getTemplatesList(): Array<template_pb.Template>;
+  setTemplatesList(value: Array<template_pb.Template>): void;
+  addTemplates(value?: template_pb.Template, index?: number): template_pb.Template;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTemplatesResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTemplatesResponse): GetTemplatesResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTemplatesResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTemplatesResponse;
+  static deserializeBinaryFromReader(message: GetTemplatesResponse, reader: jspb.BinaryReader): GetTemplatesResponse;
+}
+
+export namespace GetTemplatesResponse {
+  export type AsObject = {
+    templatesList: Array<template_pb.Template.AsObject>,
   }
 }
 

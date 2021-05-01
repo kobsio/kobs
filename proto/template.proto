@@ -1,0 +1,23 @@
+syntax = "proto3";
+package template;
+
+option go_package = "github.com/kobsio/kobs/pkg/api/plugins/template/proto";
+
+import "plugins.proto";
+
+// Template is used as spec for the Template CRD. A template can be used to define a template for a plugin. These
+// templates can then be reused for similar resources. For example if a user uses Istio in a cluster a template for the
+// Istio metrics can be defined and reused for every service.
+message Template {
+  string name = 1;
+  string description = 2;
+  repeated Variable variables = 3;
+  plugins.Plugin plugin = 4;
+}
+
+// Variable can be used to describe a used variable in a template. So that a user knows, what variables he can provide,
+// when he uses a template.
+message Variable {
+  string name = 1;
+  string description = 2;
+}

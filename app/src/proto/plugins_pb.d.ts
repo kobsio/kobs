@@ -80,6 +80,11 @@ export class Plugin extends jspb.Message {
   getDisplayname(): string;
   setDisplayname(value: string): void;
 
+  hasTemplate(): boolean;
+  clearTemplate(): void;
+  getTemplate(): Template | undefined;
+  setTemplate(value?: Template): void;
+
   hasPrometheus(): boolean;
   clearPrometheus(): void;
   getPrometheus(): prometheus_pb.Spec | undefined;
@@ -114,10 +119,34 @@ export namespace Plugin {
   export type AsObject = {
     name: string,
     displayname: string,
+    template?: Template.AsObject,
     prometheus?: prometheus_pb.Spec.AsObject,
     elasticsearch?: elasticsearch_pb.Spec.AsObject,
     jaeger?: jaeger_pb.Spec.AsObject,
     opsgenie?: opsgenie_pb.Spec.AsObject,
+  }
+}
+
+export class Template extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getVariablesMap(): jspb.Map<string, string>;
+  clearVariablesMap(): void;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Template.AsObject;
+  static toObject(includeInstance: boolean, msg: Template): Template.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Template, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Template;
+  static deserializeBinaryFromReader(message: Template, reader: jspb.BinaryReader): Template;
+}
+
+export namespace Template {
+  export type AsObject = {
+    name: string,
+    variablesMap: Array<[string, string]>,
   }
 }
 

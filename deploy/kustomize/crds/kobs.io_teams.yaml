@@ -234,6 +234,18 @@ spec:
                             type: object
                           type: array
                       type: object
+                    template:
+                      description: Template is the reference for a plugin template,
+                        which can be used within a plugin. The user must provide the
+                        name of the template and an optional list of variables.
+                      properties:
+                        name:
+                          type: string
+                        variables:
+                          additionalProperties:
+                            type: string
+                          type: object
+                      type: object
                   type: object
                 type: array
             type: object

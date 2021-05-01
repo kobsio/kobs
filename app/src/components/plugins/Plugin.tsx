@@ -6,18 +6,20 @@ import { Plugin as IPlugin } from 'proto/plugins_grpc_web_pb';
 import { plugins } from 'utils/plugins';
 
 interface IPluginProps {
-  plugin: IPlugin.AsObject;
+  plugin?: IPlugin.AsObject;
   showDetails?: (panelContent: React.ReactNode) => void;
 }
 
 const Plugin: React.FunctionComponent<IPluginProps> = ({ plugin, showDetails }: IPluginProps) => {
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
-  const pluginDetails = pluginsContext.getPluginDetails(plugin.name);
+  const pluginDetails = plugin ? pluginsContext.getPluginDetails(plugin.name) : undefined;
 
-  if (!pluginDetails || !plugins.hasOwnProperty(pluginDetails.type)) {
+  if (!plugin || !pluginDetails || !plugins.hasOwnProperty(pluginDetails.type)) {
     return (
       <Alert variant={AlertVariant.danger} title="Plugin was not found">
-        {pluginDetails ? (
+        {!plugin ? (
+          <p>The plugin was not found.</p>
+        ) : pluginDetails ? (
           <p>
             The plugin <b>{plugin.name}</b> has an invalide type.
           </p>
