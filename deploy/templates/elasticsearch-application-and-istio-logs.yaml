@@ -1,0 +1,30 @@
+apiVersion: kobs.io/v1alpha1
+kind: Template
+metadata:
+  name: elasticsearch-application-and-istio-logs
+spec:
+  description: Display the logs of your Application and the Istio Sidecar via Elasticsearch.
+  variables:
+    - name: name
+      description: The name of your Application.
+    - name: namespace
+      description: The namespace of your Application.
+  plugin:
+    name: Elasticsearch
+    elasticsearch:
+      queries:
+        - name: Application Logs
+          query: "kubernetes.namespace: << namespace >> AND kubernetes.labels.app: << name >> AND NOT kubernetes.container.name: istio-proxy"
+        - name: Istio Sidecar Logs
+          query: "kubernetes.namespace: << namespace >> AND kubernetes.labels.app: << name >> AND kubernetes.container.name: istio-proxy"
+          fields:
+            - "kubernetes.pod.name"
+            - "content.authority"
+            - "content.route_name"
+            - "content.protocol"
+            - "content.method"
+            - "content.path"
+            - "content.response_code"
+            - "content.upstream_service_time"
+            - "content.bytes_received"
+            - "content.bytes_sent"

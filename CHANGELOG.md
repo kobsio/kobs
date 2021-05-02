@@ -34,6 +34,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#55](https://github.com/kobsio/kobs/pull/55): Allow a user to add a tag from a span as filter in the Jaeger plugin.
 - [#57](https://github.com/kobsio/kobs/pull/57): Visualize the offset of spans in the Jaeger plugin.
 - [#61](https://github.com/kobsio/kobs/pull/61): Improve caching logic, by generating the teams and topology graph only when it is requested and not via an additional goroutine.
+- [#62](https://github.com/kobsio/kobs/pull/62): Show the name of a variable within the select box in the Prometheus dashboards.
 
 ## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
 
