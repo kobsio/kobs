@@ -36,6 +36,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#57](https://github.com/kobsio/kobs/pull/57): Visualize the offset of spans in the Jaeger plugin.
 - [#61](https://github.com/kobsio/kobs/pull/61): Improve caching logic, by generating the teams and topology graph only when it is requested and not via an additional goroutine.
 - [#62](https://github.com/kobsio/kobs/pull/62): Show the name of a variable within the select box in the Prometheus dashboards.
+- [#64](https://github.com/kobsio/kobs/pull/64): Recreate Pods when ConfigMap in Helm chart is changed.
 
 ## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
 
