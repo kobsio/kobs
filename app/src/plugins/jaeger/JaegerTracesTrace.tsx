@@ -9,6 +9,7 @@ import {
   doesTraceContainsError,
   formatTraceTime,
   getDuration,
+  getRootSpan,
   getSpansPerServices,
 } from 'plugins/jaeger/helpers';
 import JaegerTrace from 'plugins/jaeger/JaegerTrace';
@@ -24,9 +25,14 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
   trace,
   setTrace,
 }: IJaegerTracesTraceProps) => {
-  const rootSpan = trace.spans[0];
+  const rootSpan = getRootSpan(trace.spans);
+  if (!rootSpan) {
+    return null;
+  }
+
   const rootSpanProcess = trace.processes[rootSpan.processID];
   const rootSpanService = rootSpanProcess.serviceName;
+  const services = getSpansPerServices(trace);
 
   const card = (
     <Card
@@ -61,9 +67,9 @@ const JaegerTracesTrace: React.FunctionComponent<IJaegerTracesTraceProps> = ({
           {trace.spans.length} Spans
         </Badge>
 
-        {getSpansPerServices(trace).map((service, index) => (
-          <Badge key={index} className="pf-u-ml-sm" style={{ backgroundColor: service.color }}>
-            {service.service} ({service.spans})
+        {Object.keys(services).map((name) => (
+          <Badge key={name} className="pf-u-ml-sm" style={{ backgroundColor: services[name].color }}>
+            {services[name].service} ({services[name].spans})
           </Badge>
         ))}
 

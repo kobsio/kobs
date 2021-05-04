@@ -13,6 +13,8 @@ import (
 	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
 	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/plugins/team/clientset/versioned"
 	teamProto "github.com/kobsio/kobs/pkg/api/plugins/team/proto"
+	templateClientsetVersioned "github.com/kobsio/kobs/pkg/api/plugins/template/clientset/versioned"
+	templateProto "github.com/kobsio/kobs/pkg/api/plugins/template/proto"
 
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -33,15 +35,9 @@ type Cluster struct {
 	clientset            *kubernetes.Clientset
 	applicationClientset *applicationClientsetVersioned.Clientset
 	teamClientset        *teamClientsetVersioned.Clientset
-	options              Options
+	templateClientset    *templateClientsetVersioned.Clientset
 	name                 string
 	crds                 []*clustersProto.CRD
-}
-
-// Options contains various options, which could be set for a cluster. For example a user can set the cache duration for
-// loaded manifest files and the names of the datasources, which should be used within a cluster.
-type Options struct {
-	cacheDuration time.Duration
 }
 
 // Cache implements a simple caching layer, for the loaded manifest files. The goal of the caching layer is to return
@@ -49,16 +45,6 @@ type Options struct {
 type Cache struct {
 	namespaces          []string
 	namespacesLastFetch time.Time
-}
-
-// SetOptions is used to set the options for a cluster. The options are not set during the creation of a cluster, so
-// that we do not have to pass around the options through different functions.
-// We also do not know the datasources befor the cluster name is determined, so that we loop through all loaded clusters
-// and connect the datasource names with the correct cluster.
-func (c *Cluster) SetOptions(cacheDuration time.Duration) {
-	c.options = Options{
-		cacheDuration: cacheDuration,
-	}
 }
 
 // GetName returns the name of the cluster.
@@ -74,10 +60,10 @@ func (c *Cluster) GetCRDs() []*clustersProto.CRD {
 // GetNamespaces returns all namespaces for the cluster. To reduce the latency and the number of API calls, we are
 // "caching" the namespaces. This means that if a new namespace is created in a cluster, this namespaces is only shown
 // after the configured cache duration.
-func (c *Cluster) GetNamespaces(ctx context.Context) ([]string, error) {
+func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error) {
 	log.WithFields(logrus.Fields{"last fetch": c.cache.namespacesLastFetch}).Tracef("Last namespace fetch.")
 
-	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * c.options.cacheDuration)) {
+	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * cacheDuration)) {
 		log.WithFields(logrus.Fields{"cluster": c.name}).Debugf("Return namespaces from cache.")
 
 		return c.cache.namespaces, nil
@@ -234,6 +220,29 @@ func (c *Cluster) GetTeam(ctx context.Context, namespace, name string) (*teamPro
 	return team, nil
 }
 
+// GetTemplates returns a list of templates.
+func (c *Cluster) GetTemplates(ctx context.Context) ([]*templateProto.Template, error) {
+	templateList, err := c.templateClientset.KobsV1alpha1().Templates("").List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	var templates []*templateProto.Template
+
+	for _, templateItem := range templateList.Items {
+		if templateItem.Spec == nil {
+			continue
+		}
+
+		template := templateItem.Spec
+		template.Name = templateItem.Name
+
+		templates = append(templates, template)
+	}
+
+	return templates, nil
+}
+
 // loadCRDs retrieves all CRDs from the Kubernetes API of this cluster. Then the CRDs are transformed into our internal
 // CRD format and saved within the cluster. Since this function is only called once after a cluster was loaded, we call
 // it in a endless loop until it succeeds.
@@ -315,12 +324,19 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 		return nil, err
 	}
 
+	templateClientset, err := templateClientsetVersioned.NewForConfig(restConfig)
+	if err != nil {
+		log.WithError(err).Debugf("Could not create template clientset.")
+		return nil, err
+	}
+
 	name = strings.Trim(slugifyRe.ReplaceAllString(strings.ToLower(name), "-"), "-")
 
 	c := &Cluster{
 		clientset:            clientset,
 		applicationClientset: applicationClientset,
 		teamClientset:        teamClientset,
+		templateClientset:    templateClientset,
 		name:                 name,
 	}
 

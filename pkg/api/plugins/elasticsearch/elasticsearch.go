@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	elasticsearchProto "github.com/kobsio/kobs/pkg/api/plugins/elasticsearch/proto"
 	pluginsProto "github.com/kobsio/kobs/pkg/api/plugins/plugins/proto"
@@ -85,7 +86,7 @@ type ResponseError struct {
 	Status int `json:"status"`
 }
 
-func (e *Elasticsearch) getInstace(name string) *Instance {
+func (e *Elasticsearch) getInstance(name string) *Instance {
 	for _, i := range e.instances {
 		if i.name == name {
 			return i
@@ -100,7 +101,7 @@ func (e *Elasticsearch) GetLogs(ctx context.Context, getLogsRequest *elasticsear
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := e.getInstace(getLogsRequest.Name)
+	instance := e.getInstance(getLogsRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
@@ -111,7 +112,7 @@ func (e *Elasticsearch) GetLogs(ctx context.Context, getLogsRequest *elasticsear
 
 	if getLogsRequest.ScrollID == "" {
 		url = fmt.Sprintf("%s/_search?scroll=15m", instance.address)
-		body = []byte(fmt.Sprintf(`{"size":100,"sort":[{"@timestamp":{"order":"desc"}}],"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%d","lte":"%d"}}},{"query_string":{"query":"%s"}}]}},"aggs":{"logcount":{"auto_date_histogram":{"field":"@timestamp","buckets":30}}}}`, getLogsRequest.TimeStart*1000, getLogsRequest.TimeEnd*1000, getLogsRequest.Query.Query))
+		body = []byte(fmt.Sprintf(`{"size":100,"sort":[{"@timestamp":{"order":"desc"}}],"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%d","lte":"%d"}}},{"query_string":{"query":"%s"}}]}},"aggs":{"logcount":{"auto_date_histogram":{"field":"@timestamp","buckets":30}}}}`, getLogsRequest.TimeStart*1000, getLogsRequest.TimeEnd*1000, strings.ReplaceAll(getLogsRequest.Query.Query, "\"", "\\\"")))
 	} else {
 		url = fmt.Sprintf("%s/_search/scroll", instance.address)
 		body = []byte(`{"scroll" : "15m", "scroll_id" : "` + getLogsRequest.ScrollID + `"}`)

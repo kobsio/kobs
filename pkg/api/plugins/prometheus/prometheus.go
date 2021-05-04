@@ -36,11 +36,13 @@ type Prometheus struct {
 }
 
 type Instance struct {
-	name  string
-	v1api v1.API
+	name                 string
+	metricNames          model.LabelValues
+	lastMetricNamesFetch time.Time
+	v1api                v1.API
 }
 
-func (p *Prometheus) getInstace(name string) *Instance {
+func (p *Prometheus) getInstance(name string) *Instance {
 	for _, i := range p.instances {
 		if i.name == name {
 			return i
@@ -59,7 +61,7 @@ func (p *Prometheus) GetVariables(ctx context.Context, getVariablesRequest *prom
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := p.getInstace(getVariablesRequest.Name)
+	instance := p.getInstance(getVariablesRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
@@ -122,7 +124,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 		return nil, fmt.Errorf("request data is missing")
 	}
 
-	instance := p.getInstace(getMetricsRequest.Name)
+	instance := p.getInstance(getMetricsRequest.Name)
 	if instance == nil {
 		return nil, fmt.Errorf("invalid name for Prometheus plugin")
 	}
@@ -178,10 +180,12 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 		for _, stream := range streams {
 			var min float64
 			var max float64
+			var avg float64
 
 			var data []*prometheusProto.Data
 			for index, value := range stream.Values {
 				val := float64(value.Value)
+				avg = avg + val
 
 				if index == 0 {
 					min = val
@@ -200,6 +204,10 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 				})
 			}
 
+			if avg != 0 {
+				avg = avg / float64(len(stream.Values))
+			}
+
 			var labels map[string]string
 			labels = make(map[string]string)
 
@@ -213,6 +221,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 					Label: query.Label,
 					Min:   min,
 					Max:   max,
+					Avg:   avg,
 					Data:  data,
 				})
 			} else {
@@ -224,6 +233,7 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 					Label: label,
 					Min:   min,
 					Max:   max,
+					Avg:   avg,
 					Data:  data,
 				})
 			}
@@ -232,6 +242,140 @@ func (p *Prometheus) GetMetrics(ctx context.Context, getMetricsRequest *promethe
 
 	return &prometheusProto.GetMetricsResponse{
 		Metrics:             metrics,
+		InterpolatedQueries: interpolatedQueries,
+	}, nil
+}
+
+// MetricLookup returns all label values for a configured Prometheus instance. These labels are used to show the user a
+// list of suggestions for his entered query.
+func (p *Prometheus) MetricLookup(ctx context.Context, metricsLookupRequest *prometheusProto.MetricLookupRequest) (*prometheusProto.MetricLookupResponse, error) {
+	instance := p.getInstance(metricsLookupRequest.Name)
+	if instance == nil {
+		return nil, fmt.Errorf("invalid name for Prometheus plugin")
+	}
+
+	now := time.Now()
+
+	// Fetch metric names if last fetch was more then a minute ago
+	if instance.lastMetricNamesFetch.Add(1 * time.Hour).Before(now) {
+		var err error
+		instance.metricNames, _, err = instance.v1api.LabelValues(ctx, model.MetricNameLabel, nil, now.Add(-1*time.Hour), now)
+		if err != nil {
+			return nil, err
+		}
+
+		instance.lastMetricNamesFetch = now
+		log.Debugf("Refreshed metricNames.")
+	} else {
+		log.Debugf("Using cached metricNames.")
+	}
+
+	var names []string
+	for _, name := range instance.metricNames {
+		if strings.Contains(string(name), metricsLookupRequest.Matcher) {
+			names = append(names, string(name))
+		}
+	}
+
+	return &prometheusProto.MetricLookupResponse{
+		Names: names,
+	}, nil
+}
+
+// GetTableData implements the GetTableData function from the Prometheus gRPC service. It takes a list of queries and
+// returns the corresponding data in a table format.
+// In the first step we parse the result of each query into a map[string]map[string]string, where the key of the first
+// map is the provided label for a query. This means the label of each querie should result in the same value, so that
+// we can join the results of the different queries. The second map holds all labels and label values. The value of the
+// query result is also added to this map with a key named "value-N". Finally we transform the
+// map[string]map[string]string is converted to the map[string]*prometheusProto.Row structure, which can be used in the
+// response.
+func (p *Prometheus) GetTableData(ctx context.Context, getTableDataRequest *prometheusProto.GetTableDataRequest) (*prometheusProto.GetTableDataResponse, error) {
+	if getTableDataRequest == nil {
+		return nil, fmt.Errorf("request data is missing")
+	}
+
+	instance := p.getInstance(getTableDataRequest.Name)
+	if instance == nil {
+		return nil, fmt.Errorf("invalid name for Prometheus plugin")
+	}
+
+	var selectedVariableValues map[string]string
+	selectedVariableValues = make(map[string]string, len(getTableDataRequest.Variables))
+
+	for _, variable := range getTableDataRequest.Variables {
+		if variable.Value == "All" {
+			selectedVariableValues[variable.Name] = strings.Join(variable.Values[1:], "|")
+		} else {
+			selectedVariableValues[variable.Name] = variable.Value
+		}
+	}
+
+	queryTime := time.Unix(getTableDataRequest.TimeEnd, 0)
+
+	var interpolatedQueries []string
+	var rows map[string]map[string]string
+	rows = make(map[string]map[string]string)
+
+	for queryIndex, query := range getTableDataRequest.Queries {
+		interpolatedQuery, err := queryInterpolation(query.Query, selectedVariableValues)
+		if err != nil {
+			return nil, err
+		}
+
+		interpolatedQueries = append(interpolatedQueries, interpolatedQuery)
+
+		log.WithFields(logrus.Fields{"query": interpolatedQuery, "time": queryTime}).Tracef("Query table data.")
+
+		result, _, err := instance.v1api.Query(ctx, interpolatedQuery, queryTime)
+		if err != nil {
+			return nil, err
+		}
+
+		streams, ok := result.(model.Vector)
+		if !ok {
+			return nil, err
+		}
+
+		for _, stream := range streams {
+			var labels map[string]string
+			labels = make(map[string]string)
+			labels[fmt.Sprintf("value-%d", queryIndex+1)] = stream.Value.String()
+
+			for key, value := range stream.Metric {
+				labels[string(key)] = string(value)
+			}
+
+			label, err := queryInterpolation(query.Label, labels)
+			if err != nil {
+				return nil, err
+			}
+
+			for key, value := range labels {
+				if _, ok := rows[label]; !ok {
+					rows[label] = make(map[string]string)
+				}
+
+				if _, ok := rows[label][key]; !ok {
+					rows[label][key] = value
+				}
+
+				rows[label][fmt.Sprintf("value-%d", queryIndex+1)] = stream.Value.String()
+			}
+		}
+	}
+
+	var convertedRows map[string]*prometheusProto.Row
+	convertedRows = make(map[string]*prometheusProto.Row)
+
+	for key, value := range rows {
+		convertedRows[key] = &prometheusProto.Row{
+			Columns: value,
+		}
+	}
+
+	return &prometheusProto.GetTableDataResponse{
+		Rows:                convertedRows,
 		InterpolatedQueries: interpolatedQueries,
 	}, nil
 }

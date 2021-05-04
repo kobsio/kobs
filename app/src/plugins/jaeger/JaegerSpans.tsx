@@ -8,10 +8,11 @@ import JaegerSpansChart from 'plugins/jaeger/JaegerSpansChart';
 import 'plugins/jaeger/jaeger.css';
 
 export interface IJaegerSpansProps {
+  name: string;
   trace: ITrace;
 }
 
-const JaegerSpans: React.FunctionComponent<IJaegerSpansProps> = ({ trace }: IJaegerSpansProps) => {
+const JaegerSpans: React.FunctionComponent<IJaegerSpansProps> = ({ name, trace }: IJaegerSpansProps) => {
   const duration = getDuration(trace.spans);
   const spans: ISpan[] = createSpansTree(trace.spans, trace.spans[0].startTime, duration);
 
@@ -37,7 +38,7 @@ const JaegerSpans: React.FunctionComponent<IJaegerSpansProps> = ({ trace }: IJae
       <Card>
         <Accordion asDefinitionList={false}>
           {spans.map((span, index) => (
-            <JaegerSpan key={index} span={span} processes={trace.processes} padding={16} />
+            <JaegerSpan key={index} name={name} span={span} processes={trace.processes} level={1} />
           ))}
         </Accordion>
       </Card>

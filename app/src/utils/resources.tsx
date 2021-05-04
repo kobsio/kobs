@@ -1,4 +1,12 @@
-import { Bullseye, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core';
+import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Spinner,
+  Title,
+} from '@patternfly/react-core';
 import {
   CoreV1EventList,
   V1ClusterRoleBindingList,
@@ -71,7 +79,7 @@ export interface IResource {
 // resources is the list of Kubernetes standard resources. To generate the rows for a resource, we have to pass the
 // result from the gRPC API call to the rows function. The returned rows are mostly the same as they are also retunred
 // by kubectl.
-const resources: IResources = {
+export const resources: IResources = {
   // eslint-disable-next-line sort-keys
   cronjobs: {
     columns: ['Name', 'Namespace', 'Cluster', 'Schedule', 'Suspend', 'Active', 'Last Schedule', 'Age'],
@@ -108,7 +116,7 @@ const resources: IResources = {
               lastSchedule,
               age,
             ],
-            props: cronJob,
+            props: { apiVersion: 'batch/v1beta1', kind: 'CronJob', ...cronJob },
           });
         }
       }
@@ -172,7 +180,7 @@ const resources: IResources = {
               nodeSelector.join(', '),
               age,
             ],
-            props: daemonSet,
+            props: { apiVersion: 'apps/v1', kind: 'DaemonSet', ...daemonSet },
           });
         }
       }
@@ -216,7 +224,7 @@ const resources: IResources = {
               available,
               age,
             ],
-            props: deployment,
+            props: { apiVersion: 'apps/v1', kind: 'Deployment', ...deployment },
           });
         }
       }
@@ -262,7 +270,7 @@ const resources: IResources = {
               duration,
               age,
             ],
-            props: job,
+            props: { apiVersion: 'batch/v1', kind: 'Job', ...job },
           });
         }
       }
@@ -410,7 +418,7 @@ const resources: IResources = {
               upToDate,
               age,
             ],
-            props: statefulSet,
+            props: { apiVersion: 'apps/v1', kind: 'StatefulSet', ...statefulSet },
           });
         }
       }
@@ -1316,7 +1324,7 @@ export const customResourceDefinition = (crds: CRD.AsObject[]): IResources => {
 
 // emptyState is used to display an empty state in the table for a resource, when the gRPC API call returned an error or
 // no results.
-export const emptyState = (cols: number, error: string): IRow[] => {
+export const emptyState = (cols: number, error: string, isLoading: boolean): IRow[] => {
   return [
     {
       cells: [
@@ -1325,13 +1333,19 @@ export const emptyState = (cols: number, error: string): IRow[] => {
           title: (
             <Bullseye>
               <EmptyState variant={EmptyStateVariant.small}>
-                <EmptyStateIcon icon={SearchIcon} />
-                <Title headingLevel="h2" size="lg">
-                  No results found
-                </Title>
-                <EmptyStateBody>
-                  {error ? error : 'No results match the filter criteria. Select another cluster or namespace.'}
-                </EmptyStateBody>
+                {isLoading ? (
+                  <EmptyStateIcon variant="container" component={Spinner} />
+                ) : (
+                  <React.Fragment>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      {error ? 'An error occured' : 'No results found'}
+                    </Title>
+                    <EmptyStateBody>
+                      {error ? error : 'No results match the filter criteria. Select another cluster or namespace.'}
+                    </EmptyStateBody>
+                  </React.Fragment>
+                )}
               </EmptyState>
             </Bullseye>
           ),

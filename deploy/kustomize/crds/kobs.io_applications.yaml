@@ -138,6 +138,25 @@ spec:
                         type: object
                       name:
                         type: string
+                      opsgenie:
+                        description: Spec implements the specification for an application.
+                          This field is then used in the Application CR and contains,
+                          all possible fields, which can be used by a user to work
+                          with Opsgenie.
+                        properties:
+                          queries:
+                            items:
+                              description: Query represents a single query for an
+                                application. A query is identified by a name and a
+                                query.
+                              properties:
+                                name:
+                                  type: string
+                                query:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
                       prometheus:
                         description: Spec implements the specification for an application.
                           This field is then used in the Application CR and contains,
@@ -158,6 +177,32 @@ spec:
                                 are executed against the datasource (e.g. For Prometheus
                                 this will be a list of PromQL queries).
                               properties:
+                                columns:
+                                  items:
+                                    description: Column is a single column for the
+                                      "table" chart type. The name must be a returned
+                                      label from the specified Prometheus queries
+                                      or a returned value. A value can be specified
+                                      via "value-1", "value-2", etc. The header value
+                                      can be used to modify the header title, when
+                                      this isn't set the name will be used for the
+                                      header. Unit allows a user to set a unit for
+                                      the column.
+                                    properties:
+                                      header:
+                                        type: string
+                                      name:
+                                        type: string
+                                      unit:
+                                        type: string
+                                    type: object
+                                  type: array
+                                legend:
+                                  type: string
+                                mappings:
+                                  additionalProperties:
+                                    type: string
+                                  type: object
                                 queries:
                                   items:
                                     description: Query presents a single query to
@@ -215,6 +260,18 @@ spec:
                                   type: array
                               type: object
                             type: array
+                        type: object
+                      template:
+                        description: Template is the reference for a plugin template,
+                          which can be used within a plugin. The user must provide
+                          the name of the template and an optional list of variables.
+                        properties:
+                          name:
+                            type: string
+                          variables:
+                            additionalProperties:
+                              type: string
+                            type: object
                         type: object
                     type: object
                 type: object
@@ -275,6 +332,24 @@ spec:
                       type: object
                     name:
                       type: string
+                    opsgenie:
+                      description: Spec implements the specification for an application.
+                        This field is then used in the Application CR and contains,
+                        all possible fields, which can be used by a user to work with
+                        Opsgenie.
+                      properties:
+                        queries:
+                          items:
+                            description: Query represents a single query for an application.
+                              A query is identified by a name and a query.
+                            properties:
+                              name:
+                                type: string
+                              query:
+                                type: string
+                            type: object
+                          type: array
+                      type: object
                     prometheus:
                       description: Spec implements the specification for an application.
                         This field is then used in the Application CR and contains,
@@ -295,6 +370,31 @@ spec:
                               datasource (e.g. For Prometheus this will be a list
                               of PromQL queries).
                             properties:
+                              columns:
+                                items:
+                                  description: Column is a single column for the "table"
+                                    chart type. The name must be a returned label
+                                    from the specified Prometheus queries or a returned
+                                    value. A value can be specified via "value-1",
+                                    "value-2", etc. The header value can be used to
+                                    modify the header title, when this isn't set the
+                                    name will be used for the header. Unit allows
+                                    a user to set a unit for the column.
+                                  properties:
+                                    header:
+                                      type: string
+                                    name:
+                                      type: string
+                                    unit:
+                                      type: string
+                                  type: object
+                                type: array
+                              legend:
+                                type: string
+                              mappings:
+                                additionalProperties:
+                                  type: string
+                                type: object
                               queries:
                                 items:
                                   description: Query presents a single query to get
@@ -352,6 +452,18 @@ spec:
                                 type: array
                             type: object
                           type: array
+                      type: object
+                    template:
+                      description: Template is the reference for a plugin template,
+                        which can be used within a plugin. The user must provide the
+                        name of the template and an optional list of variables.
+                      properties:
+                        name:
+                          type: string
+                        variables:
+                          additionalProperties:
+                            type: string
+                          type: object
                       type: object
                   type: object
                 type: array

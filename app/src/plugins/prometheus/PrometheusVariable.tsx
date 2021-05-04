@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectGroup, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 
 import { Variable } from 'proto/prometheus_grpc_web_pb';
 
@@ -26,6 +26,14 @@ const PrometheusVariable: React.FunctionComponent<IPrometheusVariableProps> = ({
     setShow(false);
   };
 
+  const group = [
+    <SelectGroup label={variable.name} key="variable">
+      {variable.valuesList.map((value, index) => (
+        <SelectOption key={index} value={value} />
+      ))}
+    </SelectGroup>,
+  ];
+
   return (
     <Select
       variant={SelectVariant.single}
@@ -36,9 +44,7 @@ const PrometheusVariable: React.FunctionComponent<IPrometheusVariableProps> = ({
       selections={variable.value}
       isOpen={show}
     >
-      {variable.valuesList.map((value, index) => (
-        <SelectOption key={index} value={value} />
-      ))}
+      {group}
     </Select>
   );
 };

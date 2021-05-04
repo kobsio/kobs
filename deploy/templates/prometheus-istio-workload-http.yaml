@@ -1,0 +1,226 @@
+---
+apiVersion: kobs.io/v1alpha1
+kind: Template
+metadata:
+  name: prometheus-istio-workload-http
+spec:
+  description: Istio Workload Dashboard for HTTP traffic, similar to the one provided for Grafana https://grafana.com/grafana/dashboards/7630.
+  variables:
+    - name: namespace
+      description: The workload namespace.
+    - name: workload
+      description: The workload name.
+  plugin:
+    name: Prometheus
+    prometheus:
+      variables:
+        - name: Reporter
+          label: reporter
+          query: istio_requests_total{destination_workload="<< workload >>", destination_workload_namespace=~"<< namespace >>"}
+          allowAll: false
+        - name: Source Workload Namespace
+          label: source_workload_namespace
+          query: istio_requests_total{reporter="{{ .Reporter }}", destination_workload="<< workload >>", destination_workload_namespace=~"<< namespace >>"}
+          allowAll: true
+        - name: Source Workload
+          label: source_workload
+          query: istio_requests_total{reporter="{{ .Reporter }}", destination_workload="<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}
+          allowAll: true
+        - name: Destination Service
+          label: destination_service
+          query: istio_requests_total{reporter="source", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>"}
+          allowAll: true
+      charts:
+        - title: Incoming Request Volume
+          type: sparkline
+          unit: req/s
+          size: 6
+          queries:
+            - label: Incoming Request Volume
+              query: round(sum(irate(istio_requests_total{reporter="{{ .Reporter }}",destination_workload_namespace=~"<< namespace >>",destination_workload=~"<< workload >>"}[5m])), 0.001)
+        - title: Incoming Success Rate
+          type: sparkline
+          unit: "%"
+          size: 6
+          queries:
+            - label: Incoming Success Rate
+              query: sum(irate(istio_requests_total{reporter="{{ .Reporter }}",destination_workload_namespace=~"<< namespace >>",destination_workload=~"<< workload >>",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="{{ .Reporter }}",destination_workload_namespace=~"<< namespace >>",destination_workload=~"<< workload >>"}[5m])) * 100
+        - title: Request Duration
+          type: line
+          unit: ms
+          size: 12
+          queries:
+            - label: P50
+              query: histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}",destination_workload_namespace=~"<< namespace >>",destination_workload=~"<< workload >>"}[1m])) by (le))
+            - label: P90
+              query: histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}",destination_workload_namespace=~"<< namespace >>",destination_workload=~"<< workload >>"}[1m])) by (le))
+            - label: P99
+              query: histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}",destination_workload_namespace=~"<< namespace >>",destination_workload=~"<< workload >>"}[1m])) by (le))
+
+        - title: Inbound Workloads
+          type: divider
+        - title: Incoming Requests By Source And Response Code
+          type: line
+          unit: req/s
+          size: 6
+          queries:
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} : {{ .response_code }} (🔐 mTLS)"
+              query: round(sum(irate(istio_requests_total{connection_security_policy="mutual_tls", destination_workload_namespace=~"<< namespace >>", destination_workload=~"<< workload >>", reporter="{{ .Reporter }}", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} : {{ .response_code }}"
+              query: round(sum(irate(istio_requests_total{connection_security_policy!="mutual_tls", destination_workload_namespace=~"<< namespace >>", destination_workload=~"<< workload >>", reporter="{{ .Reporter }}", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
+        - title: Incoming Success Rate (non-5xx responses) By Source
+          type: line
+          unit: "%"
+          size: 6
+          queries:
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} (🔐 mTLS)"
+              query: sum(irate(istio_requests_total{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload_namespace=~"<< namespace >>", destination_workload=~"<< workload >>",response_code!~"5.*", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload_namespace=~"<< namespace >>", destination_workload=~"<< workload >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[5m])) by (source_workload, source_workload_namespace) * 100
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }}"
+              query: sum(irate(istio_requests_total{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload_namespace=~"<< namespace >>", destination_workload=~"<< workload >>",response_code!~"5.*", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload_namespace=~"<< namespace >>", destination_workload=~"<< workload >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[5m])) by (source_workload, source_workload_namespace) * 100
+        - title: Incoming Request Duration By Source
+          type: line
+          unit: ms
+          size: 4
+          queries:
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P50 (🔐 m TLS)"
+              query: histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P90 (🔐 mTLS)"
+              query: histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P95 (🔐 mTLS)"
+              query: histogram_quantile(0.95, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P99 (🔐 mTLS)"
+              query: histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P50"
+              query: histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P90"
+              query: histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P95"
+              query: histogram_quantile(0.95, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P99"
+              query: histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+        - title: Incoming Request Size By Source
+          type: line
+          unit: bytes
+          size: 4
+          queries:
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P50 (🔐 mTLS)"
+              query: histogram_quantile(0.50, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }}  P90 (🔐 mTLS)"
+              query: histogram_quantile(0.90, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P95 (🔐 mTLS)"
+              query: histogram_quantile(0.95, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }}  P99 (🔐 mTLS)"
+              query: histogram_quantile(0.99, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P50"
+              query: histogram_quantile(0.50, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P90"
+              query: histogram_quantile(0.90, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P95"
+              query: histogram_quantile(0.95, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P99"
+              query: histogram_quantile(0.99, sum(irate(istio_request_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+        - title: Response Size By Source
+          type: line
+          unit: bytes
+          size: 4
+          queries:
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P50 (🔐 mTLS)"
+              query: histogram_quantile(0.50, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }}  P90 (🔐 mTLS)"
+              query: histogram_quantile(0.90, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P95 (🔐 mTLS)"
+              query: histogram_quantile(0.95, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }}  P99 (🔐 mTLS)"
+              query: histogram_quantile(0.99, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P50"
+              query: histogram_quantile(0.50, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P90"
+              query: histogram_quantile(0.90, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P95"
+              query: histogram_quantile(0.95, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+            - label: "{{ .source_workload }}.{{ .source_workload_namespace }} P99"
+              query: histogram_quantile(0.99, sum(irate(istio_response_bytes_bucket{reporter="{{ .Reporter }}", connection_security_policy!="mutual_tls", destination_workload=~"<< workload >>", destination_workload_namespace=~"<< namespace >>", source_workload=~"{{ index . "Source Workload" }}", source_workload_namespace=~"{{ index . "Source Workload Namespace" }}"}[1m])) by (source_workload, source_workload_namespace, le))
+
+        - title: Outbound Workloads
+          type: divider
+        - title: Outgoing Requests By Destination And Response Code
+          type: line
+          unit: req/s
+          size: 6
+          queries:
+            - label: "{{ .destination_service }} : {{ .response_code }} (🔐 mTLS)"
+              query: round(sum(irate(istio_requests_total{connection_security_policy="mutual_tls", source_workload_namespace=~"<< namespace >>", source_workload=~"<< workload >>", reporter="source", destination_service=~"{{ index . "Destination Service" }}"}[5m])) by (destination_service, response_code), 0.001)
+            - label: "{{ .destination_service }} : {{ .response_code }}"
+              query: round(sum(irate(istio_requests_total{connection_security_policy!="mutual_tls", source_workload_namespace=~"<< namespace >>", source_workload=~"<< workload >>", reporter="source", destination_service=~"{{ index . "Destination Service" }}"}[5m])) by (destination_service, response_code), 0.001)
+        - title: Outgoing Success Rate (non-5xx responses) By Destination
+          type: line
+          unit: "%"
+          size: 6
+          queries:
+            - label: "{{ .destination_service }} (🔐 mTLS)"
+              query: sum(irate(istio_requests_total{reporter="source", connection_security_policy="mutual_tls", source_workload_namespace=~"<< namespace >>", source_workload=~"<< workload >>",response_code!~"5.*", destination_service=~"{{ index . "Destination Service" }}"}[5m])) by (destination_service) / sum(irate(istio_requests_total{reporter="source", connection_security_policy="mutual_tls", source_workload_namespace=~"<< namespace >>", source_workload=~"<< workload >>", destination_service=~"{{ index . "Destination Service" }}"}[5m])) by (destination_service) * 100
+            - label: "{{ .destination_service }}"
+              query: sum(irate(istio_requests_total{reporter="source", connection_security_policy!="mutual_tls", source_workload_namespace=~"<< namespace >>", source_workload=~"<< workload >>",response_code!~"5.*", destination_service=~"{{ index . "Destination Service" }}"}[5m])) by (destination_service) / sum(irate(istio_requests_total{reporter="source", connection_security_policy!="mutual_tls", source_workload_namespace=~"<< namespace >>", source_workload=~"<< workload >>", destination_service=~"{{ index . "Destination Service" }}"}[5m])) by (destination_service) * 100
+        - title: Outgoing Request Duration By Destination
+          type: line
+          unit: ms
+          size: 4
+          queries:
+            - label: "{{ .destination_service }} P50 (🔐 mTLS)"
+              query: histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P90 (🔐 mTLS)"
+              query: histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P95 (🔐 mTLS)"
+              query: histogram_quantile(0.95, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P99 (🔐 mTLS)"
+              query: histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P50"
+              query: histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P90"
+              query: histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P95"
+              query: histogram_quantile(0.95, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P99"
+              query: histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+        - title: Outgoing Request Size By Destination
+          type: line
+          unit: bytes
+          size: 4
+          queries:
+            - label: "{{ .destination_service }} P50 (🔐 mTLS)"
+              query: histogram_quantile(0.50, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P90 (🔐 mTLS)"
+              query: histogram_quantile(0.90, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P95 (🔐 mTLS)"
+              query: histogram_quantile(0.95, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P99 (🔐 mTLS)"
+              query: histogram_quantile(0.99, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P50"
+              query: histogram_quantile(0.50, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P90"
+              query: histogram_quantile(0.90, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P95"
+              query: histogram_quantile(0.95, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P99"
+              query: histogram_quantile(0.99, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+        - title: Response Size By Destination
+          type: line
+          unit: bytes
+          size: 4
+          queries:
+            - label: "{{ .destination_service }} P50 (🔐 mTLS)"
+              query: histogram_quantile(0.50, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P90 (🔐 mTLS)"
+              query: histogram_quantile(0.90, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P95 (🔐 mTLS)"
+              query: histogram_quantile(0.95, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }}  P99 (🔐 mTLS)"
+              query: histogram_quantile(0.99, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P50"
+              query: histogram_quantile(0.50, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P90"
+              query: histogram_quantile(0.90, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P95"
+              query: histogram_quantile(0.95, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))
+            - label: "{{ .destination_service }} P99"
+              query: histogram_quantile(0.99, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", source_workload=~"<< workload >>", source_workload_namespace=~"<< namespace >>", destination_service=~"{{ index . "Destination Service" }}"}[1m])) by (destination_service, le))

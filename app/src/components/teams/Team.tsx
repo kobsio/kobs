@@ -2,8 +2,6 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Grid,
-  GridItem,
   List,
   ListItem,
   ListVariant,
@@ -11,14 +9,15 @@ import {
   PageSectionVariants,
   Spinner,
 } from '@patternfly/react-core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { ClustersPromiseClient, GetTeamRequest, GetTeamResponse } from 'proto/clusters_grpc_web_pb';
+import TeamTabsContent, { IMountedTabs } from 'components/teams/TeamTabsContent';
 import { Application } from 'proto/application_pb';
 import ExternalLink from 'components/ExternalLink';
 import { Team as ITeam } from 'proto/team_pb';
-import TeamApplications from 'components/teams/TeamApplications';
+import TeamTabs from 'components/teams/TeamTabs';
 import Title from 'components/Title';
 import { apiURL } from 'utils/constants';
 
@@ -42,6 +41,20 @@ const Team: React.FunctionComponent = () => {
   const params = useParams<ITeamParams>();
   const [data, setData] = useState<IDataState>({ applications: [], error: '', isLoading: false, team: undefined });
 
+  const [activeTab, setActiveTab] = useState<string>('applications');
+  const [mountedTabs, setMountedTabs] = useState<IMountedTabs>({});
+  const refApplicationsContent = useRef<HTMLElement>(null);
+  const [refPluginsContent, setRefPluginsContent] = useState<React.RefObject<HTMLElement>[] | undefined>(
+    data.team ? data.team.pluginsList.map(() => createRef<HTMLElement>()) : undefined,
+  );
+
+  // changeActiveTab sets the active tab and adds the name of the selected tab to the mountedTabs object. This object is
+  // used to only load data, when a component is mounted the first time.
+  const changeActiveTab = (tab: string): void => {
+    setActiveTab(tab);
+    setMountedTabs({ ...mountedTabs, [tab]: true });
+  };
+
   // fetchTeam fetches the Team CR and a list of Applications, which can be associated with the team.
   const fetchTeam = useCallback(async () => {
     try {
@@ -62,6 +75,14 @@ const Team: React.FunctionComponent = () => {
   useEffect(() => {
     fetchTeam();
   }, [fetchTeam]);
+
+  // Since the team isn't defined on the first rendering of this component, we have to create the references for the
+  // plugin tabs each time the team is updated.
+  useEffect(() => {
+    if (data.team) {
+      setRefPluginsContent(data.team.pluginsList.map(() => createRef<HTMLElement>()));
+    }
+  }, [data.team]);
 
   if (data.isLoading) {
     return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
@@ -88,7 +109,7 @@ const Team: React.FunctionComponent = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection style={{ paddingBottom: '0px' }} variant={PageSectionVariants.light}>
         <Title title={data.team.name} subtitle="" size="xl" />
         <div>
           <p>{data.team.description}</p>
@@ -100,15 +121,23 @@ const Team: React.FunctionComponent = () => {
             ))}
           </List>
         </div>
+        <TeamTabs
+          activeTab={activeTab}
+          setTab={changeActiveTab}
+          plugins={data.team.pluginsList}
+          refApplicationsContent={refApplicationsContent}
+          refPluginsContent={refPluginsContent}
+        />
       </PageSection>
 
-      <PageSection variant={PageSectionVariants.default}>
-        <Grid hasGutter={true}>
-          <GridItem sm={12} md={12} lg={12} xl={12} xl2={12}>
-            <TeamApplications applications={data.applications} />
-          </GridItem>
-        </Grid>
-      </PageSection>
+      <TeamTabsContent
+        applications={data.applications}
+        team={data.team}
+        activeTab={activeTab}
+        mountedTabs={mountedTabs}
+        refApplicationsContent={refApplicationsContent}
+        refPluginsContent={refPluginsContent}
+      />
     </React.Fragment>
   );
 };

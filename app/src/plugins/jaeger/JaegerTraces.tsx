@@ -72,7 +72,11 @@ const JaegerTraces: React.FunctionComponent<IJaegerTracesProps> = ({
 
   // When the isLoading property is true, we render a spinner as loading indicator for the user.
   if (data.isLoading) {
-    return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
   }
 
   // In case of an error, we show an Alert component, with the error message, while the request failed.

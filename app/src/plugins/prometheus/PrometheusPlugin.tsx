@@ -80,7 +80,7 @@ const PrometheusPlugin: React.FunctionComponent<IPluginProps> = ({ name, descrip
       <PluginDataMissing
         title="Prometheus properties are missing"
         description="The Prometheus properties are missing in your CR for this application. Visit the documentation to learn more on how to use the Prometheus plugin in an Application CR."
-        documentation="https://kobs.io"
+        documentation="https://kobs.io/plugins/prometheus/"
         type="prometheus"
       />
     );

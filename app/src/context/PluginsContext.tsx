@@ -1,11 +1,51 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { GetPluginsRequest, GetPluginsResponse, PluginShort, PluginsPromiseClient } from 'proto/plugins_grpc_web_pb';
+import { ClustersPromiseClient, GetTemplatesRequest, GetTemplatesResponse } from 'proto/clusters_grpc_web_pb';
+import {
+  GetPluginsRequest,
+  GetPluginsResponse,
+  Plugin,
+  PluginShort,
+  PluginsPromiseClient,
+} from 'proto/plugins_grpc_web_pb';
+import { Template } from 'proto/template_pb';
 import { apiURL } from 'utils/constants';
+
+// interpolate is used to replace the variables in a plugin template with the provided values for the variables. More
+// information on this function can be found in the app/src/components/resources/ResourceDetails.tsx component, where
+// it is used in a similar way.
+const interpolate = (str: string, variables: IVariables, interpolator: string[] = ['<<', '>>']): string => {
+  return str
+    .split(interpolator[0])
+    .map((s1, i) => {
+      if (i === 0) {
+        return s1;
+      }
+
+      const s2 = s1.split(interpolator[1]);
+      if (s1 === s2[0]) {
+        return interpolator[0] + s2[0];
+      }
+
+      if (s2.length > 1) {
+        s2[0] = s2[0] && variables.hasOwnProperty(s2[0].trim()) ? variables[s2[0].trim()] : interpolator.join('');
+      }
+
+      return s2.join('');
+    })
+    .join('');
+};
 
 // pluginsService is the Plugins gRPC service, which is used to get all configured plugins.
 const pluginsService = new PluginsPromiseClient(apiURL, null, null);
+
+// clustersService is the Plugins gRPC service, which is used to get all templates for plugins.
+const clustersService = new ClustersPromiseClient(apiURL, null, null);
+
+interface IVariables {
+  [key: string]: string;
+}
 
 // IDataState is the state for the PluginsContext. The state contains all plugins, an error message and a loading
 // indicator.
@@ -13,12 +53,15 @@ interface IDataState {
   error: string;
   isLoading: boolean;
   plugins: PluginShort.AsObject[];
+  templates: Template.AsObject[];
 }
 
 // IPluginsContext is the plugin context, is contains all plugins.
 export interface IPluginsContext {
   getPluginDetails: (name: string) => PluginShort.AsObject | undefined;
+  getTemplate: (name: string, variables: [string, string][] | IVariables) => Plugin.AsObject | undefined;
   plugins: PluginShort.AsObject[];
+  templates: Template.AsObject[];
 }
 
 // PluginsContext is the plugin context object.
@@ -26,7 +69,11 @@ export const PluginsContext = React.createContext<IPluginsContext>({
   getPluginDetails: (name: string) => {
     return undefined;
   },
+  getTemplate: (name: string, variables: [string, string][] | IVariables) => {
+    return undefined;
+  },
   plugins: [],
+  templates: [],
 });
 
 // PluginsContextConsumer is a React component that subscribes to context changes. This lets you subscribe to a context
@@ -44,11 +91,7 @@ interface IPluginsContextProviderProps {
 export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProviderProps> = ({
   children,
 }: IPluginsContextProviderProps) => {
-  const [data, setData] = useState<IDataState>({
-    error: '',
-    isLoading: true,
-    plugins: [],
-  });
+  const [data, setData] = useState<IDataState>({ error: '', isLoading: true, plugins: [], templates: [] });
 
   // fetchData is used to retrieve all plugins from the gRPC API. The retrieved plugins are used in the plugins property
   // of the plugins context. The function is called on the first render of the component and in case of an error it can
@@ -59,25 +102,17 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
       const getPluginsResponse: GetPluginsResponse = await pluginsService.getPlugins(getPluginsRequest, null);
       const tmpPlugins = getPluginsResponse.toObject().pluginsList;
 
+      const getTemplatesRequest = new GetTemplatesRequest();
+      const getTemplatesResponse: GetTemplatesResponse = await clustersService.getTemplates(getTemplatesRequest, null);
+      const tmpTemplates = getTemplatesResponse.toObject().templatesList;
+
       if (tmpPlugins) {
-        setData({
-          error: '',
-          isLoading: false,
-          plugins: tmpPlugins,
-        });
+        setData({ error: '', isLoading: false, plugins: tmpPlugins, templates: tmpTemplates });
       } else {
-        setData({
-          error: '',
-          isLoading: false,
-          plugins: [],
-        });
+        setData({ error: '', isLoading: false, plugins: [], templates: [] });
       }
     } catch (err) {
-      setData({
-        error: err.message,
-        isLoading: false,
-        plugins: [],
-      });
+      setData({ error: err.message, isLoading: false, plugins: [], templates: [] });
     }
   }, []);
 
@@ -87,6 +122,34 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
     const filteredPlugins = data.plugins.filter((plugin) => plugin.name === name);
     if (filteredPlugins.length === 1) {
       return filteredPlugins[0];
+    }
+
+    return undefined;
+  };
+
+  // getTemplate return the template with the given name. This function also requires a list of variables. If the
+  // template uses variables, we replace the variable placeholder "<< VARIABLE >>" with the given value.
+  const getTemplate = (name: string, variables: [string, string][] | IVariables): Plugin.AsObject | undefined => {
+    const filteredTemplates = data.templates.filter((template) => template.name === name);
+    if (filteredTemplates.length === 1) {
+      if (!filteredTemplates[0].plugin) {
+        return undefined;
+      }
+
+      if (Array.isArray(variables)) {
+        if (variables.length > 0) {
+          const transformedVariables: IVariables = {};
+          for (const variable of variables) {
+            transformedVariables[variable[0]] = variable[1];
+          }
+
+          return JSON.parse(interpolate(JSON.stringify(filteredTemplates[0].plugin), transformedVariables));
+        }
+
+        return filteredTemplates[0].plugin;
+      } else {
+        return JSON.parse(interpolate(JSON.stringify(filteredTemplates[0].plugin), variables));
+      }
     }
 
     return undefined;
@@ -135,7 +198,9 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
     <PluginsContext.Provider
       value={{
         getPluginDetails: getPluginDetails,
+        getTemplate: getTemplate,
         plugins: data.plugins,
+        templates: data.templates,
       }}
     >
       {children}

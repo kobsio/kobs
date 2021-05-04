@@ -39,3 +39,9 @@ kiali:
       enabled: true
       failure: 95
       degraded: 99
+
+opsgenie:
+  - name: Opsgenie
+    description: On-call and alert management to keep services always on.
+    apiUrl: api.eu.opsgenie.com
+    apiKey: ${OPSGENIE_API_KEY}

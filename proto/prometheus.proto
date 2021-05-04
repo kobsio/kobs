@@ -7,6 +7,8 @@ option go_package = "github.com/kobsio/kobs/pkg/api/plugins/prometheus/proto";
 service Prometheus {
   rpc GetVariables(GetVariablesRequest) returns (GetVariablesResponse) {}
   rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
+  rpc MetricLookup(MetricLookupRequest) returns (MetricLookupResponse) {}
+  rpc GetTableData(GetTableDataRequest) returns (GetTableDataResponse) {}
 }
 
 // GetVariablesRequest is the request data needed to get all variables for the metrics view of an application. The
@@ -44,13 +46,42 @@ message GetMetricsResponse {
   repeated string interpolatedQueries = 2;
 }
 
+// MetricLookupRequest
+message MetricLookupRequest {
+  string name = 1;
+  string matcher = 2;
+}
+
+// MetricLookupResponse
+message MetricLookupResponse {
+  repeated string names = 1;
+}
+
+// GetTableDataRequest is the structure of a call to get the data for a table. It must contain the name of the
+// datasource, a time point (we are using the users selected end time), a list of variables and queries. To create the
+// rows we join a list of provided queries by the label value.
+message GetTableDataRequest {
+  string name = 1;
+  int64 timeEnd = 3;
+  repeated Variable variables = 5;
+  repeated Query queries = 6;
+}
+
+// GetTableDataResponse is the response format for a GetTableData call. It contains all the rows for a table and a list
+// of the interpolated queries.
+message GetTableDataResponse {
+  map<string, Row> rows = 1;
+  repeated string interpolatedQueries = 2;
+}
+
 // Metrics contains the label and all data points for a metric. It also contains the minimum and maximum value of all
 // data points.
 message Metrics {
   string label = 1;
   double min = 2;
   double max = 3;
-  repeated Data data = 4;
+  double avg = 4;
+  repeated Data data = 5;
 }
 
 // Data is one data point for a metric. Each data point contains a timestamp and a value, where x is the timestamp and y
@@ -58,6 +89,12 @@ message Metrics {
 message Data {
   int64 x = 1;
   double y = 2;
+}
+
+// Row is the message format for a single row. A row consists of columns, which are a map with the column name as key
+// and the column value as value.
+message Row {
+  map<string, string> columns = 1;
 }
 
 // Spec implements the specification for an application. This field is then used in the Application CR and contains, all
@@ -91,7 +128,10 @@ message Chart {
   string unit = 3;
   bool stacked = 4;
   int64 size = 5;
-  repeated Query queries = 6;
+  string legend = 6;
+  map<string, string> mappings = 7;
+  repeated Query queries = 8;
+  repeated Column columns = 9;
 }
 
 // Query presents a single query to get the data, which should be shown in the chart for the metrics section. A query
@@ -100,4 +140,14 @@ message Chart {
 message Query {
   string query = 1;
   string label = 2;
+}
+
+// Column is a single column for the "table" chart type. The name must be a returned label from the specified Prometheus
+// queries or a returned value. A value can be specified via "value-1", "value-2", etc. The header value can be used to
+// modify the header title, when this isn't set the name will be used for the header. Unit allows a user to set a unit
+// for the column.
+message Column {
+  string name = 1;
+  string header = 2;
+  string unit = 3;
 }

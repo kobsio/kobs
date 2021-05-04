@@ -13,6 +13,11 @@ spec:
     metadata:
       labels:
         {{- include "kobs.selectorLabels" . | nindent 8 }}
+        {{- include "kobs.podLabels" . | nindent 8 }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{ include "kobs.podAnnotations" . | nindent 8 }}
+      {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -30,15 +35,15 @@ spec:
           args:
             - --log.level={{ .Values.kobs.settings.logLevel }}
             - --log.format={{ .Values.kobs.settings.logFormat }}
+          {{- with .Values.kobs.env }}
           env:
-            {{- with .Values.kobs.env }}
             {{- toYaml . | nindent 12 }}
-            {{- end }}
+          {{- end }}
           ports:
             - name: http-web
               containerPort: 15219
               protocol: TCP
-            - name: grpc-api
+            - name: grpc-web
               containerPort: 15220
               protocol: TCP
             - name: http-metrics

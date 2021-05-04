@@ -1,19 +1,23 @@
-import { AccordionContent, AccordionItem, AccordionToggle, Badge } from '@patternfly/react-core';
+import { AccordionContent, AccordionItem, AccordionToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { ExclamationIcon } from '@patternfly/react-icons';
 
 import { IProcesses, ISpan, doesSpanContainsError } from 'plugins/jaeger/helpers';
 import JaegerSpanLogs from 'plugins/jaeger/JaegerSpanLogs';
+import JaegerTag from 'plugins/jaeger/JaegerTag';
 
 import 'plugins/jaeger/jaeger.css';
 
+const PADDING = 24;
+
 export interface IJaegerSpanProps {
+  name: string;
   span: ISpan;
   processes: IProcesses;
-  padding: number;
+  level: number;
 }
 
-const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes, padding }: IJaegerSpanProps) => {
+const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ name, span, processes, level }: IJaegerSpanProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const time = (
@@ -40,13 +44,31 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
     </span>
   );
 
+  const treeOffset = [];
+  for (let index = 0; index < level; index++) {
+    if (index > 0) {
+      treeOffset.push(
+        <span
+          style={{
+            borderRight: '1px dashed #8a8d90',
+            height: '40px',
+            paddingLeft: `${(index + 1) * PADDING - PADDING / 2}px`,
+            position: 'absolute',
+            zIndex: 300,
+          }}
+        ></span>,
+      );
+    }
+  }
+
   return (
     <React.Fragment>
       <AccordionItem>
+        {treeOffset}
         <AccordionToggle
           id={`span-${span.spanID}`}
           className="kobsio-jaeger-accordion-toggle"
-          style={{ paddingLeft: `${padding}px` }}
+          style={{ paddingLeft: `${level * PADDING}px` }}
           onClick={(): void => setExpanded(!expanded)}
           isExpanded={expanded}
         >
@@ -69,14 +91,12 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
         </AccordionToggle>
 
         <AccordionContent id={`span-${span.spanID}`} isHidden={!expanded} isFixed={false}>
-          <div style={{ paddingLeft: `${padding - 16}px` }}>
+          <div style={{ paddingLeft: `${level * PADDING - 16}px` }}>
             {processes[span.processID].tags.length > 0 ? (
               <div className="pf-u-pb-md">
                 Process:
                 {processes[span.processID].tags.map((tag, index) => (
-                  <Badge key={index} className="pf-u-ml-sm pf-u-mb-sm" isRead={true}>
-                    {tag.key}: {tag.value}
-                  </Badge>
+                  <JaegerTag key={index} name={name} tag={tag} />
                 ))}
               </div>
             ) : null}
@@ -84,9 +104,7 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
               <div className="pf-u-pb-md">
                 Tags:
                 {span.tags.map((tag, index) => (
-                  <Badge key={index} className="pf-u-ml-sm pf-u-mb-sm" isRead={true}>
-                    {tag.key}: {tag.value}
-                  </Badge>
+                  <JaegerTag key={index} name={name} tag={tag} />
                 ))}
               </div>
             ) : null}
@@ -104,7 +122,7 @@ const JaegerSpan: React.FunctionComponent<IJaegerSpanProps> = ({ span, processes
 
       {span.childs
         ? span.childs.map((span, index) => (
-            <JaegerSpan key={index} span={span} processes={processes} padding={padding + 16} />
+            <JaegerSpan key={index} name={name} span={span} processes={processes} level={level + 1} />
           ))
         : null}
     </React.Fragment>

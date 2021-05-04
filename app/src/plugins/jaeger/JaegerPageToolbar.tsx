@@ -136,6 +136,14 @@ const JaegerPageToolbar: React.FunctionComponent<IJaegerPageToolbarProps> = ({
     fetchOperations();
   }, [fetchOperations]);
 
+  // useEffect is triggered when the tags property is changed. This is needed because, tags can also be set by clicking
+  // on a tag and selecting the filter option.
+  useEffect(() => {
+    setOptions((o) => {
+      return { ...o, tags: tags };
+    });
+  }, [tags]);
+
   if (data.error) {
     return (
       <Alert

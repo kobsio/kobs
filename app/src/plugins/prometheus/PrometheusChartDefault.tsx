@@ -13,17 +13,20 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Data, Metrics } from 'proto/prometheus_grpc_web_pb';
+import { IData, transformData } from 'plugins/prometheus/helpers';
+import PrometheusChartDefaultLegend from 'plugins/prometheus/PrometheusChartDefaultLegend';
 import { formatTime } from 'utils/helpers';
 
 interface ILabels {
-  datum: Data.AsObject;
+  datum: IData;
 }
 
 export interface IPrometheusChartDefaultProps {
   type: string;
   unit: string;
   stacked: boolean;
-  disableLegend?: boolean;
+  legend: string;
+  color?: string;
   metrics: Metrics.AsObject[];
 }
 
@@ -41,12 +44,26 @@ const PrometheusChartDefault: React.FunctionComponent<IPrometheusChartDefaultPro
   type,
   unit,
   stacked,
-  disableLegend,
+  legend,
+  color,
   metrics,
 }: IPrometheusChartDefaultProps) => {
   const refChart = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
+  const [hiddenMetrics, setHiddenMetrics] = useState<string[]>([]);
+
+  const toogleMetric = (index: string): void => {
+    let tmpHiddenMetrics = [...hiddenMetrics];
+
+    if (tmpHiddenMetrics.includes(index)) {
+      tmpHiddenMetrics = tmpHiddenMetrics.filter((f) => f !== index);
+    } else {
+      tmpHiddenMetrics.push(index);
+    }
+
+    setHiddenMetrics(tmpHiddenMetrics);
+  };
 
   // useEffect is executed on every render of this component. This is needed, so that we are able to use a width of 100%
   // and a static height for the chart.
@@ -63,45 +80,76 @@ const PrometheusChartDefault: React.FunctionComponent<IPrometheusChartDefaultPro
   const legendData = metrics.map((metric, index) => ({ childName: `index${index}`, name: metric.label }));
   const series = metrics.map((metric, index) =>
     type === 'area' ? (
-      <ChartArea key={index} data={metric.dataList} interpolation="monotoneX" name={`index${index}`} />
+      <ChartArea
+        key={index}
+        data={transformData(metric.dataList, hiddenMetrics.includes(`index${index}`))}
+        interpolation="monotoneX"
+        name={`index${index}`}
+      />
     ) : type === 'bar' ? (
-      <ChartBar key={index} data={metric.dataList} name={`index${index}`} />
+      <ChartBar
+        key={index}
+        data={transformData(metric.dataList, hiddenMetrics.includes(`index${index}`))}
+        name={`index${index}`}
+      />
     ) : (
-      <ChartLine key={index} data={metric.dataList} interpolation="monotoneX" name={`index${index}`} />
+      <ChartLine
+        key={index}
+        data={transformData(metric.dataList, hiddenMetrics.includes(`index${index}`))}
+        interpolation="monotoneX"
+        name={`index${index}`}
+      />
     ),
   );
 
   return (
-    <div style={{ height: '300px', width: '100%' }} ref={refChart}>
-      <Chart
-        containerComponent={
-          <CursorVoronoiContainer
-            cursorDimension="x"
-            labels={({ datum }: ILabels): string => `${datum.y} ${unit}`}
-            labelComponent={
-              <ChartLegendTooltip
-                legendData={legendData}
-                title={(point: Data.AsObject): string => formatTime(Math.floor(point.x / 1000))}
-              />
-            }
-            mouseFollowTooltips
-            voronoiDimension="x"
-            voronoiPadding={0}
-          />
-        }
-        height={height}
-        legendData={legendData}
-        legendPosition={disableLegend ? undefined : 'bottom'}
-        padding={{ bottom: disableLegend ? 0 : 60, left: 60, right: 0, top: 0 }}
-        scale={{ x: 'time', y: 'linear' }}
-        themeColor={ChartThemeColor.multiOrdered}
-        width={width}
+    <React.Fragment>
+      <div
+        style={{ height: legend === 'table' ? '240px' : legend === 'disabled' ? '336px' : '270px', width: '100%' }}
+        ref={refChart}
       >
-        <ChartAxis dependentAxis={false} showGrid={false} />
-        <ChartAxis dependentAxis={true} showGrid={true} label={unit} />
-        {stacked ? <ChartStack>{series}</ChartStack> : <ChartGroup>{series}</ChartGroup>}
-      </Chart>
-    </div>
+        <Chart
+          containerComponent={
+            <CursorVoronoiContainer
+              cursorDimension="x"
+              labels={({ datum }: ILabels): string | null => (datum.y ? `${datum.y} ${unit}` : null)}
+              labelComponent={
+                <ChartLegendTooltip
+                  legendData={legendData}
+                  title={(point: Data.AsObject): string => formatTime(Math.floor(point.x / 1000))}
+                />
+              }
+              mouseFollowTooltips
+              voronoiDimension="x"
+              voronoiPadding={{ bottom: 30, left: 60, right: 0, top: 0 }}
+            />
+          }
+          height={height}
+          legendPosition={undefined}
+          padding={{ bottom: 30, left: 60, right: 0, top: 0 }}
+          scale={{ x: 'time', y: 'linear' }}
+          themeColor={ChartThemeColor.multiOrdered}
+          width={width}
+        >
+          <ChartAxis dependentAxis={false} showGrid={false} />
+          <ChartAxis dependentAxis={true} showGrid={true} label={unit} />
+          {color && series.length === 1 ? (
+            <ChartGroup color={color}>{series}</ChartGroup>
+          ) : stacked ? (
+            <ChartStack>{series}</ChartStack>
+          ) : (
+            <ChartGroup color={color}>{series}</ChartGroup>
+          )}
+        </Chart>
+      </div>
+      <PrometheusChartDefaultLegend
+        legend={legend}
+        legendData={legendData}
+        metrics={metrics}
+        hiddenMetrics={hiddenMetrics}
+        toogleMetric={toogleMetric}
+      />
+    </React.Fragment>
   );
 };
 

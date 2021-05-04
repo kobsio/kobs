@@ -6,7 +6,7 @@ REVISION    ?= $(shell git rev-parse HEAD)
 VERSION     ?= $(shell git describe --tags)
 
 PLUGINS ?= $(shell find ./proto -name '*.proto' | sed -e 's/^.\/proto\///' | sed -e 's/.proto//')
-CRDS    ?= application team
+CRDS    ?= application team template
 
 .PHONY: build
 build:

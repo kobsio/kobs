@@ -8,7 +8,8 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { IRow } from '@patternfly/react-table';
 
 import { ClustersContext, IClusterContext } from 'context/ClustersContext';
@@ -48,6 +49,27 @@ const checkRequiredData = (
   return true;
 };
 
+// getResourcesFromSearch returns the clusters, namespaces, kind and selector for the resources state from a given
+// search location.
+export const getResourcesFromSearch = (search: string): IResources => {
+  const params = new URLSearchParams(search);
+  const clusters = params.getAll('cluster');
+  const namespaces = params.getAll('namespace');
+  const kinds = params.getAll('kind');
+  const selector = params.get('selector');
+
+  return {
+    clusters: clusters,
+    resources: [
+      {
+        kindsList: kinds,
+        namespacesList: namespaces,
+        selector: selector ? selector : '',
+      },
+    ],
+  };
+};
+
 export interface IResources {
   clusters: string[];
   resources: IApplicationResources.AsObject[];
@@ -56,9 +78,33 @@ export interface IResources {
 // Resources is the the component for the resources page. The user can select a list of clusters, resources and
 // namespaces he wants to retrieve from the toolbar. The resources are then displayed in a list of tables.
 const Resources: React.FunctionComponent = () => {
+  const history = useHistory();
+  const location = useLocation();
   const clustersContext = useContext<IClusterContext>(ClustersContext);
-  const [resources, setResources] = useState<IResources | undefined>(undefined);
+  const [resources, setResources] = useState<IResources>(getResourcesFromSearch(location.search));
   const [selectedResource, setSelectedResource] = useState<IRow | undefined>(undefined);
+
+  // changeResources is used to set the provided resources as query parameters in the current URL. This used, so that a
+  // user can share the URL of his view with other users.
+  const changeResources = (res: IResources): void => {
+    if (res.resources.length === 1) {
+      const c = res.clusters.map((cluster) => `&cluster=${cluster}`);
+      const n = res.resources[0].namespacesList.map((namespace) => `&namespace=${namespace}`);
+      const k = res.resources[0].kindsList.map((kind) => `&kind=${kind}`);
+
+      history.push({
+        pathname: location.pathname,
+        search: `?selector=${res.resources[0].selector}${c.length > 0 ? c.join('') : ''}${
+          n.length > 0 ? n.join('') : ''
+        }${k.length > 0 ? k.join('') : ''}`,
+      });
+    }
+  };
+
+  // useEffect is used to change the resources state everytime the location.search parameter changes.
+  useEffect(() => {
+    setResources(getResourcesFromSearch(location.search));
+  }, [location.search]);
 
   return (
     <React.Fragment>
@@ -67,7 +113,7 @@ const Resources: React.FunctionComponent = () => {
           Resources
         </Title>
         <p>{resourcesDescription}</p>
-        <ResourcesToolbar setResources={setResources} />
+        <ResourcesToolbar resources={resources} setResources={changeResources} />
       </PageSection>
 
       <Drawer isExpanded={selectedResource !== undefined}>

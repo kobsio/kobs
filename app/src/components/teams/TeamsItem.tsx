@@ -12,11 +12,17 @@ interface ITeamsItemProps {
 // TeamsItem renders a single team in a Card component. The Card is wrapped by our LinkWrapper so that the user is
 // redirected to the page of the team, when he clicks on the card.
 const TeamsItem: React.FunctionComponent<ITeamsItemProps> = ({ description, logo, name }: ITeamsItemProps) => {
+  let teamLogo = logo;
+
+  if (teamLogo === '') {
+    teamLogo = '/img/plugins/teams.png';
+  }
+
   return (
     <LinkWrapper link={`/teams/${name}`}>
       <Card style={{ cursor: 'pointer' }} isHoverable={true}>
         <CardHeader>
-          <img src={logo} alt={name} width="27px" style={{ marginRight: '5px' }} />
+          <img src={teamLogo} alt={name} width="27px" style={{ marginRight: '5px' }} />
           <CardTitle>{name}</CardTitle>
         </CardHeader>
         <CardBody>{description}</CardBody>

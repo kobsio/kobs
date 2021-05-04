@@ -100,6 +100,15 @@ Clusters.GetTeam = {
   responseType: clusters_pb.GetTeamResponse
 };
 
+Clusters.GetTemplates = {
+  methodName: "GetTemplates",
+  service: Clusters,
+  requestStream: false,
+  responseStream: false,
+  requestType: clusters_pb.GetTemplatesRequest,
+  responseType: clusters_pb.GetTemplatesResponse
+};
+
 exports.Clusters = Clusters;
 
 function ClustersClient(serviceHost, options) {
@@ -391,6 +400,37 @@ ClustersClient.prototype.getTeam = function getTeam(requestMessage, metadata, ca
     callback = arguments[1];
   }
   var client = grpc.unary(Clusters.GetTeam, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ClustersClient.prototype.getTemplates = function getTemplates(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Clusters.GetTemplates, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

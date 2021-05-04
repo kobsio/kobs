@@ -10,10 +10,44 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+- [#45](https://github.com/kobsio/kobs/pull/45): Add value mappings for `sparkline` charts in the Prometheus plugin.
+- [#49](https://github.com/kobsio/kobs/pull/49): Add new chart type `table` for Prometheus plugin, which allows a user to render the results of multiple Prometheus queries in ab table.
+- [#51](https://github.com/kobsio/kobs/pull/51): Add new command-line flag to forbid access for resources.
+- [#52](https://github.com/kobsio/kobs/pull/52): Add option to enter a single trace id in the Jaeger plugin.
+- [#56](https://github.com/kobsio/kobs/pull/56): Add actions for Elasticsearch plugin to include/exclude and toggle values in the logs view.
+- [#58](https://github.com/kobsio/kobs/pull/58): Add plugin support for Teams. It is now possible to define plugins within a Team CR, which are then added to the teams page in the React UI.
+- [#59](https://github.com/kobsio/kobs/pull/59): Add support for Templates via the new Templates CRD. Templates allows a user to reuse plugin definitions accross Applications, Teams and Kubernetes resources.
+- [#60](https://github.com/kobsio/kobs/pull/60): Add support for additional Pod annotations and labels in the Helm chart via the new `podAnnotations` and `podLabels` values.
+
+### Fixed
+
+- [#43](https://github.com/kobsio/kobs/pull/43): Fix `hosts` and `gateways` list for VirtualService in the Helm chart.
+- [#44](https://github.com/kobsio/kobs/pull/44): Add default logo for teams, which is shown when a team doesn't provide a logo and improve metrics lookup for Prometheus plugin.
+- [#50](https://github.com/kobsio/kobs/pull/50): Fix determination of the root span in the Jaeger plugin.
+- [#54](https://github.com/kobsio/kobs/pull/54): Fix fields handling in Elasticsearch plugin.
+
+### Changed
+
+- [#46](https://github.com/kobsio/kobs/pull/46): Support multiple types for the legend in a Prometheus chart and use a custom component to render the legend.
+- [#47](https://github.com/kobsio/kobs/pull/47): Display the legend at the Prometheus page as table and use color of selected metric in chart.
+- [#53](https://github.com/kobsio/kobs/pull/53): Improve Jaeger plugin, by allow filtering of services and operations and adding several actions for traces.
+- [#55](https://github.com/kobsio/kobs/pull/55): Allow a user to add a tag from a span as filter in the Jaeger plugin.
+- [#57](https://github.com/kobsio/kobs/pull/57): Visualize the offset of spans in the Jaeger plugin.
+- [#61](https://github.com/kobsio/kobs/pull/61): Improve caching logic, by generating the teams and topology graph only when it is requested and not via an additional goroutine.
+- [#62](https://github.com/kobsio/kobs/pull/62): Show the name of a variable within the select box in the Prometheus dashboards.
+
+## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
+
+### Added
+
 - [#29](https://github.com/kobsio/kobs/pull/29): Add a new dependencies section to the Application CR. These dependencies are used to show a topology graph for all Applications.
 - [#31](https://github.com/kobsio/kobs/pull/31): Add plugin support for Kubernetes resources.
 - [#32](https://github.com/kobsio/kobs/pull/32): Add support for container logs via the Kubernetes API.
 - [#34](https://github.com/kobsio/kobs/pull/34): Add a new Custom Resource Definition for Teams. Teams can be used to define the ownership for Applications and other Kubernetes resources. :warning: *Breaking change:* :warning: We are now using the `apiextensions.k8s.io/v1` API for the Custom Resource Definitions of kobs.
+- [#39](https://github.com/kobsio/kobs/pull/39): Add Opsgenie plugin to view alerts within an Application.
+- [#40](https://github.com/kobsio/kobs/pull/40): Add metric name suggestions for Prometheus plugin.
+- [#41](https://github.com/kobsio/kobs/pull/41): Add overview and Pods tab for resource details.
+- [#42](https://github.com/kobsio/kobs/pull/42): Add VirtualService specification for Istio to the Helm chart.
 
 ### Fixed
 

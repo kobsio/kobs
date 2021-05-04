@@ -3,6 +3,8 @@ package team;
 
 option go_package = "github.com/kobsio/kobs/pkg/api/plugins/team/proto";
 
+import "plugins.proto";
+
 // Team is used as spec for the Team CRD. A team has a name (name of the custom resource), a description, a logo and
 // links.
 message Team {
@@ -12,6 +14,7 @@ message Team {
   string description = 4;
   string logo = 5;
   repeated Link links = 6;
+  repeated plugins.Plugin plugins = 7;
 }
 
 // Link is used to render a link for a team. Each link must contain a title and the link, which is used in the href

@@ -9,7 +9,7 @@ import {
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Options, { IAdditionalFields } from 'components/Options';
 import { IElasticsearchOptions } from 'plugins/elasticsearch/helpers';
@@ -63,6 +63,14 @@ const ElasticsearchPageToolbar: React.FunctionComponent<IElasticsearchPageToolba
       setOptions(data);
     }
   };
+
+  // useEffect is triggered when the query property is changed. This is needed because, the query can also be changed,
+  // via the actions of a field in the document (include/exclude the value of a field).
+  useEffect(() => {
+    setData((d) => {
+      return { ...d, query: query };
+    });
+  }, [query]);
 
   return (
     <Toolbar id="elasticsearch-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>

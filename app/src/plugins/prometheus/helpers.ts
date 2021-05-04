@@ -1,4 +1,6 @@
-import { Chart, Query, Spec, Variable } from 'proto/prometheus_grpc_web_pb';
+import { ChartThemeColor, getDarkThemeColors } from '@patternfly/react-charts';
+
+import { Chart, Column, Data, Query, Spec, Variable } from 'proto/prometheus_grpc_web_pb';
 import { Plugin } from 'proto/plugins_grpc_web_pb';
 
 // ITimes is the interface for a start and end time.
@@ -70,6 +72,7 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
             c.setUnit(chart.unit ? chart.unit : '');
             c.setStacked(chart.stacked ? true : false);
             c.setSize(chart.size ? chart.size : 12);
+            c.setLegend(chart.legend ? chart.legend : '');
 
             const queries: Query[] = [];
             for (const query of chart.queries) {
@@ -83,7 +86,23 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
               }
             }
 
+            const columns: Column[] = [];
+            if (chart.columns) {
+              for (const column of chart.columns) {
+                if (column.name) {
+                  const c = new Column();
+                  c.setName(column.name);
+                  c.setHeader(column.header ? column.header : '');
+                  c.setUnit(column.name ? column.name : '');
+                  columns.push(c);
+                } else {
+                  return undefined;
+                }
+              }
+            }
+
             c.setQueriesList(queries);
+            c.setColumnsList(columns);
             charts.push(c);
           } else {
             return undefined;
@@ -105,4 +124,28 @@ export const jsonToProto = (json: any): Plugin.AsObject | undefined => {
   plugin.setPrometheus(prometheus);
 
   return plugin.toObject();
+};
+
+export interface IData {
+  x: number;
+  y: number | null;
+}
+
+// transformData is used to transform the returned data from the API. This is needed because, the API returns a NaN
+// value for missing values, but Victory requires a null value.
+// See: https://formidable.com/open-source/victory/gallery/victory-line-with-null-data/
+export const transformData = (data: Data.AsObject[], isHidden?: boolean): IData[] => {
+  return data.map((d) => {
+    return { x: d.x, y: isNaN(d.y) || isHidden ? null : d.y };
+  });
+};
+
+// colors is an array with all the supported colors for a chart. These are the same colors as they are used for the
+// bars, lines and areas in a chart.
+export const colors = getDarkThemeColors(ChartThemeColor.multiOrdered).area.colorScale;
+
+// getLegendColorClass returns the color class for an item in the legend. When we have more series then colors, we start
+// again with the first color.
+export const getLegendColorClass = (index: number): string => {
+  return colors[index % colors.length];
 };

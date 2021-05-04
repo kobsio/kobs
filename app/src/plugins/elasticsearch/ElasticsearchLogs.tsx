@@ -39,6 +39,7 @@ interface IElasticsearchLogsProps extends IElasticsearchOptions {
   setDocument?: (document: React.ReactNode) => void;
   setScrollID: (scrollID: string) => void;
   selectField?: (field: string) => void;
+  showActions: boolean;
 }
 
 // ElasticsearchLogs is a wrapper component for the Elasticsearch results view (ElasticsearchLogsGrid), it is used to
@@ -54,6 +55,7 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
   setDocument,
   setScrollID,
   selectField,
+  showActions,
 }: IElasticsearchLogsProps) => {
   const [data, setData] = useState<IDataState>({
     buckets: [],
@@ -107,7 +109,7 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
           buckets: tmpLogsResponse.bucketsList,
           documents: parsedLogs,
           error: '',
-          fields: getFields(parsedLogs.slice(parsedLogs.length > 10 ? 10 : parsedLogs.length)),
+          fields: getFields(parsedLogs.length > 10 ? parsedLogs.slice(10) : parsedLogs),
           hits: tmpLogsResponse.hits,
           isLoading: false,
           scrollID: tmpLogsResponse.scrollid,
@@ -145,7 +147,11 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
 
   // When the isLoading property is true, we render a spinner as loading indicator for the user.
   if (data.isLoading) {
-    return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
   }
 
   // In case of an error, we show an Alert component, with the error message, while the request failed.
@@ -182,6 +188,7 @@ const ElasticsearchLogs: React.FunctionComponent<IElasticsearchLogsProps> = ({
       setDocument={setDocument}
       setScrollID={setScrollID}
       selectField={selectField}
+      showActions={showActions}
     />
   );
 };

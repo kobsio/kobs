@@ -5,46 +5,85 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 	"time"
 
 	applicationProto "github.com/kobsio/kobs/pkg/api/plugins/application/proto"
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters/cluster"
 	clustersProto "github.com/kobsio/kobs/pkg/api/plugins/clusters/proto"
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters/provider"
-	teamProto "github.com/kobsio/kobs/pkg/api/plugins/team/proto"
+	templateProto "github.com/kobsio/kobs/pkg/api/plugins/template/proto"
 
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
 	log                     = logrus.WithFields(logrus.Fields{"package": "clusters"})
-	cacheDurationNamespaces string
-	cacheDurationTopology   string
-	cacheDurationTeams      string
+	cacheDurationNamespaces time.Duration
+	cacheDurationTopology   time.Duration
+	cacheDurationTeams      time.Duration
+	cacheDurationTemplates  time.Duration
+	forbiddenResources      []string
 )
 
-// init is used to define all command-line flags for the clusters package. Currently this is only the cache duration,
-// which is used to cache the namespaces for a cluster.
+// init is used to define all command-line flags for the clusters package.
 func init() {
-	defaultCacheDurationNamespaces := "5m"
+	defaultCacheDurationNamespaces := time.Duration(5 * time.Minute)
 	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES") != "" {
-		defaultCacheDurationNamespaces = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES")
+		parsedCacheDurationNamespaces, err := time.ParseDuration(os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES"))
+		if err == nil {
+			defaultCacheDurationNamespaces = parsedCacheDurationNamespaces
+		}
 	}
 
-	defaultCacheDurationTopology := "60m"
+	defaultCacheDurationTopology := time.Duration(60 * time.Minute)
 	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY") != "" {
-		defaultCacheDurationTopology = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY")
+		parsedCacheDurationTopology, err := time.ParseDuration(os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY"))
+		if err == nil {
+			defaultCacheDurationTopology = parsedCacheDurationTopology
+		}
 	}
 
-	defaultCacheDurationTeams := "60m"
+	defaultCacheDurationTeams := time.Duration(60 * time.Minute)
 	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEAMS") != "" {
-		defaultCacheDurationTeams = os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEAMS")
+		parsedCacheDurationTeams, err := time.ParseDuration(os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEAMS"))
+		if err == nil {
+			defaultCacheDurationTeams = parsedCacheDurationTeams
+		}
 	}
 
-	flag.StringVar(&cacheDurationNamespaces, "clusters.cache-duration.namespaces", defaultCacheDurationNamespaces, "The duration, for how long requests to get the list of namespaces should be cached.")
-	flag.StringVar(&cacheDurationTopology, "clusters.cache-duration.topology", defaultCacheDurationTopology, "The duration, for how long the topology data should be cached.")
-	flag.StringVar(&cacheDurationTeams, "clusters.cache-duration.teams", defaultCacheDurationTeams, "The duration, for how long the teams data should be cached.")
+	defaultCacheDurationTemplates := time.Duration(60 * time.Minute)
+	if os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEMPLATES") != "" {
+		parsedCacheDurationTemplates, err := time.ParseDuration(os.Getenv("KOBS_CLUSTERS_CACHE_DURATION_TEMPLATES"))
+		if err == nil {
+			defaultCacheDurationTemplates = parsedCacheDurationTemplates
+		}
+	}
+
+	var defaultForbiddenResources []string
+	if os.Getenv("KOBS_CLUSTERS_FORBIDDEN_RESOURCES") != "" {
+		defaultForbiddenResources = strings.Split(os.Getenv("KOBS_CLUSTERS_FORBIDDEN_RESOURCES"), ",")
+	}
+
+	flag.DurationVar(&cacheDurationNamespaces, "clusters.cache-duration.namespaces", defaultCacheDurationNamespaces, "The duration, for how long requests to get the list of namespaces should be cached.")
+	flag.DurationVar(&cacheDurationTopology, "clusters.cache-duration.topology", defaultCacheDurationTopology, "The duration, for how long the topology data should be cached.")
+	flag.DurationVar(&cacheDurationTeams, "clusters.cache-duration.teams", defaultCacheDurationTeams, "The duration, for how long the teams data should be cached.")
+	flag.DurationVar(&cacheDurationTemplates, "clusters.cache-duration.templates", defaultCacheDurationTemplates, "The duration, for how long the templates data should be cached.")
+	flag.StringArrayVar(&forbiddenResources, "clusters.forbidden-resources", defaultForbiddenResources, "A list of resources, which can not be accessed via kobs.")
+}
+
+// isForbidden checks if the requested resource was specified in the forbidden resources list.
+func isForbidden(resource string) bool {
+	for _, r := range forbiddenResources {
+		if resource == r {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Config is the configuration required to load all clusters.
@@ -57,9 +96,21 @@ type Config struct {
 type Clusters struct {
 	clustersProto.UnimplementedClustersServer
 	clusters []*cluster.Cluster
-	edges    []*clustersProto.Edge
-	nodes    []*clustersProto.Node
-	teams    []Team
+	cache    Cache
+}
+
+type Cache struct {
+	topology           Topology
+	topologyLastFetch  time.Time
+	teams              []Team
+	teamsLastFetch     time.Time
+	templates          []*templateProto.Template
+	templatesLastFetch time.Time
+}
+
+type Topology struct {
+	edges []*clustersProto.Edge
+	nodes []*clustersProto.Node
 }
 
 func (c *Clusters) getCluster(name string) *cluster.Cluster {
@@ -111,7 +162,7 @@ func (c *Clusters) GetNamespaces(ctx context.Context, getNamespacesRequest *clus
 			return nil, fmt.Errorf("invalid cluster name")
 		}
 
-		clusterNamespaces, err := cluster.GetNamespaces(ctx)
+		clusterNamespaces, err := cluster.GetNamespaces(ctx, cacheDurationNamespaces)
 		if err != nil {
 			return nil, err
 		}
@@ -135,7 +186,7 @@ func (c *Clusters) GetNamespaces(ctx context.Context, getNamespacesRequest *clus
 		return uniqueNamespaces[i] < uniqueNamespaces[j]
 	})
 
-	log.WithFields(logrus.Fields{"namespaces": uniqueNamespaces}).Tracef("GetNamespaces")
+	log.WithFields(logrus.Fields{"namespaces": len(uniqueNamespaces)}).Tracef("GetNamespaces")
 
 	return &clustersProto.GetNamespacesResponse{
 		Namespaces: uniqueNamespaces,
@@ -181,6 +232,10 @@ func (c *Clusters) GetResources(ctx context.Context, getResourcesRequest *cluste
 		cluster := c.getCluster(clusterName)
 		if cluster == nil {
 			return nil, fmt.Errorf("invalid cluster name")
+		}
+
+		if isForbidden(getResourcesRequest.Resource) {
+			return nil, status.Error(codes.PermissionDenied, fmt.Sprintf("access for resource %s is forbidding", getResourcesRequest.Resource))
 		}
 
 		if getResourcesRequest.Namespaces == nil {
@@ -296,20 +351,34 @@ func (c *Clusters) GetApplication(ctx context.Context, getApplicationRequest *cl
 func (c *Clusters) GetTeams(ctx context.Context, getTeamsRequest *clustersProto.GetTeamsRequest) (*clustersProto.GetTeamsResponse, error) {
 	log.Tracef("GetTeams")
 
-	var teams []*teamProto.Team
-
-	for _, team := range c.teams {
-		teams = append(teams, &teamProto.Team{
-			Name:        team.Name,
-			Description: team.Description,
-			Logo:        team.Logo,
-		})
+	if c.cache.teamsLastFetch.After(time.Now().Add(-1 * cacheDurationTeams)) {
+		return &clustersProto.GetTeamsResponse{
+			Teams: transformCachedTeams(c.cache.teams),
+		}, nil
 	}
 
-	log.WithFields(logrus.Fields{"count": len(teams)}).Tracef("GetTeams")
+	if c.cache.teams == nil {
+		teams := getTeams(ctx, c.clusters)
+		if teams != nil {
+			c.cache.teamsLastFetch = time.Now()
+			c.cache.teams = teams
+		}
+
+		return &clustersProto.GetTeamsResponse{
+			Teams: transformCachedTeams(teams),
+		}, nil
+	}
+
+	go func() {
+		teams := getTeams(ctx, c.clusters)
+		if teams != nil {
+			c.cache.teamsLastFetch = time.Now()
+			c.cache.teams = teams
+		}
+	}()
 
 	return &clustersProto.GetTeamsResponse{
-		Teams: teams,
+		Teams: transformCachedTeams(c.cache.teams),
 	}, nil
 }
 
@@ -324,7 +393,15 @@ func (c *Clusters) GetTeams(ctx context.Context, getTeamsRequest *clustersProto.
 func (c *Clusters) GetTeam(ctx context.Context, getTeamRequest *clustersProto.GetTeamRequest) (*clustersProto.GetTeamResponse, error) {
 	log.WithFields(logrus.Fields{"name": getTeamRequest.Name}).Tracef("GetTeam")
 
-	teamShort := getTeamData(c.teams, getTeamRequest.Name)
+	if c.cache.teams == nil {
+		teams := getTeams(ctx, c.clusters)
+		if teams != nil {
+			c.cache.teamsLastFetch = time.Now()
+			c.cache.teams = teams
+		}
+	}
+
+	teamShort := getTeamData(c.cache.teams, getTeamRequest.Name)
 	if teamShort == nil {
 		return nil, fmt.Errorf("invalid team name")
 	}
@@ -361,53 +438,84 @@ func (c *Clusters) GetTeam(ctx context.Context, getTeamRequest *clustersProto.Ge
 	}, nil
 }
 
+// GetTemplates returns a list of templates. The name of a template must be unique accross all clusters and namespace,
+// because we only use the name in the CRs and resources to identify a template. If the last fetch was before the
+// request time + the cache duration we return the cached templates. If this isn't the case and the lenght of the
+// templates slice is 0 we fetch the templates and return them to the user. If the length of the slice is larger then 0,
+// we return the cached templates, but trigger a refectch in the background.
+func (c *Clusters) GetTemplates(ctx context.Context, getTemplatesRequest *clustersProto.GetTemplatesRequest) (*clustersProto.GetTemplatesResponse, error) {
+	log.Tracef("GetTemplates")
+
+	if c.cache.templatesLastFetch.After(time.Now().Add(-1 * cacheDurationTemplates)) {
+		return &clustersProto.GetTemplatesResponse{
+			Templates: c.cache.templates,
+		}, nil
+	}
+
+	if c.cache.templates == nil {
+		templates := getTemplates(ctx, c.clusters)
+		if templates != nil {
+			c.cache.templatesLastFetch = time.Now()
+			c.cache.templates = templates
+		}
+
+		return &clustersProto.GetTemplatesResponse{
+			Templates: templates,
+		}, nil
+	}
+
+	go func() {
+		templates := getTemplates(ctx, c.clusters)
+		if templates != nil {
+			c.cache.templatesLastFetch = time.Now()
+			c.cache.templates = templates
+		}
+	}()
+
+	return &clustersProto.GetTemplatesResponse{
+		Templates: c.cache.templates,
+	}, nil
+}
+
 // GetApplicationsTopology returns the topology for the given list of clusters and namespaces. We add an additional node
 // for each cluster and namespace. These nodes are used to group the applications by the cluster and namespace.
 func (c *Clusters) GetApplicationsTopology(ctx context.Context, getApplicationsTopologyRequest *clustersProto.GetApplicationsTopologyRequest) (*clustersProto.GetApplicationsTopologyResponse, error) {
-	var edges []*clustersProto.Edge
-	var nodes []*clustersProto.Node
+	log.Tracef("GetApplicationsTopology")
 
-	for _, clusterName := range getApplicationsTopologyRequest.Clusters {
-		nodes = append(nodes, &clustersProto.Node{
-			Id:        clusterName,
-			Label:     clusterName,
-			Type:      "cluster",
-			Parent:    "",
-			Cluster:   clusterName,
-			Namespace: "",
-			Name:      "",
-		})
-
-		for _, namespace := range getApplicationsTopologyRequest.Namespaces {
-			nodes = append(nodes, &clustersProto.Node{
-				Id:        clusterName + "-" + namespace,
-				Label:     namespace,
-				Type:      "namespace",
-				Parent:    clusterName,
-				Cluster:   clusterName,
-				Namespace: namespace,
-				Name:      "",
-			})
-
-			for _, edge := range c.edges {
-				if (edge.SourceCluster == clusterName && edge.SourceNamespace == namespace) || (edge.TargetCluster == clusterName && edge.TargetNamespace == namespace) {
-					edges = appendEdgeIfMissing(edges, edge)
-				}
-			}
-		}
+	if c.cache.topologyLastFetch.After(time.Now().Add(-1 * cacheDurationTopology)) {
+		edges, nodes := generateTopology(c.cache.topology, getApplicationsTopologyRequest.Clusters, getApplicationsTopologyRequest.Namespaces)
+		return &clustersProto.GetApplicationsTopologyResponse{
+			Edges: edges,
+			Nodes: nodes,
+		}, nil
 	}
 
-	for _, edge := range edges {
-		for _, node := range c.nodes {
-			if node.Id == edge.Source || node.Id == edge.Target {
-				nodes = appendNodeIfMissing(nodes, node)
-			}
+	if c.cache.topology.nodes == nil {
+		topology := getTopology(ctx, c.clusters)
+		if topology.nodes != nil {
+			c.cache.topologyLastFetch = time.Now()
+			c.cache.topology = topology
 		}
+
+		edges, nodes := generateTopology(topology, getApplicationsTopologyRequest.Clusters, getApplicationsTopologyRequest.Namespaces)
+
+		return &clustersProto.GetApplicationsTopologyResponse{
+			Edges: edges,
+			Nodes: nodes,
+		}, nil
 	}
+
+	go func() {
+		topology := getTopology(ctx, c.clusters)
+		if topology.nodes != nil {
+			c.cache.topologyLastFetch = time.Now()
+			c.cache.topology = topology
+		}
+	}()
 
 	return &clustersProto.GetApplicationsTopologyResponse{
-		Edges: edges,
-		Nodes: nodes,
+		Edges: c.cache.topology.edges,
+		Nodes: c.cache.topology.nodes,
 	}, nil
 }
 
@@ -428,21 +536,9 @@ func Load(config Config) (*Clusters, error) {
 		}
 	}
 
-	d, err := time.ParseDuration(cacheDurationNamespaces)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, c := range clusters {
-		c.SetOptions(d)
-	}
-
 	cs := &Clusters{
 		clusters: clusters,
 	}
-
-	go cs.generateTopology()
-	go cs.generateTeams()
 
 	return cs, nil
 }
