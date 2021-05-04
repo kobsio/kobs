@@ -270,16 +270,14 @@ func Register(cfg []Config, grpcServer *grpc.Server) ([]*pluginsProto.PluginShor
 
 		traffic := config.Traffic
 		if traffic.Enabled {
-			if traffic.Failure == 0 {
+			if traffic.Failure <= 0 || traffic.Failure >= 100 || traffic.Degraded < traffic.Failure {
 				traffic.Failure = 95
 			}
 
-			if traffic.Degraded == 0 {
+			if traffic.Degraded <= 0 || traffic.Degraded >= 100 || traffic.Degraded < traffic.Failure {
 				traffic.Degraded = 99
 			}
 		}
-
-		fmt.Println(traffic)
 
 		pluginDetails = append(pluginDetails, &pluginsProto.PluginShort{
 			Name:        config.Name,
