@@ -20,32 +20,33 @@ const styleSheet: cytoscape.Stylesheet[] = [
   {
     selector: 'node',
     style: {
-      'border-color': '#6A6E73',
+      'border-color': '#6a6e73',
+      'border-opacity': 1,
+      'border-width': 1,
       color: '#151515',
       'font-family': 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
       label: 'data(label)',
-      shape: 'rectangle',
+      shape: 'roundrectangle',
+      'text-halign': 'center',
+      'text-valign': 'bottom',
     },
   },
   {
     selector: "node[type='cluster']",
     style: {
       'background-color': '#f0f0f0',
-      shape: 'rectangle',
     },
   },
   {
     selector: "node[type='namespace']",
     style: {
       'background-color': '#ffffff',
-      shape: 'rectangle',
     },
   },
   {
     selector: "node[type='application']",
     style: {
       'background-color': '#0066cc',
-      shape: 'rectangle',
     },
   },
   {

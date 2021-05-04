@@ -7,6 +7,7 @@ import (
 	"github.com/kobsio/kobs/pkg/api/plugins/clusters"
 	"github.com/kobsio/kobs/pkg/api/plugins/elasticsearch"
 	"github.com/kobsio/kobs/pkg/api/plugins/jaeger"
+	"github.com/kobsio/kobs/pkg/api/plugins/kiali"
 	"github.com/kobsio/kobs/pkg/api/plugins/opsgenie"
 	"github.com/kobsio/kobs/pkg/api/plugins/prometheus"
 
@@ -19,6 +20,7 @@ type Config struct {
 	Prometheus    []prometheus.Config    `yaml:"prometheus"`
 	Elasticsearch []elasticsearch.Config `yaml:"elasticsearch"`
 	Jaeger        []jaeger.Config        `yaml:"jaeger"`
+	Kiali         []kiali.Config         `yaml:"kiali"`
 	Opsgenie      []opsgenie.Config      `yaml:"opsgenie"`
 }
 
