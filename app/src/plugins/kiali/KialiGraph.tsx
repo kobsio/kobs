@@ -3,14 +3,12 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import cytoscape from 'cytoscape';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 import dagre from 'cytoscape-dagre';
-import nodeHtmlLabel from 'cytoscape-node-html-label';
 
 import { Node } from 'proto/kiali_grpc_web_pb';
 
 import 'plugins/kiali/kiali.css';
 
 cytoscape.use(dagre);
-nodeHtmlLabel(cytoscape);
 
 // layout is the layout for the topology graph.
 // See: https://js.cytoscape.org/#layouts
@@ -91,6 +89,7 @@ const styleSheet: cytoscape.Stylesheet[] = [
       'line-color': '#6a6e73',
       'target-arrow-color': '#6a6e73',
       'target-arrow-shape': 'triangle',
+      'text-wrap': 'wrap',
       width: 3,
     },
   },

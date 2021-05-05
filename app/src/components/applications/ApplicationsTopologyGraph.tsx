@@ -1,6 +1,13 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
 import cytoscape from 'cytoscape';
+import nodeHtmlLabel from 'cytoscape-node-html-label';
+
+import { Node } from 'proto/clusters_grpc_web_pb';
+
+import 'components/applications/applications.css';
+
+nodeHtmlLabel(cytoscape);
 
 // layout is the layout for the topology graph.
 // See: https://js.cytoscape.org/#layouts
@@ -28,7 +35,9 @@ const styleSheet: cytoscape.Stylesheet[] = [
       label: 'data(label)',
       shape: 'roundrectangle',
       'text-halign': 'center',
+      'text-opacity': 0,
       'text-valign': 'bottom',
+      'text-wrap': 'wrap',
     },
   },
   {
@@ -46,7 +55,7 @@ const styleSheet: cytoscape.Stylesheet[] = [
   {
     selector: "node[type='application']",
     style: {
-      'background-color': '#0066cc',
+      'background-color': '#ffffff',
     },
   },
   {
@@ -60,6 +69,25 @@ const styleSheet: cytoscape.Stylesheet[] = [
     },
   },
 ];
+
+const nodeLabel = (node: Node.AsObject): string => {
+  if (node.type === 'cluster' || node.type === 'namespace') {
+    return `<div class="kobsio-application-topology-label boxed">
+      <div class="kobsio-application-topology-label-text boxed">
+        <span class="pf-c-badge pf-m-unread kobsio-application-topology-label-badge">
+          ${node.type === 'cluster' ? 'C' : 'N'}
+        </span>
+        ${node.label}
+      </div>
+    </div>`;
+  }
+
+  return `<div class="kobsio-application-topology-label">
+    <div class="kobsio-application-topology-label-text">
+      ${node.label}
+    </div>
+  </div>`;
+};
 
 interface IApplicationsTopologyGraphProps {
   edges: cytoscape.ElementDefinition[];
@@ -103,6 +131,17 @@ const ApplicationsTopologyGraph: React.FunctionComponent<IApplicationsTopologyGr
       if (graphRef.current) return;
       graphRef.current = cy;
       cy.on('tap', onTap);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cy as any).nodeHtmlLabel([
+        {
+          halign: 'center',
+          halignBox: 'center',
+          query: 'node:visible',
+          tpl: nodeLabel,
+          valign: 'bottom',
+          valignBox: 'bottom',
+        },
+      ]);
     },
     [onTap],
   );
