@@ -1,0 +1,39 @@
+.kobsio-application-topology-label {
+  border-radius: 3px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 2px 8px 0 rgba(0, 0, 0, 0.19);
+  display: flex;
+  font-family: Verdana,Arial,Helvetica,sans-serif,pficon;
+  font-size: 8px;
+  font-weight: normal;
+  line-height: 11px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.kobsio-application-topology-label.boxed {
+  margin-top: 13px;
+}
+
+.kobsio-application-topology-label-text {
+  align-items: center;
+  background-color: var(--pf-global--palette--white);
+  border-radius: 3px;
+  border-width: 1px;
+  color: var(--pf-global--palette--black-1000);
+  display: flex;
+  font-size: 8px;
+  padding: 3px 5px;
+}
+
+.kobsio-application-topology-label-text.boxed {
+  background-color: var(--pf-global--palette--black-700);
+  color: var(--pf-global--palette--white);
+}
+
+.kobsio-application-topology-label-badge {
+  background-color: var(--pf-global--palette--blue-200);
+  margin-right: 5px;
+  min-width: 24px;
+  padding-left: 0px;
+  padding-right: 0px;
+}

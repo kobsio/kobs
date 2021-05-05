@@ -174,7 +174,7 @@ func (k *Kiali) GetGraph(ctx context.Context, getGraphRequest *kialiProto.GetGra
 						if edgeLabel == "" {
 							edgeLabel = httpPercent
 						} else {
-							edgeLabel = edgeLabel + " - " + httpPercent + "%"
+							edgeLabel = edgeLabel + "\n" + httpPercent + "%"
 						}
 
 						if instance.traffic.Enabled {
