@@ -37,6 +37,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#61](https://github.com/kobsio/kobs/pull/61): Improve caching logic, by generating the teams and topology graph only when it is requested and not via an additional goroutine.
 - [#62](https://github.com/kobsio/kobs/pull/62): Show the name of a variable within the select box in the Prometheus dashboards.
 - [#64](https://github.com/kobsio/kobs/pull/64): Recreate Pods when ConfigMap in Helm chart is changed.
+- [#67](https://github.com/kobsio/kobs/pull/67): :warning: *Breaking change:* :warning: Adjust Pod and Service labels, which can now be set via the `pod.labels`, `pod.annotations`, `service.labels` and `service.annotations` values.
 
 ## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
 

@@ -4,6 +4,9 @@ metadata:
   name: {{ include "kobs.fullname" . }}
   labels:
     {{- include "kobs.labels" . | nindent 4 }}
+    {{- include "kobs.serviceLabels" . | nindent 4 }}
+  annotations:
+    {{- include "kobs.serviceAnnotations" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
