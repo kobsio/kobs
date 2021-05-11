@@ -32,9 +32,15 @@ type Config struct {
 }
 
 type Traffic struct {
-	Enabled  bool    `yaml:"enabled"`
-	Failure  float64 `yaml:"failure"`
 	Degraded float64 `yaml:"degraded"`
+	Failure  float64 `yaml:"failure"`
+}
+
+type Metric struct {
+	Labels     map[string]string `json:"labels"`
+	Datapoints [][]interface{}   `json:"datapoints"`
+	Stat       string            `json:"stat"`
+	Name       string            `json:"name"`
 }
 
 type Kiali struct {
@@ -170,26 +176,36 @@ func (k *Kiali) GetGraph(ctx context.Context, getGraphRequest *kialiProto.GetGra
 						edgeLabel = httpRate + "req/s"
 					}
 
-					if httpPercent, ok := response.Elements.Edges[i].Data.Traffic.Rates["httpPercentReq"]; ok {
+					if httpPercentErr, ok := response.Elements.Edges[i].Data.Traffic.Rates["httpPercentErr"]; ok {
 						if edgeLabel == "" {
-							edgeLabel = httpPercent
+							edgeLabel = httpPercentErr + "%"
 						} else {
-							edgeLabel = edgeLabel + "\n" + httpPercent + "%"
+							edgeLabel = edgeLabel + "\n" + httpPercentErr + "%"
 						}
 
-						if instance.traffic.Enabled {
-							httpPercentFloat, err := strconv.ParseFloat(httpPercent, 64)
-							if err == nil {
-								if httpPercentFloat <= instance.traffic.Failure {
-									edgeType = "httpfailure"
-								} else if httpPercentFloat <= instance.traffic.Degraded {
-									edgeType = "httpdegraded"
-								} else {
-									edgeType = "httphealthy"
-								}
+						httpPercentErrFloat, err := strconv.ParseFloat(httpPercentErr, 64)
+						if err == nil {
+							if httpPercentErrFloat >= instance.traffic.Failure {
+								edgeType = "httpfailure"
+							} else if httpPercentErrFloat >= instance.traffic.Degraded {
+								edgeType = "httpdegraded"
+							} else {
+								edgeType = "httphealthy"
 							}
+						}
+					}
+				} else if response.Elements.Edges[i].Data.Traffic.Protocol == "grpc" {
+					edgeType = "grpc"
+
+					if grpcRate, ok := response.Elements.Edges[i].Data.Traffic.Rates["grpc"]; ok {
+						edgeLabel = grpcRate + "req/s"
+					}
+
+					if grpcPercentErr, ok := response.Elements.Edges[i].Data.Traffic.Rates["grpcPercentErr"]; ok {
+						if edgeLabel == "" {
+							edgeLabel = grpcPercentErr + "%"
 						} else {
-							edgeType = "httphealthy"
+							edgeLabel = edgeLabel + "\n" + grpcPercentErr + "%"
 						}
 					}
 				} else if response.Elements.Edges[i].Data.Traffic.Protocol == "tcp" && response.Elements.Edges[i].Data.Traffic.Rates != nil {
@@ -240,7 +256,85 @@ func (k *Kiali) GetGraph(ctx context.Context, getGraphRequest *kialiProto.GetGra
 
 	log.WithFields(logrus.Fields{"nodes": len(response.Elements.Nodes), "edges": len(response.Elements.Edges)}).Debugf("Results.")
 	return response, nil
+}
 
+// GetMetrics returns the Prometheus metrics for the given workload/service from the Kiali API. We transform the API
+// response into our protobuf message format, so that we can handle the datapoints better in the React UI.
+func (k *Kiali) GetMetrics(ctx context.Context, getMetricsRequest *kialiProto.GetMetricsRequest) (*kialiProto.GetMetricsResponse, error) {
+	if getMetricsRequest == nil {
+		return nil, fmt.Errorf("request data is missing")
+	}
+
+	instance := k.getInstace(getMetricsRequest.Name)
+	if instance == nil {
+		return nil, fmt.Errorf("invalid name for Kiali plugin")
+	}
+
+	quantiles := "&quantiles[]=0.5&quantiles[]=0.95&quantiles[]=0.99"
+	filters := strings.Join(getMetricsRequest.Filters, "&filters[]=")
+	byLabels := strings.Join(getMetricsRequest.ByLabels, "&byLabels[]=")
+
+	var requestProtocol string
+	if getMetricsRequest.RequestProtocol != "" {
+		requestProtocol = "&requestProtocol=" + getMetricsRequest.RequestProtocol
+	}
+
+	url := fmt.Sprintf(
+		"/kiali/api/namespaces/%s/%s/%s/metrics?queryTime=%d&duration=%d&step=%d&rateInterval=%s%s&filters[]=%s&byLabels[]=%s&direction=%s&reporter=%s%s",
+		getMetricsRequest.Namespace,
+		getMetricsRequest.NodeType,
+		getMetricsRequest.NodeName,
+		getMetricsRequest.QueryTime,
+		getMetricsRequest.Duration,
+		getMetricsRequest.Step,
+		getMetricsRequest.RateInterval,
+		quantiles,
+		filters,
+		byLabels,
+		getMetricsRequest.Direction,
+		getMetricsRequest.Reporter,
+		requestProtocol,
+	)
+	log.WithFields(logrus.Fields{"url": url}).Debugf("GetMetrics.")
+
+	body, err := instance.doRequest(ctx, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var response map[string][]Metric
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var metrics []*kialiProto.Metric
+
+	for metricName, metricsList := range response {
+		for _, metric := range metricsList {
+			var data []*kialiProto.Data
+			for _, point := range metric.Datapoints {
+				value, err := strconv.ParseFloat(point[1].(string), 64)
+				if err == nil {
+					data = append(data, &kialiProto.Data{
+						X: int64(point[0].(float64)) * 1000,
+						Y: value,
+					})
+				}
+			}
+
+			metrics = append(metrics, &kialiProto.Metric{
+				Name:  metricName,
+				Label: metric.Labels[getMetricsRequest.ByLabels[0]],
+				Stat:  metric.Stat,
+				Data:  data,
+			})
+		}
+	}
+
+	return &kialiProto.GetMetricsResponse{
+		Metrics: metrics,
+	}, nil
 }
 
 // Register is used to register the Kiali plugin at our gRPC server, with all configured instances.
@@ -269,14 +363,12 @@ func Register(cfg []Config, grpcServer *grpc.Server) ([]*pluginsProto.PluginShor
 		}
 
 		traffic := config.Traffic
-		if traffic.Enabled {
-			if traffic.Failure <= 0 || traffic.Failure >= 100 || traffic.Degraded < traffic.Failure {
-				traffic.Failure = 95
-			}
+		if traffic.Degraded <= 0 || traffic.Degraded >= 100 || traffic.Degraded > traffic.Failure {
+			traffic.Degraded = 1
+		}
 
-			if traffic.Degraded <= 0 || traffic.Degraded >= 100 || traffic.Degraded < traffic.Failure {
-				traffic.Degraded = 99
-			}
+		if traffic.Failure <= 0 || traffic.Failure >= 100 || traffic.Degraded > traffic.Failure {
+			traffic.Failure = 5
 		}
 
 		pluginDetails = append(pluginDetails, &pluginsProto.PluginShort{

@@ -63,9 +63,8 @@ kiali:
     description: Service mesh management for Istio.
     address: https://kiali.kobs.io
     traffic:
-      enabled: true
-      failure: 95
-      degraded: 99
+      degraded: 1
+      failure: 5
 ```
 
 | Field | Type | Description | Required |
@@ -76,9 +75,8 @@ kiali:
 | username | string | Username to access a Kiali instance via basic authentication. | No |
 | password | string | Password to access a Kiali instance via basic authentication. | No |
 | token | string | Token to access a Kiali instance via token based authentication. | No |
-| traffic.enabled | boolean | Enable traffic visualization in the Kiali graph. | No |
-| traffic.failure | number | Threshold to mark edges with failures. This must be a number between 0 and 100. | No |
-| traffic.degraded | number | Threshold to mark edges with degraded performance. This must be a number between 0 and 100. | No |
+| traffic.failure | number | Threshold to mark edges with failures. This must be a number between 0 and 100. The default value is 5. | No |
+| traffic.degraded | number | Threshold to mark edges with degraded performance. This must be a number between 0 and 100. The default value is 1. | No |
 
 ## Opsgenie
 

@@ -26,12 +26,14 @@ interface IKialiGraphWrapperProps {
   name: string;
   namespaces: string[];
   duration: number;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const KialiGraphWrapper: React.FunctionComponent<IKialiGraphWrapperProps> = ({
   name,
   namespaces,
   duration,
+  setDetails,
 }: IKialiGraphWrapperProps) => {
   const [data, setData] = useState<IDataState>({ edges: [], error: '', isLoading: false, nodes: [] });
 
@@ -89,8 +91,11 @@ const KialiGraphWrapper: React.FunctionComponent<IKialiGraphWrapperProps> = ({
   return (
     <div style={{ height: '100%', minHeight: '100%' }}>
       <KialiGraph
+        name={name}
+        duration={duration}
         edges={data.edges as cytoscape.ElementDefinition[]}
         nodes={data.nodes as cytoscape.ElementDefinition[]}
+        setDetails={setDetails}
       />
     </div>
   );

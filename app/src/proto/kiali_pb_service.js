@@ -28,6 +28,15 @@ Kiali.GetGraph = {
   responseType: kiali_pb.GetGraphResponse
 };
 
+Kiali.GetMetrics = {
+  methodName: "GetMetrics",
+  service: Kiali,
+  requestStream: false,
+  responseStream: false,
+  requestType: kiali_pb.GetMetricsRequest,
+  responseType: kiali_pb.GetMetricsResponse
+};
+
 exports.Kiali = Kiali;
 
 function KialiClient(serviceHost, options) {
@@ -71,6 +80,37 @@ KialiClient.prototype.getGraph = function getGraph(requestMessage, metadata, cal
     callback = arguments[1];
   }
   var client = grpc.unary(Kiali.GetGraph, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+KialiClient.prototype.getMetrics = function getMetrics(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Kiali.GetMetrics, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

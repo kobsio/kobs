@@ -231,5 +231,85 @@ proto.plugins.kiali.KialiPromiseClient.prototype.getGraph =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.plugins.kiali.GetMetricsRequest,
+ *   !proto.plugins.kiali.GetMetricsResponse>}
+ */
+const methodDescriptor_Kiali_GetMetrics = new grpc.web.MethodDescriptor(
+  '/plugins.kiali.Kiali/GetMetrics',
+  grpc.web.MethodType.UNARY,
+  proto.plugins.kiali.GetMetricsRequest,
+  proto.plugins.kiali.GetMetricsResponse,
+  /**
+   * @param {!proto.plugins.kiali.GetMetricsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.kiali.GetMetricsResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.plugins.kiali.GetMetricsRequest,
+ *   !proto.plugins.kiali.GetMetricsResponse>}
+ */
+const methodInfo_Kiali_GetMetrics = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.plugins.kiali.GetMetricsResponse,
+  /**
+   * @param {!proto.plugins.kiali.GetMetricsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.plugins.kiali.GetMetricsResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.plugins.kiali.GetMetricsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.plugins.kiali.GetMetricsResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.plugins.kiali.GetMetricsResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.plugins.kiali.KialiClient.prototype.getMetrics =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/plugins.kiali.Kiali/GetMetrics',
+      request,
+      metadata || {},
+      methodDescriptor_Kiali_GetMetrics,
+      callback);
+};
+
+
+/**
+ * @param {!proto.plugins.kiali.GetMetricsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.plugins.kiali.GetMetricsResponse>}
+ *     Promise that resolves to the response
+ */
+proto.plugins.kiali.KialiPromiseClient.prototype.getMetrics =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/plugins.kiali.Kiali/GetMetrics',
+      request,
+      metadata || {},
+      methodDescriptor_Kiali_GetMetrics);
+};
+
+
 module.exports = proto.plugins.kiali;
 

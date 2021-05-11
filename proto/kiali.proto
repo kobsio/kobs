@@ -7,6 +7,7 @@ option go_package = "github.com/kobsio/kobs/pkg/api/plugins/kiali/proto";
 service Kiali {
   rpc GetNamespaces(GetNamespacesRequest) returns (GetNamespacesResponse) {}
   rpc GetGraph(GetGraphRequest) returns (GetGraphResponse) {}
+  rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
 }
 
 // GetNamespacesRequest is the request format to get all namespace. It just requires the name of the Kiali instance.
@@ -127,4 +128,43 @@ message SEInfo {
 message Response {
   map<string, string> flags = 1;
 	map<string, string> hosts = 2;
+}
+
+// GetMetricsRequest it the request format to get the metrics for a workload/service (nodeType). For the request we also
+// need the name and namespace of the workload/service and some other properties, which are used to filter the metrics.
+message GetMetricsRequest {
+  string name = 1;
+  string namespace = 2;
+  string nodeType = 3;
+  string nodeName = 4;
+  int64 queryTime = 5;
+  int64 duration = 6;
+  int64 step = 7;
+  string rateInterval = 8;
+  repeated string filters = 9;
+  repeated string byLabels = 10;
+  string direction = 11;
+  string reporter = 12;
+  string requestProtocol = 13;
+}
+
+// GetMetricsResponse is the response format for a GetMetrics call. It contains all the metrics for the requested
+// workload/service.
+message GetMetricsResponse {
+  repeated Metric metrics = 1;
+}
+
+// Metric is a single metrics for a workload/service. Each metric can be identified by the name, label and stat
+// parameter. The metric also contains all datapoints.
+message Metric {
+  string name = 1;
+  string label = 2;
+  string stat = 3;
+  repeated Data data = 4;
+}
+
+// Data is a single datapoint for a metric.
+message Data {
+  int64 x = 1;
+  double y = 2;
 }
