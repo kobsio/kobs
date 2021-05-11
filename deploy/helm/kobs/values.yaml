@@ -36,13 +36,11 @@ tolerations: []
 ##
 affinity: {}
 
-## Specify additional annotations for the created Pods.
+## Specify additional labels and annotations for the created Pods.
 ##
-podAnnotations: {}
-
-## Specify additional labels for the created Pods.
-##
-podLabels: {}
+pod:
+  annotations: {}
+  labels: {}
 
 kobs:
   image:
@@ -190,6 +188,9 @@ crd:
 ##
 service:
   type: ClusterIP
+
+  annotations: {}
+  labels: {}
 
 ## Create an Ingress to expose kobs.
 ## See: https://kubernetes.io/docs/concepts/services-networking/ingress/
