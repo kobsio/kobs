@@ -507,3 +507,155 @@ export namespace Response {
   }
 }
 
+export class GetMetricsRequest extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getNamespace(): string;
+  setNamespace(value: string): void;
+
+  getNodetype(): string;
+  setNodetype(value: string): void;
+
+  getNodename(): string;
+  setNodename(value: string): void;
+
+  getQuerytime(): number;
+  setQuerytime(value: number): void;
+
+  getDuration(): number;
+  setDuration(value: number): void;
+
+  getStep(): number;
+  setStep(value: number): void;
+
+  getRateinterval(): string;
+  setRateinterval(value: string): void;
+
+  clearFiltersList(): void;
+  getFiltersList(): Array<string>;
+  setFiltersList(value: Array<string>): void;
+  addFilters(value: string, index?: number): string;
+
+  clearBylabelsList(): void;
+  getBylabelsList(): Array<string>;
+  setBylabelsList(value: Array<string>): void;
+  addBylabels(value: string, index?: number): string;
+
+  getDirection(): string;
+  setDirection(value: string): void;
+
+  getReporter(): string;
+  setReporter(value: string): void;
+
+  getRequestprotocol(): string;
+  setRequestprotocol(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetMetricsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetMetricsRequest): GetMetricsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetMetricsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetMetricsRequest;
+  static deserializeBinaryFromReader(message: GetMetricsRequest, reader: jspb.BinaryReader): GetMetricsRequest;
+}
+
+export namespace GetMetricsRequest {
+  export type AsObject = {
+    name: string,
+    namespace: string,
+    nodetype: string,
+    nodename: string,
+    querytime: number,
+    duration: number,
+    step: number,
+    rateinterval: string,
+    filtersList: Array<string>,
+    bylabelsList: Array<string>,
+    direction: string,
+    reporter: string,
+    requestprotocol: string,
+  }
+}
+
+export class GetMetricsResponse extends jspb.Message {
+  clearMetricsList(): void;
+  getMetricsList(): Array<Metric>;
+  setMetricsList(value: Array<Metric>): void;
+  addMetrics(value?: Metric, index?: number): Metric;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetMetricsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetMetricsResponse): GetMetricsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetMetricsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetMetricsResponse;
+  static deserializeBinaryFromReader(message: GetMetricsResponse, reader: jspb.BinaryReader): GetMetricsResponse;
+}
+
+export namespace GetMetricsResponse {
+  export type AsObject = {
+    metricsList: Array<Metric.AsObject>,
+  }
+}
+
+export class Metric extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getLabel(): string;
+  setLabel(value: string): void;
+
+  getStat(): string;
+  setStat(value: string): void;
+
+  clearDataList(): void;
+  getDataList(): Array<Data>;
+  setDataList(value: Array<Data>): void;
+  addData(value?: Data, index?: number): Data;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Metric.AsObject;
+  static toObject(includeInstance: boolean, msg: Metric): Metric.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Metric, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Metric;
+  static deserializeBinaryFromReader(message: Metric, reader: jspb.BinaryReader): Metric;
+}
+
+export namespace Metric {
+  export type AsObject = {
+    name: string,
+    label: string,
+    stat: string,
+    dataList: Array<Data.AsObject>,
+  }
+}
+
+export class Data extends jspb.Message {
+  getX(): number;
+  setX(value: number): void;
+
+  getY(): number;
+  setY(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Data.AsObject;
+  static toObject(includeInstance: boolean, msg: Data): Data.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Data, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Data;
+  static deserializeBinaryFromReader(message: Data, reader: jspb.BinaryReader): Data;
+}
+
+export namespace Data {
+  export type AsObject = {
+    x: number,
+    y: number,
+  }
+}
+

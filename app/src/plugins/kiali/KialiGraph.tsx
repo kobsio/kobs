@@ -4,7 +4,9 @@ import cytoscape from 'cytoscape';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 import dagre from 'cytoscape-dagre';
 
-import { Node } from 'proto/kiali_grpc_web_pb';
+import { Node, NodeWrapper } from 'proto/kiali_grpc_web_pb';
+import KialiDetailsEdge from 'plugins/kiali/KialiDetailsEdge';
+import KialiDetailsNode from 'plugins/kiali/KialiDetailsNode';
 
 import 'plugins/kiali/kiali.css';
 
@@ -101,6 +103,13 @@ const styleSheet: cytoscape.Stylesheet[] = [
     },
   },
   {
+    selector: 'edge[edgetype="grpc"]',
+    style: {
+      'line-color': '#009596',
+      'target-arrow-color': '#009596',
+    },
+  },
+  {
     selector: 'edge[edgetype="http"]',
     style: {
       'line-color': '#3e8635',
@@ -171,22 +180,53 @@ const nodeLabel = (node: Node.AsObject): string => {
 };
 
 interface IKialiGraphProps {
+  name: string;
+  duration: number;
   edges: cytoscape.ElementDefinition[];
   nodes: cytoscape.ElementDefinition[];
+  setDetails?: (details: React.ReactNode) => void;
 }
 
-const KialiGraph: React.FunctionComponent<IKialiGraphProps> = ({ edges, nodes }: IKialiGraphProps) => {
+const KialiGraph: React.FunctionComponent<IKialiGraphProps> = ({
+  name,
+  duration,
+  edges,
+  nodes,
+  setDetails,
+}: IKialiGraphProps) => {
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<cytoscape.Core | null>(null);
 
-  const onTap = useCallback((event: cytoscape.EventObject): void => {
-    const ele = event.target;
-    const data = ele.data();
-    // TODO: Show drawer with metrics for the selected edge / node.
-    console.log(data);
-  }, []);
+  // onTap is used to display the details drawer for a selected edge/node. When the user clicks on a edge/node the onTap
+  // function is called. We then check, which type the clicked element has and display the corresponding details
+  // component in the drawer panel.
+  const onTap = useCallback(
+    (event: cytoscape.EventObject): void => {
+      const ele = event.target;
+      const data = ele.data();
+
+      if (data.nodetype && setDetails) {
+        setDetails(
+          <KialiDetailsNode duration={duration} name={name} node={data} close={(): void => setDetails(undefined)} />,
+        );
+      }
+
+      if (data.edgetype && setDetails) {
+        setDetails(
+          <KialiDetailsEdge
+            name={name}
+            duration={duration}
+            edge={data}
+            nodes={nodes as NodeWrapper.AsObject[]}
+            close={(): void => setDetails(undefined)}
+          />,
+        );
+      }
+    },
+    [name, duration, nodes, setDetails],
+  );
 
   const cyCallback = useCallback(
     (cy: cytoscape.Core): void => {

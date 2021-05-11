@@ -18,6 +18,7 @@ const KialiPage: React.FunctionComponent<IPluginPageProps> = ({ name, descriptio
   const history = useHistory();
   const location = useLocation();
   const [options, setOptions] = useState<IKialiOptions>(getOptionsFromSearch(location.search));
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const changeOptions = (opts: IKialiOptions): void => {
     const namespaces = opts.namespaces ? opts.namespaces.map((field) => `&namespace=${field}`) : undefined;
@@ -47,12 +48,17 @@ const KialiPage: React.FunctionComponent<IPluginPageProps> = ({ name, descriptio
         />
       </PageSection>
 
-      <Drawer isExpanded={false}>
-        <DrawerContent panelContent={undefined}>
+      <Drawer isExpanded={details !== undefined}>
+        <DrawerContent panelContent={details}>
           <DrawerContentBody>
             <PageSection style={{ height: '100%', minHeight: '100%' }} variant={PageSectionVariants.default}>
               {options.namespaces.length > 0 ? (
-                <KialiGraphWrapper name={name} namespaces={options.namespaces} duration={options.duration} />
+                <KialiGraphWrapper
+                  name={name}
+                  namespaces={options.namespaces}
+                  duration={options.duration}
+                  setDetails={setDetails}
+                />
               ) : null}
             </PageSection>
           </DrawerContentBody>

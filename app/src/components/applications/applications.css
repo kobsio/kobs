@@ -1,3 +1,5 @@
+/* kobsio-application-topology
+ * The kobsio-application-topology classes are used for the node labels in the topology graph. */
 .kobsio-application-topology-label {
   border-radius: 3px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 2px 8px 0 rgba(0, 0, 0, 0.19);
@@ -31,7 +33,7 @@
 }
 
 .kobsio-application-topology-label-badge {
-  background-color: var(--pf-global--palette--blue-200);
+  background-color: var(--pf-global--primary-color--100);
   margin-right: 5px;
   min-width: 24px;
   padding-left: 0px;

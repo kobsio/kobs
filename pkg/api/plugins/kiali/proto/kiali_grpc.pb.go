@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type KialiClient interface {
 	GetNamespaces(ctx context.Context, in *GetNamespacesRequest, opts ...grpc.CallOption) (*GetNamespacesResponse, error)
 	GetGraph(ctx context.Context, in *GetGraphRequest, opts ...grpc.CallOption) (*GetGraphResponse, error)
+	GetMetrics(ctx context.Context, in *GetMetricsRequest, opts ...grpc.CallOption) (*GetMetricsResponse, error)
 }
 
 type kialiClient struct {
@@ -48,12 +49,22 @@ func (c *kialiClient) GetGraph(ctx context.Context, in *GetGraphRequest, opts ..
 	return out, nil
 }
 
+func (c *kialiClient) GetMetrics(ctx context.Context, in *GetMetricsRequest, opts ...grpc.CallOption) (*GetMetricsResponse, error) {
+	out := new(GetMetricsResponse)
+	err := c.cc.Invoke(ctx, "/plugins.kiali.Kiali/GetMetrics", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // KialiServer is the server API for Kiali service.
 // All implementations must embed UnimplementedKialiServer
 // for forward compatibility
 type KialiServer interface {
 	GetNamespaces(context.Context, *GetNamespacesRequest) (*GetNamespacesResponse, error)
 	GetGraph(context.Context, *GetGraphRequest) (*GetGraphResponse, error)
+	GetMetrics(context.Context, *GetMetricsRequest) (*GetMetricsResponse, error)
 	mustEmbedUnimplementedKialiServer()
 }
 
@@ -66,6 +77,9 @@ func (UnimplementedKialiServer) GetNamespaces(context.Context, *GetNamespacesReq
 }
 func (UnimplementedKialiServer) GetGraph(context.Context, *GetGraphRequest) (*GetGraphResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGraph not implemented")
+}
+func (UnimplementedKialiServer) GetMetrics(context.Context, *GetMetricsRequest) (*GetMetricsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMetrics not implemented")
 }
 func (UnimplementedKialiServer) mustEmbedUnimplementedKialiServer() {}
 
@@ -116,6 +130,24 @@ func _Kiali_GetGraph_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Kiali_GetMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KialiServer).GetMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/plugins.kiali.Kiali/GetMetrics",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KialiServer).GetMetrics(ctx, req.(*GetMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Kiali_ServiceDesc is the grpc.ServiceDesc for Kiali service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -130,6 +162,10 @@ var Kiali_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGraph",
 			Handler:    _Kiali_GetGraph_Handler,
+		},
+		{
+			MethodName: "GetMetrics",
+			Handler:    _Kiali_GetMetrics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

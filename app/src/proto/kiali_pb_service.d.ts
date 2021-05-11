@@ -22,10 +22,20 @@ type KialiGetGraph = {
   readonly responseType: typeof kiali_pb.GetGraphResponse;
 };
 
+type KialiGetMetrics = {
+  readonly methodName: string;
+  readonly service: typeof Kiali;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof kiali_pb.GetMetricsRequest;
+  readonly responseType: typeof kiali_pb.GetMetricsResponse;
+};
+
 export class Kiali {
   static readonly serviceName: string;
   static readonly GetNamespaces: KialiGetNamespaces;
   static readonly GetGraph: KialiGetGraph;
+  static readonly GetMetrics: KialiGetMetrics;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -77,6 +87,15 @@ export class KialiClient {
   getGraph(
     requestMessage: kiali_pb.GetGraphRequest,
     callback: (error: ServiceError|null, responseMessage: kiali_pb.GetGraphResponse|null) => void
+  ): UnaryResponse;
+  getMetrics(
+    requestMessage: kiali_pb.GetMetricsRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: kiali_pb.GetMetricsResponse|null) => void
+  ): UnaryResponse;
+  getMetrics(
+    requestMessage: kiali_pb.GetMetricsRequest,
+    callback: (error: ServiceError|null, responseMessage: kiali_pb.GetMetricsResponse|null) => void
   ): UnaryResponse;
 }
 

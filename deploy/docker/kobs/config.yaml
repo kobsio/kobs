@@ -36,12 +36,11 @@ kiali:
     password:
     token:
     traffic:
-      enabled: true
-      failure: 95
-      degraded: 99
+      degraded: 1
+      failure: 5
 
-opsgenie:
-  - name: Opsgenie
-    description: On-call and alert management to keep services always on.
-    apiUrl: api.eu.opsgenie.com
-    apiKey: ${OPSGENIE_API_KEY}
+# opsgenie:
+#   - name: Opsgenie
+#     description: On-call and alert management to keep services always on.
+#     apiUrl: api.eu.opsgenie.com
+#     apiKey: ${OPSGENIE_API_KEY}
