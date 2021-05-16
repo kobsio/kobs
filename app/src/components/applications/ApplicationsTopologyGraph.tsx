@@ -2,23 +2,23 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
 import cytoscape from 'cytoscape';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import dagre from 'cytoscape-dagre';
 
 import { Node } from 'proto/clusters_grpc_web_pb';
 
 import 'components/applications/applications.css';
 
+cytoscape.use(dagre);
 nodeHtmlLabel(cytoscape);
 
 // layout is the layout for the topology graph.
 // See: https://js.cytoscape.org/#layouts
 const layout = {
-  animate: false,
-  avoidOverlap: true,
-  directed: true,
   fit: true,
-  name: 'breadthfirst',
-  nodeDimensionsIncludeLabels: false,
-  padding: 50,
+  name: 'dagre',
+  nodeDimensionsIncludeLabels: true,
+  rankDir: 'LR',
 };
 
 // styleSheet changes the style of the nodes and edges in the topology graph.
