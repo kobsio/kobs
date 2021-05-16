@@ -125,29 +125,11 @@ func doesNodeExists(nodes []*clustersProto.Node, nodeID string) bool {
 func generateTopology(topology Topology, clusters, namespaces []string) ([]*clustersProto.Edge, []*clustersProto.Node) {
 	var edges []*clustersProto.Edge
 	var nodes []*clustersProto.Node
+	var clusterNodes []*clustersProto.Node
+	var namespaceNodes []*clustersProto.Node
 
 	for _, clusterName := range clusters {
-		nodes = append(nodes, &clustersProto.Node{
-			Id:        clusterName,
-			Label:     clusterName,
-			Type:      "cluster",
-			Parent:    "",
-			Cluster:   clusterName,
-			Namespace: "",
-			Name:      "",
-		})
-
 		for _, namespace := range namespaces {
-			nodes = append(nodes, &clustersProto.Node{
-				Id:        clusterName + "-" + namespace,
-				Label:     namespace,
-				Type:      "namespace",
-				Parent:    clusterName,
-				Cluster:   clusterName,
-				Namespace: namespace,
-				Name:      "",
-			})
-
 			for _, edge := range topology.edges {
 				if (edge.SourceCluster == clusterName && edge.SourceNamespace == namespace) || (edge.TargetCluster == clusterName && edge.TargetNamespace == namespace) {
 					edges = appendEdgeIfMissing(edges, edge)
@@ -156,13 +138,42 @@ func generateTopology(topology Topology, clusters, namespaces []string) ([]*clus
 		}
 	}
 
+	log.WithFields(logrus.Fields{"edges": edges}).Tracef("Edges")
+
 	for _, edge := range edges {
 		for _, node := range topology.nodes {
 			if node.Id == edge.Source || node.Id == edge.Target {
 				nodes = appendNodeIfMissing(nodes, node)
+
+				clusterNode := &clustersProto.Node{
+					Id:        node.Cluster,
+					Label:     node.Cluster,
+					Type:      "cluster",
+					Parent:    "",
+					Cluster:   node.Cluster,
+					Namespace: "",
+					Name:      "",
+				}
+				clusterNodes = appendNodeIfMissing(clusterNodes, clusterNode)
+
+				namespaceNode := &clustersProto.Node{
+					Id:        node.Cluster + "-" + node.Namespace,
+					Label:     node.Namespace,
+					Type:      "namespace",
+					Parent:    node.Cluster,
+					Cluster:   node.Cluster,
+					Namespace: node.Namespace,
+					Name:      "",
+				}
+				namespaceNodes = append(namespaceNodes, namespaceNode)
 			}
 		}
 	}
+
+	log.WithFields(logrus.Fields{"nodes": nodes, "cluster-nodes": clusterNodes, "namespace-nodes": namespaceNodes}).Tracef("Nodes")
+
+	nodes = append(nodes, clusterNodes...)
+	nodes = append(nodes, namespaceNodes...)
 
 	return edges, nodes
 }

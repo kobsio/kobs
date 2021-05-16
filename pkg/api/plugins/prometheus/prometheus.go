@@ -3,6 +3,7 @@ package prometheus
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -89,6 +90,7 @@ func (p *Prometheus) GetVariables(ctx context.Context, getVariablesRequest *prom
 			}
 		}
 
+		sort.Strings(values)
 		getVariablesRequest.Variables[i].Values = values
 
 		if getVariablesRequest.Variables[i].AllowAll {

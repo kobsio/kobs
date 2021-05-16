@@ -46,27 +46,9 @@ func getTeams(ctx context.Context, cs []*cluster.Cluster) []Team {
 			continue
 		}
 
-		applications, err := c.GetApplications(ctx, "")
-		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"cluster": clusterName}).Errorf("Could not get applications")
-			continue
-		}
-
 		for _, team := range teams {
-			// Skip the team if it already exists, because teams must be unique accross clusters and namespaces.
 			if doesTeamExists(cachedTeams, team.Name) {
 				continue
-			}
-
-			var teamApplications []Application
-			for _, application := range applications {
-				if containsTeam(application.Teams, team.Name) {
-					teamApplications = append(teamApplications, Application{
-						Cluster:   application.Cluster,
-						Namespace: application.Namespace,
-						Name:      application.Name,
-					})
-				}
 			}
 
 			cachedTeams = append(cachedTeams, Team{
@@ -75,8 +57,36 @@ func getTeams(ctx context.Context, cs []*cluster.Cluster) []Team {
 				Name:         team.Name,
 				Description:  team.Description,
 				Logo:         team.Logo,
-				Applications: teamApplications,
+				Applications: nil,
 			})
+		}
+	}
+
+	log.WithFields(logrus.Fields{"teams": cachedTeams}).Tracef("Teams")
+
+	for _, c := range cs {
+		clusterName := c.GetName()
+
+		applications, err := c.GetApplications(ctx, "")
+		if err != nil {
+			log.WithError(err).WithFields(logrus.Fields{"cluster": clusterName}).Errorf("Could not get applications")
+			continue
+		}
+
+		for i := 0; i < len(cachedTeams); i++ {
+			var teamApplications []Application
+
+			for _, application := range applications {
+				if containsTeam(application.Teams, cachedTeams[i].Name) {
+					teamApplications = append(teamApplications, Application{
+						Cluster:   application.Cluster,
+						Namespace: application.Namespace,
+						Name:      application.Name,
+					})
+				}
+			}
+
+			cachedTeams[i].Applications = append(cachedTeams[i].Applications, teamApplications...)
 		}
 	}
 

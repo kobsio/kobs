@@ -11,6 +11,7 @@ import {
   Query,
 } from 'proto/prometheus_grpc_web_pb';
 import { apiURL } from 'utils/constants';
+import { transformData } from 'plugins/prometheus/helpers';
 
 // prometheusService is the gRPC service to get the metrics for the defined query in a chart.
 const prometheusService = new PrometheusPromiseClient(apiURL, null, null);
@@ -85,7 +86,12 @@ const PrometheusPreviewChart: React.FunctionComponent<IPrometheusPreviewChartPro
       <div style={{ height: '75px', position: 'relative', width: '100%' }} ref={refChart}>
         <ChartGroup height={height} padding={0} width={width}>
           {data.metrics.map((metric, index) => (
-            <ChartArea key={index} data={metric.dataList} interpolation="monotoneX" name={`index${index}`} />
+            <ChartArea
+              key={index}
+              data={transformData(metric.dataList)}
+              interpolation="monotoneX"
+              name={`index${index}`}
+            />
           ))}
         </ChartGroup>
       </div>
