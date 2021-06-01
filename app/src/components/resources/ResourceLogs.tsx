@@ -117,7 +117,7 @@ const ResourceLogs: React.FunctionComponent<IResourceLogsProps> = ({
           <p>{data.error}</p>
         </Alert>
       ) : data.logs && data.logs.length > 0 ? (
-        <Card style={{ maxWidth: '100%', overflowX: 'scroll', padding: '16px' }}>
+        <Card style={{ maxWidth: '100%', padding: '16px' }}>
           <Checkbox
             label="No wrap"
             isChecked={noWrap}
@@ -126,12 +126,16 @@ const ResourceLogs: React.FunctionComponent<IResourceLogsProps> = ({
             id="logs-no-wrap"
             name="logs-no-wrap"
           />
+
           <p>&nbsp;</p>
-          {data.logs.map((line, index) => (
-            <div key={index} className={noWrap ? 'pf-u-text-nowrap' : ''}>
-              {line}
-            </div>
-          ))}
+
+          <div style={{ overflow: noWrap ? 'auto' : 'hidden' }}>
+            {data.logs.map((line, index) => (
+              <div key={index} className={noWrap ? 'pf-u-text-nowrap' : 'pf-u-text-break-word'}>
+                {line}
+              </div>
+            ))}
+          </div>
         </Card>
       ) : (
         <Alert variant={AlertVariant.info} title="Usage">

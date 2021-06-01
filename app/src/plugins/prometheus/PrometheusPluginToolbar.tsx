@@ -35,22 +35,20 @@ const PrometheusPluginToolbar: React.FunctionComponent<IPrometheusPluginToolbarP
   };
 
   return (
-    <Card>
+    <Card style={{ maxWidth: '100%', overflow: 'auto' }}>
       <Toolbar id="prometheus-toolbar">
         <ToolbarContent>
           <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
             {variables ? (
               <ToolbarGroup>
-                <ToolbarItem>
-                  {variables.map((variable, index) => (
-                    <ToolbarItem key={index}>
-                      <PrometheusVariable
-                        variable={variable}
-                        selectValue={(value: string): void => onSelectVariableValue(value, index)}
-                      />
-                    </ToolbarItem>
-                  ))}
-                </ToolbarItem>
+                {variables.map((variable, index) => (
+                  <ToolbarItem key={index}>
+                    <PrometheusVariable
+                      variable={variable}
+                      selectValue={(value: string): void => onSelectVariableValue(value, index)}
+                    />
+                  </ToolbarItem>
+                ))}
               </ToolbarGroup>
             ) : null}
             <ToolbarGroup style={{ width: '100%' }}>
