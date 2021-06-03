@@ -62,7 +62,7 @@ helm upgrade kobs kobs/kobs
 | `pod.annotations` | Specify additional annotations for the created Pods. | `{}` |
 | `pod.labels` | Specify additional labels for the created Pods. | `{}` |
 | `kobs.image.repository` | The repository for the Docker image. | `kobsio/kobs` |
-| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.2.0` |
+| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.3.0` |
 | `kobs.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
 | `kobs.securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `kobs.resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
