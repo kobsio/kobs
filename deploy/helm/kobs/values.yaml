@@ -45,7 +45,7 @@ pod:
 kobs:
   image:
     repository: kobsio/kobs
-    tag: v0.2.0
+    tag: v0.3.0
     pullPolicy: IfNotPresent
 
   ## Specify security settings for the kobs Container. They override settings made at the Pod level via the
