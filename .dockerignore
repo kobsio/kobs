@@ -5,3 +5,6 @@ app/node_modules
 bin
 deploy
 docs
+plugins/*/lib
+plugins/*/lib-esm
+plugins/*/node_modules
