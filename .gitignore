@@ -29,3 +29,6 @@ lib-esm
 
 # binaries
 /bin
+
+# temporary files
+/tmp

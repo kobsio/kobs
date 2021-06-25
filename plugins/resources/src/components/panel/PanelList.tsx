@@ -27,39 +27,43 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, showDe
       <Accordion asDefinitionList={false}>
         {resources.map((resource, i) => (
           <div key={i}>
-            {resource.resources.map((item, j) => (
-              <AccordionItem key={j}>
-                {clustersContext.resources && clustersContext.resources.hasOwnProperty(item) ? (
-                  <React.Fragment>
-                    <AccordionToggle
-                      onClick={(): void => toggle(`resources-accordion-${i}-${j}`)}
-                      isExpanded={expanded.includes(`resources-accordion-${i}-${j}`)}
-                      id={`resources-toggle-${i}-${j}`}
-                    >
-                      {clustersContext.resources ? clustersContext.resources[item].title : ''}
-                    </AccordionToggle>
-                    <AccordionContent
-                      id={`resources-content-${i}-${j}`}
-                      style={{ maxWidth: '100%', overflowX: 'scroll' }}
-                      isHidden={!expanded.includes(`resources-accordion-${i}-${j}`)}
-                      isFixed={false}
-                    >
-                      {clustersContext.resources ? (
-                        <PanelListItem
-                          clusters={resource.clusters}
-                          namespaces={resource.namespaces}
-                          resource={clustersContext.resources[item]}
-                          selector={resource.selector}
-                          showDetails={showDetails}
-                        />
-                      ) : null}
-                    </AccordionContent>
-                  </React.Fragment>
-                ) : (
-                  <AccordionToggle id={`resources-toggle-${i}-${j}`}>Could not found resource {item}</AccordionToggle>
-                )}
-              </AccordionItem>
-            ))}
+            {resource.resources
+              ? resource.resources.map((item, j) => (
+                  <AccordionItem key={j}>
+                    {clustersContext.resources && clustersContext.resources.hasOwnProperty(item) ? (
+                      <React.Fragment>
+                        <AccordionToggle
+                          onClick={(): void => toggle(`resources-accordion-${i}-${j}`)}
+                          isExpanded={expanded.includes(`resources-accordion-${i}-${j}`)}
+                          id={`resources-toggle-${i}-${j}`}
+                        >
+                          {clustersContext.resources ? clustersContext.resources[item].title : ''}
+                        </AccordionToggle>
+                        <AccordionContent
+                          id={`resources-content-${i}-${j}`}
+                          style={{ maxWidth: '100%', overflowX: 'scroll' }}
+                          isHidden={!expanded.includes(`resources-accordion-${i}-${j}`)}
+                          isFixed={false}
+                        >
+                          {clustersContext.resources ? (
+                            <PanelListItem
+                              clusters={resource.clusters || []}
+                              namespaces={resource.namespaces || []}
+                              resource={clustersContext.resources[item]}
+                              selector={resource.selector || ''}
+                              showDetails={showDetails}
+                            />
+                          ) : null}
+                        </AccordionContent>
+                      </React.Fragment>
+                    ) : (
+                      <AccordionToggle id={`resources-toggle-${i}-${j}`}>
+                        Could not found resource {item}
+                      </AccordionToggle>
+                    )}
+                  </AccordionItem>
+                ))
+              : null}
           </div>
         ))}
       </Accordion>

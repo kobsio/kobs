@@ -16,11 +16,10 @@ spec:
     singular: team
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Team is the Team CRD, which consists of the Kubernetes metadata
-          and the Team from the protobuf  definition.
+        description: Team is the Team CRD.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -35,23 +34,36 @@ spec:
           metadata:
             type: object
           spec:
-            description: Team is used as spec for the Team CRD. A team has a name
-              (name of the custom resource), a description, a logo and links.
             properties:
               cluster:
                 type: string
+              dashboards:
+                items:
+                  properties:
+                    cluster:
+                      type: string
+                    description:
+                      type: string
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               description:
                 type: string
               links:
                 items:
-                  description: Link is used to render a link for a team. Each link
-                    must contain a title and the link, which is used in the href attribute
-                    in the frontend.
                   properties:
                     link:
                       type: string
                     title:
                       type: string
+                  required:
+                  - link
+                  - title
                   type: object
                 type: array
               logo:
@@ -60,197 +72,7 @@ spec:
                 type: string
               namespace:
                 type: string
-              plugins:
-                items:
-                  description: Plugin is the plugin formate, which can be used within
-                    the Application CR. Each plugin requires a name. The plugin specific
-                    fields like "prometheus", "elasticsearch" and "jaeger" are mutually
-                    exclusive and containing the data, which is needed to use the
-                    plugin within a Application CR.
-                  properties:
-                    displayName:
-                      type: string
-                    elasticsearch:
-                      description: Spec implements the specification for an application.
-                        This field is then used in the Application CR and contains,
-                        all possible fields, which can be used by a user to work with
-                        their logs in Elasticsaerch.
-                      properties:
-                        queries:
-                          items:
-                            description: Query represents a single query for an application.
-                              A query is identified by a name, a query and a list
-                              of fields, which should be shown in the results table.
-                              If the fields list is empty, we show the complete document
-                              in the table.
-                            properties:
-                              fields:
-                                items:
-                                  type: string
-                                type: array
-                              name:
-                                type: string
-                              query:
-                                type: string
-                            type: object
-                          type: array
-                      type: object
-                    jaeger:
-                      properties:
-                        queries:
-                          items:
-                            properties:
-                              name:
-                                type: string
-                              operation:
-                                type: string
-                              service:
-                                type: string
-                              tags:
-                                type: string
-                            type: object
-                          type: array
-                      type: object
-                    name:
-                      type: string
-                    opsgenie:
-                      description: Spec implements the specification for an application.
-                        This field is then used in the Application CR and contains,
-                        all possible fields, which can be used by a user to work with
-                        Opsgenie.
-                      properties:
-                        queries:
-                          items:
-                            description: Query represents a single query for an application.
-                              A query is identified by a name and a query.
-                            properties:
-                              name:
-                                type: string
-                              query:
-                                type: string
-                            type: object
-                          type: array
-                      type: object
-                    prometheus:
-                      description: Spec implements the specification for an application.
-                        This field is then used in the Application CR and contains,
-                        all possible fields, which can be used by a user to work with
-                        variables and charts for their data in Prometheus.
-                      properties:
-                        charts:
-                          items:
-                            description: Chart represents a chart for the metrics
-                              view. A chart must contain a title, a type (line, area,  bar
-                              chart, etc.). It can also contain a unit for the y axis.
-                              If the stacked option is set to true all series for
-                              the chart will be stacked. The size parameter can be
-                              used to define the width of a chart for large screens.
-                              We are using a 12 column grid to display the charts,
-                              so the number must be between 1 and 12. The last option
-                              is a list of queries, which are executed against the
-                              datasource (e.g. For Prometheus this will be a list
-                              of PromQL queries).
-                            properties:
-                              columns:
-                                items:
-                                  description: Column is a single column for the "table"
-                                    chart type. The name must be a returned label
-                                    from the specified Prometheus queries or a returned
-                                    value. A value can be specified via "value-1",
-                                    "value-2", etc. The header value can be used to
-                                    modify the header title, when this isn't set the
-                                    name will be used for the header. Unit allows
-                                    a user to set a unit for the column.
-                                  properties:
-                                    header:
-                                      type: string
-                                    name:
-                                      type: string
-                                    unit:
-                                      type: string
-                                  type: object
-                                type: array
-                              legend:
-                                type: string
-                              mappings:
-                                additionalProperties:
-                                  type: string
-                                type: object
-                              queries:
-                                items:
-                                  description: Query presents a single query to get
-                                    the data, which should be shown in the chart for
-                                    the metrics section. A query consists of a query
-                                    string (e.g. PromQL) and a lable. The query and
-                                    the label can contain variables via Go templating
-                                    syntax. For Prometheus the label can also contain
-                                    a label from the returned series with the same
-                                    syntax.
-                                  properties:
-                                    label:
-                                      type: string
-                                    query:
-                                      type: string
-                                  type: object
-                                type: array
-                              size:
-                                format: int64
-                                type: integer
-                              stacked:
-                                type: boolean
-                              title:
-                                type: string
-                              type:
-                                type: string
-                              unit:
-                                type: string
-                            type: object
-                          type: array
-                        variables:
-                          items:
-                            description: Variable specifies a variable, which can
-                              be used within the charts. A variable must contain a
-                              name, a label and a query. It also can set the allowAll
-                              field to true, which will include an "All" option in
-                              the variables values. The values and value field must
-                              not be provided by the user. These fields will be set
-                              by the GetVariables call. If a user provide a "value",
-                              we will try to use it as the selected value.
-                            properties:
-                              allowAll:
-                                type: boolean
-                              label:
-                                type: string
-                              name:
-                                type: string
-                              query:
-                                type: string
-                              value:
-                                type: string
-                              values:
-                                items:
-                                  type: string
-                                type: array
-                            type: object
-                          type: array
-                      type: object
-                    template:
-                      description: Template is the reference for a plugin template,
-                        which can be used within a plugin. The user must provide the
-                        name of the template and an optional list of variables.
-                      properties:
-                        name:
-                          type: string
-                        variables:
-                          additionalProperties:
-                            type: string
-                          type: object
-                      type: object
-                  type: object
-                type: array
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true

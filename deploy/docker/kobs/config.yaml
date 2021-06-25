@@ -2,7 +2,17 @@ clusters:
   providers:
     - provider: kubeconfig
       kubeconfig:
-        path: ${HOME}/.kube/config
+        # path: ${HOME}/.kube/config
+        path: ${HOME}/Documents/kubeconfig/kubeconfig
+
+plugins:
+  resources:
+    forbidden:
+      - secrets
+
+  applications:
+    topologyCacheDuration: 1m
+    teamsCacheDuration: 1m
 
 prometheus:
   - name: Prometheus

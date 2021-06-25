@@ -2269,10 +2269,10 @@
     "@octokit/types" "^6.0.3"
     universal-user-agent "^6.0.0"
 
-"@octokit/openapi-types@^7.3.2":
-  version "7.3.2"
-  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-7.3.2.tgz#065ce49b338043ec7f741316ce06afd4d459d944"
-  integrity sha512-oJhK/yhl9Gt430OrZOzAl2wJqR0No9445vmZ9Ey8GjUZUpwuu/vmEFP0TDhDXdpGDoxD6/EIFHJEcY8nHXpDTA==
+"@octokit/openapi-types@^7.3.4":
+  version "7.3.4"
+  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-7.3.4.tgz#9f075e263d1d3c1ba7a789e0085a5ed75d6daad1"
+  integrity sha512-binmLrMQWBG0CvUE/jS3/XXrZbX3oN/6gF7ocSsb/ZJ0xfox2isJN4ZhGeL91SDJVzFK7XuUYBm2mlIDedkxsg==
 
 "@octokit/plugin-enterprise-rest@^6.0.1":
   version "6.0.1"
@@ -2291,12 +2291,12 @@
   resolved "https://registry.yarnpkg.com/@octokit/plugin-request-log/-/plugin-request-log-1.0.4.tgz#5e50ed7083a613816b1e4a28aeec5fb7f1462e85"
   integrity sha512-mLUsMkgP7K/cnFEw07kWqXGF5LKrOkD+lhCrKvPHXWDywAwuDUeDwWBpc69XK3pNX0uKiVt8g5z96PJ6z9xCFA==
 
-"@octokit/plugin-rest-endpoint-methods@5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@octokit/plugin-rest-endpoint-methods/-/plugin-rest-endpoint-methods-5.3.1.tgz#deddce769b4ec3179170709ab42e4e9e6195aaa9"
-  integrity sha512-3B2iguGmkh6bQQaVOtCsS0gixrz8Lg0v4JuXPqBcFqLKuJtxAUf3K88RxMEf/naDOI73spD+goJ/o7Ie7Cvdjg==
+"@octokit/plugin-rest-endpoint-methods@5.3.2":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-rest-endpoint-methods/-/plugin-rest-endpoint-methods-5.3.2.tgz#4426a06aca230df17e40a332dcbc348779d99569"
+  integrity sha512-vwsdLUC4TUohbHAqD0f/BjUw/kfKmNs1f0+Fkldzr7GKqMXjNku5U0jzZCmVUI6GcH7b/KcXd9WtbpVpofDehQ==
   dependencies:
-    "@octokit/types" "^6.16.2"
+    "@octokit/types" "^6.16.5"
     deprecation "^2.3.1"
 
 "@octokit/request-error@^2.0.5", "@octokit/request-error@^2.1.0":
@@ -2321,21 +2321,21 @@
     universal-user-agent "^6.0.0"
 
 "@octokit/rest@^18.1.0":
-  version "18.6.0"
-  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-18.6.0.tgz#9a8457374c78c2773d3ab3f50aaffc62f3ed4f76"
-  integrity sha512-MdHuXHDJM7e5sUBe3K9tt7th0cs4csKU5Bb52LRi2oHAeIMrMZ4XqaTrEv660HoUPoM1iDlnj27Ab/Nh3MtwlA==
+  version "18.6.1"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-18.6.1.tgz#82f0582fd7e1a6e2da3cee0a8e30c2647e242cb3"
+  integrity sha512-4NUr0sr8ZohvYoDVDT/P7lmamzeGrFjdfVxIuxW9Nz3xMp//MBmIKYxHhzMuMWGa8MHs69VT2HKsNYRJMCYyWA==
   dependencies:
     "@octokit/core" "^3.5.0"
     "@octokit/plugin-paginate-rest" "^2.6.2"
     "@octokit/plugin-request-log" "^1.0.2"
-    "@octokit/plugin-rest-endpoint-methods" "5.3.1"
+    "@octokit/plugin-rest-endpoint-methods" "5.3.2"
 
-"@octokit/types@^6.0.3", "@octokit/types@^6.13.0", "@octokit/types@^6.16.1", "@octokit/types@^6.16.2":
-  version "6.16.4"
-  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.16.4.tgz#d24f5e1bacd2fe96d61854b5bda0e88cf8288dfe"
-  integrity sha512-UxhWCdSzloULfUyamfOg4dJxV9B+XjgrIZscI0VCbp4eNrjmorGEw+4qdwcpTsu6DIrm9tQsFQS2pK5QkqQ04A==
+"@octokit/types@^6.0.3", "@octokit/types@^6.13.0", "@octokit/types@^6.16.1", "@octokit/types@^6.16.5":
+  version "6.16.6"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.16.6.tgz#c113a0408a799ccb93c8749806733ad5d3edd142"
+  integrity sha512-PrEGjMnEhLlNttsuLadEWqXdMYJX3icHHaRs/ChJebRT79VDh/cNkk8bURx05BEEwr7QvaLsRzjt3hNxUJZfXA==
   dependencies:
-    "@octokit/openapi-types" "^7.3.2"
+    "@octokit/openapi-types" "^7.3.4"
 
 "@panva/asn1.js@^1.0.0":
   version "1.0.0"
@@ -2343,59 +2343,59 @@
   integrity sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==
 
 "@patternfly/patternfly@^4.108.2":
-  version "4.108.2"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.108.2.tgz#b6686b9865fd5d4233a15bdf04cc53bded5a8ccc"
-  integrity sha512-z0VB+1CXcH+eoClYQABwapX5FURSvm1nPr6asLWwg/Z4Wuxs0RjZpC6Gb+KRm8nGQwSAcMKZY1jLfPqVnznQnw==
+  version "4.115.2"
+  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.115.2.tgz#200111d52fe07d1380371530304bad9edf45de51"
+  integrity sha512-7hbJ4pRmj+rlXclD2F/UwceO6fS+9flGsgHc4eUc7NyTN2GXl6PLcqrjE2CtiKEPV90+KwsGQGJXZj8bz9HweA==
 
-"@patternfly/react-core@^4.128.2":
-  version "4.128.2"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.128.2.tgz#dd0c218bc75a32ee41c69e3d51bead6b157c4aae"
-  integrity sha512-EhrxE3+V7AYVhbERrcRVH7oY6TeVRqqzaRx8HXWnyn/hxE2rTzhhaLHyjotxk9mGYmIYtMuMebBHFbX0g+6Ymg==
+"@patternfly/react-core@^4.128.2", "@patternfly/react-core@^4.135.0":
+  version "4.135.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.135.0.tgz#b64ad4da10a8814926e28fad727bc7690cd60e66"
+  integrity sha512-DZcONUGOR7Znd6BsUJ4L+KrrnIpyjUvh3JNcYiHW3loytxShCGcx+a04QjOOcZm+MtFhkgs/t51yiC5IP12abA==
   dependencies:
-    "@patternfly/react-icons" "^4.10.11"
-    "@patternfly/react-styles" "^4.10.11"
-    "@patternfly/react-tokens" "^4.11.12"
+    "@patternfly/react-icons" "^4.11.0"
+    "@patternfly/react-styles" "^4.11.0"
+    "@patternfly/react-tokens" "^4.12.0"
     focus-trap "6.2.2"
     react-dropzone "9.0.0"
     tippy.js "5.1.2"
     tslib "1.13.0"
 
-"@patternfly/react-icons@^4.10.11":
-  version "4.10.11"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.10.11.tgz#9bed483fc37c8b795b3fb98c17ede00eef775857"
-  integrity sha512-Qyxwvghb9HZB2do3UVw4EzJSvqWaw/AEw6mFzqshZiIm2oPrL4NkvavwDt5WRicz5sbyWTZluB4grOj33PEpww==
+"@patternfly/react-icons@^4.10.11", "@patternfly/react-icons@^4.11.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.11.0.tgz#26790eeff22dc3204aa8cd094470f0a2f915634a"
+  integrity sha512-WsIX34bO9rhVRmPG0jlV3GoFGfYgPC64TscNV0lxQosiVRnYIA6Z3nBSArtJsxo5Yn6c63glIefC/YTy6D/ZYg==
 
 "@patternfly/react-log-viewer@^4.1.19":
-  version "4.1.19"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-log-viewer/-/react-log-viewer-4.1.19.tgz#c9da7768d9c0e6dcf9f36f07424d1776515a151d"
-  integrity sha512-mzT7kVcBbdaGU569bbjLY47xKYaTkBDsdVCRmfMUZy/DfaEaCUFyxEAXT0N8XUoOFf1z5mgjbgfmTK4HM+p5Sg==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-log-viewer/-/react-log-viewer-4.2.0.tgz#a0fd0cbd31ba09e2599d9b4395927d28bbc4d287"
+  integrity sha512-49sICDwV5fOAcsUZpqFWVdR+/k5ZMWXmrWCshLh531H5BZxAprNTmIN+KHCEmipouTMBC528WvVYtGgPjsvD1g==
   dependencies:
-    "@patternfly/react-core" "^4.128.2"
-    "@patternfly/react-icons" "^4.10.11"
-    "@patternfly/react-styles" "^4.10.11"
+    "@patternfly/react-core" "^4.135.0"
+    "@patternfly/react-icons" "^4.11.0"
+    "@patternfly/react-styles" "^4.11.0"
     memoize-one "^5.1.0"
 
-"@patternfly/react-styles@^4.10.11":
-  version "4.10.11"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.10.11.tgz#6bda5673a71037c0fb9be7e11a117ed8cfea6ce0"
-  integrity sha512-M+NhTtAXreJzMAV2Z1P2pbnKpRYnWbB5iZ6mxB0tkxxG+KyZ0/se8M5rUepLOE/n7BMq8IiOjPJ9zu/vpWj0gA==
+"@patternfly/react-styles@^4.11.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.11.0.tgz#0068dcb18e1343242f93fa6024dcc077acd57fb9"
+  integrity sha512-4eIqTwGI4mjt9DMqX6hnan4eRS+3LUWNaneTEJdmk+flKxtAE/O/OmQHvH4GetDnlSbyfATcA0VFbVtR0aRJAg==
 
 "@patternfly/react-table@^4.27.24":
-  version "4.27.24"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-table/-/react-table-4.27.24.tgz#c61947800d9c82fae3d46a03a1e9989ec49f5f61"
-  integrity sha512-LXKWtCeEJ4KR8ZnyeAPHdDQFJC9KQe/2Z7yJxBHy8gWciLAPcrLvnTtAb+d1O2lFXKMpUKFNUIwzVvuAffjDSA==
+  version "4.29.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-table/-/react-table-4.29.0.tgz#6394ff100994eac2d323ace340bfd259ec7d14d8"
+  integrity sha512-VJL/Y9MKO2YfCZRTK7ZIaDT8ow6pGwNFkkNsuZWN1Fkk/s5Z7M0bkceNo+kHDUGV/pnWFl8vsDYp9yXU1qXktg==
   dependencies:
-    "@patternfly/react-core" "^4.128.2"
-    "@patternfly/react-icons" "^4.10.11"
-    "@patternfly/react-styles" "^4.10.11"
-    "@patternfly/react-tokens" "^4.11.12"
+    "@patternfly/react-core" "^4.135.0"
+    "@patternfly/react-icons" "^4.11.0"
+    "@patternfly/react-styles" "^4.11.0"
+    "@patternfly/react-tokens" "^4.12.0"
     lodash "^4.17.19"
     tslib "1.13.0"
 
-"@patternfly/react-tokens@^4.11.12":
-  version "4.11.12"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.11.12.tgz#0d4d88ec768cbf5c4b46e75dc8673ba97448823c"
-  integrity sha512-PTEc2CQa/BqcDcUwT0V02l+ZoJa+bheLlh9R5g1+JQ6vlqH31gk0dpHmj6goEcSDLkbvMJgr3kNZdJsP1VdBMg==
+"@patternfly/react-tokens@^4.12.0":
+  version "4.12.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.12.0.tgz#2973c7f08a2f35997a0054bbf3c886b3c5c68822"
+  integrity sha512-Oj+GxqTtx0Yu9IDCTibZLQnpcKp58JneNKEFQkJ29WJydhPG4j6oFFElkK+ub+Ft/f9B1Ky1SsfR9eabo6IykQ==
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"
@@ -2627,6 +2627,11 @@
   resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
   integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
 
+"@types/cytoscape@*", "@types/cytoscape@^3.14.15":
+  version "3.14.15"
+  resolved "https://registry.yarnpkg.com/@types/cytoscape/-/cytoscape-3.14.15.tgz#ce3fc1b494f44d6bccb93a099eb005553fc2a14e"
+  integrity sha512-gl4fmjtiV027bgKyAkPPksa2XVCWfwZ3TOaEejeQQ6cmtdrKqrr13m8zpOYkcIYtRqzA4AT8iUzn7P4/p4sUkA==
+
 "@types/eslint@^7.2.6":
   version "7.2.13"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.13.tgz#e0ca7219ba5ded402062ad6f926d491ebb29dd53"
@@ -2733,7 +2738,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
+"@types/node@*", "@types/node@15.12.4":
   version "15.12.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.4.tgz#e1cf817d70a1e118e81922c4ff6683ce9d422e26"
   integrity sha512-zrNj1+yqYF4WskCMOHwN+w9iuD12+dGm0rQ35HLl9/Ouuq52cEtd0CH9qMgrdNmi5ejC1/V7vKEXYubB+65DkA==
@@ -2772,6 +2777,14 @@
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==
+
+"@types/react-cytoscapejs@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/react-cytoscapejs/-/react-cytoscapejs-1.2.1.tgz#44d57edaccd64a0715c3f70d1f4f1d46ae2910d4"
+  integrity sha512-BIgKrGvmnVH/ldcZGGq0Ip0kuELKlr+cDrzoXoRdVcXlcFzpa9uNFzbuvHQTDJCCR/WmlLK1TEk7Dp3MQ5/YQQ==
+  dependencies:
+    "@types/cytoscape" "*"
+    "@types/react" "*"
 
 "@types/react-dom@^17.0.0":
   version "17.0.8"
@@ -3243,9 +3256,9 @@ acorn@^7.1.0, acorn@^7.1.1, acorn@^7.4.0:
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
 acorn@^8.2.4:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.4.0.tgz#af53266e698d7cffa416714b503066a82221be60"
-  integrity sha512-ULr0LDaEqQrMFGyQ3bhJkLsbtrQ8QibAseGZeaSUiT/6zb9IvIkomWHJIvgvwad+hinRAgsI51JcWk2yvwyL+w==
+  version "8.4.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.4.1.tgz#56c36251fc7cabc7096adc18f05afe814321a28c"
+  integrity sha512-asabaBSkEKosYKMITunzX177CXxQ4Q8BSSzMTKD+FefUhipQC70gfW5SiUDhYQ3vk8G+81HqQk7Fv9OXwwn9KA==
 
 add-stream@^1.0.0:
   version "1.0.0"
@@ -5268,6 +5281,26 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
+cytoscape-dagre@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/cytoscape-dagre/-/cytoscape-dagre-2.3.2.tgz#f83d4357642c86d3bd7530dd9c1dffc2e1079d3c"
+  integrity sha512-dL9+RvGkatSlIdOKXiFwHpnpTo8ydFMqIYzZFkImJXNbDci3feyYxR46wFoaG9GFiWimc6XD9Lm0x29b1wvWpw==
+  dependencies:
+    dagre "^0.8.5"
+
+cytoscape-node-html-label@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/cytoscape-node-html-label/-/cytoscape-node-html-label-1.2.2.tgz#cad4942a52be2075f55521b3ea376daadc67d65f"
+  integrity sha512-oUVwrlsIlaJJ8QrQFSMdv3uXVXPg6tMH/Tfofr8JuZIovqI4fPqBi6sQgCMcVpS6k9Td0TTjowBsNRw32CESWg==
+
+cytoscape@^3.19.0, cytoscape@^3.2.19:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.19.0.tgz#b3e3136f823ca00a1c7752741c2a349e52545f57"
+  integrity sha512-DANM8bM4EuSTS3DraPK0nLSmzANrzQ2g/cb3u5Biexu/NVsJA+xAoXVvWHRIHDXz3y0gpMjTPv3Z13ZbkNrEPw==
+  dependencies:
+    heap "^0.2.6"
+    lodash.debounce "^4.0.8"
+
 d@1, d@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/d/-/d-1.0.1.tgz#8698095372d58dbee346ffd0c7093f99f8f9eb5a"
@@ -5275,6 +5308,14 @@ d@1, d@^1.0.1:
   dependencies:
     es5-ext "^0.10.50"
     type "^1.0.1"
+
+dagre@^0.8.5:
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/dagre/-/dagre-0.8.5.tgz#ba30b0055dac12b6c1fcc247817442777d06afee"
+  integrity sha512-/aTqmnRta7x7MCCpExk7HQL2O4owCT2h8NT//9I1OQ9vt29Pa0BzSAkR5lwFUcQ7491yVi/3CXU9jQ5o0Mn2Sw==
+  dependencies:
+    graphlib "^2.1.8"
+    lodash "^4.17.15"
 
 damerau-levenshtein@^1.0.6:
   version "1.0.7"
@@ -5717,9 +5758,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.564, electron-to-chromium@^1.3.723:
-  version "1.3.755"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.755.tgz#4b6101f13de910cf3f0a1789ddc57328133b9332"
-  integrity sha512-BJ1s/kuUuOeo1bF/EM2E4yqW9te0Hpof3wgwBx40AWJE18zsD1Tqo0kr7ijnOc+lRsrlrqKPauJAHqaxOItoUA==
+  version "1.3.756"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.756.tgz#942cee59cd64d19f576d8d5804eef09cb423740c"
+  integrity sha512-WsmJym1TMeHVndjPjczTFbnRR/c4sbzg8fBFtuhlb2Sru3i/S1VGpzDSrv/It8ctMU2bj8G7g7/O3FzYMGw6eA==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -7035,6 +7076,13 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
 
+graphlib@^2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/graphlib/-/graphlib-2.1.8.tgz#5761d414737870084c92ec7b5dbcb0592c9d35da"
+  integrity sha512-jcLLfkpoVGmH7/InMC/1hIvOPSUh38oJtGhvrOFGzioE1DZ+0YW16RgmOJhHiuWTvGiJQ9Z1Ik43JvkRPRvE+A==
+  dependencies:
+    lodash "^4.17.15"
+
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
@@ -7172,6 +7220,11 @@ he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+heap@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/heap/-/heap-0.2.6.tgz#087e1f10b046932fc8594dd9e6d378afc9d1e5ac"
+  integrity sha1-CH4fELBGky/IWU3Z5tN4r8nR5aw=
 
 hex-color-regex@^1.1.0:
   version "1.1.0"
@@ -8705,9 +8758,9 @@ jsonpath-plus@^0.19.0:
   integrity sha512-GSVwsrzW9LsA5lzsqe4CkuZ9wp+kxBb2GwNniaWzI2YFn5Ig42rSW8ZxVpWXaAfakXNrx5pgY5AbQq7kzX29kg==
 
 jsonpath-plus@^5.0.7:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/jsonpath-plus/-/jsonpath-plus-5.0.7.tgz#95fb437ebb69c67595208711a69c95735cbff45b"
-  integrity sha512-7TS6wsiw1s2UMK/A6nA4n0aUJuirCVhJ87nWX5je5MPOl0z5VTr2qs7nMP8NZ2ed3rlt6kePTqddgVPE9F0i0w==
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/jsonpath-plus/-/jsonpath-plus-5.1.0.tgz#2fc4b2e461950626c98525425a3a3518b85af6c3"
+  integrity sha512-890w2Pjtj0iswAxalRlt2kHthi6HKrXEfZcn+ZNZptv7F3rUGIeDuZo+C+h4vXBHLEsVjJrHeCm35nYeZLzSBQ==
 
 jsprim@^1.2.2:
   version "1.4.1"
@@ -11684,6 +11737,14 @@ react-app-polyfill@^2.0.0:
     raf "^3.4.1"
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
+
+react-cytoscapejs@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-cytoscapejs/-/react-cytoscapejs-1.2.1.tgz#ccce46acabf4f0c41dce9070743854f92b0dc050"
+  integrity sha512-8exVCetpzyGCAKuRjXPWGjFCnb22boZ3SXUPpPB/+wQI8Q8BwkT1URN3A7J1Czvj1qAbShh5QQ514mBUp7i7kw==
+  dependencies:
+    cytoscape "^3.2.19"
+    prop-types "^15.6.2"
 
 react-dev-utils@^11.0.3:
   version "11.0.4"
