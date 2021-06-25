@@ -1,15 +1,27 @@
 import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
+import { IPluginPanelProps, PluginOptionsMissing } from '@kobsio/plugin-core';
 import { IPanelOptions } from '../../utils/utils';
-import { IPluginPanelProps } from '@kobsio/plugin-core';
 import PanelList from './PanelList';
+import icon from '../../assets/icon.png';
 
 interface IPanelProps extends IPluginPanelProps {
-  options: IPanelOptions[];
+  options?: IPanelOptions[];
 }
 
 export const Panel: React.FunctionComponent<IPanelProps> = ({ name, title, options, showDetails }: IPanelProps) => {
+  if (!options) {
+    return (
+      <PluginOptionsMissing
+        title="Options for Resources panel are missing"
+        description=""
+        documentation=""
+        icon={icon}
+      />
+    );
+  }
+
   if (title) {
     return (
       <Card isCompact={true}>

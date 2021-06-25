@@ -21,7 +21,14 @@ import Panel from '../panel/Panel';
 // contains a cluster and a resource. Further we also need a namespace, when the list of resource contains a namespaced
 // resource. When the list only contains cluster scoped resources the user must not enter a namespace.
 const checkRequiredData = (resources: IPanelOptions, clustersContextResources: IResources | undefined): boolean => {
-  if (!resources || resources.clusters.length === 0 || resources.resources.length !== 1 || !clustersContextResources) {
+  if (
+    !resources ||
+    !resources.clusters ||
+    resources.clusters.length === 0 ||
+    !resources.resources ||
+    resources.resources.length !== 1 ||
+    !clustersContextResources
+  ) {
     return false;
   }
 
@@ -35,7 +42,7 @@ const checkRequiredData = (resources: IPanelOptions, clustersContextResources: I
     }
   }
 
-  if (!namespacedOnly && resources.namespaces.length === 0) {
+  if (!namespacedOnly && resources.namespaces && resources.namespaces.length === 0) {
     return false;
   }
 

@@ -11,12 +11,16 @@ import (
 
 	// Import all plugins, which should be used with the kobs instance. By default this are all first party plugins from
 	// the plugins folder.
+	"github.com/kobsio/kobs/plugins/applications"
 	"github.com/kobsio/kobs/plugins/resources"
+	"github.com/kobsio/kobs/plugins/teams"
 )
 
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
 type Config struct {
-	Resources resources.Config `yaml:"resources"`
+	Applications applications.Config `yaml:"applications"`
+	Resources    resources.Config    `yaml:"resources"`
+	Teams        teams.Config        `yaml:"teams"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -41,7 +45,9 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Get("/", router.getPlugins)
 
 	// Register all plugins
+	router.Mount(applications.Route, applications.Register(clusters, router.plugins, config.Applications))
 	router.Mount(resources.Route, resources.Register(clusters, router.plugins, config.Resources))
+	router.Mount(teams.Route, teams.Register(clusters, router.plugins, config.Teams))
 
 	return router
 }

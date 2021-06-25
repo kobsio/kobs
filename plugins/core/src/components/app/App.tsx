@@ -46,7 +46,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) 
             <Page header={Header}>
               <Switch>
                 <Route exact={true} path="/" component={HomePage} />
-                <Route exact={true} path="/:name" component={PluginPage} />
+                <Route exact={false} path="/:name" component={PluginPage} />
               </Switch>
             </Page>
           </Router>

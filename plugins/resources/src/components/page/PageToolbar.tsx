@@ -24,14 +24,14 @@ interface IPageToolbarProps {
 const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ resources, setResources }: IPageToolbarProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const [selectedClusters, setSelectedClusters] = useState<string[]>(
-    resources.clusters.length === 0
+    !resources.clusters || resources.clusters.length === 0
       ? clustersContext.clusters.length === 0
         ? []
         : [clustersContext.clusters[0]]
       : resources.clusters,
   );
-  const [selectedResources, setSelectedResources] = useState<string[]>(resources.resources);
-  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(resources.namespaces);
+  const [selectedResources, setSelectedResources] = useState<string[]>(resources.resources || []);
+  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(resources.namespaces || []);
 
   // selectCluster adds/removes the given cluster to the list of selected clusters. When the cluster value is an empty
   // string the selected clusters list is cleared.

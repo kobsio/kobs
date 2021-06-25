@@ -8,6 +8,10 @@ import (
 	"strings"
 	"time"
 
+	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
+	applicationClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/application/clientset/versioned"
+	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/team/clientset/versioned"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -23,10 +27,12 @@ var (
 
 // Cluster is a Kubernetes cluster. It contains all required fields to interact with the cluster and it's services.
 type Cluster struct {
-	cache     Cache
-	clientset *kubernetes.Clientset
-	name      string
-	crds      []CRD
+	cache                Cache
+	clientset            *kubernetes.Clientset
+	applicationClientset *applicationClientsetVersioned.Clientset
+	teamClientset        *teamClientsetVersioned.Clientset
+	name                 string
+	crds                 []CRD
 }
 
 // CRD is the format of a Custom Resource Definition. Each CRD must contain a path and resource, which are used for the
@@ -127,6 +133,84 @@ func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container string
 	return string(res), nil
 }
 
+// GetApplications returns a list of applications gor the given namespace. It also adds the cluster, namespace and
+// application name to the Application CR, so that this information must not be specified by the user in the CR.
+func (c *Cluster) GetApplications(ctx context.Context, namespace string) ([]application.ApplicationSpec, error) {
+	applicationsList, err := c.applicationClientset.KobsV1beta1().Applications(namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	var applications []application.ApplicationSpec
+
+	for _, applicationItem := range applicationsList.Items {
+		application := applicationItem.Spec
+		application.Cluster = c.name
+		application.Namespace = applicationItem.Namespace
+		application.Name = applicationItem.Name
+
+		applications = append(applications, application)
+	}
+
+	return applications, nil
+}
+
+// GetApplication returns a application for the given namespace and name. After the application is retrieved we replace,
+// the cluster, namespace and name in the spec of the Application CR. This is needed, so that the user doesn't have to,
+// provide these fields.
+func (c *Cluster) GetApplication(ctx context.Context, namespace, name string) (*application.ApplicationSpec, error) {
+	applicationCR, err := c.applicationClientset.KobsV1beta1().Applications(namespace).Get(ctx, name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	application := applicationCR.Spec
+	application.Cluster = c.name
+	application.Namespace = namespace
+	application.Name = name
+
+	return &application, nil
+}
+
+// GetTeams returns a list of teams gor the given namespace. It also adds the cluster, namespace and team name to the
+// Team CR, so that this information must not be specified by the user in the CR.
+func (c *Cluster) GetTeams(ctx context.Context, namespace string) ([]team.TeamSpec, error) {
+	teamsList, err := c.teamClientset.KobsV1beta1().Teams(namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	var teams []team.TeamSpec
+
+	for _, teamItem := range teamsList.Items {
+		team := teamItem.Spec
+		team.Cluster = c.name
+		team.Namespace = teamItem.Namespace
+		team.Name = teamItem.Name
+
+		teams = append(teams, team)
+	}
+
+	return teams, nil
+}
+
+// GetTeam returns a team for the given namespace and name. After the team is retrieved we replace, the cluster,
+// namespace and name in the spec of the Team CR. This is needed, so that the user doesn't have to, provide these
+// fields.
+func (c *Cluster) GetTeam(ctx context.Context, namespace, name string) (*team.TeamSpec, error) {
+	teamCR, err := c.teamClientset.KobsV1beta1().Teams(namespace).Get(ctx, name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	team := teamCR.Spec
+	team.Cluster = c.name
+	team.Namespace = namespace
+	team.Name = name
+
+	return &team, nil
+}
+
 // loadCRDs retrieves all CRDs from the Kubernetes API of this cluster. Then the CRDs are transformed into our internal
 // CRD format and saved within the cluster. Since this function is only called once after a cluster was loaded, we call
 // it in a endless loop until it succeeds.
@@ -200,11 +284,25 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 		return nil, err
 	}
 
+	applicationClientset, err := applicationClientsetVersioned.NewForConfig(restConfig)
+	if err != nil {
+		log.WithError(err).Debugf("Could not create application clientset.")
+		return nil, err
+	}
+
+	teamClientset, err := teamClientsetVersioned.NewForConfig(restConfig)
+	if err != nil {
+		log.WithError(err).Debugf("Could not create team clientset.")
+		return nil, err
+	}
+
 	name = strings.Trim(slugifyRe.ReplaceAllString(strings.ToLower(name), "-"), "-")
 
 	c := &Cluster{
-		clientset: clientset,
-		name:      name,
+		clientset:            clientset,
+		applicationClientset: applicationClientset,
+		teamClientset:        teamClientset,
+		name:                 name,
 	}
 
 	go c.loadCRDs()
