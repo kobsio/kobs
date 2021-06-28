@@ -7,6 +7,7 @@ import { App } from '@kobsio/plugin-core';
 import resourcesPlugin from '@kobsio/plugin-resources';
 import teamsPlugin from '@kobsio/plugin-teams';
 import applicationsPlugin from '@kobsio/plugin-applications';
+import dashboardsPlugin from '@kobsio/plugin-dashboards';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,6 +15,7 @@ ReactDOM.render(
       ...resourcesPlugin,
       ...teamsPlugin,
       ...applicationsPlugin,
+      ...dashboardsPlugin,
     }} />
   </React.StrictMode>,
   document.getElementById('root')

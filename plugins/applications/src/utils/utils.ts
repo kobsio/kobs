@@ -1,3 +1,4 @@
+import { IDashboardReference } from '@kobsio/plugin-dashboards';
 import cytoscape from 'cytoscape';
 
 export interface IApplication {
@@ -8,7 +9,7 @@ export interface IApplication {
   links?: ILink[];
   teams?: IReference[];
   dependencies?: IReference[];
-  dashboards?: IReference[];
+  dashboards?: IDashboardReference[];
 }
 
 export interface ILink {

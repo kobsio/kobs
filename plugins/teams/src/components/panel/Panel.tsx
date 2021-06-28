@@ -1,14 +1,13 @@
-import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginPanelProps } from '@kobsio/plugin-core';
+import { IPluginPanelProps, PluginCard } from '@kobsio/plugin-core';
+import Teams from './Teams';
 
 export const Panel: React.FunctionComponent<IPluginPanelProps> = ({ title }: IPluginPanelProps) => {
   return (
-    <Card isCompact={true}>
-      <CardTitle>{title}</CardTitle>
-      <CardBody>Show all teams</CardBody>
-    </Card>
+    <PluginCard title={title}>
+      <Teams />
+    </PluginCard>
   );
 };
 

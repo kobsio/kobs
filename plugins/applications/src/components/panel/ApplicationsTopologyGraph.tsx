@@ -9,8 +9,6 @@ import { IEdge, INode, INodeData } from '../../utils/utils';
 
 import Details from './details/Details';
 
-import '../../assets/applications.css';
-
 cytoscape.use(dagre);
 nodeHtmlLabel(cytoscape);
 

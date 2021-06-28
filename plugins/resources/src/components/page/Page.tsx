@@ -26,7 +26,7 @@ const checkRequiredData = (resources: IPanelOptions, clustersContextResources: I
     !resources.clusters ||
     resources.clusters.length === 0 ||
     !resources.resources ||
-    resources.resources.length !== 1 ||
+    resources.resources.length === 0 ||
     !clustersContextResources
   ) {
     return false;
@@ -112,7 +112,13 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                   <p>Select a list of clusters, resources and namespaces from the toolbar.</p>
                 </Alert>
               ) : (
-                <Panel name={name} title="" options={[resources]} showDetails={setSelectedResource} />
+                <Panel
+                  defaults={{ cluster: '', name: '', namespace: '' }}
+                  name={name}
+                  title=""
+                  options={[resources]}
+                  showDetails={setSelectedResource}
+                />
               )}
             </PageSection>
           </DrawerContentBody>

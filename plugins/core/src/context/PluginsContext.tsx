@@ -2,6 +2,12 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
+export interface IPluginDefaults {
+  cluster: string;
+  namespace: string;
+  name: string;
+}
+
 export interface IPluginData {
   name: string;
   displayName: string;
@@ -16,8 +22,10 @@ export interface IPluginPageProps {
 }
 
 export interface IPluginPanelProps {
+  defaults: IPluginDefaults;
   name: string;
   title: string;
+  description?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
   showDetails?: (details: React.ReactNode) => void;

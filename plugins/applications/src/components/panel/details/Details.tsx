@@ -15,6 +15,7 @@ import React from 'react';
 import { UsersIcon } from '@patternfly/react-icons';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
+import { Dashboards } from '@kobsio/plugin-dashboards';
 import DetailsLink from './DetailsLink';
 import { IApplication } from '../../../utils/utils';
 
@@ -67,7 +68,11 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
             </List>
           ) : null}
         </div>
-        TODO: Dashboards
+
+        {application.dashboards ? (
+          <Dashboards defaults={application} references={application.dashboards} useDrawer={false} />
+        ) : null}
+
         <p>&nbsp;</p>
       </DrawerPanelBody>
     </DrawerPanelContent>

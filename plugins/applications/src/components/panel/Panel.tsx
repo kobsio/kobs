@@ -1,45 +1,62 @@
 import React from 'react';
 
-import { IPluginPanelProps, PluginOptionsMissing } from '@kobsio/plugin-core';
+import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
 import ApplicationsGallery from './ApplicationsGallery';
 import ApplicationsTopology from './ApplicationsTopology';
 import { IPanelOptions } from '../../utils/utils';
-import icon from '../../assets/icon.png';
 
 interface IPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
 }
 
-export const Panel: React.FunctionComponent<IPanelProps> = ({ name, title, options, showDetails }: IPanelProps) => {
+export const Panel: React.FunctionComponent<IPanelProps> = ({
+  defaults,
+  name,
+  title,
+  options,
+  showDetails,
+}: IPanelProps) => {
   if (!options) {
     return (
       <PluginOptionsMissing
-        title="Options for Application panel are missing"
-        description=""
+        title={title}
+        message="Options for Application panel are missing"
+        details=""
         documentation=""
-        icon={icon}
       />
     );
   }
 
   if (options.view === 'topology') {
-    return (
+    const topology = (
       <ApplicationsTopology
-        clusters={options.clusters || []}
-        namespaces={options.namespaces || []}
+        clusters={options.clusters || [defaults.cluster]}
+        namespaces={options.namespaces || [defaults.namespace]}
         showDetails={showDetails}
       />
     );
+
+    if (title) {
+      return <PluginCard title={title}>{topology}</PluginCard>;
+    }
+
+    return topology;
   }
 
-  return (
+  const gallery = (
     <ApplicationsGallery
-      clusters={options.clusters || []}
-      namespaces={options.namespaces || []}
+      clusters={options.clusters || [defaults.cluster]}
+      namespaces={options.namespaces || [defaults.namespace]}
       team={options.team}
       showDetails={showDetails}
     />
   );
+
+  if (title) {
+    return <PluginCard title={title}>{gallery}</PluginCard>;
+  }
+
+  return gallery;
 };
 
 export default Panel;

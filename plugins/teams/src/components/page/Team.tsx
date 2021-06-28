@@ -14,6 +14,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import React from 'react';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
+import { Dashboards } from '@kobsio/plugin-dashboards';
 import { ITeam } from '../../utils/utils';
 
 interface ITeamParams {
@@ -99,7 +100,8 @@ const Team: React.FunctionComponent = () => {
           ) : null}
         </div>
       </PageSection>
-      <PageSection variant={PageSectionVariants.default}>TODO</PageSection>
+
+      {data.dashboards ? <Dashboards defaults={data} references={data.dashboards} useDrawer={true} /> : null}
     </React.Fragment>
   );
 };

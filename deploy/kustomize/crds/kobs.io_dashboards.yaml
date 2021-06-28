@@ -1,0 +1,100 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: dashboards.kobs.io
+spec:
+  group: kobs.io
+  names:
+    kind: Dashboard
+    listKind: DashboardList
+    plural: dashboards
+    singular: dashboard
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: Dashboard is the Dashboard CRD.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              cluster:
+                type: string
+              description:
+                type: string
+              name:
+                type: string
+              namespace:
+                type: string
+              rows:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    panels:
+                      items:
+                        properties:
+                          colSpan:
+                            format: int64
+                            type: integer
+                          description:
+                            type: string
+                          plugin:
+                            properties:
+                              name:
+                                type: string
+                              options:
+                                x-kubernetes-preserve-unknown-fields: true
+                            required:
+                            - name
+                            type: object
+                          rowSpan:
+                            format: int64
+                            type: integer
+                          title:
+                            type: string
+                        required:
+                        - plugin
+                        - title
+                        type: object
+                      type: array
+                    size:
+                      format: int64
+                      type: integer
+                    title:
+                      type: string
+                  required:
+                  - panels
+                  type: object
+                type: array
+              title:
+                type: string
+            required:
+            - rows
+            type: object
+        type: object
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

@@ -2,6 +2,8 @@ package v1beta1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 )
 
 // +genclient
@@ -35,7 +37,7 @@ type ApplicationSpec struct {
 	Dependencies []Reference `json:"dependencies,omitempty"`
 	// TODO: Add the preview options, when the Dashboard CRD was created.
 	// Preview      Plugin       `json:"preview"`
-	Dashboards []Reference `json:"dashboards,omitempty"`
+	Dashboards []dashboard.Reference `json:"dashboards,omitempty"`
 }
 
 type Link struct {
