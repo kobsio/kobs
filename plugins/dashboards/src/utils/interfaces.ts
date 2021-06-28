@@ -4,7 +4,13 @@ export interface IDashboard {
   name: string;
   title: string;
   description?: string;
+  placeholders?: IPlaceholder[];
   rows: IRow[];
+}
+
+export interface IPlaceholder {
+  name: string;
+  description?: string;
 }
 
 export interface IRow {
@@ -34,4 +40,9 @@ export interface IReference {
   name: string;
   title: string;
   description?: string;
+  placeholders?: IPlaceholders;
+}
+
+export interface IPlaceholders {
+  [key: string]: string;
 }

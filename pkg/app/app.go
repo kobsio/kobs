@@ -89,8 +89,12 @@ func New(isDevelopment bool) (*Server, error) {
 
 		staticHandler := http.StripPrefix("/", http.FileServer(http.Dir(assetsDir)))
 		router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
+			// When kobs is run in development mode and the request path starts with "/api", we redirect these requests
+			// to the port, where the API is running ("15220"). We have to return 307 as status code, to preserve the
+			// used http method. This can be used to test the production build of the React app locally without the need
+			// of another proxy, which handles the redirect.
 			if isDevelopment && strings.HasPrefix(r.URL.Path, "/api") {
-				http.Redirect(w, r, "http://localhost:15220"+r.URL.Path+"?"+r.URL.RawQuery, http.StatusMovedPermanently)
+				http.Redirect(w, r, "http://localhost:15220"+r.URL.Path+"?"+r.URL.RawQuery, http.StatusTemporaryRedirect)
 				return
 			}
 

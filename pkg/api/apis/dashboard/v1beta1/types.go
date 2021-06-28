@@ -27,12 +27,18 @@ type DashboardList struct {
 }
 
 type DashboardSpec struct {
-	Cluster     string `json:"cluster,omitempty"`
-	Namespace   string `json:"namespace,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Title       string `json:"title,omitempty"`
+	Cluster      string        `json:"cluster,omitempty"`
+	Namespace    string        `json:"namespace,omitempty"`
+	Name         string        `json:"name,omitempty"`
+	Title        string        `json:"title,omitempty"`
+	Description  string        `json:"description,omitempty"`
+	Placeholders []Placeholder `json:"placeholders,omitempty"`
+	Rows         []Row         `json:"rows"`
+}
+
+type Placeholder struct {
+	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
-	Rows        []Row  `json:"rows"`
 }
 
 type Row struct {
@@ -56,9 +62,10 @@ type Plugin struct {
 }
 
 type Reference struct {
-	Cluster     string `json:"cluster,omitempty"`
-	Namespace   string `json:"namespace,omitempty"`
-	Name        string `json:"name"`
-	Title       string `json:"title"`
-	Description string `json:"description,omitempty"`
+	Cluster      string            `json:"cluster,omitempty"`
+	Namespace    string            `json:"namespace,omitempty"`
+	Name         string            `json:"name"`
+	Title        string            `json:"title"`
+	Description  string            `json:"description,omitempty"`
+	Placeholders map[string]string `json:"placeholders,omitempty"`
 }

@@ -128,7 +128,9 @@ func (in *TeamSpec) DeepCopyInto(out *TeamSpec) {
 	if in.Dashboards != nil {
 		in, out := &in.Dashboards, &out.Dashboards
 		*out = make([]dashboardv1beta1.Reference, len(*in))
-		copy(*out, *in)
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 	return
 }
