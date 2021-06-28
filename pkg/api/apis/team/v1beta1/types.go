@@ -2,6 +2,8 @@ package v1beta1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 )
 
 // +genclient
@@ -26,13 +28,13 @@ type TeamList struct {
 }
 
 type TeamSpec struct {
-	Cluster     string      `json:"cluster,omitempty"`
-	Namespace   string      `json:"namespace,omitempty"`
-	Name        string      `json:"name,omitempty"`
-	Description string      `json:"description,omitempty"`
-	Links       []Link      `json:"links,omitempty"`
-	Logo        string      `json:"logo,omitempty"`
-	Dashboards  []Reference `json:"dashboards,omitempty"`
+	Cluster     string                `json:"cluster,omitempty"`
+	Namespace   string                `json:"namespace,omitempty"`
+	Name        string                `json:"name,omitempty"`
+	Description string                `json:"description,omitempty"`
+	Links       []Link                `json:"links,omitempty"`
+	Logo        string                `json:"logo,omitempty"`
+	Dashboards  []dashboard.Reference `json:"dashboards,omitempty"`
 }
 
 type Link struct {

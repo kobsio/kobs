@@ -1,5 +1,7 @@
 import { IPluginComponents } from '@kobsio/plugin-core';
 
+import './assets/applications.css';
+
 import icon from './assets/icon.png';
 
 import Page from './components/page/Page';

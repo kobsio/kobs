@@ -55,6 +55,8 @@ const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> 
     },
   );
 
+  console.log('TOPOLOGY', data, clusters, namespaces);
+
   if (isLoading) {
     return (
       <div className="pf-u-text-align-center">

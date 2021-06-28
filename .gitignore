@@ -32,3 +32,6 @@ lib-esm
 
 # temporary files
 /tmp
+
+# test file
+/test.yaml

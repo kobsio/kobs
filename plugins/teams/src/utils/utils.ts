@@ -1,3 +1,5 @@
+import { IDashboardReference } from '@kobsio/plugin-dashboards';
+
 export interface ITeam {
   cluster: string;
   namespace: string;
@@ -5,17 +7,10 @@ export interface ITeam {
   description?: string;
   links?: ILink[];
   logo?: string;
-  dashboards?: IReference[];
+  dashboards?: IDashboardReference[];
 }
 
 export interface ILink {
   title: string;
   link: string;
-}
-
-export interface IReference {
-  cluster?: string;
-  namespace?: string;
-  name: string;
-  description?: string;
 }

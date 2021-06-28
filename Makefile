@@ -5,7 +5,7 @@ REPO      ?= github.com/kobsio/kobs
 REVISION  ?= $(shell git rev-parse HEAD)
 VERSION   ?= $(shell git describe --tags)
 
-CRDS ?= team application
+CRDS ?= team application dashboard
 
 .PHONY: build
 build:

@@ -21,6 +21,7 @@ limitations under the License.
 package v1beta1
 
 import (
+	dashboardv1beta1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -104,7 +105,7 @@ func (in *ApplicationSpec) DeepCopyInto(out *ApplicationSpec) {
 	}
 	if in.Dashboards != nil {
 		in, out := &in.Dashboards, &out.Dashboards
-		*out = make([]Reference, len(*in))
+		*out = make([]dashboardv1beta1.Reference, len(*in))
 		copy(*out, *in)
 	}
 	return

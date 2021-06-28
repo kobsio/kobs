@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@kobsio/plugin-core": "*",
+    "@kobsio/plugin-dashboards": "*",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.11.0",
     "@types/react": "^17.0.0",

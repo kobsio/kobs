@@ -48,7 +48,7 @@ const Teams: React.FunctionComponent<ITeamsProps> = ({ displayName, description 
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h6" size="xl">
-          Teams
+          {displayName}
         </Title>
         <p>{description}</p>
       </PageSection>

@@ -12,7 +12,7 @@ interface IPanelListProps {
 
 const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, showDetails }: IPanelListProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
-  const [expanded, setExpanded] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState<string[]>(['resources-accordion-0-0']);
 
   const toggle = (id: string): void => {
     if (expanded.includes(id)) {

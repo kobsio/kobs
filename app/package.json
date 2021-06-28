@@ -6,6 +6,7 @@
   "dependencies": {
     "@kobsio/plugin-applications": "*",
     "@kobsio/plugin-core": "*",
+    "@kobsio/plugin-dashboards": "*",
     "@kobsio/plugin-resources": "*",
     "@kobsio/plugin-teams": "*",
     "@types/node": "^12.0.0",

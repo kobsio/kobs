@@ -28,9 +28,15 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
       try {
         const clusterParams = clusters.map((cluster) => `cluster=${cluster}`).join('&');
         const namespaceParams = namespaces.map((namespace) => `namespace=${namespace}`).join('&');
+        const teamParams =
+          team && team.cluster && team.namespace && team.name
+            ? `&teamCluster=${team.cluster}&teamNamespace=${team.namespace}&teamName=${team.name}`
+            : '';
 
         const response = await fetch(
-          `/api/plugins/applications/applications?view=gallery&teamCluster=${team?.cluster}&teamNamespace=${team?.namespace}&teamName=${team?.name}&${clusterParams}&${namespaceParams}`,
+          `/api/plugins/applications/applications?view=gallery&${
+            teamParams ? teamParams : `${clusterParams}&${namespaceParams}`
+          }`,
           {
             method: 'get',
           },

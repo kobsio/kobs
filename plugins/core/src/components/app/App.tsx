@@ -10,7 +10,7 @@ import '@patternfly/patternfly/patternfly-addons.css';
 import { IPluginComponents, PluginsContextProvider } from '../../context/PluginsContext';
 import { ClustersContextProvider } from '../../context/ClustersContext';
 import HomePage from './HomePage';
-import PluginPage from './PluginPage';
+import { PluginPage } from '../plugin/PluginPage';
 
 import logo from '../../assets/logo.png';
 

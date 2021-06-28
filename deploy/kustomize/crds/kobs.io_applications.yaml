@@ -50,8 +50,11 @@ spec:
                       type: string
                     namespace:
                       type: string
+                    title:
+                      type: string
                   required:
                   - name
+                  - title
                   type: object
                 type: array
               dependencies:

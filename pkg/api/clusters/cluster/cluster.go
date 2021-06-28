@@ -9,8 +9,10 @@ import (
 	"time"
 
 	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
 	applicationClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/application/clientset/versioned"
+	dashboardClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned"
 	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/team/clientset/versioned"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -31,6 +33,7 @@ type Cluster struct {
 	clientset            *kubernetes.Clientset
 	applicationClientset *applicationClientsetVersioned.Clientset
 	teamClientset        *teamClientsetVersioned.Clientset
+	dashboardClientset   *dashboardClientsetVersioned.Clientset
 	name                 string
 	crds                 []CRD
 }
@@ -211,6 +214,47 @@ func (c *Cluster) GetTeam(ctx context.Context, namespace, name string) (*team.Te
 	return &team, nil
 }
 
+// GetDashboards returns a list of dashboards gor the given namespace. It also adds the cluster, namespace and dashboard
+// name to the Dashboard CR, so that this information must not be specified by the user in the CR.
+func (c *Cluster) GetDashboards(ctx context.Context, namespace string) ([]dashboard.DashboardSpec, error) {
+	dashboardsList, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	var dashboards []dashboard.DashboardSpec
+
+	for _, dashboardItem := range dashboardsList.Items {
+		dashboard := dashboardItem.Spec
+		dashboard.Cluster = c.name
+		dashboard.Namespace = dashboardItem.Namespace
+		dashboard.Name = dashboardItem.Name
+		dashboard.Title = dashboardItem.Name
+
+		dashboards = append(dashboards, dashboard)
+	}
+
+	return dashboards, nil
+}
+
+// GetDashboard returns a dashboard for the given namespace and name. After the dashboard is retrieved we replace,
+// the cluster, namespace and name in the spec of the Dashboard CR. This is needed, so that the user doesn't have to,
+// provide these fields.
+func (c *Cluster) GetDashboard(ctx context.Context, namespace, name string) (*dashboard.DashboardSpec, error) {
+	dashboardCR, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).Get(ctx, name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	dashboard := dashboardCR.Spec
+	dashboard.Cluster = c.name
+	dashboard.Namespace = namespace
+	dashboard.Name = name
+	dashboard.Title = name
+
+	return &dashboard, nil
+}
+
 // loadCRDs retrieves all CRDs from the Kubernetes API of this cluster. Then the CRDs are transformed into our internal
 // CRD format and saved within the cluster. Since this function is only called once after a cluster was loaded, we call
 // it in a endless loop until it succeeds.
@@ -296,12 +340,19 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 		return nil, err
 	}
 
+	dashboardClientset, err := dashboardClientsetVersioned.NewForConfig(restConfig)
+	if err != nil {
+		log.WithError(err).Debugf("Could not create team clientset.")
+		return nil, err
+	}
+
 	name = strings.Trim(slugifyRe.ReplaceAllString(strings.ToLower(name), "-"), "-")
 
 	c := &Cluster{
 		clientset:            clientset,
 		applicationClientset: applicationClientset,
 		teamClientset:        teamClientset,
+		dashboardClientset:   dashboardClientset,
 		name:                 name,
 	}
 

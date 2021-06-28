@@ -58,5 +58,3 @@ export const PluginPage: React.FunctionComponent = () => {
     />
   );
 };
-
-export default PluginPage;

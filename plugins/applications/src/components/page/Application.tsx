@@ -17,6 +17,7 @@ import React from 'react';
 import { UsersIcon } from '@patternfly/react-icons';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
+import { Dashboards } from '@kobsio/plugin-dashboards';
 import { IApplication } from '../../utils/utils';
 
 interface IApplicationsParams {
@@ -117,7 +118,8 @@ const Application: React.FunctionComponent = () => {
           ) : null}
         </div>
       </PageSection>
-      <PageSection variant={PageSectionVariants.default}>TODO</PageSection>
+
+      {data.dashboards ? <Dashboards defaults={data} references={data.dashboards} useDrawer={true} /> : null}
     </React.Fragment>
   );
 };
