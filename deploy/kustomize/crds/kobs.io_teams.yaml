@@ -48,6 +48,10 @@ spec:
                       type: string
                     namespace:
                       type: string
+                    placeholders:
+                      additionalProperties:
+                        type: string
+                      type: object
                     title:
                       type: string
                   required:

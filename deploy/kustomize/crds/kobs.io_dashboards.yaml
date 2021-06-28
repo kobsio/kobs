@@ -43,6 +43,17 @@ spec:
                 type: string
               namespace:
                 type: string
+              placeholders:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               rows:
                 items:
                   properties:

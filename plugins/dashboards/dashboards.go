@@ -8,6 +8,7 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/plugins/dashboards/pkg/placeholders"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -79,8 +80,8 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 
 	// Loop through all the provided references and set the cluster and namespace from the defaults, when it is not
 	// provided. Then we are using the GetDashboard function for a cluster to get the dashboard by namespace and name.
-	// Finally we are adding the title from the reference as dashboard title and we are adding the dashboard to a list
-	// of dashboards.
+	// Finally we are replacing the placeholders in a dashboard with the provided values and we are adding the title
+	// from the reference as dashboard title and we are adding the dashboard to a list of dashboards.
 	for _, reference := range data.References {
 		if reference.Cluster == "" {
 			reference.Cluster = data.Defaults.Cluster
@@ -100,6 +101,14 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get dashboard"))
 			return
+		}
+
+		if reference.Placeholders != nil {
+			dashboard, err = placeholders.Replace(reference.Placeholders, *dashboard)
+			if err != nil {
+				render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not replace placeholders"))
+				return
+			}
 		}
 
 		dashboard.Title = reference.Title
