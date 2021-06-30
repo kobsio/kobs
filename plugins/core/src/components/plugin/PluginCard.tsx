@@ -4,6 +4,7 @@ import React from 'react';
 interface IPluginCardProps {
   title: string;
   description?: string;
+  transparent?: boolean;
   children: React.ReactElement;
   actions?: React.ReactElement;
 }
@@ -14,19 +15,27 @@ interface IPluginCardProps {
 export const PluginCard: React.FunctionComponent<IPluginCardProps> = ({
   title,
   description,
+  transparent,
   children,
   actions,
 }: IPluginCardProps) => {
   return (
-    <Card isCompact={true} style={{ height: '100%', width: '100%' }}>
+    <Card
+      isCompact={true}
+      style={
+        transparent
+          ? { backgroundColor: '#f0f0f0', boxShadow: 'none', height: '100%', width: '100%' }
+          : { height: '100%', width: '100%' }
+      }
+    >
       <CardHeader>
         <CardHeaderMain>
           {description ? (
             <Tooltip content={<div>{description}</div>}>
-              <span>{title}</span>
+              <span className="pf-u-font-weight-bold">{title}</span>
             </Tooltip>
           ) : (
-            title
+            <span className="pf-u-font-weight-bold">{title}</span>
           )}
         </CardHeaderMain>
         {actions || null}

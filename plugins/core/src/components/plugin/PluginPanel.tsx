@@ -11,6 +11,7 @@ import { PluginCard } from './PluginCard';
 // clusters and namespaces property in the CR.
 export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   defaults,
+  times,
   name,
   title,
   description,
@@ -46,6 +47,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   return (
     <Component
       defaults={defaults}
+      times={times}
       name={pluginDetails.name}
       title={title}
       description={description}

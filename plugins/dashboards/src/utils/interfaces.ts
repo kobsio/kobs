@@ -5,12 +5,20 @@ export interface IDashboard {
   title: string;
   description?: string;
   placeholders?: IPlaceholder[];
+  variables?: IVariable[];
   rows: IRow[];
 }
 
 export interface IPlaceholder {
   name: string;
   description?: string;
+}
+
+export interface IVariable {
+  name: string;
+  label?: string;
+  hide?: boolean;
+  plugin: IPlugin;
 }
 
 export interface IRow {
@@ -45,4 +53,9 @@ export interface IReference {
 
 export interface IPlaceholders {
   [key: string]: string;
+}
+
+export interface IVariableValues extends IVariable {
+  value: string;
+  values: string[];
 }

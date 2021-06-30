@@ -9,7 +9,7 @@ interface IPanelProps extends IPluginPanelProps {
   options?: IReference[];
 }
 
-export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, options }: IPanelProps) => {
+export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, description, options }: IPanelProps) => {
   if (!options || !Array.isArray(options)) {
     return (
       <PluginOptionsMissing
@@ -22,7 +22,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, o
   }
 
   return (
-    <PluginCard title={title}>
+    <PluginCard title={title} description={description} transparent={true}>
       <Gallery hasGutter={true} maxWidths={{ default: '100%' }}>
         {options.map((reference, index) => (
           <GalleryItem key={index}>

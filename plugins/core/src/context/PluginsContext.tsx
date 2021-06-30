@@ -2,10 +2,18 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
+import { TTime } from '../components/misc/Options';
+
 export interface IPluginDefaults {
   cluster: string;
   namespace: string;
   name: string;
+}
+
+export interface IPluginTimes {
+  time: TTime;
+  timeEnd: number;
+  timeStart: number;
 }
 
 export interface IPluginData {
@@ -23,6 +31,7 @@ export interface IPluginPageProps {
 
 export interface IPluginPanelProps {
   defaults: IPluginDefaults;
+  times?: IPluginTimes;
   name: string;
   title: string;
   description?: string;

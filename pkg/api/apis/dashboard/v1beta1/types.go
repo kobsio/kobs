@@ -33,12 +33,20 @@ type DashboardSpec struct {
 	Title        string        `json:"title,omitempty"`
 	Description  string        `json:"description,omitempty"`
 	Placeholders []Placeholder `json:"placeholders,omitempty"`
+	Variables    []Variable    `json:"variables,omitempty"`
 	Rows         []Row         `json:"rows"`
 }
 
 type Placeholder struct {
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
+}
+
+type Variable struct {
+	Name   string `json:"name"`
+	Label  string `json:"label,omitempty"`
+	Hide   bool   `json:"hide,omitempty"`
+	Plugin Plugin `json:"plugin"`
 }
 
 type Row struct {
