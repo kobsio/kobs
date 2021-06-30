@@ -13,6 +13,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   defaults,
   name,
   title,
+  description,
   options,
   showDetails,
 }: IPanelProps) => {
@@ -37,7 +38,11 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     );
 
     if (title) {
-      return <PluginCard title={title}>{topology}</PluginCard>;
+      return (
+        <PluginCard title={title} description={description} transparent={true}>
+          {topology}
+        </PluginCard>
+      );
     }
 
     return topology;
@@ -53,7 +58,11 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   );
 
   if (title) {
-    return <PluginCard title={title}>{gallery}</PluginCard>;
+    return (
+      <PluginCard title={title} description={description} transparent={true}>
+        {gallery}
+      </PluginCard>
+    );
   }
 
   return gallery;

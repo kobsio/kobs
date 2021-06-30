@@ -19,7 +19,7 @@ func Replace(placeholders map[string]string, dash dashboard.DashboardSpec) (*das
 		return nil, err
 	}
 
-	tpl, err := template.New("dashboard").Delims("{%", "%}").Parse(string(out))
+	tpl, err := template.New("dashboard").Delims("{{", "}}").Parse(string(out))
 	if err != nil {
 		return nil, err
 	}

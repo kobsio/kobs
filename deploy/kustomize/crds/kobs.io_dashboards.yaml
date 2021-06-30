@@ -97,6 +97,29 @@ spec:
                 type: array
               title:
                 type: string
+              variables:
+                items:
+                  properties:
+                    hide:
+                      type: boolean
+                    label:
+                      type: string
+                    name:
+                      type: string
+                    plugin:
+                      properties:
+                        name:
+                          type: string
+                        options:
+                          x-kubernetes-preserve-unknown-fields: true
+                      required:
+                      - name
+                      type: object
+                  required:
+                  - name
+                  - plugin
+                  type: object
+                type: array
             required:
             - rows
             type: object

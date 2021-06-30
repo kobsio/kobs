@@ -101,7 +101,11 @@ const Team: React.FunctionComponent = () => {
         </div>
       </PageSection>
 
-      {data.dashboards ? <Dashboards defaults={data} references={data.dashboards} useDrawer={true} /> : null}
+      {data.dashboards ? (
+        <Dashboards defaults={data} references={data.dashboards} useDrawer={true} />
+      ) : (
+        <PageSection variant={PageSectionVariants.default}></PageSection>
+      )}
     </React.Fragment>
   );
 };
