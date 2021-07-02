@@ -3,7 +3,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { memo } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IEdge, INode } from '../../utils/utils';
+import { IEdge, INode } from '../../utils/interfaces';
 import ApplicationsTopologyGraph from './ApplicationsTopologyGraph';
 
 interface IDataState {
@@ -17,7 +17,9 @@ interface IApplicationsTopologyProps {
   showDetails?: (details: React.ReactNode) => void;
 }
 
-// ApplicationsTopology is the component to display all applications inside a gallery view.
+// ApplicationsTopology is the component to display all applications inside a topology view. We need a list of clusters
+// and namespaces to build the topology view in the API. The API then returnes all related edges and nodes, in a format
+// which can be used by cytoscape, which is responsible for rendering the topology.
 const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> = ({
   clusters,
   namespaces,
@@ -94,10 +96,7 @@ const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> 
 };
 
 export default memo(ApplicationsTopology, (prevProps, nextProps) => {
-  if (
-    JSON.stringify(prevProps.clusters) === JSON.stringify(nextProps.clusters) &&
-    JSON.stringify(prevProps.namespaces) === JSON.stringify(nextProps.namespaces)
-  ) {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
     return true;
   }
 

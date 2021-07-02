@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@kobsio/plugin-core": "*",
-    "@kubernetes/client-node": "^0.14.3",
+    "@kubernetes/client-node": "^0.15.0",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.10.11",
     "@patternfly/react-log-viewer": "^4.1.19",

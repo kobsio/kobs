@@ -16,10 +16,9 @@ import {
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 
-import { IPluginDefaults } from '@kobsio/plugin-core';
-
 import { IDashboard, IReference } from '../../utils/interfaces';
-import Dashboard from './Dashboard';
+import DashboardWrapper from './DashboardWrapper';
+import { IPluginDefaults } from '@kobsio/plugin-core';
 
 interface IDashboardsProps {
   defaults: IPluginDefaults;
@@ -27,6 +26,9 @@ interface IDashboardsProps {
   useDrawer: boolean;
 }
 
+// The Dashboards component is used to fetch all the referenced dashboards in a team/application and show them as tabs.
+// The useDrawer property is used to decide if the dashboard should be used inside a drawer or not. For example if an
+// application is already displayed in a drawer we shouldn't use another drawer for the dashboards.
 export const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   defaults,
   references,
@@ -35,6 +37,9 @@ export const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   const [activeDashboard, setActiveDashboard] = useState<string>(references.length > 0 ? references[0].title : '');
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
+  // Fetch all dashboards. The dashboards are available via the data variable. To fetch the dashboards we have to pass
+  // the defaults and the references to the API. The defaults are required so that a user can omit the cluster and
+  // namespace in the references.
   const { isError, isLoading, error, data, refetch } = useQuery<IDashboard[], Error>(
     ['dashboards/dashboards', defaults, references],
     async () => {
@@ -63,6 +68,7 @@ export const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
     },
   );
 
+  // When the isLoading parameter is true we show a Spinner, so the user sees that the dashboards are currently fetched.
   if (isLoading) {
     return (
       <div className="pf-u-text-align-center">
@@ -71,6 +77,8 @@ export const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
     );
   }
 
+  // When an error happens during the API call, we show the user this error. He then has the option to retry the API
+  // call.
   if (isError) {
     return (
       <PageSection variant={PageSectionVariants.default}>
@@ -95,6 +103,8 @@ export const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
     return <PageSection variant={PageSectionVariants.default}></PageSection>;
   }
 
+  // Create the tabs component. If the useDrawer value is false, we only render the tabs. If the value of the useDrawer
+  // variable is true we render the tabs as content inside the drawer component.
   const tabs = (
     <Tabs
       activeKey={activeDashboard}
@@ -106,7 +116,11 @@ export const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
       {data.map((dashboard) => (
         <Tab key={dashboard.title} eventKey={dashboard.title} title={<TabTitleText>{dashboard.title}</TabTitleText>}>
           <PageSection variant={PageSectionVariants.default} isFilled={true}>
-            <Dashboard defaults={defaults} dashboard={dashboard} showDetails={useDrawer ? setDetails : undefined} />
+            <DashboardWrapper
+              defaults={defaults}
+              dashboard={dashboard}
+              showDetails={useDrawer ? setDetails : undefined}
+            />
           </PageSection>
         </Tab>
       ))}

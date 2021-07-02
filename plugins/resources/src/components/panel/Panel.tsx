@@ -1,17 +1,19 @@
+import React, { memo } from 'react';
 import { Card } from '@patternfly/react-core';
-import React from 'react';
 
 import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
-import { IPanelOptions } from '../../utils/utils';
+import { IPanelOptions } from '../../utils/interfaces';
 import PanelList from './PanelList';
 
 interface IPanelProps extends IPluginPanelProps {
   options?: IPanelOptions[];
 }
 
+// Panel implements the panel component for the resources plugin. The options property must be in the format of the
+// IPanelOptions interface. Since the options are not validated on the API side, we have to validate the data, before
+// we render the plugin.
 export const Panel: React.FunctionComponent<IPanelProps> = ({
   defaults,
-  name,
   title,
   description,
   options,
@@ -28,6 +30,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     );
   }
 
+  // We replace the cluster and namespace in the provided options, when they were not set by the user. For that we are
+  // using the cluster/namespace of the parent team/application where the panel is used.
   const opts: IPanelOptions[] = options.map((option) => {
     return {
       clusters: option.clusters || [defaults.cluster],
@@ -37,6 +41,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     };
   });
 
+  // When a title is provided we can be sure that the component is used within a dashboard. When no title is provided
+  // the component is used in the resources page and we do not wrap it in the PluginCard component.
   if (title) {
     return (
       <PluginCard title={title} description={description} transparent={true}>
@@ -52,4 +58,10 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   );
 };
 
-export default Panel;
+export default memo(Panel, (prevProps, nextProps) => {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
+    return true;
+  }
+
+  return false;
+});

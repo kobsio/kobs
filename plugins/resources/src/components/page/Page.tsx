@@ -12,7 +12,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { ClustersContext, IClusterContext, IPluginPageProps, IResources } from '@kobsio/plugin-core';
-import { IPanelOptions } from '../../utils/utils';
+import { IPanelOptions } from '../../utils/interfaces';
 import PageToolbar from './PageToolbar';
 import Panel from '../panel/Panel';
 

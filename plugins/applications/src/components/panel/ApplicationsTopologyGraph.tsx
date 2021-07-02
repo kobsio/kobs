@@ -1,11 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
 import cytoscape from 'cytoscape';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 import dagre from 'cytoscape-dagre';
 
-import { IEdge, INode, INodeData } from '../../utils/utils';
+import { IEdge, INode, INodeData } from '../../utils/interfaces';
 
 import Details from './details/Details';
 
@@ -180,14 +180,4 @@ const ApplicationsTopologyGraph: React.FunctionComponent<IApplicationsTopologyGr
   );
 };
 
-// export default ApplicationsTopologyGraph;
-export default memo(ApplicationsTopologyGraph, (prevProps, nextProps) => {
-  if (
-    JSON.stringify(prevProps.edges) === JSON.stringify(nextProps.edges) &&
-    JSON.stringify(prevProps.nodes) === JSON.stringify(nextProps.nodes)
-  ) {
-    return true;
-  }
-
-  return false;
-});
+export default ApplicationsTopologyGraph;

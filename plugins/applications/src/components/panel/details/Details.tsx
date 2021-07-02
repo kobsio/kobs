@@ -17,13 +17,16 @@ import { UsersIcon } from '@patternfly/react-icons';
 import { ExternalLink, Title } from '@kobsio/plugin-core';
 import { Dashboards } from '@kobsio/plugin-dashboards';
 import DetailsLink from './DetailsLink';
-import { IApplication } from '../../../utils/utils';
+import { IApplication } from '../../../utils/interfaces';
 
 interface IDetailsProps {
   application: IApplication;
   close: () => void;
 }
 
+// The Details component implements the component which is displayed in the drawer panel. It displays the cluster,
+// namespace and name of the application in the title. Below the title we display all the teams and links. Most of the
+// space is used to display the referenced dashboards of the application.
 const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }: IDetailsProps) => {
   return (
     <DrawerPanelContent minSize="50%">

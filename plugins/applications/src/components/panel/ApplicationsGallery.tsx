@@ -3,7 +3,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { memo } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IApplication, IReference } from '../../utils/utils';
+import { IApplication, IReference } from '../../utils/interfaces';
 import ApplicationsGalleryItem from './ApplicationsGalleryItem';
 
 interface IApplicationsGalleryProps {
@@ -100,12 +100,9 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
   );
 };
 
+// export default ApplicationsGallery;
 export default memo(ApplicationsGallery, (prevProps, nextProps) => {
-  if (
-    JSON.stringify(prevProps.clusters) === JSON.stringify(nextProps.clusters) &&
-    JSON.stringify(prevProps.namespaces) === JSON.stringify(nextProps.namespaces) &&
-    prevProps.team === nextProps.team
-  ) {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
     return true;
   }
 

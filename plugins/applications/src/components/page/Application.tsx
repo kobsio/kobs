@@ -18,7 +18,7 @@ import { UsersIcon } from '@patternfly/react-icons';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
 import { Dashboards } from '@kobsio/plugin-dashboards';
-import { IApplication } from '../../utils/utils';
+import { IApplication } from '../../utils/interfaces';
 
 interface IApplicationsParams {
   cluster: string;
@@ -26,6 +26,9 @@ interface IApplicationsParams {
   name: string;
 }
 
+// The Application component is used to display a single application. The application which should be shown is
+// determined by the cluster, namespace and name paramter. These parameters are passed to the API as query parameters.
+// The API is called everytime the cluster, namespace or name parameter changes and returns the application.
 const Application: React.FunctionComponent = () => {
   const history = useHistory();
   const params = useParams<IApplicationsParams>();
@@ -55,10 +58,13 @@ const Application: React.FunctionComponent = () => {
     },
   );
 
+  // During the API call we display a Spinner at the center of the page.
   if (isLoading) {
     return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
   }
 
+  // When an error occured during the API call we show this error. The user has then the option to go to the home page,
+  // the applications page or to retry the API call.
   if (isError) {
     return (
       <Alert
@@ -80,6 +86,8 @@ const Application: React.FunctionComponent = () => {
     );
   }
 
+  // As long as the data is undefined we do not display anything. This can happen during the first rendering of the
+  // component. After this the data should be defined or the data is loading or an error occured.
   if (!data) {
     return null;
   }

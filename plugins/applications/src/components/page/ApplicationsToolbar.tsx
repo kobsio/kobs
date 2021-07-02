@@ -10,12 +10,12 @@ import {
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
-import React, { useContext, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 
 import { ClustersContext, IClusterContext } from '@kobsio/plugin-core';
 import ApplicationsToolbarItemClusters from './ApplicationsToolbarItemClusters';
 import ApplicationsToolbarItemNamespaces from './ApplicationsToolbarItemNamespaces';
-import { TView } from '../../utils/utils';
+import { TView } from '../../utils/interfaces';
 
 interface IApplicationsToolbarProps {
   clusters: string[];
@@ -116,4 +116,10 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
   );
 };
 
-export default ApplicationsToolbar;
+export default memo(ApplicationsToolbar, (prevProps, nextProps) => {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
+    return true;
+  }
+
+  return false;
+});

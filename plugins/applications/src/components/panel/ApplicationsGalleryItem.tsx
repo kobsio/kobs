@@ -2,7 +2,7 @@ import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
 import Details from './details/Details';
-import { IApplication } from '../../utils/utils';
+import { IApplication } from '../../utils/interfaces';
 import { LinkWrapper } from '@kobsio/plugin-core';
 
 interface IApplicationsGalleryItemProps {

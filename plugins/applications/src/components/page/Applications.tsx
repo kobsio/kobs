@@ -13,7 +13,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import ApplicationsToolbar from './ApplicationsToolbar';
 import Panel from '../panel/Panel';
-import { TView } from '../../utils/utils';
+import { TView } from '../../utils/interfaces';
 
 interface IDataState {
   clusters: string[];
@@ -41,6 +41,9 @@ export interface IApplicationsProps {
   description: string;
 }
 
+// Applications is the page which lets the user query all the created applications by cluster and namespace. The user
+// can also select the view he wants to see (gallery vs. topology). The component is just a wrapper for the toolbar and
+// the panel. It handles the reflection of the selected clusters and namespaces in the current url.
 const Applications: React.FunctionComponent<IApplicationsProps> = ({
   name,
   displayName,

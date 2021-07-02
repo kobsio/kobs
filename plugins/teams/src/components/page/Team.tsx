@@ -15,7 +15,7 @@ import React from 'react';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
 import { Dashboards } from '@kobsio/plugin-dashboards';
-import { ITeam } from '../../utils/utils';
+import { ITeam } from '../../utils/interfaces';
 
 interface ITeamParams {
   cluster: string;
@@ -24,7 +24,7 @@ interface ITeamParams {
 }
 
 // Team is the component for the teams page.n It loads a team by the specified cluster, namespace and name URL
-// parameter.
+// parameter. Everytime the cluster, namespace or name parameter is changed we make an API call to get the team.
 const Team: React.FunctionComponent = () => {
   const history = useHistory();
   const params = useParams<ITeamParams>();
@@ -54,10 +54,13 @@ const Team: React.FunctionComponent = () => {
     },
   );
 
+  // During the API call we are showing a spinner, to show the user that the team is currently loading.
   if (isLoading) {
     return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
   }
 
+  // When an error occures during the API call, we show the user this error. The user can then go back to the home page,
+  // to the teams page or he can retry the API call.
   if (isError) {
     return (
       <Alert
@@ -79,6 +82,8 @@ const Team: React.FunctionComponent = () => {
     );
   }
 
+  // When the data is undefined and the isLoading and isError variables are not true we show nothing. This happens while
+  // the component is rendered the first time.
   if (!data) {
     return null;
   }

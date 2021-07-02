@@ -1,6 +1,6 @@
 import { Alert, AlertActionLink, AlertVariant, Grid, GridItem, Spinner, Title } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import {
   ClustersContext,
@@ -10,7 +10,6 @@ import {
   IPluginsContext,
   PluginPanel,
   PluginsContext,
-  useWindowWidth,
 } from '@kobsio/plugin-core';
 import { IDashboard, IRow, IVariableValues } from '../../utils/interfaces';
 import { interpolate, rowHeight, toGridSpans } from '../../utils/dashboard';
@@ -19,6 +18,7 @@ import DashboardToolbar from './DashboardToolbar';
 interface IDashboardProps {
   defaults: IPluginDefaults;
   dashboard: IDashboard;
+  forceDefaultSpan: boolean;
   showDetails?: (details: React.ReactNode) => void;
 }
 
@@ -26,16 +26,14 @@ interface IDashboardProps {
 // component.
 // The component is also used to set the initial value for the times and for fetching all defined variable values. To
 // allow a user to change the time or select another variable value the component includes a toolbar component.
-const Dashboard: React.FunctionComponent<IDashboardProps> = ({ defaults, dashboard, showDetails }: IDashboardProps) => {
+const Dashboard: React.FunctionComponent<IDashboardProps> = ({
+  defaults,
+  dashboard,
+  forceDefaultSpan,
+  showDetails,
+}: IDashboardProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
-
-  // width, refGrid and forceDefaultSpan are used to determine the current width of the dashboard (this isn't always the
-  // screen width, because the dashboard can also be used in a panel), so that we can adjust the size of the rows and
-  // columns in the grid.
-  const width = useWindowWidth();
-  const refGrid = useRef<HTMLDivElement>(null);
-  const [forceDefaultSpan, setForceDefaultSpan] = useState<boolean>(false);
 
   // times is the state for the users selected time. The default value will always be the last 15 minutes. This is
   // required for some plugins (e.g. the Prometheus plugin), which making use of a time range.
@@ -98,89 +96,79 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({ defaults, dashboa
     },
   );
 
-  // useEffect is executed every time the window width changes, to determin the size of the grid and use a static span
-  // size of 12 if necessary. We have to use the with of the grid instead of the window width, because it is possible
-  // that the chart is rendered in a drawer (e.g. for applications in the applications page).
-  useEffect(() => {
-    if (refGrid && refGrid.current) {
-      if (refGrid.current.getBoundingClientRect().width >= 1200) {
-        setForceDefaultSpan(false);
-      } else {
-        setForceDefaultSpan(true);
-      }
-    }
-  }, [width]);
-
   // We do not use the dashboard.rows array directly to render the dashboard. Instead we are replacing all the variables
   // in the dashboard first with users selected values. For that we have to convert the array to a string first so that
   // we can replace the variables in the string and then we have to convert it back to an array,
   const rows: IRow[] = data ? JSON.parse(interpolate(JSON.stringify(dashboard.rows), data)) : dashboard.rows;
 
+  if (isError) {
+    return (
+      <Alert
+        variant={AlertVariant.danger}
+        title="Applications were not fetched"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[], Error>> => refetch()}>
+              Retry
+            </AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>{error?.message}</p>
+      </Alert>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
+  }
   return (
-    <div ref={refGrid}>
-      {isError ? (
-        <Alert
-          variant={AlertVariant.danger}
-          title="Applications were not fetched"
-          actionLinks={
-            <React.Fragment>
-              <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[], Error>> => refetch()}>
-                Retry
-              </AlertActionLink>
-            </React.Fragment>
-          }
-        >
-          <p>{error?.message}</p>
-        </Alert>
-      ) : !data ? (
-        <div className="pf-u-text-align-center">
-          <Spinner />
-        </div>
-      ) : (
-        <React.Fragment>
-          <DashboardToolbar variables={data} setVariables={setVariables} times={times} setTimes={setTimes} />
+    <React.Fragment>
+      <DashboardToolbar variables={data} setVariables={setVariables} times={times} setTimes={setTimes} />
 
-          <p>&nbsp;</p>
+      <p>&nbsp;</p>
 
-          <Grid hasGutter={true}>
-            {rows.map((row, rowIndex) => (
-              <React.Fragment key={rowIndex}>
-                {row.title ? (
-                  <Title headingLevel="h6" size="lg">
-                    {row.title}
-                  </Title>
-                ) : null}
-                {row.panels.map((panel, panelIndex) => (
-                  <GridItem
-                    key={panelIndex}
-                    span={toGridSpans(12, forceDefaultSpan, panel.colSpan)}
-                    rowSpan={toGridSpans(1, forceDefaultSpan, panel.rowSpan)}
-                  >
-                    <div
-                      style={
-                        row.size !== undefined && row.size === -1
-                          ? undefined
-                          : { height: rowHeight(row.size, panel.rowSpan), overflow: 'scroll' }
-                      }
-                    >
-                      <PluginPanel
-                        defaults={defaults}
-                        times={times}
-                        title={panel.title}
-                        description={panel.description}
-                        name={panel.plugin.name}
-                        options={panel.plugin.options}
-                        showDetails={showDetails}
-                      />
-                    </div>
-                  </GridItem>
-                ))}
-              </React.Fragment>
+      <Grid hasGutter={true}>
+        {rows.map((row, rowIndex) => (
+          <React.Fragment key={rowIndex}>
+            {row.title ? (
+              <Title headingLevel="h6" size="lg">
+                {row.title}
+              </Title>
+            ) : null}
+            {row.panels.map((panel, panelIndex) => (
+              <GridItem
+                key={panelIndex}
+                span={toGridSpans(12, forceDefaultSpan, panel.colSpan)}
+                rowSpan={toGridSpans(1, forceDefaultSpan, panel.rowSpan)}
+              >
+                <div
+                  style={
+                    row.size !== undefined && row.size === -1
+                      ? undefined
+                      : { height: rowHeight(row.size, panel.rowSpan), overflow: 'scroll' }
+                  }
+                >
+                  <PluginPanel
+                    defaults={defaults}
+                    times={times}
+                    title={panel.title}
+                    description={panel.description}
+                    name={panel.plugin.name}
+                    options={panel.plugin.options}
+                    showDetails={showDetails}
+                  />
+                </div>
+              </GridItem>
             ))}
-          </Grid>
-        </React.Fragment>
-      )}
-    </div>
+          </React.Fragment>
+        ))}
+      </Grid>
+    </React.Fragment>
   );
 };
 

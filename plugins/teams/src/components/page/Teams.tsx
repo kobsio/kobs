@@ -13,7 +13,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { ITeam } from '../../utils/utils';
+import { ITeam } from '../../utils/interfaces';
 import TeamsItem from './TeamsItem';
 
 export interface ITeamsProps {
@@ -21,7 +21,8 @@ export interface ITeamsProps {
   description: string;
 }
 
-// Teams is the page which is used to show all teams.
+// Teams is the page which is used to show all teams. The component will display the configured name and description of
+// the teams plugin. Below this header it will display all the loaded teams.
 const Teams: React.FunctionComponent<ITeamsProps> = ({ displayName, description }: ITeamsProps) => {
   const history = useHistory();
 

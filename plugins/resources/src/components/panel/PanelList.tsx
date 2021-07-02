@@ -2,7 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Card } fro
 import React, { useContext, useState } from 'react';
 
 import { ClustersContext, IClusterContext } from '@kobsio/plugin-core';
-import { IPanelOptions } from '../../utils/utils';
+import { IPanelOptions } from '../../utils/interfaces';
 import PanelListItem from './PanelListItem';
 
 interface IPanelListProps {

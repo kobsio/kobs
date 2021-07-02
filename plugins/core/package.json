@@ -10,7 +10,7 @@
     "plugin": "tsc && tsc --build tsconfig.esm.json && cp -r src/assets lib && cp -r src/assets lib-esm"
   },
   "devDependencies": {
-    "@kubernetes/client-node": "^0.14.3",
+    "@kubernetes/client-node": "^0.15.0",
     "@patternfly/patternfly": "^4.108.2",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.10.11",
@@ -25,6 +25,5 @@
     "react-query": "^3.17.2",
     "react-router-dom": "^5.2.0",
     "typescript": "^4.3.4"
-  },
-  "dependencies": {}
+  }
 }

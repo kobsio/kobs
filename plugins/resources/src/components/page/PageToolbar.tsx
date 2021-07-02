@@ -8,10 +8,10 @@ import {
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
-import React, { useContext, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 
 import { ClustersContext, IClusterContext } from '@kobsio/plugin-core';
-import { IPanelOptions } from '../../utils/utils';
+import { IPanelOptions } from '../../utils/interfaces';
 import PageToolbarItemClusters from './PageToolbarItemClusters';
 import PageToolbarItemNamespaces from './PageToolbarItemNamespaces';
 import PageToolbarItemResources from './PageToolbarItemResources';
@@ -119,4 +119,10 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ resources, se
   );
 };
 
-export default PageToolbar;
+export default memo(PageToolbar, (prevProps, nextProps) => {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
+    return true;
+  }
+
+  return false;
+});

@@ -4,18 +4,26 @@ import React from 'react';
 
 import { TTime } from '../components/misc/Options';
 
+// IPluginDefaults is the interface which is used for the default property of the plugin panel components. This is
+// required, so that a user must not define a cluster or namespace in a plugin. Instead we will use the cluster or
+// namespace of the parent team or application.
 export interface IPluginDefaults {
   cluster: string;
   namespace: string;
   name: string;
 }
 
+// IPluginTimes is the interface for the times property of the plugin panel. The times property can be used to retrieve
+// only data for a selected time range in a plugin. For example the Prometheus uses these properties to show only
+// metrics for the selected time range.
 export interface IPluginTimes {
   time: TTime;
   timeEnd: number;
   timeStart: number;
 }
 
+// IPluginData is the data for a plugin as it is configured in the kobs configuration file. These properties will be
+// returned by our Go API for each plugin.
 export interface IPluginData {
   name: string;
   displayName: string;
@@ -23,12 +31,17 @@ export interface IPluginData {
   type: string;
 }
 
+// IPluginPageProps are the properties for the page component of each plugin. While the displayName and description are
+// mostly used for the UI, the name is required to identify a configured plugin instance in the backend.
 export interface IPluginPageProps {
   name: string;
   displayName: string;
   description: string;
 }
 
+// IPluginPanelProps is the interface for the properties of the panel component of each plugin. It contains the already
+// mentioned defaults and times, the name of the plugin, the panel title and description and some options. The options
+// can be very different between plugins and should be defined by an interface which is special to each plugin.
 export interface IPluginPanelProps {
   defaults: IPluginDefaults;
   times?: IPluginTimes;
@@ -40,6 +53,8 @@ export interface IPluginPanelProps {
   showDetails?: (details: React.ReactNode) => void;
 }
 
+// IPluginComponent is the interface which must be implemented by each plugin. It must contain an icon and panel
+// component. The page and preview component is optional for each plugin.
 export interface IPluginComponent {
   icon: string;
   page?: React.FunctionComponent<IPluginPageProps>;

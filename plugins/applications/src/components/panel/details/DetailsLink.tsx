@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { DrawerLink } from '@kobsio/plugin-core';
-import { IApplication } from '../../../utils/utils';
+import { IApplication } from '../../../utils/interfaces';
 
 interface IDetailsLinkProps {
   application: IApplication;

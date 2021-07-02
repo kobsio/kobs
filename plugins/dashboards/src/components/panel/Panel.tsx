@@ -1,5 +1,5 @@
 import { Gallery, GalleryItem } from '@patternfly/react-core';
-import React from 'react';
+import React, { memo } from 'react';
 
 import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
 import { IReference } from '../../utils/interfaces';
@@ -9,6 +9,7 @@ interface IPanelProps extends IPluginPanelProps {
   options?: IReference[];
 }
 
+// Panel implements the panel component for the dashboards plugin.
 export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, description, options }: IPanelProps) => {
   if (!options || !Array.isArray(options)) {
     return (
@@ -34,4 +35,10 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, d
   );
 };
 
-export default Panel;
+export default memo(Panel, (prevProps, nextProps) => {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
+    return true;
+  }
+
+  return false;
+});

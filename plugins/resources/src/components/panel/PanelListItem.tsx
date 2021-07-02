@@ -79,12 +79,7 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
 };
 
 export default memo(PanelListItem, (prevProps, nextProps) => {
-  if (
-    JSON.stringify(prevProps.clusters) === JSON.stringify(nextProps.clusters) &&
-    JSON.stringify(prevProps.namespaces) === JSON.stringify(nextProps.namespaces) &&
-    JSON.stringify(prevProps.resource) === JSON.stringify(nextProps.resource) &&
-    prevProps.selector === nextProps.selector
-  ) {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
     return true;
   }
 

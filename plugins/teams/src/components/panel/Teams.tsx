@@ -2,9 +2,12 @@ import { Alert, AlertActionLink, AlertVariant, Gallery, GalleryItem, Spinner } f
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
-import { ITeam } from '../../utils/utils';
+import { ITeam } from '../../utils/interfaces';
 import TeamsItem from '../page/TeamsItem';
 
+// The Teams component is used to load all teams within the teams panel component. It is very similar to the Teams
+// component ióf the page implementation of the plugin. Therefore we also using the same TeamsItem component to present
+// a single team in the frontend.
 const Teams: React.FunctionComponent = () => {
   const { isError, isLoading, error, data, refetch } = useQuery<ITeam[], Error>(['teams/teams'], async () => {
     try {
