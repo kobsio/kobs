@@ -60,8 +60,12 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // that all child components should used the retunred data array instead of the formerly defined variables state,
   // because it contains the current values and selected value for a variable. The variables state is mainly there to
   // trigger this function everytime a new variable value is selected.
+  // Currently we support "core" variable, which can be used to select a cluster or plugin and we are supporting the
+  // Prometheus plugin. For the Prometheus plugin the user must specify the name of the Prometheus instance via the name
+  // parameter in the options. When the user changes the variables, we keep the old variable values, so that we not have
+  // to rerender all the panels in the dashboard.
   const { isError, error, data, refetch } = useQuery<IVariableValues[], Error>(
-    ['dashboard/variables', variables],
+    ['dashboard/variables', variables, times],
     async () => {
       if (!variables) {
         return [];
@@ -86,6 +90,41 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                 }
               }
             }
+          } else {
+            const pluginDetails = pluginsContext.getPluginDetails(tmpVariables[i].plugin.name);
+
+            if (pluginDetails?.type === 'prometheus') {
+              const response = await fetch(`/api/plugins/prometheus/variable/${tmpVariables[i].plugin.name}`, {
+                body: JSON.stringify({
+                  label: tmpVariables[i].plugin.options.label,
+                  query: interpolate(tmpVariables[i].plugin.options.query, tmpVariables),
+                  timeEnd: times.timeEnd,
+                  timeStart: times.timeStart,
+                  type: tmpVariables[i].plugin.options.type,
+                }),
+                method: 'post',
+              });
+              const json = await response.json();
+
+              if (response.status >= 200 && response.status < 300) {
+                if (json && Array.isArray(json) && json.length > 0) {
+                  if (tmpVariables[i].plugin.options.allowAll) {
+                    json.unshift(json.join('|'));
+                  }
+
+                  tmpVariables[i].values = json;
+                  tmpVariables[i].value = json.includes(tmpVariables[i].value) ? tmpVariables[i].value : json[0];
+                } else {
+                  throw new Error(`No values for variable ${tmpVariables[i].label || tmpVariables[i].name}`);
+                }
+              } else {
+                if (json.error) {
+                  throw new Error(json.error);
+                } else {
+                  throw new Error('An unknown error occured');
+                }
+              }
+            }
           }
         }
 
@@ -94,6 +133,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
         throw err;
       }
     },
+    { keepPreviousData: true },
   );
 
   // We do not use the dashboard.rows array directly to render the dashboard. Instead we are replacing all the variables
@@ -126,6 +166,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
       </div>
     );
   }
+
   return (
     <React.Fragment>
       <DashboardToolbar variables={data} setVariables={setVariables} times={times} setTimes={setTimes} />

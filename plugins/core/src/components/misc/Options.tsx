@@ -47,6 +47,26 @@ export type TTime =
   | 'last7Days'
   | 'last90Days';
 
+// TTimeOptions is an array with all available type for TTime. It is used to verify that the value of a string is an
+//valid option for the TTime type.
+export const TTimeOptions = [
+  'custom',
+  'last12Hours',
+  'last15Minutes',
+  'last1Day',
+  'last1Hour',
+  'last1Year',
+  'last2Days',
+  'last30Days',
+  'last30Minutes',
+  'last3Hours',
+  'last5Minutes',
+  'last6Hours',
+  'last6Months',
+  'last7Days',
+  'last90Days',
+];
+
 // ITime is the interface for a time in the times map. It contains a label which should be displayed in the Options
 // component and the seconds between the start and the end time.
 interface ITime {
@@ -88,6 +108,7 @@ interface IOptionsProps {
   timeEnd: number;
   timeStart: number;
   setOptions: (
+    refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
     time: TTime,
     timeEnd: number,
@@ -142,6 +163,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
       setCustomTimeStartError('');
       setCustomTimeEndError('');
       setOptions(
+        false,
         additionalFields,
         'custom',
         Math.floor(parsedTimeEnd.getTime() / 1000),
@@ -154,7 +176,13 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   // quick is the function for the quick select option. We always use the current time in seconds and substract the
   // seconds specified in the quick select option.
   const quick = (t: TTime): void => {
-    setOptions(additionalFields, t, Math.floor(Date.now() / 1000), Math.floor(Date.now() / 1000) - times[t].seconds);
+    setOptions(
+      false,
+      additionalFields,
+      t,
+      Math.floor(Date.now() / 1000),
+      Math.floor(Date.now() / 1000) - times[t].seconds,
+    );
     setShow(false);
   };
 
@@ -172,6 +200,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   const refreshTimes = (): void => {
     if (time !== 'custom') {
       setOptions(
+        true,
         additionalFields,
         time,
         Math.floor(Date.now() / 1000),

@@ -15,7 +15,7 @@ import React from 'react';
 import { UsersIcon } from '@patternfly/react-icons';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
-import { Dashboards } from '@kobsio/plugin-dashboards';
+import { DashboardsWrapper } from '@kobsio/plugin-dashboards';
 import DetailsLink from './DetailsLink';
 import { IApplication } from '../../../utils/interfaces';
 
@@ -73,7 +73,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
         </div>
 
         {application.dashboards ? (
-          <Dashboards defaults={application} references={application.dashboards} useDrawer={false} />
+          <DashboardsWrapper defaults={application} references={application.dashboards} useDrawer={false} />
         ) : null}
 
         <p>&nbsp;</p>

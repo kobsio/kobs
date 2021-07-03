@@ -17,5 +17,7 @@ export * from './context/PluginsContext';
 export * from './utils/manifests';
 export * from './utils/resources';
 export * from './utils/time';
+export * from './utils/useDebounce';
+export * from './utils/useDimensions';
 export * from './utils/useWindowHeight';
 export * from './utils/useWindowWidth';

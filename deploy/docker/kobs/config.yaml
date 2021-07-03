@@ -14,13 +14,14 @@ plugins:
     topologyCacheDuration: 1m
     teamsCacheDuration: 1m
 
-prometheus:
-  - name: Prometheus
-    description: Prometheus can be used for the metrics of your application.
-    address: http://localhost:9090
-    username:
-    password:
-    token:
+  prometheus:
+    - name: prometheus
+      displayName: Prometheus
+      description: Prometheus can be used for the metrics of your application.
+      address: http://localhost:9090
+      username:
+      password:
+      token:
 
 elasticsearch:
   - name: Elasticsearch

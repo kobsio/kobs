@@ -1,6 +1,6 @@
 import { gridSpans } from '@patternfly/react-core';
 
-import { IVariableValues } from './interfaces';
+import { IDashboardsOptions, IReference, IVariableValues } from './interfaces';
 
 // toGridSpans is used to convert the provided col and row span value to the corresponding gridSpans value, so that it
 // can be used within the Patternfly Grid component. The function requires a default value which is 12 for columns and
@@ -69,10 +69,35 @@ export const interpolate = (
         s2[0] =
           s2[0] && vars.hasOwnProperty(s2[0].trim().substring(1))
             ? vars[s2[0].trim().substring(1)]
-            : interpolator.join('');
+            : interpolator.join(` ${s2[0]} `);
       }
 
       return s2.join('');
     })
     .join('');
+};
+
+// getOptionsFromSearch is used to parse the given search location and return is as options for Prometheus. This is
+// needed, so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we
+// pass him to this page and pass the data via the URL parameters.
+export const getOptionsFromSearch = (
+  search: string,
+  references: IReference[],
+  useDrawer: boolean,
+): IDashboardsOptions => {
+  const params = new URLSearchParams(search);
+  const dashboard = params.get('dashboard');
+
+  let isReferenced = false;
+  if (useDrawer) {
+    for (const reference of references) {
+      if (reference.title === dashboard) {
+        isReferenced = true;
+      }
+    }
+  }
+
+  return {
+    dashboard: dashboard && isReferenced ? dashboard : references.length > 0 ? references[0].title : '',
+  };
 };
