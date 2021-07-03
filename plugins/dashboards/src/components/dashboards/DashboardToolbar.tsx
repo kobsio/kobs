@@ -52,6 +52,7 @@ const DashboardToolbar: React.FunctionComponent<IDashboardToolbarProps> = ({
                   timeEnd={times.timeEnd}
                   timeStart={times.timeStart}
                   setOptions={(
+                    refresh: boolean,
                     additionalFields: IOptionsAdditionalFields[] | undefined,
                     time: TTime,
                     timeEnd: number,

@@ -18,5 +18,5 @@ const dashboardsPlugin: IPluginComponents = {
 
 export default dashboardsPlugin;
 
-export * from './components/dashboards/Dashboards';
+export * from './components/dashboards/DashboardsWrapper';
 export type IDashboardReference = IReference;

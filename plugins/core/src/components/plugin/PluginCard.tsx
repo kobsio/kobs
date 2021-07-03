@@ -5,7 +5,7 @@ interface IPluginCardProps {
   title: string;
   description?: string;
   transparent?: boolean;
-  children: React.ReactElement;
+  children: React.ReactElement | null;
   actions?: React.ReactElement;
 }
 

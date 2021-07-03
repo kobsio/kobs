@@ -46,6 +46,7 @@ const DashboardToolbarVariable: React.FunctionComponent<IDashboardToolbarVariabl
       onSelect={onSelect}
       selections={variable.value}
       isOpen={show}
+      width={250}
     >
       {group}
     </Select>
