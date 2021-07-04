@@ -13,6 +13,7 @@ import (
 	// the plugins folder.
 	"github.com/kobsio/kobs/plugins/applications"
 	"github.com/kobsio/kobs/plugins/dashboards"
+	"github.com/kobsio/kobs/plugins/elasticsearch"
 	"github.com/kobsio/kobs/plugins/prometheus"
 	"github.com/kobsio/kobs/plugins/resources"
 	"github.com/kobsio/kobs/plugins/teams"
@@ -20,11 +21,12 @@ import (
 
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
 type Config struct {
-	Applications applications.Config `yaml:"applications"`
-	Resources    resources.Config    `yaml:"resources"`
-	Teams        teams.Config        `yaml:"teams"`
-	Dashboards   dashboards.Config   `yaml:"dashboards"`
-	Prometheus   prometheus.Config   `yaml:"prometheus"`
+	Applications  applications.Config  `yaml:"applications"`
+	Resources     resources.Config     `yaml:"resources"`
+	Teams         teams.Config         `yaml:"teams"`
+	Dashboards    dashboards.Config    `yaml:"dashboards"`
+	Prometheus    prometheus.Config    `yaml:"prometheus"`
+	Elasticsearch elasticsearch.Config `yaml:"elasticsearch"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -54,6 +56,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(teams.Route, teams.Register(clusters, router.plugins, config.Teams))
 	router.Mount(dashboards.Route, dashboards.Register(clusters, router.plugins, config.Dashboards))
 	router.Mount(prometheus.Route, prometheus.Register(clusters, router.plugins, config.Prometheus))
+	router.Mount(elasticsearch.Route, elasticsearch.Register(clusters, router.plugins, config.Elasticsearch))
 
 	return router
 }
