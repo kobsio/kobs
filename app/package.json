@@ -7,6 +7,7 @@
     "@kobsio/plugin-applications": "*",
     "@kobsio/plugin-core": "*",
     "@kobsio/plugin-dashboards": "*",
+    "@kobsio/plugin-elasticsearch": "*",
     "@kobsio/plugin-prometheus": "*",
     "@kobsio/plugin-resources": "*",
     "@kobsio/plugin-teams": "*",

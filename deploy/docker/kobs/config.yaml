@@ -23,13 +23,14 @@ plugins:
       password:
       token:
 
-elasticsearch:
-  - name: Elasticsearch
-    description: Elasticsearch can be used for the logs of your application.
-    address: http://localhost:9200
-    username:
-    password:
-    token:
+  elasticsearch:
+    - name: elasticsearch
+      displayName: Elasticsearch
+      description: Elasticsearch can be used for the logs of your application.
+      address: http://localhost:9200
+      username:
+      password:
+      token:
 
 jaeger:
   - name: Jaeger

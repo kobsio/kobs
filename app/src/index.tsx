@@ -9,6 +9,7 @@ import teamsPlugin from '@kobsio/plugin-teams';
 import applicationsPlugin from '@kobsio/plugin-applications';
 import dashboardsPlugin from '@kobsio/plugin-dashboards';
 import prometheusPlugin from '@kobsio/plugin-prometheus';
+import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.render(
       ...applicationsPlugin,
       ...dashboardsPlugin,
       ...prometheusPlugin,
+      ...elasticsearchPlugin,
     }} />
   </React.StrictMode>,
   document.getElementById('root')
