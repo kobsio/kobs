@@ -33,7 +33,7 @@ export interface IDocument {
 
 export interface IBucket extends BarDatum {
   time: string;
-  Documents: number;
+  documents: number;
 }
 
 // IKeyValue is the interface for a single field in a document, with it's key and value.

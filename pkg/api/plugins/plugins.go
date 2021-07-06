@@ -14,6 +14,7 @@ import (
 	"github.com/kobsio/kobs/plugins/applications"
 	"github.com/kobsio/kobs/plugins/dashboards"
 	"github.com/kobsio/kobs/plugins/elasticsearch"
+	"github.com/kobsio/kobs/plugins/jaeger"
 	"github.com/kobsio/kobs/plugins/prometheus"
 	"github.com/kobsio/kobs/plugins/resources"
 	"github.com/kobsio/kobs/plugins/teams"
@@ -27,6 +28,7 @@ type Config struct {
 	Dashboards    dashboards.Config    `yaml:"dashboards"`
 	Prometheus    prometheus.Config    `yaml:"prometheus"`
 	Elasticsearch elasticsearch.Config `yaml:"elasticsearch"`
+	Jaeger        jaeger.Config        `yaml:"jaeger"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -57,6 +59,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(dashboards.Route, dashboards.Register(clusters, router.plugins, config.Dashboards))
 	router.Mount(prometheus.Route, prometheus.Register(clusters, router.plugins, config.Prometheus))
 	router.Mount(elasticsearch.Route, elasticsearch.Register(clusters, router.plugins, config.Elasticsearch))
+	router.Mount(jaeger.Route, jaeger.Register(clusters, router.plugins, config.Jaeger))
 
 	return router
 }

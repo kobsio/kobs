@@ -1,5 +1,5 @@
 {
-  "name": "@kobsio/plugin-elasticsearch",
+  "name": "@kobsio/plugin-jaeger",
   "version": "0.0.0",
   "license": "MIT",
   "private": false,
@@ -11,15 +11,15 @@
   },
   "devDependencies": {
     "@kobsio/plugin-core": "*",
-    "@nivo/bar": "^0.72.0",
+    "@nivo/scatterplot": "^0.72.0",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.11.0",
-    "@patternfly/react-table": "^4.29.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-dropzone": "^11.3.4",
     "react-query": "^3.17.2",
     "react-router-dom": "^5.2.0",
     "typescript": "^4.3.4"
