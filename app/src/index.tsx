@@ -10,6 +10,7 @@ import applicationsPlugin from '@kobsio/plugin-applications';
 import dashboardsPlugin from '@kobsio/plugin-dashboards';
 import prometheusPlugin from '@kobsio/plugin-prometheus';
 import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
+import jaegerPlugin from '@kobsio/plugin-jaeger';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.render(
       ...dashboardsPlugin,
       ...prometheusPlugin,
       ...elasticsearchPlugin,
+      ...jaegerPlugin,
     }} />
   </React.StrictMode>,
   document.getElementById('root')

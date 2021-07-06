@@ -1,5 +1,6 @@
 import React from 'react';
 import { ResponsiveBarCanvas } from '@nivo/bar';
+import { SquareIcon } from '@patternfly/react-icons';
 
 import { IBucket } from '../../utils/interfaces';
 
@@ -34,12 +35,36 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
         indexBy="time"
         indexScale={{ round: true, type: 'band' }}
         isInteractive={true}
-        keys={['Documents']}
+        keys={['documents']}
         layout="vertical"
         margin={{ bottom: 25, left: 50, right: 0, top: 0 }}
         maxValue="auto"
         minValue="auto"
         reverse={false}
+        theme={{
+          background: '#ffffff',
+          fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
+          fontSize: 10,
+          textColor: '#000000',
+        }}
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+        tooltip={(tooltip) => (
+          <div
+            className="pf-u-box-shadow-sm"
+            style={{
+              background: '#ffffff',
+              fontSize: '12px',
+              padding: '12px',
+            }}
+          >
+            <div>
+              <b>{tooltip.data.time}</b>
+            </div>
+            <div>
+              <SquareIcon color="#0066cc" /> Documents: {tooltip.data.documents}
+            </div>
+          </div>
+        )}
         valueFormat=""
         valueScale={{ type: 'linear' }}
       />

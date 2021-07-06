@@ -61,5 +61,5 @@ type Data struct {
 // because the name of this field is also shown in the UI as label.
 type Bucket struct {
 	Time      string `json:"time"`
-	Documents int64  `json:"Documents"`
+	Documents int64  `json:"documents"`
 }

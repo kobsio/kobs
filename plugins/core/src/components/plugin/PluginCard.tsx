@@ -19,6 +19,10 @@ export const PluginCard: React.FunctionComponent<IPluginCardProps> = ({
   children,
   actions,
 }: IPluginCardProps) => {
+  if (!title) {
+    return children;
+  }
+
   return (
     <Card
       isCompact={true}
