@@ -1,34 +1,27 @@
-import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { Alert, AlertVariant, Spinner } from '@patternfly/react-core';
 import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
+import { useQuery } from 'react-query';
 
-import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import { convertMetrics, getMappingValue } from '../../utils/helpers';
-import Actions from './Actions';
 import { COLOR_SCALE } from '../../utils/colors';
 import { IPanelOptions } from '../../utils/interfaces';
+import { IPluginTimes } from '@kobsio/plugin-core';
 
 interface ISpakrlineProps {
   name: string;
-  title: string;
-  description?: string;
   times: IPluginTimes;
+  title: string;
   options: IPanelOptions;
 }
 
-// The Spakrline component is used to render a sparkline chart. The chart is very simular to an area chart, but we do
-// not show a legend and the chart is not interactive. Additionally we are show the last value above the chart. This
-// value can be replaced with a mapping value, which must be specified by the user via the mappings parameter in the
-// options.
 export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
   name,
-  title,
-  description,
   times,
+  title,
   options,
 }: ISpakrlineProps) => {
-  const { isError, isFetching, error, data, refetch } = useQuery<Serie[], Error>(
+  const { isError, isLoading, error, data } = useQuery<Serie[], Error>(
     ['prometheus/metrics', name, options.queries, times],
     async () => {
       try {
@@ -73,32 +66,18 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
   }
 
   return (
-    <PluginCard
-      title={title}
-      description={description}
-      actions={<Actions name={name} isFetching={isFetching} times={times} queries={options.queries} />}
-    >
-      {isError ? (
-        <Alert
-          variant={AlertVariant.danger}
-          isInline={true}
-          title="Could not get metrics"
-          actionLinks={
-            <React.Fragment>
-              <AlertActionLink onClick={(): Promise<QueryObserverResult<Serie[], Error>> => refetch()}>
-                Retry
-              </AlertActionLink>
-            </React.Fragment>
-          }
-        >
-          <p>{error?.message}</p>
-        </Alert>
+    <div>
+      {isLoading ? (
+        <div className="pf-u-text-align-center">
+          <Spinner />
+        </div>
+      ) : isError ? (
+        <Alert variant={AlertVariant.danger} isInline={true} title={error?.message} />
       ) : data ? (
-        <React.Fragment>
-          <div style={{ height: '100%', position: 'relative' }}>
-            <div style={{ fontSize: '24px', position: 'absolute', textAlign: 'center', top: '31px', width: '100%' }}>
-              {label}
-            </div>
+        <div>
+          <div className="pf-u-font-size-lg pf-u-text-nowrap pf-u-text-truncate">{label}</div>
+          <div className="pf-u-font-size-sm pf-u-color-400 pf-u-text-nowrap pf-u-text-truncate">{title}</div>
+          <div style={{ height: '75px' }}>
             <ResponsiveLineCanvas
               colors={COLOR_SCALE[0]}
               curve="monotoneX"
@@ -114,9 +93,9 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
               yScale={{ stacked: false, type: 'linear' }}
             />
           </div>
-        </React.Fragment>
+        </div>
       ) : null}
-    </PluginCard>
+    </div>
   );
 };
 

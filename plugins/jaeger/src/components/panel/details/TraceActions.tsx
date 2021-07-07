@@ -15,15 +15,12 @@ import { Link } from 'react-router-dom';
 
 import { ITrace } from '../../../utils/interfaces';
 
-interface IJaegerTraceActionsProps {
+interface ITraceActionsProps {
   name: string;
   trace: ITrace;
 }
 
-const JaegerTraceActions: React.FunctionComponent<IJaegerTraceActionsProps> = ({
-  name,
-  trace,
-}: IJaegerTraceActionsProps) => {
+const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ name, trace }: ITraceActionsProps) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [compareTrace, setCompareTrace] = useState<string>('');
@@ -94,4 +91,4 @@ const JaegerTraceActions: React.FunctionComponent<IJaegerTraceActionsProps> = ({
   );
 };
 
-export default JaegerTraceActions;
+export default TraceActions;

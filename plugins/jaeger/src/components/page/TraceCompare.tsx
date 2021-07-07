@@ -29,7 +29,7 @@ const TraceCompare: React.FunctionComponent<ITraceCompareProps> = ({ name, trace
   const history = useHistory();
 
   const { isError, isLoading, error, data, refetch } = useQuery<ITrace, Error>(
-    ['jaeger/trace', traceID, trace],
+    ['jaeger/trace', name, traceID, trace],
     async () => {
       try {
         if (trace && trace.traceID === traceID) {

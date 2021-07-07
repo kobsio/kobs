@@ -15,7 +15,7 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
 }: ITracesToolbarServicesProps) => {
   const [show, setShow] = useState<boolean>(false);
 
-  const { isError, isLoading, error, data } = useQuery<string[], Error>(['jaeger/services'], async () => {
+  const { isError, isLoading, error, data } = useQuery<string[], Error>(['jaeger/services', name], async () => {
     try {
       const response = await fetch(`/api/plugins/jaeger/services/${name}`, {
         method: 'get',

@@ -27,7 +27,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, d
       <Gallery hasGutter={true} maxWidths={{ default: '100%' }}>
         {options.map((reference, index) => (
           <GalleryItem key={index}>
-            <PanelItem title={reference.title} description={reference.description} />
+            <PanelItem defaults={defaults} reference={reference} />
           </GalleryItem>
         ))}
       </Gallery>

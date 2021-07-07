@@ -26,7 +26,7 @@ export const PageToolbarAutocomplete: React.FunctionComponent<IPageToolbarAutoco
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [hoveringMetricNamesList, setHovering] = useState(false);
 
-  const { data } = useQuery<string[], Error>(['prometheus/labelvalues', debouncedQuery], async () => {
+  const { data } = useQuery<string[], Error>(['prometheus/labelvalues', name, debouncedQuery], async () => {
     try {
       if (debouncedQuery === '') {
         return undefined;

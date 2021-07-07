@@ -22,7 +22,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
   const history = useHistory();
 
   const { isError, isLoading, error, data, refetch } = useQuery<IMetric[], Error>(
-    ['prometheus/metrics', queries, resolution, times],
+    ['prometheus/metrics', name, queries, resolution, times],
     async () => {
       try {
         const response = await fetch(`/api/plugins/prometheus/metrics/${name}`, {

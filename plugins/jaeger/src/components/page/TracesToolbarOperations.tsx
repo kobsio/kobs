@@ -19,26 +19,29 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
 }: ITracesToolbarOperationsProps) => {
   const [show, setShow] = useState<boolean>(false);
 
-  const { isError, isLoading, error, data } = useQuery<string[], Error>(['jaeger/operations', service], async () => {
-    try {
-      const response = await fetch(`/api/plugins/jaeger/operations/${name}?service=${service}`, {
-        method: 'get',
-      });
-      const json = await response.json();
+  const { isError, isLoading, error, data } = useQuery<string[], Error>(
+    ['jaeger/operations', name, service],
+    async () => {
+      try {
+        const response = await fetch(`/api/plugins/jaeger/operations/${name}?service=${service}`, {
+          method: 'get',
+        });
+        const json = await response.json();
 
-      if (response.status >= 200 && response.status < 300) {
-        return ['All Operations', ...json.data.map((operation: IOperation) => operation.name)];
-      } else {
-        if (json.error) {
-          throw new Error(json.error);
+        if (response.status >= 200 && response.status < 300) {
+          return ['All Operations', ...json.data.map((operation: IOperation) => operation.name)];
         } else {
-          throw new Error('An unknown error occured');
+          if (json.error) {
+            throw new Error(json.error);
+          } else {
+            throw new Error('An unknown error occured');
+          }
         }
+      } catch (err) {
+        throw err;
       }
-    } catch (err) {
-      throw err;
-    }
-  });
+    },
+  );
 
   const filter = (
     e: React.ChangeEvent<HTMLInputElement>,

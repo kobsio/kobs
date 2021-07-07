@@ -10,11 +10,15 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import DashboardsItem from './DashboardsItem';
+import DashboardsModal from './DashboardsModal';
+import DashboardsToolbar from './DashboardsToolbar';
 import { IDashboard } from '../../utils/interfaces';
+import { filterDashboards } from '../../utils/dashboard';
+import { useDebounce } from '@kobsio/plugin-core';
 
 export interface IDashboardsProps {
   displayName: string;
@@ -23,6 +27,9 @@ export interface IDashboardsProps {
 
 const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ displayName, description }: IDashboardsProps) => {
   const history = useHistory();
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [dashboard, setDashboard] = useState<IDashboard | undefined>(undefined);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IDashboard[], Error>(
     ['dashboards/dashboards'],
@@ -53,7 +60,10 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ displayName, de
           {displayName}
         </Title>
         <p>{description}</p>
+        <DashboardsToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </PageSection>
+
+      <DashboardsModal dashboard={dashboard} setDashboard={setDashboard} />
 
       <PageSection style={{ height: '100%', minHeight: '100%' }} variant={PageSectionVariants.default}>
         {isLoading ? (
@@ -77,9 +87,9 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ displayName, de
           </Alert>
         ) : data ? (
           <Gallery hasGutter={true} maxWidths={{ default: '100%' }}>
-            {data.map((dashboard, index) => (
+            {filterDashboards(data, debouncedSearchTerm).map((dashboard, index) => (
               <GalleryItem key={index}>
-                <DashboardsItem dashboard={dashboard} />
+                <DashboardsItem dashboard={dashboard} setDashboard={setDashboard} />
               </GalleryItem>
             ))}
           </Gallery>

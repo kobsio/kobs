@@ -26,7 +26,7 @@ export const Table: React.FunctionComponent<ITableProps> = ({
   options,
 }: ITableProps) => {
   const { isError, isFetching, error, data, refetch } = useQuery<IRows, Error>(
-    ['prometheus/table', options.queries, times],
+    ['prometheus/table', name, options.queries, times],
     async () => {
       try {
         if (!options.queries || !Array.isArray(options.queries) || options.queries.length === 0) {

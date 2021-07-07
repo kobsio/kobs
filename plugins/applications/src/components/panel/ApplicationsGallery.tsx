@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import { IApplication, IReference } from '../../utils/interfaces';
 import ApplicationsGalleryItem from './ApplicationsGalleryItem';
+import { IPluginTimes } from '@kobsio/plugin-core';
 
 interface IApplicationsGalleryProps {
   clusters: string[];
@@ -20,6 +21,11 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
   team,
   showDetails,
 }: IApplicationsGalleryProps) => {
+  const times: IPluginTimes = {
+    time: 'last15Minutes',
+    timeEnd: Math.floor(Date.now() / 1000),
+    timeStart: Math.floor(Date.now() / 1000) - 900,
+  };
   const history = useHistory();
 
   const { isError, isLoading, error, data, refetch } = useQuery<IApplication[], Error>(
@@ -93,7 +99,7 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
     <Gallery hasGutter={true}>
       {data.map((application, index) => (
         <GalleryItem key={index}>
-          <ApplicationsGalleryItem application={application} showDetails={showDetails} />
+          <ApplicationsGalleryItem times={times} application={application} showDetails={showDetails} />
         </GalleryItem>
       ))}
     </Gallery>

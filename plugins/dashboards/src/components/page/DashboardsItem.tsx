@@ -5,11 +5,20 @@ import { IDashboard } from '../../utils/interfaces';
 
 interface IDashboardsItemProps {
   dashboard: IDashboard;
+  setDashboard: (value: IDashboard | undefined) => void;
 }
 
-const DashboardsItem: React.FunctionComponent<IDashboardsItemProps> = ({ dashboard }: IDashboardsItemProps) => {
+const DashboardsItem: React.FunctionComponent<IDashboardsItemProps> = ({
+  dashboard,
+  setDashboard,
+}: IDashboardsItemProps) => {
   return (
-    <Card isCompact={true} isHoverable={true}>
+    <Card
+      style={{ cursor: 'pointer' }}
+      isCompact={true}
+      isHoverable={true}
+      onClick={(): void => setDashboard(dashboard)}
+    >
       <CardHeader>
         <CardTitle>
           {dashboard.name}

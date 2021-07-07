@@ -38,8 +38,6 @@ spec:
               cluster:
                 type: string
               dashboards:
-                description: 'TODO: Add the preview options, when the Dashboard CRD
-                  was created. Preview      Plugin       `json:"preview"`'
                 items:
                   properties:
                     cluster:
@@ -94,6 +92,23 @@ spec:
                 type: string
               namespace:
                 type: string
+              preview:
+                properties:
+                  plugin:
+                    properties:
+                      name:
+                        type: string
+                      options:
+                        x-kubernetes-preserve-unknown-fields: true
+                    required:
+                    - name
+                    type: object
+                  title:
+                    type: string
+                required:
+                - plugin
+                - title
+                type: object
               teams:
                 items:
                   properties:

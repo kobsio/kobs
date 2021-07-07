@@ -36,7 +36,7 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
   // into a series so that we can use it in nivo charts. The result also contains a list with all the labels for all
   // series.
   const { isError, isFetching, error, data, refetch } = useQuery<ISeries, Error>(
-    ['prometheus/metrics', options.queries, times],
+    ['prometheus/metrics', name, options.queries, times],
     async () => {
       try {
         if (!options.queries || !Array.isArray(options.queries) || options.queries.length === 0) {

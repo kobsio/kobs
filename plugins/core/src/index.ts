@@ -10,6 +10,7 @@ export * from './components/misc/Title';
 export * from './components/plugin/PluginCard';
 export * from './components/plugin/PluginOptionsMissing';
 export * from './components/plugin/PluginPanel';
+export * from './components/plugin/PluginPreview';
 
 export * from './context/ClustersContext';
 export * from './context/PluginsContext';

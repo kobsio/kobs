@@ -28,16 +28,15 @@ type ApplicationList struct {
 }
 
 type ApplicationSpec struct {
-	Cluster      string      `json:"cluster,omitempty"`
-	Namespace    string      `json:"namespace,omitempty"`
-	Name         string      `json:"name,omitempty"`
-	Description  string      `json:"description,omitempty"`
-	Links        []Link      `json:"links,omitempty"`
-	Teams        []Reference `json:"teams,omitempty"`
-	Dependencies []Reference `json:"dependencies,omitempty"`
-	// TODO: Add the preview options, when the Dashboard CRD was created.
-	// Preview      Plugin       `json:"preview"`
-	Dashboards []dashboard.Reference `json:"dashboards,omitempty"`
+	Cluster      string                `json:"cluster,omitempty"`
+	Namespace    string                `json:"namespace,omitempty"`
+	Name         string                `json:"name,omitempty"`
+	Description  string                `json:"description,omitempty"`
+	Links        []Link                `json:"links,omitempty"`
+	Teams        []Reference           `json:"teams,omitempty"`
+	Dependencies []Reference           `json:"dependencies,omitempty"`
+	Preview      *Preview              `json:"preview,omitempty"`
+	Dashboards   []dashboard.Reference `json:"dashboards,omitempty"`
 }
 
 type Link struct {
@@ -50,4 +49,9 @@ type Reference struct {
 	Namespace   string `json:"namespace,omitempty"`
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
+}
+
+type Preview struct {
+	Title  string           `json:"title"`
+	Plugin dashboard.Plugin `json:"plugin"`
 }

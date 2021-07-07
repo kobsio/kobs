@@ -1,6 +1,7 @@
 import { gridSpans } from '@patternfly/react-core';
 
-import { IDashboardsOptions, IReference, IVariableValues } from './interfaces';
+import { IDashboard, IDashboardsOptions, IPlaceholders, IReference, IVariableValues } from './interfaces';
+import { IPluginDefaults } from '@kobsio/plugin-core';
 
 // toGridSpans is used to convert the provided col and row span value to the corresponding gridSpans value, so that it
 // can be used within the Patternfly Grid component. The function requires a default value which is 12 for columns and
@@ -99,5 +100,63 @@ export const getOptionsFromSearch = (
 
   return {
     dashboard: dashboard && isReferenced ? dashboard : references.length > 0 ? references[0].title : '',
+  };
+};
+
+// filterDashboards returns all given dashboards where the name contains the given search term.
+export const filterDashboards = (dashboards: IDashboard[], searchTerm: string): IDashboard[] => {
+  if (searchTerm === '') {
+    return dashboards;
+  }
+
+  return dashboards.filter((dashboard) => dashboard.name.includes(searchTerm));
+};
+
+// getPlaceholdersObject returns the placeholders from the given dashboard as object.
+export const getPlaceholdersObject = (dashboard?: IDashboard): IPlaceholders | undefined => {
+  if (!dashboard || !dashboard.placeholders) {
+    return undefined;
+  }
+
+  const placeholders: IPlaceholders = {};
+
+  for (const placeholder of dashboard.placeholders) {
+    placeholders[placeholder.name] = '';
+  }
+
+  return placeholders;
+};
+
+// getPlaceholdersFromSearch parses the given search string and returns all the placeholders from it.
+export const getPlaceholdersFromSearch = (search: string): IPlaceholders | undefined => {
+  const placeholders = (/^[?#]/.test(search) ? search.slice(1) : search)
+    .split('&')
+    .reduce((params: IPlaceholders, param) => {
+      const item = param.split('=');
+      const key = decodeURIComponent(item[0] || '');
+      const value = decodeURIComponent(item[1] || '');
+      if (key) {
+        params[key] = value;
+      }
+      return params;
+    }, {});
+
+  delete placeholders['defaultCluster'];
+  delete placeholders['defaultNamespace'];
+
+  return placeholders;
+};
+
+// getDefaultsFromSearch returns the plugins defaults from a given search string.
+export const getDefaultsFromSearch = (search: string): IPluginDefaults => {
+  const params = new URLSearchParams(search);
+  const cluster = params.get('defaultCluster');
+  const namespace = params.get('defaultNamespace');
+  const name = params.get('defaultName');
+
+  return {
+    cluster: cluster || '',
+    name: name || '',
+    namespace: namespace || '',
   };
 };

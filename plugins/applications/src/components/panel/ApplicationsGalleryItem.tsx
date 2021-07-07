@@ -1,11 +1,12 @@
 import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
+import { IPluginTimes, LinkWrapper, PluginPreview } from '@kobsio/plugin-core';
 import Details from './details/Details';
 import { IApplication } from '../../utils/interfaces';
-import { LinkWrapper } from '@kobsio/plugin-core';
 
 interface IApplicationsGalleryItemProps {
+  times: IPluginTimes;
   application: IApplication;
   showDetails?: (details: React.ReactNode) => void;
 }
@@ -14,12 +15,28 @@ interface IApplicationsGalleryItemProps {
 // description of the application. If the user doesn't provide a description, we just show the namespace and cluster of
 // the application in the card body.
 const ApplicationsGalleryItem: React.FunctionComponent<IApplicationsGalleryItemProps> = ({
+  times,
   application,
   showDetails,
 }: IApplicationsGalleryItemProps) => {
   const cardBody = (
-    <CardBody>
-      {application.description ? application.description : `${application.namespace} (${application.cluster})`}
+    <CardBody style={{ height: '150px', maxHeight: '150px', minHeight: '150px' }}>
+      {application.preview ? (
+        <div style={{ height: '124px', overflow: 'hidden' }}>
+          <PluginPreview
+            times={times}
+            title={application.preview.title}
+            name={application.preview.plugin.name}
+            options={application.preview.plugin.options}
+          />
+        </div>
+      ) : application.description ? (
+        <div style={{ height: '124px', overflow: 'scroll' }}>{application.description}</div>
+      ) : (
+        <div style={{ height: '124px', overflow: 'scroll' }}>
+          `${application.namespace} (${application.cluster})`
+        </div>
+      )}
     </CardBody>
   );
 

@@ -40,6 +40,13 @@ type getDashboardsRequest struct {
 	References []dashboard.Reference `json:"references"`
 }
 
+type getDashboardRequest struct {
+	Cluster      string            `json:"cluster"`
+	Namespace    string            `json:"namespace"`
+	Name         string            `json:"name"`
+	Placeholders map[string]string `json:"placeholders"`
+}
+
 // getAllDashboards can be use to get all dashboards accross all clusters and namespaces. For that we are looping
 // through all the clusters and retrieving all dashboards via the GetDashboards function. Finally we return an array of
 // dashboards.
@@ -120,25 +127,39 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 }
 
 // getDashboard can be used to get a single dashboard. Each dashboard is identified by the cluster, namespace and name
-// which is set via the query parameter. To get the dashboard we have to get the cluster and then using the GetDashboard
+// which is set via the request body. To get the dashboard we have to get the cluster and then using the GetDashboard
 // function to return the dashboard.
 func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
-	clusterName := r.URL.Query().Get("cluster")
-	namespace := r.URL.Query().Get("namespace")
-	name := r.URL.Query().Get("name")
+	log.Tracef("getDashboard")
 
-	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name}).Tracef("getDashboard")
+	var data getDashboardRequest
 
-	cluster := router.clusters.GetCluster(clusterName)
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not decode request body"))
+		return
+	}
+
+	log.WithFields(logrus.Fields{"cluster": data.Cluster, "namespace": data.Namespace, "name": data.Name}).Tracef("getDashboard")
+
+	cluster := router.clusters.GetCluster(data.Cluster)
 	if cluster == nil {
 		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
 		return
 	}
 
-	dashboard, err := cluster.GetDashboard(r.Context(), namespace, name)
+	dashboard, err := cluster.GetDashboard(r.Context(), data.Namespace, data.Name)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get team"))
+		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get dashboard"))
 		return
+	}
+
+	if data.Placeholders != nil {
+		dashboard, err = placeholders.Replace(data.Placeholders, *dashboard)
+		if err != nil {
+			render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not replace placeholders"))
+			return
+		}
 	}
 
 	render.JSON(w, r, dashboard)
@@ -161,7 +182,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router.Get("/dashboards", router.getAllDashboards)
 	router.Post("/dashboards", router.getDashboards)
-	router.Get("/dashboard", router.getDashboard)
+	router.Post("/dashboard", router.getDashboard)
 
 	return router
 }

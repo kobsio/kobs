@@ -1,4 +1,4 @@
-import { IDashboardReference } from '@kobsio/plugin-dashboards';
+import { IDashboardReference, IPlugin } from '@kobsio/plugin-dashboards';
 import cytoscape from 'cytoscape';
 
 // IApplication implements the Application CR, which can be created by a user to describe an application. While we have
@@ -12,7 +12,13 @@ export interface IApplication {
   links?: ILink[];
   teams?: IReference[];
   dependencies?: IReference[];
+  preview?: IPreview;
   dashboards?: IDashboardReference[];
+}
+
+export interface IPreview {
+  title: string;
+  plugin: IPlugin;
 }
 
 export interface ILink {

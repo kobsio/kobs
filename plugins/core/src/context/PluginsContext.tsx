@@ -53,13 +53,22 @@ export interface IPluginPanelProps {
   showDetails?: (details: React.ReactNode) => void;
 }
 
+// IPluginPreviewProps is the interface for the properties of the preview component of each plugin. It contains the
+export interface IPluginPreviewProps {
+  times: IPluginTimes;
+  title: string;
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options?: any;
+}
+
 // IPluginComponent is the interface which must be implemented by each plugin. It must contain an icon and panel
 // component. The page and preview component is optional for each plugin.
 export interface IPluginComponent {
   icon: string;
   page?: React.FunctionComponent<IPluginPageProps>;
   panel: React.FunctionComponent<IPluginPanelProps>;
-  preview?: React.FunctionComponent<IPluginPanelProps>;
+  preview?: React.FunctionComponent<IPluginPreviewProps>;
 }
 
 // IPlugins is the interface for a list of plugins. The key of this interface is the plugin type and must correspond

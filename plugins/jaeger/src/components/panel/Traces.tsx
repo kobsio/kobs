@@ -31,7 +31,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
   times,
 }: ITracesProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<ITrace[], Error>(
-    ['jaeger/traces', limit, maxDuration, minDuration, operation, service, tags, times],
+    ['jaeger/traces', name, limit, maxDuration, minDuration, operation, service, tags, times],
     async () => {
       try {
         const response = await fetch(
