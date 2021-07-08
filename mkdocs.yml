@@ -30,14 +30,16 @@ nav:
       - Resources: resources/resources.md
       - Applications: resources/applications.md
       - Teams: resources/teams.md
-      - Templates: resources/templates.md
+      - Dashboards: resources/dashboards.md
   - Plugins:
       - Getting Started: plugins/getting-started.md
+      - Applications: plugins/applications.md
+      - Dashboards: plugins/dashboards.md
       - Elasticsearch: plugins/elasticsearch.md
       - Jaeger: plugins/jaeger.md
-      - Kiali: plugins/kiali.md
-      - Opsgenie: plugins/opsgenie.md
       - Prometheus: plugins/prometheus.md
+      - Resources: plugins/resources.md
+      - Teams: plugins/teams.md
   - Contributing:
       - Getting Started: contributing/getting-started.md
       - Add a Plugin: contributing/add-a-plugin.md
@@ -48,6 +50,7 @@ plugins:
 
 markdown_extensions:
   - admonition
+  - pymdownx.details
   - pymdownx.highlight
   - pymdownx.superfences
 

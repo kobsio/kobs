@@ -12,10 +12,6 @@ The following command-line arguments and environment variables are available.
 | `--app.address` | `KOBS_APP_ADDRESS` | The address, where the Application server is listen on. | `:15219` |
 | `--app.assets` | `KOBS_APP_ASSETS` | The location of the assets directory. | `app/build` |
 | `--clusters.cache-duration.namespaces` | `KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES` | The duration, for how long requests to get the list of namespaces should be cached. | `5m` |
-| `--clusters.cache-duration.teams` | `KOBS_CLUSTERS_CACHE_DURATION_TEAMS` | The duration, for how long the teams data should be cached. | `60m` |
-| `--clusters.cache-duration.templates` | `KOBS_CLUSTERS_CACHE_DURATION_TEMPLATES` | The duration, for how long the templates should be cached. | `60m` |
-| `--clusters.cache-duration.topology` | `KOBS_CLUSTERS_CACHE_DURATION_TOPOLOGY` | The duration, for how long the topology data should be cached. | `60m` |
-| `--clusters.forbidden-resources` | `KOBS_CLUSTERS_FORBIDDEN_RESOURCES` | A list of resources, which can not be accessed via kobs. | |
 | `--config` | `KOBS_CONFIG` | Name of the configuration file.  | `config.yaml` |
 | `--log.format` | `KOBS_LOG_FORMAT` | Set the output format of the logs. Must be `plain` or `json`.  | `plain` |
 | `--log.level` | `KOBS_LOG_LEVEL` | Set the log level. Must be `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`.  | `info` |
@@ -35,20 +31,24 @@ clusters:
       incluster:
         name: kobs-demo
 
-prometheus:
-  - name: Prometheus
-    description: Prometheus can be used for the metrics of your application.
-    address: http://prometheus:9090
+plugins:
+  prometheus:
+    - name: prometheus
+      displayName: Prometheus
+      description: "From metrics to insight: Power your metrics and alerting with a leading open-source monitoring solution."
+      address: http://prometheus.istio-system.svc.cluster.local:9090
 
-elasticsearch:
-  - name: Elasticsearch
-    description: Elasticsearch can be used for the logs of your application.
-    address: http://elasticsearch-es-http:9200
+  elasticsearch:
+    - name: elasticsearch
+      displayName: Elasticsearch
+      description: "A distributed, RESTful search and analytics engine capable of addressing a growing number of use cases."
+      address: http://elasticsearch-es-http.elastic-system.svc.cluster.local:9200
 
-jaeger:
-  - name: Jaeger
-    description: Jaeger can be used for the traces of your application.
-    address: http://tracing:80/jaeger
+  jaeger:
+    - name: jaeger
+      displayName: Jaeger
+      description: "Open-source, end-to-end distributed tracing: Monitor and troubleshoot transactions in complex distributed systems"
+      address: http://tracing.istio-system.svc.cluster.local:80/jaeger
 ```
 
 You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: `${NAME_OF_THE_ENVIRONMENT_VARIABLE}`. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.

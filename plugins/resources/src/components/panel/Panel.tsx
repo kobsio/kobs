@@ -3,6 +3,7 @@ import { Card } from '@patternfly/react-core';
 
 import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
 import { IPanelOptions } from '../../utils/interfaces';
+import PanelActions from './PanelActions';
 import PanelList from './PanelList';
 
 interface IPanelProps extends IPluginPanelProps {
@@ -45,7 +46,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   // the component is used in the resources page and we do not wrap it in the PluginCard component.
   if (title) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description} transparent={true} actions={<PanelActions options={opts} />}>
         <PanelList resources={opts} showDetails={showDetails} />
       </PluginCard>
     );

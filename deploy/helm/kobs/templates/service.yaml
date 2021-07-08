@@ -15,18 +15,12 @@ spec:
       protocol: TCP
       name: http-web
     - port: 15220
-      targetPort: grpc-web
+      targetPort: http-api
       protocol: TCP
-      name: grpc-web
+      name: http-api
     - port: 15221
       targetPort: http-metrics
       protocol: TCP
       name: http-metrics
-    {{ if .Values.envoy.enabled }}
-    - port: 15222
-      targetPort: http-envoy
-      protocol: TCP
-      name: http-envoy
-    {{ end }}
   selector:
     {{- include "kobs.selectorLabels" . | nindent 4 }}

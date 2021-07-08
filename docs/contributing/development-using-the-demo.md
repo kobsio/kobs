@@ -7,27 +7,16 @@ docker build -f ./cmd/kobs/Dockerfile -t localhost:5000/kobs:dev .
 docker push localhost:5000/kobs:dev
 ```
 
-When you have pushed your custom image, you have to adjust the patch file for the kobs deployment. Change the Docker image in the [`kobs.yaml`](https://github.com/kobsio/kobs/blob/main/deploy/demo/observability/kobs.yaml) file to the following:
+When you have pushed your custom image, you can run the following command to deploy kobs with the new image:
 
 ```sh
-spec:
-  template:
-    spec:
-      containers:
-        - name: kobs
-          image: localhost:5000/kobs:dev
-```
-
-Now you can deploy the files for the `observability` namespace again:
-
-```sh
-kustomize build deploy/demo/observability | kubectl apply -f -
+kustomize build deploy/demo/kobs/dev | kubectl apply -f -
 ```
 
 Finally you can check if the kobs Pod is using your image, with the following command:
 
 ```sh
-k get pods -n observability -l app.kubernetes.io/name=kobs -o yaml | grep "image: localhost:5000/kobs:dev"
+k get pods -n kobs -l app.kubernetes.io/name=kobs -o yaml | grep "image: localhost:5000/kobs:dev"
 ```
 
 If you make changes to the CRDs for kobs you can deploy them using the following command:

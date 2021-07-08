@@ -23,7 +23,7 @@ export interface ILogsData {
   took: number;
   hits: number;
   documents: IDocument[];
-  buckets: IBucket[];
+  buckets?: IBucket[];
 }
 
 export interface IDocument {

@@ -14,6 +14,23 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Changed
 
+## [v0.4.0](https://github.com/kobsio/kobs/releases/tag/v0.4.0) (2021-07-14)
+
+### Added
+
+- [#74](https://github.com/kobsio/kobs/pull/74): Add new Custom Resource Definition for Dashboards as a replacement for Templates.
+- [#75](https://github.com/kobsio/kobs/pull/75): Add placeholder for Dashboards, which allows users to pass custom values to Dashboards.
+- [#76](https://github.com/kobsio/kobs/pull/76): Add support for variables and time ranges in Dashboards.
+
+### Changed
+
+- [#71](https://github.com/kobsio/kobs/pull/71): :warning: *Breaking change:* :warning: Remove protobuf as requirement and rework project structure for better plugin support.
+- [#73](https://github.com/kobsio/kobs/pull/73): :warning: *Breaking change:* :warning: Add a new version for the Applications and Teams Custom Resource Definitions (v1beta1).
+- [#77](https://github.com/kobsio/kobs/pull/77): :warning: *Breaking change:* :warning: Rework Prometheus plugin.
+- [#78](https://github.com/kobsio/kobs/pull/78): :warning: *Breaking change:* :warning: Rework Elasticsearch plugin.
+- [#79](https://github.com/kobsio/kobs/pull/79): :warning: *Breaking change:* :warning: Rework Jaeger plugin.
+- [#80](https://github.com/kobsio/kobs/pull/80): Adjust documentation, demo, Helm chart and Kustomize files for the new CRDs and plugins.
+
 ## [v0.3.0](https://github.com/kobsio/kobs/releases/tag/v0.3.0) (2021-06-03)
 
 ### Added

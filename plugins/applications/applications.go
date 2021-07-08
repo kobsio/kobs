@@ -204,7 +204,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	plugins.Append(plugin.Plugin{
 		Name:        "applications",
 		DisplayName: "Applications",
-		Description: "TODO",
+		Description: "Monitor your Kubernetes workloads.",
 		Type:        "applications",
 	})
 

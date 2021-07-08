@@ -15,12 +15,3 @@ services:
       - 15221:15221
     command:
       --log.level=trace
-  envoy:
-    container_name: envoy
-    image: envoyproxy/envoy:v1.17.0
-    volumes:
-      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
-    ports:
-      - 15222:15222
-    depends_on:
-      - kobs

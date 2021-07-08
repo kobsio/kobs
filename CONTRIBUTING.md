@@ -32,6 +32,41 @@ When contributing a complex change to the kobs repository, please discuss the ch
 
 The following section explains various suggestions and procedures to note during development of kobs.
 
+### Repository Structure
+
+Most of the kobs functions are implemented via plugins, which can be found in the `plugins` folder. The other directories are used to implement the core functionality of kobs:
+
+```txt
+.
+├── app                         # The React UI, with all first party plugins
+│   ├── public                  # Static files for the React UI, like the kobs logo and favicon
+│   └── src                     # The source files for the React UI, the index.tsx is used to register all plugins
+├── cmd
+│   └── kobs                    # The main package for kobs
+├── deploy                      # Contains the Kustomize files, the Helm chart, the Docker Compose file and the demo application
+├── docs                        # The MkDocs files for the documentation, the build of this folder is deployed to http://kobs.io
+├── pkg
+│   ├── api                     # The api package contains the HTTP API which is served at 15220
+│   │   ├── apis
+│   │   │   ├── application     # The Applications Custom Resource Definition
+│   │   │   ├── dashboard       # The Dashboards Custom Resource Definition
+│   │   │   └── team            # The Teams Custom Resource Definition
+│   │   ├── clients             # The generated code of the clients for our Custom Resource Definitions
+│   │   ├── clusters            # The clusters package is used to load all clusters from the provided configuration file
+│   │   └── plugins             # The plugin package is used to register the plugins at the API server
+│   ├── app                     # The app package is used to serve the build of the React UI
+│   ├── config
+│   ├── metrics
+│   └── version
+└── plugins                     # The implementation for all first party plugins
+    ├── applications
+    ├── core
+    ├── dashboards
+    ├── resources
+    ├── teams
+    └── ...
+```
+
 ### Prerequisites
 
 - It is strongly recommended that you use macOS or Linux distributions for development.
@@ -39,25 +74,7 @@ The following section explains various suggestions and procedures to note during
 - You have Node.js 14.0.0 or newer installed.
 - For the React UI, you will need a working NodeJS environment and the Yarn package manager to compile the Web UI assets.
 
-kobs uses protocol buffers. When you modify the `.proto` files, you need the following dependencies to generate the Go and JavaScript code:
-
-- [Protocol Buffers](https://github.com/protocolbuffers/protobuf): Download the latest `protoc` binary from the [releases](https://github.com/protocolbuffers/protobuf/releases). Under macOS you can also use brew to install protobuf with `brew install protobuf`.
-- [gRPC Web](https://github.com/grpc/grpc-web): The plugin is used to generate the code for the React UI. Under macOS you can use brew to install gRPC Web with `brew install protoc-gen-grpc-web`. You can also download the plugin for your system from the [releases](https://github.com/grpc/grpc-web/releases) page and install it:
-
-```sh
-mv ~/Downloads/protoc-gen-grpc-web-1.2.1-darwin-x86_64 /usr/local/bin/protoc-gen-grpc-web
-chmod +x /usr/local/bin/protoc-gen-grpc-web
-```
-
-- Install the gRPC plugins for Go:
-
-```sh
-go get google.golang.org/protobuf/cmd/protoc-gen-go@v1.25.0
-go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
-go get istio.io/tools/cmd/protoc-gen-deepcopy@v0.0.0-20210206003203-61eabd18b4e0
-```
-
-- Install the Kubernetes [code-generator](https://github.com/kubernetes/code-generator) into your `GOPATH`:
+If you adjust the Custom Resource Definitions for kobs, you must install the Kubernetes [code-generator](https://github.com/kubernetes/code-generator) into your `GOPATH`:
 
 ```sh
 go get k8s.io/code-generator@v0.20.2
@@ -68,8 +85,8 @@ go get k8s.io/code-generator@v0.20.2
 kobs consists of three components:
 
 - The React UI, which is the frontend component of kobs.
-- The server, which serves the React UI and the gRPC server.
-- Envoy for gRPC-Web.
+- The server, which serves the React UI and the API.
+- The plugins, which contains the frontend and backend code for several functions of kobs.
 
 #### React UI
 
@@ -93,8 +110,8 @@ When you run the kobs binary, it will use the following ports:
 
 | Port | Description | Command-Line Flag |
 | ---- | ----------- | ----------------- |
-| `15219` | Serves the React UI and the `/health` endpoint. This requires that you have built the React UI once via `yarn build`. If you haven't built the React UI, you can skip serving the fronend by setting `--app.assets=""`. | `--app.address` |
-| `15220` | Provides the gRPC server. | `--api.address` |
+| `15219` | Serves the React UI. This requires that you have built the React UI once via `yarn build`. If you haven't built the React UI, you can skip serving the fronend by setting `--app.assets=""`. | `--app.address` |
+| `15220` | Serve the HTTP API. | `--api.address` |
 | `15221` | Serves kobs internal metrics. | `--metrics.address` |
 
 When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the kobs server. You can also adjust the log level to `trace` via the `--log.level` flag, for more useful output during development.
@@ -109,56 +126,45 @@ var (
 
 The Go code is formatted using [`gofmt`](https://golang.org/cmd/gofmt/).
 
-#### Envoy
+#### Plugins
 
-Because the API is served via [gRPC](https://grpc.io) and we are using [gRPC-Web](https://grpc.io/docs/platforms/web/) in the React UI, you have to run [Envoy](https://www.envoyproxy.io). The Envoy configuration for development can be found in the [envoy.yaml](./deploy/docker/envoy/envoy.yaml) file.
+We are using [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) to manage the plugins. All first party plugins for kobs are available in the `plugins` directory. They are build when you run `yarn start` or `yarn build`. If you just want to build the plugins you can run `yarn plugin`.
 
-The Envoy Proxy will accept connection on port `15222` and forwards them to port `15220`. Envoy also serves the React UI from port `15219` via port `15222`.
+To build / rebuild a single plugin you can run `yarn workspace <plugin-name> plugin` (e.g. `yarn workspace @kobsio/plugin-prometheus plugin`). Each of the plugins has a similar structure, which can be found in the following:
 
-##### Mac
-
-To start Envoy in a Docker container you can use the following command:
-
-```sh
-docker run -it --rm --name envoy -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
+```txt
+plugins/prometheus
+├── pkg                 # Additional Go packages for the plugin
+├── prometheus.go       # The entry point for the backend implementation of the plugin
+└── src                 # The TypeScript code for the plugin
+    ├── assets          # Static assets like images and CSS files
+    ├── components      #
+    │   ├── page        # The page implementation for the plugin
+    │   ├── panel       # The panel implementation for the plugin
+    │   └── preview     # The preview implementation for the plugin
+    ├── index.ts        # Export for the plugin, so that it can be added to the app in the app/src/index.tsx file
+    └── utils           # Additional functions for the TypeScript code
 ```
 
-##### Linux
-
-When running on Linux, you've to adjust the `envoy.yaml` (beacuse DNS name `host.docker.internal` is only available on Mac).
-
-```sh
-sed -i 's/host.docker.internal/localhost/' deploy/docker/envoy/envoy.yaml
-```
-
-Now start the Docker container with following command:
-
-```sh
-docker run -it --rm --name envoy --net=host -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
-```
-
+If you want to add a new plugin, please read the [Add a Plugin](https://kobs.io/contributing/add-a-plugin/) guide from the documentation.
 
 ### Run kobs
 
-There are three options to run kobs for local development. Each of the following commands should be run in a separate terminal window.
-
-The first option can be used to serve the development version of the React UI, which will be available via [http://localhost:3000](http://localhost:3000):
+To run kobs you can use the following two commands, which should be run in two separate terminal windows. This will start the a kobs server and it will serve the development version of the React UI, which will be available via [http://localhost:3000](http://localhost:3000):
 
 ```sh
-cd app && yarn start
-make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml
-docker run -it --rm --name envoy -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
+yarn start
+make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml --app.assets=""
 ```
 
-The second option can be used to serve the production build of the React UI, which will be available via [http://localhost:15222](http://localhost:15222):
+If you want to test the production build of kobs, you can build the React UI via `yarn build` and then start the server with the `--development` flag. The `--development` flag will then redirect all the API requests to port `15220` from the frontend which is available at [http://localhost:15222](http://localhost:15222):
 
 ```sh
-cd app && yarn build
-make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml
-docker run -it --rm --name envoy -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
+yarn build
+make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml --development
 ```
 
-The third option can be used when you do not have Go and Node.js installed on your system and you want to use Docker instead. The React UI will be available via [http://localhost:15222](http://localhost:15222):
+If you do not have Go and Node.js installed on your system and you want to use Docker instead. You can run kobs via Docker with the following commands:
 
 ```sh
 # With Docker Compose
@@ -167,7 +173,6 @@ cd deploy/docker && docker-compose up
 # Without Docker Compose
 docker build -f ./cmd/kobs/Dockerfile -t kobsio/kobs:dev .
 docker run -it --rm --name kobs -p 15219:15219 -p 15220:15220 -p 15221:15221 -v $(pwd)/deploy/docker/kobs/config.yaml:/kobs/config.yaml -v $HOME/.kube/config:/.kube/config kobsio/kobs:dev --development
-docker run -it --rm --name envoy -p 15222:15222 -v $(pwd)/deploy/docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro envoyproxy/envoy:v1.17.0
 ```
 
 When you want to run kobs inside your Kubernetes cluster, please checkout the Documentation at [kobs.io](https://kobs.io).

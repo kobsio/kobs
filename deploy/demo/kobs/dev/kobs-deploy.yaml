@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kobs
+  namespace: kobs
+spec:
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "15221"
+      labels:
+        app: kobs
+    spec:
+      containers:
+        - name: kobs
+          image: localhost:5000/kobs:dev
+          imagePullPolicy: Always
+          args:
+            - --log.level=trace
+          env:
+            - name: KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES
+              value: 1m

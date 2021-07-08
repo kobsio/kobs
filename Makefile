@@ -33,7 +33,12 @@ generate-crds:
 		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/listers ./pkg/api/clients/$$crd/listers; \
 		rm -rf ./tmp; \
 	done
-	controller-gen "crd:crdVersions={v1},trivialVersions=true" paths="./..." output:crd:artifacts:config=deploy/kustomize/crds; \
+
+	controller-gen "crd:crdVersions={v1},trivialVersions=true" paths="./..." output:crd:artifacts:config=deploy/kustomize/crds
+
+	for crd in $(CRDS); do \
+		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
+	done
 
 .PHONY: release-major
 release-major:

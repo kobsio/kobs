@@ -1,0 +1,21 @@
+---
+apiVersion: kobs.io/v1beta1
+kind: Dashboard
+metadata:
+  name: traces
+  namespace: kobs
+spec:
+  description: Traces
+  placeholders:
+    - name: service
+      description: The service name
+  rows:
+    - size: -1
+      panels:
+        - title: Traces
+          colSpan: 12
+          plugin:
+            name: jaeger
+            options:
+              service: "{{ .service }}"
+              showChart: true

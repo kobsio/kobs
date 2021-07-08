@@ -9,7 +9,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: kobs
-    namespace: observability
+    namespace: kobs
 roleRef:
   kind: ClusterRole
   name: kobs

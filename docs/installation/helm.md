@@ -26,10 +26,7 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 NOTES:
-1. Get the application URL by running these commands:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kobs,app.kubernetes.io/instance=kobs" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:15222 to use your application"
-  kubectl --namespace default port-forward $POD_NAME 15222
+Visit https://kobs.io for more information.
 ```
 
 ## Update the Helm Chart
@@ -59,23 +56,18 @@ helm upgrade kobs kobs/kobs
 | `nodeSelector` | Specify a map of key-value pairs, to assign the Pods to a specific set of nodes. | `{}` |
 | `tolerations` | Specify the tolerations for the kobs Pods. | `[]` |
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
-| `pod.annotations` | Specify additional annotations for the created Pods. | `{}` |
-| `pod.labels` | Specify additional labels for the created Pods. | `{}` |
 | `kobs.image.repository` | The repository for the Docker image. | `kobsio/kobs` |
-| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.3.0` |
+| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.4.0` |
 | `kobs.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
+| `kobs.annotations` | Specify additional annotations for the created Pods. | `{}` |
+| `kobs.labels` | Specify additional labels for the created Pods. | `{}` |
 | `kobs.securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `kobs.resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
 | `kobs.env` | Set additional environment variables for the kobs container. | `[]` |
-| `kobs.settings.logLevel` | Set the log level. Must be `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |
+| `kobs.settings.clustersCacheDurationNamespaces` | The duration for how long the list of namespaces for each cluster should be cached. | `5m` |
 | `kobs.settings.logFormat` | Set the output format of the logs. Must be `plain` or `json`. | `plain` |
+| `kobs.settings.logLevel` | Set the log level. Must be `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |
 | `kobs.config` | Content of the `config.yaml` file, which is loaded during the start of kobs and contains the configuration. | |
-| `envoy.enabled` | Enable the Envoy sidecar. | `true` |
-| `envoy.image.repository` | The repository for the Docker image. | `envoyproxy/envoy` |
-| `envoy.image.tag` | The tag of the Docker image which should be used. | `v1.17.0` |
-| `envoy.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
-| `envoy.securityContext` | Specify security settings for the envoy Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
-| `envoy.resources` | Set cpu and memory requests and limits for the envoy container. | `{}` |
 | `istio.virtualService.create` | Specifies whether a VirtualService should be created. | `false` |
 | `istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |
 | `istio.virtualService.hosts` | A list of hosts for the VirtualService. | `[]` |
@@ -86,7 +78,6 @@ helm upgrade kobs kobs/kobs
 | `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `""` |
 | `rbac.create` | Specifies whether a cluster role and cluster role binding should be created. | `true` |
 | `rbac.name` | The name of the cluster role and cluster role binding to use. If not set and create is true, a name is generated using the fullname template. | `""` |
-| `crd.create` | Specifies whether the custom resource definitions for kobs should be created. | `true` |
 | `service.type` | Set the type for the created Service: `ClusterIP`, `NodePort`, `LoadBalancer`. | `ClusterIP` |
 | `service.annotations` | Specify additional annotations for the created Service. | `{}` |
 | `service.labels` | Specify additional labels for the created Service. | `{}` |
