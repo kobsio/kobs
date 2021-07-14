@@ -4,6 +4,7 @@ import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plu
 import ApplicationsGallery from './ApplicationsGallery';
 import ApplicationsTopology from './ApplicationsTopology';
 import { IPanelOptions } from '../../utils/interfaces';
+import PanelActions from './PanelActions';
 
 interface IPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
@@ -47,7 +48,18 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 
     if (title) {
       return (
-        <PluginCard title={title} description={description} transparent={true}>
+        <PluginCard
+          title={title}
+          description={description}
+          transparent={true}
+          actions={
+            <PanelActions
+              view="topology"
+              clusters={options.clusters || [defaults.cluster]}
+              namespaces={options.namespaces || [defaults.namespace]}
+            />
+          }
+        >
           {topology}
         </PluginCard>
       );
@@ -69,7 +81,20 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 
   if (title) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard
+        title={title}
+        description={description}
+        transparent={true}
+        actions={
+          options.team ? undefined : (
+            <PanelActions
+              view="gallery"
+              clusters={options.clusters || [defaults.cluster]}
+              namespaces={options.namespaces || [defaults.namespace]}
+            />
+          )
+        }
+      >
         {gallery}
       </PluginCard>
     );

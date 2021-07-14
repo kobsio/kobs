@@ -2,8 +2,7 @@ clusters:
   providers:
     - provider: kubeconfig
       kubeconfig:
-        # path: ${HOME}/.kube/config
-        path: ${HOME}/Documents/kubeconfig/kubeconfig
+        path: ${HOME}/.kube/config
 
 plugins:
   resources:

@@ -9,7 +9,7 @@
   "scripts": {
     "plugin": "tsc && tsc --build tsconfig.esm.json && cp -r src/assets lib && cp -r src/assets lib-esm"
   },
-  "devDependencies": {
+  "dependencies": {
     "@kobsio/plugin-core": "*",
     "@patternfly/react-core": "^4.128.2",
     "@types/react": "^17.0.0",

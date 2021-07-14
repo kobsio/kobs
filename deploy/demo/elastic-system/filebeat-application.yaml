@@ -1,0 +1,24 @@
+---
+apiVersion: kobs.io/v1beta1
+kind: Application
+metadata:
+  name: filebeat
+  namespace: elastic-system
+spec:
+  links:
+    - title: Website
+      link: https://www.elastic.co/de/beats/filebeat
+    - title: GitHub
+      link: https://github.com/elastic/beats
+    - title: Application CR
+      link: https://github.com/kobsio/kobs/blob/main/deploy/demo/elastic-system/filebeat-application.yaml
+  dependencies:
+    - name: elastic-operator
+      namespace: elastic-system
+      description: Filebeat is managed by the Elastic Operator
+  preview:
+    title: All Logs
+    plugin:
+      name: elasticsearch
+      options:
+        query: "kubernetes.namespace: elastic-system AND kubernetes.labels.app: filebeat"

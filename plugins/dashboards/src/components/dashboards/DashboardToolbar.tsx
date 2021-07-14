@@ -32,7 +32,7 @@ const DashboardToolbar: React.FunctionComponent<IDashboardToolbarProps> = ({
 
   return (
     <Card style={{ maxWidth: '100%' }}>
-      <Toolbar id="dashboard-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
+      <Toolbar id="dashboard-toolbar" style={{ zIndex: 300 }}>
         <ToolbarContent>
           <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
             {variables.map((variable, index) =>

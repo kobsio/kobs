@@ -5,6 +5,7 @@ import React from 'react';
 import { IOptions, ITrace } from '../../utils/interfaces';
 import { addColorForProcesses, encodeTags } from '../../utils/helpers';
 import { PluginCard } from '@kobsio/plugin-core';
+import TracesActions from './TracesActions';
 import TracesChart from './TracesChart';
 import TracesList from './TracesList';
 
@@ -61,7 +62,23 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
   );
 
   return (
-    <PluginCard title={title} description={description} transparent={true}>
+    <PluginCard
+      title={title}
+      description={description}
+      transparent={true}
+      actions={
+        <TracesActions
+          name={name}
+          limit={limit}
+          maxDuration={maxDuration}
+          minDuration={minDuration}
+          operation={operation}
+          service={service}
+          tags={tags}
+          times={times}
+        />
+      }
+    >
       {isLoading ? (
         <div className="pf-u-text-align-center">
           <Spinner />

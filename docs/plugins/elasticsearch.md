@@ -8,36 +8,48 @@ The Elasticsearch plugin can be used to retrieve logs from a configured Elastics
 
 ![Document](assets/elasticsearch-document.png)
 
-## Specification
+## Options
 
-The following specification can be used, within an application.
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| queries | [[]Query](#query) | A list of queries, to retrieve documents for. | Yes |
-
-### Query
+The following options can be used for a panel with the Elasticsearch plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | A name for the query. | Yes |
 | query | string | The Elasticsearch query. We are using the [Query String Syntax](#query-string-syntax) for Elasticsearch. | Yes |
 | fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. | No |
-
-For example the following query specification will display all logs of the `istio-proxy` container for all Pods with a label `app: reviews` and some preselected fields.
+| showChart | boolean | If this is `true` the chart with the distribution of the Documents over the selected time range will be shown | No |
 
 ```yaml
+---
+apiVersion: kobs.io/v1beta1
+kind: Dashboard
 spec:
-  plugins:
-    - name: Elasticsearch
-      elasticsearch:
-        queries:
-          - name: All istio-proxy Logs
-            query: "kubernetes.namespace: bookinfo AND kubernetes.labels.app: reviews AND kubernetes.container.name: istio-proxy"
-            fields: ["kubernetes.pod.name", "content.protocol", "content.method", "content.path", "content.response_code", "content.duration"]
+  placeholders:
+    - name: namespace
+      description: The workload namespace
+    - name: app
+      description: The workloads app label
+  rows:
+    - size: -1
+      panels:
+        - title: Istio Logs
+          colSpan: 12
+          plugin:
+            name: elasticsearch
+            options:
+              query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.labels.app: {{ .app }} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
+              fields:
+                - "kubernetes.pod.name"
+                - "content.authority"
+                - "content.route_name"
+                - "content.protocol"
+                - "content.method"
+                - "content.path"
+                - "content.response_code"
+                - "content.upstream_service_time"
+                - "content.bytes_received"
+                - "content.bytes_sent"
+              showChart: true
 ```
-
-![Example](assets/elasticsearch-example.png)
 
 ## Query String Syntax
 

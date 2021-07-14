@@ -107,13 +107,14 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
               const json = await response.json();
 
               if (response.status >= 200 && response.status < 300) {
-                if (json && Array.isArray(json) && json.length > 0) {
-                  if (tmpVariables[i].plugin.options.allowAll) {
+                if (json && Array.isArray(json) && json.length > 1) {
+                  if (json && json.length > 0 && tmpVariables[i].plugin.options.allowAll) {
                     json.unshift(json.join('|'));
                   }
 
-                  tmpVariables[i].values = json;
-                  tmpVariables[i].value = json.includes(tmpVariables[i].value) ? tmpVariables[i].value : json[0];
+                  tmpVariables[i].values = json ? json : [''];
+                  tmpVariables[i].value =
+                    json && json.includes(tmpVariables[i].value) ? tmpVariables[i].value : json ? json[0] : '';
                 } else {
                   throw new Error(`No values for variable ${tmpVariables[i].label || tmpVariables[i].name}`);
                 }
@@ -145,7 +146,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
     return (
       <Alert
         variant={AlertVariant.danger}
-        title="Applications were not fetched"
+        title="Variables were not fetched"
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[], Error>> => refetch()}>

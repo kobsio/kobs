@@ -72,6 +72,8 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
           ) : null}
         </div>
 
+        <p>&nbsp;</p>
+
         {application.dashboards ? (
           <DashboardsWrapper defaults={application} references={application.dashboards} useDrawer={false} />
         ) : null}

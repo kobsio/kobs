@@ -1,3 +1,12 @@
+# istioctl profile dump default --dry-run
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+  labels:
+    name: istio-system
+
 ---
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
@@ -5,26 +14,14 @@ metadata:
   name: istio
   namespace: istio-system
 spec:
-  hub: docker.io/istio
-  tag: 1.9.2
-  meshConfig:
-    defaultConfig:
-      proxyMetadata: {}
-    enablePrometheusMerge: true
-    accessLogFile: /dev/stdout
-    accessLogEncoding: JSON
   components:
     base:
       enabled: true
-    pilot:
-      enabled: true
-      k8s:
-        overlays:
-          - kind: PodDisruptionBudget
-            name: istiod
-            patches:
-              - path: spec.minAvailable
-                value: 0
+    cni:
+      enabled: false
+    egressGateways:
+      - enabled: false
+        name: istio-egressgateway
     ingressGateways:
       - name: istio-ingressgateway
         enabled: true
@@ -55,47 +52,109 @@ spec:
               patches:
                 - path: spec.minAvailable
                   value: 0
-    egressGateways:
-      - name: istio-egressgateway
-        enabled: false
-    cni:
-      enabled: false
     istiodRemote:
       enabled: false
+    pilot:
+      enabled: true
+      k8s:
+        overlays:
+          - kind: PodDisruptionBudget
+            name: istiod
+            patches:
+              - path: spec.minAvailable
+                value: 0
+  hub: docker.io/istio
+  meshConfig:
+    defaultConfig:
+      proxyMetadata: {}
+    enablePrometheusMerge: true
+    accessLogFile: /dev/stdout
+    accessLogEncoding: JSON
+  profile: default
+  tag: 1.10.1
   values:
+    base:
+      enableCRDTemplates: false
+      validationURL: ""
+    gateways:
+      istio-egressgateway:
+        autoscaleEnabled: true
+        env: {}
+        name: istio-egressgateway
+        secretVolumes:
+          - mountPath: /etc/istio/egressgateway-certs
+            name: egressgateway-certs
+            secretName: istio-egressgateway-certs
+          - mountPath: /etc/istio/egressgateway-ca-certs
+            name: egressgateway-ca-certs
+            secretName: istio-egressgateway-ca-certs
+        type: ClusterIP
+        zvpn: {}
+      istio-ingressgateway:
+        autoscaleEnabled: true
+        env: {}
+        name: istio-ingressgateway
+        secretVolumes:
+          - mountPath: /etc/istio/ingressgateway-certs
+            name: ingressgateway-certs
+            secretName: istio-ingressgateway-certs
+          - mountPath: /etc/istio/ingressgateway-ca-certs
+            name: ingressgateway-ca-certs
+            secretName: istio-ingressgateway-ca-certs
+        type: LoadBalancer
+        zvpn: {}
     global:
+      configValidation: true
+      defaultNodeSelector: {}
+      defaultPodDisruptionBudget:
+        enabled: true
+      defaultResources:
+        requests:
+          cpu: 10m
+      imagePullPolicy: ""
+      imagePullSecrets: []
       istioNamespace: istio-system
       istiod:
         enableAnalysis: false
-      logging:
-        level: "default:info"
-      logAsJson: true
-      pilotCertProvider: istiod
       jwtPolicy: third-party-jwt
+      logAsJson: false
+      logging:
+        level: default:info
+      meshNetworks: {}
+      mountMtlsCerts: false
+      multiCluster:
+        clusterName: ""
+        enabled: false
+      network: ""
+      omitSidecarInjectorConfigMap: false
+      oneNamespace: false
+      operatorManageWebhooks: false
+      pilotCertProvider: istiod
+      priorityClassName: ""
       proxy:
+        autoInject: enabled
+        clusterDomain: cluster.local
+        componentLogLevel: misc:error
+        enableCoreDump: false
+        excludeIPRanges: ""
+        excludeInboundPorts: ""
+        excludeOutboundPorts: ""
         image: proxyv2
-        clusterDomain: "cluster.local"
+        includeIPRanges: '*'
+        logLevel: warning
+        privileged: false
+        readinessFailureThreshold: 30
+        readinessInitialDelaySeconds: 1
+        readinessPeriodSeconds: 2
         resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
           limits:
             cpu: 2000m
             memory: 1024Mi
-        logLevel: warning
-        componentLogLevel: "misc:error"
-        privileged: false
-        enableCoreDump: false
+          requests:
+            cpu: 100m
+            memory: 128Mi
         statusPort: 15020
-        readinessInitialDelaySeconds: 1
-        readinessPeriodSeconds: 2
-        readinessFailureThreshold: 30
-        includeIPRanges: "*"
-        excludeIPRanges: ""
-        excludeOutboundPorts: ""
-        excludeInboundPorts: ""
-        autoInject: enabled
-        tracer: "zipkin"
+        tracer: zipkin
       proxy_init:
         image: proxyv2
         resources:
@@ -105,60 +164,35 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-      imagePullPolicy: ""
-      operatorManageWebhooks: false
-      tracer:
-        lightstep: {}
-        zipkin:
-          address: zipkin.observability:9411
-        datadog: {}
-        stackdriver: {}
-      imagePullSecrets: []
-      arch:
-        amd64: 2
-        s390x: 2
-        ppc64le: 2
-      oneNamespace: false
-      defaultNodeSelector: {}
-      configValidation: true
-      multiCluster:
-        enabled: false
-        clusterName: ""
-      omitSidecarInjectorConfigMap: false
-      network: ""
-      defaultResources:
-        requests:
-          cpu: 10m
-      defaultPodDisruptionBudget:
-        enabled: true
-      priorityClassName: ""
-      useMCP: false
       sds:
         token:
           aud: istio-ca
       sts:
         servicePort: 0
-      meshNetworks: {}
-      mountMtlsCerts: false
-    base:
-      enableCRDTemplates: false
-      validationURL: ""
+      tracer:
+        datadog: {}
+        lightstep: {}
+        stackdriver: {}
+        zipkin:
+          address: zipkin.istio-system.svc.cluster.local:9411
+      useMCP: false
+    istiodRemote:
+      injectionURL: ""
     pilot:
       autoscaleEnabled: true
-      autoscaleMin: 1
       autoscaleMax: 5
-      replicaCount: 1
-      image: pilot
-      traceSampling: 1.0
-      env: {}
+      autoscaleMin: 1
+      configMap: true
       cpu:
         targetAverageUtilization: 80
-      nodeSelector: {}
-      keepaliveMaxServerConnectionAge: 30m
-      enableProtocolSniffingForOutbound: true
       enableProtocolSniffingForInbound: true
-      deploymentLabels:
-      configMap: true
+      enableProtocolSniffingForOutbound: true
+      env: {}
+      image: pilot
+      keepaliveMaxServerConnectionAge: 30m
+      nodeSelector: {}
+      replicaCount: 1
+      traceSampling: 1
     telemetry:
       enabled: true
       v2:
@@ -166,40 +200,11 @@ spec:
         metadataExchange:
           wasmEnabled: false
         prometheus:
-          wasmEnabled: false
           enabled: true
+          wasmEnabled: false
         stackdriver:
+          configOverride: {}
           enabled: false
           logging: false
           monitoring: false
           topology: false
-          configOverride: {}
-    istiodRemote:
-      injectionURL: ""
-    gateways:
-      istio-egressgateway:
-        zvpn: {}
-        env: {}
-        autoscaleEnabled: true
-        type: ClusterIP
-        name: istio-egressgateway
-        secretVolumes:
-          - name: egressgateway-certs
-            secretName: istio-egressgateway-certs
-            mountPath: /etc/istio/egressgateway-certs
-          - name: egressgateway-ca-certs
-            secretName: istio-egressgateway-ca-certs
-            mountPath: /etc/istio/egressgateway-ca-certs
-      istio-ingressgateway:
-        autoscaleEnabled: true
-        type: LoadBalancer
-        name: istio-ingressgateway
-        zvpn: {}
-        env: {}
-        secretVolumes:
-          - name: ingressgateway-certs
-            secretName: istio-ingressgateway-certs
-            mountPath: /etc/istio/ingressgateway-certs
-          - name: ingressgateway-ca-certs
-            secretName: istio-ingressgateway-ca-certs
-            mountPath: /etc/istio/ingressgateway-ca-certs

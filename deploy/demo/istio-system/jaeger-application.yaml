@@ -1,0 +1,21 @@
+---
+apiVersion: kobs.io/v1beta1
+kind: Application
+metadata:
+  name: jaeger
+  namespace: istio-system
+spec:
+  description: Open source, end-to-end distributed tracing to monitor and troubleshoot transactions in complex distributed systems.
+  links:
+    - title: Website
+      link: https://www.jaegertracing.io
+    - title: GitHub
+      link: https://github.com/jaegertracing/jaeger
+    - title: Application CR
+      link: https://github.com/kobsio/kobs/blob/main/deploy/demo/jaeger/jaeger-application.yaml
+  preview:
+    title: All Logs
+    plugin:
+      name: elasticsearch
+      options:
+        query: "kubernetes.namespace: istio-system AND kubernetes.labels.app: jaeger"

@@ -9,13 +9,13 @@
   "scripts": {
     "plugin": "tsc && tsc --build tsconfig.esm.json && cp -r src/assets lib && cp -r src/assets lib-esm"
   },
-  "devDependencies": {
+  "dependencies": {
     "@kobsio/plugin-core": "*",
     "@nivo/core": "^0.72.0",
     "@nivo/line": "^0.72.0",
     "@patternfly/react-core": "^4.128.2",
-    "@patternfly/react-icons": "^4.11.0",
-    "@patternfly/react-table": "^4.29.0",
+    "@patternfly/react-icons": "^4.10.11",
+    "@patternfly/react-table": "^4.27.24",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",

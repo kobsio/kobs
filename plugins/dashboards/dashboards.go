@@ -170,7 +170,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	plugins.Append(plugin.Plugin{
 		Name:        "dashboards",
 		DisplayName: "Dashboards",
-		Description: "TODO",
+		Description: "Create dashboards for your Teams and Applications.",
 		Type:        "dashboards",
 	})
 

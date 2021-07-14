@@ -43,58 +43,6 @@ spec:
       labels:
         app: details
         version: v1
-      annotations:
-        kobs.io/teams: |
-          ["squad-diablo"]
-        kobs.io/applications: |
-          [{"name": "details"}]
-        kobs.io/plugins: |
-          [
-            {
-              "name": "Prometheus",
-              "prometheus": {
-                "variables": [
-                  { "name": "Container", "label": "container", "query": "container_cpu_usage_seconds_total{namespace=\"<< $.metadata.namespace >>\", image!=\"\", pod=\"<< $.metadata.name >>\", container!=\"POD\", container!=\"\"}", "allowAll": true }
-                ],
-                "charts": [
-                  {
-                    "title": "CPU Usage",
-                    "type": "area",
-                    "unit": "Cores",
-                    "queries": [
-                      { "label": "Current", "query": "sum(max(rate(container_cpu_usage_seconds_total{namespace=\"<< $.metadata.namespace >>\", image!=\"\", pod=\"<< $.metadata.name >>\", container=~\"{{ .Container }}\", container!=\"POD\", container!=\"\"}[2m])) by (container))" }
-                    ]
-                  },
-                  {
-                    "title": "Memory Usage",
-                    "type": "area",
-                    "unit": "MiB",
-                    "queries": [
-                      { "label": "Current", "query": "sum(max(rate(container_memory_usage_bytes{namespace=\"<< $.metadata.namespace >>\", image!=\"\", pod=\"<< $.metadata.name >>\", container=~\"{{ .Container }}\", container!=\"POD\", container!=\"\"}[2m])) by (container)) / 1024 / 1024" }
-                    ]
-                  },
-                  {
-                    "title": "Network I/O",
-                    "type": "area",
-                    "unit": "MiB",
-                    "queries": [
-                      { "label": "Receive", "query": "sum(rate(container_network_receive_bytes_total{namespace=\"<< $.metadata.namespace >>\", pod=\"<< $.metadata.name >>\"}[2m])) by (pod) / 1024 / 1024" },
-                      { "label": "Transmit", "query": "-sum(rate(container_network_transmit_bytes_total{namespace=\"<< $.metadata.namespace >>\", pod=\"<< $.metadata.name >>\"}[2m])) by (pod) / 1024 / 1024" }
-                    ]
-                  }
-                ]
-              }
-            },
-            {
-              "name": "Elasticsearch",
-              "elasticsearch": {
-                "queries": [
-                  { "name": "Container Logs: productpage", "query": "kubernetes.namespace: << $.metadata.namespace >> AND kubernetes.pod.name: << $.metadata.name >> AND kubernetes.container.name: productpage" },
-                  { "name": "Container Logs: istio-proxy", "query": "kubernetes.namespace: << $.metadata.namespace >> AND kubernetes.pod.name: << $.metadata.name >> AND kubernetes.container.name: istio-proxy", "fields": ["kubernetes.pod.name", "content.protocol", "content.method", "content.path", "content.response_code", "content.duration"] }
-                ]
-              }
-            }
-          ]
     spec:
       serviceAccountName: bookinfo-details
       containers:

@@ -62,29 +62,31 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ name, times, title
           <div className="pf-u-font-size-lg pf-u-text-nowrap pf-u-text-truncate">{data.hits} Hits</div>
           <div className="pf-u-font-size-sm pf-u-color-400 pf-u-text-nowrap pf-u-text-truncate">{title}</div>
           <div style={{ height: '75px' }}>
-            <ResponsiveBarCanvas
-              borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-              borderRadius={0}
-              borderWidth={0}
-              colorBy="id"
-              colors={['#0066cc']}
-              data={data.buckets}
-              enableLabel={false}
-              enableGridX={false}
-              enableGridY={false}
-              groupMode="stacked"
-              indexBy="time"
-              indexScale={{ round: true, type: 'band' }}
-              isInteractive={false}
-              keys={['documents']}
-              layout="vertical"
-              margin={{ bottom: 0, left: 0, right: 0, top: 0 }}
-              maxValue="auto"
-              minValue="auto"
-              reverse={false}
-              valueFormat=""
-              valueScale={{ type: 'linear' }}
-            />
+            {!data.buckets || data.buckets.length === 0 ? null : (
+              <ResponsiveBarCanvas
+                borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+                borderRadius={0}
+                borderWidth={0}
+                colorBy="id"
+                colors={['#0066cc']}
+                data={data.buckets}
+                enableLabel={false}
+                enableGridX={false}
+                enableGridY={false}
+                groupMode="stacked"
+                indexBy="time"
+                indexScale={{ round: true, type: 'band' }}
+                isInteractive={false}
+                keys={['documents']}
+                layout="vertical"
+                margin={{ bottom: 0, left: 0, right: 0, top: 0 }}
+                maxValue="auto"
+                minValue="auto"
+                reverse={false}
+                valueFormat=""
+                valueScale={{ type: 'linear' }}
+              />
+            )}
           </div>
         </div>
       ) : null}

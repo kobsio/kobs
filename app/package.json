@@ -12,7 +12,6 @@
     "@kobsio/plugin-prometheus": "*",
     "@kobsio/plugin-resources": "*",
     "@kobsio/plugin-teams": "*",
-    "@types/node": "^15.14.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "react": "^17.0.2",

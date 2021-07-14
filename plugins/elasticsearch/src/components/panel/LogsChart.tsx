@@ -5,10 +5,14 @@ import { SquareIcon } from '@patternfly/react-icons';
 import { IBucket } from '../../utils/interfaces';
 
 interface ILogsChartProps {
-  buckets: IBucket[];
+  buckets?: IBucket[];
 }
 
 const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsChartProps) => {
+  if (!buckets || buckets.length === 0) {
+    return <div style={{ height: '250px' }}></div>;
+  }
+
   return (
     <div style={{ height: '250px' }}>
       <ResponsiveBarCanvas
