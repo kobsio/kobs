@@ -1,0 +1,55 @@
+---
+apiVersion: kobs.io/v1beta1
+kind: Dashboard
+metadata:
+  name: resources
+  namespace: kobs
+spec:
+  description: Resources for an Application
+  placeholders:
+    - name: namespace
+      description: Namespace for the Application
+  variables:
+    - name: cluster
+      label: Cluster
+      plugin:
+        name: core
+        options:
+          type: clusters
+  rows:
+    - panels:
+        - title: Resources in the {{ .namespace }} ({% .cluster %})
+          plugin:
+            name: resources
+            options:
+              - clusters:
+                  - "{% .cluster %}"
+                namespaces:
+                  - "{{ .namespace }}"
+                resources:
+                  - pods
+                  - deployments
+                  - statefulsets
+                  - daemonsets
+    - size: 4
+      panels:
+        - title: Applications
+          colSpan: 6
+          plugin:
+            name: applications
+            options:
+              view: gallery
+              clusters:
+                - "{% .cluster %}"
+              namespaces:
+                - "{{ .namespace }}"
+        - title: Applications Topology
+          colSpan: 6
+          plugin:
+            name: applications
+            options:
+              view: topology
+              clusters:
+                - "{% .cluster %}"
+              namespaces:
+                - "{{ .namespace }}"

@@ -32,8 +32,9 @@ spec:
           image: "{{ .Values.kobs.image.repository }}:{{ .Values.kobs.image.tag }}"
           imagePullPolicy: {{ .Values.kobs.image.pullPolicy }}
           args:
-            - --log.level={{ .Values.kobs.settings.logLevel }}
+            - --clusters.cache-duration.namespaces={{ .Values.kobs.settings.clustersCacheDurationNamespaces }}
             - --log.format={{ .Values.kobs.settings.logFormat }}
+            - --log.level={{ .Values.kobs.settings.logLevel }}
           {{- with .Values.kobs.env }}
           env:
             {{- toYaml . | nindent 12 }}
@@ -42,7 +43,7 @@ spec:
             - name: http-web
               containerPort: 15219
               protocol: TCP
-            - name: grpc-web
+            - name: http-api
               containerPort: 15220
               protocol: TCP
             - name: http-metrics
@@ -50,12 +51,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health
-              port: http-web
+              path: /api/health
+              port: http-api
           readinessProbe:
             httpGet:
-              path: /health
-              port: http-web
+              path: /api/health
+              port: http-api
           resources:
             {{- toYaml .Values.kobs.resources | nindent 12 }}
           volumeMounts:
@@ -63,35 +64,6 @@ spec:
               mountPath: /kobs/config.yaml
               subPath: config.yaml
               readOnly: true
-        {{ if .Values.envoy.enabled }}
-        - name: envoy
-          securityContext:
-            {{- toYaml .Values.envoy.securityContext | nindent 12 }}
-          image: "{{ .Values.envoy.image.repository }}:{{ .Values.envoy.image.tag }}"
-          imagePullPolicy: {{ .Values.envoy.image.pullPolicy }}
-          ports:
-            - name: http-envoy
-              containerPort: 15222
-              protocol: TCP
-            - name: http-admin
-              containerPort: 9901
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /ready
-              port: http-admin
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: http-admin
-          resources:
-            {{- toYaml .Values.envoy.resources | nindent 12 }}
-          volumeMounts:
-            - name: config
-              mountPath: /etc/envoy/envoy.yaml
-              subPath: envoy.yaml
-              readOnly: true
-        {{ end }}
       volumes:
         - name: config
           configMap:

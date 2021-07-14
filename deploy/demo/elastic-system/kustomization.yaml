@@ -4,3 +4,7 @@ kind: Kustomization
 resources:
   - elastic-operator-application.yaml
   - elastic-operator.yaml
+  - elasticsearch-application.yaml
+  - elasticsearch.yaml
+  - filebeat-application.yaml
+  - filebeat.yaml

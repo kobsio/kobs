@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
@@ -55,7 +56,7 @@ func (s *Server) Stop() {
 
 // New return a new metrics server.
 func New() *Server {
-	router := http.NewServeMux()
+	router := chi.NewRouter()
 	router.Handle("/metrics", promhttp.Handler())
 
 	return &Server{

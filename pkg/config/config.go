@@ -4,24 +4,16 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/kobsio/kobs/pkg/api/plugins/clusters"
-	"github.com/kobsio/kobs/pkg/api/plugins/elasticsearch"
-	"github.com/kobsio/kobs/pkg/api/plugins/jaeger"
-	"github.com/kobsio/kobs/pkg/api/plugins/kiali"
-	"github.com/kobsio/kobs/pkg/api/plugins/opsgenie"
-	"github.com/kobsio/kobs/pkg/api/plugins/prometheus"
+	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/plugins"
 
 	"gopkg.in/yaml.v2"
 )
 
 // Config is the complete configuration for kobs.
 type Config struct {
-	Clusters      clusters.Config        `yaml:"clusters"`
-	Prometheus    []prometheus.Config    `yaml:"prometheus"`
-	Elasticsearch []elasticsearch.Config `yaml:"elasticsearch"`
-	Jaeger        []jaeger.Config        `yaml:"jaeger"`
-	Kiali         []kiali.Config         `yaml:"kiali"`
-	Opsgenie      []opsgenie.Config      `yaml:"opsgenie"`
+	Clusters clusters.Config `yaml:"clusters"`
+	Plugins  plugins.Config  `yaml:"plugins"`
 }
 
 // Load the configuration for kobs. Most of the configuration options are available as command-line flag, but we also

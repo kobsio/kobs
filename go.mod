@@ -3,20 +3,16 @@ module github.com/kobsio/kobs
 go 1.16
 
 require (
-	github.com/gogo/protobuf v1.3.2
-	github.com/golang/protobuf v1.4.3
-	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
-	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.8
-	github.com/prometheus/client_golang v1.10.0
-	github.com/prometheus/common v0.18.0
-	github.com/sirupsen/logrus v1.7.0
+	github.com/go-chi/chi/v5 v5.0.3
+	github.com/go-chi/cors v1.2.0
+	github.com/go-chi/render v1.0.1
+	github.com/prometheus/client_golang v1.11.0
+	github.com/prometheus/common v0.26.0
+	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/pflag v1.0.5
-	google.golang.org/grpc v1.35.0
-	google.golang.org/protobuf v1.25.0
-	gopkg.in/yaml.v2 v2.3.0
-	k8s.io/api v0.20.1
-	k8s.io/apiextensions-apiserver v0.20.1
-	k8s.io/apimachinery v0.20.1
-	k8s.io/client-go v0.20.1
+	gopkg.in/yaml.v2 v2.4.0
+	k8s.io/api v0.21.2
+	k8s.io/apiextensions-apiserver v0.21.2
+	k8s.io/apimachinery v0.21.2
+	k8s.io/client-go v0.21.2
 )

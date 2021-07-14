@@ -36,17 +36,20 @@ tolerations: []
 ##
 affinity: {}
 
-## Specify additional labels and annotations for the created Pods.
+## Specify all infromation for the kobs pods.
 ##
-pod:
-  annotations: {}
-  labels: {}
-
 kobs:
+  ## Set the image which should be used for kobs.
+  ##
   image:
     repository: kobsio/kobs
-    tag: v0.3.0
+    tag: v0.4.0
     pullPolicy: IfNotPresent
+
+  ## Specify additional labels and annotations for the created Pods.
+  ##
+  annotations: {}
+  labels: {}
 
   ## Specify security settings for the kobs Container. They override settings made at the Pod level via the
   ## "podSecurityContext" when there is overlap.
@@ -80,8 +83,9 @@ kobs:
   ## Specify some settings like log level, log format, etc. for kobs.
   ##
   settings:
-    logLevel: info
+    clustersCacheDurationNamespaces: 5m
     logFormat: plain
+    logLevel: info
 
   ## Set the content of the config.yaml file, which is used by kobs. The configuration file is used to specify the
   ## cluster providers and the configuration for the plugins.
@@ -93,44 +97,7 @@ kobs:
           incluster:
             name: kobs
 
-## Enable the Envoy sidecar. This is required, because kobs uses gRPC Web for the API requests and Envoy translates the
-## HTTP requests from the frontend into gRPC requests.
-## The Envoy sidecar can be disabled, when you handle the gRPC requests at another level, e.g. Ingress.
-##
-envoy:
-  enabled: true
-
-  image:
-    repository: envoyproxy/envoy
-    tag: v1.17.0
-    pullPolicy: IfNotPresent
-
-  ## Specify security settings for the wnvoy Container. They override settings made at the Pod level via the
-  ## "podSecurityContext" when there is overlap.
-  ## See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ##
-  securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
-
-  ## We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This
-  ## also increases chances charts run on environments with little resources, such as Minikube. If you do want to
-  ## specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after
-  ## 'resources:'.
-  ##
-  resources: {}
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
-## If you are using Istio you can disable the Envoy sidecar in the Helm chart and use the Istio to get gRPC web working.
+## If you are using Istio you can create a VirtualService instead of an Ingress to expose kobs.
 ##
 istio:
   ## Create a VirtualService, with the correct routes for the gRPC API and the React UI for kobs. You can provide a list
@@ -177,12 +144,6 @@ rbac:
   # If not set and create is true, a name is generated using the fullname template.
   name:
 
-## Specifies whether the custom resource definitions for kobs should be created.
-## The custom resource definitions are used to extend the functionality of kobs.
-##
-crd:
-  create: true
-
 ## Set the type for the created service: ClusterIP, NodePort, LoadBalancer.
 ## See: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
 ##
@@ -201,8 +162,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts: []
-    # - host: chart-example.local
-    #   paths: []
+    # - chart-example.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

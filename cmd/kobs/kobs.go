@@ -17,11 +17,12 @@ import (
 )
 
 var (
-	log         = logrus.WithFields(logrus.Fields{"package": "main"})
-	configFile  string
-	logFormat   string
-	logLevel    string
-	showVersion bool
+	log           = logrus.WithFields(logrus.Fields{"package": "main"})
+	configFile    string
+	isDevelopment bool
+	logFormat     string
+	logLevel      string
+	showVersion   bool
 )
 
 // init is used to define all flags for kobs. If a specific package needs some additional flags, they must be defined in
@@ -44,6 +45,7 @@ func init() {
 	}
 
 	flag.StringVar(&configFile, "config", defaultConfigFile, "Name of the configuration file.")
+	flag.BoolVar(&isDevelopment, "development", false, "Use development version.")
 	flag.StringVar(&logFormat, "log.format", defaultLogFormat, "Set the output format of the logs. Must be \"plain\" or \"json\".")
 	flag.StringVar(&logLevel, "log.level", defaultLogLevel, "Set the log level. Must be \"trace\", \"debug\", \"info\", \"warn\", \"error\", \"fatal\" or \"panic\".")
 	flag.BoolVar(&showVersion, "version", false, "Print version information.")
@@ -104,17 +106,17 @@ func main() {
 	// for terminal signals, to initialize the graceful shutdown of the components.
 	// The appServer is the kobs application server, which serves the React frontend and the health endpoint. The
 	// metrics server is used to serve the kobs metrics.
-	appServer, err := app.New()
-	if err != nil {
-		log.WithError(err).Fatalf("Could not create application server.")
-	}
-	go appServer.Start()
-
-	apiServer, err := api.New(cfg)
+	apiServer, err := api.New(cfg, isDevelopment)
 	if err != nil {
 		log.WithError(err).Fatalf("Could not create API server.")
 	}
 	go apiServer.Start()
+
+	appServer, err := app.New(isDevelopment)
+	if err != nil {
+		log.WithError(err).Fatalf("Could not create Application server.")
+	}
+	go appServer.Start()
 
 	metricsServer := metrics.New()
 	go metricsServer.Start()
@@ -130,8 +132,8 @@ func main() {
 	log.Debugf("Start shutdown process.")
 
 	metricsServer.Stop()
-	apiServer.Stop()
 	appServer.Stop()
+	apiServer.Stop()
 
 	log.Infof("Shutdown kobs...")
 }

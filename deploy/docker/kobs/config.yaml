@@ -4,29 +4,41 @@ clusters:
       kubeconfig:
         path: ${HOME}/.kube/config
 
-prometheus:
-  - name: Prometheus
-    description: Prometheus can be used for the metrics of your application.
-    address: http://localhost:9090
-    username:
-    password:
-    token:
+plugins:
+  resources:
+    forbidden:
+      - secrets
 
-elasticsearch:
-  - name: Elasticsearch
-    description: Elasticsearch can be used for the logs of your application.
-    address: http://localhost:9200
-    username:
-    password:
-    token:
+  applications:
+    topologyCacheDuration: 1m
+    teamsCacheDuration: 1m
 
-jaeger:
-  - name: Jaeger
-    description: Jaeger can be used for the traces of your application.
-    address: http://localhost:16686
-    username:
-    password:
-    token:
+  prometheus:
+    - name: prometheus
+      displayName: Prometheus
+      description: Prometheus can be used for the metrics of your application.
+      address: http://localhost:9090
+      username:
+      password:
+      token:
+
+  elasticsearch:
+    - name: elasticsearch
+      displayName: Elasticsearch
+      description: Elasticsearch can be used for the logs of your application.
+      address: http://localhost:9200
+      username:
+      password:
+      token:
+
+  jaeger:
+    - name: jaeger
+      displayName: Jaeger
+      description: Jaeger can be used for the traces of your application.
+      address: http://localhost:16686
+      username:
+      password:
+      token:
 
 kiali:
   - name: Kiali

@@ -77,8 +77,8 @@ Create the name of the cluster role and cluster role binding to use
 Additional annotations for Pods
 */}}
 {{- define "kobs.podAnnotations" -}}
-{{- if .Values.pod.annotations }}
-{{- toYaml .Values.pod.annotations }}
+{{- if .Values.kobs.annotations }}
+{{- toYaml .Values.kobs.annotations }}
 {{- end }}
 {{- end }}
 
@@ -86,8 +86,8 @@ Additional annotations for Pods
 Additional labels for Pods
 */}}
 {{- define "kobs.podLabels" -}}
-{{- if .Values.pod.labels }}
-{{- toYaml .Values.pod.labels }}
+{{- if .Values.kobs.labels }}
+{{- toYaml .Values.kobs.labels }}
 {{- end }}
 {{- end }}
 

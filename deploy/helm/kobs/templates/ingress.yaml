@@ -27,14 +27,17 @@ spec:
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ . | quote }}
       http:
         paths:
-        {{- range .paths }}
-          - path: {{ . }}
+          - path: /api
+            pathType: Prefix
             backend:
               serviceName: {{ $fullName }}
-              servicePort: 15222
-        {{- end }}
+              servicePort: 15220
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: 15219
   {{- end }}
 {{- end }}

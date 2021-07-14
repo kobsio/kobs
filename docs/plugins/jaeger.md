@@ -8,33 +8,38 @@ The Jaeger plugin can be used to retrieve traces from a configured Jaeger instan
 
 ![Compare Traces](assets/jaeger-compare-traces.png)
 
-## Specification
+## Options
 
-The following specification can be used, within an application.
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| queries | [[]Query](#query) | A list of queries, to retrieve traces for. | Yes |
-
-### Query
+The following options can be used for a panel with the Jaeger plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | A name for the query. | Yes |
+| limit | string | The maximum number of traces which should be shown. The default value is `20`. | No |
+| maxDuration | string | The maximum duration for the retrieved traces (e.g. `1s`). | No |
+| minDuration | string | The minimum duration for the retrieved traces (e.g. `100ms`). | No |
 | service | string | The service to retrieve traces for. | Yes |
 | operation | string | An optional operation to retrieve traces for. | No |
 | tags | string | Tags, which the traces must be contain. | No |
+| showChart | boolean | If this is `true` the chart with the traces will be shown. | No |
 
-For example the following query specification will display all traces for the `reviews.bookinfo` service.
+For example the following dashboard shows all traces for the specified service (e.g. `reviews.bookinfo`).
 
 ```yaml
+---
+apiVersion: kobs.io/v1beta1
+kind: Dashboard
 spec:
-  plugins:
-    - name: Jaeger
-      jaeger:
-        queries:
-          - name: All Traces
-            service: reviews.bookinfo
+  placeholders:
+    - name: service
+      description: The service name
+  rows:
+    - size: -1
+      panels:
+        - title: Traces
+          colSpan: 12
+          plugin:
+            name: jaeger
+            options:
+              service: "{{ .service }}"
+              showChart: true
 ```
-
-![Example](assets/jaeger-example.png)

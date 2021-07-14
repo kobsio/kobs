@@ -6,11 +6,12 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/cmd/server",
+      "program": "${workspaceFolder}/cmd/kobs",
       "args": [
         "--log.level=trace",
-        "--config=../../config.yaml",
-        "--app.assets=../../app/build"
+        "--config=../../deploy/docker/kobs/config.yaml",
+        "--app.assets=../../app/build",
+        "--development"
       ]
     },
     {

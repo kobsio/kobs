@@ -5,6 +5,6 @@
 To install kobs using Kustomize your can run the following command:
 
 ```sh
-kubectl create namespace observability
+kubectl create namespace kobs
 kustomize build github.com/kobsio/kobs/deploy/kustomize | kubectl apply -f -
 ```

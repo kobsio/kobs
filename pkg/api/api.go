@@ -1,18 +1,22 @@
 package api
 
 import (
-	"net"
+	"context"
+	"net/http"
 	"os"
+	"time"
 
-	"github.com/kobsio/kobs/pkg/api/plugins/plugins"
+	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/middleware/httplog"
+	"github.com/kobsio/kobs/pkg/api/plugins"
 	"github.com/kobsio/kobs/pkg/config"
 
-	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 var (
@@ -20,8 +24,8 @@ var (
 	address string
 )
 
-// init is used to define all flags, which are needed for the API server. We have to define the address, where
-// the API server is listen on.
+// init is used to define all flags, which are needed for the api server. We have to define the address, where the api
+// server is listen on.
 func init() {
 	defaultAddress := ":15220"
 	if os.Getenv("KOBS_API_ADDRESS") != "" {
@@ -31,49 +35,72 @@ func init() {
 	flag.StringVar(&address, "api.address", defaultAddress, "The address, where the API server is listen on.")
 }
 
-// Server implements the API server. The API server is used to serve the GRPC server.
+// Server implements the api server. The api server is used to serve the rest api for kobs.
 type Server struct {
-	listener net.Listener
-	server   *grpc.Server
+	server *http.Server
 }
 
-// Start starts serving the API server.
+// Start starts serving the api server.
 func (s *Server) Start() {
-	log.Infof("API server listen on %s.", s.listener.Addr())
-	s.server.Serve(s.listener)
+	log.Infof("API server listen on %s.", s.server.Addr)
+
+	if err := s.server.ListenAndServe(); err != nil {
+		if err != http.ErrServerClosed {
+			log.WithError(err).Error("API server died unexpected.")
+		} else {
+			log.Info("API server was stopped.")
+		}
+	}
 }
 
-// Stop terminates the API server gracefully.
+// Stop terminates the api server gracefully.
 func (s *Server) Stop() {
 	log.Debugf("Start shutdown of the API server.")
-	s.server.GracefulStop()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := s.server.Shutdown(ctx)
+	if err != nil {
+		log.WithError(err).Error("Graceful shutdown of the API server failed.")
+	}
 }
 
-// New return a new API server. For the we have to create a new gRPC server and register all services, like the clusters
-// service and all services for the configured plugins.
-func New(cfg *config.Config) (*Server, error) {
-	listener, err := net.Listen("tcp", address)
+// New return a new api server. It creates the underlying http server, with the defined address from the api.address
+// flag.
+func New(cfg *config.Config, isDevelopment bool) (*Server, error) {
+	loadedClusters, err := clusters.Load(cfg.Clusters)
 	if err != nil {
 		return nil, err
 	}
 
-	logrusEntry := logrus.NewEntry(logrus.StandardLogger())
+	router := chi.NewRouter()
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.URLFormat)
+	router.Use(httplog.NewStructuredLogger(log.Logger))
+	router.Use(render.SetContentType(render.ContentTypeJSON))
 
-	grpcServer := grpc.NewServer(
-		grpc.ChainStreamInterceptor(
-			grpc_logrus.StreamServerInterceptor(logrusEntry),
-			grpc_prometheus.StreamServerInterceptor,
-		),
-		grpc.ChainUnaryInterceptor(
-			grpc_logrus.UnaryServerInterceptor(logrusEntry),
-			grpc_prometheus.UnaryServerInterceptor,
-		),
-	)
-	reflection.Register(grpcServer)
-	plugins.Register(cfg, grpcServer)
+	if isDevelopment {
+		router.Use(cors.Handler(cors.Options{
+			AllowedOrigins: []string{"*"},
+			AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+		}))
+	}
+
+	router.Route("/api", func(r chi.Router) {
+		r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+			render.JSON(w, r, nil)
+		})
+		r.Mount("/clusters", clusters.NewRouter(loadedClusters))
+		r.Mount("/plugins", plugins.Register(loadedClusters, cfg.Plugins))
+	})
 
 	return &Server{
-		listener: listener,
-		server:   grpcServer,
+		server: &http.Server{
+			Addr:    address,
+			Handler: router,
+		},
 	}, nil
 }
