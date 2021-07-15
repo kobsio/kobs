@@ -40,7 +40,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 	for _, cluster := range router.clusters.Clusters {
 		team, err := cluster.GetTeams(r.Context(), "")
 		if err != nil {
-			render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get teams"))
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get teams")
 			return
 		}
 
@@ -63,13 +63,13 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	team, err := cluster.GetTeam(r.Context(), namespace, name)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get team"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get team")
 		return
 	}
 

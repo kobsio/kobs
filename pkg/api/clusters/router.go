@@ -53,13 +53,13 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	for _, clusterName := range clusterNames {
 		cluster := router.clusters.GetCluster(clusterName)
 		if cluster == nil {
-			render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 			return
 		}
 
 		clusterNamespaces, err := cluster.GetNamespaces(r.Context(), cacheDurationNamespaces)
 		if err != nil {
-			render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get namespaces"))
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get namespaces")
 			return
 		}
 

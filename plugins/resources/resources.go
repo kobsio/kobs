@@ -74,12 +74,12 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	for _, clusterName := range clusterNames {
 		cluster := router.clusters.GetCluster(clusterName)
 		if cluster == nil {
-			render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 			return
 		}
 
 		if router.isForbidden(resource) {
-			render.Render(w, r, errresponse.Render(nil, http.StatusForbidden, fmt.Sprintf("access for resource %s is forbidding", resource)))
+			errresponse.Render(w, r, nil, http.StatusForbidden, fmt.Sprintf("Access for resource %s is forbidding", resource))
 			return
 		}
 
@@ -89,14 +89,14 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 		if namespaces == nil {
 			list, err := cluster.GetResources(r.Context(), "", path, resource, paramName, param)
 			if err != nil {
-				render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get resources"))
+				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
 				return
 			}
 
 			var tmpResources map[string]interface{}
 			err = json.Unmarshal(list, &tmpResources)
 			if err != nil {
-				render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not unmarshal resources"))
+				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not unmarshal resources")
 				return
 			}
 
@@ -109,14 +109,14 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 			for _, namespace := range namespaces {
 				list, err := cluster.GetResources(r.Context(), namespace, path, resource, paramName, param)
 				if err != nil {
-					render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get resources"))
+					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
 					return
 				}
 
 				var tmpResources map[string]interface{}
 				err = json.Unmarshal(list, &tmpResources)
 				if err != nil {
-					render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not unmarshal resources"))
+					errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not unmarshal resources")
 					return
 				}
 
@@ -147,25 +147,25 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	parsedSince, err := strconv.ParseInt(since, 10, 64)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not parse since parameter"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse since parameter")
 		return
 	}
 
 	parsedPrevious, err := strconv.ParseBool(previous)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not parse previous parameter"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse previous parameter")
 		return
 	}
 
 	logs, err := cluster.GetLogs(r.Context(), namespace, name, container, parsedSince, parsedPrevious)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadGateway, "could not get logs"))
+		errresponse.Render(w, r, err, http.StatusBadGateway, "Could not get logs")
 		return
 	}
 

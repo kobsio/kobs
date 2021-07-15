@@ -57,25 +57,25 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not parse start time"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not parse end time"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	data, err := i.GetLogs(r.Context(), query, scrollID, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not get logs"))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get logs")
 		return
 	}
 

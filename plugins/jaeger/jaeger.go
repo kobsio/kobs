@@ -48,13 +48,13 @@ func (router *Router) getServices(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	body, err := i.GetServices()
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not get services"))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get services")
 		return
 	}
 
@@ -69,13 +69,13 @@ func (router *Router) getOperations(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	body, err := i.GetOperations(service)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not get operations"))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get operations")
 		return
 	}
 
@@ -97,25 +97,25 @@ func (router *Router) getTraces(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not parse start time"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not parse end time"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	body, err := i.GetTraces(limit, maxDuration, minDuration, operation, service, tags, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not get traces"))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get traces")
 		return
 	}
 
@@ -130,13 +130,13 @@ func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	body, err := i.GetTrace(traceID)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not get trace"))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get trace")
 		return
 	}
 

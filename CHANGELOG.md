@@ -16,6 +16,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Changed
 
+- [#82](https://github.com/kobsio/kobs/pull/82): Improve error handling for our API.
+
 ## [v0.4.0](https://github.com/kobsio/kobs/releases/tag/v0.4.0) (2021-07-14)
 
 ### Added

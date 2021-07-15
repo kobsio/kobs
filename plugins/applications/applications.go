@@ -81,7 +81,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 
-				render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not get applications"))
+				errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not get applications")
 				return
 			}
 
@@ -108,14 +108,14 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		for _, clusterName := range clusterNames {
 			cluster := router.clusters.GetCluster(clusterName)
 			if cluster == nil {
-				render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+				errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 				return
 			}
 
 			for _, namespace := range namespaces {
 				application, err := cluster.GetApplications(r.Context(), namespace)
 				if err != nil {
-					render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get applications"))
+					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get applications")
 					return
 				}
 
@@ -153,7 +153,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not generate topology"))
+			errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not generate topology")
 			return
 		}
 
@@ -172,7 +172,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid view property"))
+	errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid view property")
 }
 
 // getApplication returns a a single application for the given clusters and namespaces and name. The cluster, namespace
@@ -186,13 +186,13 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	application, err := cluster.GetApplication(r.Context(), namespace, name)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get application"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get application")
 		return
 	}
 

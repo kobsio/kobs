@@ -58,7 +58,7 @@ func (router *Router) getAllDashboards(w http.ResponseWriter, r *http.Request) {
 	for _, cluster := range router.clusters.Clusters {
 		dashboard, err := cluster.GetDashboards(r.Context(), "")
 		if err != nil {
-			render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get dashboards"))
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboards")
 			return
 		}
 
@@ -79,7 +79,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not decode request body"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
@@ -100,20 +100,20 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 
 		cluster := router.clusters.GetCluster(reference.Cluster)
 		if cluster == nil {
-			render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 			return
 		}
 
 		dashboard, err := cluster.GetDashboard(r.Context(), reference.Namespace, reference.Name)
 		if err != nil {
-			render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get dashboard"))
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboard")
 			return
 		}
 
 		if reference.Placeholders != nil {
 			dashboard, err = placeholders.Replace(reference.Placeholders, *dashboard)
 			if err != nil {
-				render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not replace placeholders"))
+				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
 				return
 			}
 		}
@@ -136,7 +136,7 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not decode request body"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
@@ -144,20 +144,20 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 
 	cluster := router.clusters.GetCluster(data.Cluster)
 	if cluster == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "invalid cluster name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	dashboard, err := cluster.GetDashboard(r.Context(), data.Namespace, data.Name)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get dashboard"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboard")
 		return
 	}
 
 	if data.Placeholders != nil {
 		dashboard, err = placeholders.Replace(data.Placeholders, *dashboard)
 		if err != nil {
-			render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not replace placeholders"))
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
 			return
 		}
 	}
