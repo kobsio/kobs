@@ -10,6 +10,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+- [#81](https://github.com/kobsio/kobs/pull/81): Add markdown plugin, which can be used to render a markdown formatted text in a dashboard panel.
+
 ### Fixed
 
 ### Changed
