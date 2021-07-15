@@ -71,7 +71,7 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
@@ -79,13 +79,13 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not decode request body"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	values, err := i.GetVariable(r.Context(), data.Label, data.Query, data.Type, data.TimeStart, data.TimeEnd)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get variable"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get variable")
 		return
 	}
 
@@ -103,7 +103,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
@@ -111,13 +111,13 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not decode request body"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	metrics, err := i.GetMetrics(r.Context(), data.Queries, data.Resolution, data.TimeStart, data.TimeEnd)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get metrics"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
@@ -135,7 +135,7 @@ func (router *Router) getTable(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
@@ -143,13 +143,13 @@ func (router *Router) getTable(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not decode request body"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	rows, err := i.GetTableData(r.Context(), data.Queries, data.TimeEnd)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusBadRequest, "could not get metrics"))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
@@ -167,13 +167,13 @@ func (router *Router) getLabels(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		render.Render(w, r, errresponse.Render(nil, http.StatusBadRequest, "could not find instance name"))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	labelValues, err := i.GetLabelValues(r.Context(), searchTerm)
 	if err != nil {
-		render.Render(w, r, errresponse.Render(err, http.StatusInternalServerError, "could not get label values"))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get label values")
 		return
 	}
 

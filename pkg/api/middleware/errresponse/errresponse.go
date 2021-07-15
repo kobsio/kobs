@@ -3,35 +3,31 @@
 package errresponse
 
 import (
+	"fmt"
 	"net/http"
+
+	"github.com/kobsio/kobs/pkg/api/middleware/httplog"
 
 	"github.com/go-chi/render"
 )
 
 // ErrResponse renderer type for handling all sorts of errors.
 type ErrResponse struct {
-	Err            error  `json:"-"`     // low-level runtime error
-	HTTPStatusCode int    `json:"-"`     // http response status code
-	StatusText     string `json:"error"` // user-level status message
+	Error string `json:"error"`
 }
 
-func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	render.Status(r, e.HTTPStatusCode)
-	return nil
-}
-
-func Render(err error, status int, msg string) render.Renderer {
+// Render sets the given status for the response and then returns the error and message as JSON object.
+func Render(w http.ResponseWriter, r *http.Request, err error, status int, msg string) {
 	if err != nil {
-		return &ErrResponse{
-			Err:            err,
-			HTTPStatusCode: status,
-			StatusText:     msg,
-		}
+		msg = fmt.Sprintf("%s: %s", msg, err.Error())
 	}
 
-	return &ErrResponse{
-		Err:            nil,
-		HTTPStatusCode: status,
-		StatusText:     msg,
+	errResponse := &ErrResponse{
+		Error: msg,
 	}
+
+	httplog.LogEntrySetField(r, "error", msg)
+
+	render.Status(r, status)
+	render.JSON(w, r, errResponse)
 }
