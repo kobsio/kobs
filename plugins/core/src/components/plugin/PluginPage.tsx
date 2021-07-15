@@ -23,7 +23,7 @@ export const PluginPage: React.FunctionComponent = () => {
       ? pluginsContext.components[pluginDetails.type].page
       : undefined;
 
-  if (!pluginDetails || !Component) {
+  if (!pluginDetails) {
     return (
       <PageSection>
         <Alert
@@ -35,16 +35,30 @@ export const PluginPage: React.FunctionComponent = () => {
             </React.Fragment>
           }
         >
-          {pluginDetails ? (
-            <p>
-              The plugin <b>{pluginDetails.displayName}</b> of tpye <b>{pluginDetails.type}</b> does not implements a
-              page component.
-            </p>
-          ) : (
-            <p>
-              The plugin <b>{params.name}</b> was not found.
-            </p>
-          )}
+          <p>
+            The plugin <b>{params.name}</b> was not found.
+          </p>
+        </Alert>
+      </PageSection>
+    );
+  }
+
+  if (!Component) {
+    return (
+      <PageSection>
+        <Alert
+          variant={AlertVariant.info}
+          title="The Plugin doesn't have a page component"
+          actionLinks={
+            <React.Fragment>
+              <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
+            </React.Fragment>
+          }
+        >
+          <p>
+            The plugin <b>{pluginDetails.displayName}</b> of tpye <b>{pluginDetails.type}</b> does not implements a page
+            component.
+          </p>
         </Alert>
       </PageSection>
     );
