@@ -21,3 +21,93 @@ If you want to view the Yaml representation of the resource you can select the c
 Next to the yaml representation, you find a seconde tab events, which shows all events, which are related to the selected object. The events are retrieved with a field selector and the name of the resource: `fieldSelector=involvedObject.name=<NAME-OF-THE-RESOURCE>`.
 
 ![Events](assets/resources-events.png)
+
+## Annotations
+
+You can extend your resources with additional information for kobs, by using annotations. This allows you to specify teams, applications and dashboards for your Kubernetes objects like Pods, Deployments, etc.
+
+| Annotations | Format | Description |
+| ----------- | ------ | ----------- |
+| `kobs.io/teams` | `[{"cluster": "<cluster-name>", "namespace": "<namespace-name>", "name": "<team-name>"}, {...}]` | Specify a list of teams. You have to provide the name of the team and an optional cluster / namespace. If the cluster / namespace is not specified, the cluster / namespace of the resource will be used. |
+| `kobs.io/applications` | `[{"cluster": "<cluster-name>", "namespace": "<namespace-name>", "name": "<application-name>"}, {...}]` | Specify a list of applications. You have to provide the name of the application and an optional cluster / namespace. If the cluster / namespace is not specified, the cluster / namespace of the resource will be used. |
+| `kobs.io/dashboards` | `[{"cluster": "<cluster-name>", "namespace": "<namespace-name>", "name": "<application-name>", "title": "<dashboard-title>", "placeholders": {"placeholder1": "<placeholder1-value>", "placeholder2": "<placeholder2-value>"}}, {...}]` | | Specify a list of dashboards. You have to provide the name of the dashboard and an optional cluster / namespace. If the cluster / namespace is not specified, the cluster / namespace of the resource will be used. You can also set the values for placeholders. |
+
+### Teams
+
+Specify a list of teams within the `kobs.io/teams` annotation. The list contains an array of teams, where each team is identified by a cluster, namespace and name. If the cluster or namespace isn't set the cluster / namespace of the Kubernetes resource will be used.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage-v1
+  namespace: bookinfo
+  labels:
+    app: productpage
+    version: v1
+  annotations:
+    kobs.io/teams: |
+      [{"namespace": "kobs", "name": "team-diablo"},
+      {"namespace": "kobs", "name": "team-resident-evil"},
+      {"namespace": "kobs", "name": "team-call-of-duty"}]
+```
+
+### Applications
+
+Specify a list of applications within the `kobs.io/applications` annotation. The list contains an array of applications, where each application is identified by a cluster, namespace and name. If the cluster or namespace isn't set the cluster / namespace of the Kubernetes resource will be used.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage-v1
+  namespace: bookinfo
+  labels:
+    app: productpage
+    version: v1
+  annotations:
+    kobs.io/applications: |
+      [{"name": "productpage"}]
+```
+
+### Dashboards
+
+Specify a list of dashboards within the `kobs.io/dashboards` annotation. The list contains multiple dashboards, as they can be set for [applications](applications.md#dashboard) and [teams](teams.md#dashboard).
+
+To set the value of a placeholder, you can use a [JSONPath](https://goessner.net/articles/JsonPath/). The JSONPath is run against the resource manifest, so that for example `$.metadata.name` will use the name of the resource as value for a placeholder.
+
+!!! note
+    We are using the [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) to extract the content from the Kubernetes objects. A list of examples can be found within the documentation of the module.
+
+The following example adds the `kobs.io/teams`, `kobs.io/applications` and `kobs.io/dashboards` annotation to each Pod of the `productpage-v1` Deployment. The corresponding Pods will then have a dashboard which can be used to view the resource usage of this Pod and the logs for the Pods from Elasticsearch.
+
+```yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage-v1
+  namespace: bookinfo
+spec:
+  selector:
+    matchLabels:
+      app: productpage
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: productpage
+        version: v1
+      annotations:
+        kobs.io/teams: |
+          [{"namespace": "kobs", "name": "team-diablo"},
+          {"namespace": "kobs", "name": "team-resident-evil"},
+          {"namespace": "kobs", "name": "team-call-of-duty"}]
+        kobs.io/applications: |
+          [{"name": "productpage"}]
+        kobs.io/dashboards: |
+          [{"namespace": "kobs", "name": "resource-usage", "title": "Resource Usage", "placeholders": {"namespace": "bookinfo", "pod": "$.metadata.name"}},
+          {"namespace": "kobs", "name": "pod-logs", "title": "Logs", "placeholders": {"namespace": "bookinfo", "name": "$.metadata.name"}}]
+```
+
+![Annotations](assets/resources-annotations.png)

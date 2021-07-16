@@ -1,0 +1,26 @@
+---
+apiVersion: kobs.io/v1beta1
+kind: Dashboard
+metadata:
+  name: pod-logs
+  namespace: kobs
+spec:
+  description: Istio Logs
+  placeholders:
+    - name: namespace
+      description: The Pod namespace
+    - name: name
+      description: The Pod name
+  rows:
+    - size: -1
+      panels:
+        - title: Pod Logs
+          colSpan: 12
+          plugin:
+            name: elasticsearch
+            options:
+              query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.pod.name: {{ .name }}"
+              fields:
+                - "kubernetes.container.name"
+                - "message"
+              showChart: true

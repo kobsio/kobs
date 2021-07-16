@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@kobsio/plugin-core": "*",
+    "@kobsio/plugin-dashboards": "*",
     "@kubernetes/client-node": "^0.15.0",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.10.11",
@@ -19,6 +20,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
+    "jsonpath-plus": "^6.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.17.2",

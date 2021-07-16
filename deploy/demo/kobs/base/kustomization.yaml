@@ -5,6 +5,7 @@ resources:
   - ../../../kustomize/kobs
   - dashboards/istio-http.yaml
   - dashboards/istio-logs.yaml
+  - dashboards/pod-logs.yaml
   - dashboards/resource-usage.yaml
   - dashboards/resources.yaml
   - dashboards/traces.yaml
