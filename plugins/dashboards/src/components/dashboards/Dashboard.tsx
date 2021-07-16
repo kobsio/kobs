@@ -107,8 +107,8 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
               const json = await response.json();
 
               if (response.status >= 200 && response.status < 300) {
-                if (json && Array.isArray(json) && json.length > 1) {
-                  if (json && json.length > 0 && tmpVariables[i].plugin.options.allowAll) {
+                if (json && Array.isArray(json) && json.length > 0) {
+                  if (json && json.length > 1 && tmpVariables[i].plugin.options.allowAll) {
                     json.unshift(json.join('|'));
                   }
 

@@ -14,7 +14,7 @@ spec:
     - title: Application CR
       link: https://github.com/kobsio/kobs/blob/main/deploy/demo/bookinfo/reviews-application.yaml
   teams:
-    - name: squad-resident-evil
+    - name: team-resident-evil
       namespace: kobs
   dependencies:
     - name: ratings

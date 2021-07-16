@@ -14,7 +14,9 @@ import { IRow } from '@patternfly/react-table';
 import yaml from 'js-yaml';
 
 import { Editor, Title } from '@kobsio/plugin-core';
+import Dashboards from './Dashboards';
 import Events from './Events';
+import Links from './Links';
 import Logs from './Logs';
 import Overview from './Overview';
 import Pods from './Pods';
@@ -66,6 +68,8 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, close }: ID
       </DrawerHead>
 
       <DrawerPanelBody>
+        <Links resource={resource} />
+
         <Tabs
           activeKey={activeTab}
           onSelect={(event, tabIndex): void => setActiveTab(tabIndex.toString())}
@@ -121,6 +125,12 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, close }: ID
               </div>
             </Tab>
           ) : null}
+
+          <Tab eventKey="dashboards" title={<TabTitleText>Dashboards</TabTitleText>}>
+            <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+              <Dashboards resource={resource} />
+            </div>
+          </Tab>
         </Tabs>
       </DrawerPanelBody>
     </DrawerPanelContent>

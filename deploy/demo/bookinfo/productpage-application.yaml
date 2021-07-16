@@ -14,11 +14,11 @@ spec:
     - title: Application CR
       link: https://github.com/kobsio/kobs/blob/main/deploy/demo/bookinfo/productpage-application.yaml
   teams:
-    - name: squad-diablo
+    - name: team-diablo
       namespace: kobs
-    - name: squad-resident-evil
+    - name: team-resident-evil
       namespace: kobs
-    - name: squad-call-of-duty
+    - name: team-call-of-duty
       namespace: kobs
   dependencies:
     - name: details

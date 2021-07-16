@@ -14,7 +14,7 @@ spec:
     - title: Application CR
       link: https://github.com/kobsio/kobs/blob/main/deploy/demo/bookinfo/details-application.yaml
   teams:
-    - name: squad-diablo
+    - name: team-diablo
       namespace: kobs
   preview:
     title: Incoming Success Rate
