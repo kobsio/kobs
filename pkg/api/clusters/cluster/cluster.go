@@ -18,6 +18,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
@@ -118,6 +119,42 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, path, resource, p
 	}
 
 	return res, nil
+}
+
+// DeleteResource can be used to delete the given resource. The resource is identified by the Kubernetes API path and
+// the name of the resource.
+func (c *Cluster) DeleteResource(ctx context.Context, namespace, name, path, resource string) error {
+	_, err := c.clientset.RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
+	if err != nil {
+		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("DeleteResource")
+		return err
+	}
+
+	return nil
+}
+
+// PatchResource can be used to edit the given resource. The resource is identified by the Kubernetes API path and the
+// name of the resource.
+func (c *Cluster) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
+	_, err := c.clientset.RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
+	if err != nil {
+		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("PatchResource")
+		return err
+	}
+
+	return nil
+}
+
+// CreateResource can be used to create the given resource. The resource is identified by the Kubernetes API path and the
+// name of the resource.
+func (c *Cluster) CreateResource(ctx context.Context, namespace, path, resource string, body []byte) error {
+	_, err := c.clientset.RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).Body(body).DoRaw(ctx)
+	if err != nil {
+		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("CreateResource")
+		return err
+	}
+
+	return nil
 }
 
 // GetLogs returns the logs for a Container. The Container is identified by the namespace and pod name and the container

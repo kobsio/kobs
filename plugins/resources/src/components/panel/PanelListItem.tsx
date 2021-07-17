@@ -70,7 +70,7 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
         onRowClick={
           showDetails && data && data.length > 0 && data[0].cells?.length === resource.columns.length
             ? (e, row, props, data): void =>
-                showDetails(<Details resource={row} close={(): void => showDetails(undefined)} />)
+                showDetails(<Details request={resource} resource={row} close={(): void => showDetails(undefined)} />)
             : undefined
         }
       />
