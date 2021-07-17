@@ -3,6 +3,7 @@ package resources
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -133,6 +134,110 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, resources)
 }
 
+// deleteResource handles the deletion of a resource. The resource can be identified by the given cluster, namespace,
+// name, resource and path.
+func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
+	clusterName := r.URL.Query().Get("cluster")
+	namespace := r.URL.Query().Get("namespace")
+	name := r.URL.Query().Get("name")
+	resource := r.URL.Query().Get("resource")
+	path := r.URL.Query().Get("path")
+
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "resource": resource, "path": path}).Tracef("deleteResource")
+
+	cluster := router.clusters.GetCluster(clusterName)
+	if cluster == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
+		return
+	}
+
+	if router.isForbidden(resource) {
+		errresponse.Render(w, r, nil, http.StatusForbidden, fmt.Sprintf("Access for resource %s is forbidding", resource))
+		return
+	}
+
+	err := cluster.DeleteResource(r.Context(), namespace, name, path, resource)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not delete resource")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
+// patchResource hadnles patch operations for resources. The resource can be identified by the given cluster,
+// namespace, name, resource and path. The patch operation must be provided in the request body.
+func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
+	clusterName := r.URL.Query().Get("cluster")
+	namespace := r.URL.Query().Get("namespace")
+	name := r.URL.Query().Get("name")
+	resource := r.URL.Query().Get("resource")
+	path := r.URL.Query().Get("path")
+
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "resource": resource, "path": path}).Tracef("patchResource")
+
+	cluster := router.clusters.GetCluster(clusterName)
+	if cluster == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
+		return
+	}
+
+	if router.isForbidden(resource) {
+		errresponse.Render(w, r, nil, http.StatusForbidden, fmt.Sprintf("Access for resource %s is forbidding", resource))
+		return
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
+		return
+	}
+
+	err = cluster.PatchResource(r.Context(), namespace, name, path, resource, body)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not patch resource")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
+// createResource hadnles patch operations for resources. The resource can be identified by the given cluster,
+// namespace, name, resource and path. The resource must be provided in the request body.
+func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
+	clusterName := r.URL.Query().Get("cluster")
+	namespace := r.URL.Query().Get("namespace")
+	resource := r.URL.Query().Get("resource")
+	path := r.URL.Query().Get("path")
+
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "resource": resource, "path": path}).Tracef("createResource")
+
+	cluster := router.clusters.GetCluster(clusterName)
+	if cluster == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
+		return
+	}
+
+	if router.isForbidden(resource) {
+		errresponse.Render(w, r, nil, http.StatusForbidden, fmt.Sprintf("Access for resource %s is forbidding", resource))
+		return
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
+		return
+	}
+
+	err = cluster.CreateResource(r.Context(), namespace, path, resource, body)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create resource")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
 // getLogs returns the logs for the container of a pod in a cluster and namespace. A user can also set the time since
 // when the logs should be returned.
 func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
@@ -191,6 +296,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	}
 
 	router.Get("/resources", router.getResources)
+	router.Delete("/resources", router.deleteResource)
+	router.Put("/resources", router.patchResource)
+	router.Post("/resources", router.createResource)
 	router.Get("/logs", router.getLogs)
 
 	return router

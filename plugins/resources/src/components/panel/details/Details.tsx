@@ -13,7 +13,8 @@ import React, { useState } from 'react';
 import { IRow } from '@patternfly/react-table';
 import yaml from 'js-yaml';
 
-import { Editor, Title } from '@kobsio/plugin-core';
+import { Editor, IResource, Title } from '@kobsio/plugin-core';
+import Actions from './Actions';
 import Dashboards from './Dashboards';
 import Events from './Events';
 import Links from './Links';
@@ -43,11 +44,12 @@ const getSelector = (resource: IRow): string => {
 };
 
 interface IDetailsProps {
+  request: IResource;
   resource: IRow;
   close: () => void;
 }
 
-const Details: React.FunctionComponent<IDetailsProps> = ({ resource, close }: IDetailsProps) => {
+const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, close }: IDetailsProps) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
   const podSelector = getSelector(resource);
@@ -63,6 +65,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, close }: ID
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
+          <Actions request={request} resource={resource} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>

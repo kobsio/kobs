@@ -22,6 +22,21 @@ Next to the yaml representation, you find a seconde tab events, which shows all 
 
 ![Events](assets/resources-events.png)
 
+## Actions
+
+kobs provides several actions for all Kubernetes resources. These actions can be found in the upper right corner in the details view next to the close icon. For each resource it is possible to edit and delete the selected resource.
+
+Next to these default actions, kobs also has some other actions for some resources:
+
+- Scale Deployments, StatefulSets and ReplicaSets (`kubectl scale --replicas=3 deployment/bookinfo`)
+- Restart DaemonSets, Deployments and StatefulSets (`kubectl rollout restart deployment bookinfo`)
+- Trigger a CronJob manually (`kubectl create job --from=cronjob/backup backup-manual-qg0qjf`)
+
+![Edit Action](assets/resources-actions-edit.png)
+
+!!! note
+    Make sure, that kobs has enough permissions to create, edit and delete resource. If the permissions are missing an error will be returned when a user triggers one of the actions.
+
 ## Annotations
 
 You can extend your resources with additional information for kobs, by using annotations. This allows you to specify teams, applications and dashboards for your Kubernetes objects like Pods, Deployments, etc.
