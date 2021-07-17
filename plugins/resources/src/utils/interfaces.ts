@@ -7,3 +7,28 @@ export interface IPanelOptions {
   resources?: string[];
   selector?: string;
 }
+
+// IMetric is the interface for the response for a metrics request.
+export interface IMetric {
+  cluster?: string;
+  namespace?: string;
+  resources?: IMetricResources;
+}
+
+export interface IMetricResources {
+  apiVersion?: string;
+  containers?: IMetricContainer[];
+  kind?: string;
+  timestamp?: Date;
+  window?: string;
+}
+
+export interface IMetricContainer {
+  name?: string;
+  usage?: IMetricUsage;
+}
+
+export interface IMetricUsage {
+  cpu?: string;
+  memory?: string;
+}

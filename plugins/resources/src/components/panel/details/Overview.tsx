@@ -36,7 +36,14 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ resource }: IOvervi
   // Overwrite the additions for several resources.
   if (resource.props && resource.props.apiVersion && resource.props.kind) {
     if (resource.props.apiVersion === 'v1' && resource.props.kind === 'Pod') {
-      additions = <Pod pod={resource.props} />;
+      additions = (
+        <Pod
+          cluster={resource.cluster?.title}
+          namespace={resource.namespace?.title}
+          name={resource.name?.title}
+          pod={resource.props}
+        />
+      );
     } else if (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'Deployment') {
       additions = (
         <Deployment
