@@ -14,18 +14,21 @@ import Conditions from './overview/Conditions';
 import CronJob from './overview/CronJob';
 import DaemonSet from './overview/DaemonSet';
 import Deployment from './overview/Deployment';
+import { IResource } from '@kobsio/plugin-core';
 import Job from './overview/Job';
+import Node from './overview/Node';
 import Pod from './overview/Pod';
 import StatefulSet from './overview/StatefulSet';
 import { timeDifference } from '@kobsio/plugin-core';
 
 interface IOverviewProps {
+  request: IResource;
   resource: IRow;
 }
 
 // Overview is the overview tab for a resource. It shows the metadata of a resource in a clear way. We can also
 // add some additional fields on a per resource basis.
-const Overview: React.FunctionComponent<IOverviewProps> = ({ resource }: IOverviewProps) => {
+const Overview: React.FunctionComponent<IOverviewProps> = ({ request, resource }: IOverviewProps) => {
   // additions contains a React component with additional details for a resource. The default component just renders the
   // conditions of a resource.
   let additions =
@@ -34,41 +37,44 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ resource }: IOvervi
     ) : null;
 
   // Overwrite the additions for several resources.
-  if (resource.props && resource.props.apiVersion && resource.props.kind) {
-    if (resource.props.apiVersion === 'v1' && resource.props.kind === 'Pod') {
-      additions = (
-        <Pod
-          cluster={resource.cluster?.title}
-          namespace={resource.namespace?.title}
-          name={resource.name?.title}
-          pod={resource.props}
-        />
-      );
-    } else if (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'Deployment') {
-      additions = (
-        <Deployment
-          cluster={resource.cluster?.title}
-          namespace={resource.namespace?.title}
-          deployment={resource.props}
-        />
-      );
-    } else if (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'DaemonSet') {
-      additions = (
-        <DaemonSet cluster={resource.cluster?.title} namespace={resource.namespace?.title} daemonSet={resource.props} />
-      );
-    } else if (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'StatefulSet') {
-      additions = (
-        <StatefulSet
-          cluster={resource.cluster?.title}
-          namespace={resource.namespace?.title}
-          statefulSet={resource.props}
-        />
-      );
-    } else if (resource.props.apiVersion === 'batch/v1beta1' && resource.props.kind === 'CronJob') {
-      additions = <CronJob cronJob={resource.props} />;
-    } else if (resource.props.apiVersion === 'batch/v1' && resource.props.kind === 'Job') {
-      additions = <Job cluster={resource.cluster?.title} namespace={resource.namespace?.title} job={resource.props} />;
-    }
+  if (request.resource === 'Pod') {
+    additions = (
+      <Pod
+        cluster={resource.cluster?.title}
+        namespace={resource.namespace?.title}
+        name={resource.name?.title}
+        pod={resource.props}
+      />
+    );
+  } else if (request.resource === 'deployments') {
+    additions = (
+      <Deployment cluster={resource.cluster?.title} namespace={resource.namespace?.title} deployment={resource.props} />
+    );
+  } else if (request.resource === 'daemonsets') {
+    additions = (
+      <DaemonSet cluster={resource.cluster?.title} namespace={resource.namespace?.title} daemonSet={resource.props} />
+    );
+  } else if (request.resource === 'statefulsets') {
+    additions = (
+      <StatefulSet
+        cluster={resource.cluster?.title}
+        namespace={resource.namespace?.title}
+        statefulSet={resource.props}
+      />
+    );
+  } else if (request.resource === 'cronjobs') {
+    additions = <CronJob cronJob={resource.props} />;
+  } else if (request.resource === 'jobs') {
+    additions = <Job cluster={resource.cluster?.title} namespace={resource.namespace?.title} job={resource.props} />;
+  } else if (request.resource === 'nodes') {
+    additions = (
+      <Node
+        cluster={resource.cluster?.title}
+        namespace={resource.namespace?.title}
+        name={resource.name?.title}
+        node={resource.props}
+      />
+    );
   }
 
   return (

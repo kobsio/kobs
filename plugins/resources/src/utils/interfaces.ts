@@ -20,6 +20,7 @@ export interface IMetricResources {
   containers?: IMetricContainer[];
   kind?: string;
   timestamp?: Date;
+  usage?: IMetricUsage;
   window?: string;
 }
 

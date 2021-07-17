@@ -127,7 +127,7 @@ export const resources: IResources = {
 
           rows.push({
             cells: [cronJob.metadata?.name, item.namespace, item.cluster, schedule, suspend, active, lastSchedule, age],
-            props: { apiVersion: 'batch/v1beta1', kind: 'CronJob', ...cronJob },
+            props: cronJob,
           });
         }
       }
@@ -191,7 +191,7 @@ export const resources: IResources = {
               nodeSelector.join(', '),
               age,
             ],
-            props: { apiVersion: 'apps/v1', kind: 'DaemonSet', ...daemonSet },
+            props: daemonSet,
           });
         }
       }
@@ -235,7 +235,7 @@ export const resources: IResources = {
               available,
               age,
             ],
-            props: { apiVersion: 'apps/v1', kind: 'Deployment', ...deployment },
+            props: deployment,
           });
         }
       }
@@ -281,7 +281,7 @@ export const resources: IResources = {
               duration,
               age,
             ],
-            props: { apiVersion: 'batch/v1', kind: 'Job', ...job },
+            props: job,
           });
         }
       }
@@ -344,7 +344,7 @@ export const resources: IResources = {
               restarts,
               age,
             ],
-            props: { apiVersion: 'v1', kind: 'Pod', ...pod },
+            props: pod,
           });
         }
       }
@@ -414,7 +414,7 @@ export const resources: IResources = {
 
           rows.push({
             cells: [statefulSet.metadata?.name, item.namespace, item.cluster, `${ready}/${shouldReady}`, upToDate, age],
-            props: { apiVersion: 'apps/v1', kind: 'StatefulSet', ...statefulSet },
+            props: statefulSet,
           });
         }
       }

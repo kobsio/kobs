@@ -20,6 +20,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#82](https://github.com/kobsio/kobs/pull/82): Improve error handling for our API.
 - [#85](https://github.com/kobsio/kobs/pull/85): Improve overview page for Pods, by displaying all Containers in an expandable table and by including the current resource usage of all Containers.
+- [#86](https://github.com/kobsio/kobs/pull/86): Improve overview page for Nodes, by displaying the resource metrics for the CPU, Memory and Pods.
 
 ## [v0.4.0](https://github.com/kobsio/kobs/releases/tag/v0.4.0) (2021-07-14)
 

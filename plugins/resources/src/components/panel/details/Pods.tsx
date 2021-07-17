@@ -8,20 +8,21 @@ import { ClustersContext, IClusterContext, emptyState } from '@kobsio/plugin-cor
 interface IPodsProps {
   cluster: string;
   namespace: string;
-  selector: string;
+  paramName: string;
+  param: string;
 }
 
 // Pods is the pods tab for various resources. It can be used to show the pods for a deployment, statefulset,
 // etc. within the tabs.
-const Pods: React.FunctionComponent<IPodsProps> = ({ cluster, namespace, selector }: IPodsProps) => {
+const Pods: React.FunctionComponent<IPodsProps> = ({ cluster, namespace, paramName, param }: IPodsProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
 
   const { isError, isLoading, error, data } = useQuery<IRow[], Error>(
-    ['resources/pods', cluster, namespace, selector],
+    ['resources/pods', cluster, namespace, paramName, param],
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/resources/resources?cluster=${cluster}&namespace${namespace}&resource=pods&path=/api/v1&paramName=labelSelector&param=${selector}`,
+          `/api/plugins/resources/resources?cluster=${cluster}&namespace${namespace}&resource=pods&path=/api/v1&paramName=${paramName}&param=${param}`,
           { method: 'get' },
         );
         const json = await response.json();
