@@ -114,14 +114,26 @@ func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration
 // list of resources.
 func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error) {
 	if name != "" {
-		res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
+		if namespace != "" {
+			res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
+			if err != nil {
+				log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "name": name, "path": path, "resource": resource}).Errorf("GetResources")
+				return nil, err
+			}
+
+			return res, nil
+		}
+
+		res, err := c.clientset.RESTClient().Get().AbsPath(path).Resource(resource).Name(name).DoRaw(ctx)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "name": name, "path": path, "resource": resource}).Errorf("GetResources")
+			log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "name": name, "path": path, "resource": resource}).Errorf("GetResources")
 			return nil, err
 		}
 
 		return res, nil
 	}
+
+	fmt.Printf("\n\n\n\n paramName: %s param: %s\n\n\n\n", paramName, param)
 
 	res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Param(paramName, param).DoRaw(ctx)
 	if err != nil {

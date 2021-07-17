@@ -60,7 +60,7 @@ const Pod: React.FunctionComponent<IPodProps> = ({ cluster, namespace, name, pod
             return metric[0].resources.containers;
           }
 
-          throw new Error('Could not find Pod metrics');
+          throw new Error('Could not get Pod metrics');
         }
 
         if (json.error) {

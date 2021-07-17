@@ -24,20 +24,18 @@ import Pods from './Pods';
 
 // getSelector is used to get the label selector for various resources as string. The returned string can be used in
 // a Kubernetes API request to get the all pods, which are matching the label selector.
-const getSelector = (resource: IRow): string => {
-  if (resource.props && resource.props.apiVersion && resource.props.kind) {
-    if (
-      (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'Deployment') ||
-      (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'DaemonSet') ||
-      (resource.props.apiVersion === 'apps/v1' && resource.props.kind === 'StatefulSet') ||
-      (resource.props.apiVersion === 'batch/v1' && resource.props.kind === 'Job')
-    ) {
-      return resource.props?.spec?.selector?.matchLabels
-        ? Object.keys(resource.props.spec.selector.matchLabels)
-            .map((key) => `${key}=${resource.props.spec.selector.matchLabels[key]}`)
-            .join(',')
-        : '';
-    }
+const getSelector = (request: IResource, resource: IRow): string => {
+  if (
+    request.resource === 'deployments' ||
+    request.resource === 'daemonsets' ||
+    request.resource === 'statefulsets' ||
+    request.resource === 'jobs'
+  ) {
+    return resource.props?.spec?.selector?.matchLabels
+      ? Object.keys(resource.props.spec.selector.matchLabels)
+          .map((key) => `${key}=${resource.props.spec.selector.matchLabels[key]}`)
+          .join(',')
+      : '';
   }
 
   return '';
@@ -52,7 +50,7 @@ interface IDetailsProps {
 const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, close }: IDetailsProps) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
-  const podSelector = getSelector(resource);
+  const podSelector = getSelector(request, resource);
 
   return (
     <DrawerPanelContent minSize="50%">
@@ -82,7 +80,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
         >
           <Tab eventKey="overview" title={<TabTitleText>Overview</TabTitleText>}>
             <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
-              <Overview resource={resource} />
+              <Overview request={request} resource={resource} />
             </div>
           </Tab>
 
@@ -104,7 +102,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
             </div>
           </Tab>
 
-          {resource.props && resource.props.apiVersion === 'v1' && resource.props.kind === 'Pod' ? (
+          {request.resource === 'pods' ? (
             <Tab eventKey="logs" title={<TabTitleText>Logs</TabTitleText>}>
               <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
                 <Logs
@@ -117,13 +115,14 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
             </Tab>
           ) : null}
 
-          {podSelector ? (
+          {podSelector || request.resource === 'nodes' ? (
             <Tab eventKey="pods" title={<TabTitleText>Pods</TabTitleText>}>
               <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
                 <Pods
                   cluster={resource.cluster.title}
                   namespace={resource.namespace ? resource.namespace.title : ''}
-                  selector={podSelector}
+                  paramName={podSelector ? 'labelSelector' : 'fieldSelector'}
+                  param={podSelector ? podSelector : `spec.nodeName=${resource.props.metadata.name}`}
                 />
               </div>
             </Tab>
