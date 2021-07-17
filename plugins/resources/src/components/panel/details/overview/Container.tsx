@@ -1,6 +1,15 @@
-import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Title } from '@patternfly/react-core';
+import {
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+} from '@patternfly/react-core';
+import { ExpandableRowContent, Td, Tr } from '@patternfly/react-table';
+import React, { useState } from 'react';
 import { V1Container, V1ContainerState, V1ContainerStatus, V1EnvVarSource, V1Probe } from '@kubernetes/client-node';
-import React from 'react';
+
+import { IMetricContainer } from '../../../../utils/interfaces';
+import { formatResourceValue } from '../../../../utils/helpers';
 
 const getContainerStatus = (state: V1ContainerState): string => {
   if (state.running) {
@@ -30,7 +39,7 @@ const getValueFrom = (valueFrom: V1EnvVarSource): string => {
   return '-';
 };
 
-const getPrope = (title: string, probe: V1Probe): JSX.Element => {
+const getProbe = (title: string, probe: V1Probe): JSX.Element => {
   return (
     <DescriptionListGroup>
       <DescriptionListTerm>{title}</DescriptionListTerm>
@@ -94,94 +103,127 @@ const getPrope = (title: string, probe: V1Probe): JSX.Element => {
 interface IContainerProps {
   container: V1Container;
   containerStatus?: V1ContainerStatus;
+  containerMetric?: IMetricContainer;
 }
 
-const Container: React.FunctionComponent<IContainerProps> = ({ container, containerStatus }: IContainerProps) => {
+const Container: React.FunctionComponent<IContainerProps> = ({
+  container,
+  containerStatus,
+  containerMetric,
+}: IContainerProps) => {
+  const [isExpanded, setIsExpaned] = useState<boolean>(false);
+
   return (
     <React.Fragment>
-      <Title headingLevel="h4" size="lg">
-        {container.name}
-      </Title>
-      <DescriptionListGroup>
-        <DescriptionListTerm>Status</DescriptionListTerm>
-        <DescriptionListDescription>
+      <Tr onClick={(): void => setIsExpaned(!isExpanded)}>
+        <Td dataLabel="Name">{container.name}</Td>
+        <Td dataLabel="Ready">{containerStatus && containerStatus.ready ? 'True' : 'False'}</Td>
+        <Td dataLabel="Restarts">{containerStatus ? containerStatus.restartCount : 0}</Td>
+        <Td dataLabel="Status">
           {containerStatus && containerStatus.state ? getContainerStatus(containerStatus.state) : '-'}
-        </DescriptionListDescription>
-      </DescriptionListGroup>
-      <DescriptionListGroup>
-        <DescriptionListTerm>Ready</DescriptionListTerm>
-        <DescriptionListDescription>
-          {containerStatus && containerStatus.ready ? 'True' : 'False'}
-        </DescriptionListDescription>
-      </DescriptionListGroup>
-      <DescriptionListGroup>
-        <DescriptionListTerm>Image</DescriptionListTerm>
-        <DescriptionListDescription>{container.image}</DescriptionListDescription>
-      </DescriptionListGroup>
-      {container.command && (
-        <DescriptionListGroup>
-          <DescriptionListTerm>Command</DescriptionListTerm>
-          <DescriptionListDescription>{container.command}</DescriptionListDescription>
-        </DescriptionListGroup>
-      )}
-      {container.command && (
-        <DescriptionListGroup>
-          <DescriptionListTerm>Command</DescriptionListTerm>
-          <DescriptionListDescription>{container.command.join(' ')}</DescriptionListDescription>
-        </DescriptionListGroup>
-      )}
-      {container.args && (
-        <DescriptionListGroup>
-          <DescriptionListTerm>Command</DescriptionListTerm>
-          <DescriptionListDescription>{container.args.join(' ')}</DescriptionListDescription>
-        </DescriptionListGroup>
-      )}
-      {container.ports && (
-        <DescriptionListGroup>
-          <DescriptionListTerm>Ports</DescriptionListTerm>
-          <DescriptionListDescription>
-            {container.ports.map((port, index) => (
-              <div key={index} className="pf-c-chip pf-u-mr-md pf-u-mb-sm" style={{ maxWidth: '100%' }}>
-                <span className="pf-c-chip__text" style={{ maxWidth: '100%' }}>
-                  {port.containerPort}
-                  {port.protocol ? `/${port.protocol}` : ''}
-                  {port.name ? ` (${port.name})` : ''}
-                </span>
-              </div>
-            ))}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-      )}
-      {container.env && (
-        <DescriptionListGroup>
-          <DescriptionListTerm>Environment</DescriptionListTerm>
-          <DescriptionListDescription>
-            {container.env.map((env, index) => (
-              <div key={index}>
-                {env.name}:
-                <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
-                  {env.value ? env.value : env.valueFrom ? getValueFrom(env.valueFrom) : '-'}
-                </span>
-              </div>
-            ))}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-      )}
-      {container.volumeMounts && (
-        <DescriptionListGroup>
-          <DescriptionListTerm>Mounts</DescriptionListTerm>
-          <DescriptionListDescription>
-            {container.volumeMounts.map((mount, index) => (
-              <div key={index}>
-                {mount.name}:<span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{mount.mountPath}</span>
-              </div>
-            ))}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-      )}
-      {container.livenessProbe && getPrope('Liveness Probe', container.livenessProbe)}
-      {container.readinessProbe && getPrope('Readiness Probe', container.readinessProbe)}
-      {container.startupProbe && getPrope('Startup Probe', container.startupProbe)}
+        </Td>
+        <Td dataLabel="CPU Usage">
+          {containerMetric && containerMetric.usage && containerMetric.usage.cpu
+            ? formatResourceValue('cpu', containerMetric.usage.cpu)
+            : '-'}
+        </Td>
+        <Td dataLabel="CPU Requests">
+          {container.resources && container.resources.requests
+            ? formatResourceValue('cpu', container.resources.requests['cpu'])
+            : '-'}
+        </Td>
+        <Td dataLabel="CPU Limits">
+          {container.resources && container.resources.limits
+            ? formatResourceValue('cpu', container.resources.limits['cpu'])
+            : '-'}
+        </Td>
+        <Td dataLabel="Memory Usage">
+          {containerMetric && containerMetric.usage && containerMetric.usage.memory
+            ? formatResourceValue('memory', containerMetric.usage.memory)
+            : '-'}
+        </Td>
+        <Td dataLabel="Memory Requests">
+          {container.resources && container.resources.requests
+            ? formatResourceValue('memory', container.resources.requests['memory'])
+            : '-'}
+        </Td>
+        <Td dataLabel="Memory Limits">
+          {container.resources && container.resources.limits
+            ? formatResourceValue('memory', container.resources.limits['memory'])
+            : '-'}
+        </Td>
+      </Tr>
+      <Tr isExpanded={isExpanded}>
+        <Td colSpan={10}>
+          <ExpandableRowContent>
+            <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Image</DescriptionListTerm>
+                <DescriptionListDescription>{container.image}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {container.command && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Command</DescriptionListTerm>
+                  <DescriptionListDescription>{container.command.join(' ')}</DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {container.args && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Command</DescriptionListTerm>
+                  <DescriptionListDescription>{container.args.join(' ')}</DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {container.ports && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Ports</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {container.ports.map((port, index) => (
+                      <div key={index} className="pf-c-chip pf-u-mr-md pf-u-mb-sm" style={{ maxWidth: '100%' }}>
+                        <span className="pf-c-chip__text" style={{ maxWidth: '100%' }}>
+                          {port.containerPort}
+                          {port.protocol ? `/${port.protocol}` : ''}
+                          {port.name ? ` (${port.name})` : ''}
+                        </span>
+                      </div>
+                    ))}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {container.env && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Environment</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {container.env.map((env, index) => (
+                      <div key={index}>
+                        {env.name}:
+                        <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+                          {env.value ? env.value : env.valueFrom ? getValueFrom(env.valueFrom) : '-'}
+                        </span>
+                      </div>
+                    ))}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {container.volumeMounts && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Mounts</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {container.volumeMounts.map((mount, index) => (
+                      <div key={index}>
+                        {mount.name}:
+                        <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{mount.mountPath}</span>
+                      </div>
+                    ))}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {container.livenessProbe && getProbe('Liveness Probe', container.livenessProbe)}
+              {container.readinessProbe && getProbe('Readiness Probe', container.readinessProbe)}
+              {container.startupProbe && getProbe('Startup Probe', container.startupProbe)}
+            </DescriptionList>
+          </ExpandableRowContent>
+        </Td>
+      </Tr>
     </React.Fragment>
   );
 };

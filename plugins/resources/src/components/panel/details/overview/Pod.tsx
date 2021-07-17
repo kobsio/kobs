@@ -1,30 +1,21 @@
 import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Tooltip } from '@patternfly/react-core';
-import { V1ContainerStatus, V1Pod } from '@kubernetes/client-node';
 import React from 'react';
+import { V1Pod } from '@kubernetes/client-node';
+import { useQuery } from 'react-query';
 import yaml from 'js-yaml';
 
+import { IMetric, IMetricContainer } from '../../../../utils/interfaces';
 import Conditions from './Conditions';
-import Container from './Container';
-
-const getContainerStatus = (name: string, status?: V1ContainerStatus[]): V1ContainerStatus | undefined => {
-  if (!status) {
-    return undefined;
-  }
-
-  for (const s of status) {
-    if (s.name === name) {
-      return s;
-    }
-  }
-
-  return undefined;
-};
+import Containers from './Containers';
 
 interface IPodProps {
+  cluster: string;
+  namespace: string;
+  name: string;
   pod: V1Pod;
 }
 
-const Pod: React.FunctionComponent<IPodProps> = ({ pod }: IPodProps) => {
+const Pod: React.FunctionComponent<IPodProps> = ({ cluster, namespace, name, pod }: IPodProps) => {
   const phase = pod.status && pod.status.phase ? pod.status.phase : 'Unknown';
   let reason = pod.status && pod.status.reason ? pod.status.reason : '';
   let shouldReady = 0;
@@ -51,6 +42,37 @@ const Pod: React.FunctionComponent<IPodProps> = ({ pod }: IPodProps) => {
       }
     }
   }
+
+  const { isError, data } = useQuery<IMetricContainer[], Error>(
+    ['resources/pod/metrics', cluster, namespace, name],
+    async () => {
+      try {
+        const response = await fetch(
+          `/api/plugins/resources/resources?cluster=${cluster}&namespace=${namespace}&name=${name}&resource=pods&path=/apis/metrics.k8s.io/v1beta1`,
+          { method: 'get' },
+        );
+        const json = await response.json();
+
+        if (response.status >= 200 && response.status < 300) {
+          const metric = json as IMetric[];
+
+          if (metric && metric.length === 1 && metric[0].resources && metric[0].resources.containers) {
+            return metric[0].resources.containers;
+          }
+
+          throw new Error('Could not find Pod metrics');
+        }
+
+        if (json.error) {
+          throw new Error(json.error);
+        } else {
+          throw new Error('An unknown error occured');
+        }
+      } catch (err) {
+        throw err;
+      }
+    },
+  );
 
   return (
     <React.Fragment>
@@ -123,20 +145,22 @@ const Pod: React.FunctionComponent<IPodProps> = ({ pod }: IPodProps) => {
         </DescriptionListDescription>
       </DescriptionListGroup>
       {pod.status?.conditions && <Conditions conditions={pod.status.conditions} />}
-      {pod.spec?.initContainers?.map((container, index) => (
-        <Container
-          key={index}
-          container={container}
-          containerStatus={getContainerStatus(container.name, pod.status?.initContainerStatuses)}
+      {pod.spec?.initContainers && (
+        <Containers
+          title="Init Containers"
+          containers={pod.spec?.initContainers}
+          containerStatuses={pod.status?.initContainerStatuses}
+          containerMetrics={undefined}
         />
-      ))}
-      {pod.spec?.containers?.map((container, index) => (
-        <Container
-          key={index}
-          container={container}
-          containerStatus={getContainerStatus(container.name, pod.status?.containerStatuses)}
+      )}
+      {pod.spec?.containers && (
+        <Containers
+          title="Containers"
+          containers={pod.spec?.containers}
+          containerStatuses={pod.status?.containerStatuses}
+          containerMetrics={isError ? undefined : data}
         />
-      ))}
+      )}
     </React.Fragment>
   );
 };

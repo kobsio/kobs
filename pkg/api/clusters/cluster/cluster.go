@@ -110,8 +110,19 @@ func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration
 }
 
 // GetResources returns a list for the given resource in the given namespace. The resource is identified by the
-// Kubernetes API path and the name of the resource.
-func (c *Cluster) GetResources(ctx context.Context, namespace, path, resource, paramName, param string) ([]byte, error) {
+// Kubernetes API path and the resource. The name is optional and can be used to get a single resource, instead of a
+// list of resources.
+func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error) {
+	if name != "" {
+		res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
+		if err != nil {
+			log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "name": name, "path": path, "resource": resource}).Errorf("GetResources")
+			return nil, err
+		}
+
+		return res, nil
+	}
+
 	res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Param(paramName, param).DoRaw(ctx)
 	if err != nil {
 		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("GetResources")

@@ -61,12 +61,13 @@ func (router *Router) isForbidden(resource string) bool {
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	clusterNames := r.URL.Query()["cluster"]
 	namespaces := r.URL.Query()["namespace"]
+	name := r.URL.Query().Get("name")
 	resource := r.URL.Query().Get("resource")
 	path := r.URL.Query().Get("path")
 	paramName := r.URL.Query().Get("paramName")
 	param := r.URL.Query().Get("param")
 
-	log.WithFields(logrus.Fields{"clusters": clusterNames, "namespaces": namespaces, "resource": resource, "path": path, "paramName": paramName, "param": param}).Tracef("getResources")
+	log.WithFields(logrus.Fields{"clusters": clusterNames, "namespaces": namespaces, "name": name, "resource": resource, "path": path, "paramName": paramName, "param": param}).Tracef("getResources")
 
 	var resources []Resources
 
@@ -88,7 +89,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 		// provided we loop through all the namespaces and return the resources for these namespaces. All results are
 		// added to the resources slice, which is then returned by the api.
 		if namespaces == nil {
-			list, err := cluster.GetResources(r.Context(), "", path, resource, paramName, param)
+			list, err := cluster.GetResources(r.Context(), "", name, path, resource, paramName, param)
 			if err != nil {
 				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
 				return
@@ -108,7 +109,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 			})
 		} else {
 			for _, namespace := range namespaces {
-				list, err := cluster.GetResources(r.Context(), namespace, path, resource, paramName, param)
+				list, err := cluster.GetResources(r.Context(), namespace, name, path, resource, paramName, param)
 				if err != nil {
 					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
 					return
