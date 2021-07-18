@@ -26,7 +26,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         title={title}
         message="Options for Prometheus panel are missing or invalid"
         details="The panel doesn't contain the required options to render the Prometheus chart or the provided options are invalid."
-        documentation=""
+        documentation="https://kobs.io/plugins/prometheus.html"
       />
     );
   }

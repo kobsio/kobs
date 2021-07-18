@@ -15,7 +15,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ title, description
         title={title}
         message="Options for Markdown panel are missing or invalid"
         details="The panel doesn't contain the a text property."
-        documentation=""
+        documentation="https://kobs.io/plugins/markdown.html"
       />
     );
   }

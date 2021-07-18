@@ -9,6 +9,7 @@
     "@kobsio/plugin-dashboards": "*",
     "@kobsio/plugin-elasticsearch": "*",
     "@kobsio/plugin-jaeger": "*",
+    "@kobsio/plugin-kiali": "*",
     "@kobsio/plugin-markdown": "*",
     "@kobsio/plugin-prometheus": "*",
     "@kobsio/plugin-resources": "*",

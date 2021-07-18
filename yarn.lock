@@ -2913,7 +2913,7 @@
   resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
   integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
 
-"@types/cytoscape@*", "@types/cytoscape@^3.14.15":
+"@types/cytoscape@*", "@types/cytoscape@^3.14.15", "@types/cytoscape@^3.14.17":
   version "3.14.17"
   resolved "https://registry.yarnpkg.com/@types/cytoscape/-/cytoscape-3.14.17.tgz#20eaa183e8b0509d6d38e80600e9ff25d70f607b"
   integrity sha512-0s/bNVEgaxNDh9xZvke1vg7eZcPPM8UuBIuks0/tOjMTRnL4F1b7/yNaVCNY3gXpIWStaqH31k1CI7cyeP9Wkw==
@@ -3068,7 +3068,7 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.5.tgz#75a2a8e7d8ab4b230414505d92335d1dcb53a6df"
   integrity sha512-L28j2FcJfSZOnL1WBjDYp2vUHCeIFlyYI/53EwD/rKUBQ7MtUUfbQWiyKJGpcnv4/WgrhWsFKrcPstcAt/J0tQ==
 
-"@types/react-cytoscapejs@^1.2.1":
+"@types/react-cytoscapejs@^1.2.1", "@types/react-cytoscapejs@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@types/react-cytoscapejs/-/react-cytoscapejs-1.2.2.tgz#e2d27dc11b2bac61fd3e64efe2004ab65958344f"
   integrity sha512-Z+CeQLw4XyQOrS/SdbcUCdYfWqYmaPS/WT+gNy33KYR09BtVzekx1jeNU5kNDvXCv8/8jGlhSrSk0uO7ocGuFg==

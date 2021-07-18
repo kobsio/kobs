@@ -26,7 +26,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         title={title}
         message="Options for Resources panel are missing or invalid"
         details="The panel doesn't contain the required options to get resources or the provided options are invalid."
-        documentation=""
+        documentation="https://kobs.io/plugins/resources.html"
       />
     );
   }

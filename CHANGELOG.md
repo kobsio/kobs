@@ -13,6 +13,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#81](https://github.com/kobsio/kobs/pull/81): Add markdown plugin, which can be used to render a markdown formatted text in a dashboard panel.
 - [#83](https://github.com/kobsio/kobs/pull/83): Extend Kubernetes resource with Teams, Applications and Dashboards via annotations.
 - [#84](https://github.com/kobsio/kobs/pull/84): Add actions for resource, so that they can be modified or deleted within kobs.
+- [#87](https://github.com/kobsio/kobs/pull/87): Rework Kiali plugin to show the topology chart from Kiali for a list of namespaces.
 
 ### Fixed
 

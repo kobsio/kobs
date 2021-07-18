@@ -15,6 +15,7 @@ import (
 	"github.com/kobsio/kobs/plugins/dashboards"
 	"github.com/kobsio/kobs/plugins/elasticsearch"
 	"github.com/kobsio/kobs/plugins/jaeger"
+	"github.com/kobsio/kobs/plugins/kiali"
 	"github.com/kobsio/kobs/plugins/markdown"
 	"github.com/kobsio/kobs/plugins/prometheus"
 	"github.com/kobsio/kobs/plugins/resources"
@@ -31,6 +32,7 @@ type Config struct {
 	Elasticsearch elasticsearch.Config `yaml:"elasticsearch"`
 	Jaeger        jaeger.Config        `yaml:"jaeger"`
 	Markdown      markdown.Config      `yaml:"markdown"`
+	Kiali         kiali.Config         `yaml:"kiali"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -63,6 +65,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(elasticsearch.Route, elasticsearch.Register(clusters, router.plugins, config.Elasticsearch))
 	router.Mount(jaeger.Route, jaeger.Register(clusters, router.plugins, config.Jaeger))
 	router.Mount(markdown.Route, markdown.Register(clusters, router.plugins, config.Markdown))
+	router.Mount(kiali.Route, kiali.Register(clusters, router.plugins, config.Kiali))
 
 	return router
 }
