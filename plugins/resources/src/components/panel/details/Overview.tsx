@@ -37,7 +37,7 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ request, resource }
     ) : null;
 
   // Overwrite the additions for several resources.
-  if (request.resource === 'Pod') {
+  if (request.resource === 'pods') {
     additions = (
       <Pod
         cluster={resource.cluster?.title}

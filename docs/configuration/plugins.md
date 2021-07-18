@@ -7,6 +7,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | applications | [Applications](#applications) | Configure the caching behaviour for the applications plugin. | No |
 | elasticsearch | [[]Elasticsearch](#elasticsearch) | Configure multiple Elasticsearch instances, which can be used within kobs. | No |
 | jaeger | [[]Jaeger](#jaeger) | Configure multiple Jaeger instances, which can be used within kobs. | No |
+| kiali | [[]Kiali](#kiali) | Configure multiple Kiali instances, which can be used within kobs. | No |
 | prometheus | [[]Prometheus](#prometheus) | Configure multiple Prometheus instances, which can be used within kobs. | No |
 | resources | [Resources](#resources) | Configuration for the resources plugin. | No |
 

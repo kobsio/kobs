@@ -133,8 +133,6 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resou
 		return res, nil
 	}
 
-	fmt.Printf("\n\n\n\n paramName: %s param: %s\n\n\n\n", paramName, param)
-
 	res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Param(paramName, param).DoRaw(ctx)
 	if err != nil {
 		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("GetResources")
