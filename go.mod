@@ -6,6 +6,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.3
 	github.com/go-chi/cors v1.2.0
 	github.com/go-chi/render v1.0.1
+	github.com/kiali/kiali v1.37.0
 	github.com/prometheus/client_golang v1.11.0
 	github.com/prometheus/common v0.26.0
 	github.com/sirupsen/logrus v1.8.1

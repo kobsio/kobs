@@ -28,7 +28,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         title={title}
         message="Options for Application panel are missing"
         details=""
-        documentation=""
+        documentation="https://kobs.io/plugins/applications.html"
       />
     );
   }

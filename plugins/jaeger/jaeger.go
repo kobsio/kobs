@@ -52,7 +52,7 @@ func (router *Router) getServices(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetServices()
+	body, err := i.GetServices(r.Context())
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get services")
 		return
@@ -73,7 +73,7 @@ func (router *Router) getOperations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetOperations(service)
+	body, err := i.GetOperations(r.Context(), service)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get operations")
 		return
@@ -113,7 +113,7 @@ func (router *Router) getTraces(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetTraces(limit, maxDuration, minDuration, operation, service, tags, parsedTimeStart, parsedTimeEnd)
+	body, err := i.GetTraces(r.Context(), limit, maxDuration, minDuration, operation, service, tags, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get traces")
 		return
@@ -134,7 +134,7 @@ func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetTrace(traceID)
+	body, err := i.GetTrace(r.Context(), traceID)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get trace")
 		return

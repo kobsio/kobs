@@ -1,6 +1,7 @@
 package instance
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -42,8 +43,8 @@ type Instance struct {
 
 // doRequest is a helper function to run a request against a Jaeger instance for the given path. It returns the body or
 // if the request failed the error message.
-func (i *Instance) doRequest(url string) (map[string]interface{}, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", i.address, url), nil)
+func (i *Instance) doRequest(ctx context.Context, url string) (map[string]interface{}, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s%s", i.address, url), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -80,20 +81,20 @@ func (i *Instance) doRequest(url string) (map[string]interface{}, error) {
 	return nil, fmt.Errorf("%v", res)
 }
 
-func (i *Instance) GetServices() (map[string]interface{}, error) {
-	return i.doRequest("/api/services")
+func (i *Instance) GetServices(ctx context.Context) (map[string]interface{}, error) {
+	return i.doRequest(ctx, "/api/services")
 }
 
-func (i *Instance) GetOperations(service string) (map[string]interface{}, error) {
-	return i.doRequest(fmt.Sprintf("/api/operations?service=%s", service))
+func (i *Instance) GetOperations(ctx context.Context, service string) (map[string]interface{}, error) {
+	return i.doRequest(ctx, fmt.Sprintf("/api/operations?service=%s", service))
 }
 
-func (i *Instance) GetTraces(limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]interface{}, error) {
-	return i.doRequest(fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d&tags=%s", timeEnd*1000000, limit, maxDuration, minDuration, operation, service, timeStart*1000000, tags))
+func (i *Instance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]interface{}, error) {
+	return i.doRequest(ctx, fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d&tags=%s", timeEnd*1000000, limit, maxDuration, minDuration, operation, service, timeStart*1000000, tags))
 }
 
-func (i *Instance) GetTrace(traceID string) (map[string]interface{}, error) {
-	return i.doRequest(fmt.Sprintf("/api/traces/%s", traceID))
+func (i *Instance) GetTrace(ctx context.Context, traceID string) (map[string]interface{}, error) {
+	return i.doRequest(ctx, fmt.Sprintf("/api/traces/%s", traceID))
 }
 
 // New returns a new Elasticsearch instance for the given configuration.

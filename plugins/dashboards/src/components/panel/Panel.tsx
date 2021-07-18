@@ -17,7 +17,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, d
         title={title}
         message="Options for Dashboards panel are missing or invalid"
         details="The panel doesn't contain the required options to get dashboards or the provided options are invalid."
-        documentation=""
+        documentation="https://kobs.io/plugins/dashboards.html"
       />
     );
   }

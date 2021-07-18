@@ -40,16 +40,17 @@ plugins:
       password:
       token:
 
-kiali:
-  - name: Kiali
-    description: Service mesh management for Istio.
-    address: http://localhost:20001
-    username:
-    password:
-    token:
-    traffic:
-      degraded: 1
-      failure: 5
+  kiali:
+    - name: kiali
+      displayName: Kiali
+      description: Service mesh management for Istio.
+      address: http://localhost:20001
+      username:
+      password:
+      token:
+      traffic:
+        degraded: 1
+        failure: 5
 
 # opsgenie:
 #   - name: Opsgenie
