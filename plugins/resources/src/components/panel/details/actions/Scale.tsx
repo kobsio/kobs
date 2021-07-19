@@ -1,17 +1,8 @@
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertVariant,
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalVariant,
-  NumberInput,
-} from '@patternfly/react-core';
+import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant, NumberInput } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { IRow } from '@patternfly/react-table';
 
+import { IAlert } from '../../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
 
 interface IScaleProps {
@@ -19,11 +10,19 @@ interface IScaleProps {
   resource: IRow;
   show: boolean;
   setShow: (value: boolean) => void;
+  setAlert: (alert: IAlert) => void;
+  refetch: () => void;
 }
 
-const Scale: React.FunctionComponent<IScaleProps> = ({ request, resource, show, setShow }: IScaleProps) => {
+const Scale: React.FunctionComponent<IScaleProps> = ({
+  request,
+  resource,
+  show,
+  setShow,
+  setAlert,
+  refetch,
+}: IScaleProps) => {
   const [replicas, setReplicas] = useState<number>(resource.props?.spec?.replicas || 0);
-  const [error, setError] = useState<string>('');
 
   const handleScale = async (): Promise<void> => {
     try {
@@ -40,6 +39,8 @@ const Scale: React.FunctionComponent<IScaleProps> = ({ request, resource, show, 
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
+        setAlert({ title: `Scale replicas for ${resource.name.title} to ${replicas}`, variant: AlertVariant.success });
+        refetch();
       } else {
         if (json.error) {
           throw new Error(json.error);
@@ -49,28 +50,13 @@ const Scale: React.FunctionComponent<IScaleProps> = ({ request, resource, show, 
       }
     } catch (err) {
       setShow(false);
-      setError(err.message);
+      setAlert({ title: err.message, variant: AlertVariant.danger });
     }
   };
 
   useEffect(() => {
     setReplicas(resource.props?.spec?.replicas || 0);
   }, [resource.props?.spec?.replicas]);
-
-  if (error) {
-    return (
-      <div style={{ height: '100%', minHeight: '100%' }}>
-        <AlertGroup isToast={true}>
-          <Alert
-            isLiveRegion={true}
-            variant={AlertVariant.danger}
-            title={error}
-            actionClose={<AlertActionCloseButton onClick={(): void => setError('')} />}
-          />
-        </AlertGroup>
-      </div>
-    );
-  }
 
   return (
     <Modal

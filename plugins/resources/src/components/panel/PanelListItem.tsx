@@ -20,7 +20,7 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
   selector,
   showDetails,
 }: IPanelListItemProps) => {
-  const { isError, isLoading, error, data } = useQuery<IRow[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IRow[], Error>(
     ['resources/panellistitem', clusters, namespaces, resource.scope, resource.resource, resource.path, selector],
     async () => {
       try {
@@ -52,6 +52,14 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
     },
   );
 
+  // refetchhWithDelay is used to call the refetch function to get the resource, but with a delay of 3 seconde. This is
+  // required, because sometime the Kubenretes isn't that fast after an action (edit, delete, ...) was triggered.
+  const refetchhWithDelay = (): void => {
+    setTimeout(() => {
+      refetch();
+    }, 3000);
+  };
+
   return (
     <Table
       aria-label={resource.title}
@@ -70,7 +78,14 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
         onRowClick={
           showDetails && data && data.length > 0 && data[0].cells?.length === resource.columns.length
             ? (e, row, props, data): void =>
-                showDetails(<Details request={resource} resource={row} close={(): void => showDetails(undefined)} />)
+                showDetails(
+                  <Details
+                    request={resource}
+                    resource={row}
+                    close={(): void => showDetails(undefined)}
+                    refetch={refetchhWithDelay}
+                  />,
+                )
             : undefined
         }
       />

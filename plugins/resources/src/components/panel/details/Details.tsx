@@ -45,9 +45,10 @@ interface IDetailsProps {
   request: IResource;
   resource: IRow;
   close: () => void;
+  refetch: () => void;
 }
 
-const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, close }: IDetailsProps) => {
+const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, close, refetch }: IDetailsProps) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
   const podSelector = getSelector(request, resource);
@@ -63,7 +64,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
-          <Actions request={request} resource={resource} />
+          <Actions request={request} resource={resource} refetch={refetch} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>

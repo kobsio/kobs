@@ -1,30 +1,30 @@
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertVariant,
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalVariant,
-} from '@patternfly/react-core';
+import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { IRow } from '@patternfly/react-table';
 import { compare } from 'fast-json-patch';
 import yaml from 'js-yaml';
 
 import { Editor, IResource } from '@kobsio/plugin-core';
+import { IAlert } from '../../../../utils/interfaces';
 
 interface IEditProps {
   request: IResource;
   resource: IRow;
   show: boolean;
   setShow: (value: boolean) => void;
+  setAlert: (alert: IAlert) => void;
+  refetch: () => void;
 }
 
-const Edit: React.FunctionComponent<IEditProps> = ({ request, resource, show, setShow }: IEditProps) => {
+const Edit: React.FunctionComponent<IEditProps> = ({
+  request,
+  resource,
+  show,
+  setShow,
+  setAlert,
+  refetch,
+}: IEditProps) => {
   const [value, setValue] = useState<string>(yaml.dump(resource.props));
-  const [error, setError] = useState<string>('');
 
   const handleEdit = async (): Promise<void> => {
     try {
@@ -44,6 +44,8 @@ const Edit: React.FunctionComponent<IEditProps> = ({ request, resource, show, se
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
+        setAlert({ title: `${resource.name.title} was saved`, variant: AlertVariant.danger });
+        refetch();
       } else {
         if (json.error) {
           throw new Error(json.error);
@@ -53,28 +55,13 @@ const Edit: React.FunctionComponent<IEditProps> = ({ request, resource, show, se
       }
     } catch (err) {
       setShow(false);
-      setError(err.message);
+      setAlert({ title: err.message, variant: AlertVariant.danger });
     }
   };
 
   useEffect(() => {
     setValue(yaml.dump(resource.props));
   }, [resource.props]);
-
-  if (error) {
-    return (
-      <div style={{ height: '100%', minHeight: '100%' }}>
-        <AlertGroup isToast={true}>
-          <Alert
-            isLiveRegion={true}
-            variant={AlertVariant.danger}
-            title={error}
-            actionClose={<AlertActionCloseButton onClick={(): void => setError('')} />}
-          />
-        </AlertGroup>
-      </div>
-    );
-  }
 
   return (
     <Modal
