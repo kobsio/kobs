@@ -1,17 +1,9 @@
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertVariant,
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalVariant,
-} from '@patternfly/react-core';
-import React, { useState } from 'react';
+import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { IRow } from '@patternfly/react-table';
+import React from 'react';
 import { V1Job } from '@kubernetes/client-node';
 
+import { IAlert } from '../../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
 
 export const randomString = (length: number): string => {
@@ -31,11 +23,18 @@ interface ICreateJobProps {
   resource: IRow;
   show: boolean;
   setShow: (value: boolean) => void;
+  setAlert: (alert: IAlert) => void;
+  refetch: () => void;
 }
 
-const CreateJob: React.FunctionComponent<ICreateJobProps> = ({ request, resource, show, setShow }: ICreateJobProps) => {
-  const [error, setError] = useState<string>('');
-
+const CreateJob: React.FunctionComponent<ICreateJobProps> = ({
+  request,
+  resource,
+  show,
+  setShow,
+  setAlert,
+  refetch,
+}: ICreateJobProps) => {
   const jobName = `${
     resource.props && resource.props.metadata && resource.props.metadata.name ? resource.props.metadata.name : ''
   }-manual-${randomString(6)}`.toLowerCase();
@@ -87,6 +86,8 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({ request, resource
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
+        setAlert({ title: `Job ${jobName} was created`, variant: AlertVariant.danger });
+        refetch();
       } else {
         if (json.error) {
           throw new Error(json.error);
@@ -96,24 +97,9 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({ request, resource
       }
     } catch (err) {
       setShow(false);
-      setError(err.message);
+      setAlert({ title: err.message, variant: AlertVariant.danger });
     }
   };
-
-  if (error) {
-    return (
-      <div style={{ height: '100%', minHeight: '100%' }}>
-        <AlertGroup isToast={true}>
-          <Alert
-            isLiveRegion={true}
-            variant={AlertVariant.danger}
-            title={error}
-            actionClose={<AlertActionCloseButton onClick={(): void => setError('')} />}
-          />
-        </AlertGroup>
-      </div>
-    );
-  }
 
   return (
     <Modal
