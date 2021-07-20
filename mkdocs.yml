@@ -47,6 +47,7 @@ nav:
       - Getting Started: contributing/getting-started.md
       - Add a Plugin: contributing/add-a-plugin.md
       - Development using the Demo: contributing/development-using-the-demo.md
+      - Release: contributing/release.md
 
 plugins:
   - search
