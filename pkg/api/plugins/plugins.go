@@ -17,6 +17,7 @@ import (
 	"github.com/kobsio/kobs/plugins/jaeger"
 	"github.com/kobsio/kobs/plugins/kiali"
 	"github.com/kobsio/kobs/plugins/markdown"
+	"github.com/kobsio/kobs/plugins/opsgenie"
 	"github.com/kobsio/kobs/plugins/prometheus"
 	"github.com/kobsio/kobs/plugins/resources"
 	"github.com/kobsio/kobs/plugins/teams"
@@ -33,6 +34,7 @@ type Config struct {
 	Jaeger        jaeger.Config        `yaml:"jaeger"`
 	Markdown      markdown.Config      `yaml:"markdown"`
 	Kiali         kiali.Config         `yaml:"kiali"`
+	Opsgenie      opsgenie.Config      `yaml:"opsgenie"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -66,6 +68,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(jaeger.Route, jaeger.Register(clusters, router.plugins, config.Jaeger))
 	router.Mount(markdown.Route, markdown.Register(clusters, router.plugins, config.Markdown))
 	router.Mount(kiali.Route, kiali.Register(clusters, router.plugins, config.Kiali))
+	router.Mount(opsgenie.Route, opsgenie.Register(clusters, router.plugins, config.Opsgenie))
 
 	return router
 }

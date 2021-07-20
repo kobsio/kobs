@@ -13,6 +13,7 @@ import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
 import jaegerPlugin from '@kobsio/plugin-jaeger';
 import kialiPlugin from '@kobsio/plugin-kiali';
 import markdownPlugin from '@kobsio/plugin-markdown';
+import opsgeniePlugin from '@kobsio/plugin-opsgenie';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -26,6 +27,7 @@ ReactDOM.render(
       ...jaegerPlugin,
       ...kialiPlugin,
       ...markdownPlugin,
+      ...opsgeniePlugin,
     }} />
   </React.StrictMode>,
   document.getElementById('root')
