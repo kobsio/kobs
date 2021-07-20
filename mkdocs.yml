@@ -39,6 +39,7 @@ nav:
       - Jaeger: plugins/jaeger.md
       - Kiali: plugins/kiali.md
       - Markdown: plugins/markdown.md
+      - Opsgenie: plugins/opsgenie.md
       - Prometheus: plugins/prometheus.md
       - Resources: plugins/resources.md
       - Teams: plugins/teams.md

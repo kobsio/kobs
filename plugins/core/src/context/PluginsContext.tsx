@@ -29,6 +29,12 @@ export interface IPluginData {
   displayName: string;
   description: string;
   type: string;
+  options?: IPluginDataOptions;
+}
+
+export interface IPluginDataOptions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 // IPluginPageProps are the properties for the page component of each plugin. While the displayName and description are

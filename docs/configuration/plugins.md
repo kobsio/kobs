@@ -8,6 +8,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | elasticsearch | [[]Elasticsearch](#elasticsearch) | Configure multiple Elasticsearch instances, which can be used within kobs. | No |
 | jaeger | [[]Jaeger](#jaeger) | Configure multiple Jaeger instances, which can be used within kobs. | No |
 | kiali | [[]Kiali](#kiali) | Configure multiple Kiali instances, which can be used within kobs. | No |
+| opsgenie | [[]Opsgenie](#opsgenie) | Configure the Opsgenie API, which can be used within kobs. | No |
 | prometheus | [[]Prometheus](#prometheus) | Configure multiple Prometheus instances, which can be used within kobs. | No |
 | resources | [Resources](#resources) | Configuration for the resources plugin. | No |
 
@@ -93,7 +94,7 @@ plugins:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Kiali instance. | Yes |
-| displayName | string | Name of the Kiali as it is shown in the UI. | Yes |
+| displayName | string | Name of the Kiali instance as it is shown in the UI. | Yes |
 | descriptions | string | Description of the Kiali instance. | No |
 | address | string | Address of the Kiali instance. | Yes |
 | username | string | Username to access a Kiali instance via basic authentication. | No |
@@ -101,6 +102,30 @@ plugins:
 | token | string | Token to access a Kiali instance via token based authentication. | No |
 | traffic.failure | number | Threshold to mark edges with failures. This must be a number between `0` and `100`. The default value is `5`. | No |
 | traffic.degraded | number | Threshold to mark edges with degraded performance. This must be a number between `0` and `100`. The default value is `1`. | No |
+
+## Opsgenie
+
+The following configuration can be used to access the Opsgenie API.
+
+```yaml
+plugins:
+  opsgenie:
+    - name: opsgenie
+      displayName: Opsgenie
+      description: On-call and alert management to keep services always on.
+      apiUrl: api.eu.opsgenie.com
+      apiKey: ${OPSGENIE_API_KEY}
+      url: https://<your-organisation>.app.eu.opsgenie.com
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Opsgenie instance. | Yes |
+| displayName | string | Name of the Opsgenie instance as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Opsgenie instance. | No |
+| apiKey | string | API Key for the Opsgenie API. More information can be found at [API key management](https://support.atlassian.com/opsgenie/docs/api-key-management/). | Yes |
+| apiUrl | string | API URL for the Opsgenie API. Must be `api.opsgenie.com` or `api.eu.opsgenie.com`. | Yes |
+| url | string | The address for the Opsgenie account of your organisation | No |
 
 ## Prometheus
 
