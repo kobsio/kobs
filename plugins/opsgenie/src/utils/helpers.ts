@@ -11,7 +11,7 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   const timeStart = params.get('timeStart');
 
   return {
-    query: query ? query : 'status: open',
+    query: query === null ? 'status: open' : query,
     times: {
       time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
       timeEnd:

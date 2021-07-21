@@ -144,8 +144,8 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resou
 
 // DeleteResource can be used to delete the given resource. The resource is identified by the Kubernetes API path and
 // the name of the resource.
-func (c *Cluster) DeleteResource(ctx context.Context, namespace, name, path, resource string) error {
-	_, err := c.clientset.RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
+func (c *Cluster) DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
+	_, err := c.clientset.RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("DeleteResource")
 		return err

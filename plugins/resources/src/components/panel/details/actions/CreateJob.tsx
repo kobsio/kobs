@@ -86,7 +86,7 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `Job ${jobName} was created`, variant: AlertVariant.danger });
+        setAlert({ title: `Job ${jobName} was created`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {
