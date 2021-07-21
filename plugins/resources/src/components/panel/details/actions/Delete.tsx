@@ -1,6 +1,6 @@
-import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import { AlertVariant, Button, ButtonVariant, Checkbox, Modal, ModalVariant } from '@patternfly/react-core';
+import React, { useState } from 'react';
 import { IRow } from '@patternfly/react-table';
-import React from 'react';
 
 import { IAlert } from '../../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
@@ -22,19 +22,21 @@ const Delete: React.FunctionComponent<IDeleteProps> = ({
   setAlert,
   refetch,
 }: IDeleteProps) => {
+  const [force, setForce] = useState<boolean>(false);
+
   const handleDelete = async (): Promise<void> => {
     try {
       const response = await fetch(
         `/api/plugins/resources/resources?cluster=${resource.cluster.title}${
           resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&resource=${request.resource}&path=${request.path}`,
+        }&name=${resource.name.title}&resource=${request.resource}&path=${request.path}&force=${force}`,
         { method: 'delete' },
       );
       const json = await response.json();
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `${resource.name.title} was deleted`, variant: AlertVariant.danger });
+        setAlert({ title: `${resource.name.title} was deleted`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {
@@ -68,6 +70,15 @@ const Delete: React.FunctionComponent<IDeleteProps> = ({
         Do you really want to delete <b>{resource.name.title}</b> (
         {resource.namespace ? `${resource.namespace.title} ${resource.cluster.title}` : resource.cluster.title})?
       </p>
+      <p>&nbsp;</p>
+      <Checkbox
+        label="Force"
+        isChecked={force}
+        onChange={setForce}
+        aria-label="Force"
+        id="force-delete"
+        name="force-delete"
+      />
     </Modal>
   );
 };

@@ -137,12 +137,15 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 
 // deleteResource handles the deletion of a resource. The resource can be identified by the given cluster, namespace,
 // name, resource and path.
+// When the user sets the "force" parameter to "true" we will set a body on the delete request, where we set the
+// "gracePeriodSeconds" to 0. This will cause the same behaviour as "kubectl delete --force --grace-period 0".
 func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 	resource := r.URL.Query().Get("resource")
 	path := r.URL.Query().Get("path")
+	force := r.URL.Query().Get("force")
 
 	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "resource": resource, "path": path}).Tracef("deleteResource")
 
@@ -157,7 +160,18 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := cluster.DeleteResource(r.Context(), namespace, name, path, resource)
+	parsedForce, err := strconv.ParseBool(force)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse force parameter")
+		return
+	}
+
+	var body []byte
+	if parsedForce {
+		body = []byte(`{"gracePeriodSeconds": 0}`)
+	}
+
+	err = cluster.DeleteResource(r.Context(), namespace, name, path, resource, body)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not delete resource")
 		return
