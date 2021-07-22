@@ -8,8 +8,6 @@ import (
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/httplog"
-	"github.com/kobsio/kobs/pkg/api/plugins"
-	"github.com/kobsio/kobs/pkg/config"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -68,12 +66,7 @@ func (s *Server) Stop() {
 
 // New return a new api server. It creates the underlying http server, with the defined address from the api.address
 // flag.
-func New(cfg *config.Config, isDevelopment bool) (*Server, error) {
-	loadedClusters, err := clusters.Load(cfg.Clusters)
-	if err != nil {
-		return nil, err
-	}
-
+func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopment bool) (*Server, error) {
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Recoverer)
@@ -94,7 +87,7 @@ func New(cfg *config.Config, isDevelopment bool) (*Server, error) {
 			render.JSON(w, r, nil)
 		})
 		r.Mount("/clusters", clusters.NewRouter(loadedClusters))
-		r.Mount("/plugins", plugins.Register(loadedClusters, cfg.Plugins))
+		r.Mount("/plugins", pluginsRouter)
 	})
 
 	return &Server{

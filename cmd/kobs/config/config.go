@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/kobsio/kobs/cmd/kobs/plugins"
 	"github.com/kobsio/kobs/pkg/api/clusters"
-	"github.com/kobsio/kobs/pkg/api/plugins"
 
 	"gopkg.in/yaml.v2"
 )
