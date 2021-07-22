@@ -51,7 +51,6 @@ const GraphWrapper: React.FunctionComponent<IGraphWrapperProps> = ({
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {

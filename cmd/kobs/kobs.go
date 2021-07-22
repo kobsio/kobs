@@ -6,9 +6,11 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/kobsio/kobs/cmd/kobs/config"
+	"github.com/kobsio/kobs/cmd/kobs/plugins"
 	"github.com/kobsio/kobs/pkg/api"
+	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/app"
-	"github.com/kobsio/kobs/pkg/config"
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/version"
 
@@ -82,7 +84,7 @@ func main() {
 	// Load the configuration for kobs from the provided configuration file.
 	cfg, err := config.Load(configFile)
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"config": configFile}).Fatalf("Could not load configuration file.")
+		log.WithError(err).WithFields(logrus.Fields{"config": configFile}).Fatalf("Could not load configuration file")
 	}
 
 	// When the version value is set to "true" (--version) we will print the version information for kobs. After we
@@ -102,19 +104,31 @@ func main() {
 	log.WithFields(version.Info()).Infof("Version information")
 	log.WithFields(version.BuildContext()).Infof("Build context")
 
+	// Load all cluster for the given clusters configuration and create the chi router for all plugins. We do not hanle
+	// this within the API package, so that users can build their own version of kobs using the kobsio/kobs-app
+	// repository.
+	// The loaded clusters and the router for the plugins is then passed to the api package, so we can access all the
+	// plugin api routes via the kobs api.
+	loadedClusters, err := clusters.Load(cfg.Clusters)
+	if err != nil {
+		log.WithError(err).Fatalf("Could not load clusters")
+	}
+
+	pluginsRouter := plugins.Register(loadedClusters, cfg.Plugins)
+
 	// Initialize each component and start it in it's own goroutine, so that the main goroutine is only used as listener
 	// for terminal signals, to initialize the graceful shutdown of the components.
 	// The appServer is the kobs application server, which serves the React frontend and the health endpoint. The
 	// metrics server is used to serve the kobs metrics.
-	apiServer, err := api.New(cfg, isDevelopment)
+	apiServer, err := api.New(loadedClusters, pluginsRouter, isDevelopment)
 	if err != nil {
-		log.WithError(err).Fatalf("Could not create API server.")
+		log.WithError(err).Fatalf("Could not create API server")
 	}
 	go apiServer.Start()
 
 	appServer, err := app.New(isDevelopment)
 	if err != nil {
-		log.WithError(err).Fatalf("Could not create Application server.")
+		log.WithError(err).Fatalf("Could not create Application server")
 	}
 	go appServer.Start()
 
@@ -127,9 +141,9 @@ func main() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	log.Debugf("Start listining for SIGINT and SIGTERM signal.")
+	log.Debugf("Start listining for SIGINT and SIGTERM signal")
 	<-done
-	log.Debugf("Start shutdown process.")
+	log.Debugf("Start shutdown process")
 
 	metricsServer.Stop()
 	appServer.Stop()

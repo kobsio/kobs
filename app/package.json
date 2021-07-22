@@ -11,6 +11,7 @@
     "@kobsio/plugin-jaeger": "*",
     "@kobsio/plugin-kiali": "*",
     "@kobsio/plugin-markdown": "*",
+    "@kobsio/plugin-opsgenie": "*",
     "@kobsio/plugin-prometheus": "*",
     "@kobsio/plugin-resources": "*",
     "@kobsio/plugin-teams": "*",

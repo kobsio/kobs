@@ -44,7 +44,7 @@ const Edit: React.FunctionComponent<IEditProps> = ({
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `${resource.name.title} was saved`, variant: AlertVariant.danger });
+        setAlert({ title: `${resource.name.title} was saved`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {

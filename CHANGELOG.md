@@ -15,6 +15,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#84](https://github.com/kobsio/kobs/pull/84): Add actions for resource, so that they can be modified or deleted within kobs.
 - [#87](https://github.com/kobsio/kobs/pull/87): Rework Kiali plugin to show the topology chart from Kiali for a list of namespaces.
 - [#89](https://github.com/kobsio/kobs/pull/89): Rework Opsgenie plugin to show alerts and incidents from Opsgenie.
+- [#91](https://github.com/kobsio/kobs/pull/91): Add force delete option for Kubernetes resources.
+- [#92](https://github.com/kobsio/kobs/pull/92): Preparation to build a own version of kobs using the [kobsio/app](https://github.com/kobsio/app) template.
 
 ### Fixed
 
