@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import './index.css';
+
 // Import plugins. Here we import all plugins, which we want to add to the current kobs app. By default this are all
 // first party plugins from the /plugins folder.
 import { App } from '@kobsio/plugin-core';
