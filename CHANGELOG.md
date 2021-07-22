@@ -17,6 +17,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#89](https://github.com/kobsio/kobs/pull/89): Rework Opsgenie plugin to show alerts and incidents from Opsgenie.
 - [#91](https://github.com/kobsio/kobs/pull/91): Add force delete option for Kubernetes resources.
 - [#92](https://github.com/kobsio/kobs/pull/92): Preparation to build a own version of kobs using the [kobsio/app](https://github.com/kobsio/app) template.
+- [#93](https://github.com/kobsio/kobs/pull/93): Show status of Kubernetes resource in the table of the resources plugin.
 
 ### Fixed
 

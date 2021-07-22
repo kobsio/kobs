@@ -36,13 +36,17 @@ import {
   V1beta1PodSecurityPolicyList,
   V2beta1HorizontalPodAutoscalerList,
 } from '@kubernetes/client-node';
+import { SearchIcon, SquareIcon } from '@patternfly/react-icons';
 import { IRow } from '@patternfly/react-table';
 import { JSONPath } from 'jsonpath-plus';
 import React from 'react';
-import { SearchIcon } from '@patternfly/react-icons';
 
 import { getLabelSelector } from './manifests';
 import { timeDifference } from './time';
+
+const COLOR_OK = 'var(--pf-global--success-color--100)';
+const COLOR_WARNING = 'var(--pf-global--warning-color--100)';
+const COLOR_DANGER = 'var(--pf-global--danger-color--100)';
 
 // IResourceItems is a list of resources for the cluster and namespace. The resources field contains a list of json
 // manifests, which are representing the resources. This interface is used as input for the rows function of the
@@ -149,6 +153,7 @@ export const resources: IResources = {
       'Available',
       'Node Selector',
       'Age',
+      '',
     ],
     description: 'A DaemonSet ensures that all (or some) Nodes run a copy of a Pod.',
     isCRD: false,
@@ -178,6 +183,15 @@ export const resources: IResources = {
             nodeSelector.push(`${key}=${daemonSet.spec?.template.spec?.nodeSelector[key]}`);
           }
 
+          let status = COLOR_WARNING;
+          if (daemonSet.status && daemonSet.status.numberMisscheduled > 0) {
+            status = COLOR_DANGER;
+          } else if (desired === current && desired === ready && desired === upToDate && desired === available) {
+            status = COLOR_OK;
+          } else if (current === 0 || ready === 0 || upToDate === 0 || available) {
+            status = COLOR_DANGER;
+          }
+
           rows.push({
             cells: [
               daemonSet.metadata?.name,
@@ -190,6 +204,9 @@ export const resources: IResources = {
               available,
               nodeSelector.join(', '),
               age,
+              <span key="status">
+                <SquareIcon color={status} />
+              </span>,
             ],
             props: daemonSet,
           });
@@ -202,7 +219,7 @@ export const resources: IResources = {
     title: 'Daemon Sets',
   },
   deployments: {
-    columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Up to date', 'Available', 'Age'],
+    columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Up to date', 'Available', 'Age', ''],
     description: 'A Deployment provides declarative updates for Pods and ReplicaSets.',
     isCRD: false,
     path: '/apis/apps/v1',
@@ -225,6 +242,13 @@ export const resources: IResources = {
           const upToDate = deployment.status?.updatedReplicas ? deployment.status?.updatedReplicas : 0;
           const available = deployment.status?.availableReplicas ? deployment.status?.availableReplicas : 0;
 
+          let status = COLOR_WARNING;
+          if (shouldReady === ready && shouldReady === upToDate && shouldReady === available) {
+            status = COLOR_OK;
+          } else if (ready === 0 || upToDate === 0 || available) {
+            status = COLOR_DANGER;
+          }
+
           rows.push({
             cells: [
               deployment.metadata?.name,
@@ -234,6 +258,9 @@ export const resources: IResources = {
               upToDate,
               available,
               age,
+              <span key="status">
+                <SquareIcon color={status} />
+              </span>,
             ],
             props: deployment,
           });
@@ -246,7 +273,7 @@ export const resources: IResources = {
     title: 'Deployments',
   },
   jobs: {
-    columns: ['Name', 'Namespace', 'Cluster', 'Completions', 'Duration', 'Age'],
+    columns: ['Name', 'Namespace', 'Cluster', 'Completions', 'Duration', 'Age', ''],
     description:
       'A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate.',
     isCRD: false,
@@ -272,6 +299,11 @@ export const resources: IResources = {
                 )
               : '-';
 
+          let status = COLOR_OK;
+          if (completions !== completionsShould && completionsShould !== 0) {
+            status = COLOR_DANGER;
+          }
+
           rows.push({
             cells: [
               job.metadata?.name,
@@ -280,6 +312,9 @@ export const resources: IResources = {
               `${completions}/${completionsShould}`,
               duration,
               age,
+              <span key="status">
+                <SquareIcon color={status} />
+              </span>,
             ],
             props: job,
           });
@@ -292,7 +327,7 @@ export const resources: IResources = {
     title: 'Jobs',
   },
   pods: {
-    columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Status', 'Restarts', 'Age'],
+    columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Status', 'Restarts', 'Age', ''],
     description: 'Pods are the smallest deployable units of computing that you can create and manage in Kubernetes.',
     isCRD: false,
     path: '/api/v1',
@@ -343,6 +378,17 @@ export const resources: IResources = {
               reason ? reason : phase,
               restarts,
               age,
+              <span key="status">
+                <SquareIcon
+                  color={
+                    phase === 'Running' || phase === 'Succeeded'
+                      ? COLOR_OK
+                      : phase === 'Unknown'
+                      ? COLOR_WARNING
+                      : COLOR_DANGER
+                  }
+                />
+              </span>,
             ],
             props: pod,
           });
@@ -355,7 +401,7 @@ export const resources: IResources = {
     title: 'Pods',
   },
   replicasets: {
-    columns: ['Name', 'Namespace', 'Cluster', 'Desired', 'Current', 'Ready', 'Age'],
+    columns: ['Name', 'Namespace', 'Cluster', 'Desired', 'Current', 'Ready', 'Age', ''],
     description: "A ReplicaSet's purpose is to maintain a stable set of replica Pods running at any given time.",
     isCRD: false,
     path: '/apis/apps/v1',
@@ -377,8 +423,24 @@ export const resources: IResources = {
           const current = replicaSet.status?.availableReplicas ? replicaSet.status?.availableReplicas : 0;
           const ready = replicaSet.status?.readyReplicas ? replicaSet.status?.readyReplicas : 0;
 
+          let status = COLOR_OK;
+          if (desired !== 0 && desired !== current && desired !== ready) {
+            status = COLOR_DANGER;
+          }
+
           rows.push({
-            cells: [replicaSet.metadata?.name, item.namespace, item.cluster, desired, current, ready, age],
+            cells: [
+              replicaSet.metadata?.name,
+              item.namespace,
+              item.cluster,
+              desired,
+              current,
+              ready,
+              age,
+              <span key="status">
+                <SquareIcon color={status} />
+              </span>,
+            ],
             props: replicaSet,
           });
         }
@@ -390,7 +452,7 @@ export const resources: IResources = {
     title: 'Replica Sets',
   },
   statefulsets: {
-    columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Up to date', 'Age'],
+    columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Up to date', 'Age', ''],
     description: 'StatefulSet is the workload API object used to manage stateful applications.',
     isCRD: false,
     path: '/apis/apps/v1',
@@ -412,8 +474,25 @@ export const resources: IResources = {
           const shouldReady = statefulSet.status?.replicas ? statefulSet.status?.replicas : 0;
           const upToDate = statefulSet.status?.updatedReplicas ? statefulSet.status?.updatedReplicas : 0;
 
+          let status = COLOR_WARNING;
+          if (shouldReady === 0 || (shouldReady === ready && shouldReady === upToDate)) {
+            status = COLOR_OK;
+          } else if (ready === 0 || upToDate === 0) {
+            status = COLOR_DANGER;
+          }
+
           rows.push({
-            cells: [statefulSet.metadata?.name, item.namespace, item.cluster, `${ready}/${shouldReady}`, upToDate, age],
+            cells: [
+              statefulSet.metadata?.name,
+              item.namespace,
+              item.cluster,
+              `${ready}/${shouldReady}`,
+              upToDate,
+              age,
+              <span key="status">
+                <SquareIcon color={status} />
+              </span>,
+            ],
             props: statefulSet,
           });
         }
@@ -779,7 +858,7 @@ export const resources: IResources = {
     title: 'Persistent Volumes',
   },
   poddisruptionbudgets: {
-    columns: ['Name', 'Namespace', 'Cluster', 'Min. Available', 'Max. Unavailable', 'Allowed Disruptions', 'Age'],
+    columns: ['Name', 'Namespace', 'Cluster', 'Min. Available', 'Max. Unavailable', 'Allowed Disruptions', 'Age', ''],
     description: '',
     isCRD: false,
     path: '/apis/policy/v1beta1',
@@ -798,6 +877,16 @@ export const resources: IResources = {
               ? timeDifference(new Date().getTime(), new Date(pdb.metadata.creationTimestamp.toString()).getTime())
               : '-';
 
+          let status = COLOR_OK;
+          if (
+            !pdb.status ||
+            !pdb.status.currentHealthy ||
+            !pdb.status.desiredHealthy ||
+            pdb.status.currentHealthy < pdb.status.desiredHealthy
+          ) {
+            status = COLOR_DANGER;
+          }
+
           rows.push({
             cells: [
               pdb.metadata?.name,
@@ -807,6 +896,9 @@ export const resources: IResources = {
               maxUnavailable,
               allowedDisruptions,
               age,
+              <span key="status">
+                <SquareIcon color={status} />
+              </span>,
             ],
             props: pdb,
           });
