@@ -48,6 +48,7 @@ nav:
       - Add a Plugin: contributing/add-a-plugin.md
       - Development using the Demo: contributing/development-using-the-demo.md
       - Using the kobsio/app: contributing/using-the-kobsio-app.md
+      - Release: contributing/release.md
 
 plugins:
   - search
