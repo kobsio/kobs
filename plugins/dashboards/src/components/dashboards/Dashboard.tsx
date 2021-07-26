@@ -116,7 +116,8 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                   tmpVariables[i].value =
                     json && json.includes(tmpVariables[i].value) ? tmpVariables[i].value : json ? json[0] : '';
                 } else {
-                  throw new Error(`No values for variable ${tmpVariables[i].label || tmpVariables[i].name}`);
+                  tmpVariables[i].values = [''];
+                  tmpVariables[i].value = '';
                 }
               } else {
                 if (json.error) {

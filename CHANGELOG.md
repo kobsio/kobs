@@ -21,6 +21,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#94](https://github.com/kobsio/kobs/pull/94): Fix variable handling for dashboards.
+
 ### Changed
 
 - [#82](https://github.com/kobsio/kobs/pull/82): Improve error handling for our API.
