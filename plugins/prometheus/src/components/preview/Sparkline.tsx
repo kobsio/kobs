@@ -41,7 +41,11 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return convertMetrics(json).series;
+          if (json) {
+            return convertMetrics(json).series;
+          } else {
+            return [];
+          }
         } else {
           if (json.error) {
             throw new Error(json.error);
@@ -58,11 +62,16 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
 
   // Determine the label which should be shown above the chart. This is the last value in first metric of the returned
   // data or a value from the user specified mappings.
-  let label = '';
-  if (data && options.mappings && Object.keys(options.mappings).length > 0) {
-    label = getMappingValue(data[0].data[data[0].data.length - 1].y, options.mappings);
-  } else if (data) {
-    label = `${data[0].data[data[0].data.length - 1].y} ${options.unit ? options.unit : ''}`;
+  let label = 'N/A';
+  if (data && data.length > 0) {
+    if (options.mappings && Object.keys(options.mappings).length > 0) {
+      label = getMappingValue(data[0].data[data[0].data.length - 1].y, options.mappings);
+    } else {
+      label =
+        data[0].data[data[0].data.length - 1].y === null
+          ? 'N/A'
+          : `${data[0].data[data[0].data.length - 1].y} ${options.unit ? options.unit : ''}`;
+    }
   }
 
   return (

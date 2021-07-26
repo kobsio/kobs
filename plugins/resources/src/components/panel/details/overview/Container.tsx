@@ -15,7 +15,7 @@ const getContainerStatus = (state: V1ContainerState): string => {
   if (state.running) {
     return `Started at ${state.running.startedAt}`;
   } else if (state.waiting) {
-    return `Waiting: ${state.waiting.message}`;
+    return state.waiting.message ? `Waiting: ${state.waiting.message}` : 'Waiting';
   } else if (state.terminated) {
     return `Terminated with ${state.terminated.exitCode} at ${state.terminated.finishedAt}: ${state.terminated.reason}`;
   }
