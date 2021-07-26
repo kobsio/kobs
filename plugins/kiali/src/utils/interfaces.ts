@@ -1,8 +1,17 @@
+import { Serie } from '@nivo/line';
+
+import { IPluginTimes } from '@kobsio/plugin-core';
+
+// IOptions is the interface for the Kiali page.
+export interface IOptions {
+  namespaces?: string[];
+  times: IPluginTimes;
+}
+
 // IPanelOptions is the interface for the options property for the Kiali panel component. A user can set a list of
 // namespaces and a duration to overwrite the selected time range in the dashboard.
 export interface IPanelOptions {
   namespaces?: string[];
-  duration?: number;
 }
 
 // IGraph is the interface for the Kiali topology graph including our custom fields. It should implement the same fields
@@ -98,11 +107,18 @@ export interface ITraffic {
 export interface ITrafficHTTPRates {
   http: string;
   httpPercentErr?: string;
+  httpIn?: string;
+  httpIn4xx?: string;
+  httpIn5xx?: string;
+  httpInNoResponse?: string;
+  httpOut?: string;
 }
 
 export interface ITrafficGRPCRates {
   grpc: string;
   grpcPercentErr?: string;
+  grpcIn?: string;
+  grpcOut?: string;
 }
 
 export interface ITrafficTCPRates {
@@ -132,3 +148,51 @@ export type IHealthConfig = {
 
 export type TNodeType = 'aggregate' | 'app' | 'box' | 'service' | 'serviceentry' | 'unknown' | 'workload';
 export type TProtocols = 'http' | 'grpc' | 'tcp';
+
+// IMetricsMap is the interface for the returned metrics from the Kiali API.
+// See: https://github.com/kiali/kiali-ui/blob/master/src/types/Metrics.ts
+export type IMetricsMap = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  request_count?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  request_error_count?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  request_duration_millis?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  request_throughput?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  response_throughput?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  request_size?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  response_size?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  tcp_received?: IMetric[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  tcp_sent?: IMetric[];
+};
+
+export interface IMetric {
+  labels: ILabels;
+  datapoints: IDatapoint[];
+  name: string;
+  stat?: string;
+}
+
+export type ILabels = {
+  [key: string]: string;
+};
+
+export type IDatapoint = [number, number];
+
+// IChart is the interface to render a chart for the returned data from the Kiali API. To get the serues data we have
+// to use the convertMetrics function from the helpers.ts file.
+export interface IChart {
+  series: ISerie[];
+  title: string;
+  unit: string;
+}
+
+export interface ISerie extends Serie {
+  label: string;
+}

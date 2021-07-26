@@ -12,4 +12,3 @@ The following options can be used for a panel with the Kiali plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | namespaces | string | A list of namespaces for which the topology graph should be shown. | Yes |
-| duration | number | The duration for the metrics in the topology chart in seconds (e.g. `900`). If no duration is provided the duration will be calculated be the selected time range in the dashboard. | No |

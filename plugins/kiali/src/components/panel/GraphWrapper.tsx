@@ -5,28 +5,31 @@ import cytoscape from 'cytoscape';
 
 import Graph from './Graph';
 import { IGraph } from '../../utils/interfaces';
+import { IPluginTimes } from '@kobsio/plugin-core';
 
 interface IGraphWrapperProps {
   name: string;
   namespaces: string[];
-  duration: number;
+  times: IPluginTimes;
   setDetails?: (details: React.ReactNode) => void;
 }
 
 const GraphWrapper: React.FunctionComponent<IGraphWrapperProps> = ({
   name,
   namespaces,
-  duration,
+  times,
   setDetails,
 }: IGraphWrapperProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IGraph, Error>(
-    ['jaeger/traces', name, duration, namespaces],
+    ['kiali/graph', name, times, namespaces],
     async () => {
       try {
         const namespaceParams = namespaces.map((namespace) => `namespace=${namespace}`).join('&');
 
         const response = await fetch(
-          `/api/plugins/kiali/graph/${name}?duration=${duration}&graphType=versionedApp&injectServiceNodes=true&groupBy=app${[
+          `/api/plugins/kiali/graph/${name}?duration=${
+            times.timeEnd - times.timeStart
+          }&graphType=versionedApp&injectServiceNodes=true&groupBy=app${[
             'deadNode',
             'sidecarsCheck',
             'serviceEntry',
@@ -87,7 +90,7 @@ const GraphWrapper: React.FunctionComponent<IGraphWrapperProps> = ({
     <div style={{ height: '100%', minHeight: '100%' }}>
       <Graph
         name={name}
-        duration={duration}
+        times={times}
         edges={data.elements.edges as cytoscape.ElementDefinition[]}
         nodes={data.elements.nodes as cytoscape.ElementDefinition[]}
         setDetails={setDetails}
@@ -99,7 +102,7 @@ const GraphWrapper: React.FunctionComponent<IGraphWrapperProps> = ({
 export default memo(GraphWrapper, (prevProps, nextProps) => {
   if (
     JSON.stringify(prevProps.namespaces) === JSON.stringify(nextProps.namespaces) &&
-    prevProps.duration === nextProps.duration
+    JSON.stringify(prevProps.times) === JSON.stringify(nextProps.times)
   ) {
     return true;
   }

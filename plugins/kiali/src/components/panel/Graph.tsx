@@ -4,8 +4,9 @@ import cytoscape from 'cytoscape';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 import dagre from 'cytoscape-dagre';
 
-import { INodeData, INodeWrapper } from '../../utils/interfaces';
+import { IEdgeWrapper, INodeData, INodeWrapper } from '../../utils/interfaces';
 import Edge from './details/Edge';
+import { IPluginTimes } from '@kobsio/plugin-core';
 import Node from './details/Node';
 
 cytoscape.use(dagre);
@@ -179,13 +180,13 @@ const nodeLabel = (node: INodeData): string => {
 
 interface IGraphProps {
   name: string;
-  duration: number;
+  times: IPluginTimes;
   edges: cytoscape.ElementDefinition[];
   nodes: cytoscape.ElementDefinition[];
   setDetails?: (details: React.ReactNode) => void;
 }
 
-const Graph: React.FunctionComponent<IGraphProps> = ({ name, duration, edges, nodes, setDetails }: IGraphProps) => {
+const Graph: React.FunctionComponent<IGraphProps> = ({ name, times, edges, nodes, setDetails }: IGraphProps) => {
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -200,14 +201,23 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ name, duration, edges, no
       const data = ele.data();
 
       if (data.nodeType && setDetails) {
-        setDetails(<Node duration={duration} name={name} node={data} close={(): void => setDetails(undefined)} />);
+        setDetails(
+          <Node
+            name={name}
+            times={times}
+            node={data}
+            nodes={nodes as INodeWrapper[]}
+            edges={edges as IEdgeWrapper[]}
+            close={(): void => setDetails(undefined)}
+          />,
+        );
       }
 
       if (data.edgeType && setDetails) {
         setDetails(
           <Edge
             name={name}
-            duration={duration}
+            times={times}
             edge={data}
             nodes={nodes as INodeWrapper[]}
             close={(): void => setDetails(undefined)}
@@ -216,7 +226,7 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ name, duration, edges, no
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [name, duration, nodes, setDetails],
+    [name, times, nodes, setDetails],
   );
 
   const cyCallback = useCallback(

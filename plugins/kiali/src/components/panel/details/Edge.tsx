@@ -14,20 +14,24 @@ import React, { useState } from 'react';
 import { IEdgeData, INodeWrapper } from '../../../utils/interfaces';
 import EdgeFlags from './EdgeFlags';
 import EdgeHosts from './EdgeHosts';
+import EdgeMetricsHTTP from './EdgeMetricsHTTP';
+import EdgeMetricsTCP from './EdgeMetricsTCP';
+import EdgeMetricsgRPC from './EdgeMetricsgRPC';
 import EdgeTrafficGRPC from './EdgeTrafficGRPC';
 import EdgeTrafficHTTP from './EdgeTrafficHTTP';
+import { IPluginTimes } from '@kobsio/plugin-core';
 import { getTitle } from '../../../utils/helpers';
 
 interface IEdgeProps {
   name: string;
-  duration: number;
+  times: IPluginTimes;
   edge: IEdgeData;
   nodes: INodeWrapper[];
   close: () => void;
 }
 
 // Edge is used as the drawer panel component to display the details about a selected edge.
-const Edge: React.FunctionComponent<IEdgeProps> = ({ name, duration, edge, nodes, close }: IEdgeProps) => {
+const Edge: React.FunctionComponent<IEdgeProps> = ({ name, times, edge, nodes, close }: IEdgeProps) => {
   const [activeTab, setActiveTab] = useState<string>(
     edge.traffic?.protocol === 'http' ? 'trafficHTTP' : edge.traffic?.protocol === 'grpc' ? 'trafficGRPC' : 'flags',
   );
@@ -94,6 +98,18 @@ const Edge: React.FunctionComponent<IEdgeProps> = ({ name, duration, edge, nodes
             </div>
           </Tab>
         </Tabs>
+
+        <div style={{ maxWidth: '100%', padding: '24px 24px' }}>
+          {sourceNode.length === 1 && targetNode.length === 1 ? (
+            edge.traffic?.protocol === 'tcp' ? (
+              <EdgeMetricsTCP name={name} times={times} sourceNode={sourceNode[0]} targetNode={targetNode[0]} />
+            ) : edge.traffic?.protocol === 'http' ? (
+              <EdgeMetricsHTTP name={name} times={times} sourceNode={sourceNode[0]} targetNode={targetNode[0]} />
+            ) : edge.traffic?.protocol === 'grpc' ? (
+              <EdgeMetricsgRPC name={name} times={times} sourceNode={sourceNode[0]} targetNode={targetNode[0]} />
+            ) : null
+          ) : null}
+        </div>
       </DrawerPanelBody>
     </DrawerPanelContent>
   );
