@@ -8,46 +8,13 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { ClustersContext, IClusterContext, IPluginPageProps, IResources } from '@kobsio/plugin-core';
 import { IPanelOptions } from '../../utils/interfaces';
+import { IPluginPageProps } from '@kobsio/plugin-core';
 import PageToolbar from './PageToolbar';
 import Panel from '../panel/Panel';
-
-// checkRequiredData checks if the given resources object contains all data, so that we can passed it to the
-// ResourcesPanel component and show the list of resources. We can only pass the object to the component, when it
-// contains a cluster and a resource. Further we also need a namespace, when the list of resource contains a namespaced
-// resource. When the list only contains cluster scoped resources the user must not enter a namespace.
-const checkRequiredData = (resources: IPanelOptions, clustersContextResources: IResources | undefined): boolean => {
-  if (
-    !resources ||
-    !resources.clusters ||
-    resources.clusters.length === 0 ||
-    !resources.resources ||
-    resources.resources.length === 0 ||
-    !clustersContextResources
-  ) {
-    return false;
-  }
-
-  let namespacedOnly = true;
-  for (let i = 0; i < resources.resources.length; i++) {
-    if (
-      clustersContextResources.hasOwnProperty(resources.resources[i]) &&
-      clustersContextResources[resources.resources[i]].scope === 'Namespaced'
-    ) {
-      namespacedOnly = false;
-    }
-  }
-
-  if (!namespacedOnly && resources.namespaces && resources.namespaces.length === 0) {
-    return false;
-  }
-
-  return true;
-};
 
 // getResourcesFromSearch returns the clusters, namespaces, resources and selector for the resources state from a given
 // search location.
@@ -69,7 +36,6 @@ export const getResourcesFromSearch = (search: string): IPanelOptions => {
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const history = useHistory();
   const location = useLocation();
-  const clustersContext = useContext<IClusterContext>(ClustersContext);
   const [resources, setResources] = useState<IPanelOptions>(getResourcesFromSearch(location.search));
   const [selectedResource, setSelectedResource] = useState<React.ReactNode>(undefined);
 
@@ -107,7 +73,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         <DrawerContent panelContent={selectedResource}>
           <DrawerContentBody>
             <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-              {!resources || !checkRequiredData(resources, clustersContext.resources) ? (
+              {!resources ? (
                 <Alert variant={AlertVariant.info} title="Select clusters, resources and namespaces">
                   <p>Select a list of clusters, resources and namespaces from the toolbar.</p>
                 </Alert>

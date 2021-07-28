@@ -26,13 +26,12 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
       try {
         const clusterParams = clusters.map((cluster) => `cluster=${cluster}`).join('&');
         const namespaceParams = namespaces.map((namespace) => `namespace=${namespace}`).join('&');
+        const path = resource.isCRD ? `/apis/${resource.path}` : resource.path;
 
         const response = await fetch(
           `/api/plugins/resources/resources?${clusterParams}${
             resource.scope === 'Namespaced' ? `&${namespaceParams}` : ''
-          }&resource=${resource.resource}&path=${resource.path}${
-            selector ? `&paramName=labelSelector&param=${selector}` : ''
-          }`,
+          }&resource=${resource.resource}&path=${path}${selector ? `&paramName=labelSelector&param=${selector}` : ''}`,
           { method: 'get' },
         );
         const json = await response.json();

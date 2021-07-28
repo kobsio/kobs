@@ -29,6 +29,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#85](https://github.com/kobsio/kobs/pull/85): Improve overview page for Pods, by displaying all Containers in an expandable table and by including the current resource usage of all Containers.
 - [#86](https://github.com/kobsio/kobs/pull/86): Improve overview page for Nodes, by displaying the resource metrics for the CPU, Memory and Pods.
 - [#88](https://github.com/kobsio/kobs/pull/88): Improve handling of actions for Kubernetes resources.
+- [#95](https://github.com/kobsio/kobs/pull/95): It is now possible to get Kubernetes resources for all namespaces by not selecting a namespace from the select box on the resources page.
 
 ## [v0.4.0](https://github.com/kobsio/kobs/releases/tag/v0.4.0) (2021-07-14)
 

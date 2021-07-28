@@ -130,7 +130,16 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [cronJob.metadata?.name, item.namespace, item.cluster, schedule, suspend, active, lastSchedule, age],
+            cells: [
+              cronJob.metadata?.name,
+              item.namespace || cronJob.metadata?.namespace,
+              item.cluster,
+              schedule,
+              suspend,
+              active,
+              lastSchedule,
+              age,
+            ],
             props: cronJob,
           });
         }
@@ -195,7 +204,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               daemonSet.metadata?.name,
-              item.namespace,
+              item.namespace || daemonSet.metadata?.namespace,
               item.cluster,
               desired,
               current,
@@ -252,7 +261,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               deployment.metadata?.name,
-              item.namespace,
+              item.namespace || deployment.metadata?.namespace,
               item.cluster,
               `${ready}/${shouldReady}`,
               upToDate,
@@ -307,7 +316,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               job.metadata?.name,
-              item.namespace,
+              item.namespace || job.metadata?.namespace,
               item.cluster,
               `${completions}/${completionsShould}`,
               duration,
@@ -372,7 +381,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               pod.metadata?.name,
-              item.namespace,
+              item.namespace || pod.metadata?.namespace,
               item.cluster,
               `${isReady}/${shouldReady}`,
               reason ? reason : phase,
@@ -431,7 +440,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               replicaSet.metadata?.name,
-              item.namespace,
+              item.namespace || replicaSet.metadata?.namespace,
               item.cluster,
               desired,
               current,
@@ -484,7 +493,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               statefulSet.metadata?.name,
-              item.namespace,
+              item.namespace || statefulSet.metadata?.namespace,
               item.cluster,
               `${ready}/${shouldReady}`,
               upToDate,
@@ -531,7 +540,13 @@ export const resources: IResources = {
           }
 
           rows.push({
-            cells: [endpoint.metadata?.name, item.namespace, item.cluster, ep.join(', '), age],
+            cells: [
+              endpoint.metadata?.name,
+              item.namespace || endpoint.metadata?.namespace,
+              item.cluster,
+              ep.join(', '),
+              age,
+            ],
             props: endpoint,
           });
         }
@@ -570,7 +585,16 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [hpa.metadata?.name, item.namespace, item.cluster, reference, minPods, maxPods, replicas, age],
+            cells: [
+              hpa.metadata?.name,
+              item.namespace || hpa.metadata?.namespace,
+              item.cluster,
+              reference,
+              minPods,
+              maxPods,
+              replicas,
+              age,
+            ],
             props: hpa,
           });
         }
@@ -608,7 +632,14 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [ingress.metadata?.name, item.namespace, item.cluster, hosts ? hosts.join(', ') : '', address, age],
+            cells: [
+              ingress.metadata?.name,
+              item.namespace || ingress.metadata?.namespace,
+              item.cluster,
+              hosts ? hosts.join(', ') : '',
+              address,
+              age,
+            ],
             props: ingress,
           });
         }
@@ -641,7 +672,13 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [networkPolicy.metadata?.name, item.namespace, item.cluster, podSelector, age],
+            cells: [
+              networkPolicy.metadata?.name,
+              item.namespace || networkPolicy.metadata?.namespace,
+              item.cluster,
+              podSelector,
+              age,
+            ],
             props: networkPolicy,
           });
         }
@@ -687,7 +724,16 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [service.metadata?.name, item.namespace, item.cluster, type, clusterIP, externalIPs, ports, age],
+            cells: [
+              service.metadata?.name,
+              item.namespace || service.metadata?.namespace,
+              item.cluster,
+              type,
+              clusterIP,
+              externalIPs,
+              ports,
+              age,
+            ],
             props: service,
           });
         }
@@ -722,7 +768,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               configMap.metadata?.name,
-              item.namespace,
+              item.namespace || configMap.metadata?.namespace,
               item.cluster,
               configMap.data ? Object.keys(configMap.data).length : 0,
               age,
@@ -763,7 +809,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               pvc.metadata?.name,
-              item.namespace,
+              item.namespace || pvc.metadata?.namespace,
               item.cluster,
               status,
               volume,
@@ -890,7 +936,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               pdb.metadata?.name,
-              item.namespace,
+              item.namespace || pdb.metadata?.namespace,
               item.cluster,
               minAvailable,
               maxUnavailable,
@@ -930,7 +976,7 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [secret.metadata?.name, item.namespace, item.cluster, type, data, age],
+            cells: [secret.metadata?.name, item.namespace || secret.metadata?.namespace, item.cluster, type, data, age],
             props: secret,
           });
         }
@@ -963,7 +1009,13 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [serviceAccount.metadata?.name, item.namespace, item.cluster, secrets, age],
+            cells: [
+              serviceAccount.metadata?.name,
+              item.namespace || serviceAccount.metadata?.namespace,
+              item.cluster,
+              secrets,
+              age,
+            ],
             props: serviceAccount,
           });
         }
@@ -1112,7 +1164,7 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [roleBinding.metadata?.name, item.namespace, item.cluster, age],
+            cells: [roleBinding.metadata?.name, item.namespace || roleBinding.metadata?.namespace, item.cluster, age],
             props: roleBinding,
           });
         }
@@ -1141,7 +1193,7 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [role.metadata?.name, item.namespace, item.cluster, age],
+            cells: [role.metadata?.name, item.namespace || role.metadata?.namespace, item.cluster, age],
             props: role,
           });
         }
@@ -1168,7 +1220,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               event.metadata?.name,
-              item.namespace,
+              item.namespace || event.metadata.namespace,
               item.cluster,
               event.lastTimestamp
                 ? timeDifference(new Date().getTime(), new Date(event.lastTimestamp.toString()).getTime())
@@ -1306,7 +1358,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               psp.metadata?.name,
-              item.cluster,
+              item.cluster || psp.metadata?.namespace,
               privileged,
               capabilities,
               seLinux,
@@ -1357,7 +1409,7 @@ export const customResourceDefinition = (crds: ICRD[]): IResources => {
             // retrieved via JSON paths.
             const defaultCells =
               crd.scope === 'Namespaced'
-                ? [cr.metadata?.name, item.namespace, item.cluster]
+                ? [cr.metadata?.name, item.namespace || cr.metadata?.namespace, item.cluster]
                 : [cr.metadata?.name, item.cluster];
             const crdCells =
               crd.columns && crd.columns.length > 0

@@ -78,7 +78,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITr
             enableGridX={false}
             enableGridY={false}
             margin={{ bottom: 25, left: 0, right: 0, top: 0 }}
-            nodeSize={{ key: 'size', sizes: [15, 50], values: [min, max] }}
+            nodeSize={{ key: 'size', sizes: [15, 20], values: [min, max] }}
             theme={{
               background: '#ffffff',
               fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
