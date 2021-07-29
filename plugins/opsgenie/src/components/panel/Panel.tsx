@@ -25,7 +25,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         title={title}
         message="Options for Opsgenie panel are missing or invalid"
         details="The panel doesn't contain the required options to render get the Opsgenie data or the provided options are invalid."
-        documentation="https://kobs.io/plugins/opsgenie.html"
+        documentation="https://kobs.io/plugins/opsgenie"
       />
     );
   }
