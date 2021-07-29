@@ -20,6 +20,7 @@ import (
 	"github.com/kobsio/kobs/plugins/opsgenie"
 	"github.com/kobsio/kobs/plugins/prometheus"
 	"github.com/kobsio/kobs/plugins/resources"
+	"github.com/kobsio/kobs/plugins/rss"
 	"github.com/kobsio/kobs/plugins/teams"
 )
 
@@ -35,6 +36,7 @@ type Config struct {
 	Markdown      markdown.Config      `yaml:"markdown"`
 	Kiali         kiali.Config         `yaml:"kiali"`
 	Opsgenie      opsgenie.Config      `yaml:"opsgenie"`
+	RSS           rss.Config           `yaml:"rss"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -69,6 +71,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(markdown.Route, markdown.Register(clusters, router.plugins, config.Markdown))
 	router.Mount(kiali.Route, kiali.Register(clusters, router.plugins, config.Kiali))
 	router.Mount(opsgenie.Route, opsgenie.Register(clusters, router.plugins, config.Opsgenie))
+	router.Mount(rss.Route, rss.Register(clusters, router.plugins, config.RSS))
 
 	return router
 }

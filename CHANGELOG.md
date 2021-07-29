@@ -30,6 +30,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#86](https://github.com/kobsio/kobs/pull/86): Improve overview page for Nodes, by displaying the resource metrics for the CPU, Memory and Pods.
 - [#88](https://github.com/kobsio/kobs/pull/88): Improve handling of actions for Kubernetes resources.
 - [#95](https://github.com/kobsio/kobs/pull/95): It is now possible to get Kubernetes resources for all namespaces by not selecting a namespace from the select box on the resources page.
+- [#96](https://github.com/kobsio/kobs/pull/96): Add RSS plugin to show the latest status updates of third party services.
 
 ## [v0.4.0](https://github.com/kobsio/kobs/releases/tag/v0.4.0) (2021-07-14)
 

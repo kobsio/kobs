@@ -16,6 +16,7 @@ import jaegerPlugin from '@kobsio/plugin-jaeger';
 import kialiPlugin from '@kobsio/plugin-kiali';
 import markdownPlugin from '@kobsio/plugin-markdown';
 import opsgeniePlugin from '@kobsio/plugin-opsgenie';
+import rssPlugin from '@kobsio/plugin-rss';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,6 +31,7 @@ ReactDOM.render(
       ...kialiPlugin,
       ...markdownPlugin,
       ...opsgeniePlugin,
+      ...rssPlugin,
     }} />
   </React.StrictMode>,
   document.getElementById('root')
