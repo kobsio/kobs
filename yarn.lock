@@ -2310,6 +2310,21 @@
     "@react-spring/web" "9.2.0"
     d3-shape "^1.3.5"
 
+"@nivo/line@^0.73.0":
+  version "0.73.0"
+  resolved "https://registry.yarnpkg.com/@nivo/line/-/line-0.73.0.tgz#8d77963d0ff014138b2201cc0836f0a12593225f"
+  integrity sha512-ZxCJyoYN6tFx3NA4KvxKtbYLLzEl+S8TU57Qd/iGfJ2AbFAgiBhOiYH4kBY7VuxbUjcqQhPUvkPGcolnzqEXMg==
+  dependencies:
+    "@nivo/annotations" "0.73.0"
+    "@nivo/axes" "0.73.0"
+    "@nivo/colors" "0.73.0"
+    "@nivo/legends" "0.73.0"
+    "@nivo/scales" "0.73.0"
+    "@nivo/tooltip" "0.73.0"
+    "@nivo/voronoi" "0.73.0"
+    "@react-spring/web" "9.2.4"
+    d3-shape "^1.3.5"
+
 "@nivo/recompose@0.72.0":
   version "0.72.0"
   resolved "https://registry.yarnpkg.com/@nivo/recompose/-/recompose-0.72.0.tgz#dabd8eeaa99886e67d28162169521e2fa7e00d33"
@@ -2379,6 +2394,14 @@
   version "0.72.0"
   resolved "https://registry.yarnpkg.com/@nivo/voronoi/-/voronoi-0.72.0.tgz#f1a7f5d32e45900e6257bb726eccc5426cdd6f8e"
   integrity sha512-Yu5IBQoywxNyU9A5SL734NDm5cpDic0cYWvfrZg48SOEvlv48jz30cMzcXyd786uvbd9hUhxboI6ZGB29EVLJw==
+  dependencies:
+    d3-delaunay "^5.3.0"
+    d3-scale "^3.2.3"
+
+"@nivo/voronoi@0.73.0":
+  version "0.73.0"
+  resolved "https://registry.yarnpkg.com/@nivo/voronoi/-/voronoi-0.73.0.tgz#858aa5340c93bc299e07938b1e6770394ca7e9c9"
+  integrity sha512-jYDwNkNhEXRt4LR3hTxBZpuRDUQN4GtdP4fxcJIFGxvmh3Bsd3XQMWPqZYTNpgDddYjsnLtLe5RvR5gC7hBojw==
   dependencies:
     d3-delaunay "^5.3.0"
     d3-scale "^3.2.3"

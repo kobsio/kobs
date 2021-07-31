@@ -250,6 +250,22 @@ func (i *Instance) GetGraph(ctx context.Context, duration int64, graphType, grou
 	return &graph, nil
 }
 
+// GetMetrics returns the metrics for an edge or node in the Kiali topology graph.
+func (i *Instance) GetMetrics(ctx context.Context, url string) (*map[string]interface{}, error) {
+	body, err := i.doRequest(ctx, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var metrics map[string]interface{}
+	err = json.Unmarshal(body, &metrics)
+	if err != nil {
+		return nil, err
+	}
+
+	return &metrics, nil
+}
+
 // New returns a new Kiali instance for the given configuration.
 func New(config Config) (*Instance, error) {
 	roundTripper := roundtripper.DefaultRoundTripper

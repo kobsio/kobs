@@ -75,7 +75,7 @@ func (router *Router) getGraph(w http.ResponseWriter, r *http.Request) {
 	appenders := r.URL.Query()["appender"]
 	namespaces := r.URL.Query()["namespace"]
 
-	log.WithFields(logrus.Fields{"name": name}).Tracef("getNamespaces")
+	log.WithFields(logrus.Fields{"name": name}).Tracef("getGraph")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -102,6 +102,27 @@ func (router *Router) getGraph(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.JSON(w, r, graph)
+}
+
+func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	url := r.URL.Query().Get("url")
+
+	log.WithFields(logrus.Fields{"name": name, "url": url}).Tracef("getMetrics")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	metrics, err := i.GetMetrics(r.Context(), url)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get metrics")
+		return
+	}
+
+	render.JSON(w, r, metrics)
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
@@ -132,6 +153,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router.Get("/namespaces/{name}", router.getNamespaces)
 	router.Get("/graph/{name}", router.getGraph)
+	router.Get("/metrics/{name}", router.getMetrics)
 
 	return router
 }

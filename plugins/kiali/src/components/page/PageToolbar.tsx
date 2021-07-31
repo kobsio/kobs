@@ -10,24 +10,24 @@ import {
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 
-import { IPanelOptions } from '../../utils/interfaces';
-import PageToolbarDuration from './PageToolbarDuration';
+import { IOptionsAdditionalFields, Options, TTime } from '@kobsio/plugin-core';
+import { IOptions } from '../../utils/interfaces';
 import PageToolbarNamespaces from './PageToolbarNamespaces';
 
-interface IPageToolbarProps extends IPanelOptions {
+interface IPageToolbarProps extends IOptions {
   name: string;
-  setOptions: (data: IPanelOptions) => void;
+  setOptions: (data: IOptions) => void;
 }
 
 const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   name,
-  duration,
+  times,
   namespaces,
   setOptions,
 }: IPageToolbarProps) => {
-  const [data, setData] = useState<IPanelOptions>({
-    duration: duration,
+  const [data, setData] = useState<IOptions>({
     namespaces: namespaces,
+    times: times,
   });
 
   // selectNamespace adds/removes the given namespace to the list of selected namespaces. When the namespace value is an
@@ -48,6 +48,28 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
     }
   };
 
+  const changeOptions = (
+    refresh: boolean,
+    additionalFields: IOptionsAdditionalFields[] | undefined,
+    time: TTime,
+    timeEnd: number,
+    timeStart: number,
+  ): void => {
+    const tmpData = { ...data };
+
+    if (refresh) {
+      setOptions({
+        ...tmpData,
+        times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+      });
+    }
+
+    setData({
+      ...tmpData,
+      times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+    });
+  };
+
   return (
     <Toolbar id="kiali-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
       <ToolbarContent style={{ padding: '0px' }}>
@@ -57,9 +79,11 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
               <PageToolbarNamespaces name={name} namespaces={data.namespaces || []} selectNamespace={selectNamespace} />
             </ToolbarItem>
             <ToolbarItem>
-              <PageToolbarDuration
-                duration={data.duration || 900}
-                setDuration={(d: number): void => setData({ ...data, duration: d })}
+              <Options
+                time={data.times.time}
+                timeEnd={data.times.timeEnd}
+                timeStart={data.times.timeStart}
+                setOptions={changeOptions}
               />
             </ToolbarItem>
             <ToolbarItem>
