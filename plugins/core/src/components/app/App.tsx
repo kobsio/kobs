@@ -11,6 +11,7 @@ import { IPluginComponents, PluginsContextProvider } from '../../context/Plugins
 import { ClustersContextProvider } from '../../context/ClustersContext';
 import HomePage from './HomePage';
 import { PluginPage } from '../plugin/PluginPage';
+import { TerminalsContextProvider } from '../../context/TerminalsContext';
 
 import logo from '../../assets/logo.png';
 
@@ -42,14 +43,16 @@ export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) 
     <QueryClientProvider client={queryClient}>
       <ClustersContextProvider>
         <PluginsContextProvider components={plugins}>
-          <Router>
-            <Page header={Header}>
-              <Switch>
-                <Route exact={true} path="/" component={HomePage} />
-                <Route exact={false} path="/:name" component={PluginPage} />
-              </Switch>
-            </Page>
-          </Router>
+          <TerminalsContextProvider>
+            <Router>
+              <Page header={Header}>
+                <Switch>
+                  <Route exact={true} path="/" component={HomePage} />
+                  <Route exact={false} path="/:name" component={PluginPage} />
+                </Switch>
+              </Page>
+            </Router>
+          </TerminalsContextProvider>
         </PluginsContextProvider>
       </ClustersContextProvider>
     </QueryClientProvider>
