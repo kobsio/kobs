@@ -9,6 +9,7 @@ import { IAlert } from '../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
 import Restart from './actions/Restart';
 import Scale from './actions/Scale';
+import Terminal from './actions/Terminal';
 
 interface IActionProps {
   request: IResource;
@@ -22,6 +23,7 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
   const [showScale, setShowScale] = useState<boolean>(false);
   const [showRestart, setShowRestart] = useState<boolean>(false);
   const [showCreateJob, setShowCreateJob] = useState<boolean>(false);
+  const [showTerminal, setShowTerminal] = useState<boolean>(false);
   const [showEdit, setShowEdit] = useState<boolean>(false);
   const [showDelete, setShowDelete] = useState<boolean>(false);
 
@@ -74,6 +76,20 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
         }}
       >
         Create Job
+      </DropdownItem>,
+    );
+  }
+
+  if (request.resource === 'pods') {
+    dropdownItems.push(
+      <DropdownItem
+        key="terminal"
+        onClick={(): void => {
+          setShowDropdown(false);
+          setShowTerminal(true);
+        }}
+      >
+        Terminal
       </DropdownItem>,
     );
   }
@@ -151,6 +167,8 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
         setAlert={(alert: IAlert): void => setAlerts([...alerts, alert])}
         refetch={refetch}
       />
+
+      <Terminal request={request} resource={resource} show={showTerminal} setShow={setShowTerminal} />
 
       <Edit
         request={request}

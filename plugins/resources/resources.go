@@ -8,11 +8,13 @@ import (
 	"strconv"
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/clusters/cluster/terminal"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )
 
@@ -34,7 +36,14 @@ type Resources struct {
 // Config is the structure of the configuration for the resources plugin. It only contains one filed to forbid access to
 // the provided resources.
 type Config struct {
-	Forbidden []string `json:"forbidden"`
+	Forbidden []string  `yaml:"forbidden"`
+	WebSocket WebSocket `yaml:"webSocket"`
+}
+
+// WebSocket is the structure for the WebSocket configuration for terminal for Pods.
+type WebSocket struct {
+	Address         string `yaml:"address"`
+	AllowAllOrigins bool   `yaml:"allowAllOrigins"`
 }
 
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
@@ -295,13 +304,68 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	}{logs})
 }
 
+// getTerminal starts a new terminal session for a container in a pod. The user must provide the cluster, namespace, pod
+// and container via the corresponding query parameter. It is also possible to specify the shell which should be used
+// for the terminal.
+func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
+	clusterName := r.URL.Query().Get("cluster")
+	namespace := r.URL.Query().Get("namespace")
+	name := r.URL.Query().Get("name")
+	container := r.URL.Query().Get("container")
+	shell := r.URL.Query().Get("shell")
+
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "container": container, "shell": shell}).Tracef("getTerminal")
+
+	var upgrader = websocket.Upgrader{}
+
+	if router.config.WebSocket.AllowAllOrigins {
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	}
+
+	c, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.WithError(err).Errorf("Could not upgrade connection")
+		return
+	}
+	defer c.Close()
+
+	cluster := router.clusters.GetCluster(clusterName)
+	if cluster == nil {
+		log.WithError(err).Errorf("Invalid cluster name")
+		msg, _ := json.Marshal(terminal.Message{
+			Op:   "stdout",
+			Data: fmt.Sprintf("Invalid cluster name: %s", err.Error()),
+		})
+		c.WriteMessage(websocket.TextMessage, msg)
+		return
+	}
+
+	err = cluster.GetTerminal(c, namespace, name, container, shell)
+	if err != nil {
+		log.WithError(err).Errorf("Could not create terminal")
+		msg, _ := json.Marshal(terminal.Message{
+			Op:   "stdout",
+			Data: fmt.Sprintf("Could not create terminal: %s", err.Error()),
+		})
+		c.WriteMessage(websocket.TextMessage, msg)
+		return
+	}
+
+	log.Tracef("Terminal connection was closed")
+}
+
 // Register returns a new router which can be used in the router for the kobs rest api.
 func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+	var options map[string]interface{}
+	options = make(map[string]interface{})
+	options["webSocketAddress"] = config.WebSocket.Address
+
 	plugins.Append(plugin.Plugin{
 		Name:        "resources",
 		DisplayName: "Resources",
 		Description: "View and edit Kubernetes resources.",
 		Type:        "resources",
+		Options:     options,
 	})
 
 	router := Router{
@@ -315,6 +379,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	router.Put("/resources", router.patchResource)
 	router.Post("/resources", router.createResource)
 	router.Get("/logs", router.getLogs)
+	router.HandleFunc("/terminal", router.getTerminal)
 
 	return router
 }

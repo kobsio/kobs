@@ -158,8 +158,13 @@ plugins:
   resources:
     forbidden:
       - secrets
+    webSocket:
+      address: ws://localhost:15220
+      allowAllOrigins: true
 ```
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | forbidden | []string | A list of resources, which can not be retrieved via the kobs API. | No |
+| webSocket.address | string | The address, which should be used for the WebSocket connection. By default this will be the current host, but it can be overwritten for development purposes. | No |
+| webSocket.allowAllOrigins | boolean | When this is `true`, WebSocket connections are allowed for all origins. This should only be used for development. | No |

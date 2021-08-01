@@ -1,3 +1,5 @@
+import 'xterm/css/xterm.css';
+
 export * from './components/app/App';
 
 export * from './components/misc/DrawerLink';
@@ -14,6 +16,7 @@ export * from './components/plugin/PluginPreview';
 
 export * from './context/ClustersContext';
 export * from './context/PluginsContext';
+export * from './context/TerminalsContext';
 
 export * from './utils/manifests';
 export * from './utils/resources';

@@ -4,16 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
 
+	"github.com/gorilla/websocket"
 	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
 	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
 	applicationClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/application/clientset/versioned"
 	dashboardClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned"
 	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/team/clientset/versioned"
+	"github.com/kobsio/kobs/pkg/api/clusters/cluster/terminal"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -21,6 +24,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/remotecommand"
 )
 
 var (
@@ -31,6 +35,7 @@ var (
 // Cluster is a Kubernetes cluster. It contains all required fields to interact with the cluster and it's services.
 type Cluster struct {
 	cache                Cache
+	config               *rest.Config
 	clientset            *kubernetes.Clientset
 	applicationClientset *applicationClientsetVersioned.Clientset
 	teamClientset        *teamClientsetVersioned.Clientset
@@ -192,6 +197,26 @@ func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container string
 	}
 
 	return string(res), nil
+}
+
+// GetTerminal starts a new terminal session via the given WebSocket connection.
+func (c *Cluster) GetTerminal(conn *websocket.Conn, namespace, name, container, shell string) error {
+	reqURL, err := url.Parse(fmt.Sprintf("%s/api/v1/namespaces/%s/pods/%s/exec?container=%s&command=%s&stdin=true&stdout=true&stderr=true&tty=true", c.config.Host, namespace, name, container, shell))
+	if err != nil {
+		return err
+	}
+
+	if !terminal.IsValidShell(shell) {
+		return fmt.Errorf("invalid shell %s", shell)
+	}
+
+	session := &terminal.Session{
+		WebSocket: conn,
+		SizeChan:  make(chan remotecommand.TerminalSize),
+	}
+
+	cmd := []string{shell}
+	return terminal.StartProcess(c.config, reqURL, cmd, session)
 }
 
 // GetApplications returns a list of applications gor the given namespace. It also adds the cluster, namespace and
@@ -407,6 +432,7 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 	name = strings.Trim(slugifyRe.ReplaceAllString(strings.ToLower(name), "-"), "-")
 
 	c := &Cluster{
+		config:               restConfig,
 		clientset:            clientset,
 		applicationClientset: applicationClientset,
 		teamClientset:        teamClientset,
