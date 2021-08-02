@@ -161,6 +161,14 @@ const Pod: React.FunctionComponent<IPodProps> = ({ cluster, namespace, name, pod
           containerMetrics={isError ? undefined : data}
         />
       )}
+      {pod.spec?.ephemeralContainers && (
+        <Containers
+          title="Ephemeral Containers"
+          containers={pod.spec?.ephemeralContainers}
+          containerStatuses={pod.status?.ephemeralContainerStatuses}
+          containerMetrics={isError ? undefined : data}
+        />
+      )}
     </React.Fragment>
   );
 };

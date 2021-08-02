@@ -173,8 +173,18 @@ func (c *Cluster) PatchResource(ctx context.Context, namespace, name, path, reso
 
 // CreateResource can be used to create the given resource. The resource is identified by the Kubernetes API path and the
 // name of the resource.
-func (c *Cluster) CreateResource(ctx context.Context, namespace, path, resource string, body []byte) error {
-	_, err := c.clientset.RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).Body(body).DoRaw(ctx)
+func (c *Cluster) CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
+	if name != "" && subResource != "" {
+		_, err := c.clientset.RESTClient().Put().AbsPath(path).Namespace(namespace).Name(name).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
+		if err != nil {
+			log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "name": name, "path": path, "resource": resource, "subResource": subResource}).Errorf("CreateResource")
+			return err
+		}
+
+		return nil
+	}
+
+	_, err := c.clientset.RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("CreateResource")
 		return err

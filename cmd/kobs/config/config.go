@@ -7,13 +7,13 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/plugins"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 
-	"gopkg.in/yaml.v2"
+	"sigs.k8s.io/yaml"
 )
 
 // Config is the complete configuration for kobs.
 type Config struct {
-	Clusters clusters.Config `yaml:"clusters"`
-	Plugins  plugins.Config  `yaml:"plugins"`
+	Clusters clusters.Config `json:"clusters"`
+	Plugins  plugins.Config  `json:"plugins"`
 }
 
 // Load the configuration for kobs. Most of the configuration options are available as command-line flag, but we also

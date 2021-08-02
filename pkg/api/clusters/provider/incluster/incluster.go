@@ -13,7 +13,7 @@ var (
 
 // Config is the configuration for the InCluster provider.
 type Config struct {
-	Name string `yaml:"name"`
+	Name string `json:"name"`
 }
 
 // GetCluster returns the cluster, where kobs is running in via the incluster configuration. For the selection of the

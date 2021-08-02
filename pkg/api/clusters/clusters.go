@@ -33,7 +33,7 @@ func init() {
 // Config is the configuration required to load all clusters. It takes an array of providers, which are defined in the
 // providers package.
 type Config struct {
-	Providers []provider.Config `yaml:"providers"`
+	Providers []provider.Config `json:"providers"`
 }
 
 // TODO

@@ -2,6 +2,7 @@ import { Alert, AlertActionCloseButton, AlertGroup, Dropdown, DropdownItem, Keba
 import React, { useState } from 'react';
 import { IRow } from '@patternfly/react-table';
 
+import CreateEphemeralContainer from './actions/CreateEphemeralContainer';
 import CreateJob from './actions/CreateJob';
 import Delete from './actions/Delete';
 import Edit from './actions/Edit';
@@ -24,6 +25,7 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
   const [showRestart, setShowRestart] = useState<boolean>(false);
   const [showCreateJob, setShowCreateJob] = useState<boolean>(false);
   const [showTerminal, setShowTerminal] = useState<boolean>(false);
+  const [showCreateEphemeralContainer, setShowCreateEphemeralContainer] = useState<boolean>(false);
   const [showEdit, setShowEdit] = useState<boolean>(false);
   const [showDelete, setShowDelete] = useState<boolean>(false);
 
@@ -90,6 +92,20 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
         }}
       >
         Terminal
+      </DropdownItem>,
+    );
+  }
+
+  if (request.resource === 'pods') {
+    dropdownItems.push(
+      <DropdownItem
+        key="debug"
+        onClick={(): void => {
+          setShowDropdown(false);
+          setShowCreateEphemeralContainer(true);
+        }}
+      >
+        Create Ephemeral Container
       </DropdownItem>,
     );
   }
@@ -169,6 +185,15 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
       />
 
       <Terminal request={request} resource={resource} show={showTerminal} setShow={setShowTerminal} />
+
+      <CreateEphemeralContainer
+        request={request}
+        resource={resource}
+        show={showCreateEphemeralContainer}
+        setShow={setShowCreateEphemeralContainer}
+        setAlert={(alert: IAlert): void => setAlerts([...alerts, alert])}
+        refetch={refetch}
+      />
 
       <Edit
         request={request}

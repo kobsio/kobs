@@ -17,6 +17,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
+	corev1 "k8s.io/api/core/v1"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
@@ -44,14 +45,15 @@ type Resources struct {
 // Config is the structure of the configuration for the resources plugin. It only contains one filed to forbid access to
 // the provided resources.
 type Config struct {
-	Forbidden []string  `yaml:"forbidden"`
-	WebSocket WebSocket `yaml:"webSocket"`
+	Forbidden           []string                    `json:"forbidden"`
+	WebSocket           WebSocket                   `json:"webSocket"`
+	EphemeralContainers []corev1.EphemeralContainer `json:"ephemeralContainers"`
 }
 
 // WebSocket is the structure for the WebSocket configuration for terminal for Pods.
 type WebSocket struct {
-	Address         string `yaml:"address"`
-	AllowAllOrigins bool   `yaml:"allowAllOrigins"`
+	Address         string `json:"address"`
+	AllowAllOrigins bool   `json:"allowAllOrigins"`
 }
 
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
@@ -239,10 +241,12 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
+	name := r.URL.Query().Get("name")
 	resource := r.URL.Query().Get("resource")
+	subResource := r.URL.Query().Get("subResource")
 	path := r.URL.Query().Get("path")
 
-	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "resource": resource, "path": path}).Tracef("createResource")
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "path": path, "resource": resource, "subResource": subResource}).Tracef("createResource")
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
@@ -261,7 +265,7 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cluster.CreateResource(r.Context(), namespace, path, resource, body)
+	err = cluster.CreateResource(r.Context(), namespace, name, path, resource, subResource, body)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create resource")
 		return
@@ -385,6 +389,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	var options map[string]interface{}
 	options = make(map[string]interface{})
 	options["webSocketAddress"] = config.WebSocket.Address
+	options["ephemeralContainers"] = config.EphemeralContainers
 
 	plugins.Append(plugin.Plugin{
 		Name:        "resources",

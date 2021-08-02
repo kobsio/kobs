@@ -39,6 +39,12 @@ const getContainers = (pod: V1Pod): string[] => {
     }
   }
 
+  if (pod.spec?.ephemeralContainers) {
+    for (const container of pod.spec?.ephemeralContainers) {
+      containers.push(container.name);
+    }
+  }
+
   return containers;
 };
 
@@ -70,8 +76,6 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ request, resource, 
           ? pluginDetails.options.webSocketAddress
           : undefined;
       const host = configuredWebSocketAddress || `wss://${window.location.host}`;
-
-      console.log(host);
 
       const ws = new WebSocket(
         `${host}/api/plugins/resources/terminal?cluster=${resource.cluster.title}${
@@ -132,7 +136,7 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ request, resource, 
       isOpen={show}
       onClose={(): void => setShow(false)}
       actions={[
-        <Button key="createJob" variant={ButtonVariant.primary} onClick={createTerminal}>
+        <Button key="createTerminal" variant={ButtonVariant.primary} onClick={createTerminal}>
           Create Terminal
         </Button>,
         <Button key="cancel" variant={ButtonVariant.link} onClick={(): void => setShow(false)}>

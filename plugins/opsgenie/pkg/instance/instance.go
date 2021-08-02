@@ -17,12 +17,12 @@ var (
 
 // Config is the structure of the configuration for a single Opsgenie instance.
 type Config struct {
-	Name        string `yaml:"name"`
-	DisplayName string `yaml:"displayName"`
-	Description string `yaml:"description"`
-	APIKey      string `yaml:"apiKey"`
-	APIUrl      string `yaml:"apiUrl"`
-	URL         string `yaml:"url"`
+	Name        string `json:"name"`
+	DisplayName string `json:"displayName"`
+	Description string `json:"description"`
+	APIKey      string `json:"apiKey"`
+	APIUrl      string `json:"apiUrl"`
+	URL         string `json:"url"`
 }
 
 // Instance represents a single Jaeger instance, which can be added via the configuration file.

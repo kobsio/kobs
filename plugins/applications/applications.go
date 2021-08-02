@@ -26,8 +26,8 @@ var (
 
 // Config is the structure of the configuration for the applications plugin.
 type Config struct {
-	TopologyCacheDuration time.Duration `yaml:"topologyCacheDuration"`
-	TeamsCacheDuration    time.Duration `yaml:"teamsCacheDuration"`
+	TopologyCacheDuration string `json:"topologyCacheDuration"`
+	TeamsCacheDuration    string `json:"teamsCacheDuration"`
 }
 
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
@@ -209,15 +209,19 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	})
 
 	var topology topology.Cache
-	topology.CacheDuration = config.TopologyCacheDuration
-	if topology.CacheDuration.Seconds() < 60 {
+	topologyCacheDuration, err := time.ParseDuration(config.TopologyCacheDuration)
+	if err != nil || topologyCacheDuration.Seconds() < 60 {
 		topology.CacheDuration = time.Duration(1 * time.Hour)
+	} else {
+		topology.CacheDuration = topologyCacheDuration
 	}
 
 	var teams teams.Cache
-	teams.CacheDuration = config.TeamsCacheDuration
-	if teams.CacheDuration.Seconds() < 60 {
+	teamsCacheDuration, err := time.ParseDuration(config.TeamsCacheDuration)
+	if err != nil || teamsCacheDuration.Seconds() < 60 {
 		teams.CacheDuration = time.Duration(1 * time.Hour)
+	} else {
+		teams.CacheDuration = teamsCacheDuration
 	}
 
 	router := Router{
