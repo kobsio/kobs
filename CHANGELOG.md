@@ -24,6 +24,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Fixed
 
 - [#94](https://github.com/kobsio/kobs/pull/94): Fix variable handling for dashboards.
+- [#99](https://github.com/kobsio/kobs/pull/99): Fix WebSocket connections for the Kubernetes terminal in environments with an idle timeout for all connections.
 
 ### Changed
 
