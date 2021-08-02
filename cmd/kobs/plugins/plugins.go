@@ -26,17 +26,17 @@ import (
 
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
 type Config struct {
-	Applications  applications.Config  `yaml:"applications"`
-	Resources     resources.Config     `yaml:"resources"`
-	Teams         teams.Config         `yaml:"teams"`
-	Dashboards    dashboards.Config    `yaml:"dashboards"`
-	Prometheus    prometheus.Config    `yaml:"prometheus"`
-	Elasticsearch elasticsearch.Config `yaml:"elasticsearch"`
-	Jaeger        jaeger.Config        `yaml:"jaeger"`
-	Markdown      markdown.Config      `yaml:"markdown"`
-	Kiali         kiali.Config         `yaml:"kiali"`
-	Opsgenie      opsgenie.Config      `yaml:"opsgenie"`
-	RSS           rss.Config           `yaml:"rss"`
+	Applications  applications.Config  `json:"applications"`
+	Resources     resources.Config     `json:"resources"`
+	Teams         teams.Config         `json:"teams"`
+	Dashboards    dashboards.Config    `json:"dashboards"`
+	Prometheus    prometheus.Config    `json:"prometheus"`
+	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
+	Jaeger        jaeger.Config        `json:"jaeger"`
+	Markdown      markdown.Config      `json:"markdown"`
+	Kiali         kiali.Config         `json:"kiali"`
+	Opsgenie      opsgenie.Config      `json:"opsgenie"`
+	RSS           rss.Config           `json:"rss"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the

@@ -28,9 +28,9 @@ const (
 // Config is the provider configuration to get Kubernetes clusters from. The provider configuration only contains the
 // provider type and a provider specific configuration.
 type Config struct {
-	Provider   Type              `yaml:"provider"`
-	InCluster  incluster.Config  `yaml:"incluster"`
-	Kubeconfig kubeconfig.Config `yaml:"kubeconfig"`
+	Provider   Type              `json:"provider"`
+	InCluster  incluster.Config  `json:"incluster"`
+	Kubeconfig kubeconfig.Config `json:"kubeconfig"`
 }
 
 // GetClusters returns all clusters for the given provider. When the provider field doesn't match our custom Type, we

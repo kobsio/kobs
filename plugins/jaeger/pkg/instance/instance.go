@@ -17,13 +17,13 @@ var (
 
 // Config is the structure of the configuration for a single Jaeger instance.
 type Config struct {
-	Name        string `yaml:"name"`
-	DisplayName string `yaml:"displayName"`
-	Description string `yaml:"description"`
-	Address     string `yaml:"address"`
-	Username    string `yaml:"username"`
-	Password    string `yaml:"password"`
-	Token       string `yaml:"token"`
+	Name        string `json:"name"`
+	DisplayName string `json:"displayName"`
+	Description string `json:"description"`
+	Address     string `json:"address"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	Token       string `json:"token"`
 }
 
 // ResponseError is the structure for a failed Jaeger API request.

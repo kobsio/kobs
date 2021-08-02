@@ -55,9 +55,9 @@ import (
 
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
 type Config struct {
-        Resources     resources.Config     `yaml:"resources"`
-        HelloWorld    helloworld.Config    `yaml:"helloworld"`
-+        MyNewPlugin      mynewplugin.Config      `yaml:"myNewPlugin"`
+        Resources     resources.Config     `json:"resources"`
+        HelloWorld    helloworld.Config    `json:"helloworld"`
++        MyNewPlugin      mynewplugin.Config      `json:"myNewPlugin"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the

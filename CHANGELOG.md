@@ -20,6 +20,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#93](https://github.com/kobsio/kobs/pull/93): Show status of Kubernetes resource in the table of the resources plugin.
 - [#97](https://github.com/kobsio/kobs/pull/97): Add support for Kiali metrics.
 - [#98](https://github.com/kobsio/kobs/pull/98): Add terminal support for Kubernetes Pods.
+- [#100](https://github.com/kobsio/kobs/pull/100): Add support for Ephemeral Containers.
 
 ### Fixed
 

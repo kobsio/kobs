@@ -14,7 +14,7 @@ var (
 
 // Config is the configuration for the Kubeconfig provider.
 type Config struct {
-	Path string `yaml:"path"`
+	Path string `json:"path"`
 }
 
 // GetClusters returns all clusters from a given Kubeconfig file. For that the user have to provide the path to the
