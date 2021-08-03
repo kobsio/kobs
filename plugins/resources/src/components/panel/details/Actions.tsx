@@ -8,6 +8,7 @@ import Delete from './actions/Delete';
 import Edit from './actions/Edit';
 import { IAlert } from '../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
+import Logs from './actions/Logs';
 import Restart from './actions/Restart';
 import Scale from './actions/Scale';
 import Terminal from './actions/Terminal';
@@ -24,6 +25,7 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
   const [showScale, setShowScale] = useState<boolean>(false);
   const [showRestart, setShowRestart] = useState<boolean>(false);
   const [showCreateJob, setShowCreateJob] = useState<boolean>(false);
+  const [showLogs, setShowLogs] = useState<boolean>(false);
   const [showTerminal, setShowTerminal] = useState<boolean>(false);
   const [showCreateEphemeralContainer, setShowCreateEphemeralContainer] = useState<boolean>(false);
   const [showEdit, setShowEdit] = useState<boolean>(false);
@@ -78,6 +80,20 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
         }}
       >
         Create Job
+      </DropdownItem>,
+    );
+  }
+
+  if (request.resource === 'pods') {
+    dropdownItems.push(
+      <DropdownItem
+        key="logs"
+        onClick={(): void => {
+          setShowDropdown(false);
+          setShowLogs(true);
+        }}
+      >
+        Logs
       </DropdownItem>,
     );
   }
@@ -183,6 +199,8 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
         setAlert={(alert: IAlert): void => setAlerts([...alerts, alert])}
         refetch={refetch}
       />
+
+      <Logs request={request} resource={resource} show={showLogs} setShow={setShowLogs} />
 
       <Terminal request={request} resource={resource} show={showTerminal} setShow={setShowTerminal} />
 

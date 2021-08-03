@@ -281,10 +281,12 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 	container := r.URL.Query().Get("container")
+	regex := r.URL.Query().Get("regex")
 	since := r.URL.Query().Get("since")
+	tail := r.URL.Query().Get("tail")
 	previous := r.URL.Query().Get("previous")
 
-	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "container": container, "since": since, "previous": previous}).Tracef("getLogs")
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "container": container, "regex": regex, "since": since, "previous": previous}).Tracef("getLogs")
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
@@ -298,13 +300,19 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	parsedTail, err := strconv.ParseInt(tail, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse tail parameter")
+		return
+	}
+
 	parsedPrevious, err := strconv.ParseBool(previous)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse previous parameter")
 		return
 	}
 
-	logs, err := cluster.GetLogs(r.Context(), namespace, name, container, parsedSince, parsedPrevious)
+	logs, err := cluster.GetLogs(r.Context(), namespace, name, container, regex, parsedSince, parsedTail, parsedPrevious)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadGateway, "Could not get logs")
 		return
