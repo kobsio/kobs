@@ -3,9 +3,7 @@ name: Helm
 on:
   push:
     paths:
-      - 'deploy/helm/**'
-    tags-ignore:
-      - '**'
+      - 'deploy/helm/kobs/**'
 
 jobs:
   helm:
