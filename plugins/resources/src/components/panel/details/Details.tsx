@@ -18,7 +18,6 @@ import Actions from './Actions';
 import Dashboards from './Dashboards';
 import Events from './Events';
 import Links from './Links';
-import Logs from './Logs';
 import Overview from './Overview';
 import Pods from './Pods';
 
@@ -102,19 +101,6 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
               />
             </div>
           </Tab>
-
-          {request.resource === 'pods' ? (
-            <Tab eventKey="logs" title={<TabTitleText>Logs</TabTitleText>}>
-              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
-                <Logs
-                  cluster={resource.cluster.title}
-                  namespace={resource.namespace ? resource.namespace.title : ''}
-                  name={resource.name.title}
-                  pod={resource.props}
-                />
-              </div>
-            </Tab>
-          ) : null}
 
           {podSelector || request.resource === 'nodes' ? (
             <Tab eventKey="pods" title={<TabTitleText>Pods</TabTitleText>}>

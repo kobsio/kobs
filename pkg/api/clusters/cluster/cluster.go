@@ -196,17 +196,44 @@ func (c *Cluster) CreateResource(ctx context.Context, namespace, name, path, res
 // GetLogs returns the logs for a Container. The Container is identified by the namespace and pod name and the container
 // name. Is is also possible to set the time since when the logs should be received and with the previous flag the logs
 // for the last container can be received.
-func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container string, since int64, previous bool) (string, error) {
-	res, err := c.clientset.CoreV1().Pods(namespace).GetLogs(name, &corev1.PodLogOptions{
+func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container, regex string, since, tail int64, previous bool) (string, error) {
+	options := &corev1.PodLogOptions{
 		Container:    container,
 		SinceSeconds: &since,
 		Previous:     previous,
-	}).DoRaw(ctx)
+	}
+
+	if tail > 0 {
+		options.TailLines = &tail
+	}
+
+	res, err := c.clientset.CoreV1().Pods(namespace).GetLogs(name, options).DoRaw(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	return string(res), nil
+	if regex == "" {
+		var logs []string
+		for _, line := range strings.Split(string(res), "\n") {
+			logs = append(logs, line)
+		}
+
+		return strings.Join(logs, "\n\r") + "\n\r", nil
+	}
+
+	reg, err := regexp.Compile(regex)
+	if err != nil {
+		return "", err
+	}
+
+	var logs []string
+	for _, line := range strings.Split(string(res), "\n") {
+		if reg.MatchString(line) {
+			logs = append(logs, line)
+		}
+	}
+
+	return strings.Join(logs, "\n\r") + "\n\r", nil
 }
 
 // GetTerminal starts a new terminal session via the given WebSocket connection.

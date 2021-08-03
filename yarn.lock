@@ -2519,16 +2519,6 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.11.0.tgz#26790eeff22dc3204aa8cd094470f0a2f915634a"
   integrity sha512-WsIX34bO9rhVRmPG0jlV3GoFGfYgPC64TscNV0lxQosiVRnYIA6Z3nBSArtJsxo5Yn6c63glIefC/YTy6D/ZYg==
 
-"@patternfly/react-log-viewer@^4.1.19":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-log-viewer/-/react-log-viewer-4.2.0.tgz#a0fd0cbd31ba09e2599d9b4395927d28bbc4d287"
-  integrity sha512-49sICDwV5fOAcsUZpqFWVdR+/k5ZMWXmrWCshLh531H5BZxAprNTmIN+KHCEmipouTMBC528WvVYtGgPjsvD1g==
-  dependencies:
-    "@patternfly/react-core" "^4.135.0"
-    "@patternfly/react-icons" "^4.11.0"
-    "@patternfly/react-styles" "^4.11.0"
-    memoize-one "^5.1.0"
-
 "@patternfly/react-styles@^4.11.0":
   version "4.11.0"
   resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.11.0.tgz#0068dcb18e1343242f93fa6024dcc077acd57fb9"
@@ -9632,11 +9622,6 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
-
-memoize-one@^5.1.0:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
-  integrity sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==
 
 memory-fs@^0.4.1:
   version "0.4.1"

@@ -35,6 +35,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#88](https://github.com/kobsio/kobs/pull/88): Improve handling of actions for Kubernetes resources.
 - [#95](https://github.com/kobsio/kobs/pull/95): It is now possible to get Kubernetes resources for all namespaces by not selecting a namespace from the select box on the resources page.
 - [#96](https://github.com/kobsio/kobs/pull/96): Add RSS plugin to show the latest status updates of third party services.
+- [#101](https://github.com/kobsio/kobs/pull/101): Show logs in the terminal.
 
 ## [v0.4.0](https://github.com/kobsio/kobs/releases/tag/v0.4.0) (2021-07-14)
 
