@@ -12,6 +12,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#102](https://github.com/kobsio/kobs/pull/102): Fix GitHub Action for creating a new Helm release.
+
 ### Changed
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
