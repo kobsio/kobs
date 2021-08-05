@@ -10,6 +10,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+- [#103](https://github.com/kobsio/kobs/pull/103): Add option to get user information from a request.
+
 ### Fixed
 
 - [#102](https://github.com/kobsio/kobs/pull/102): Fix GitHub Action for creating a new Helm release.

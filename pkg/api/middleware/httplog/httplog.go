@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/api/middleware/auth"
+
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/sirupsen/logrus"
 )
@@ -32,6 +34,10 @@ func (l *StructuredLogger) NewLogEntry(r *http.Request) middleware.LogEntry {
 
 	if reqID := middleware.GetReqID(r.Context()); reqID != "" {
 		logFields["req_id"] = reqID
+	}
+
+	if user := auth.GetUser(r.Context()); user != "" {
+		logFields["user"] = user
 	}
 
 	scheme := "http"

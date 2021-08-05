@@ -34,10 +34,10 @@ spec:
             pathType: Prefix
             backend:
               serviceName: {{ $fullName }}
-              servicePort: 15220
+              servicePort: http-api
           - path: /
             backend:
               serviceName: {{ $fullName }}
-              servicePort: 15219
+              servicePort: http-web
   {{- end }}
 {{- end }}
