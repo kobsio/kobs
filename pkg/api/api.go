@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/middleware/auth"
 	"github.com/kobsio/kobs/pkg/api/middleware/httplog"
 
 	"github.com/go-chi/chi/v5"
@@ -71,6 +72,7 @@ func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopm
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
+	router.Use(auth.Auth)
 	router.Use(httplog.NewStructuredLogger(log.Logger))
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 

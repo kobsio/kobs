@@ -26,6 +26,7 @@ nav:
       - Getting Started: configuration/getting-started.md
       - Clusters: configuration/clusters.md
       - Plugins: configuration/plugins.md
+      - Authentication: configuration/authentication.md
   - Resources:
       - Resources: resources/resources.md
       - Applications: resources/applications.md
