@@ -167,3 +167,44 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+## Create a Service Monitor for the Prometheus Operator.
+## See: https://github.com/coreos/prometheus-operator
+##
+serviceMonitor:
+  enabled: false
+
+  ## Interval at which metrics should be scraped. Fallback to the Prometheus default unless specified.
+  ##
+  # interval: 10s
+
+  ## Timeout after which the scrape is ended. Fallback to the Prometheus default unless specified.
+  ##
+  # scrapeTimeout: 30s
+
+  ## Additional labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+  ## See: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  ##
+  labels: {}
+
+  ## HonorLabels chooses the metric's labels on collisions with target labels.
+  ##
+  honorLabels: true
+
+  ## MetricRelabelConfigs to apply to samples before ingestion.
+  ##
+  metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+  ## RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few
+  ## standard Kubernetes fields and replaces original scrape job name with __tmp_prometheus_job_name.
+  ##
+  relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace

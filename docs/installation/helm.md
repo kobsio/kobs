@@ -85,3 +85,10 @@ helm upgrade kobs kobs/kobs
 | `ingress.annotations` | Annotations to add to the ingress. | `{}` |
 | `ingress.hosts` | Hosts to use for the ingress. | `[]` |
 | `ingress.tls` | TLS configuration for the ingress. | `[]` |
+| `serviceMonitor.enabled` | Create a Service Monitor for kobs. | `false` |
+| `serviceMonitor.interval` | Interval at which metrics should be scraped. Fallback to the Prometheus default unless specified. | |
+| `serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended. Fallback to the Prometheus default unless specified. | |
+| `serviceMonitor.labels` | Additional labels for the the Service Monitor. | `{}` |
+| `serviceMonitor.honorLabels` | Chooses the metric's labels on collisions with target labels. | `false` |
+| `serviceMonitor.metricRelabelings` | Metric relabel config. | `[]` |
+| `serviceMonitor.relabelings` | Relabel config. | `[]` |

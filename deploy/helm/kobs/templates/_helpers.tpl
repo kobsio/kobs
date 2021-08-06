@@ -108,3 +108,12 @@ Additional labels for the Service
 {{- toYaml .Values.service.labels }}
 {{- end }}
 {{- end }}
+
+{{/*
+Additional labels for the Service Monitor
+*/}}
+{{- define "kobs.serviceMonitorLabels" -}}
+{{- if .Values.serviceMonitor.labels }}
+{{- toYaml .Values.serviceMonitor.labels }}
+{{- end }}
+{{- end }}
