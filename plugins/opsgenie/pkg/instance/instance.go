@@ -2,6 +2,7 @@ package instance
 
 import (
 	"context"
+	"time"
 
 	"github.com/kobsio/kobs/plugins/opsgenie/pkg/instance/timeline"
 
@@ -17,17 +18,26 @@ var (
 
 // Config is the structure of the configuration for a single Opsgenie instance.
 type Config struct {
-	Name        string `json:"name"`
-	DisplayName string `json:"displayName"`
-	Description string `json:"description"`
-	APIKey      string `json:"apiKey"`
-	APIUrl      string `json:"apiUrl"`
-	URL         string `json:"url"`
+	Name        string  `json:"name"`
+	DisplayName string  `json:"displayName"`
+	Description string  `json:"description"`
+	APIKey      string  `json:"apiKey"`
+	APIUrl      string  `json:"apiUrl"`
+	URL         string  `json:"url"`
+	Actions     Actions `json:"actions"`
+}
+
+// Actions is the structure to enable/disable various actions for Opsgenie in the configuration.
+type Actions struct {
+	Acknowledge bool `json:"acknowledge"`
+	Snooze      bool `json:"snooze"`
+	Close       bool `json:"close"`
 }
 
 // Instance represents a single Jaeger instance, which can be added via the configuration file.
 type Instance struct {
 	Name           string
+	Actions        Actions
 	alertClient    *alert.Client
 	incidentClient *incident.Client
 	timelineClient *timeline.Client
@@ -138,6 +148,40 @@ func (i *Instance) GetIncidentTimeline(ctx context.Context, id string) ([]timeli
 	return res, nil
 }
 
+// AcknowledgeAlert acknowledges an alert.
+func (i *Instance) AcknowledgeAlert(ctx context.Context, id, user string) error {
+	_, err := i.alertClient.Acknowledge(ctx, &alert.AcknowledgeAlertRequest{
+		IdentifierType:  alert.ALERTID,
+		IdentifierValue: id,
+		User:            user,
+	})
+
+	return err
+}
+
+// SnoozeAlert snoozes an alert.
+func (i *Instance) SnoozeAlert(ctx context.Context, id, user string, duration time.Duration) error {
+	_, err := i.alertClient.Snooze(ctx, &alert.SnoozeAlertRequest{
+		IdentifierType:  alert.ALERTID,
+		IdentifierValue: id,
+		EndTime:         time.Now().Add(duration),
+		User:            user,
+	})
+
+	return err
+}
+
+// CloseAlert closes an alert.
+func (i *Instance) CloseAlert(ctx context.Context, id, user string) error {
+	_, err := i.alertClient.Close(ctx, &alert.CloseAlertRequest{
+		IdentifierType:  alert.ALERTID,
+		IdentifierValue: id,
+		User:            user,
+	})
+
+	return err
+}
+
 // New returns a new Elasticsearch instance for the given configuration.
 func New(config Config) (*Instance, error) {
 	alertClient, err := alert.NewClient(&client.Config{
@@ -169,6 +213,7 @@ func New(config Config) (*Instance, error) {
 
 	return &Instance{
 		Name:           config.Name,
+		Actions:        config.Actions,
 		alertClient:    alertClient,
 		incidentClient: incidentClient,
 		timelineClient: timelineClient,

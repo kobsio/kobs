@@ -1,3 +1,5 @@
+import { AlertVariant } from '@patternfly/react-core';
+
 import { IPluginTimes } from '@kobsio/plugin-core';
 
 // IOptions is the interface for the options on the Opsgenie page.
@@ -131,4 +133,11 @@ export interface IDescription {
 export interface ILastEdit {
   editTime?: string;
   actor?: IActor;
+}
+
+// IMessage is the interface for an message. A message shuld identicate if a triggered action was succesful or if the
+// action failed.
+export interface IMessage {
+  title: string;
+  variant: AlertVariant;
 }

@@ -116,6 +116,10 @@ plugins:
       apiUrl: api.eu.opsgenie.com
       apiKey: ${OPSGENIE_API_KEY}
       url: https://<your-organisation>.app.eu.opsgenie.com
+      actions:
+        acknowledge: true
+        snooze: true
+        close: true
 ```
 
 | Field | Type | Description | Required |
@@ -125,7 +129,10 @@ plugins:
 | descriptions | string | Description of the Opsgenie instance. | No |
 | apiKey | string | API Key for the Opsgenie API. More information can be found at [API key management](https://support.atlassian.com/opsgenie/docs/api-key-management/). | Yes |
 | apiUrl | string | API URL for the Opsgenie API. Must be `api.opsgenie.com` or `api.eu.opsgenie.com`. | Yes |
-| url | string | The address for the Opsgenie account of your organisation | No |
+| url | string | The address for the Opsgenie account of your organisation. | No |
+| actions.acknowledge | boolean | Allow users to acknowledge Opsgenie alerts via kobs. | No |
+| actions.snooze | boolean | Allow users to snooze Opsgenie alerts via kobs. | No |
+| actions.close | boolean | Allow users to close Opsgenie alerts via kobs. | No |
 
 ## Prometheus
 

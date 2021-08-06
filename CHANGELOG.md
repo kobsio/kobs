@@ -11,6 +11,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Added
 
 - [#103](https://github.com/kobsio/kobs/pull/103): Add option to get user information from a request.
+- [#104](https://github.com/kobsio/kobs/pull/104): Add actions for Opsgenie plugin to acknowledge, snooze and close alerts.
 
 ### Fixed
 
