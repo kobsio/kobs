@@ -2,8 +2,10 @@ package opsgenie
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/middleware/auth"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/plugins/opsgenie/pkg/instance"
@@ -14,7 +16,10 @@ import (
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
-const Route = "/opsgenie"
+const (
+	Route       = "/opsgenie"
+	DefaultUser = "kobs.io"
+)
 
 var (
 	log = logrus.WithFields(logrus.Fields{"package": "opsgenie"})
@@ -208,6 +213,106 @@ func (router *Router) getIncidentTimeline(w http.ResponseWriter, r *http.Request
 	render.JSON(w, r, timeline)
 }
 
+func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	id := r.URL.Query().Get("id")
+
+	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("acknowledgeAlert")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	if !i.Actions.Acknowledge {
+		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to acknowledge alerts")
+		return
+	}
+
+	user := auth.GetUser(r.Context())
+	if user == "" {
+		user = DefaultUser
+	}
+
+	err := i.AcknowledgeAlert(r.Context(), id, user)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not acknowledge alert")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
+func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	id := r.URL.Query().Get("id")
+	snooze := r.URL.Query().Get("snooze")
+
+	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("snoozeAlert")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	if !i.Actions.Snooze {
+		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to snooze alerts")
+		return
+	}
+
+	snoozeParsed, err := time.ParseDuration(snooze)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not parse snooze parameter")
+		return
+	}
+
+	user := auth.GetUser(r.Context())
+	if user == "" {
+		user = DefaultUser
+	}
+
+	err = i.SnoozeAlert(r.Context(), id, user, snoozeParsed)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not snooze alert")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
+func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	id := r.URL.Query().Get("id")
+
+	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("closeAlert")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	if !i.Actions.Close {
+		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to close alerts")
+		return
+	}
+
+	user := auth.GetUser(r.Context())
+	if user == "" {
+		user = DefaultUser
+	}
+
+	err := i.CloseAlert(r.Context(), id, user)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not close alert")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
 // Register returns a new router which can be used in the router for the kobs rest api.
 func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
 	var instances []*instance.Instance
@@ -223,6 +328,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		var options map[string]interface{}
 		options = make(map[string]interface{})
 		options["url"] = cfg.URL
+		options["actions"] = cfg.Actions
 
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,
@@ -243,6 +349,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	router.Get("/alert/details/{name}", router.getAlertDetails)
 	router.Get("/alert/logs/{name}", router.getAlertLogs)
 	router.Get("/alert/notes/{name}", router.getAlertNotes)
+	router.Get("/alert/acknowledge/{name}", router.acknowledgeAlert)
+	router.Get("/alert/snooze/{name}", router.snoozeAlert)
+	router.Get("/alert/close/{name}", router.closeAlert)
 	router.Get("/incidents/{name}", router.getIncidents)
 	router.Get("/incident/logs/{name}", router.getIncidentLogs)
 	router.Get("/incident/notes/{name}", router.getIncidentNotes)
