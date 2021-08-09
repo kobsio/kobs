@@ -98,6 +98,7 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 			var min float64
 			var max float64
 			var avg float64
+			var count float64
 
 			var data []Datum
 			for index, value := range stream.Values {
@@ -109,6 +110,7 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 					})
 				} else {
 					avg = avg + val
+					count = count + 1
 
 					if index == 0 {
 						min = val
@@ -128,8 +130,8 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 				}
 			}
 
-			if avg != 0 {
-				avg = avg / float64(len(stream.Values))
+			if avg != 0 && count != 0 {
+				avg = avg / count
 			}
 
 			var labels map[string]string
