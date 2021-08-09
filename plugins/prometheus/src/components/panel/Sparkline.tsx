@@ -1,13 +1,13 @@
 import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
+import { ResponsiveLineCanvas } from '@nivo/line';
 
+import { IPanelOptions, ISeries } from '../../utils/interfaces';
 import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import { convertMetrics, getMappingValue } from '../../utils/helpers';
 import Actions from './Actions';
 import { COLOR_SCALE } from '../../utils/colors';
-import { IPanelOptions } from '../../utils/interfaces';
 
 interface ISpakrlineProps {
   name: string;
@@ -28,7 +28,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
   times,
   options,
 }: ISpakrlineProps) => {
-  const { isError, isFetching, error, data, refetch } = useQuery<Serie[], Error>(
+  const { isError, isFetching, error, data, refetch } = useQuery<ISeries, Error>(
     ['prometheus/metrics', name, options.queries, times],
     async () => {
       try {
@@ -49,9 +49,9 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
 
         if (response.status >= 200 && response.status < 300) {
           if (json) {
-            return convertMetrics(json).series;
+            return convertMetrics(json);
           } else {
-            return [];
+            return { labels: {}, series: [] };
           }
         } else {
           if (json.error) {
@@ -70,14 +70,18 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
   // Determine the label which should be shown above the chart. This is the last value in first metric of the returned
   // data or a value from the user specified mappings.
   let label = 'N/A';
-  if (data && data.length > 0) {
+  if (options.queries && Array.isArray(options.queries) && options.queries.length > 0 && options.queries[0].label) {
+    if (data && data.labels && data.labels.hasOwnProperty('0-0')) {
+      label = data.labels['0-0'];
+    }
+  } else if (data && data.series && data.series.length > 0) {
     if (options.mappings && Object.keys(options.mappings).length > 0) {
-      label = getMappingValue(data[0].data[data[0].data.length - 1].y, options.mappings);
+      label = getMappingValue(data.series[0].data[data.series[0].data.length - 1].y, options.mappings);
     } else {
       label =
-        data[0].data[data[0].data.length - 1].y === null
+        data.series[0].data[data.series[0].data.length - 1].y === null
           ? 'N/A'
-          : `${data[0].data[data[0].data.length - 1].y} ${options.unit ? options.unit : ''}`;
+          : `${data.series[0].data[data.series[0].data.length - 1].y} ${options.unit ? options.unit : ''}`;
     }
   }
 
@@ -94,7 +98,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
           title="Could not get metrics"
           actionLinks={
             <React.Fragment>
-              <AlertActionLink onClick={(): Promise<QueryObserverResult<Serie[], Error>> => refetch()}>
+              <AlertActionLink onClick={(): Promise<QueryObserverResult<ISeries, Error>> => refetch()}>
                 Retry
               </AlertActionLink>
             </React.Fragment>
@@ -102,7 +106,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
         >
           <p>{error?.message}</p>
         </Alert>
-      ) : data ? (
+      ) : data && data.series ? (
         <React.Fragment>
           <div style={{ height: '100%', position: 'relative' }}>
             <div style={{ fontSize: '24px', position: 'absolute', textAlign: 'center', top: '31px', width: '100%' }}>
@@ -111,7 +115,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
             <ResponsiveLineCanvas
               colors={COLOR_SCALE[0]}
               curve="monotoneX"
-              data={data}
+              data={data.series}
               enableArea={true}
               enableGridX={false}
               enableGridY={false}

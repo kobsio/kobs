@@ -12,12 +12,15 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#103](https://github.com/kobsio/kobs/pull/103): Add option to get user information from a request.
 - [#104](https://github.com/kobsio/kobs/pull/104): Add actions for Opsgenie plugin to acknowledge, snooze and close alerts.
+- [#105](https://github.com/kobsio/kobs/pull/105): Add Prometheus metrics for API requests.
 
 ### Fixed
 
 - [#102](https://github.com/kobsio/kobs/pull/102): Fix GitHub Action for creating a new Helm release.
 
 ### Changed
+
+- [#106](https://github.com/kobsio/kobs/pull/106): :warning: *Breaking change:* :warning: Change Prometheus sparkline chart to allow the usage of labels.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

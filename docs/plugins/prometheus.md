@@ -25,7 +25,10 @@ The following options can be used for a panel with the Prometheus plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | query | string | The PromQL query. | Yes |
-| label | string | The label the results. The label can use the value of a variable or a label of the returned time series, e.g. `{% .<prometheus-label> %}`. If you want to use a Prometheus label make sure that the label name doesn't conflict with a variable name | Yes |
+| label | string | The label the results. The label can use the value of a variable or a label of the returned time series, e.g. `{% .<prometheus-label> %}`. If you want to use a Prometheus label make sure that the label name doesn't conflict with a variable name. | Yes |
+
+!!! note
+    In `sparkline` charts the label must not be provided. If the label is provided in a `sparkline` chart the label will be displayed instead of the current value.
 
 ### Column
 
@@ -73,8 +76,7 @@ spec:
               type: sparkline
               unit: Cores
               queries:
-                - label: CPU Usage
-                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m]))
+                - query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m]))
         - title: Memory Usage
           colSpan: 4
           plugin:
@@ -83,8 +85,7 @@ spec:
               type: sparkline
               unit: MiB
               queries:
-                - label: Memory Usage
-                  query: sum(container_memory_working_set_bytes{namespace="{{ .namespace }}", pod=~"{% .var_pod %}", container!="POD", container!=""}) / 1024 / 1024
+                - query: sum(container_memory_working_set_bytes{namespace="{{ .namespace }}", pod=~"{% .var_pod %}", container!="POD", container!=""}) / 1024 / 1024
         - title: Restarts
           colSpan: 4
           plugin:
@@ -92,8 +93,7 @@ spec:
             options:
               type: sparkline
               queries:
-                - label: Restarts
-                  query: kube_pod_container_status_restarts_total{namespace="{{ .namespace }}", pod=~"{% .var_pod %}"}
+                - query: kube_pod_container_status_restarts_total{namespace="{{ .namespace }}", pod=~"{% .var_pod %}"}
     - size: 3
       panels:
         - title: CPU Usage

@@ -58,8 +58,7 @@ spec:
               unit: req/s
               type: sparkline
               queries:
-                - label: Incoming Request Volume
-                  query: round(sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[5m])), 0.001)
+                - query: round(sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[5m])), 0.001)
         - title: Incoming Success Rate
           colSpan: 6
           plugin:
@@ -68,8 +67,7 @@ spec:
               unit: "%"
               type: sparkline
               queries:
-                - label: Incoming Success Rate
-                  query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[5m])) * 100
+                - query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[5m])) * 100
     - size: 2
       panels:
         - title: Request Duration
