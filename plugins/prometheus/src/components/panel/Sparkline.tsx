@@ -5,7 +5,7 @@ import { ResponsiveLineCanvas } from '@nivo/line';
 
 import { IPanelOptions, ISeries } from '../../utils/interfaces';
 import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
-import { convertMetrics, getMappingValue } from '../../utils/helpers';
+import { convertMetrics, getMappingValue, roundNumber } from '../../utils/helpers';
 import Actions from './Actions';
 import { COLOR_SCALE } from '../../utils/colors';
 
@@ -81,7 +81,9 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
       label =
         data.series[0].data[data.series[0].data.length - 1].y === null
           ? 'N/A'
-          : `${data.series[0].data[data.series[0].data.length - 1].y} ${options.unit ? options.unit : ''}`;
+          : `${roundNumber(data.series[0].data[data.series[0].data.length - 1].y as number)} ${
+              options.unit ? options.unit : ''
+            }`;
     }
   }
 

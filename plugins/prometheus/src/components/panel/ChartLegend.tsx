@@ -5,6 +5,7 @@ import React from 'react';
 import { Serie } from '@nivo/line';
 
 import { getColor } from '../../utils/colors';
+import { roundNumber } from '../../utils/helpers';
 
 interface IChartLegendProps {
   series: Serie[];
@@ -55,16 +56,19 @@ const ChartLegend: React.FunctionComponent<IChartLegendProps> = ({
               </Button>
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Min">
-              {metric.min} {unit}
+              {roundNumber(metric.min)} {unit}
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Max">
-              {metric.max} {unit}
+              {roundNumber(metric.max)} {unit}
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Avg">
-              {metric.avg} {unit}
+              {roundNumber(metric.avg)} {unit}
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Current">
-              {metric.data[metric.data.length - 1].y} {unit}
+              {metric.data[metric.data.length - 1].y
+                ? roundNumber(metric.data[metric.data.length - 1].y as number)
+                : metric.data[metric.data.length - 1].y}{' '}
+              {unit}
             </Td>
           </Tr>
         ))}

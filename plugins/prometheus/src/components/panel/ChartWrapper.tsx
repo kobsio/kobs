@@ -103,7 +103,16 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
         </Alert>
       ) : data ? (
         <React.Fragment>
-          <div style={{ height: options.legend === 'table' ? 'calc(100% - 80px)' : '100%' }}>
+          <div
+            style={{
+              height:
+                options.legend === 'table'
+                  ? 'calc(100% - 80px)'
+                  : options.legend === 'table-large'
+                  ? 'calc(100% - 140px)'
+                  : '100%',
+            }}
+          >
             <Chart
               times={times}
               options={options}
@@ -113,6 +122,10 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
           </div>
           {options.legend === 'table' ? (
             <div className="pf-u-mt-md" style={{ height: '60px', overflow: 'scroll' }}>
+              <ChartLegend series={data.series} unit={options.unit || ''} selected={selectedSeries} select={select} />
+            </div>
+          ) : options.legend === 'table-large' ? (
+            <div className="pf-u-mt-md" style={{ height: '120px', overflow: 'scroll' }}>
               <ChartLegend series={data.series} unit={options.unit || ''} selected={selectedSeries} select={select} />
             </div>
           ) : null}
