@@ -21,6 +21,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#106](https://github.com/kobsio/kobs/pull/106): :warning: *Breaking change:* :warning: Change Prometheus sparkline chart to allow the usage of labels.
+- [#107](https://github.com/kobsio/kobs/pull/107): Add new option for Prometheus chart legend and change formatting of values.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

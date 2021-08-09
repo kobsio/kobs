@@ -74,3 +74,9 @@ export const getMappingValue = (value: DatumValue | null | undefined, mappings: 
 
   return mappings[value.toString()];
 };
+
+// roundNumber rounds the given number to a specify number of decimals. The default number of decimals is 4 but can be
+// overwritten by the user.
+export const roundNumber = (value: number, dec = 4): number => {
+  return Math.round(value * Math.pow(10, dec)) / Math.pow(10, dec);
+};

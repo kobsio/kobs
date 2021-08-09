@@ -15,7 +15,7 @@ The following options can be used for a panel with the Prometheus plugin:
 | type | string | The type of the chart. Must be `sparkline`, `line`, `area` or `table`. | Yes |
 | unit | string | An optional unit for the y axis of the chart. | No |
 | stacked | boolean | When this is `true` all time series in the chart will be stacked. | No |
-| legend | string | The type which should be used for the legend. Currently only `table` is supported as legend. If the value is not set, no legend will be shown. | No |
+| legend | string | The type which should be used for the legend. Currently only `table` and `table-large` is supported as legend. If the value is not set, no legend will be shown. | No |
 | mappings | map<string, string> | Specify value mappings for your data. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 | queries | [[]Query](#query) | A list of queries, which are used to get the data for the chart. | Yes |
 | columns | [[]Column](#column) | A list of columns, which **must** be provided, when the type of the chart is `table` | No |
