@@ -2,6 +2,7 @@ import { Card, CardBody, Flex, FlexItem, ToggleGroup, ToggleGroupItem } from '@p
 import React, { useState } from 'react';
 import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import { SquareIcon } from '@patternfly/react-icons';
+import { TooltipWrapper } from '@nivo/tooltip';
 
 import { convertMetrics, formatAxisBottom } from '../../utils/helpers';
 import { COLOR_SCALE } from '../../utils/colors';
@@ -84,24 +85,32 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, times, m
               textColor: '#000000',
             }}
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            tooltip={(tooltip) => (
-              <div
-                className="pf-u-box-shadow-sm"
-                style={{
-                  background: '#ffffff',
-                  fontSize: '12px',
-                  padding: '12px',
-                }}
-              >
-                <div>
-                  <b>{tooltip.point.data.xFormatted}</b>
-                </div>
-                <div>
-                  <SquareIcon color={tooltip.point.color} /> {seriesData.labels[tooltip.point.id.split('.')[0]]}:{' '}
-                  {tooltip.point.data.yFormatted}
-                </div>
-              </div>
-            )}
+            tooltip={(tooltip) => {
+              const serie = selectedSeries.filter((serie) => serie.id === tooltip.point.serieId);
+              const isFirstHalf = tooltip.point.index % serie[0].data.length < serie[0].data.length / 2;
+
+              return (
+                <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
+                  <div
+                    className="pf-u-box-shadow-sm"
+                    style={{
+                      background: '#ffffff',
+                      fontSize: '12px',
+                      padding: '12px',
+                      width: '300px',
+                    }}
+                  >
+                    <div>
+                      <b>{tooltip.point.data.xFormatted}</b>
+                    </div>
+                    <div>
+                      <SquareIcon color={tooltip.point.color} /> {seriesData.labels[tooltip.point.id.split('.')[0]]}:{' '}
+                      {tooltip.point.data.yFormatted}
+                    </div>
+                  </div>
+                </TooltipWrapper>
+              );
+            }}
             xScale={{ type: 'time' }}
             yScale={{ stacked: stacked, type: 'linear' }}
             yFormat=" >-.2f"
