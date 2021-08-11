@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResponsiveBarCanvas } from '@nivo/bar';
 import { SquareIcon } from '@patternfly/react-icons';
+import { TooltipWrapper } from '@nivo/tooltip';
 
 import { IBucket } from '../../utils/interfaces';
 
@@ -52,23 +53,30 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
           textColor: '#000000',
         }}
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        tooltip={(tooltip) => (
-          <div
-            className="pf-u-box-shadow-sm"
-            style={{
-              background: '#ffffff',
-              fontSize: '12px',
-              padding: '12px',
-            }}
-          >
-            <div>
-              <b>{tooltip.data.time}</b>
-            </div>
-            <div>
-              <SquareIcon color="#0066cc" /> Documents: {tooltip.data.documents}
-            </div>
-          </div>
-        )}
+        tooltip={(tooltip) => {
+          const isFirstHalf = tooltip.index < buckets.length / 2;
+
+          return (
+            <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
+              <div
+                className="pf-u-box-shadow-sm"
+                style={{
+                  background: '#ffffff',
+                  fontSize: '12px',
+                  padding: '12px',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <div>
+                  <b>{tooltip.data.time}</b>
+                </div>
+                <div>
+                  <SquareIcon color="#0066cc" /> Documents: {tooltip.data.documents}
+                </div>
+              </div>
+            </TooltipWrapper>
+          );
+        }}
         valueFormat=""
         valueScale={{ type: 'linear' }}
       />

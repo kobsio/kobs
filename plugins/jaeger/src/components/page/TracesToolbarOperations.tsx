@@ -44,12 +44,13 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
   );
 
   const filter = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement> | null,
+    value: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
-    if (e && e.target && e.target.value && data) {
+    if (value && data) {
       return data
-        .filter((item) => item.includes(e.target.value))
+        .filter((item) => item.includes(value))
         .map((item, index) => <SelectOption key={index} value={item} />);
     } else {
       if (data) {

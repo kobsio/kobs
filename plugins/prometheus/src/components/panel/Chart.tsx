@@ -1,6 +1,7 @@
 import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
 import { SquareIcon } from '@patternfly/react-icons';
+import { TooltipWrapper } from '@nivo/tooltip';
 
 import { ILabels, IPanelOptions } from '../../utils/interfaces';
 import { COLOR_SCALE } from '../../utils/colors';
@@ -45,24 +46,32 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, options, la
         textColor: '#000000',
       }}
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      tooltip={(tooltip) => (
-        <div
-          className="pf-u-box-shadow-sm"
-          style={{
-            background: '#ffffff',
-            fontSize: '12px',
-            padding: '12px',
-          }}
-        >
-          <div>
-            <b>{tooltip.point.data.xFormatted}</b>
-          </div>
-          <div>
-            <SquareIcon color={tooltip.point.color} /> {labels[tooltip.point.id.split('.')[0]]}:{' '}
-            {tooltip.point.data.yFormatted} {options.unit}
-          </div>
-        </div>
-      )}
+      tooltip={(tooltip) => {
+        const serie = series.filter((serie) => serie.id === tooltip.point.serieId);
+        const isFirstHalf = tooltip.point.index % serie[0].data.length < serie[0].data.length / 2;
+
+        return (
+          <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
+            <div
+              className="pf-u-box-shadow-sm"
+              style={{
+                background: '#ffffff',
+                fontSize: '12px',
+                padding: '12px',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <div>
+                <b>{tooltip.point.data.xFormatted}</b>
+              </div>
+              <div>
+                <SquareIcon color={tooltip.point.color} /> {labels[tooltip.point.id.split('.')[0]]}:{' '}
+                {tooltip.point.data.yFormatted} {options.unit}
+              </div>
+            </div>
+          </TooltipWrapper>
+        );
+      }}
       xScale={{ type: 'time' }}
       yScale={{ max: 'auto', min: 'auto', stacked: options.stacked, type: 'linear' }}
       yFormat=" >-.2f"

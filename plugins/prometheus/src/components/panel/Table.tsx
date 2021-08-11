@@ -6,6 +6,7 @@ import React from 'react';
 import { IPanelOptions, IRows } from '../../utils/interfaces';
 import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import Actions from './Actions';
+import { roundNumber } from '../../utils/helpers';
 
 interface ITableProps {
   name: string;
@@ -100,7 +101,7 @@ export const Table: React.FunctionComponent<ITableProps> = ({
                 {options.columns
                   ? options.columns.map((column, index) => (
                       <Td key={index} dataLabel={column.title ? column.title : column.name}>
-                        {column.name ? data[key][column.name] : ''} {column.unit}
+                        {column.name ? roundNumber(parseFloat(data[key][column.name])) : ''} {column.unit}
                       </Td>
                     ))
                   : null}
