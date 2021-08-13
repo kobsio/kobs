@@ -47,8 +47,8 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, options, la
       }}
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       tooltip={(tooltip) => {
-        const serie = series.filter((serie) => serie.id === tooltip.point.serieId);
-        const isFirstHalf = tooltip.point.index % serie[0].data.length < serie[0].data.length / 2;
+        const isFirstHalf =
+          Math.floor(new Date(tooltip.point.data.x).getTime() / 1000) < (times.timeEnd + times.timeStart) / 2;
 
         return (
           <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
@@ -72,7 +72,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, options, la
           </TooltipWrapper>
         );
       }}
-      xScale={{ type: 'time' }}
+      xScale={{ max: new Date(times.timeEnd * 1000), min: new Date(times.timeStart * 1000), type: 'time' }}
       yScale={{ max: 'auto', min: 'auto', stacked: options.stacked, type: 'linear' }}
       yFormat=" >-.2f"
     />

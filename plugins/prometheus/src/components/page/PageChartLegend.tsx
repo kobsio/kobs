@@ -5,6 +5,7 @@ import React from 'react';
 import { Serie } from '@nivo/line';
 
 import { getColor } from '../../utils/colors';
+import { roundNumber } from '../../utils/helpers';
 
 interface IPageChartLegendProps {
   queries: string[];
@@ -54,10 +55,10 @@ const PageChartLegend: React.FunctionComponent<IPageChartLegendProps> = ({
                 {metric.label === '{}' && series.length === queries.length ? queries[index] : metric.label}
               </Button>
             </Td>
-            <Td dataLabel="Min">{metric.min}</Td>
-            <Td dataLabel="Max">{metric.max}</Td>
-            <Td dataLabel="Avg">{metric.avg}</Td>
-            <Td dataLabel="Current">{metric.data[metric.data.length - 1].y}</Td>
+            <Td dataLabel="Min">{roundNumber(metric.min)}</Td>
+            <Td dataLabel="Max">{roundNumber(metric.max)}</Td>
+            <Td dataLabel="Avg">{roundNumber(metric.avg)}</Td>
+            <Td dataLabel="Current">{roundNumber(metric.data[metric.data.length - 1].y as number)}</Td>
           </Tr>
         ))}
       </Tbody>
