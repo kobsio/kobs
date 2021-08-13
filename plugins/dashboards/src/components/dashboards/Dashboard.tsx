@@ -239,8 +239,10 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
 
 export default memo(Dashboard, (prevProps, nextProps) => {
   if (
+    prevProps.activeKey === nextProps.activeKey &&
+    JSON.stringify(prevProps.defaults) === JSON.stringify(nextProps.defaults) &&
     JSON.stringify(prevProps.dashboard) === JSON.stringify(nextProps.dashboard) &&
-    prevProps.activeKey === nextProps.activeKey
+    prevProps.forceDefaultSpan === nextProps.forceDefaultSpan
   ) {
     return true;
   }
