@@ -18,6 +18,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#102](https://github.com/kobsio/kobs/pull/102): Fix GitHub Action for creating a new Helm release.
 - [#109](https://github.com/kobsio/kobs/pull/109): Fix tooltip position in Prometheus charts.
+- [#110](https://github.com/kobsio/kobs/pull/110): Fix Dashboard tabs showing wrong variables.
 
 ### Changed
 

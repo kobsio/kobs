@@ -1,6 +1,16 @@
-import { Alert, AlertActionLink, AlertVariant, Grid, GridItem, Spinner, Title } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertActionLink,
+  AlertVariant,
+  Grid,
+  GridItem,
+  PageSection,
+  PageSectionVariants,
+  Spinner,
+  Title,
+} from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import React, { useContext, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 
 import {
   ClustersContext,
@@ -16,6 +26,8 @@ import { interpolate, rowHeight, toGridSpans } from '../../utils/dashboard';
 import DashboardToolbar from './DashboardToolbar';
 
 interface IDashboardProps {
+  activeKey: string;
+  eventKey: string;
   defaults: IPluginDefaults;
   dashboard: IDashboard;
   forceDefaultSpan: boolean;
@@ -27,6 +39,8 @@ interface IDashboardProps {
 // The component is also used to set the initial value for the times and for fetching all defined variable values. To
 // allow a user to change the time or select another variable value the component includes a toolbar component.
 const Dashboard: React.FunctionComponent<IDashboardProps> = ({
+  activeKey,
+  eventKey,
   defaults,
   dashboard,
   forceDefaultSpan,
@@ -64,9 +78,13 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // Prometheus plugin. For the Prometheus plugin the user must specify the name of the Prometheus instance via the name
   // parameter in the options. When the user changes the variables, we keep the old variable values, so that we not have
   // to rerender all the panels in the dashboard.
-  const { isError, error, data, refetch } = useQuery<IVariableValues[], Error>(
-    ['dashboard/variables', variables, times],
+  const { isError, error, data, refetch } = useQuery<IVariableValues[] | null, Error>(
+    ['dashboard/variables', variables, times, activeKey],
     async () => {
+      if (activeKey !== eventKey) {
+        return null;
+      }
+
       if (!variables) {
         return [];
       }
@@ -145,32 +163,36 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
 
   if (isError) {
     return (
-      <Alert
-        variant={AlertVariant.danger}
-        title="Variables were not fetched"
-        actionLinks={
-          <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[], Error>> => refetch()}>
-              Retry
-            </AlertActionLink>
-          </React.Fragment>
-        }
-      >
-        <p>{error?.message}</p>
-      </Alert>
+      <PageSection variant={PageSectionVariants.default} isFilled={true}>
+        <Alert
+          variant={AlertVariant.danger}
+          title="Variables were not fetched"
+          actionLinks={
+            <React.Fragment>
+              <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[] | null, Error>> => refetch()}>
+                Retry
+              </AlertActionLink>
+            </React.Fragment>
+          }
+        >
+          <p>{error?.message}</p>
+        </Alert>
+      </PageSection>
     );
   }
 
   if (!data) {
     return (
-      <div className="pf-u-text-align-center">
-        <Spinner />
-      </div>
+      <PageSection variant={PageSectionVariants.default} isFilled={true}>
+        <div className="pf-u-text-align-center">
+          <Spinner />
+        </div>
+      </PageSection>
     );
   }
 
   return (
-    <React.Fragment>
+    <PageSection variant={PageSectionVariants.default} isFilled={true}>
       <DashboardToolbar variables={data} setVariables={setVariables} times={times} setTimes={setTimes} />
 
       <p>&nbsp;</p>
@@ -211,8 +233,17 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
           </React.Fragment>
         ))}
       </Grid>
-    </React.Fragment>
+    </PageSection>
   );
 };
 
-export default Dashboard;
+export default memo(Dashboard, (prevProps, nextProps) => {
+  if (
+    JSON.stringify(prevProps.dashboard) === JSON.stringify(nextProps.dashboard) &&
+    prevProps.activeKey === nextProps.activeKey
+  ) {
+    return true;
+  }
+
+  return false;
+});

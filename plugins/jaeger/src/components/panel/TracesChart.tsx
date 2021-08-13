@@ -89,7 +89,6 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITr
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             tooltip={(tooltip) => {
               const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
-              console.log(tooltip.node);
 
               return (
                 <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>

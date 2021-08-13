@@ -143,18 +143,17 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
       }
       className="pf-u-mt-md kobsio-dashboards-tabs-without-margin-top"
       isFilled={true}
-      mountOnEnter={true}
     >
       {data.map((dashboard) => (
         <Tab key={dashboard.title} eventKey={dashboard.title} title={<TabTitleText>{dashboard.title}</TabTitleText>}>
-          <PageSection variant={PageSectionVariants.default} isFilled={true}>
-            <Dashboard
-              defaults={defaults}
-              dashboard={dashboard}
-              forceDefaultSpan={forceDefaultSpan}
-              showDetails={useDrawer ? setDetails : undefined}
-            />
-          </PageSection>
+          <Dashboard
+            activeKey={options.dashboard}
+            eventKey={dashboard.title}
+            defaults={defaults}
+            dashboard={dashboard}
+            forceDefaultSpan={forceDefaultSpan}
+            showDetails={useDrawer ? setDetails : undefined}
+          />
         </Tab>
       ))}
     </Tabs>
