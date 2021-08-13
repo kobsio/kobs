@@ -102,11 +102,12 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 
 			var data []Datum
 			for index, value := range stream.Values {
+				timestamp := value.Timestamp.Unix() * 1000
 				val := float64(value.Value)
 
 				if math.IsNaN(val) {
 					data = append(data, Datum{
-						X: value.Timestamp.Unix() * 1000,
+						X: timestamp,
 					})
 				} else {
 					avg = avg + val
@@ -124,7 +125,7 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 					}
 
 					data = append(data, Datum{
-						X: value.Timestamp.Unix() * 1000,
+						X: timestamp,
 						Y: &val,
 					})
 				}
