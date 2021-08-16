@@ -79,7 +79,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // parameter in the options. When the user changes the variables, we keep the old variable values, so that we not have
   // to rerender all the panels in the dashboard.
   const { isError, error, data, refetch } = useQuery<IVariableValues[] | null, Error>(
-    ['dashboard/variables', variables, times, activeKey],
+    ['dashboard/variables', dashboard.title, variables, times, activeKey],
     async () => {
       if (activeKey !== eventKey) {
         return null;
