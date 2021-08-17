@@ -3,10 +3,10 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
 
-import { IPanelOptions, IRows } from '../../utils/interfaces';
+import { IColumn, IPanelOptions, IRows } from '../../utils/interfaces';
 import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
+import { getMappingValue, roundNumber } from '../../utils/helpers';
 import Actions from './Actions';
-import { roundNumber } from '../../utils/helpers';
 
 interface ITableProps {
   name: string;
@@ -15,6 +15,22 @@ interface ITableProps {
   times: IPluginTimes;
   options: IPanelOptions;
 }
+
+const formatColumValue = (key: string, column: IColumn, data: IRows): string | number => {
+  if (!column.name) {
+    return '';
+  }
+
+  if (column.mappings) {
+    return getMappingValue(data[key][column.name], column.mappings);
+  }
+
+  if (column.name.startsWith('value')) {
+    return roundNumber(parseFloat(data[key][column.name]));
+  }
+
+  return data[key][column.name];
+};
 
 // The Table component can be used to show the result of multiple Prometheus queries in a table. To get the data for the
 // table we have to use the table endpoint of the Prometheus plugin API. This will return a list of columns, where the
@@ -101,7 +117,8 @@ export const Table: React.FunctionComponent<ITableProps> = ({
                 {options.columns
                   ? options.columns.map((column, index) => (
                       <Td key={index} dataLabel={column.title ? column.title : column.name}>
-                        {column.name ? roundNumber(parseFloat(data[key][column.name])) : ''} {column.unit}
+                        {formatColumValue(key, column, data)}
+                        {column.unit ? ` ${column.unit}` : ''}
                       </Td>
                     ))
                   : null}

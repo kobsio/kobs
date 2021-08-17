@@ -1,14 +1,4 @@
-import {
-  Alert,
-  AlertActionLink,
-  AlertVariant,
-  Grid,
-  GridItem,
-  PageSection,
-  PageSectionVariants,
-  Spinner,
-  Title,
-} from '@patternfly/react-core';
+import { Alert, AlertActionLink, AlertVariant, Grid, GridItem, Spinner, Title } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { memo, useContext, useState } from 'react';
 
@@ -79,7 +69,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // parameter in the options. When the user changes the variables, we keep the old variable values, so that we not have
   // to rerender all the panels in the dashboard.
   const { isError, error, data, refetch } = useQuery<IVariableValues[] | null, Error>(
-    ['dashboard/variables', dashboard.title, variables, times, activeKey],
+    ['dashboard/variables', dashboard, variables, times, activeKey],
     async () => {
       if (activeKey !== eventKey) {
         return null;
@@ -163,36 +153,32 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
 
   if (isError) {
     return (
-      <PageSection variant={PageSectionVariants.default} isFilled={true}>
-        <Alert
-          variant={AlertVariant.danger}
-          title="Variables were not fetched"
-          actionLinks={
-            <React.Fragment>
-              <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[] | null, Error>> => refetch()}>
-                Retry
-              </AlertActionLink>
-            </React.Fragment>
-          }
-        >
-          <p>{error?.message}</p>
-        </Alert>
-      </PageSection>
+      <Alert
+        variant={AlertVariant.danger}
+        title="Variables were not fetched"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[] | null, Error>> => refetch()}>
+              Retry
+            </AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>{error?.message}</p>
+      </Alert>
     );
   }
 
   if (!data) {
     return (
-      <PageSection variant={PageSectionVariants.default} isFilled={true}>
-        <div className="pf-u-text-align-center">
-          <Spinner />
-        </div>
-      </PageSection>
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
     );
   }
 
   return (
-    <PageSection variant={PageSectionVariants.default} isFilled={true}>
+    <React.Fragment>
       <DashboardToolbar variables={data} setVariables={setVariables} times={times} setTimes={setTimes} />
 
       <p>&nbsp;</p>
@@ -233,7 +219,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
           </React.Fragment>
         ))}
       </Grid>
-    </PageSection>
+    </React.Fragment>
   );
 };
 

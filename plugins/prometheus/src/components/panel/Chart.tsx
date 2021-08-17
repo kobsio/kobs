@@ -74,7 +74,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, options, la
       }}
       xScale={{ max: new Date(times.timeEnd * 1000), min: new Date(times.timeStart * 1000), type: 'time' }}
       yScale={{ max: 'auto', min: 'auto', stacked: options.stacked, type: 'linear' }}
-      yFormat=" >-.2f"
+      yFormat=" >-.4f"
     />
   );
 };

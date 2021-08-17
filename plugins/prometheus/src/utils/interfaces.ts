@@ -78,4 +78,5 @@ export interface IColumn {
   name?: string;
   title?: string;
   unit?: string;
+  mappings?: IMappings;
 }

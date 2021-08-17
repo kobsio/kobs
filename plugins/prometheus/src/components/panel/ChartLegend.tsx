@@ -66,9 +66,8 @@ const ChartLegend: React.FunctionComponent<IChartLegendProps> = ({
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Current">
               {metric.data[metric.data.length - 1].y
-                ? roundNumber(metric.data[metric.data.length - 1].y as number)
-                : metric.data[metric.data.length - 1].y}{' '}
-              {unit}
+                ? `${roundNumber(metric.data[metric.data.length - 1].y as number)} ${unit}`
+                : ''}
             </Td>
           </Tr>
         ))}

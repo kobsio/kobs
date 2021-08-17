@@ -27,6 +27,32 @@ const DashboardToolbarVariable: React.FunctionComponent<IDashboardToolbarVariabl
     setShow(false);
   };
 
+  const filter = (
+    e: React.ChangeEvent<HTMLInputElement> | null,
+    value: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
+    if (value) {
+      return [
+        <SelectGroup label={variable.label || variable.name} key="variable">
+          {variable.values
+            .filter((item) => item.includes(value))
+            .map((item, index) => (
+              <SelectOption key={index} value={item} />
+            ))}
+        </SelectGroup>,
+      ];
+    } else {
+      return [
+        <SelectGroup label={variable.label || variable.name} key="variable">
+          {variable.values.map((item, index) => (
+            <SelectOption key={index} value={item} />
+          ))}
+        </SelectGroup>,
+      ];
+    }
+  };
+
   // group is the select group for the select box. We can not render this in the return function, because the Select
   // component requires an array of SelectGroup components.
   const group = [
@@ -39,13 +65,15 @@ const DashboardToolbarVariable: React.FunctionComponent<IDashboardToolbarVariabl
 
   return (
     <Select
-      variant={SelectVariant.single}
+      variant={SelectVariant.typeahead}
       typeAheadAriaLabel={`Select ${variable.label || variable.name}`}
       placeholderText={`Select ${variable.label || variable.name}`}
       onToggle={(): void => setShow(!show)}
+      onFilter={filter}
       onSelect={onSelect}
       selections={variable.value}
       isOpen={show}
+      isGrouped={true}
       width={250}
     >
       {group}

@@ -146,14 +146,16 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
     >
       {data.map((dashboard) => (
         <Tab key={dashboard.title} eventKey={dashboard.title} title={<TabTitleText>{dashboard.title}</TabTitleText>}>
-          <Dashboard
-            activeKey={options.dashboard}
-            eventKey={dashboard.title}
-            defaults={defaults}
-            dashboard={dashboard}
-            forceDefaultSpan={forceDefaultSpan}
-            showDetails={useDrawer ? setDetails : undefined}
-          />
+          <PageSection variant={PageSectionVariants.default} isFilled={true}>
+            <Dashboard
+              activeKey={options.dashboard}
+              eventKey={dashboard.title}
+              defaults={defaults}
+              dashboard={dashboard}
+              forceDefaultSpan={forceDefaultSpan}
+              showDetails={useDrawer ? setDetails : undefined}
+            />
+          </PageSection>
         </Tab>
       ))}
     </Tabs>
