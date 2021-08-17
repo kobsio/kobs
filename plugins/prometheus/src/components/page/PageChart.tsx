@@ -113,7 +113,7 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, times, m
             }}
             xScale={{ max: new Date(times.timeEnd * 1000), min: new Date(times.timeStart * 1000), type: 'time' }}
             yScale={{ stacked: stacked, type: 'linear' }}
-            yFormat=" >-.2f"
+            yFormat=" >-.4f"
           />
         </div>
         <p>&nbsp;</p>

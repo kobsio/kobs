@@ -13,6 +13,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#103](https://github.com/kobsio/kobs/pull/103): Add option to get user information from a request.
 - [#104](https://github.com/kobsio/kobs/pull/104): Add actions for Opsgenie plugin to acknowledge, snooze and close alerts.
 - [#105](https://github.com/kobsio/kobs/pull/105): Add Prometheus metrics for API requests.
+- [#112](https://github.com/kobsio/kobs/pull/112): Allow mapping values in Prometheus table panel.
 
 ### Fixed
 

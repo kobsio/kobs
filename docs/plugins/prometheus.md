@@ -37,6 +37,7 @@ The following options can be used for a panel with the Prometheus plugin:
 | name | string | The name of a column must be a returned label from the specified queries. To get the result of a query the special column `value-N`, where `N` is the index of the query. | Yes |
 | header | string | An optional value for the header of the column. When this is not specified the name will be used as header for the column. | No |
 | unit | string | An optional unit for the column values. | No |
+| mappings | map<string, string> | Specify value mappings for the column. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 
 ## Example
 
