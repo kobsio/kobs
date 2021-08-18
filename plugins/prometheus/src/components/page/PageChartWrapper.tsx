@@ -3,7 +3,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IMetric, IOptions } from '../../utils/interfaces';
+import { IMetrics, IOptions } from '../../utils/interfaces';
 import PageChart from './PageChart';
 
 interface IPageChartWrapperProps extends IOptions {
@@ -21,7 +21,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
 }: IPageChartWrapperProps) => {
   const history = useHistory();
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IMetric[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IMetrics, Error>(
     ['prometheus/metrics', name, queries, resolution, times],
     async () => {
       try {
@@ -69,7 +69,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetric[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetrics, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -84,7 +84,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
     return null;
   }
 
-  return <PageChart queries={queries} times={times} metrics={data} />;
+  return <PageChart queries={queries} metrics={data} />;
 };
 
 export default PageChartWrapper;

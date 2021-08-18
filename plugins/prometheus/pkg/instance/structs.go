@@ -7,6 +7,16 @@ type Query struct {
 	Label string `json:"label"`
 }
 
+// Metrics is the structure for the returned metrics from the Prometheus metrics API endpoint. It contains a list of
+// metrics, the start and end time for the query and the min and max value accross all time series.
+type Metrics struct {
+	StartTime int64    `json:"startTime"`
+	EndTime   int64    `json:"endTime"`
+	Min       float64  `json:"min"`
+	Max       float64  `json:"max"`
+	Metrics   []Metric `json:"metrics"`
+}
+
 // Metric is the response format for a single metric. Each metric must have an ID and label. We also add the min, max
 // and average for the returned data.
 type Metric struct {

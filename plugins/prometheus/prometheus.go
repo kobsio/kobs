@@ -121,7 +121,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.WithFields(logrus.Fields{"metrics": len(metrics)}).Tracef("getMetrics")
+	log.WithFields(logrus.Fields{"metrics": len(metrics.Metrics)}).Tracef("getMetrics")
 	render.JSON(w, r, metrics)
 }
 

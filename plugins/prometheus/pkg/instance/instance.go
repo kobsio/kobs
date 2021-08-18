@@ -64,7 +64,7 @@ func (i *Instance) GetVariable(ctx context.Context, label, query, queryType stri
 // GetMetrics returns all metrics for all given queries. For each given query we have to make one call to the Prometheus
 // API. Then we have to loop through the returned time series and transform them into a format, which can be processed
 // by out React UI.
-func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution string, timeStart, timeEnd int64) ([]Metric, error) {
+func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution string, timeStart, timeEnd int64) (*Metrics, error) {
 	steps := getSteps(timeStart, timeEnd)
 	if resolution != "" {
 		parsedDuration, err := time.ParseDuration(resolution)
@@ -79,6 +79,11 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 		Step:  steps,
 	}
 
+	globalTimeStart := timeStart * 1000
+	globalTimeEnd := timeEnd * 1000
+
+	var globalMin float64
+	var globalMax float64
 	var metrics []Metric
 
 	for queryIndex, query := range queries {
@@ -105,11 +110,32 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 				timestamp := value.Timestamp.Unix() * 1000
 				val := float64(value.Value)
 
+				// Determine the start and end time accross all series. In the React UI this is used to define the min
+				// and max value for x axis of the chart.
+				if timestamp < globalTimeStart {
+					globalTimeStart = timestamp
+				} else if timestamp > globalTimeEnd {
+					globalTimeEnd = timestamp
+				}
+
 				if math.IsNaN(val) {
 					data = append(data, Datum{
 						X: timestamp,
 					})
 				} else {
+					// Determine the min and max value accross all series. In the React UI this is used to define the
+					// min and max value for the y axis of the chart.
+					if queryIndex == 0 && streamIndex == 0 && index == 0 {
+						globalMin = val
+						globalMax = val
+					} else {
+						if val < globalMin {
+							globalMin = val
+						} else if val > globalMax {
+							globalMax = val
+						}
+					}
+
 					avg = avg + val
 					count = count + 1
 
@@ -169,7 +195,13 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 		}
 	}
 
-	return metrics, nil
+	return &Metrics{
+		StartTime: globalTimeStart,
+		EndTime:   globalTimeEnd,
+		Min:       globalMin,
+		Max:       globalMax,
+		Metrics:   metrics,
+	}, nil
 }
 
 // GetTableData returns the data, when the user selected the table view for the Prometheus plugin. To get the data we
