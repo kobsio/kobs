@@ -41,10 +41,10 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          if (json) {
-            return convertMetrics(json);
+          if (json && json.metrics) {
+            return convertMetrics(json.metrics, json.startTime, json.endTime, json.min, json.max);
           } else {
-            return { labels: {}, series: [] };
+            return { endTime: times.timeEnd, labels: {}, max: 0, min: 0, series: [], startTime: times.timeStart };
           }
         } else {
           if (json.error) {
@@ -104,7 +104,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
               isInteractive={false}
               lineWidth={1}
               margin={{ bottom: 0, left: 0, right: 0, top: 0 }}
-              xScale={{ type: 'time' }}
+              xScale={{ max: new Date(data.endTime), min: new Date(data.startTime), type: 'time' }}
               yScale={{ stacked: false, type: 'linear' }}
             />
           </div>

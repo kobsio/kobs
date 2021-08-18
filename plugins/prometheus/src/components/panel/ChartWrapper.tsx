@@ -55,7 +55,7 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return convertMetrics(json);
+          return convertMetrics(json.metrics, json.startTime, json.endTime, json.min, json.max);
         } else {
           if (json.error) {
             throw new Error(json.error);
@@ -114,7 +114,10 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
             }}
           >
             <Chart
-              times={times}
+              startTime={data.startTime}
+              endTime={data.endTime}
+              min={data.min}
+              max={data.max}
               options={options}
               labels={data.labels}
               series={selectedSeries.length > 0 ? selectedSeries : data.series}

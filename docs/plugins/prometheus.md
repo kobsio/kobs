@@ -16,9 +16,19 @@ The following options can be used for a panel with the Prometheus plugin:
 | unit | string | An optional unit for the y axis of the chart. | No |
 | stacked | boolean | When this is `true` all time series in the chart will be stacked. | No |
 | legend | string | The type which should be used for the legend. Currently only `table` and `table-large` is supported as legend. If the value is not set, no legend will be shown. | No |
+| yAxis | [yAxis](#yaxis) | Set the scale of the y axis. | No |
 | mappings | map<string, string> | Specify value mappings for your data. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 | queries | [[]Query](#query) | A list of queries, which are used to get the data for the chart. | Yes |
 | columns | [[]Column](#column) | A list of columns, which **must** be provided, when the type of the chart is `table` | No |
+
+### yAxis
+
+The y axis can be customized for line and area charts. It is possible to use the min/max value of all returned time series or you can set a custom value. By default the scale of the y axis will be automatically determined.
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| min | `auto`, `min`, number | The minimum value for the y axis. This could be `auto`, `min` (minimum value accross all displayed metrics) or a custom number. The default is `auto`. | No |
+| max | `auto`, `max`, number | The minimum value for the y axis. This could be `auto`, `max` (maximum value accross all displayed metrics) or a custom number. The default is `auto`. | No |
 
 ### Query
 

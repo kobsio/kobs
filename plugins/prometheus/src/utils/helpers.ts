@@ -1,7 +1,7 @@
 import { DatumValue, Serie } from '@nivo/line';
 
 import { ILabels, IMappings, IMetric, IOptions, ISeries } from './interfaces';
-import { IPluginTimes, TTime, TTimeOptions } from '@kobsio/plugin-core';
+import { TTime, TTimeOptions } from '@kobsio/plugin-core';
 
 // getOptionsFromSearch is used to parse the given search location and return is as options for Prometheus. This is
 // needed, so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we
@@ -32,7 +32,15 @@ export const getOptionsFromSearch = (search: string): IOptions => {
 // convertMetrics converts a list of metrics, which is returned by our API into the format which is required by nivo.
 // This is necessary, because nivo requires a date object for the x value which can not be returned by our API. The API
 // instead returns the corresponding timestamp.
-export const convertMetrics = (metrics: IMetric[]): ISeries => {
+// The startTime and endTime and the min and max values are just passed to the returned ISeries so that we can use it in
+// the UI, without maintaining two different objects.
+export const convertMetrics = (
+  metrics: IMetric[],
+  startTime: number,
+  endTime: number,
+  min: number,
+  max: number,
+): ISeries => {
   const labels: ILabels = {};
   const series: Serie[] = [];
 
@@ -48,18 +56,25 @@ export const convertMetrics = (metrics: IMetric[]): ISeries => {
   }
 
   return {
+    endTime: endTime,
     labels: labels,
+    max: max,
+    min: min,
     series: series,
+    startTime: startTime,
   };
 };
 
 // formatAxisBottom calculates the format for the bottom axis based on the specified start and end time.
-export const formatAxisBottom = (times: IPluginTimes): string => {
-  if (times.timeEnd - times.timeStart < 3600) {
+export const formatAxisBottom = (timeStart: number, timeEnd: number): string => {
+  timeStart = Math.floor(timeStart / 1000);
+  timeEnd = Math.floor(timeEnd / 1000);
+
+  if (timeEnd - timeStart < 3600) {
     return '%H:%M:%S';
-  } else if (times.timeEnd - times.timeStart < 86400) {
+  } else if (timeEnd - timeStart < 86400) {
     return '%H:%M';
-  } else if (times.timeEnd - times.timeStart < 604800) {
+  } else if (timeEnd - timeStart < 604800) {
     return '%m-%d %H:%M';
   }
 

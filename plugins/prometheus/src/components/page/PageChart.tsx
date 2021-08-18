@@ -6,24 +6,22 @@ import { TooltipWrapper } from '@nivo/tooltip';
 
 import { convertMetrics, formatAxisBottom } from '../../utils/helpers';
 import { COLOR_SCALE } from '../../utils/colors';
-import { IMetric } from '../../utils/interfaces';
-import { IPluginTimes } from '@kobsio/plugin-core';
+import { IMetrics } from '../../utils/interfaces';
 import PageChartLegend from './PageChartLegend';
 
 interface IPageChartProps {
   queries: string[];
-  times: IPluginTimes;
-  metrics: IMetric[];
+  metrics: IMetrics;
 }
 
 // The PageChart component is used to render the chart for the given metrics. Above the chart we display two toggle
 // groups so that the user can adjust the basic style of the chart. The user can switch between a line and area chart
 // and between a stacked and unstacked visualization. At the bottom of the page we are including the PageChartLegend
 // component to render the legend for the metrics.
-const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, times, metrics }: IPageChartProps) => {
+const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, metrics }: IPageChartProps) => {
   // series is an array for the converted metrics, which can be used by nivo. We convert the metrics to a series, so
   // that we have to do this onyl once and not everytime the selected metrics are changed.
-  const seriesData = convertMetrics(metrics);
+  const seriesData = convertMetrics(metrics.metrics, metrics.startTime, metrics.endTime, metrics.min, metrics.max);
 
   const [type, setType] = useState<string>('line');
   const [stacked, setStacked] = useState<boolean>(false);
@@ -60,7 +58,7 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, times, m
         <div style={{ height: '350px' }}>
           <ResponsiveLineCanvas
             axisBottom={{
-              format: formatAxisBottom(times),
+              format: formatAxisBottom(metrics.startTime, metrics.endTime),
             }}
             axisLeft={{
               format: '>-.2f',
@@ -86,8 +84,7 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, times, m
             }}
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             tooltip={(tooltip) => {
-              const isFirstHalf =
-                Math.floor(new Date(tooltip.point.data.x).getTime() / 1000) < (times.timeEnd + times.timeStart) / 2;
+              const isFirstHalf = new Date(tooltip.point.data.x).getTime() < (metrics.endTime + metrics.startTime) / 2;
 
               return (
                 <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
@@ -111,7 +108,7 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, times, m
                 </TooltipWrapper>
               );
             }}
-            xScale={{ max: new Date(times.timeEnd * 1000), min: new Date(times.timeStart * 1000), type: 'time' }}
+            xScale={{ max: new Date(metrics.endTime), min: new Date(metrics.startTime), type: 'time' }}
             yScale={{ stacked: stacked, type: 'linear' }}
             yFormat=" >-.4f"
           />

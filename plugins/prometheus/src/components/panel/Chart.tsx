@@ -1,15 +1,39 @@
 import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
+import { ScaleSpec } from '@nivo/scales';
 import { SquareIcon } from '@patternfly/react-icons';
 import { TooltipWrapper } from '@nivo/tooltip';
 
-import { ILabels, IPanelOptions } from '../../utils/interfaces';
+import { ILabels, IPanelOptions, IYAxis } from '../../utils/interfaces';
 import { COLOR_SCALE } from '../../utils/colors';
-import { IPluginTimes } from '@kobsio/plugin-core';
 import { formatAxisBottom } from '../../utils/helpers';
 
+const getYScale = (yAxis: IYAxis | undefined, stacked: boolean | undefined, min: number, max: number): ScaleSpec => {
+  let minValue: number | 'auto' = 'auto';
+  let maxValue: number | 'auto' = 'auto';
+
+  if (yAxis) {
+    if (yAxis.min && yAxis.min === 'min') {
+      minValue = min;
+    } else if (yAxis.min && typeof yAxis.min === 'number') {
+      minValue = yAxis.min;
+    }
+
+    if (yAxis.max && yAxis.max === 'max') {
+      maxValue = max;
+    } else if (yAxis.max && typeof yAxis.max === 'number') {
+      maxValue = yAxis.max;
+    }
+  }
+
+  return { max: maxValue, min: minValue, stacked: stacked, type: 'linear' };
+};
+
 interface IChartProps {
-  times: IPluginTimes;
+  startTime: number;
+  endTime: number;
+  min: number;
+  max: number;
   options: IPanelOptions;
   labels: ILabels;
   series: Serie[];
@@ -17,11 +41,19 @@ interface IChartProps {
 
 // The Chart component is responsible for rendering the chart for all the metrics, which were returned for the users
 // specified queries.
-export const Chart: React.FunctionComponent<IChartProps> = ({ times, options, labels, series }: IChartProps) => {
+export const Chart: React.FunctionComponent<IChartProps> = ({
+  startTime,
+  endTime,
+  min,
+  max,
+  options,
+  labels,
+  series,
+}: IChartProps) => {
   return (
     <ResponsiveLineCanvas
       axisBottom={{
-        format: formatAxisBottom(times),
+        format: formatAxisBottom(startTime, endTime),
       }}
       axisLeft={{
         format: '>-.2f',
@@ -47,8 +79,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, options, la
       }}
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       tooltip={(tooltip) => {
-        const isFirstHalf =
-          Math.floor(new Date(tooltip.point.data.x).getTime() / 1000) < (times.timeEnd + times.timeStart) / 2;
+        const isFirstHalf = new Date(tooltip.point.data.x).getTime() < (endTime + startTime) / 2;
 
         return (
           <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
@@ -72,8 +103,8 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, options, la
           </TooltipWrapper>
         );
       }}
-      xScale={{ max: new Date(times.timeEnd * 1000), min: new Date(times.timeStart * 1000), type: 'time' }}
-      yScale={{ max: 'auto', min: 'auto', stacked: options.stacked, type: 'linear' }}
+      xScale={{ max: new Date(endTime), min: new Date(startTime), type: 'time' }}
+      yScale={getYScale(options.yAxis, options.stacked, min, max)}
       yFormat=" >-.4f"
     />
   );
