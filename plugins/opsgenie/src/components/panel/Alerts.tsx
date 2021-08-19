@@ -37,7 +37,6 @@ const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, times, set
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {

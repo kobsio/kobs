@@ -174,6 +174,14 @@ export const createSpansTree = (spans: ISpan[], traceStartTime: number, duration
   const map: IMap = {};
   const roots: ISpan[] = [];
 
+  spans.sort((a, b) => {
+    if (a.startTime < b.startTime) {
+      return -1;
+    }
+
+    return 1;
+  });
+
   for (let i = 0; i < spans.length; i++) {
     map[spans[i].spanID] = i;
     spans[i].childs = [];

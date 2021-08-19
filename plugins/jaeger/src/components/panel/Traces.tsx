@@ -58,7 +58,6 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   return (

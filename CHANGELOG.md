@@ -22,6 +22,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#109](https://github.com/kobsio/kobs/pull/109): Fix tooltip position in Prometheus charts.
 - [#110](https://github.com/kobsio/kobs/pull/110): Fix Dashboard tabs showing wrong variables.
 - [#111](https://github.com/kobsio/kobs/pull/111): Fix usage of `memo` in Dashboards and fix resources table for CRDs when a value is undefined.
+- [#114](https://github.com/kobsio/kobs/pull/114): Fix span order and additional fields for Jaeger plugin.
 
 ### Changed
 
