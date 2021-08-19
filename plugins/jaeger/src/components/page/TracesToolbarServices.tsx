@@ -23,7 +23,7 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
       const json = await response.json();
 
       if (response.status >= 200 && response.status < 300) {
-        return json.data;
+        return json.data.sort();
       } else {
         if (json.error) {
           throw new Error(json.error);

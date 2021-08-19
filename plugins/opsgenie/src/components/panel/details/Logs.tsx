@@ -43,7 +43,6 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, id, type }: ILogsProp
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {

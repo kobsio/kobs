@@ -142,6 +142,21 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   // change the start and end time to the new values. If the string couldn't be parsed, the user will see an error below
   // the corresponding input field.
   const apply = (): void => {
+    // If the time wasn't changed by the user, we keep the selected time interval and only refresh the time for the
+    // selected interval and change the additional fields. This allows a user to adjust an additional field without
+    // switching to a custom time interval.
+    if (customTimeEnd === formatTime(timeEnd) && customTimeStart === formatTime(timeStart) && time !== 'custom') {
+      setOptions(
+        false,
+        additionalFields,
+        time,
+        Math.floor(Date.now() / 1000),
+        Math.floor(Date.now() / 1000) - times[time].seconds,
+      );
+      setShow(false);
+      return;
+    }
+
     // Get a new date object for the users current timezone. This allows us to ignore the timezone, while parsing the
     // provided time string. The parsed date object will be in UTC, to transform the parsed date into the users timezone
     // we have to add the minutes between UTC and the users timezon (getTimezoneOffset()).

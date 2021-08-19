@@ -29,7 +29,7 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return ['All Operations', ...json.data.map((operation: IOperation) => operation.name)];
+          return ['All Operations', ...json.data.map((operation: IOperation) => operation.name).sort()];
         } else {
           if (json.error) {
             throw new Error(json.error);

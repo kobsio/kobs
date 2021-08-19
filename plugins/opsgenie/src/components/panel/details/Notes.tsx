@@ -43,7 +43,6 @@ const Notes: React.FunctionComponent<INotesProps> = ({ name, id, type }: INotesP
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {

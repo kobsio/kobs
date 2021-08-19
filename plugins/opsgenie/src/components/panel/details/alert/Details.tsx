@@ -43,7 +43,6 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ name, id }: IDetailsP
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {

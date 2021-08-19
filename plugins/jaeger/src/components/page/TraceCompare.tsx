@@ -54,7 +54,6 @@ const TraceCompare: React.FunctionComponent<ITraceCompareProps> = ({ name, trace
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {
