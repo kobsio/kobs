@@ -100,7 +100,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
         <React.Fragment>
           {showChart ? (
             <React.Fragment>
-              <TracesChart traces={data} />
+              <TracesChart name={name} traces={data} showDetails={showDetails} />
               <p>&nbsp;</p>
               <p>&nbsp;</p>
               <p>&nbsp;</p>
