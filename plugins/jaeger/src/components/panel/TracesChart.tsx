@@ -1,11 +1,11 @@
 import { Card, CardBody } from '@patternfly/react-core';
-import { Datum, Node, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
+import { Datum, Node, NodeProps, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
 import React, { ReactNode, useMemo } from 'react';
 import { SquareIcon } from '@patternfly/react-icons';
 import { TooltipWrapper } from '@nivo/tooltip';
 import Trace from './details/Trace';
 
-import { getDuration, getRootSpan } from '../../utils/helpers';
+import { doesTraceContainsError, getDuration, getRootSpan } from '../../utils/helpers';
 import { ITrace } from '../../utils/interfaces';
 
 interface IDatum extends Datum {
@@ -101,6 +101,15 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
               if (showDetails && isIDatum(node.data)) {
                 showDetails(<Trace name={name} trace={node.data.trace} close={(): void => showDetails(undefined)} />);
               }
+            }}
+            // @ts-ignore as the typing expects NodeProps but actually has Node
+            renderNode={(ctx: CanvasRenderingContext2D, props: Node): void => {
+              const hasError = isIDatum(props.data) ? doesTraceContainsError(props.data.trace) : false;
+
+              ctx.beginPath();
+              ctx.arc(props.x, props.y, props.size / 2, 0, 2 * Math.PI);
+              ctx.fillStyle = hasError ? '#FF0000' : props.style.color;
+              ctx.fill();
             }}
             tooltip={(tooltip): ReactNode => {
               const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
