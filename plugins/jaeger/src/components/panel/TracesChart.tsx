@@ -1,6 +1,6 @@
 import { Card, CardBody } from '@patternfly/react-core';
 import { Datum, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { SquareIcon } from '@patternfly/react-icons';
 import { TooltipWrapper } from '@nivo/tooltip';
 
@@ -17,51 +17,52 @@ interface ITracesChartProps {
 }
 
 const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITracesChartProps) => {
-  let min = 0;
-  let max = 0;
-  const data: IDatum[] = [];
+  const { series, min, max } = useMemo<{ series: Serie[]; min: number; max: number }>(() => {
+    // Initialize min and max so that we can simply compare during traversing.
+    let minimalSpans = Number.MAX_SAFE_INTEGER;
+    let maximalSpans = 0;
+    const result: IDatum[] = [];
 
-  for (let i = 0; i < traces.length; i++) {
-    if (i === 0) {
-      min = traces[i].spans.length;
-      max = traces[i].spans.length;
-    }
+    traces.forEach((trace) => {
+      if (trace.spans.length < minimalSpans) {
+        minimalSpans = trace.spans.length;
+      }
+      if (trace.spans.length > maximalSpans) {
+        maximalSpans = trace.spans.length;
+      }
 
-    if (traces[i].spans.length < min) {
-      min = traces[i].spans.length;
-    }
+      const rootSpan = getRootSpan(trace.spans);
+      if (!rootSpan) {
+        result.push({
+          label: `${trace.traceID}`,
+          size: trace.spans.length,
+          x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
+          y: getDuration(trace.spans),
+        });
+      } else {
+        const rootSpanProcess = trace.processes[rootSpan.processID];
+        const rootSpanService = rootSpanProcess.serviceName;
 
-    if (traces[i].spans.length > min) {
-      max = traces[i].spans.length;
-    }
+        result.push({
+          label: `${rootSpanService}: ${rootSpan.operationName}`,
+          size: trace.spans.length,
+          x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
+          y: getDuration(trace.spans),
+        });
+      }
+    });
 
-    const rootSpan = getRootSpan(traces[i].spans);
-    if (!rootSpan) {
-      data.push({
-        label: `${traces[i].traceID}`,
-        size: traces[i].spans.length,
-        x: new Date(Math.floor(traces[i].spans[0].startTime / 1000)),
-        y: getDuration(traces[i].spans),
-      });
-    } else {
-      const rootSpanProcess = traces[i].processes[rootSpan.processID];
-      const rootSpanService = rootSpanProcess.serviceName;
-
-      data.push({
-        label: `${rootSpanService}: ${rootSpan.operationName}`,
-        size: traces[i].spans.length,
-        x: new Date(Math.floor(traces[i].spans[0].startTime / 1000)),
-        y: getDuration(traces[i].spans),
-      });
-    }
-  }
-
-  const series: Serie[] = [
-    {
-      data: data.sort((a, b) => (a.x.valueOf() as number) - (b.x.valueOf() as number)),
-      id: 'Traces',
-    },
-  ];
+    return {
+      max: maximalSpans,
+      min: minimalSpans,
+      series: [
+        {
+          data: result.sort((a, b) => (a.x.valueOf() as number) - (b.x.valueOf() as number)),
+          id: 'Traces',
+        },
+      ],
+    };
+  }, [traces]);
 
   return (
     <Card isCompact={true}>
