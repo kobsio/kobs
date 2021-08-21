@@ -10,9 +10,9 @@ import {
   ListItem,
   ListVariant,
 } from '@patternfly/react-core';
+import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { UsersIcon } from '@patternfly/react-icons';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
 import { DashboardsWrapper } from '@kobsio/plugin-dashboards';
@@ -42,6 +42,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
         <div>
           <p>{application.description}</p>
           {(application.teams && application.teams.length > 0) ||
+          (application.dependencies && application.dependencies.length > 0) ||
           (application.links && application.links.length > 0) ? (
             <List variant={ListVariant.inline}>
               {application.teams && application.teams.length > 0
@@ -55,6 +56,23 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
                       >
                         <Button variant={ButtonVariant.link} isInline={true} icon={<UsersIcon />}>
                           {team.name}
+                        </Button>
+                      </Link>
+                    </ListItem>
+                  ))
+                : null}
+
+              {application.dependencies && application.dependencies.length > 0
+                ? application.dependencies.map((dependency, index) => (
+                    <ListItem key={index}>
+                      <Link
+                        key={index}
+                        to={`/applications/${dependency.cluster ? dependency.cluster : application.cluster}/${
+                          dependency.namespace ? dependency.namespace : application.namespace
+                        }/${dependency.name}`}
+                      >
+                        <Button variant={ButtonVariant.link} isInline={true} icon={<TopologyIcon />}>
+                          {dependency.name}
                         </Button>
                       </Link>
                     </ListItem>

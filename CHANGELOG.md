@@ -23,6 +23,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#110](https://github.com/kobsio/kobs/pull/110): Fix Dashboard tabs showing wrong variables.
 - [#111](https://github.com/kobsio/kobs/pull/111): Fix usage of `memo` in Dashboards and fix resources table for CRDs when a value is undefined.
 - [#114](https://github.com/kobsio/kobs/pull/114): Fix span order and additional fields for Jaeger plugin.
+- [#118](https://github.com/kobsio/kobs/pull/118): Fix `null is not an object (evaluating 'e[Symbol.iterator]')` error for Prometheus charts.
 
 ### Changed
 
