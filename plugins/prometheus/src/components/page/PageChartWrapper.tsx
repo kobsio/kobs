@@ -3,8 +3,9 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IMetrics, IOptions } from '../../utils/interfaces';
+import { IOptions, ISeries } from '../../utils/interfaces';
 import PageChart from './PageChart';
+import { convertMetrics } from '../../utils/helpers';
 
 interface IPageChartWrapperProps extends IOptions {
   name: string;
@@ -21,7 +22,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
 }: IPageChartWrapperProps) => {
   const history = useHistory();
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IMetrics, Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<ISeries, Error>(
     ['prometheus/metrics', name, queries, resolution, times],
     async () => {
       try {
@@ -39,7 +40,11 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return json;
+          if (json && json.metrics) {
+            return convertMetrics(json.metrics, json.startTime, json.endTime, json.min, json.max);
+          } else {
+            return { endTime: times.timeEnd, labels: {}, max: 0, min: 0, series: [], startTime: times.timeStart };
+          }
         } else {
           if (json.error) {
             throw new Error(json.error);
@@ -69,7 +74,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetrics, Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<ISeries, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -84,7 +89,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
     return null;
   }
 
-  return <PageChart queries={queries} metrics={data} />;
+  return <PageChart queries={queries} series={data} />;
 };
 
 export default PageChartWrapper;
