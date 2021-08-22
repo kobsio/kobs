@@ -10,6 +10,16 @@ export interface IOptions {
   times: IPluginTimes;
 }
 
+// IMetrics implements the interface for the corresponding Go struct, which is returned by our API. It contains a list
+// of metrics, the start and end time and the minimum and maximum value accross all time series.
+export interface IMetrics {
+  startTime: number;
+  endTime: number;
+  min: number;
+  max: number;
+  metrics: IMetric[];
+}
+
 // IMetric implements the interface for the corresponding Go struct, which is returned by our API. It contains one
 // additional field named "color", which is used to specify the color for a line, when the user selected a single line
 // in the legend. The data points are implemented by the IDatum interface.
@@ -47,7 +57,11 @@ export interface ILabels {
 // ISeries is the interface which is retunred by the convertMetrics function. It contains the converted series and all
 // labels for these series.
 export interface ISeries {
+  startTime: number;
+  endTime: number;
   labels: ILabels;
+  max: number;
+  min: number;
   series: Serie[];
 }
 
@@ -60,6 +74,7 @@ export interface IPanelOptions {
   unit?: string;
   stacked?: boolean;
   legend?: string;
+  yAxis?: IYAxis;
   mappings?: IMappings;
   queries?: IQuery[];
   columns?: IColumn[];
@@ -78,4 +93,10 @@ export interface IColumn {
   name?: string;
   title?: string;
   unit?: string;
+  mappings?: IMappings;
+}
+
+export interface IYAxis {
+  min: string | number;
+  max: string | number;
 }

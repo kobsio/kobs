@@ -12,12 +12,24 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#103](https://github.com/kobsio/kobs/pull/103): Add option to get user information from a request.
 - [#104](https://github.com/kobsio/kobs/pull/104): Add actions for Opsgenie plugin to acknowledge, snooze and close alerts.
+- [#105](https://github.com/kobsio/kobs/pull/105): Add Prometheus metrics for API requests.
+- [#112](https://github.com/kobsio/kobs/pull/112): Allow mapping values in Prometheus table panel.
+- [#113](https://github.com/kobsio/kobs/pull/113): Allow and improve customization of axis scaling.
 
 ### Fixed
 
 - [#102](https://github.com/kobsio/kobs/pull/102): Fix GitHub Action for creating a new Helm release.
+- [#109](https://github.com/kobsio/kobs/pull/109): Fix tooltip position in Prometheus charts.
+- [#110](https://github.com/kobsio/kobs/pull/110): Fix Dashboard tabs showing wrong variables.
+- [#111](https://github.com/kobsio/kobs/pull/111): Fix usage of `memo` in Dashboards and fix resources table for CRDs when a value is undefined.
+- [#114](https://github.com/kobsio/kobs/pull/114): Fix span order and additional fields for Jaeger plugin.
+- [#118](https://github.com/kobsio/kobs/pull/118): Fix `null is not an object (evaluating 'e[Symbol.iterator]')` error for Prometheus charts.
 
 ### Changed
+
+- [#106](https://github.com/kobsio/kobs/pull/106): :warning: *Breaking change:* :warning: Change Prometheus sparkline chart to allow the usage of labels.
+- [#107](https://github.com/kobsio/kobs/pull/107): Add new option for Prometheus chart legend and change formatting of values.
+- [#108](https://github.com/kobsio/kobs/pull/108): Improve tooltip position in all nivo charts.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

@@ -2,6 +2,7 @@ import { Card, CardBody } from '@patternfly/react-core';
 import { Datum, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
 import React from 'react';
 import { SquareIcon } from '@patternfly/react-icons';
+import { TooltipWrapper } from '@nivo/tooltip';
 
 import { getDuration, getRootSpan } from '../../utils/helpers';
 import { ITrace } from '../../utils/interfaces';
@@ -57,7 +58,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITr
 
   const series: Serie[] = [
     {
-      data: data,
+      data: data.sort((a, b) => (a.x.valueOf() as number) - (b.x.valueOf() as number)),
       id: 'Traces',
     },
   ];
@@ -86,24 +87,31 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITr
               textColor: '#000000',
             }}
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            tooltip={(tooltip) => (
-              <div
-                className="pf-u-box-shadow-sm"
-                style={{
-                  background: '#ffffff',
-                  fontSize: '12px',
-                  padding: '12px',
-                }}
-              >
-                <div>
-                  <b>{tooltip.node.data.formattedX}</b>
-                </div>
-                <div>
-                  <SquareIcon color="#0066cc" /> {(tooltip.node.data as unknown as IDatum).label}{' '}
-                  {tooltip.node.data.formattedY}
-                </div>
-              </div>
-            )}
+            tooltip={(tooltip) => {
+              const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
+
+              return (
+                <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
+                  <div
+                    className="pf-u-box-shadow-sm"
+                    style={{
+                      background: '#ffffff',
+                      fontSize: '12px',
+                      padding: '12px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <div>
+                      <b>{tooltip.node.data.formattedX}</b>
+                    </div>
+                    <div>
+                      <SquareIcon color="#0066cc" /> {(tooltip.node.data as unknown as IDatum).label}{' '}
+                      {tooltip.node.data.formattedY}
+                    </div>
+                  </div>
+                </TooltipWrapper>
+              );
+            }}
             xFormat="time:%Y-%m-%d %H:%M:%S.%L"
             xScale={{ type: 'time' }}
             yFormat={(e): string => e + ' ms'}

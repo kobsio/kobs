@@ -37,7 +37,6 @@ const Incidents: React.FunctionComponent<IIncidentsProps> = ({ name, query, time
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {

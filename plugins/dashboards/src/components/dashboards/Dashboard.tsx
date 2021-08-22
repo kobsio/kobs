@@ -1,6 +1,6 @@
 import { Alert, AlertActionLink, AlertVariant, Grid, GridItem, Spinner, Title } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import React, { useContext, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 
 import {
   ClustersContext,
@@ -16,6 +16,8 @@ import { interpolate, rowHeight, toGridSpans } from '../../utils/dashboard';
 import DashboardToolbar from './DashboardToolbar';
 
 interface IDashboardProps {
+  activeKey: string;
+  eventKey: string;
   defaults: IPluginDefaults;
   dashboard: IDashboard;
   forceDefaultSpan: boolean;
@@ -27,6 +29,8 @@ interface IDashboardProps {
 // The component is also used to set the initial value for the times and for fetching all defined variable values. To
 // allow a user to change the time or select another variable value the component includes a toolbar component.
 const Dashboard: React.FunctionComponent<IDashboardProps> = ({
+  activeKey,
+  eventKey,
   defaults,
   dashboard,
   forceDefaultSpan,
@@ -64,9 +68,13 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // Prometheus plugin. For the Prometheus plugin the user must specify the name of the Prometheus instance via the name
   // parameter in the options. When the user changes the variables, we keep the old variable values, so that we not have
   // to rerender all the panels in the dashboard.
-  const { isError, error, data, refetch } = useQuery<IVariableValues[], Error>(
-    ['dashboard/variables', variables, times],
+  const { isError, error, data, refetch } = useQuery<IVariableValues[] | null, Error>(
+    ['dashboard/variables', dashboard, variables, times, activeKey],
     async () => {
+      if (activeKey !== eventKey) {
+        return null;
+      }
+
       if (!variables) {
         return [];
       }
@@ -150,7 +158,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
         title="Variables were not fetched"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[] | null, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -215,4 +223,15 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   );
 };
 
-export default Dashboard;
+export default memo(Dashboard, (prevProps, nextProps) => {
+  if (
+    prevProps.activeKey === nextProps.activeKey &&
+    JSON.stringify(prevProps.defaults) === JSON.stringify(nextProps.defaults) &&
+    JSON.stringify(prevProps.dashboard) === JSON.stringify(nextProps.dashboard) &&
+    prevProps.forceDefaultSpan === nextProps.forceDefaultSpan
+  ) {
+    return true;
+  }
+
+  return false;
+});

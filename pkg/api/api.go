@@ -67,16 +67,13 @@ func (s *Server) Stop() {
 }
 
 // New return a new api server. It creates the underlying http server, with the defined address from the api.address
-// flag.
+// flag. When the development flag is set we also set some cors option, so we do not have to care about cors for
+// development.
+// We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
+// our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
+// Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
 func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopment bool) (*Server, error) {
 	router := chi.NewRouter()
-	router.Use(middleware.RequestID)
-	router.Use(middleware.Recoverer)
-	router.Use(middleware.URLFormat)
-	router.Use(metrics.Metrics)
-	router.Use(auth.Auth)
-	router.Use(httplog.NewStructuredLogger(log.Logger))
-	router.Use(render.SetContentType(render.ContentTypeJSON))
 
 	if isDevelopment {
 		router.Use(cors.Handler(cors.Options{
@@ -86,10 +83,19 @@ func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopm
 		}))
 	}
 
+	router.Get("/api/health", func(w http.ResponseWriter, r *http.Request) {
+		render.JSON(w, r, nil)
+	})
+
 	router.Route("/api", func(r chi.Router) {
-		r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
-			render.JSON(w, r, nil)
-		})
+		r.Use(middleware.RequestID)
+		r.Use(middleware.Recoverer)
+		r.Use(middleware.URLFormat)
+		r.Use(metrics.Metrics)
+		r.Use(auth.Auth)
+		r.Use(httplog.NewStructuredLogger(log.Logger))
+		r.Use(render.SetContentType(render.ContentTypeJSON))
+
 		r.Mount("/clusters", clusters.NewRouter(loadedClusters))
 		r.Mount("/plugins", pluginsRouter)
 	})

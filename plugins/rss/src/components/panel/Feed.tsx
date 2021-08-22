@@ -36,7 +36,6 @@ const Alerts: React.FunctionComponent<IFeedProps> = ({ urls, sortBy, setDetails 
         throw err;
       }
     },
-    { keepPreviousData: true },
   );
 
   if (isLoading) {

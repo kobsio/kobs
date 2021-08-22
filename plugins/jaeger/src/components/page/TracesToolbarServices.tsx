@@ -23,7 +23,7 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
       const json = await response.json();
 
       if (response.status >= 200 && response.status < 300) {
-        return json.data;
+        return json.data.sort();
       } else {
         if (json.error) {
           throw new Error(json.error);
@@ -37,12 +37,13 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
   });
 
   const filter = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement> | null,
+    value: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
-    if (e && e.target && e.target.value && data) {
+    if (value && data) {
       return data
-        .filter((item) => item.includes(e.target.value))
+        .filter((item) => item.includes(value))
         .map((item, index) => <SelectOption key={index} value={item} />);
     } else {
       if (data) {

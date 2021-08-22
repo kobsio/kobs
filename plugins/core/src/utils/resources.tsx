@@ -1415,6 +1415,7 @@ export const customResourceDefinition = (crds: ICRD[]): IResources => {
               crd.columns && crd.columns.length > 0
                 ? crd.columns.map((column) => {
                     const value = JSONPath({ json: cr, path: `$.${column.jsonPath}` })[0];
+                    if (!value) return '';
                     if (column.type === 'date') return timeDifference(new Date().getTime(), new Date(value).getTime());
                     return value;
                   })

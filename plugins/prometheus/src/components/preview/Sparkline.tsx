@@ -1,11 +1,11 @@
 import { Alert, AlertVariant, Spinner } from '@patternfly/react-core';
-import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
+import { ResponsiveLineCanvas } from '@nivo/line';
 import { useQuery } from 'react-query';
 
-import { convertMetrics, getMappingValue } from '../../utils/helpers';
+import { IPanelOptions, ISeries } from '../../utils/interfaces';
+import { convertMetrics, getMappingValue, roundNumber } from '../../utils/helpers';
 import { COLOR_SCALE } from '../../utils/colors';
-import { IPanelOptions } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 
 interface ISpakrlineProps {
@@ -21,7 +21,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
   title,
   options,
 }: ISpakrlineProps) => {
-  const { isError, isLoading, error, data } = useQuery<Serie[], Error>(
+  const { isError, isLoading, error, data } = useQuery<ISeries, Error>(
     ['prometheus/metrics', name, options.queries, times],
     async () => {
       try {
@@ -41,10 +41,10 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          if (json) {
-            return convertMetrics(json).series;
+          if (json && json.metrics) {
+            return convertMetrics(json.metrics, json.startTime, json.endTime, json.min, json.max);
           } else {
-            return [];
+            return { endTime: times.timeEnd, labels: {}, max: 0, min: 0, series: [], startTime: times.timeStart };
           }
         } else {
           if (json.error) {
@@ -63,14 +63,20 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
   // Determine the label which should be shown above the chart. This is the last value in first metric of the returned
   // data or a value from the user specified mappings.
   let label = 'N/A';
-  if (data && data.length > 0) {
+  if (options.queries && Array.isArray(options.queries) && options.queries.length > 0 && options.queries[0].label) {
+    if (data && data.labels && data.labels.hasOwnProperty('0-0')) {
+      label = data.labels['0-0'];
+    }
+  } else if (data && data.series && data.series.length > 0) {
     if (options.mappings && Object.keys(options.mappings).length > 0) {
-      label = getMappingValue(data[0].data[data[0].data.length - 1].y, options.mappings);
+      label = getMappingValue(data.series[0].data[data.series[0].data.length - 1].y, options.mappings);
     } else {
       label =
-        data[0].data[data[0].data.length - 1].y === null
+        data.series[0].data[data.series[0].data.length - 1].y === null
           ? 'N/A'
-          : `${data[0].data[data[0].data.length - 1].y} ${options.unit ? options.unit : ''}`;
+          : `${roundNumber(data.series[0].data[data.series[0].data.length - 1].y as number)} ${
+              options.unit ? options.unit : ''
+            }`;
     }
   }
 
@@ -82,7 +88,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
         </div>
       ) : isError ? (
         <Alert variant={AlertVariant.danger} isInline={true} title={error?.message} />
-      ) : data ? (
+      ) : data && data.series ? (
         <div>
           <div className="pf-u-font-size-lg pf-u-text-nowrap pf-u-text-truncate">{label}</div>
           <div className="pf-u-font-size-sm pf-u-color-400 pf-u-text-nowrap pf-u-text-truncate">{title}</div>
@@ -90,7 +96,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
             <ResponsiveLineCanvas
               colors={COLOR_SCALE[0]}
               curve="monotoneX"
-              data={data}
+              data={data.series}
               enableArea={true}
               enableGridX={false}
               enableGridY={false}
@@ -98,7 +104,7 @@ export const Spakrline: React.FunctionComponent<ISpakrlineProps> = ({
               isInteractive={false}
               lineWidth={1}
               margin={{ bottom: 0, left: 0, right: 0, top: 0 }}
-              xScale={{ type: 'time' }}
+              xScale={{ max: new Date(data.endTime), min: new Date(data.startTime), type: 'time' }}
               yScale={{ stacked: false, type: 'linear' }}
             />
           </div>

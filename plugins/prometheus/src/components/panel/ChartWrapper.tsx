@@ -55,7 +55,11 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return convertMetrics(json);
+          if (json && json.metrics) {
+            return convertMetrics(json.metrics, json.startTime, json.endTime, json.min, json.max);
+          } else {
+            return { endTime: times.timeEnd, labels: {}, max: 0, min: 0, series: [], startTime: times.timeStart };
+          }
         } else {
           if (json.error) {
             throw new Error(json.error);
@@ -103,9 +107,21 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
         </Alert>
       ) : data ? (
         <React.Fragment>
-          <div style={{ height: options.legend === 'table' ? 'calc(100% - 80px)' : '100%' }}>
+          <div
+            style={{
+              height:
+                options.legend === 'table'
+                  ? 'calc(100% - 80px)'
+                  : options.legend === 'table-large'
+                  ? 'calc(100% - 140px)'
+                  : '100%',
+            }}
+          >
             <Chart
-              times={times}
+              startTime={data.startTime}
+              endTime={data.endTime}
+              min={data.min}
+              max={data.max}
               options={options}
               labels={data.labels}
               series={selectedSeries.length > 0 ? selectedSeries : data.series}
@@ -113,6 +129,10 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
           </div>
           {options.legend === 'table' ? (
             <div className="pf-u-mt-md" style={{ height: '60px', overflow: 'scroll' }}>
+              <ChartLegend series={data.series} unit={options.unit || ''} selected={selectedSeries} select={select} />
+            </div>
+          ) : options.legend === 'table-large' ? (
+            <div className="pf-u-mt-md" style={{ height: '120px', overflow: 'scroll' }}>
               <ChartLegend series={data.series} unit={options.unit || ''} selected={selectedSeries} select={select} />
             </div>
           ) : null}

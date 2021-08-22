@@ -15,17 +15,30 @@ The following options can be used for a panel with the Prometheus plugin:
 | type | string | The type of the chart. Must be `sparkline`, `line`, `area` or `table`. | Yes |
 | unit | string | An optional unit for the y axis of the chart. | No |
 | stacked | boolean | When this is `true` all time series in the chart will be stacked. | No |
-| legend | string | The type which should be used for the legend. Currently only `table` is supported as legend. If the value is not set, no legend will be shown. | No |
+| legend | string | The type which should be used for the legend. Currently only `table` and `table-large` is supported as legend. If the value is not set, no legend will be shown. | No |
+| yAxis | [yAxis](#yaxis) | Set the scale of the y axis. | No |
 | mappings | map<string, string> | Specify value mappings for your data. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 | queries | [[]Query](#query) | A list of queries, which are used to get the data for the chart. | Yes |
 | columns | [[]Column](#column) | A list of columns, which **must** be provided, when the type of the chart is `table` | No |
+
+### yAxis
+
+The y axis can be customized for line and area charts. It is possible to use the min/max value of all returned time series or you can set a custom value. By default the scale of the y axis will be automatically determined.
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| min | `auto`, `min`, number | The minimum value for the y axis. This could be `auto`, `min` (minimum value accross all displayed metrics) or a custom number. The default is `auto`. | No |
+| max | `auto`, `max`, number | The minimum value for the y axis. This could be `auto`, `max` (maximum value accross all displayed metrics) or a custom number. The default is `auto`. | No |
 
 ### Query
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | query | string | The PromQL query. | Yes |
-| label | string | The label the results. The label can use the value of a variable or a label of the returned time series, e.g. `{% .<prometheus-label> %}`. If you want to use a Prometheus label make sure that the label name doesn't conflict with a variable name | Yes |
+| label | string | The label the results. The label can use the value of a variable or a label of the returned time series, e.g. `{% .<prometheus-label> %}`. If you want to use a Prometheus label make sure that the label name doesn't conflict with a variable name. | Yes |
+
+!!! note
+    In `sparkline` charts the label must not be provided. If the label is provided in a `sparkline` chart the label will be displayed instead of the current value.
 
 ### Column
 
@@ -34,6 +47,7 @@ The following options can be used for a panel with the Prometheus plugin:
 | name | string | The name of a column must be a returned label from the specified queries. To get the result of a query the special column `value-N`, where `N` is the index of the query. | Yes |
 | header | string | An optional value for the header of the column. When this is not specified the name will be used as header for the column. | No |
 | unit | string | An optional unit for the column values. | No |
+| mappings | map<string, string> | Specify value mappings for the column. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 
 ## Example
 
@@ -73,8 +87,7 @@ spec:
               type: sparkline
               unit: Cores
               queries:
-                - label: CPU Usage
-                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m]))
+                - query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m]))
         - title: Memory Usage
           colSpan: 4
           plugin:
@@ -83,8 +96,7 @@ spec:
               type: sparkline
               unit: MiB
               queries:
-                - label: Memory Usage
-                  query: sum(container_memory_working_set_bytes{namespace="{{ .namespace }}", pod=~"{% .var_pod %}", container!="POD", container!=""}) / 1024 / 1024
+                - query: sum(container_memory_working_set_bytes{namespace="{{ .namespace }}", pod=~"{% .var_pod %}", container!="POD", container!=""}) / 1024 / 1024
         - title: Restarts
           colSpan: 4
           plugin:
@@ -92,8 +104,7 @@ spec:
             options:
               type: sparkline
               queries:
-                - label: Restarts
-                  query: kube_pod_container_status_restarts_total{namespace="{{ .namespace }}", pod=~"{% .var_pod %}"}
+                - query: kube_pod_container_status_restarts_total{namespace="{{ .namespace }}", pod=~"{% .var_pod %}"}
     - size: 3
       panels:
         - title: CPU Usage

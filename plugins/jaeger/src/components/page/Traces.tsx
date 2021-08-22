@@ -10,8 +10,8 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 
 import { IOptions } from '../../utils/interfaces';
-import PageToolbar from './TracesToolbar';
 import TracesPanel from '../panel/Traces';
+import TracesToolbar from './TracesToolbar';
 import { getOptionsFromSearch } from '../../utils/helpers';
 
 interface ITracesProps {
@@ -55,7 +55,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({ name, displayName, desc
           </span>
         </Title>
         <p>{description}</p>
-        <PageToolbar
+        <TracesToolbar
           name={name}
           limit={options.limit}
           maxDuration={options.maxDuration}

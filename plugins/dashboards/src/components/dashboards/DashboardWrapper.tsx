@@ -21,6 +21,8 @@ const DashboardWrapper: React.FunctionComponent<IDashboardWrapperProps> = ({
   return (
     <div ref={refWrapper}>
       <Dashboard
+        activeKey=""
+        eventKey=""
         defaults={defaults}
         dashboard={dashboard}
         forceDefaultSpan={tabsSize.width < 1200}

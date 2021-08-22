@@ -16,12 +16,12 @@ import { IOptions } from '../../utils/interfaces';
 import TracesToolbarOperations from './TracesToolbarOperations';
 import TracesToolbarServices from './TracesToolbarServices';
 
-interface IPageToolbarProps extends IOptions {
+interface ITracesToolbarProps extends IOptions {
   name: string;
   setOptions: (data: IOptions) => void;
 }
 
-const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
+const TracesToolbar: React.FunctionComponent<ITracesToolbarProps> = ({
   name,
   limit,
   maxDuration,
@@ -31,7 +31,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   tags,
   times,
   setOptions,
-}: IPageToolbarProps) => {
+}: ITracesToolbarProps) => {
   const [data, setData] = useState<IOptions>({
     limit: limit,
     maxDuration: maxDuration,
@@ -64,6 +64,9 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
 
       setData({
         ...tmpData,
+        limit: additionalFields[0].value,
+        maxDuration: additionalFields[1].value,
+        minDuration: additionalFields[2].value,
         times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
       });
     }
@@ -141,4 +144,4 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   );
 };
 
-export default PageToolbar;
+export default TracesToolbar;
