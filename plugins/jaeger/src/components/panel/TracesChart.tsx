@@ -1,5 +1,5 @@
 import { Card, CardBody } from '@patternfly/react-core';
-import { Datum, Node, NodeProps, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
+import { Datum, Node, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
 import React, { ReactNode, useMemo } from 'react';
 import { SquareIcon } from '@patternfly/react-icons';
 import { TooltipWrapper } from '@nivo/tooltip';
