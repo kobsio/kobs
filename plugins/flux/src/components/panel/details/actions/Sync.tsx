@@ -6,7 +6,7 @@ import { compare } from 'fast-json-patch';
 import { IAlert } from '../../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
 
-interface IRestartProps {
+interface ISyncProps {
   request: IResource;
   resource: IRow;
   show: boolean;
@@ -15,24 +15,28 @@ interface IRestartProps {
   refetch: () => void;
 }
 
-const Restart: React.FunctionComponent<IRestartProps> = ({
+// The Sync component can be used to trigger a reconciliation of the given Flux resource via the
+// "reconcile.fluxcd.io/requestedAt" annotation. outside of the defined schedule. Despite the name, the value is not
+// interpreted as a timestamp, and any change in value shall trigger a reconciliation.
+// See: https://pkg.go.dev/github.com/fluxcd/pkg/apis/meta#pkg-constants
+const Sync: React.FunctionComponent<ISyncProps> = ({
   request,
   resource,
   show,
   setShow,
   setAlert,
   refetch,
-}: IRestartProps) => {
-  const handleRestart = async (): Promise<void> => {
+}: ISyncProps) => {
+  const handleSync = async (): Promise<void> => {
     try {
       const now = new Date();
       const copy = JSON.parse(JSON.stringify(resource.props));
 
-      if (copy.spec && copy.spec.template.metadata) {
-        if (copy.spec.template.metadata.annotations) {
-          copy.spec.template.metadata.annotations['kobs.io/restartedAt'] = now.toJSON();
+      if (copy.metadata && copy.metadata) {
+        if (copy.metadata.annotations) {
+          copy.metadata.annotations['reconcile.fluxcd.io/requestedAt'] = now.toJSON();
         } else {
-          copy.spec.template.metadata.annotations = { 'kobs.io/restartedAt': now.toJSON() };
+          copy.metadata.annotations = { 'reconcile.fluxcd.io/requestedAt': now.toJSON() };
         }
       }
 
@@ -51,7 +55,7 @@ const Restart: React.FunctionComponent<IRestartProps> = ({
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `${resource.name.title} was restarted`, variant: AlertVariant.success });
+        setAlert({ title: `${resource.name.title} is syncing`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {
@@ -69,12 +73,12 @@ const Restart: React.FunctionComponent<IRestartProps> = ({
   return (
     <Modal
       variant={ModalVariant.small}
-      title={`Restart ${resource.name.title}`}
+      title={`Sync ${resource.name.title}`}
       isOpen={show}
       onClose={(): void => setShow(false)}
       actions={[
-        <Button key="restart" variant={ButtonVariant.primary} onClick={handleRestart}>
-          Restart
+        <Button key="sync" variant={ButtonVariant.primary} onClick={handleSync}>
+          Sync
         </Button>,
         <Button key="cancel" variant={ButtonVariant.link} onClick={(): void => setShow(false)}>
           Cancel
@@ -82,11 +86,11 @@ const Restart: React.FunctionComponent<IRestartProps> = ({
       ]}
     >
       <p>
-        Do you really want to restart <b>{resource.name.title}</b> (
+        Do you really want to sync <b>{resource.name.title}</b> (
         {resource.namespace ? `${resource.namespace.title}/${resource.cluster.title}` : resource.cluster.title})?
       </p>
     </Modal>
   );
 };
 
-export default Restart;
+export default Sync;

@@ -15,6 +15,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#105](https://github.com/kobsio/kobs/pull/105): Add Prometheus metrics for API requests.
 - [#112](https://github.com/kobsio/kobs/pull/112): Allow mapping values in Prometheus table panel.
 - [#113](https://github.com/kobsio/kobs/pull/113): Allow and improve customization of axis scaling.
+- [#119](https://github.com/kobsio/kobs/pull/119): Add Flux plugin to view and reconcile [Flux](https://fluxcd.io) resources.
 
 ### Fixed
 

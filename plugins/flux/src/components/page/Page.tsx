@@ -58,6 +58,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                   {options.type === 'sources' ? (
                     <React.Fragment>
                       <PageList
+                        name={name}
                         cluster={options.cluster}
                         type="gitrepositories.source.toolkit.fluxcd.io/v1beta1"
                         title="Git Repos"
@@ -65,6 +66,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                       />
                       <p>&nbsp;</p>
                       <PageList
+                        name={name}
                         cluster={options.cluster}
                         type="helmrepositories.source.toolkit.fluxcd.io/v1beta1"
                         title="Helm Repos"
@@ -72,6 +74,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                       />
                       <p>&nbsp;</p>
                       <PageList
+                        name={name}
                         cluster={options.cluster}
                         type="buckets.source.toolkit.fluxcd.io/v1beta1"
                         title="Buckets"
@@ -80,6 +83,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                     </React.Fragment>
                   ) : options.type === 'kustomizations' ? (
                     <PageList
+                      name={name}
                       cluster={options.cluster}
                       type="kustomizations.kustomize.toolkit.fluxcd.io/v1beta1"
                       title="Kustomizations"
@@ -87,6 +91,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                     />
                   ) : options.type === 'helmreleases' ? (
                     <PageList
+                      name={name}
                       cluster={options.cluster}
                       type="helmreleases.helm.toolkit.fluxcd.io/v2beta1"
                       title="Helm Releases"

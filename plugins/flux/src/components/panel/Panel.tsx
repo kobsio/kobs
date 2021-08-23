@@ -1,24 +1,33 @@
 import React, { memo } from 'react';
-import { Card } from '@patternfly/react-core';
 
 import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
 import { IPanelOptions } from '../../utils/interfaces';
+import PanelList from './PanelList';
 
 interface IPanelProps extends IPluginPanelProps {
-  options?: IPanelOptions[];
+  options?: IPanelOptions;
 }
 
 // Panel implements the panel component for the Flux plugin. The options property must be in the format of the
 // IPanelOptions interface. Since the options are not validated on the API side, we have to validate the data, before
 // we render the plugin.
 export const Panel: React.FunctionComponent<IPanelProps> = ({
+  name,
   defaults,
   title,
   description,
   options,
   showDetails,
 }: IPanelProps) => {
-  if (!options || !Array.isArray(options)) {
+  if (
+    !options ||
+    !options.type ||
+    (options.type !== 'gitrepositories.source.toolkit.fluxcd.io/v1beta1' &&
+      options.type !== 'helmrepositories.source.toolkit.fluxcd.io/v1beta1' &&
+      options.type !== 'buckets.source.toolkit.fluxcd.io/v1beta1' &&
+      options.type !== 'kustomizations.kustomize.toolkit.fluxcd.io/v1beta1' &&
+      options.type !== 'helmreleases.helm.toolkit.fluxcd.io/v2beta1')
+  ) {
     return (
       <PluginOptionsMissing
         title={title}
@@ -29,27 +38,19 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     );
   }
 
-  // We replace the cluster and namespace in the provided options, when they were not set by the user. For that we are
-  // using the cluster/namespace of the parent team/application where the panel is used.
-  const opts: IPanelOptions[] = options.map((option) => {
-    return {
-      clusters: option.cluster || defaults.cluster,
-      name: option.name,
-      namespaces: option.namespace || defaults.namespace,
-    };
-  });
-
-  // When a title is provided we can be sure that the component is used within a dashboard. When no title is provided
-  // the component is used in the Flux page and we do not wrap it in the PluginCard component.
-  if (title) {
-    return (
-      <PluginCard title={title} description={description} transparent={true}>
-        <div>Plugin {JSON.stringify(opts)}</div>
-      </PluginCard>
-    );
-  }
-
-  return <Card>Page {JSON.stringify(opts)}</Card>;
+  return (
+    <PluginCard title={title} description={description}>
+      <PanelList
+        name={name}
+        title={title}
+        type={options.type}
+        cluster={options.cluster || defaults.cluster}
+        namespace={options.namespace || ''}
+        selector={options.selector}
+        showDetails={showDetails}
+      />
+    </PluginCard>
+  );
 };
 
 export default memo(Panel, (prevProps, nextProps) => {
