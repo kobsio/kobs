@@ -4,34 +4,30 @@ import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import { SquareIcon } from '@patternfly/react-icons';
 import { TooltipWrapper } from '@nivo/tooltip';
 
-import { convertMetrics, formatAxisBottom } from '../../utils/helpers';
 import { COLOR_SCALE } from '../../utils/colors';
-import { IMetrics } from '../../utils/interfaces';
+import { ISeries } from '../../utils/interfaces';
 import PageChartLegend from './PageChartLegend';
+import { formatAxisBottom } from '../../utils/helpers';
 
 interface IPageChartProps {
   queries: string[];
-  metrics: IMetrics;
+  series: ISeries;
 }
 
 // The PageChart component is used to render the chart for the given metrics. Above the chart we display two toggle
 // groups so that the user can adjust the basic style of the chart. The user can switch between a line and area chart
 // and between a stacked and unstacked visualization. At the bottom of the page we are including the PageChartLegend
 // component to render the legend for the metrics.
-const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, metrics }: IPageChartProps) => {
-  // series is an array for the converted metrics, which can be used by nivo. We convert the metrics to a series, so
-  // that we have to do this onyl once and not everytime the selected metrics are changed.
-  const seriesData = convertMetrics(metrics.metrics, metrics.startTime, metrics.endTime, metrics.min, metrics.max);
-
+const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, series }: IPageChartProps) => {
   const [type, setType] = useState<string>('line');
   const [stacked, setStacked] = useState<boolean>(false);
-  const [selectedSeries, setSelectedSeries] = useState<Serie[]>(seriesData.series);
+  const [selectedSeries, setSelectedSeries] = useState<Serie[]>(series.series);
 
   // select is used to select a single metric, which should be shown in the rendered chart. If the currently selected
   // metric is clicked again, the filter will be removed and all metrics will be shown in the chart.
   const select = (color: string, metric: Serie): void => {
     if (selectedSeries.length === 1 && selectedSeries[0].label === metric.label) {
-      setSelectedSeries(seriesData.series);
+      setSelectedSeries(series.series);
     } else {
       setSelectedSeries([{ ...metric, color: color }]);
     }
@@ -58,7 +54,7 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, metrics 
         <div style={{ height: '350px' }}>
           <ResponsiveLineCanvas
             axisBottom={{
-              format: formatAxisBottom(metrics.startTime, metrics.endTime),
+              format: formatAxisBottom(series.startTime, series.endTime),
             }}
             axisLeft={{
               format: '>-.2f',
@@ -84,7 +80,7 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, metrics 
             }}
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             tooltip={(tooltip) => {
-              const isFirstHalf = new Date(tooltip.point.data.x).getTime() < (metrics.endTime + metrics.startTime) / 2;
+              const isFirstHalf = new Date(tooltip.point.data.x).getTime() < (series.endTime + series.startTime) / 2;
 
               return (
                 <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
@@ -101,20 +97,20 @@ const PageChart: React.FunctionComponent<IPageChartProps> = ({ queries, metrics 
                       <b>{tooltip.point.data.xFormatted}</b>
                     </div>
                     <div>
-                      <SquareIcon color={tooltip.point.color} /> {seriesData.labels[tooltip.point.id.split('.')[0]]}:{' '}
+                      <SquareIcon color={tooltip.point.color} /> {series.labels[tooltip.point.id.split('.')[0]]}:{' '}
                       {tooltip.point.data.yFormatted}
                     </div>
                   </div>
                 </TooltipWrapper>
               );
             }}
-            xScale={{ max: new Date(metrics.endTime), min: new Date(metrics.startTime), type: 'time' }}
+            xScale={{ max: new Date(series.endTime), min: new Date(series.startTime), type: 'time' }}
             yScale={{ stacked: stacked, type: 'linear' }}
             yFormat=" >-.4f"
           />
         </div>
         <p>&nbsp;</p>
-        <PageChartLegend queries={queries} series={seriesData.series} selected={selectedSeries} select={select} />
+        <PageChartLegend queries={queries} series={series.series} selected={selectedSeries} select={select} />
       </CardBody>
     </Card>
   );
