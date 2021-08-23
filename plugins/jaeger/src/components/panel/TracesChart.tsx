@@ -1,8 +1,9 @@
 import { Card, CardBody } from '@patternfly/react-core';
-import { Datum, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
-import React, { useMemo } from 'react';
+import { Datum, Node, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
+import React, { ReactNode, useMemo } from 'react';
 import { SquareIcon } from '@patternfly/react-icons';
 import { TooltipWrapper } from '@nivo/tooltip';
+import Trace from './details/Trace';
 
 import { getDuration, getRootSpan } from '../../utils/helpers';
 import { ITrace } from '../../utils/interfaces';
@@ -10,13 +11,20 @@ import { ITrace } from '../../utils/interfaces';
 interface IDatum extends Datum {
   label: string;
   size: number;
+  trace: ITrace;
 }
 
 interface ITracesChartProps {
+  name: string;
   traces: ITrace[];
+  showDetails?: (details: React.ReactNode) => void;
 }
 
-const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITracesChartProps) => {
+function isIDatum(object: Datum): object is IDatum {
+  return (object as IDatum).trace !== undefined;
+}
+
+const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces, showDetails }: ITracesChartProps) => {
   const { series, min, max } = useMemo<{ series: Serie[]; min: number; max: number }>(() => {
     // Initialize min and max so that we can simply compare during traversing.
     let minimalSpans = Number.MAX_SAFE_INTEGER;
@@ -36,6 +44,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITr
         result.push({
           label: `${trace.traceID}`,
           size: trace.spans.length,
+          trace,
           x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
           y: getDuration(trace.spans),
         });
@@ -46,6 +55,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITr
         result.push({
           label: `${rootSpanService}: ${rootSpan.operationName}`,
           size: trace.spans.length,
+          trace,
           x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
           y: getDuration(trace.spans),
         });
@@ -87,8 +97,12 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ traces }: ITr
               fontSize: 10,
               textColor: '#000000',
             }}
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            tooltip={(tooltip) => {
+            onClick={(node: Node): void => {
+              if (showDetails && isIDatum(node.data)) {
+                showDetails(<Trace name={name} trace={node.data.trace} close={(): void => showDetails(undefined)} />);
+              }
+            }}
+            tooltip={(tooltip): ReactNode => {
               const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
 
               return (
