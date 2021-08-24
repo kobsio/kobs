@@ -16,6 +16,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#112](https://github.com/kobsio/kobs/pull/112): Allow mapping values in Prometheus table panel.
 - [#113](https://github.com/kobsio/kobs/pull/113): Allow and improve customization of axis scaling.
 - [#116](https://github.com/kobsio/kobs/pull/116): Open details when clicking on Jaeger chart nodes.
+- [#119](https://github.com/kobsio/kobs/pull/119): Add Flux plugin to view and reconcile [Flux](https://fluxcd.io) resources.
 
 ### Fixed
 
@@ -24,8 +25,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#110](https://github.com/kobsio/kobs/pull/110): Fix Dashboard tabs showing wrong variables.
 - [#111](https://github.com/kobsio/kobs/pull/111): Fix usage of `memo` in Dashboards and fix resources table for CRDs when a value is undefined.
 - [#114](https://github.com/kobsio/kobs/pull/114): Fix span order and additional fields for Jaeger plugin.
-- [#118](https://github.com/kobsio/kobs/pull/118): Fix `null is not an object (evaluating 'e[Symbol.iterator]')` error for Prometheus charts.
 - [#115](https://github.com/kobsio/kobs/pull/115): Fix maximum node size of the Jaeger chart and utilize `useMemo` to cache computation for it.
+- [#118](https://github.com/kobsio/kobs/pull/118): Fix `null is not an object (evaluating 'e[Symbol.iterator]')` error for Prometheus charts.
 
 ### Changed
 

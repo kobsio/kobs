@@ -1,0 +1,44 @@
+package flux
+
+import (
+	"github.com/kobsio/kobs/pkg/api/clusters"
+	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/sirupsen/logrus"
+)
+
+// Route is the route under which the plugin should be registered in our router for the rest api.
+const Route = "/flux"
+
+var (
+	log = logrus.WithFields(logrus.Fields{"package": "flux"})
+)
+
+// Config is the structure of the configuration for the Flux plugin.
+type Config struct{}
+
+// Router implements the router for the flux plugin, which can be registered in the router for our rest api.
+type Router struct {
+	*chi.Mux
+	clusters *clusters.Clusters
+	config   Config
+}
+
+// Register returns a new router which can be used in the router for the kobs rest api.
+func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+	plugins.Append(plugin.Plugin{
+		Name:        "flux",
+		DisplayName: "Flux",
+		Description: "Flux is a set of continuous and progressive delivery solutions for Kubernetes.",
+		Type:        "flux",
+	})
+
+	router := Router{
+		chi.NewRouter(),
+		clusters,
+		config,
+	}
+
+	return router
+}
