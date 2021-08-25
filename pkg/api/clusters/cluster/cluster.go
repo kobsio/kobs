@@ -21,10 +21,12 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	apiruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
@@ -82,6 +84,13 @@ func (c *Cluster) GetName() string {
 // GetCRDs returns all CRDs of the cluster.
 func (c *Cluster) GetCRDs() []CRD {
 	return c.crds
+}
+
+// GetClient returns a new client to perform CRUD operations on Kubernetes objects.
+func (c *Cluster) GetClient(schema *apiruntime.Scheme) (client.Client, error) {
+	return client.New(c.config, client.Options{
+		Scheme: schema,
+	})
 }
 
 // GetNamespaces returns all namespaces for the cluster. To reduce the latency and the number of API calls, we are

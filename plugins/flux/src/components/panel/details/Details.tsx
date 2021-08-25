@@ -47,7 +47,10 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
-          <Actions request={request} resource={resource} refetch={refetch} />
+          {type === 'kustomizations.kustomize.toolkit.fluxcd.io/v1beta1' ||
+          type === 'helmreleases.helm.toolkit.fluxcd.io/v2beta1' ? (
+            <Actions request={request} resource={resource} refetch={refetch} />
+          ) : null}
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>

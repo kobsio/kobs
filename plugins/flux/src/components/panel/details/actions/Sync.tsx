@@ -1,7 +1,6 @@
 import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { IRow } from '@patternfly/react-table';
 import React from 'react';
-import { compare } from 'fast-json-patch';
 
 import { IAlert } from '../../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
@@ -29,26 +28,12 @@ const Sync: React.FunctionComponent<ISyncProps> = ({
 }: ISyncProps) => {
   const handleSync = async (): Promise<void> => {
     try {
-      const now = new Date();
-      const copy = JSON.parse(JSON.stringify(resource.props));
-
-      if (copy.metadata && copy.metadata) {
-        if (copy.metadata.annotations) {
-          copy.metadata.annotations['reconcile.fluxcd.io/requestedAt'] = now.toJSON();
-        } else {
-          copy.metadata.annotations = { 'reconcile.fluxcd.io/requestedAt': now.toJSON() };
-        }
-      }
-
-      const diff = compare(resource.props, copy);
-
       const response = await fetch(
-        `/api/plugins/resources/resources?cluster=${resource.cluster.title}${
+        `/api/plugins/flux/sync?cluster=${resource.cluster.title}${
           resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&resource=${request.resource}&path=${request.path}`,
+        }&name=${resource.name.title}&resource=${request.resource}`,
         {
-          body: JSON.stringify(diff),
-          method: 'put',
+          method: 'get',
         },
       );
       const json = await response.json();
