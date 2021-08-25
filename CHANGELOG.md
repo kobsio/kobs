@@ -27,6 +27,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#114](https://github.com/kobsio/kobs/pull/114): Fix span order and additional fields for Jaeger plugin.
 - [#115](https://github.com/kobsio/kobs/pull/115): Fix maximum node size of the Jaeger chart and utilize `useMemo` to cache computation for it.
 - [#118](https://github.com/kobsio/kobs/pull/118): Fix `null is not an object (evaluating 'e[Symbol.iterator]')` error for Prometheus charts.
+- [#120](https://github.com/kobsio/kobs/pull/120): Fix reconcilation of Flux resources.
 
 ### Changed
 
