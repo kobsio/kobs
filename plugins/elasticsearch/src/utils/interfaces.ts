@@ -11,9 +11,14 @@ export interface IOptions {
 
 // IPanelOptions are the options for the panel component of the Elasticsearch plugin.
 export interface IPanelOptions {
-  fields?: string[];
-  query?: string;
+  queries?: IQuery[];
   showChart?: boolean;
+}
+
+export interface IQuery {
+  name?: string;
+  query?: string;
+  fields?: string[];
 }
 
 // ILogsData is the interface of the data returned from our Go API for the Elasticsearch plugin. The interface must

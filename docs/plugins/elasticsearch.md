@@ -14,9 +14,16 @@ The following options can be used for a panel with the Elasticsearch plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
+| showChart | boolean | If this is `true` the chart with the distribution of the Documents over the selected time range will be shown | No |
+| queries | [[]Query](#query) | A list of Elasticsearch queries, which can be selected by the user. | Yes |
+
+### Query
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | A name for the Elasticsearch query, which is displayed in the select box. | Yes |
 | query | string | The Elasticsearch query. We are using the [Query String Syntax](#query-string-syntax) for Elasticsearch. | Yes |
 | fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. | No |
-| showChart | boolean | If this is `true` the chart with the distribution of the Documents over the selected time range will be shown | No |
 
 ```yaml
 ---
@@ -36,19 +43,21 @@ spec:
           plugin:
             name: elasticsearch
             options:
-              query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.labels.app: {{ .app }} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
-              fields:
-                - "kubernetes.pod.name"
-                - "content.authority"
-                - "content.route_name"
-                - "content.protocol"
-                - "content.method"
-                - "content.path"
-                - "content.response_code"
-                - "content.upstream_service_time"
-                - "content.bytes_received"
-                - "content.bytes_sent"
               showChart: true
+              queries:
+                - name: Istio Logs
+                  query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.labels.app: {{ .app }} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
+                  fields:
+                    - "kubernetes.pod.name"
+                    - "content.authority"
+                    - "content.route_name"
+                    - "content.protocol"
+                    - "content.method"
+                    - "content.path"
+                    - "content.response_code"
+                    - "content.upstream_service_time"
+                    - "content.bytes_received"
+                    - "content.bytes_sent"
 ```
 
 ## Query String Syntax

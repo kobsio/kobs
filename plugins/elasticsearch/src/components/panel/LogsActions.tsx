@@ -3,17 +3,16 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IPluginTimes } from '@kobsio/plugin-core';
+import { IQuery } from '../../utils/interfaces';
 
 interface IActionsProps {
   name: string;
-  query: string;
-  fields?: string[];
+  queries: IQuery[];
   times: IPluginTimes;
 }
 
-export const Actions: React.FunctionComponent<IActionsProps> = ({ name, query, fields, times }: IActionsProps) => {
+export const Actions: React.FunctionComponent<IActionsProps> = ({ name, queries, times }: IActionsProps) => {
   const [show, setShow] = useState<boolean>(false);
-  const fieldParams = fields ? fields.map((field) => `&field=${field}`) : undefined;
 
   return (
     <CardActions>
@@ -22,20 +21,20 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({ name, query, f
         isOpen={show}
         isPlain={true}
         position="right"
-        dropdownItems={[
+        dropdownItems={queries.map((query) => [
           <DropdownItem
             key={0}
             component={
               <Link
-                to={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${query}${
-                  fieldParams && fieldParams.length > 0 ? fieldParams.join('') : ''
-                }`}
+                to={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${
+                  query.query
+                }${query.fields ? query.fields.map((field) => `&field=${field}`).join('') : ''}`}
               >
-                Explore
+                {query.name}
               </Link>
             }
           />,
-        ]}
+        ])}
       />
     </CardActions>
   );
