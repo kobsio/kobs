@@ -19,16 +19,18 @@ spec:
           plugin:
             name: elasticsearch
             options:
-              query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.labels.app: {{ .app }} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
-              fields:
-                - "kubernetes.pod.name"
-                - "content.authority"
-                - "content.route_name"
-                - "content.protocol"
-                - "content.method"
-                - "content.path"
-                - "content.response_code"
-                - "content.upstream_service_time"
-                - "content.bytes_received"
-                - "content.bytes_sent"
               showChart: true
+              queries:
+                - name: Istio Logs
+                  query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.labels.app: {{ .app }} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
+                  fields:
+                    - "kubernetes.pod.name"
+                    - "content.authority"
+                    - "content.route_name"
+                    - "content.protocol"
+                    - "content.method"
+                    - "content.path"
+                    - "content.response_code"
+                    - "content.upstream_service_time"
+                    - "content.bytes_received"
+                    - "content.bytes_sent"

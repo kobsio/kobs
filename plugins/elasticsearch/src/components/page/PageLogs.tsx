@@ -126,11 +126,13 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
           </CardBody>
         </Card>
         <p>&nbsp;</p>
-        <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
-          <CardBody>
-            <LogsDocuments pages={data.pages} fields={fields} showDetails={showDetails} />
-          </CardBody>
-        </Card>
+        {data.pages[0].documents.length > 0 ? (
+          <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
+            <CardBody>
+              <LogsDocuments pages={data.pages} fields={fields} showDetails={showDetails} />
+            </CardBody>
+          </Card>
+        ) : null}
         <p>&nbsp;</p>
         {data.pages[0].documents.length > 0 ? (
           <Card isCompact={true}>

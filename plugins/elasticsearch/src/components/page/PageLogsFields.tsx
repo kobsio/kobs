@@ -15,7 +15,7 @@ const PageLogsFields: React.FunctionComponent<IPageLogsFieldsProps> = ({
   selectedFields,
   selectField,
 }: IPageLogsFieldsProps) => {
-  if (selectedFields && selectedFields.length === 0 && fields.length === 0) {
+  if ((!selectedFields || selectedFields.length === 0) && fields.length === 0) {
     return null;
   }
 
