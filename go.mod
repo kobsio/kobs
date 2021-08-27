@@ -3,6 +3,7 @@ module github.com/kobsio/kobs
 go 1.16
 
 require (
+	github.com/ClickHouse/clickhouse-go v1.4.5
 	github.com/fluxcd/helm-controller/api v0.11.2
 	github.com/fluxcd/kustomize-controller/api v0.13.3
 	github.com/fluxcd/pkg/apis/meta v0.10.1
@@ -17,6 +18,7 @@ require (
 	github.com/prometheus/common v0.30.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/pflag v1.0.5
+	github.com/stretchr/testify v1.7.0
 	k8s.io/api v0.21.3
 	k8s.io/apiextensions-apiserver v0.21.3
 	k8s.io/apimachinery v0.21.3

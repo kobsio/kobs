@@ -17,6 +17,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#113](https://github.com/kobsio/kobs/pull/113): Allow and improve customization of axis scaling.
 - [#116](https://github.com/kobsio/kobs/pull/116): Open details when clicking on Jaeger chart nodes.
 - [#119](https://github.com/kobsio/kobs/pull/119): Add Flux plugin to view and reconcile [Flux](https://fluxcd.io) resources.
+- [#122](https://github.com/kobsio/kobs/pull/122): Add ClickHouse plugin, to query show logs ingested by the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) Fluent Bit plugin.
 
 ### Fixed
 
