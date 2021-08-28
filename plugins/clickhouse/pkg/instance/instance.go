@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/ClickHouse/clickhouse-go"
@@ -58,6 +59,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
 	sqlQuery := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s ORDER BY timestamp DESC LIMIT %d OFFSET %d", defaultColumns, i.database, conditions, limit, offset)
+	log.WithFields(logrus.Fields{"query": sqlQuery}).Tracef("sql query")
 	rows, err := i.client.QueryContext(ctx, sqlQuery, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
 		return nil, nil, offset, err
@@ -110,6 +112,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 		return nil, nil, offset, err
 	}
 
+	sort.Strings(fields)
 	return documents, fields, offset + limit, nil
 }
 

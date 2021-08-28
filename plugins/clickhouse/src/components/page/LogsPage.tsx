@@ -64,7 +64,7 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
           {displayName}
         </Title>
         <p>{description}</p>
-        <LogsToolbar query={options.query} times={options.times} setOptions={changeOptions} />
+        <LogsToolbar query={options.query} fields={options.fields} times={options.times} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={selectedDocument !== undefined}>

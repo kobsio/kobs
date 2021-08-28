@@ -64,7 +64,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
           {displayName}
         </Title>
         <p>{description}</p>
-        <PageToolbar query={options.query} times={options.times} setOptions={changeOptions} />
+        <PageToolbar query={options.query} fields={options.fields} times={options.times} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={selectedDocument !== undefined}>
