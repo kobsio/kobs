@@ -35,6 +35,7 @@ nav:
   - Plugins:
       - Getting Started: plugins/getting-started.md
       - Applications: plugins/applications.md
+      - ClickHouse: plugins/clickhouse.md
       - Dashboards: plugins/dashboards.md
       - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md
