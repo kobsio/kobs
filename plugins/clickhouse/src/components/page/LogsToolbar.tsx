@@ -18,7 +18,12 @@ interface ILogsToolbarProps extends IOptions {
   setOptions: (data: IOptions) => void;
 }
 
-const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({ query, times, setOptions }: ILogsToolbarProps) => {
+const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
+  query,
+  fields,
+  times,
+  setOptions,
+}: ILogsToolbarProps) => {
   const [data, setData] = useState<IOptions>({
     query: query,
     times: times,
@@ -34,7 +39,7 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({ query, times,
   // use "SHIFT" + "ENTER".
   const onEnter = (e: React.KeyboardEvent<HTMLInputElement> | undefined): void => {
     if (e?.key === 'Enter' && !e.shiftKey) {
-      setOptions(data);
+      setOptions({ ...data, fields: fields });
     }
   };
 
@@ -53,6 +58,7 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({ query, times,
     if (refresh) {
       setOptions({
         ...tmpData,
+        fields: fields,
         times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
       });
     }
@@ -80,7 +86,11 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({ query, times,
               />
             </ToolbarItem>
             <ToolbarItem>
-              <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setOptions(data)}>
+              <Button
+                variant={ButtonVariant.primary}
+                icon={<SearchIcon />}
+                onClick={(): void => setOptions({ ...data, fields: fields })}
+              >
                 Search
               </Button>
             </ToolbarItem>

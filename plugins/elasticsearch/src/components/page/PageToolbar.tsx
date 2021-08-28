@@ -20,7 +20,12 @@ interface IPageToolbarProps extends IOptions {
 
 // PageToolbar is the toolbar for the Elasticsearch plugin page. It allows a user to specify query and to select a start
 // time and end time for the query.
-const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, times, setOptions }: IPageToolbarProps) => {
+const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
+  query,
+  fields,
+  times,
+  setOptions,
+}: IPageToolbarProps) => {
   const [data, setData] = useState<IOptions>({
     query: query,
     times: times,
@@ -36,7 +41,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, times,
   // use "SHIFT" + "ENTER".
   const onEnter = (e: React.KeyboardEvent<HTMLInputElement> | undefined): void => {
     if (e?.key === 'Enter' && !e.shiftKey) {
-      setOptions(data);
+      setOptions({ ...data, fields: fields });
     }
   };
 
@@ -55,6 +60,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, times,
     if (refresh) {
       setOptions({
         ...tmpData,
+        fields: fields,
         times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
       });
     }
@@ -82,7 +88,11 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, times,
               />
             </ToolbarItem>
             <ToolbarItem>
-              <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setOptions(data)}>
+              <Button
+                variant={ButtonVariant.primary}
+                icon={<SearchIcon />}
+                onClick={(): void => setOptions({ ...data, fields: fields })}
+              >
                 Search
               </Button>
             </ToolbarItem>

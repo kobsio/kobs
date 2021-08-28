@@ -55,14 +55,9 @@ func parseLogsQuery(query string) (string, error) {
 // that we pass the key (first item), value (second item) and the operator to the handleConditionParts to build the
 // where condition.
 func splitOperator(condition string) (string, error) {
-	equal := strings.Split(condition, "=")
-	if len(equal) == 2 {
-		return handleConditionParts(equal[0], equal[1], "=")
-	}
-
-	notEqual := strings.Split(condition, "!=")
-	if len(notEqual) == 2 {
-		return handleConditionParts(notEqual[0], notEqual[1], "!=")
+	greaterThanOrEqual := strings.Split(condition, ">=")
+	if len(greaterThanOrEqual) == 2 {
+		return handleConditionParts(greaterThanOrEqual[0], greaterThanOrEqual[1], ">=")
 	}
 
 	greaterThan := strings.Split(condition, ">")
@@ -70,9 +65,9 @@ func splitOperator(condition string) (string, error) {
 		return handleConditionParts(greaterThan[0], greaterThan[1], ">")
 	}
 
-	greaterThanOrEqual := strings.Split(condition, ">=")
-	if len(greaterThanOrEqual) == 2 {
-		return handleConditionParts(greaterThanOrEqual[0], greaterThanOrEqual[1], ">=")
+	lessThanOrEqual := strings.Split(condition, "<=")
+	if len(lessThanOrEqual) == 2 {
+		return handleConditionParts(lessThanOrEqual[0], lessThanOrEqual[1], "<=")
 	}
 
 	lessThan := strings.Split(condition, "<")
@@ -80,9 +75,14 @@ func splitOperator(condition string) (string, error) {
 		return handleConditionParts(lessThan[0], lessThan[1], "<")
 	}
 
-	lessThanOrEqual := strings.Split(condition, "<=")
-	if len(lessThanOrEqual) == 2 {
-		return handleConditionParts(lessThanOrEqual[0], lessThanOrEqual[1], "<=")
+	notEqual := strings.Split(condition, "!=")
+	if len(notEqual) == 2 {
+		return handleConditionParts(notEqual[0], notEqual[1], "!=")
+	}
+
+	equal := strings.Split(condition, "=")
+	if len(equal) == 2 {
+		return handleConditionParts(equal[0], equal[1], "=")
 	}
 
 	regex := strings.Split(condition, "~")
@@ -125,5 +125,5 @@ func handleConditionParts(key, value, operator string) (string, error) {
 		return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] %s %s", key, operator, value), nil
 	}
 
-	return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')] %s '%s'", key, operator, value), nil
+	return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')] %s %s", key, operator, value), nil
 }
