@@ -47,6 +47,35 @@ func (router *Router) getInstance(name string) *instance.Instance {
 	return nil
 }
 
+func (router *Router) getSQL(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	query := r.URL.Query().Get("query")
+
+	log.WithFields(logrus.Fields{"name": name, "query": query}).Tracef("getSQL")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	rows, columns, err := i.GetSQL(r.Context(), query)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get result for SQL query")
+		return
+	}
+
+	data := struct {
+		Rows    [][]interface{} `json:"rows"`
+		Columns []string        `json:"columns"`
+	}{
+		rows,
+		columns,
+	}
+
+	render.JSON(w, r, data)
+}
+
 // getLogs implements the special handling when the user selected the "logs" options for the "view" configuration. This
 // options is intended to use together with the kobsio/fluent-bit-clickhouse Fluent Bit plugin and provides a custom
 // query language to get the logs from ClickHouse.
@@ -101,11 +130,17 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, logsResponse{
-		Documents: documents,
-		Fields:    fields,
-		Offset:    newOffset,
-	})
+	data := struct {
+		Documents []map[string]interface{} `json:"documents"`
+		Fields    []string                 `json:"fields"`
+		Offset    int64                    `json:"offset"`
+	}{
+		documents,
+		fields,
+		newOffset,
+	}
+
+	render.JSON(w, r, data)
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
@@ -139,6 +174,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
+	router.Get("/sql/{name}", router.getSQL)
 	router.Get("/logs/{name}", router.getLogs)
 
 	return router
