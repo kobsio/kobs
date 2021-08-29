@@ -35,18 +35,20 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   }
 
   if (options.type === 'logs' && options.queries) {
-    <Logs
-      name={name}
-      title={title}
-      description={description}
-      queries={options.queries}
-      times={times}
-      showDetails={showDetails}
-    />;
+    return (
+      <Logs
+        name={name}
+        title={title}
+        description={description}
+        queries={options.queries}
+        times={times}
+        showDetails={showDetails}
+      />
+    );
   }
 
   if (options.type === 'sql' && options.queries) {
-    <SQL name={name} title={title} description={description} queries={options.queries} />;
+    return <SQL name={name} title={title} description={description} queries={options.queries} />;
   }
 
   return null;
