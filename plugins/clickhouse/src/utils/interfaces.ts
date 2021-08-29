@@ -30,3 +30,9 @@ export interface IDocument {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
+
+// ISQLData is the interface of the data returned from our Go API for the sql view of the ClickHouse plugin.
+export interface ISQLData {
+  columns?: string[];
+  rows?: string[][];
+}

@@ -1,7 +1,7 @@
 import { TTime, TTimeOptions, formatTime } from '@kobsio/plugin-core';
 import { IOptions } from './interfaces';
 
-// getOptionsFromSearch is used to get the Elasticsearch options from a given search location.
+// getOptionsFromSearch is used to get the ClickHouse options from a given search location.
 export const getOptionsFromSearch = (search: string): IOptions => {
   const params = new URLSearchParams(search);
   const fields = params.getAll('field');
@@ -23,6 +23,13 @@ export const getOptionsFromSearch = (search: string): IOptions => {
           : Math.floor(Date.now() / 1000) - 900,
     },
   };
+};
+
+// getQueryFromSearch is used to get the sql query from a given search location.
+export const getQueryFromSearch = (search: string): string => {
+  const params = new URLSearchParams(search);
+  const query = params.get('query');
+  return query ? query : '';
 };
 
 // formatTimeWrapper is a wrapper for our shared formatTime function. It is needed to convert a given time string to the

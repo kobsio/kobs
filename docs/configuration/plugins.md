@@ -53,7 +53,7 @@ plugins:
 | address | string | Address of the ClickHouse instance. | Yes |
 | username | string | Username to access a ClickHouse instance. | No |
 | password | string | Password to access a ClickHouse instance. | No |
-| type | string | The type which should be used for the ClickHouse instance. Currently the only supported value is `logs`. The `logs` mode should be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) plugin to collect logs via Fluent Bit and save them in ClickHouse. |
+| type | string | The type which should be used for the ClickHouse instance. This must be `sql` or `logs`. While the `sql` mode allows you to use raw SQL queries, the `logs` mode should be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) plugin to collect logs via Fluent Bit and save them in ClickHouse. |
 
 ## Elasticsearch
 

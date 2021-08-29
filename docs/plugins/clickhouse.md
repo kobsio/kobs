@@ -15,7 +15,7 @@ The following options can be used for a panel with the ClickHouse plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | Set the type for which you want to use the ClickHouse instance. Currently the only supported value is `logs`. | Yes |
+| type | string | Set the type for which you want to use the ClickHouse instance. This must be `sql` or `logs` | Yes |
 | queries | [[]Query](#query) | A list of queries, which can be selected by the user. | Yes |
 
 ### Query
@@ -24,7 +24,7 @@ The following options can be used for a panel with the ClickHouse plugin:
 | ----- | ---- | ----------- | -------- |
 | name | string | A name for the ClickHouse query, which is displayed in the select box. | Yes |
 | query | string | The query which should be run against ClickHouse. See [Query Syntax](#query-syntax) for more information on the syntax, when ClickHouse is used in the `logs` mode. | Yes |
-| fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. | No |
+| fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. This field is only available for the `logs`. | No |
 
 ```yaml
 ---
@@ -81,7 +81,9 @@ kobs supports multiple operators which can be used in a query to retrieve logs f
 | `<=` | The value of the field must be lower than or equal to the specified value. | `content.response_code<=499` |
 | `~` | The value of the field must match the regular expression. | `content.upstream_cluster~'inbound.*'` |
 
-### Standard Fields
+### Default Fields
+
+In the following you can find a list of fields which are available for each log line. Consider to filter you logs by these fields, to keep your queries fast:
 
 - `timestamp`: The timestamp for when the log line was written.
 - `cluster`: The name of the cluster as it is set by Fluent Bit.

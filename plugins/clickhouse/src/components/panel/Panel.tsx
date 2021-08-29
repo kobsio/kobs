@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { IPluginPanelProps, PluginOptionsMissing } from '@kobsio/plugin-core';
 import { IPanelOptions } from '../../utils/interfaces';
 import Logs from './Logs';
+import SQL from './SQL';
 
 interface IPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
@@ -19,7 +20,9 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   if (
     !options ||
     !times ||
-    (options.type === 'logs' && (!options.queries || !Array.isArray(options.queries) || options.queries.length === 0))
+    (options.type === 'logs' &&
+      (!options.queries || !Array.isArray(options.queries) || options.queries.length === 0)) ||
+    (options.type === 'sql' && (!options.queries || !Array.isArray(options.queries) || options.queries.length === 0))
   ) {
     return (
       <PluginOptionsMissing
@@ -40,6 +43,10 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       times={times}
       showDetails={showDetails}
     />;
+  }
+
+  if (options.type === 'sql' && options.queries) {
+    <SQL name={name} title={title} description={description} queries={options.queries} />;
   }
 
   return null;
