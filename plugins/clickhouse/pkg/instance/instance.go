@@ -73,9 +73,10 @@ func (i *Instance) GetSQL(ctx context.Context, query string) ([][]interface{}, [
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, error) {
+func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, error) {
 	var documents []map[string]interface{}
 	fields := defaultFields
+	queryStartTime := time.Now()
 
 	// When the user provides a query, we have to build the additional conditions for the sql query. This is done via
 	// the parseLogsQuery which is responsible for parsing our simple query language and returning the corresponding
@@ -84,7 +85,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	if query != "" {
 		parsedQuery, err := parseLogsQuery(query)
 		if err != nil {
-			return nil, nil, offset, err
+			return nil, nil, 0, offset, err
 		}
 
 		conditions = fmt.Sprintf("AND %s", parsedQuery)
@@ -97,7 +98,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	log.WithFields(logrus.Fields{"query": sqlQuery}).Tracef("sql query")
 	rows, err := i.client.QueryContext(ctx, sqlQuery, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
-		return nil, nil, offset, err
+		return nil, nil, 0, offset, err
 	}
 	defer rows.Close()
 
@@ -110,7 +111,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	for rows.Next() {
 		var r Row
 		if err := rows.Scan(&r.Timestamp, &r.Cluster, &r.Namespace, &r.App, &r.Pod, &r.Container, &r.Host, &r.FieldsString.Key, &r.FieldsString.Value, &r.FieldsNumber.Key, &r.FieldsNumber.Value, &r.Log); err != nil {
-			return nil, nil, offset, err
+			return nil, nil, 0, offset, err
 		}
 
 		var document map[string]interface{}
@@ -144,11 +145,41 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, nil, offset, err
+		return nil, nil, 0, offset, err
 	}
 
 	sort.Strings(fields)
-	return documents, fields, offset + limit, nil
+	return documents, fields, time.Now().Sub(queryStartTime).Milliseconds(), offset + limit, nil
+}
+
+// GetLogsCount returns the number of documents, which could be returned by the user provided query.
+func (i *Instance) GetLogsCount(ctx context.Context, query string, timeStart, timeEnd int64) (int64, error) {
+	var count int64
+
+	conditions := ""
+	if query != "" {
+		parsedQuery, err := parseLogsQuery(query)
+		if err != nil {
+			return 0, err
+		}
+
+		conditions = fmt.Sprintf("AND %s", parsedQuery)
+	}
+
+	sqlQueryCount := fmt.Sprintf("SELECT count(*) FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s", i.database, conditions)
+	rowsCount, err := i.client.QueryContext(ctx, sqlQueryCount, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
+	if err != nil {
+		return 0, err
+	}
+	defer rowsCount.Close()
+
+	for rowsCount.Next() {
+		if err := rowsCount.Scan(&count); err != nil {
+			return 0, err
+		}
+	}
+
+	return count, nil
 }
 
 // New returns a new ClickHouse instance for the given configuration.

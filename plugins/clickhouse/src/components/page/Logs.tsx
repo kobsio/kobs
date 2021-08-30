@@ -18,6 +18,7 @@ import { ILogsData } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 import LogsDocuments from '../panel/LogsDocuments';
 import LogsFields from './LogsFields';
+import LogsHeader from './LogsHeader';
 
 interface IPageLogsProps {
   name: string;
@@ -43,7 +44,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
     async ({ pageParam }) => {
       try {
         const response = await fetch(
-          `/api/plugins/clickhouse/logs/${name}?query=${query}&timeStart=${times.timeStart}&timeEnd=${
+          `/api/plugins/clickhouse/logs/documents/${name}?query=${query}&timeStart=${times.timeStart}&timeEnd=${
             times.timeEnd
           }&limit=100&offset=${pageParam || ''}`,
           {
@@ -111,6 +112,13 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
+          <LogsHeader
+            name={name}
+            query={query}
+            times={times}
+            took={data.pages[0].took || 0}
+            isFetchingDocuments={isFetching}
+          />
           <CardBody>
             <LogsDocuments pages={data.pages} fields={fields} showDetails={showDetails} />
           </CardBody>

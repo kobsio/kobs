@@ -124,7 +124,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	documents, fields, newOffset, err := i.GetLogs(r.Context(), query, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
+	documents, fields, took, newOffset, err := i.GetLogs(r.Context(), query, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
@@ -133,11 +133,54 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Documents []map[string]interface{} `json:"documents"`
 		Fields    []string                 `json:"fields"`
+		Took      int64                    `json:"took"`
 		Offset    int64                    `json:"offset"`
 	}{
 		documents,
 		fields,
+		took,
 		newOffset,
+	}
+
+	render.JSON(w, r, data)
+}
+
+func (router *Router) getLogsCount(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	query := r.URL.Query().Get("query")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+
+	log.WithFields(logrus.Fields{"name": name, "query": query, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogsCount")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	count, err := i.GetLogsCount(r.Context(), query, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs count")
+		return
+	}
+
+	data := struct {
+		Count int64 `json:"count"`
+	}{
+		count,
 	}
 
 	render.JSON(w, r, data)
@@ -175,7 +218,8 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	}
 
 	router.Get("/sql/{name}", router.getSQL)
-	router.Get("/logs/{name}", router.getLogs)
+	router.Get("/logs/documents/{name}", router.getLogs)
+	router.Get("/logs/count/{name}", router.getLogsCount)
 
 	return router
 }

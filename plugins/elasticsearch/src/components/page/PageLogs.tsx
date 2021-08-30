@@ -5,7 +5,10 @@ import {
   Button,
   ButtonVariant,
   Card,
+  CardActions,
   CardBody,
+  CardHeader,
+  CardHeaderMain,
   CardTitle,
   Grid,
   GridItem,
@@ -118,9 +121,15 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
         <Card isCompact={true}>
-          <CardTitle className="pf-u-text-align-center">
-            {data.pages[0].hits} Documents in {data.pages[0].took} Milliseconds
-          </CardTitle>
+          <CardHeader>
+            <CardHeaderMain>
+              <CardTitle>
+                {data.pages[0].hits} Documents in {data.pages[0].took} Milliseconds
+              </CardTitle>
+            </CardHeaderMain>
+            <CardActions>{isFetching && <Spinner size="md" />}</CardActions>
+          </CardHeader>
+
           <CardBody>
             <LogsChart buckets={data.pages[0].buckets} />
           </CardBody>

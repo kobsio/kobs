@@ -20,7 +20,7 @@ func parseLogsQuery(query string) (string, error) {
 	openBrackets := strings.Split(query, "(")
 	for _, openBracket := range openBrackets {
 		var newCloseBrackets []string
-		closeBrackets := strings.Split(openBracket, "(")
+		closeBrackets := strings.Split(openBracket, ")")
 		for _, closeBracket := range closeBrackets {
 			var newNots []string
 			nots := strings.Split(closeBracket, "_not_")
