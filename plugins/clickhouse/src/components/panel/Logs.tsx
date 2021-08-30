@@ -43,9 +43,9 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
     async ({ pageParam }) => {
       try {
         const response = await fetch(
-          `/api/plugins/clickhouse/logs/${name}?query=${selectedQuery.query}&timeStart=${times.timeStart}&timeEnd=${
-            times.timeEnd
-          }&limit=100&offset=${pageParam || ''}`,
+          `/api/plugins/clickhouse/logs/documents/${name}?query=${selectedQuery.query}&timeStart=${
+            times.timeStart
+          }&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam || ''}`,
           {
             method: 'get',
           },

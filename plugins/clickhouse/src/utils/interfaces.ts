@@ -22,6 +22,7 @@ export interface IQuery {
 // ILogsData is the interface of the data returned from our Go API for the logs view of the ClickHouse plugin.
 export interface ILogsData {
   offset: number;
+  took?: number;
   fields?: string[];
   documents?: IDocument[];
 }
@@ -29,6 +30,10 @@ export interface ILogsData {
 export interface IDocument {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
+}
+
+export interface ILogsCountData {
+  count?: number;
 }
 
 // ISQLData is the interface of the data returned from our Go API for the sql view of the ClickHouse plugin.
