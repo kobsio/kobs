@@ -167,6 +167,7 @@ func (i *Instance) GetLogsCount(ctx context.Context, query string, timeStart, ti
 	}
 
 	sqlQueryCount := fmt.Sprintf("SELECT count(*) FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s", i.database, conditions)
+	log.WithFields(logrus.Fields{"query": sqlQueryCount}).Tracef("sql count query")
 	rowsCount, err := i.client.QueryContext(ctx, sqlQueryCount, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
 		return 0, err

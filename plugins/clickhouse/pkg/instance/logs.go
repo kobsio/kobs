@@ -75,6 +75,11 @@ func splitOperator(condition string) (string, error) {
 		return handleConditionParts(lessThan[0], lessThan[1], "<")
 	}
 
+	ilike := strings.Split(condition, "=~")
+	if len(ilike) == 2 {
+		return handleConditionParts(ilike[0], ilike[1], "=~")
+	}
+
 	notEqual := strings.Split(condition, "!=")
 	if len(notEqual) == 2 {
 		return handleConditionParts(notEqual[0], notEqual[1], "!=")
@@ -110,6 +115,10 @@ func handleConditionParts(key, value, operator string) (string, error) {
 	value = strings.TrimSpace(value)
 
 	if contains(defaultFields, key) {
+		if operator == "=~" {
+			return fmt.Sprintf("%s ILIKE %s", key, value), nil
+		}
+
 		if operator == "~" {
 			return fmt.Sprintf("match(%s, %s)", key, value), nil
 		}
@@ -118,11 +127,23 @@ func handleConditionParts(key, value, operator string) (string, error) {
 	}
 
 	if value != "" && string(value[0]) == "'" && string(value[len(value)-1]) == "'" {
+		if operator == "=~" {
+			return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] ILIKE %s", key, value), nil
+		}
+
 		if operator == "~" {
 			return fmt.Sprintf("match(fields_string.value[indexOf(fields_string.key, '%s')], %s)", key, value), nil
 		}
 
 		return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] %s %s", key, operator, value), nil
+	}
+
+	if operator == "=~" {
+		return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')] ILIKE %s", key, value), nil
+	}
+
+	if operator == "~" {
+		return fmt.Sprintf("match(fields_number.value[indexOf(fields_number.key, '%s')], %s)", key, value), nil
 	}
 
 	return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')] %s %s", key, operator, value), nil

@@ -18,7 +18,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, query }: ISQLProps) => 
     ['clickhouse/sql', query],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/clickhouse/sql/${name}?query=${query}`, {
+        const response = await fetch(`/api/plugins/clickhouse/sql/${name}?query=${encodeURIComponent(query)}`, {
           method: 'get',
         });
         const json = await response.json();

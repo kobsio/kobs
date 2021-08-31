@@ -20,6 +20,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#122](https://github.com/kobsio/kobs/pull/122): Add ClickHouse plugin, to query show logs ingested by the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) Fluent Bit plugin.
 - [#124](https://github.com/kobsio/kobs/pull/124): Add `sql` mode for ClickHouse to execute raw SQL queries.
 - [#126](https://github.com/kobsio/kobs/pull/126): Show request details when gettings logs from ClickHouse.
+- [#127](https://github.com/kobsio/kobs/pull/127): Allow `ILIKE` queries for ClickHouse logs, using the new `=~` operator.
 
 ### Fixed
 

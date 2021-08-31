@@ -42,8 +42,12 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
     ['clickhouse/logs', selectedQuery, times],
     async ({ pageParam }) => {
       try {
+        if (!selectedQuery.query) {
+          throw new Error('Query is missing');
+        }
+
         const response = await fetch(
-          `/api/plugins/clickhouse/logs/documents/${name}?query=${selectedQuery.query}&timeStart=${
+          `/api/plugins/clickhouse/logs/documents/${name}?query=${encodeURIComponent(selectedQuery.query)}&timeStart=${
             times.timeStart
           }&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam || ''}`,
           {
