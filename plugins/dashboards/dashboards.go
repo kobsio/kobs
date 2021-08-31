@@ -98,28 +98,40 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 			reference.Namespace = data.Defaults.Namespace
 		}
 
-		cluster := router.clusters.GetCluster(reference.Cluster)
-		if cluster == nil {
-			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
-			return
-		}
-
-		dashboard, err := cluster.GetDashboard(r.Context(), reference.Namespace, reference.Name)
-		if err != nil {
-			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboard")
-			return
-		}
-
-		if reference.Placeholders != nil {
-			dashboard, err = placeholders.Replace(reference.Placeholders, *dashboard)
-			if err != nil {
-				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
+		if reference.Inline != nil {
+			dashboards = append(dashboards, &dashboard.DashboardSpec{
+				Cluster:     "-",
+				Namespace:   "-",
+				Name:        "-",
+				Title:       reference.Title,
+				Description: reference.Description,
+				Variables:   reference.Inline.Variables,
+				Rows:        reference.Inline.Rows,
+			})
+		} else {
+			cluster := router.clusters.GetCluster(reference.Cluster)
+			if cluster == nil {
+				errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 				return
 			}
-		}
 
-		dashboard.Title = reference.Title
-		dashboards = append(dashboards, dashboard)
+			dashboard, err := cluster.GetDashboard(r.Context(), reference.Namespace, reference.Name)
+			if err != nil {
+				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboard")
+				return
+			}
+
+			if reference.Placeholders != nil {
+				dashboard, err = placeholders.Replace(reference.Placeholders, *dashboard)
+				if err != nil {
+					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
+					return
+				}
+			}
+
+			dashboard.Title = reference.Title
+			dashboards = append(dashboards, dashboard)
+		}
 	}
 
 	log.WithFields(logrus.Fields{"count": len(dashboards)}).Tracef("getDashboards")
