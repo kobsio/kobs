@@ -23,7 +23,9 @@ const LogsHeader: React.FunctionComponent<ILogsHeaderProps> = ({
   const { data } = useQuery<ILogsCountData, Error>(['clickhouse/logscount', query, times], async () => {
     try {
       const response = await fetch(
-        `/api/plugins/clickhouse/logs/count/${name}?query=${query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+        `/api/plugins/clickhouse/logs/count/${name}?query=${encodeURIComponent(query)}&timeStart=${
+          times.timeStart
+        }&timeEnd=${times.timeEnd}`,
         {
           method: 'get',
         },

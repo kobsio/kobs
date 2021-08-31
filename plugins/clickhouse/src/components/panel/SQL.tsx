@@ -31,9 +31,16 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
     ['clickhouse/sql', selectedQuery],
     async ({ pageParam }) => {
       try {
-        const response = await fetch(`/api/plugins/clickhouse/sql/${name}?query=${selectedQuery.query}`, {
-          method: 'get',
-        });
+        if (!selectedQuery.query) {
+          throw new Error('Query is missing');
+        }
+
+        const response = await fetch(
+          `/api/plugins/clickhouse/sql/${name}?query=${encodeURIComponent(selectedQuery.query)}`,
+          {
+            method: 'get',
+          },
+        );
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {

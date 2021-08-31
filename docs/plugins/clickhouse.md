@@ -79,7 +79,8 @@ kobs supports multiple operators which can be used in a query to retrieve logs f
 | `>=` | The value of the field must be greater than or equal to the specified value. | `content.response_code>=500` |
 | `<` | The value of the field must be lower than the specified value. | `content.response_code<500` |
 | `<=` | The value of the field must be lower than or equal to the specified value. | `content.response_code<=499` |
-| `~` | The value of the field must match the regular expression. | `content.upstream_cluster~'inbound.*'` |
+| `=~` | The value of the field is compared using `ILIKE`. | `content.upstream_cluster=~'inbound%'` |
+| `~` | The value of the field must match the regular expression. The syntax of the `re2` regular expressions can be found [here](https://github.com/google/re2/wiki/Syntax). | `content.upstream_cluster~'inbound.*'` |
 
 ### Default Fields
 

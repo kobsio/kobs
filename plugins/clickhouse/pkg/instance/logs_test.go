@@ -15,6 +15,8 @@ func TestParseLogsQuery(t *testing.T) {
 		{query: "cluster = 'foo' _and_ namespace = 'bar'", where: "cluster='foo' AND namespace='bar'", isInvalid: false},
 		{query: "cluster = 'foo' _and_ (namespace='hello' _or_ namespace='world')", where: "cluster='foo' AND (namespace='hello' OR namespace='world')", isInvalid: false},
 		{query: "kubernetes.label_foo = 'bar'", where: "fields_string.value[indexOf(fields_string.key, 'kubernetes.label_foo')] = 'bar'", isInvalid: false},
+		{query: "kubernetes.label_foo_bar =~ '\\%hellow\\%world\\%'", where: "fields_string.value[indexOf(fields_string.key, 'kubernetes.label_foo_bar')] ILIKE '\\%hellow\\%world\\%'", isInvalid: false},
+		{query: "kubernetes.label_foo_bar ~ 'hello.*'", where: "match(fields_string.value[indexOf(fields_string.key, 'kubernetes.label_foo_bar')], 'hello.*')", isInvalid: false},
 	} {
 		t.Run(tc.query, func(t *testing.T) {
 			parsedWhere, err := parseLogsQuery(tc.query)
