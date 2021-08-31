@@ -32,10 +32,18 @@ Define the dashboards, which should be used for the team.
 | ----- | ---- | ----------- | -------- |
 | cluster | string | Cluster of the dashboard. If this field is omitted kobs will look in the same cluster as the application was created in. | No |
 | namespace | string | Namespace of the dashboard. If this field is omitted kobs will look in the same namespace as the application was created in. | No |
-| name | string | Name of the dashboard. | Yes |
+| name | string | Name of the dashboard. **Note:** You have not to provide a name, if you use the **inline** property. | Yes |
 | title | string | Title for the dashboard | Yes |
 | description | string | The description can be used to explain the content of the dashboard. | No |
 | placeholders | map<string, string> | A map of placeholders, whith the name as key and the value for the placeholder as value. More information for placeholders can be found in the documentation for [Dashboards](./dashboards.md). | No |
+| inline | [Inline](#inline) | Specify a complete dashboard within the reference. This can be used if you just use the dashboard within one team. | No |
+
+### Inline
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| variables | [[]Variable](./dashboards.md#Variable) | A list of variables, where the values are loaded by the specified plugin. | No |
+| rows | [[]Row](./dashboards.md#row) | A list of rows for the dashboard. | Yes |
 
 ## Example
 

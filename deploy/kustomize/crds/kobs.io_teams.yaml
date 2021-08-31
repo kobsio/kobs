@@ -44,6 +44,75 @@ spec:
                       type: string
                     description:
                       type: string
+                    inline:
+                      properties:
+                        rows:
+                          items:
+                            properties:
+                              description:
+                                type: string
+                              panels:
+                                items:
+                                  properties:
+                                    colSpan:
+                                      format: int64
+                                      type: integer
+                                    description:
+                                      type: string
+                                    plugin:
+                                      properties:
+                                        name:
+                                          type: string
+                                        options:
+                                          x-kubernetes-preserve-unknown-fields: true
+                                      required:
+                                      - name
+                                      type: object
+                                    rowSpan:
+                                      format: int64
+                                      type: integer
+                                    title:
+                                      type: string
+                                  required:
+                                  - plugin
+                                  - title
+                                  type: object
+                                type: array
+                              size:
+                                format: int64
+                                type: integer
+                              title:
+                                type: string
+                            required:
+                            - panels
+                            type: object
+                          type: array
+                        variables:
+                          items:
+                            properties:
+                              hide:
+                                type: boolean
+                              label:
+                                type: string
+                              name:
+                                type: string
+                              plugin:
+                                properties:
+                                  name:
+                                    type: string
+                                  options:
+                                    x-kubernetes-preserve-unknown-fields: true
+                                required:
+                                - name
+                                type: object
+                            required:
+                            - name
+                            - plugin
+                            type: object
+                          type: array
+                      required:
+                      - rows
+                      type: object
                     name:
                       type: string
                     namespace:
@@ -55,7 +124,6 @@ spec:
                     title:
                       type: string
                   required:
-                  - name
                   - title
                   type: object
                 type: array
