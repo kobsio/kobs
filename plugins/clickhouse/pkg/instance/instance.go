@@ -94,7 +94,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	// Now we are building and executing our sql query. We always return all fields from the logs table, where the
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
-	sqlQuery := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s ORDER BY timestamp DESC LIMIT %d OFFSET %d", defaultColumns, i.database, conditions, limit, offset)
+	sqlQuery := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s ORDER BY timestamp DESC LIMIT %d OFFSET %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, conditions, limit, offset)
 	log.WithFields(logrus.Fields{"query": sqlQuery}).Tracef("sql query")
 	rows, err := i.client.QueryContext(ctx, sqlQuery, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
@@ -166,7 +166,7 @@ func (i *Instance) GetLogsCount(ctx context.Context, query string, timeStart, ti
 		conditions = fmt.Sprintf("AND %s", parsedQuery)
 	}
 
-	sqlQueryCount := fmt.Sprintf("SELECT count(*) FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s", i.database, conditions)
+	sqlQueryCount := fmt.Sprintf("SELECT count(*) FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s SETTINGS skip_unavailable_shards = 1", i.database, conditions)
 	log.WithFields(logrus.Fields{"query": sqlQueryCount}).Tracef("sql count query")
 	rowsCount, err := i.client.QueryContext(ctx, sqlQueryCount, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
