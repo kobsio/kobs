@@ -3,11 +3,12 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
 import { IOptions, ITrace } from '../../utils/interfaces';
-import { addColorForProcesses, encodeTags } from '../../utils/helpers';
+import { encodeTags, transformTraceData } from '../../utils/helpers';
 import { PluginCard } from '@kobsio/plugin-core';
 import TracesActions from './TracesActions';
 import TracesChart from './TracesChart';
 import TracesList from './TracesList';
+import { addColorForProcesses } from '../../utils/colors';
 
 interface ITracesProps extends IOptions {
   name: string;
@@ -46,7 +47,17 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return addColorForProcesses(json.data);
+          const traceData = addColorForProcesses(json.data);
+          const traces: ITrace[] = [];
+
+          for (const trace of traceData) {
+            const transformedTrace = transformTraceData(trace);
+            if (transformedTrace) {
+              traces.push(transformedTrace);
+            }
+          }
+
+          return traces;
         } else {
           if (json.error) {
             throw new Error(json.error);

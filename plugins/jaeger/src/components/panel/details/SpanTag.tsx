@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Tooltip } from '@patternfly/react-core';
 
-import { IKeyValue } from '../../../utils/interfaces';
+import { IKeyValuePair } from '../../../utils/interfaces';
 
 interface ISpanTagProps {
-  tag: IKeyValue;
+  tag: IKeyValuePair;
 }
 
 const SpanTag: React.FunctionComponent<ISpanTagProps> = ({ tag }: ISpanTagProps) => {

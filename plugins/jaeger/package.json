@@ -23,6 +23,7 @@
     "react-dropzone": "^11.3.4",
     "react-query": "^3.17.2",
     "react-router-dom": "^5.2.0",
+    "react-virtuoso": "^1.11.1",
     "typescript": "^4.3.4"
   }
 }
