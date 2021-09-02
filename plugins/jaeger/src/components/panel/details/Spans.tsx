@@ -1,8 +1,8 @@
 import { Accordion, Card, CardBody } from '@patternfly/react-core';
 import React from 'react';
+import { Virtuoso } from 'react-virtuoso';
 
-import { ISpan, ITrace } from '../../../utils/interfaces';
-import { createSpansTree, getDuration, getRootSpan } from '../../../utils/helpers';
+import { ITrace } from '../../../utils/interfaces';
 import Span from './Span';
 import SpansChart from './SpansChart';
 
@@ -12,38 +12,50 @@ export interface ISpansProps {
 }
 
 const Spans: React.FunctionComponent<ISpansProps> = ({ name, trace }: ISpansProps) => {
-  const rootSpan = trace.spans.length > 0 ? getRootSpan(trace.spans) : undefined;
-  if (!rootSpan) {
-    return null;
-  }
-
-  const duration = getDuration(trace.spans);
-  const spans: ISpan[] = createSpansTree(trace.spans, rootSpan.startTime, duration);
-
   return (
     <React.Fragment>
-      <Card>
-        <CardBody>
-          <div style={{ height: `${trace.spans.length > 20 ? 100 : trace.spans.length * 5}px`, position: 'relative' }}>
-            {spans.map((span, index) => (
-              <SpansChart
-                key={index}
-                span={span}
-                processes={trace.processes}
-                height={trace.spans.length > 20 ? 100 / trace.spans.length : 5}
-              />
-            ))}
-          </div>
-        </CardBody>
-      </Card>
+      {trace.spans.length <= 100 && (
+        <div>
+          <Card>
+            <CardBody>
+              <div
+                style={{ height: `${trace.spans.length > 20 ? 100 : trace.spans.length * 5}px`, position: 'relative' }}
+              >
+                {trace.spans.map((span, index) => (
+                  <SpansChart
+                    key={index}
+                    span={span}
+                    duration={trace.duration}
+                    startTime={trace.startTime}
+                    processes={trace.processes}
+                    height={trace.spans.length > 20 ? 100 / trace.spans.length : 5}
+                  />
+                ))}
+              </div>
+            </CardBody>
+          </Card>
 
-      <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+      )}
 
       <Card>
         <Accordion asDefinitionList={false}>
-          {spans.map((span, index) => (
-            <Span key={index} name={name} span={span} processes={trace.processes} level={1} />
-          ))}
+          <div style={{ height: 'calc(100vh - 76px - 154px - 84px - 72px)' }}>
+            <Virtuoso
+              useWindowScroll={false}
+              data={trace.spans}
+              itemContent={(index, span): React.ReactNode => (
+                <Span
+                  name={name}
+                  span={span}
+                  duration={trace.duration}
+                  startTime={trace.startTime}
+                  processes={trace.processes}
+                />
+              )}
+            />
+          </div>
         </Accordion>
       </Card>
     </React.Fragment>
