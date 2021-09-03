@@ -41,6 +41,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         title={title}
         description={description}
         queries={options.queries}
+        showChart={options.showChart || false}
         times={times}
         showDetails={showDetails}
       />

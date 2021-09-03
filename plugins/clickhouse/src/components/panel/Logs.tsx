@@ -17,12 +17,14 @@ import { ILogsData, IQuery } from '../../utils/interfaces';
 import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import LogsActions from './LogsActions';
 import LogsDocuments from '../panel/LogsDocuments';
+import LogsStats from './LogsStats';
 
 interface ILogsProps {
   name: string;
   title: string;
   description?: string;
   queries: IQuery[];
+  showChart: boolean;
   times: IPluginTimes;
   showDetails?: (details: React.ReactNode) => void;
 }
@@ -32,6 +34,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
   title,
   description,
   queries,
+  showChart,
   times,
   showDetails,
 }: ILogsProps) => {
@@ -135,6 +138,17 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
           </Alert>
         ) : data && data.pages.length > 0 ? (
           <div>
+            {showChart && selectedQuery.query ? (
+              <LogsStats
+                name={name}
+                query={selectedQuery.query}
+                times={times}
+                took={data.pages[0].took || 0}
+                isFetchingDocuments={isFetching}
+                isPanel={true}
+              />
+            ) : null}
+
             <LogsDocuments pages={data.pages} fields={selectedQuery.fields} showDetails={showDetails} />
             <p>&nbsp;</p>
 

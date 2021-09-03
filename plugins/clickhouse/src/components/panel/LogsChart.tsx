@@ -37,10 +37,10 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
         enableGridX={false}
         enableGridY={true}
         groupMode="stacked"
-        indexBy="time"
+        indexBy="interval"
         indexScale={{ round: true, type: 'band' }}
         isInteractive={true}
-        keys={['documents']}
+        keys={['count']}
         layout="vertical"
         margin={{ bottom: 25, left: 50, right: 0, top: 0 }}
         maxValue="auto"
@@ -68,10 +68,10 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
                 }}
               >
                 <div>
-                  <b>{tooltip.data.time}</b>
+                  <b>{tooltip.data.interval}</b>
                 </div>
                 <div>
-                  <SquareIcon color="#0066cc" /> Documents: {tooltip.data.documents}
+                  <SquareIcon color="#0066cc" /> Documents: {tooltip.data.count}
                 </div>
               </div>
             </TooltipWrapper>

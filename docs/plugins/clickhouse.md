@@ -16,6 +16,7 @@ The following options can be used for a panel with the ClickHouse plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | type | string | Set the type for which you want to use the ClickHouse instance. This must be `sql` or `logs` | Yes |
+| showChart | boolean | If this is `true` the chart with the distribution of the Documents over the selected time range will be shown. This option is only available when type is `logs`. | No |
 | queries | [[]Query](#query) | A list of queries, which can be selected by the user. | Yes |
 
 ### Query

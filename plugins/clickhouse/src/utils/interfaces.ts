@@ -1,3 +1,5 @@
+import { BarDatum } from '@nivo/bar';
+
 import { IPluginTimes } from '@kobsio/plugin-core';
 
 // IOptions is the interface for all options, which can be set for an ClickHouse query.
@@ -10,6 +12,7 @@ export interface IOptions {
 // IPanelOptions are the options for the panel component of the ClickHouse plugin.
 export interface IPanelOptions {
   type: string;
+  showChart?: boolean;
   queries?: IQuery[];
 }
 
@@ -32,8 +35,14 @@ export interface IDocument {
   [key: string]: any;
 }
 
-export interface ILogsCountData {
+export interface ILogsStats {
   count?: number;
+  buckets?: IBucket[];
+}
+
+export interface IBucket extends BarDatum {
+  interval: string;
+  count: number;
 }
 
 // ISQLData is the interface of the data returned from our Go API for the sql view of the ClickHouse plugin.
