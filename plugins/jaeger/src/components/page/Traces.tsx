@@ -77,13 +77,18 @@ const Traces: React.FunctionComponent<ITracesProps> = ({ name, displayName, desc
                   name={name}
                   title=""
                   showDetails={setSelectedTrace}
+                  queries={[
+                    {
+                      limit: options.limit,
+                      maxDuration: options.maxDuration,
+                      minDuration: options.minDuration,
+                      name: '',
+                      operation: options.operation,
+                      service: options.service,
+                      tags: options.tags,
+                    },
+                  ]}
                   showChart={true}
-                  limit={options.limit}
-                  maxDuration={options.maxDuration}
-                  minDuration={options.minDuration}
-                  operation={options.operation}
-                  service={options.service}
-                  tags={options.tags}
                   times={options.times}
                 />
               ) : null}

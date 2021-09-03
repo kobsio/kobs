@@ -2,20 +2,18 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle } from '@patternfly/re
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IOptions } from '../../utils/interfaces';
+import { IPluginTimes } from '@kobsio/plugin-core';
+import { IQuery } from '../../utils/interfaces';
 
-interface ITracesActionsProps extends IOptions {
+interface ITracesActionsProps {
   name: string;
+  queries: IQuery[];
+  times: IPluginTimes;
 }
 
 export const TracesActions: React.FunctionComponent<ITracesActionsProps> = ({
   name,
-  limit,
-  maxDuration,
-  minDuration,
-  operation,
-  service,
-  tags,
+  queries,
   times,
 }: ITracesActionsProps) => {
   const [show, setShow] = useState<boolean>(false);
@@ -27,18 +25,22 @@ export const TracesActions: React.FunctionComponent<ITracesActionsProps> = ({
         isOpen={show}
         isPlain={true}
         position="right"
-        dropdownItems={[
+        dropdownItems={queries.map((query, index) => (
           <DropdownItem
-            key={0}
+            key={index}
             component={
               <Link
-                to={`/${name}?limit=${limit}&maxDuration=${maxDuration}&minDuration=${minDuration}&operation=${operation}&service=${service}&tags=${tags}&time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}`}
+                to={`/${name}?limit=${query.limit || '20'}&maxDuration=${query.maxDuration || ''}&minDuration=${
+                  query.minDuration || ''
+                }&operation=${query.operation || ''}&service=${query.service || ''}&tags=${query.tags || ''}&time=${
+                  times.time
+                }&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}`}
               >
-                Explore
+                {query.name}
               </Link>
             }
-          />,
-        ]}
+          />
+        ))}
       />
     </CardActions>
   );
