@@ -22,6 +22,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#126](https://github.com/kobsio/kobs/pull/126): Show request details when gettings logs from ClickHouse.
 - [#127](https://github.com/kobsio/kobs/pull/127): Allow `ILIKE` queries for ClickHouse logs, using the new `=~` operator.
 - [#128](https://github.com/kobsio/kobs/pull/128): Allow users to specify dashboards within a Team or Application via the new `inline` property.
+- [#131](https://github.com/kobsio/kobs/pull/131): Add chart which shows the distribution of the logs lines in the selected time range for the ClickHouse plugin.
 
 ### Fixed
 

@@ -145,7 +145,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
-func (router *Router) getLogsCount(w http.ResponseWriter, r *http.Request) {
+func (router *Router) getLogsStats(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 	timeStart := r.URL.Query().Get("timeStart")
@@ -171,16 +171,18 @@ func (router *Router) getLogsCount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	count, err := i.GetLogsCount(r.Context(), query, parsedTimeStart, parsedTimeEnd)
+	count, buckets, err := i.GetLogsStats(r.Context(), query, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs count")
 		return
 	}
 
 	data := struct {
-		Count int64 `json:"count"`
+		Count   int64             `json:"count"`
+		Buckets []instance.Bucket `json:"buckets"`
 	}{
 		count,
+		buckets,
 	}
 
 	render.JSON(w, r, data)
@@ -219,7 +221,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router.Get("/sql/{name}", router.getSQL)
 	router.Get("/logs/documents/{name}", router.getLogs)
-	router.Get("/logs/count/{name}", router.getLogsCount)
+	router.Get("/logs/stats/{name}", router.getLogsStats)
 
 	return router
 }

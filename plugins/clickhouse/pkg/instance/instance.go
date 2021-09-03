@@ -95,7 +95,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
 	sqlQuery := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s ORDER BY timestamp DESC LIMIT %d OFFSET %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, conditions, limit, offset)
-	log.WithFields(logrus.Fields{"query": sqlQuery}).Tracef("sql query")
+	log.WithFields(logrus.Fields{"query": sqlQuery, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql query")
 	rows, err := i.client.QueryContext(ctx, sqlQuery, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
 		return nil, nil, 0, offset, err
@@ -152,35 +152,65 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 	return documents, fields, time.Now().Sub(queryStartTime).Milliseconds(), offset + limit, nil
 }
 
-// GetLogsCount returns the number of documents, which could be returned by the user provided query.
-func (i *Instance) GetLogsCount(ctx context.Context, query string, timeStart, timeEnd int64) (int64, error) {
+// GetLogsStats returns the number of documents, which could be returned by the user provided query and the distribution
+// of the logs over the selected time range.
+func (i *Instance) GetLogsStats(ctx context.Context, query string, timeStart, timeEnd int64) (int64, []Bucket, error) {
 	var count int64
+	var buckets []Bucket
 
 	conditions := ""
 	if query != "" {
 		parsedQuery, err := parseLogsQuery(query)
 		if err != nil {
-			return 0, err
+			return 0, nil, err
 		}
 
 		conditions = fmt.Sprintf("AND %s", parsedQuery)
 	}
 
 	sqlQueryCount := fmt.Sprintf("SELECT count(*) FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s SETTINGS skip_unavailable_shards = 1", i.database, conditions)
-	log.WithFields(logrus.Fields{"query": sqlQueryCount}).Tracef("sql count query")
+	log.WithFields(logrus.Fields{"query": sqlQueryCount, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql count query")
 	rowsCount, err := i.client.QueryContext(ctx, sqlQueryCount, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
-		return 0, err
+		return 0, nil, err
 	}
 	defer rowsCount.Close()
 
 	for rowsCount.Next() {
 		if err := rowsCount.Scan(&count); err != nil {
-			return 0, err
+			return 0, nil, err
 		}
 	}
 
-	return count, nil
+	interval := (timeEnd - timeStart) / 30
+	sqlQueryBuckets := fmt.Sprintf("SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data , count(*) AS count_data FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s GROUP BY interval_data SETTINGS skip_unavailable_shards = 1", interval, i.database, conditions)
+	log.WithFields(logrus.Fields{"query": sqlQueryBuckets, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql buckets query")
+	rowsBuckets, err := i.client.QueryContext(ctx, sqlQueryBuckets, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
+	if err != nil {
+		return 0, nil, err
+	}
+	defer rowsBuckets.Close()
+
+	for rowsBuckets.Next() {
+		var intervalData time.Time
+		var countData int64
+
+		if err := rowsBuckets.Scan(&intervalData, &countData); err != nil {
+			return 0, nil, err
+		}
+
+		buckets = append(buckets, Bucket{
+			Interval:          intervalData,
+			IntervalFormatted: intervalData.Format("01-02 15:04:05"),
+			Count:             countData,
+		})
+	}
+
+	sort.Slice(buckets, func(i, j int) bool {
+		return buckets[i].Interval.Before(buckets[j].Interval)
+	})
+
+	return count, buckets, nil
 }
 
 // New returns a new ClickHouse instance for the given configuration.

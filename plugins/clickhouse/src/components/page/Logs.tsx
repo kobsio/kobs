@@ -18,7 +18,7 @@ import { ILogsData } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 import LogsDocuments from '../panel/LogsDocuments';
 import LogsFields from './LogsFields';
-import LogsHeader from './LogsHeader';
+import LogsStats from '../panel/LogsStats';
 
 interface IPageLogsProps {
   name: string;
@@ -111,19 +111,25 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
         </Card>
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
+        <LogsStats
+          name={name}
+          query={query}
+          times={times}
+          took={data.pages[0].took || 0}
+          isFetchingDocuments={isFetching}
+          isPanel={false}
+        />
+
+        <p>&nbsp;</p>
+
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
-          <LogsHeader
-            name={name}
-            query={query}
-            times={times}
-            took={data.pages[0].took || 0}
-            isFetchingDocuments={isFetching}
-          />
           <CardBody>
             <LogsDocuments pages={data.pages} fields={fields} showDetails={showDetails} />
           </CardBody>
         </Card>
+
         <p>&nbsp;</p>
+
         {data.pages[0].documents && data.pages[0].documents.length > 0 ? (
           <Card isCompact={true}>
             <CardBody>
