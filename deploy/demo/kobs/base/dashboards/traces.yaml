@@ -17,5 +17,7 @@ spec:
           plugin:
             name: jaeger
             options:
-              service: "{{ .service }}"
               showChart: true
+              queries:
+                - name: "{{ .service }}"
+                  service: "{{ .service }}"

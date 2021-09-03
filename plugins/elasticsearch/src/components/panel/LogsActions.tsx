@@ -21,9 +21,9 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({ name, queries,
         isOpen={show}
         isPlain={true}
         position="right"
-        dropdownItems={queries.map((query) => [
+        dropdownItems={queries.map((query, index) => (
           <DropdownItem
-            key={0}
+            key={index}
             component={
               <Link
                 to={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${
@@ -33,8 +33,8 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({ name, queries,
                 {query.name}
               </Link>
             }
-          />,
-        ])}
+          />
+        ))}
       />
     </CardActions>
   );

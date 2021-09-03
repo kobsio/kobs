@@ -14,13 +14,18 @@ export interface IOptions {
 // IPanelOptions is the interface for the options property for the Jaeger panel component. A user can set the same
 // properties as he can select in the Jaeger page.
 export interface IPanelOptions {
+  queries?: IQuery[];
+  showChart?: boolean;
+}
+
+export interface IQuery {
+  name?: string;
   limit?: string;
   maxDuration?: string;
   minDuration?: string;
   operation?: string;
   service?: string;
   tags?: string;
-  showChart?: boolean;
 }
 
 // IOperation is the interface for a single operation as it is returned by the API.

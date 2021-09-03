@@ -19,9 +19,9 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({ name, queries 
         isOpen={show}
         isPlain={true}
         position="right"
-        dropdownItems={queries.map((query) => [
-          <DropdownItem key={0} component={<Link to={`/${name}?query=${query.query}`}>{query.name}</Link>} />,
-        ])}
+        dropdownItems={queries.map((query, index) => (
+          <DropdownItem key={index} component={<Link to={`/${name}?query=${query.query}`}>{query.name}</Link>} />
+        ))}
       />
     </CardActions>
   );
