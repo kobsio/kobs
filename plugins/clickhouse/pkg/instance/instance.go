@@ -113,6 +113,12 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 			}
 		}
 
+		// If the document count returns zero documents we can skip the other database calls and immediately return the
+		// result of the API request.
+		if count == 0 {
+			return nil, nil, count, time.Now().Sub(queryStartTime).Milliseconds(), nil, offset, timeStart, nil
+		}
+
 		// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is used
 		// to render the distribution chart, which shows how many documents/rows are available within a bucket.
 		interval := (timeEnd - timeStart) / 30
@@ -133,14 +139,16 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 			}
 
 			buckets = append(buckets, Bucket{
-				Interval:          intervalData,
-				IntervalFormatted: intervalData.Format("01-02 15:04:05"),
+				Interval:          intervalData.Unix(),
+				IntervalFormatted: "",
 				Count:             countData,
+				// Formatting is handled on the client side.
+				// IntervalFormatted: intervalData.Format("01-02 15:04:05"),
 			})
 		}
 
 		sort.Slice(buckets, func(i, j int) bool {
-			return buckets[i].Interval.Before(buckets[j].Interval)
+			return buckets[i].Interval < buckets[j].Interval
 		})
 
 		// We are only returning the first 10000 documents in buckets of the given limit, to speed up the following
@@ -155,7 +163,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 		for i := len(buckets) - 1; i >= 0; i-- {
 			bucketCount = bucketCount + buckets[i].Count
 			if bucketCount > 10000 {
-				timeStart = buckets[i].Interval.Unix()
+				timeStart = buckets[i].Interval
 				break
 			}
 		}

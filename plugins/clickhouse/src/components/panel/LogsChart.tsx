@@ -14,12 +14,24 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
     return <div style={{ height: '250px' }}></div>;
   }
 
+  const data: IBucket[] = buckets.map((bucket) => {
+    const d = new Date(bucket.interval * 1000);
+
+    return {
+      count: bucket.count,
+      interval: bucket.interval,
+      intervalFormatted: `${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${(
+        '0' + d.getHours()
+      ).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`,
+    };
+  });
+
   return (
     <div style={{ height: '250px' }}>
       <ResponsiveBarCanvas
         axisBottom={{
           legend: '',
-          tickValues: buckets.filter((bucket, index) => index % 2 === 0).map((bucket) => bucket.interval),
+          tickValues: data.filter((bucket, index) => index % 2 === 0).map((bucket) => bucket.intervalFormatted),
         }}
         axisLeft={{
           format: '>-.0s',
@@ -32,12 +44,12 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
         borderWidth={0}
         colorBy="id"
         colors={['#0066cc']}
-        data={buckets}
+        data={data}
         enableLabel={false}
         enableGridX={false}
         enableGridY={true}
         groupMode="stacked"
-        indexBy="interval"
+        indexBy="intervalFormatted"
         indexScale={{ round: true, type: 'band' }}
         isInteractive={true}
         keys={['count']}
@@ -54,7 +66,7 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
         }}
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         tooltip={(tooltip) => {
-          const isFirstHalf = tooltip.index < buckets.length / 2;
+          const isFirstHalf = tooltip.index < data.length / 2;
 
           return (
             <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
@@ -68,7 +80,7 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
                 }}
               >
                 <div>
-                  <b>{tooltip.data.interval}</b>
+                  <b>{tooltip.data.intervalFormatted}</b>
                 </div>
                 <div>
                   <SquareIcon color="#0066cc" /> Documents: {tooltip.data.count}
