@@ -38,6 +38,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#123](https://github.com/kobsio/kobs/pull/123): Fix fields handling in ClickHouse and Elasticsearch plugin.
 - [#125](https://github.com/kobsio/kobs/pull/125): Fix missing `return` statement in ClickHouse panel.
 - [#129](https://github.com/kobsio/kobs/pull/129): Fix handling of traces in the Jaeger plugin by using some function from the [jaegertracing/jaeger-ui](https://github.com/jaegertracing/jaeger-ui).
+- [#134](https://github.com/kobsio/kobs/pull/134): Fix time in log buckets of the ClickHouse plugin.
 
 ### Changed
 

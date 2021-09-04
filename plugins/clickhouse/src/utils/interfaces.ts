@@ -39,7 +39,8 @@ export interface IDocument {
 }
 
 export interface IBucket extends BarDatum {
-  interval: string;
+  interval: number;
+  intervalFormatted: string;
   count: number;
 }
 
