@@ -16,8 +16,8 @@ import React, { useState } from 'react';
 import { ILogsData, IQuery } from '../../utils/interfaces';
 import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import LogsActions from './LogsActions';
+import LogsChart from './LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
-import LogsStats from './LogsStats';
 
 interface ILogsProps {
   name: string;
@@ -50,7 +50,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
         }
 
         const response = await fetch(
-          `/api/plugins/clickhouse/logs/documents/${name}?query=${encodeURIComponent(selectedQuery.query)}&timeStart=${
+          `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(selectedQuery.query)}&timeStart=${
             times.timeStart
           }&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam || ''}`,
           {
@@ -138,15 +138,11 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
           </Alert>
         ) : data && data.pages.length > 0 ? (
           <div>
-            {showChart && selectedQuery.query ? (
-              <LogsStats
-                name={name}
-                query={selectedQuery.query}
-                times={times}
-                took={data.pages[0].took || 0}
-                isFetchingDocuments={isFetching}
-                isPanel={true}
-              />
+            {showChart ? (
+              <div>
+                <LogsChart buckets={data.pages[0].buckets} />
+                <p>&nbsp;</p>
+              </div>
             ) : null}
 
             <LogsDocuments pages={data.pages} fields={selectedQuery.fields} showDetails={showDetails} />
