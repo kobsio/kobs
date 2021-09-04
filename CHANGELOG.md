@@ -46,6 +46,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#108](https://github.com/kobsio/kobs/pull/108): Improve tooltip position in all nivo charts.
 - [#121](https://github.com/kobsio/kobs/pull/121): :warning: *Breaking change:* :warning: Allow multiple queries in the panel options for the Elasticsearch plugin.
 - [#130](https://github.com/kobsio/kobs/pull/130): :warning: *Breaking change:* :warning: Allow multiple queries in the panel options for the Jaeger plugin.
+- [#133](https://github.com/kobsio/kobs/pull/133): Improve querie performance to get logs from ClickHouse.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

@@ -5,7 +5,11 @@ import {
   Button,
   ButtonVariant,
   Card,
+  CardActions,
   CardBody,
+  CardHeader,
+  CardHeaderMain,
+  CardTitle,
   Grid,
   GridItem,
   Spinner,
@@ -16,9 +20,9 @@ import { useHistory } from 'react-router-dom';
 
 import { ILogsData } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
+import LogsChart from '../panel/LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
 import LogsFields from './LogsFields';
-import LogsStats from '../panel/LogsStats';
 
 interface IPageLogsProps {
   name: string;
@@ -43,10 +47,11 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
     ['clickhouse/logs', query, times],
     async ({ pageParam }) => {
       try {
+        console.log(pageParam);
         const response = await fetch(
-          `/api/plugins/clickhouse/logs/documents/${name}?query=${encodeURIComponent(query)}&timeStart=${
-            times.timeStart
-          }&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam || ''}`,
+          `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(query)}&timeStart=${
+            pageParam && pageParam.timeStart ? pageParam.timeStart : times.timeStart
+          }&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam && pageParam.offset ? pageParam.offset : ''}`,
           {
             method: 'get',
           },
@@ -67,7 +72,9 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
       }
     },
     {
-      getNextPageParam: (lastPage, pages) => lastPage.offset,
+      getNextPageParam: (lastPage, pages) => {
+        return { offset: lastPage.offset, timeStart: lastPage.timeStart };
+      },
       keepPreviousData: true,
     },
   );
@@ -111,14 +118,19 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
         </Card>
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
-        <LogsStats
-          name={name}
-          query={query}
-          times={times}
-          took={data.pages[0].took || 0}
-          isFetchingDocuments={isFetching}
-          isPanel={false}
-        />
+        <Card isCompact={true}>
+          <CardHeader>
+            <CardHeaderMain>
+              <CardTitle>
+                {data.pages[0].count} Documents in {data.pages[0].took} Milliseconds
+              </CardTitle>
+            </CardHeaderMain>
+            <CardActions>{isFetching && <Spinner size="md" />}</CardActions>
+          </CardHeader>
+          <CardBody>
+            <LogsChart buckets={data.pages[0].buckets} />
+          </CardBody>
+        </Card>
 
         <p>&nbsp;</p>
 

@@ -25,19 +25,17 @@ export interface IQuery {
 // ILogsData is the interface of the data returned from our Go API for the logs view of the ClickHouse plugin.
 export interface ILogsData {
   offset: number;
+  timeStart: number;
+  count?: number;
   took?: number;
   fields?: string[];
   documents?: IDocument[];
+  buckets?: IBucket[];
 }
 
 export interface IDocument {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
-}
-
-export interface ILogsStats {
-  count?: number;
-  buckets?: IBucket[];
 }
 
 export interface IBucket extends BarDatum {
