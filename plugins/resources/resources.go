@@ -24,14 +24,8 @@ import (
 const Route = "/resources"
 
 var (
-	log = logrus.WithFields(logrus.Fields{"package": "resources"})
-
-	// Time allowed to write a message to the peer.
-	writeWait = 10 * time.Second
-	// Time allowed to read the next pong message from the peer.
-	pongWait = 30 * time.Second
-	// Send pings to peer with this period. Must be less than pongWait.
-	pingPeriod = (pongWait * 9) / 10
+	log        = logrus.WithFields(logrus.Fields{"package": "resources"})
+	pingPeriod = 30 * time.Second
 )
 
 // Resources is the structure for the getResources api call. It contains the cluster, namespace and the json
@@ -349,8 +343,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
-	c.SetReadDeadline(time.Now().Add(pongWait))
-	c.SetPongHandler(func(string) error { c.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	c.SetPongHandler(func(string) error { return nil })
 
 	go func() {
 		ticker := time.NewTicker(pingPeriod)
@@ -359,7 +352,6 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		for {
 			select {
 			case <-ticker.C:
-				c.SetWriteDeadline(time.Now().Add(writeWait))
 				if err := c.WriteMessage(websocket.PingMessage, nil); err != nil {
 					return
 				}
