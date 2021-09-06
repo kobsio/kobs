@@ -108,7 +108,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
 
               ctx.beginPath();
               ctx.arc(props.x, props.y, props.size / 2, 0, 2 * Math.PI);
-              ctx.fillStyle = hasError ? '#FF0000' : props.style.color;
+              ctx.fillStyle = hasError ? '#c9190b' : props.style.color;
               ctx.fill();
             }}
             tooltip={(tooltip): ReactNode => {
