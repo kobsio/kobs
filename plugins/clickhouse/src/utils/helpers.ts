@@ -5,6 +5,8 @@ import { IOptions } from './interfaces';
 export const getOptionsFromSearch = (search: string): IOptions => {
   const params = new URLSearchParams(search);
   const fields = params.getAll('field');
+  const order = params.get('order');
+  const orderBy = params.get('orderBy');
   const query = params.get('query');
   const time = params.get('time');
   const timeEnd = params.get('timeEnd');
@@ -12,6 +14,8 @@ export const getOptionsFromSearch = (search: string): IOptions => {
 
   return {
     fields: fields.length > 0 ? fields : undefined,
+    order: order ? order : 'ascending',
+    orderBy: orderBy ? orderBy : '',
     query: query ? query : '',
     times: {
       time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',

@@ -28,9 +28,9 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
 
     history.push({
       pathname: location.pathname,
-      search: `?query=${opts.query}&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${
-        opts.times.timeStart
-      }${fields.length > 0 ? fields.join('') : ''}`,
+      search: `?query=${opts.query}&order=${opts.order}&orderBy=${opts.orderBy}&time=${opts.times.time}&timeEnd=${
+        opts.times.timeEnd
+      }&timeStart=${opts.times.timeStart}${fields.length > 0 ? fields.join('') : ''}`,
     });
   };
 
@@ -64,7 +64,14 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
           {displayName}
         </Title>
         <p>{description}</p>
-        <LogsToolbar query={options.query} fields={options.fields} times={options.times} setOptions={changeOptions} />
+        <LogsToolbar
+          query={options.query}
+          order={options.order}
+          orderBy={options.orderBy}
+          fields={options.fields}
+          times={options.times}
+          setOptions={changeOptions}
+        />
       </PageSection>
 
       <Drawer isExpanded={selectedDocument !== undefined}>
@@ -76,6 +83,8 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
                   name={name}
                   fields={options.fields}
                   query={options.query}
+                  order={options.order}
+                  orderBy={options.orderBy}
                   selectField={selectField}
                   times={options.times}
                   showDetails={setSelectedDocument}

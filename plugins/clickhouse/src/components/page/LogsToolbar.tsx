@@ -20,11 +20,15 @@ interface ILogsToolbarProps extends IOptions {
 
 const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
   query,
+  order,
+  orderBy,
   fields,
   times,
   setOptions,
 }: ILogsToolbarProps) => {
   const [data, setData] = useState<IOptions>({
+    order: order,
+    orderBy: orderBy,
     query: query,
     times: times,
   });
@@ -53,20 +57,26 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
     timeEnd: number,
     timeStart: number,
   ): void => {
-    const tmpData = { ...data };
+    if (additionalFields && additionalFields.length === 2) {
+      const tmpData = { ...data };
 
-    if (refresh) {
-      setOptions({
+      if (refresh) {
+        setOptions({
+          ...tmpData,
+          fields: fields,
+          order: additionalFields[1].value,
+          orderBy: additionalFields[0].value,
+          times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+        });
+      }
+
+      setData({
         ...tmpData,
-        fields: fields,
+        order: additionalFields[1].value,
+        orderBy: additionalFields[0].value,
         times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
       });
     }
-
-    setData({
-      ...tmpData,
-      times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
-    });
   };
 
   return (
@@ -79,6 +89,22 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
             </ToolbarItem>
             <ToolbarItem>
               <Options
+                additionalFields={[
+                  {
+                    label: 'Order By',
+                    name: 'orderBy',
+                    placeholder: '',
+                    value: data.orderBy,
+                  },
+                  {
+                    label: 'Order',
+                    name: 'order',
+                    placeholder: '',
+                    type: 'select',
+                    value: data.order,
+                    values: ['ascending', 'descending'],
+                  },
+                ]}
                 time={data.times.time}
                 timeEnd={data.times.timeEnd}
                 timeStart={data.times.timeStart}

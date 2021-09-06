@@ -24,6 +24,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#128](https://github.com/kobsio/kobs/pull/128): Allow users to specify dashboards within a Team or Application via the new `inline` property.
 - [#131](https://github.com/kobsio/kobs/pull/131): Add chart which shows the distribution of the logs lines in the selected time range for the ClickHouse plugin.
 - [#132](https://github.com/kobsio/kobs/pull/132): Support the download of log lines in their JSON representation in the ClickHouse and Elasticsearch plugin.
+- [#136](https://github.com/kobsio/kobs/pull/136): Allow custom order for the returned logs and add `!~` and `_exists_` operator for ClickHouse plugin.
 
 ### Fixed
 

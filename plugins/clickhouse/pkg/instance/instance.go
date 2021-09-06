@@ -73,7 +73,7 @@ func (i *Instance) GetSQL(ctx context.Context, query string) ([][]interface{}, [
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, int64, int64, error) {
+func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, int64, int64, error) {
 	var count int64
 	var buckets []Bucket
 	var documents []map[string]interface{}
@@ -169,10 +169,12 @@ func (i *Instance) GetLogs(ctx context.Context, query string, limit, offset, tim
 		}
 	}
 
+	parsedOrder := parseOrder(order, orderBy)
+
 	// Now we are building and executing our sql query. We always return all fields from the logs table, where the
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
-	sqlQuery := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s ORDER BY timestamp DESC LIMIT %d OFFSET %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, conditions, limit, offset)
+	sqlQuery := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s ORDER BY %s LIMIT %d OFFSET %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, conditions, parsedOrder, limit, offset)
 	log.WithFields(logrus.Fields{"query": sqlQuery, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql query")
 	rows, err := i.client.QueryContext(ctx, sqlQuery, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
