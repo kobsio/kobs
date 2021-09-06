@@ -5,6 +5,8 @@ import { IPluginTimes } from '@kobsio/plugin-core';
 // IOptions is the interface for all options, which can be set for an ClickHouse query.
 export interface IOptions {
   fields?: string[];
+  order: string;
+  orderBy: string;
   query: string;
   times: IPluginTimes;
 }
@@ -20,6 +22,8 @@ export interface IQuery {
   name?: string;
   query?: string;
   fields?: string[];
+  order?: string;
+  orderBy?: string;
 }
 
 // ILogsData is the interface of the data returned from our Go API for the logs view of the ClickHouse plugin.

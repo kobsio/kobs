@@ -1,4 +1,5 @@
 import { TableText, Td, Tr } from '@patternfly/react-table';
+import { DropdownPosition } from '@patternfly/react-core';
 import React from 'react';
 
 import Details from './details/Details';
@@ -16,16 +17,25 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
   fields,
   showDetails,
 }: ILogsDocumentProps) => {
-  return (
-    <Tr
-      onClick={(): void =>
+  const defaultActions = [
+    {
+      onClick: (): void =>
         showDetails
           ? showDetails(<Details document={document} close={(): void => showDetails(undefined)} />)
-          : undefined
-      }
-    >
+          : undefined,
+      title: 'Details',
+    },
+  ];
+
+  return (
+    <Tr>
+      <Td
+        noPadding={true}
+        style={{ padding: 0 }}
+        actions={{ dropdownPosition: DropdownPosition.left, items: defaultActions }}
+      />
       <Td dataLabel="Time">
-        <TableText wrapModifier="nowrap"> {formatTimeWrapper(document['timestamp'])}</TableText>
+        <TableText wrapModifier="nowrap">{formatTimeWrapper(document['timestamp'])}</TableText>
       </Td>
       {fields && fields.length > 0 ? (
         fields.map((field, index) => (

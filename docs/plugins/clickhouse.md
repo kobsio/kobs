@@ -26,6 +26,8 @@ The following options can be used for a panel with the ClickHouse plugin:
 | name | string | A name for the ClickHouse query, which is displayed in the select box. | Yes |
 | query | string | The query which should be run against ClickHouse. See [Query Syntax](#query-syntax) for more information on the syntax, when ClickHouse is used in the `logs` mode. | Yes |
 | fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. This field is only available for the `logs`. | No |
+| order | string | Order for the returned logs. Must be `ascending` or `descending`. The default value for this field is `descending`. | No |
+| orderBy | string | The name of the field, by which the results should be orderd. The default value for this field is `timestamp`. | No |
 
 ```yaml
 ---
@@ -74,6 +76,7 @@ kobs supports multiple operators which can be used in a query to retrieve logs f
 | `_not_` | Exclude the term from the query. | `cluster='kobs-demo' _and_ _not_ namespace='bookinfo'` |
 | `_and_` | Both terms must be included in the results. | `namespace='bookinfo' _and_ app='bookinfo'` |
 | `_or_` | The result can contain one of the given terms. | `namespace='bookinfo' _or_ namespace='istio-system'` |
+| `_exists_` | The field can not be `null` | `container_name='istio-proxy' _and_ _exists_ content.request_id` |
 | `=` | The field must have this value. | `namespace='bookinfo'` |
 | `!=` | The field should not have this value. | `namespace!='bookinfo'` |
 | `>` | The value of the field must be greater than the specified value. | `content.response_code>499` |
@@ -81,6 +84,7 @@ kobs supports multiple operators which can be used in a query to retrieve logs f
 | `<` | The value of the field must be lower than the specified value. | `content.response_code<500` |
 | `<=` | The value of the field must be lower than or equal to the specified value. | `content.response_code<=499` |
 | `=~` | The value of the field is compared using `ILIKE`. | `content.upstream_cluster=~'inbound%'` |
+| `!~` | The value of the field is compared using `NOT ILIKE`. | `content.upstream_cluster!~'inbound%'` |
 | `~` | The value of the field must match the regular expression. The syntax of the `re2` regular expressions can be found [here](https://github.com/google/re2/wiki/Syntax). | `content.upstream_cluster~'inbound.*'` |
 
 ### Default Fields

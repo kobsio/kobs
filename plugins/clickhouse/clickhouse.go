@@ -84,12 +84,14 @@ func (router *Router) getSQL(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
+	order := r.URL.Query().Get("order")
+	orderBy := r.URL.Query().Get("orderBy")
 	limit := r.URL.Query().Get("limit")
 	offset := r.URL.Query().Get("offset")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "limit": limit, "offset": offset, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
+	log.WithFields(logrus.Fields{"name": name, "query": query, "order": order, "orderBy": orderBy, "limit": limit, "offset": offset, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -124,7 +126,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	documents, fields, count, took, buckets, newOffset, newTimeStart, err := i.GetLogs(r.Context(), query, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
+	documents, fields, count, took, buckets, newOffset, newTimeStart, err := i.GetLogs(r.Context(), query, order, orderBy, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return

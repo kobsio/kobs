@@ -85,6 +85,11 @@ func splitOperator(condition string) (string, error) {
 		return handleConditionParts(notEqual[0], notEqual[1], "!=")
 	}
 
+	notIlike := strings.Split(condition, "!~")
+	if len(notIlike) == 2 {
+		return handleConditionParts(notIlike[0], notIlike[1], "!~")
+	}
+
 	equal := strings.Split(condition, "=")
 	if len(equal) == 2 {
 		return handleConditionParts(equal[0], equal[1], "=")
@@ -93,6 +98,10 @@ func splitOperator(condition string) (string, error) {
 	regex := strings.Split(condition, "~")
 	if len(regex) == 2 {
 		return handleConditionParts(regex[0], regex[1], "~")
+	}
+
+	if strings.Contains(condition, "_exists_ ") {
+		return handleExistsCondition(strings.TrimLeft(strings.TrimSpace(condition), "_exists_ ")), nil
 	}
 
 	if strings.TrimSpace(condition) == "" {
@@ -119,6 +128,10 @@ func handleConditionParts(key, value, operator string) (string, error) {
 			return fmt.Sprintf("%s ILIKE %s", key, value), nil
 		}
 
+		if operator == "!~" {
+			return fmt.Sprintf("%s NOT ILIKE %s", key, value), nil
+		}
+
 		if operator == "~" {
 			return fmt.Sprintf("match(%s, %s)", key, value), nil
 		}
@@ -129,6 +142,10 @@ func handleConditionParts(key, value, operator string) (string, error) {
 	if value != "" && string(value[0]) == "'" && string(value[len(value)-1]) == "'" {
 		if operator == "=~" {
 			return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] ILIKE %s", key, value), nil
+		}
+
+		if operator == "!~" {
+			return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] NOT ILIKE %s", key, value), nil
 		}
 
 		if operator == "~" {
@@ -142,9 +159,40 @@ func handleConditionParts(key, value, operator string) (string, error) {
 		return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')] ILIKE %s", key, value), nil
 	}
 
+	if operator == "!~" {
+		return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')] NOT ILIKE %s", key, value), nil
+	}
+
 	if operator == "~" {
 		return fmt.Sprintf("match(fields_number.value[indexOf(fields_number.key, '%s')], %s)", key, value), nil
 	}
 
 	return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')] %s %s", key, operator, value), nil
+}
+
+func handleExistsCondition(key string) string {
+	if contains(defaultFields, key) {
+		return fmt.Sprintf("%s IS NOT NULL", key)
+	}
+
+	return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] IS NOT NULL AND fields_number.value[indexOf(fields_number.key, '%s')] IS NOT NULL", key, key)
+}
+
+func parseOrder(order, orderBy string) string {
+	if order == "" || orderBy == "" {
+		return "timestamp DESC"
+	}
+
+	if order == "ascending" {
+		order = "ASC"
+	} else {
+		order = "DESC"
+	}
+
+	orderBy = strings.TrimSpace(orderBy)
+	if contains(defaultFields, orderBy) {
+		return fmt.Sprintf("%s %s", orderBy, order)
+	}
+
+	return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] %s, fields_number.value[indexOf(fields_number.key, '%s')] %s", orderBy, order, orderBy, order)
 }

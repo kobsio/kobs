@@ -19,6 +19,7 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
     <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={false}>
       <Thead>
         <Tr>
+          <Th />
           <Th>Time</Th>
           {fields && fields.length > 0 ? (
             fields.map((selectedField, index) => <Th key={index}>{selectedField}</Th>)
