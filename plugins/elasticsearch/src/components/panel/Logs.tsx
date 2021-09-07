@@ -26,7 +26,6 @@ interface ILogsProps {
   queries: IQuery[];
   showChart: boolean;
   times: IPluginTimes;
-  showDetails?: (details: React.ReactNode) => void;
 }
 
 const Logs: React.FunctionComponent<ILogsProps> = ({
@@ -36,7 +35,6 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
   queries,
   showChart,
   times,
-  showDetails,
 }: ILogsProps) => {
   const [showSelect, setShowSelect] = useState<boolean>(false);
   const [selectedQuery, setSelectedQuery] = useState<IQuery>(queries[0]);
@@ -141,7 +139,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
               </div>
             ) : null}
 
-            <LogsDocuments pages={data.pages} fields={selectedQuery.fields} showDetails={showDetails} />
+            <LogsDocuments pages={data.pages} fields={selectedQuery.fields} />
             <p>&nbsp;</p>
 
             {data.pages[0].documents.length > 0 ? (

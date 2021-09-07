@@ -32,7 +32,6 @@ interface IPageLogsProps {
   query: string;
   selectField: (field: string) => void;
   times: IPluginTimes;
-  showDetails: (details: React.ReactNode) => void;
 }
 
 const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
@@ -43,7 +42,6 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   query,
   selectField,
   times,
-  showDetails,
 }: IPageLogsProps) => {
   const history = useHistory();
 
@@ -141,7 +139,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
 
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
           <CardBody>
-            <LogsDocuments pages={data.pages} fields={fields} showDetails={showDetails} />
+            <LogsDocuments pages={data.pages} fields={fields} />
           </CardBody>
         </Card>
 

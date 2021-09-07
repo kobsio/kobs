@@ -1,11 +1,4 @@
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  PageSection,
-  PageSectionVariants,
-  Title,
-} from '@patternfly/react-core';
+import { PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -19,7 +12,6 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
   const location = useLocation();
   const history = useHistory();
   const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
-  const [selectedDocument, setSelectedDocument] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options for an ClickHouse query. Instead of directly modifying the options
   // state we change the URL parameters.
@@ -62,6 +54,11 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
       <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h6" size="xl">
           {displayName}
+          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
+            <a href="https://kobs.io/plugins/clickhouse/" target="_blank" rel="noreferrer">
+              Documentation
+            </a>
+          </span>
         </Title>
         <p>{description}</p>
         <LogsToolbar
@@ -74,26 +71,19 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
         />
       </PageSection>
 
-      <Drawer isExpanded={selectedDocument !== undefined}>
-        <DrawerContent panelContent={selectedDocument}>
-          <DrawerContentBody>
-            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-              {options.query.length > 0 ? (
-                <Logs
-                  name={name}
-                  fields={options.fields}
-                  query={options.query}
-                  order={options.order}
-                  orderBy={options.orderBy}
-                  selectField={selectField}
-                  times={options.times}
-                  showDetails={setSelectedDocument}
-                />
-              ) : null}
-            </PageSection>
-          </DrawerContentBody>
-        </DrawerContent>
-      </Drawer>
+      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+        {options.query.length > 0 ? (
+          <Logs
+            name={name}
+            fields={options.fields}
+            query={options.query}
+            order={options.order}
+            orderBy={options.orderBy}
+            selectField={selectField}
+            times={options.times}
+          />
+        ) : null}
+      </PageSection>
     </React.Fragment>
   );
 };
