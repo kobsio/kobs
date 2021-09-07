@@ -15,7 +15,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   times,
   options,
-  showDetails,
 }: IPanelProps) => {
   if (
     !options ||
@@ -43,7 +42,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         queries={options.queries}
         showChart={options.showChart || false}
         times={times}
-        showDetails={showDetails}
       />
     );
   }

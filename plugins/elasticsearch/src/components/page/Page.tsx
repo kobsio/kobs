@@ -1,11 +1,4 @@
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  PageSection,
-  PageSectionVariants,
-  Title,
-} from '@patternfly/react-core';
+import { PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -19,7 +12,6 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
   const location = useLocation();
   const history = useHistory();
   const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
-  const [selectedDocument, setSelectedDocument] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options for an Elasticsearch query. Instead of directly modifying the options
   // state we change the URL parameters.
@@ -62,29 +54,27 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h6" size="xl">
           {displayName}
+          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
+            <a href="https://kobs.io/plugins/elasticsearch/" target="_blank" rel="noreferrer">
+              Documentation
+            </a>
+          </span>
         </Title>
         <p>{description}</p>
         <PageToolbar query={options.query} fields={options.fields} times={options.times} setOptions={changeOptions} />
       </PageSection>
 
-      <Drawer isExpanded={selectedDocument !== undefined}>
-        <DrawerContent panelContent={selectedDocument}>
-          <DrawerContentBody>
-            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-              {options.query.length > 0 ? (
-                <PageLogs
-                  name={name}
-                  fields={options.fields}
-                  query={options.query}
-                  selectField={selectField}
-                  times={options.times}
-                  showDetails={setSelectedDocument}
-                />
-              ) : null}
-            </PageSection>
-          </DrawerContentBody>
-        </DrawerContent>
-      </Drawer>
+      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+        {options.query.length > 0 ? (
+          <PageLogs
+            name={name}
+            fields={options.fields}
+            query={options.query}
+            selectField={selectField}
+            times={options.times}
+          />
+        ) : null}
+      </PageSection>
     </React.Fragment>
   );
 };

@@ -7,14 +7,9 @@ import LogsDocument from './LogsDocument';
 interface ILogsDocumentsProps {
   pages: ILogsData[];
   fields?: string[];
-  showDetails?: (details: React.ReactNode) => void;
 }
 
-const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
-  pages,
-  fields,
-  showDetails,
-}: ILogsDocumentsProps) => {
+const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({ pages, fields }: ILogsDocumentsProps) => {
   return (
     <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={false}>
       <Thead>
@@ -26,18 +21,14 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
           ) : (
             <Th>Log</Th>
           )}
+          <Th />
         </Tr>
       </Thead>
       <Tbody>
         {pages.map((page, pageIndex) =>
           page.documents
             ? page.documents.map((document, documentIndex) => (
-                <LogsDocument
-                  key={`${pageIndex}_${documentIndex}`}
-                  document={document}
-                  fields={fields}
-                  showDetails={showDetails}
-                />
+                <LogsDocument key={`${pageIndex}_${documentIndex}`} document={document} fields={fields} />
               ))
             : null,
         )}

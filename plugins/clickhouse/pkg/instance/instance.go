@@ -119,52 +119,54 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 			return nil, nil, count, time.Now().Sub(queryStartTime).Milliseconds(), nil, offset, timeStart, nil
 		}
 
-		// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is used
-		// to render the distribution chart, which shows how many documents/rows are available within a bucket.
-		interval := (timeEnd - timeStart) / 30
-		sqlQueryBuckets := fmt.Sprintf("SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data , count(*) AS count_data FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s GROUP BY interval_data SETTINGS skip_unavailable_shards = 1", interval, i.database, conditions)
-		log.WithFields(logrus.Fields{"query": sqlQueryBuckets, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql buckets query")
-		rowsBuckets, err := i.client.QueryContext(ctx, sqlQueryBuckets, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
-		if err != nil {
-			return nil, nil, 0, 0, nil, offset, timeStart, err
-		}
-		defer rowsBuckets.Close()
-
-		for rowsBuckets.Next() {
-			var intervalData time.Time
-			var countData int64
-
-			if err := rowsBuckets.Scan(&intervalData, &countData); err != nil {
+		// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is
+		// used to render the distribution chart, which shows how many documents/rows are available within a bucket.
+		if timeEnd-timeStart > 30 {
+			interval := (timeEnd - timeStart) / 30
+			sqlQueryBuckets := fmt.Sprintf("SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data , count(*) AS count_data FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s GROUP BY interval_data SETTINGS skip_unavailable_shards = 1", interval, i.database, conditions)
+			log.WithFields(logrus.Fields{"query": sqlQueryBuckets, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql buckets query")
+			rowsBuckets, err := i.client.QueryContext(ctx, sqlQueryBuckets, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
+			if err != nil {
 				return nil, nil, 0, 0, nil, offset, timeStart, err
 			}
+			defer rowsBuckets.Close()
 
-			buckets = append(buckets, Bucket{
-				Interval:          intervalData.Unix(),
-				IntervalFormatted: "",
-				Count:             countData,
-				// Formatting is handled on the client side.
-				// IntervalFormatted: intervalData.Format("01-02 15:04:05"),
+			for rowsBuckets.Next() {
+				var intervalData time.Time
+				var countData int64
+
+				if err := rowsBuckets.Scan(&intervalData, &countData); err != nil {
+					return nil, nil, 0, 0, nil, offset, timeStart, err
+				}
+
+				buckets = append(buckets, Bucket{
+					Interval:          intervalData.Unix(),
+					IntervalFormatted: "",
+					Count:             countData,
+					// Formatting is handled on the client side.
+					// IntervalFormatted: intervalData.Format("01-02 15:04:05"),
+				})
+			}
+
+			sort.Slice(buckets, func(i, j int) bool {
+				return buckets[i].Interval < buckets[j].Interval
 			})
-		}
 
-		sort.Slice(buckets, func(i, j int) bool {
-			return buckets[i].Interval < buckets[j].Interval
-		})
-
-		// We are only returning the first 10000 documents in buckets of the given limit, to speed up the following
-		// query to get the documents. For that we are looping through the sorted buckets and using the timestamp from
-		// the bucket where the sum of all newer buckets contains 10000 docuemnts.
-		// This new start time is then also returned in the response and can be used for the "load more" call as the new
-		// start date. In these follow up calls the start time isn't changed again, because we are skipping the count
-		// and bucket queries.
-		// NOTE: If a user has problems with this limit in the future, we can provide an option for this via the
-		// config.yaml file or maybe even better via an additional field in the Options component in the React UI.
-		var bucketCount int64
-		for i := len(buckets) - 1; i >= 0; i-- {
-			bucketCount = bucketCount + buckets[i].Count
-			if bucketCount > 10000 {
-				timeStart = buckets[i].Interval
-				break
+			// We are only returning the first 10000 documents in buckets of the given limit, to speed up the following
+			// query to get the documents. For that we are looping through the sorted buckets and using the timestamp from
+			// the bucket where the sum of all newer buckets contains 10000 docuemnts.
+			// This new start time is then also returned in the response and can be used for the "load more" call as the new
+			// start date. In these follow up calls the start time isn't changed again, because we are skipping the count
+			// and bucket queries.
+			// NOTE: If a user has problems with this limit in the future, we can provide an option for this via the
+			// config.yaml file or maybe even better via an additional field in the Options component in the React UI.
+			var bucketCount int64
+			for i := len(buckets) - 1; i >= 0; i-- {
+				bucketCount = bucketCount + buckets[i].Count
+				if bucketCount > 10000 {
+					timeStart = buckets[i].Interval
+					break
+				}
 			}
 		}
 	}
