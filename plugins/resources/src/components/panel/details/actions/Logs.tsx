@@ -15,7 +15,14 @@ import { IRow } from '@patternfly/react-table';
 import { V1Pod } from '@kubernetes/client-node';
 import { Terminal as xTerm } from 'xterm';
 
-import { IResource, ITerminalContext, TERMINAL_OPTIONS, TerminalsContext } from '@kobsio/plugin-core';
+import {
+  IPluginsContext,
+  IResource,
+  ITerminalContext,
+  PluginsContext,
+  TERMINAL_OPTIONS,
+  TerminalsContext,
+} from '@kobsio/plugin-core';
 
 // getContainers returns a list with all container names for the given Pod. It contains all specified init containers
 // and the "normal" containers.
@@ -53,12 +60,65 @@ interface ILogsProps {
 const Logs: React.FunctionComponent<ILogsProps> = ({ request, resource, show, setShow }: ILogsProps) => {
   const containers = getContainers(resource.props);
 
+  const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const terminalsContext = useContext<ITerminalContext>(TerminalsContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [container, setContainer] = useState<string>(containers[0]);
   const [since, setSince] = useState<number>(900);
   const [regex, setRegex] = useState<string>('');
   const [previous, setPrevious] = useState<boolean>(false);
+  const [follow, setFollow] = useState<boolean>(false);
+
+  const streamLogs = async (): Promise<void> => {
+    setShow(false);
+
+    const term = new xTerm(TERMINAL_OPTIONS);
+
+    try {
+      const pluginDetails = pluginsContext.getPluginDetails('resources');
+      const configuredWebSocketAddress =
+        pluginDetails && pluginDetails.options && pluginDetails.options && pluginDetails.options.webSocketAddress
+          ? pluginDetails.options.webSocketAddress
+          : undefined;
+      const host = configuredWebSocketAddress || `wss://${window.location.host}`;
+
+      const ws = new WebSocket(
+        `${host}/api/plugins/resources/logs?cluster=${resource.cluster.title}${
+          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
+        }&name=${resource.name.title}&container=${container}&since=${since}&tail=${
+          TERMINAL_OPTIONS.scrollback
+        }&previous=false&follow=true`,
+      );
+
+      term.reset();
+
+      term.onData((str) => {
+        if (str === '\r') {
+          term.write('\n\r');
+        } else {
+          term.write(str);
+        }
+      });
+
+      ws.onmessage = (event): void => {
+        term.write(`${event.data}\n\r`);
+      };
+
+      terminalsContext.addTerminal({
+        name: `${resource.name.title}: ${container}`,
+        terminal: term,
+        webSocket: ws,
+      });
+    } catch (err) {
+      if (err.message) {
+        term.write(`${err.message}\n\r`);
+        terminalsContext.addTerminal({
+          name: `${resource.name.title}: ${container}`,
+          terminal: term,
+        });
+      }
+    }
+  };
 
   const getLogs = async (): Promise<void> => {
     setIsLoading(true);
@@ -70,7 +130,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ request, resource, show, se
           resource.namespace ? `&namespace=${resource.namespace.title}` : ''
         }&name=${resource.name.title}&container=${container}&regex=${encodeURIComponent(regex)}&since=${since}&tail=${
           TERMINAL_OPTIONS.scrollback
-        }&previous=${previous}`,
+        }&previous=${previous}&follow=true`,
         { method: 'get' },
       );
       const json = await response.json();
@@ -110,7 +170,12 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ request, resource, show, se
       isOpen={show}
       onClose={(): void => setShow(false)}
       actions={[
-        <Button key="getLogs" variant={ButtonVariant.primary} isLoading={isLoading} onClick={getLogs}>
+        <Button
+          key="getLogs"
+          variant={ButtonVariant.primary}
+          isLoading={isLoading}
+          onClick={(): Promise<void> => (follow ? streamLogs() : getLogs())}
+        >
           Show Logs
         </Button>,
         <Button key="cancel" variant={ButtonVariant.link} onClick={(): void => setShow(false)}>
@@ -172,6 +237,17 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ request, resource, show, se
             aria-label="Previous"
             id="logs-form-previous"
             name="logs-form-previous"
+          />
+        </FormGroup>
+
+        <FormGroup label="Follow" fieldId="logs-form-follow">
+          <Checkbox
+            label="Follow"
+            isChecked={follow}
+            onChange={setFollow}
+            aria-label="Follow"
+            id="logs-form-follow"
+            name="logs-form-follow"
           />
         </FormGroup>
       </Form>
