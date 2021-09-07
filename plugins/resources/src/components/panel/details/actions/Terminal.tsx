@@ -114,7 +114,7 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ request, resource, 
       };
 
       terminalsContext.addTerminal({
-        name: `${resource.namespace.title}: ${container} (${shell})`,
+        name: `${resource.name.title}: ${container} (${shell})`,
         terminal: term,
         webSocket: ws,
       });
@@ -122,7 +122,7 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ request, resource, 
       if (err.message) {
         term.write(`${err.message}\n\r`);
         terminalsContext.addTerminal({
-          name: `${resource.namespace.title}: ${container} (${shell})`,
+          name: `${resource.name.title}: ${container} (${shell})`,
           terminal: term,
         });
       }

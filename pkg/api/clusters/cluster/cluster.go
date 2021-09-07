@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -243,6 +244,55 @@ func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container, regex
 	}
 
 	return strings.Join(logs, "\n\r") + "\n\r", nil
+}
+
+// StreamLogs can be used to stream the logs of the selected Container. For that we are using the passed in WebSocket
+// connection an write each line returned by the Kubernetes API to this connection.
+func (c *Cluster) StreamLogs(ctx context.Context, conn *websocket.Conn, namespace, name, container string, since, tail int64, follow bool) error {
+	options := &corev1.PodLogOptions{
+		Container:    container,
+		SinceSeconds: &since,
+		Follow:       follow,
+	}
+
+	if tail > 0 {
+		options.TailLines = &tail
+	}
+
+	stream, err := c.clientset.CoreV1().Pods(namespace).GetLogs(name, options).Stream(ctx)
+	if err != nil {
+		return err
+	}
+
+	defer stream.Close()
+	reader := bufio.NewReaderSize(stream, 16)
+	lastLine := ""
+
+	for {
+		data, isPrefix, err := reader.ReadLine()
+		if err != nil {
+			return err
+		}
+
+		lines := strings.Split(string(data), "\r")
+		length := len(lines)
+
+		if len(lastLine) > 0 {
+			lines[0] = lastLine + lines[0]
+			lastLine = ""
+		}
+
+		if isPrefix {
+			lastLine = lines[length-1]
+			lines = lines[:(length - 1)]
+		}
+
+		for _, line := range lines {
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(line)); err != nil {
+				return err
+			}
+		}
+	}
 }
 
 // GetTerminal starts a new terminal session via the given WebSocket connection.
