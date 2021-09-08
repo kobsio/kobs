@@ -46,7 +46,7 @@ const CreateEphemeralContainer: React.FunctionComponent<ICreateEphemeralContaine
 
   const createEphemeralContainer = async (): Promise<void> => {
     try {
-      const parsedEphemeralContainer: V1EphemeralContainer = yaml.load(ephemeralContainer);
+      const parsedEphemeralContainer = yaml.load(ephemeralContainer) as V1EphemeralContainer;
       const manifest: V1EphemeralContainers = {
         apiVersion: 'v1',
         ephemeralContainers: [parsedEphemeralContainer],

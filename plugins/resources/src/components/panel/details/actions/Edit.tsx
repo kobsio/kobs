@@ -29,7 +29,8 @@ const Edit: React.FunctionComponent<IEditProps> = ({
   const handleEdit = async (): Promise<void> => {
     try {
       const parsedValue = yaml.load(value);
-      const diff = compare(resource.props, parsedValue);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const diff = compare(resource.props, parsedValue as any);
 
       const response = await fetch(
         `/api/plugins/resources/resources?cluster=${resource.cluster.title}${

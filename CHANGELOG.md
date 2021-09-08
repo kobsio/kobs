@@ -52,6 +52,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#130](https://github.com/kobsio/kobs/pull/130): :warning: *Breaking change:* :warning: Allow multiple queries in the panel options for the Jaeger plugin.
 - [#133](https://github.com/kobsio/kobs/pull/133): Improve querie performance to get logs from ClickHouse.
 - [#137](https://github.com/kobsio/kobs/pull/137): Change log view for the ClickHouse and Elasticsearch plugin.
+- [#139](https://github.com/kobsio/kobs/pull/139): Update Go and JavaScript dependencies.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 
