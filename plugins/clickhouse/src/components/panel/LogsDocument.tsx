@@ -92,7 +92,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({ document, f
       </Tr>
       <Tr isExpanded={isExpanded}>
         <Td />
-        <Td colSpan={fields && fields.length > 0 ? fields.length : 2}>
+        <Td colSpan={fields && fields.length > 0 ? fields.length + 1 : 2}>
           {isExpanded && <LogsDocumentDetails document={document} />}
         </Td>
         <Td />
