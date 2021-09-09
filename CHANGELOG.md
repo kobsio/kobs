@@ -42,6 +42,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#129](https://github.com/kobsio/kobs/pull/129): Fix handling of traces in the Jaeger plugin by using some function from the [jaegertracing/jaeger-ui](https://github.com/jaegertracing/jaeger-ui).
 - [#134](https://github.com/kobsio/kobs/pull/134): Fix time in log buckets of the ClickHouse plugin.
 - [#135](https://github.com/kobsio/kobs/pull/135): Fix read and write i/o timeouts for web terminal.
+- [#143](https://github.com/kobsio/kobs/pull/143): Fix a bug in the Jaeger plugin, where results were not refreshed after a user selected another service, operation, etc.
 
 ### Changed
 
