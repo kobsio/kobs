@@ -14,9 +14,11 @@ import prometheusPlugin from '@kobsio/plugin-prometheus';
 import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
 import jaegerPlugin from '@kobsio/plugin-jaeger';
 import kialiPlugin from '@kobsio/plugin-kiali';
-import markdownPlugin from '@kobsio/plugin-markdown';
+import fluxPlugin from '@kobsio/plugin-flux';
 import opsgeniePlugin from '@kobsio/plugin-opsgenie';
+import markdownPlugin from '@kobsio/plugin-markdown';
 import rssPlugin from '@kobsio/plugin-rss';
+import clickhousePlugin from '@kobsio/plugin-clickhouse';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,9 +31,11 @@ ReactDOM.render(
       ...elasticsearchPlugin,
       ...jaegerPlugin,
       ...kialiPlugin,
-      ...markdownPlugin,
+      ...fluxPlugin,
       ...opsgeniePlugin,
+      ...markdownPlugin,
       ...rssPlugin,
+      ...clickhousePlugin,
     }} />
   </React.StrictMode>,
   document.getElementById('root')

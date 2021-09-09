@@ -24,14 +24,8 @@ import (
 const Route = "/resources"
 
 var (
-	log = logrus.WithFields(logrus.Fields{"package": "resources"})
-
-	// Time allowed to write a message to the peer.
-	writeWait = 10 * time.Second
-	// Time allowed to read the next pong message from the peer.
-	pongWait = 30 * time.Second
-	// Send pings to peer with this period. Must be less than pongWait.
-	pingPeriod = (pongWait * 9) / 10
+	log        = logrus.WithFields(logrus.Fields{"package": "resources"})
+	pingPeriod = 30 * time.Second
 )
 
 // Resources is the structure for the getResources api call. It contains the cluster, namespace and the json
@@ -285,8 +279,9 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	since := r.URL.Query().Get("since")
 	tail := r.URL.Query().Get("tail")
 	previous := r.URL.Query().Get("previous")
+	follow := r.URL.Query().Get("follow")
 
-	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "container": container, "regex": regex, "since": since, "previous": previous}).Tracef("getLogs")
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "container": container, "regex": regex, "since": since, "previous": previous, "follow": follow}).Tracef("getLogs")
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
@@ -309,6 +304,54 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	parsedPrevious, err := strconv.ParseBool(previous)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse previous parameter")
+		return
+	}
+
+	parsedFollow, err := strconv.ParseBool(follow)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse follow parameter")
+		return
+	}
+
+	// If the parsedFollow parameter was set to true, we stream the logs via an WebSocket connection instead of
+	// returning a json response.
+	if parsedFollow {
+		var upgrader = websocket.Upgrader{}
+
+		if router.config.WebSocket.AllowAllOrigins {
+			upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+		}
+
+		c, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			log.WithError(err).Errorf("Could not upgrade connection")
+			return
+		}
+		defer c.Close()
+
+		c.SetPongHandler(func(string) error { return nil })
+
+		go func() {
+			ticker := time.NewTicker(pingPeriod)
+			defer ticker.Stop()
+
+			for {
+				select {
+				case <-ticker.C:
+					if err := c.WriteMessage(websocket.PingMessage, nil); err != nil {
+						return
+					}
+				}
+			}
+		}()
+
+		err = cluster.StreamLogs(r.Context(), c, namespace, name, container, parsedSince, parsedTail, parsedFollow)
+		if err != nil {
+			c.WriteMessage(websocket.TextMessage, []byte("Could not stream logs: "+err.Error()))
+			return
+		}
+
+		log.Tracef("Logs stream was closed")
 		return
 	}
 
@@ -349,8 +392,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
-	c.SetReadDeadline(time.Now().Add(pongWait))
-	c.SetPongHandler(func(string) error { c.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	c.SetPongHandler(func(string) error { return nil })
 
 	go func() {
 		ticker := time.NewTicker(pingPeriod)
@@ -359,7 +401,6 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		for {
 			select {
 			case <-ticker.C:
-				c.SetWriteDeadline(time.Now().Add(writeWait))
 				if err := c.WriteMessage(websocket.PingMessage, nil); err != nil {
 					return
 				}

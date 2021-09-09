@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -21,10 +22,12 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	apiruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
@@ -82,6 +85,13 @@ func (c *Cluster) GetName() string {
 // GetCRDs returns all CRDs of the cluster.
 func (c *Cluster) GetCRDs() []CRD {
 	return c.crds
+}
+
+// GetClient returns a new client to perform CRUD operations on Kubernetes objects.
+func (c *Cluster) GetClient(schema *apiruntime.Scheme) (client.Client, error) {
+	return client.New(c.config, client.Options{
+		Scheme: schema,
+	})
 }
 
 // GetNamespaces returns all namespaces for the cluster. To reduce the latency and the number of API calls, we are
@@ -234,6 +244,55 @@ func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container, regex
 	}
 
 	return strings.Join(logs, "\n\r") + "\n\r", nil
+}
+
+// StreamLogs can be used to stream the logs of the selected Container. For that we are using the passed in WebSocket
+// connection an write each line returned by the Kubernetes API to this connection.
+func (c *Cluster) StreamLogs(ctx context.Context, conn *websocket.Conn, namespace, name, container string, since, tail int64, follow bool) error {
+	options := &corev1.PodLogOptions{
+		Container:    container,
+		SinceSeconds: &since,
+		Follow:       follow,
+	}
+
+	if tail > 0 {
+		options.TailLines = &tail
+	}
+
+	stream, err := c.clientset.CoreV1().Pods(namespace).GetLogs(name, options).Stream(ctx)
+	if err != nil {
+		return err
+	}
+
+	defer stream.Close()
+	reader := bufio.NewReaderSize(stream, 16)
+	lastLine := ""
+
+	for {
+		data, isPrefix, err := reader.ReadLine()
+		if err != nil {
+			return err
+		}
+
+		lines := strings.Split(string(data), "\r")
+		length := len(lines)
+
+		if len(lastLine) > 0 {
+			lines[0] = lastLine + lines[0]
+			lastLine = ""
+		}
+
+		if isPrefix {
+			lastLine = lines[length-1]
+			lines = lines[:(length - 1)]
+		}
+
+		for _, line := range lines {
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(line)); err != nil {
+				return err
+			}
+		}
+	}
 }
 
 // GetTerminal starts a new terminal session via the given WebSocket connection.

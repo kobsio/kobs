@@ -5,6 +5,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | applications | [Applications](#applications) | Configure the caching behaviour for the applications plugin. | No |
+| clickhouse | [[]ClickHouse](#clickhouse) | Configure multiple ClickHouse instances, which can be used within kobs. | No |
 | elasticsearch | [[]Elasticsearch](#elasticsearch) | Configure multiple Elasticsearch instances, which can be used within kobs. | No |
 | jaeger | [[]Jaeger](#jaeger) | Configure multiple Jaeger instances, which can be used within kobs. | No |
 | kiali | [[]Kiali](#kiali) | Configure multiple Kiali instances, which can be used within kobs. | No |
@@ -28,6 +29,31 @@ plugins:
 | topologyCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the topology graph should be cached. The default value is `1h`. | No |
 | teamsCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the teams for an application should be cached. The default value is `1h`. | No |
 
+## ClickHouse
+
+The following config can be used to grant kobs access to a ClickHouse instance running at `clickhouse-clickhouse.logging.svc.cluster.local:9000`, where the logs are save in a database named `logs`. To access ClickHouse the user `admin` with the password `admin` is used.
+
+```yaml
+plugins:
+  clickhouse:
+    - name: ClickHouse
+      description: ClickHouse is a fast open-source OLAP database management system.
+      address: clickhouse-clickhouse.logging.svc.cluster.local:9000
+      database: logs
+      username: admin
+      password: admin
+      type: logs
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the ClickHouse instance. | Yes |
+| displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
+| descriptions | string | Description of the ClickHouse instance. | No |
+| address | string | Address of the ClickHouse instance. | Yes |
+| username | string | Username to access a ClickHouse instance. | No |
+| password | string | Password to access a ClickHouse instance. | No |
+| type | string | The type which should be used for the ClickHouse instance. This must be `sql` or `logs`. While the `sql` mode allows you to use raw SQL queries, the `logs` mode should be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) plugin to collect logs via Fluent Bit and save them in ClickHouse. |
 
 ## Elasticsearch
 

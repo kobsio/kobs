@@ -1,21 +1,28 @@
 import React from 'react';
 
-import { IProcesses, ISpan } from '../../../utils/interfaces';
+import { IProcess, ISpan } from '../../../utils/interfaces';
 
-export interface IJaegerSpansChartProps {
+export interface ISpansChartProps {
   span: ISpan;
-  processes: IProcesses;
+  duration: number;
+  startTime: number;
+  processes: Record<string, IProcess>;
   height: number;
 }
 
-// JaegerSpansChart is a single line in the chart to visualize the spans over time. The component requires a span, all
+// SpansChart is a single line in the chart to visualize the spans over time. The component requires a span, all
 // processes to set the correct color for the line and a height for the line. The height is calculated by the container
 // height divided by the number of spans.
-const JaegerSpansChart: React.FunctionComponent<IJaegerSpansChartProps> = ({
+const SpansChart: React.FunctionComponent<ISpansChartProps> = ({
   span,
+  duration,
+  startTime,
   processes,
   height,
-}: IJaegerSpansChartProps) => {
+}: ISpansChartProps) => {
+  const offset = ((span.startTime - startTime) / 1000 / (duration / 1000)) * 100;
+  const fill = (span.duration / 1000 / (duration / 1000)) * 100;
+
   return (
     <React.Fragment>
       <div style={{ height: `${height}px`, position: 'relative' }}>
@@ -34,21 +41,15 @@ const JaegerSpansChart: React.FunctionComponent<IJaegerSpansChartProps> = ({
                 ? processes[span.processID].color
                 : 'var(--pf-global--primary-color--100)',
               height: `${height}px`,
-              left: `${span.offset}%`,
+              left: `${offset}%`,
               position: 'absolute',
-              width: `${span.fill}%`,
+              width: `${fill}%`,
             }}
           ></span>
         </span>
       </div>
-
-      {span.childs
-        ? span.childs.map((span, index) => (
-            <JaegerSpansChart key={index} span={span} processes={processes} height={height} />
-          ))
-        : null}
     </React.Fragment>
   );
 };
 
-export default JaegerSpansChart;
+export default SpansChart;

@@ -4,15 +4,10 @@ import React from 'react';
 
 import { LinkWrapper } from '@kobsio/plugin-core';
 
-import {
-  doesTraceContainsError,
-  formatTraceTime,
-  getDuration,
-  getRootSpan,
-  getSpansPerServices,
-} from '../../utils/helpers';
+import { doesTraceContainsError, formatTraceTime } from '../../utils/helpers';
 import { ITrace } from '../../utils/interfaces';
 import Trace from './details/Trace';
+import { getColorForService } from '../../utils/colors';
 
 interface ITracesListItemProps {
   name: string;
@@ -25,15 +20,6 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
   trace,
   showDetails,
 }: ITracesListItemProps) => {
-  const rootSpan = getRootSpan(trace.spans);
-  if (!rootSpan) {
-    return null;
-  }
-
-  const rootSpanProcess = trace.processes[rootSpan.processID];
-  const rootSpanService = rootSpanProcess.serviceName;
-  const services = getSpansPerServices(trace);
-
   const card = (
     <Card
       style={{ cursor: 'pointer' }}
@@ -47,7 +33,7 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
     >
       <CardHeader>
         <CardTitle>
-          {rootSpanService}: {rootSpan.operationName}
+          {trace.traceName}
           <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
             {trace.traceID}
             {doesTraceContainsError(trace) ? (
@@ -59,7 +45,7 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
           </span>
         </CardTitle>
         <CardActions>
-          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{getDuration(trace.spans)}ms</span>
+          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{trace.duration / 1000}ms</span>
         </CardActions>
       </CardHeader>
       <CardBody>
@@ -67,13 +53,17 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
           {trace.spans.length} Spans
         </Badge>
 
-        {Object.keys(services).map((name) => (
-          <Badge key={name} className="pf-u-ml-sm" style={{ backgroundColor: services[name].color }}>
-            {services[name].service} ({services[name].spans})
+        {trace.services.map((service, index) => (
+          <Badge
+            key={index}
+            className="pf-u-ml-sm"
+            style={{ backgroundColor: getColorForService(trace.processes, service.name) }}
+          >
+            {service.name} ({service.numberOfSpans})
           </Badge>
         ))}
 
-        <span style={{ float: 'right' }}>{formatTraceTime(rootSpan.startTime)}</span>
+        <span style={{ float: 'right' }}>{formatTraceTime(trace.startTime)}</span>
       </CardBody>
     </Card>
   );

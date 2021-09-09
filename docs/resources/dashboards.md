@@ -21,7 +21,7 @@ In the following you can found the specification for the Dashboard CRD. On the b
 | description | string | Provide a descriptions for the dashboard with additional details. | No |
 | placeholders | [[]Placeholder](#placeholder) | A list of placeholders, which can be directly set by the user. | No |
 | variables | [[]Variable](#Variable) | A list of variables, where the values are loaded by the specified plugin. | No |
-| Rows | [[]Row](#row) | A list of rows for the dashboard. | Yes |
+| rows | [[]Row](#row) | A list of rows for the dashboard. | Yes |
 
 ### Placeholder
 

@@ -12,6 +12,7 @@ import {
 import React, { useState } from 'react';
 
 import { Editor, Title } from '@kobsio/plugin-core';
+import Actions from './Actions';
 import Document from './Document';
 import { IDocument } from '../../../utils/interfaces';
 import { formatTimeWrapper } from '../../../utils/helpers';
@@ -35,6 +36,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ document, close }: ID
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
+          <Actions document={document} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>

@@ -7,35 +7,27 @@ import LogsDocument from './LogsDocument';
 interface ILogsDocumentsProps {
   pages: ILogsData[];
   fields?: string[];
-  showDetails?: (details: React.ReactNode) => void;
 }
 
-const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
-  pages,
-  fields,
-  showDetails,
-}: ILogsDocumentsProps) => {
+const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({ pages, fields }: ILogsDocumentsProps) => {
   return (
     <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={false}>
       <Thead>
         <Tr>
+          <Th />
           <Th>Time</Th>
           {fields && fields.length > 0 ? (
             fields.map((selectedField, index) => <Th key={index}>{selectedField}</Th>)
           ) : (
             <Th>_source</Th>
           )}
+          <Th />
         </Tr>
       </Thead>
       <Tbody>
         {pages.map((page, pageIndex) =>
           page.documents.map((document, documentIndex) => (
-            <LogsDocument
-              key={`${pageIndex}_${documentIndex}`}
-              document={document}
-              fields={fields}
-              showDetails={showDetails}
-            />
+            <LogsDocument key={`${pageIndex}_${documentIndex}`} document={document} fields={fields} />
           )),
         )}
       </Tbody>

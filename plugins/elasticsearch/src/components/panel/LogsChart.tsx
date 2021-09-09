@@ -14,12 +14,14 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
     return <div style={{ height: '250px' }}></div>;
   }
 
+  console.log(buckets);
+
   return (
     <div style={{ height: '250px' }}>
       <ResponsiveBarCanvas
         axisBottom={{
           legend: '',
-          tickValues: 5,
+          tickValues: buckets.filter((bucket, index) => index % 2 === 0).map((bucket) => bucket.time),
         }}
         axisLeft={{
           format: '>-.0s',

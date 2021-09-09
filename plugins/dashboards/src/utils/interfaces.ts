@@ -50,14 +50,20 @@ export interface IPlugin {
 export interface IReference {
   cluster?: string;
   namespace?: string;
-  name: string;
+  name?: string;
   title: string;
   description?: string;
   placeholders?: IPlaceholders;
+  inline?: IReferenceInline;
 }
 
 export interface IPlaceholders {
   [key: string]: string;
+}
+
+export interface IReferenceInline {
+  variables?: IVariable[];
+  rows: IRow[];
 }
 
 // IVariableValues is an extension of the IVariable interface. It contains the additional fields for the selected

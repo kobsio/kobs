@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { ITrace } from '../../utils/interfaces';
-import TraceCompare from './TraceCompare';
+import TraceCompareData from './TraceCompareData';
+import TraceCompareID from './TraceCompareID';
 import TraceSelect from './TraceSelect';
 
 interface IJaegerPageCompareParams {
@@ -40,7 +41,7 @@ const JaegerPageCompare: React.FunctionComponent<IJaegerPageCompareProps> = ({ n
 
   // handleUpload handles the upload of a JSON file, which contains a trace. When the file upload is finished we parse
   // the content of the file and set the uploadedTrace state. This state (trace) is then passed to the first
-  // TraceCompare so that the trace can be viewed.
+  // TraceCompareID so that the trace can be viewed.
   const handleUpload = (trace: ITrace): void => {
     setUploadedTrace(trace);
     history.push({
@@ -66,12 +67,16 @@ const JaegerPageCompare: React.FunctionComponent<IJaegerPageCompareProps> = ({ n
   return (
     <Grid>
       <GridItem sm={12} md={12} lg={compareTrace ? 6 : 12} xl={compareTrace ? 6 : 12} xl2={compareTrace ? 6 : 12}>
-        <TraceCompare name={name} traceID={params.traceID} trace={uploadedTrace} />
+        {uploadedTrace ? (
+          <TraceCompareData name={name} traceData={uploadedTrace} />
+        ) : (
+          <TraceCompareID name={name} traceID={params.traceID} />
+        )}
       </GridItem>
 
       {compareTrace ? (
         <GridItem sm={12} md={12} lg={compareTrace ? 6 : 12} xl={compareTrace ? 6 : 12} xl2={compareTrace ? 6 : 12}>
-          <TraceCompare name={name} traceID={compareTrace} />
+          <TraceCompareID name={name} traceID={compareTrace} />
         </GridItem>
       ) : null}
     </Grid>

@@ -6,5 +6,6 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"noFallthroughCasesInSwitch": true,
+    "useUnknownInCatchVariables": false,
 	}
 }

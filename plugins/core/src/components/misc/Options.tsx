@@ -3,6 +3,8 @@ import {
   ButtonVariant,
   Form,
   FormGroup,
+  FormSelect,
+  FormSelectOption,
   Level,
   LevelItem,
   Modal,
@@ -16,6 +18,8 @@ import { RedoIcon } from '@patternfly/react-icons';
 
 import { formatTime } from '../../utils/time';
 
+export type TOptionsAdditionalFields = 'text' | 'select';
+
 // IOptionsAdditionalFields is the interface for an additional field which should be shown in the options modal. This
 // allows the usage of the component within a plugin (e.g. the Prometheus plugin can use the Options component to allow
 // a user to select the time range and additional he can also select the resolution). Each field must define a label,
@@ -25,6 +29,8 @@ export interface IOptionsAdditionalFields {
   name: string;
   placeholder: string;
   value: string;
+  values?: string[];
+  type?: TOptionsAdditionalFields;
 }
 
 // TTime is the type with all possible values for the time property. A value of "custom" identifies that a user
@@ -326,18 +332,34 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
           {internalAdditionalFields && internalAdditionalFields.length > 0 ? (
             <LevelItem style={{ paddingBottom: '16px' }}>
               <Form>
-                {internalAdditionalFields.map((field, index) => (
-                  <FormGroup key={index} label={field.label} isRequired={false} fieldId={field.name}>
-                    <TextInput
-                      type="text"
-                      id={field.name}
-                      name={field.name}
-                      placeholder={field.placeholder}
-                      value={field.value}
-                      onChange={(value): void => changeAdditionalField(index, value)}
-                    />
-                  </FormGroup>
-                ))}
+                {internalAdditionalFields.map((field, index) =>
+                  field.type === 'select' ? (
+                    <FormGroup key={index} label={field.label} isRequired={false} fieldId={field.name}>
+                      <FormSelect
+                        value={field.value}
+                        onChange={(value): void => changeAdditionalField(index, value)}
+                        id={field.name}
+                        name={field.name}
+                        aria-label={field.name}
+                      >
+                        {field.values
+                          ? field.values.map((value) => <FormSelectOption key={value} value={value} label={value} />)
+                          : null}
+                      </FormSelect>
+                    </FormGroup>
+                  ) : (
+                    <FormGroup key={index} label={field.label} isRequired={false} fieldId={field.name}>
+                      <TextInput
+                        type="text"
+                        id={field.name}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        value={field.value}
+                        onChange={(value): void => changeAdditionalField(index, value)}
+                      />
+                    </FormGroup>
+                  ),
+                )}
               </Form>
             </LevelItem>
           ) : null}

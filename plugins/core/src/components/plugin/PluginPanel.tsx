@@ -28,7 +28,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   if (!pluginDetails || !Component) {
     return (
       <PluginCard title={title} description={description}>
-        <Alert variant={AlertVariant.danger} title="Plugin was not found">
+        <Alert variant={AlertVariant.danger} isInline={true} title="Plugin was not found">
           {pluginDetails ? (
             <p>
               The plugin <b>{pluginDetails.displayName}</b> of tpye <b>{pluginDetails.type}</b> does not implements a

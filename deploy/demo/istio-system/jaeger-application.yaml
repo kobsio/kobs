@@ -18,4 +18,6 @@ spec:
     plugin:
       name: elasticsearch
       options:
-        query: "kubernetes.namespace: istio-system AND kubernetes.labels.app: jaeger"
+        queries:
+          - name: All Jaeger Logs
+            query: "kubernetes.namespace: istio-system AND kubernetes.labels.app: jaeger"

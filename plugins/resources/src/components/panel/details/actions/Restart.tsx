@@ -83,7 +83,7 @@ const Restart: React.FunctionComponent<IRestartProps> = ({
     >
       <p>
         Do you really want to restart <b>{resource.name.title}</b> (
-        {resource.namespace ? `${resource.namespace.title} ${resource.cluster.title}` : resource.cluster.title})?
+        {resource.namespace ? `${resource.namespace.title}/${resource.cluster.title}` : resource.cluster.title})?
       </p>
     </Modal>
   );

@@ -12,8 +12,10 @@ import (
 	// Import all plugins, which should be used with the kobs instance. By default this are all first party plugins from
 	// the plugins folder.
 	"github.com/kobsio/kobs/plugins/applications"
+	"github.com/kobsio/kobs/plugins/clickhouse"
 	"github.com/kobsio/kobs/plugins/dashboards"
 	"github.com/kobsio/kobs/plugins/elasticsearch"
+	"github.com/kobsio/kobs/plugins/flux"
 	"github.com/kobsio/kobs/plugins/jaeger"
 	"github.com/kobsio/kobs/plugins/kiali"
 	"github.com/kobsio/kobs/plugins/markdown"
@@ -33,10 +35,12 @@ type Config struct {
 	Prometheus    prometheus.Config    `json:"prometheus"`
 	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
 	Jaeger        jaeger.Config        `json:"jaeger"`
-	Markdown      markdown.Config      `json:"markdown"`
 	Kiali         kiali.Config         `json:"kiali"`
+	Flux          flux.Config          `json:"flux"`
 	Opsgenie      opsgenie.Config      `json:"opsgenie"`
+	Markdown      markdown.Config      `json:"markdown"`
 	RSS           rss.Config           `json:"rss"`
+	Clickhouse    clickhouse.Config    `json:"clickhouse"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -61,16 +65,18 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Get("/", router.getPlugins)
 
 	// Register all plugins
-	router.Mount(applications.Route, applications.Register(clusters, router.plugins, config.Applications))
 	router.Mount(resources.Route, resources.Register(clusters, router.plugins, config.Resources))
+	router.Mount(applications.Route, applications.Register(clusters, router.plugins, config.Applications))
 	router.Mount(teams.Route, teams.Register(clusters, router.plugins, config.Teams))
 	router.Mount(dashboards.Route, dashboards.Register(clusters, router.plugins, config.Dashboards))
 	router.Mount(prometheus.Route, prometheus.Register(clusters, router.plugins, config.Prometheus))
 	router.Mount(elasticsearch.Route, elasticsearch.Register(clusters, router.plugins, config.Elasticsearch))
 	router.Mount(jaeger.Route, jaeger.Register(clusters, router.plugins, config.Jaeger))
-	router.Mount(markdown.Route, markdown.Register(clusters, router.plugins, config.Markdown))
 	router.Mount(kiali.Route, kiali.Register(clusters, router.plugins, config.Kiali))
+	router.Mount(flux.Route, flux.Register(clusters, router.plugins, config.Flux))
 	router.Mount(opsgenie.Route, opsgenie.Register(clusters, router.plugins, config.Opsgenie))
+	router.Mount(clickhouse.Route, clickhouse.Register(clusters, router.plugins, config.Clickhouse))
+	router.Mount(markdown.Route, markdown.Register(clusters, router.plugins, config.Markdown))
 	router.Mount(rss.Route, rss.Register(clusters, router.plugins, config.RSS))
 
 	return router

@@ -5,9 +5,11 @@
   "proxy": "http://localhost:15220",
   "dependencies": {
     "@kobsio/plugin-applications": "*",
+    "@kobsio/plugin-clickhouse": "*",
     "@kobsio/plugin-core": "*",
     "@kobsio/plugin-dashboards": "*",
     "@kobsio/plugin-elasticsearch": "*",
+    "@kobsio/plugin-flux": "*",
     "@kobsio/plugin-jaeger": "*",
     "@kobsio/plugin-kiali": "*",
     "@kobsio/plugin-markdown": "*",

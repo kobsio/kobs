@@ -72,8 +72,14 @@ type Plugin struct {
 type Reference struct {
 	Cluster      string            `json:"cluster,omitempty"`
 	Namespace    string            `json:"namespace,omitempty"`
-	Name         string            `json:"name"`
+	Name         string            `json:"name,omitempty"`
 	Title        string            `json:"title"`
 	Description  string            `json:"description,omitempty"`
 	Placeholders map[string]string `json:"placeholders,omitempty"`
+	Inline       *ReferenceInline  `json:"inline,omitempty"`
+}
+
+type ReferenceInline struct {
+	Variables []Variable `json:"variables,omitempty"`
+	Rows      []Row      `json:"rows"`
 }

@@ -18,12 +18,18 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ name, times, title
     ['elasticsearch/logs', name, options, times],
     async ({ pageParam }) => {
       try {
-        if (!options.query) {
+        if (
+          !options ||
+          !options.queries ||
+          !Array.isArray(options.queries) ||
+          options.queries.length === 0 ||
+          !options.queries[0].query
+        ) {
           throw new Error('Query is missing');
         }
 
         const response = await fetch(
-          `/api/plugins/elasticsearch/logs/${name}?query=${options.query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&scrollID=`,
+          `/api/plugins/elasticsearch/logs/${name}?query=${options.queries[0].query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&scrollID=`,
           {
             method: 'get',
           },

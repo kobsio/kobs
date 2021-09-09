@@ -16,7 +16,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   options,
   showDetails,
 }: IPanelProps) => {
-  if (!options || !options.service || !times) {
+  if (!options || !options.queries || !Array.isArray(options.queries) || options.queries.length === 0 || !times) {
     return (
       <PluginOptionsMissing
         title={title}
@@ -34,12 +34,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       description={description}
       showDetails={showDetails}
       showChart={options.showChart || false}
-      limit={options.limit || '20'}
-      maxDuration={options.maxDuration || ''}
-      minDuration={options.minDuration || ''}
-      operation={options.operation || ''}
-      service={options.service}
-      tags={options.tags || ''}
+      queries={options.queries}
       times={times}
     />
   );

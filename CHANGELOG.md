@@ -16,6 +16,16 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#112](https://github.com/kobsio/kobs/pull/112): Allow mapping values in Prometheus table panel.
 - [#113](https://github.com/kobsio/kobs/pull/113): Allow and improve customization of axis scaling.
 - [#116](https://github.com/kobsio/kobs/pull/116): Open details when clicking on Jaeger chart nodes.
+- [#119](https://github.com/kobsio/kobs/pull/119): Add Flux plugin to view and reconcile [Flux](https://fluxcd.io) resources.
+- [#122](https://github.com/kobsio/kobs/pull/122): Add ClickHouse plugin, to query show logs ingested by the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) Fluent Bit plugin.
+- [#124](https://github.com/kobsio/kobs/pull/124): Add `sql` mode for ClickHouse to execute raw SQL queries.
+- [#126](https://github.com/kobsio/kobs/pull/126): Show request details when gettings logs from ClickHouse.
+- [#127](https://github.com/kobsio/kobs/pull/127): Allow `ILIKE` queries for ClickHouse logs, using the new `=~` operator.
+- [#128](https://github.com/kobsio/kobs/pull/128): Allow users to specify dashboards within a Team or Application via the new `inline` property.
+- [#131](https://github.com/kobsio/kobs/pull/131): Add chart which shows the distribution of the logs lines in the selected time range for the ClickHouse plugin.
+- [#132](https://github.com/kobsio/kobs/pull/132): Support the download of log lines in their JSON representation in the ClickHouse and Elasticsearch plugin.
+- [#136](https://github.com/kobsio/kobs/pull/136): Allow custom order for the returned logs and add `!~` and `_exists_` operator for ClickHouse plugin.
+- [#138](https://github.com/kobsio/kobs/pull/138): Add option to stream (follow) logs via WebSockets.
 - [#117](https://github.com/kobsio/kobs/pull/117): Change Jaeger chart node color to red for erroneous traces.
 
 ### Fixed
@@ -25,14 +35,26 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#110](https://github.com/kobsio/kobs/pull/110): Fix Dashboard tabs showing wrong variables.
 - [#111](https://github.com/kobsio/kobs/pull/111): Fix usage of `memo` in Dashboards and fix resources table for CRDs when a value is undefined.
 - [#114](https://github.com/kobsio/kobs/pull/114): Fix span order and additional fields for Jaeger plugin.
-- [#118](https://github.com/kobsio/kobs/pull/118): Fix `null is not an object (evaluating 'e[Symbol.iterator]')` error for Prometheus charts.
 - [#115](https://github.com/kobsio/kobs/pull/115): Fix maximum node size of the Jaeger chart and utilize `useMemo` to cache computation for it.
+- [#118](https://github.com/kobsio/kobs/pull/118): Fix `null is not an object (evaluating 'e[Symbol.iterator]')` error for Prometheus charts.
+- [#120](https://github.com/kobsio/kobs/pull/120): Fix reconcilation of Flux resources.
+- [#123](https://github.com/kobsio/kobs/pull/123): Fix fields handling in ClickHouse and Elasticsearch plugin.
+- [#125](https://github.com/kobsio/kobs/pull/125): Fix missing `return` statement in ClickHouse panel.
+- [#129](https://github.com/kobsio/kobs/pull/129): Fix handling of traces in the Jaeger plugin by using some function from the [jaegertracing/jaeger-ui](https://github.com/jaegertracing/jaeger-ui).
+- [#134](https://github.com/kobsio/kobs/pull/134): Fix time in log buckets of the ClickHouse plugin.
+- [#135](https://github.com/kobsio/kobs/pull/135): Fix read and write i/o timeouts for web terminal.
 
 ### Changed
 
 - [#106](https://github.com/kobsio/kobs/pull/106): :warning: *Breaking change:* :warning: Change Prometheus sparkline chart to allow the usage of labels.
 - [#107](https://github.com/kobsio/kobs/pull/107): Add new option for Prometheus chart legend and change formatting of values.
 - [#108](https://github.com/kobsio/kobs/pull/108): Improve tooltip position in all nivo charts.
+- [#121](https://github.com/kobsio/kobs/pull/121): :warning: *Breaking change:* :warning: Allow multiple queries in the panel options for the Elasticsearch plugin.
+- [#130](https://github.com/kobsio/kobs/pull/130): :warning: *Breaking change:* :warning: Allow multiple queries in the panel options for the Jaeger plugin.
+- [#133](https://github.com/kobsio/kobs/pull/133): Improve querie performance to get logs from ClickHouse.
+- [#137](https://github.com/kobsio/kobs/pull/137): Change log view for the ClickHouse and Elasticsearch plugin.
+- [#139](https://github.com/kobsio/kobs/pull/139): Update Go and JavaScript dependencies.
+- [#140](https://github.com/kobsio/kobs/pull/140): Fill the chart for the distribution of the log lines with zero value.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

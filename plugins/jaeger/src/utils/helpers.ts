@@ -1,6 +1,6 @@
-import { IOptions, ISpan, ITrace } from './interfaces';
+import { IDeduplicateTags, IKeyValuePair, IOptions, ISpan, ITrace } from './interfaces';
 import { IPluginTimes, TTime, TTimeOptions, formatTime } from '@kobsio/plugin-core';
-import { getColor } from './colors';
+import TreeNode from './TreeNode';
 
 // getOptionsFromSearch is used to get the Jaeger options from a given search location.
 export const getOptionsFromSearch = (search: string): IOptions => {
@@ -57,19 +57,6 @@ export const encodeTags = (tags: string): string => {
   return encodeURIComponent(JSON.stringify(jsonTags));
 };
 
-// getDuration returns the duration for a trace in milliseconds.
-export const getDuration = (spans: ISpan[]): number => {
-  const startTimes: number[] = [];
-  const endTimes: number[] = [];
-
-  for (const span of spans) {
-    startTimes.push(span.startTime);
-    endTimes.push(span.startTime + span.duration);
-  }
-
-  return (Math.max(...endTimes) - Math.min(...startTimes)) / 1000;
-};
-
 // formatAxisBottom calculates the format for the bottom axis based on the specified start and end time.
 export const formatAxisBottom = (times: IPluginTimes): string => {
   if (times.timeEnd - times.timeStart < 3600) {
@@ -112,127 +99,193 @@ export const formatTraceTime = (time: number): string => {
   return formatTime(Math.floor(time / 1000000));
 };
 
-// getRootSpan returns the first span of a trace. Normally this should be the first span, but sometime it can happen,
-// that this isn't the case. So that we have to loop over the spans and then we return the first trace, which doesn't
-// have a reference.
-export const getRootSpan = (spans: ISpan[]): ISpan | undefined => {
-  for (const span of spans) {
-    if (span.references.length === 0 || span.references[0].refType !== 'CHILD_OF') {
-      return span;
-    }
-  }
-
-  return undefined;
-};
-
-// IService is the interface to get the number of spans per service.
-export interface IService {
-  color: string;
-  service: string;
-  spans: number;
-}
-
-export interface IServices {
-  [key: string]: IService;
-}
-
-// getSpansPerServices returns the number of spans per service.
-export const getSpansPerServices = (trace: ITrace): IServices => {
-  const services: IService[] = Object.keys(trace.processes).map((process) => {
-    return {
-      color: trace.processes[process].color
-        ? (trace.processes[process].color as string)
-        : 'var(--pf-global--primary-color--100)',
-      service: trace.processes[process].serviceName,
-      spans: trace.spans.filter((span) => span.processID === process).length,
-    };
-  });
-
-  const uniqueServices: IServices = {};
-  for (const service of services) {
-    if (uniqueServices.hasOwnProperty(service.service)) {
-      uniqueServices[service.service] = {
-        ...uniqueServices[service.service],
-        spans: uniqueServices[service.service].spans + service.spans,
-      };
-    } else {
-      uniqueServices[service.service] = service;
-    }
-  }
-
-  return uniqueServices;
-};
-
-// IMap is the interface for the map of spans in the createSpansTree function.
-interface IMap {
-  [key: string]: number;
-}
-
-// createSpansTree creates a tree of spans. This simplifies the frontend code in contrast to working with the flat array
-// of spans.
-export const createSpansTree = (spans: ISpan[], traceStartTime: number, duration: number): ISpan[] => {
-  const map: IMap = {};
-  const roots: ISpan[] = [];
-
-  spans.sort((a, b) => {
-    if (a.startTime < b.startTime) {
-      return -1;
-    }
-
-    return 1;
-  });
+// getTraceName returns the name of the trace. The name consists out of the first spans service name and operation name.
+// See: https://github.com/jaegertracing/jaeger-ui/blob/master/packages/jaeger-ui/src/model/trace-viewer.tsx
+const getTraceName = (spans: ISpan[]): string => {
+  let candidateSpan: ISpan | undefined;
+  const allIDs: Set<string> = new Set(spans.map(({ spanID }) => spanID));
 
   for (let i = 0; i < spans.length; i++) {
-    map[spans[i].spanID] = i;
-    spans[i].childs = [];
+    const hasInternalRef =
+      spans[i].references &&
+      spans[i].references.some(({ traceID, spanID }) => traceID === spans[i].traceID && allIDs.has(spanID));
+    if (hasInternalRef) continue;
 
-    spans[i].offset = ((spans[i].startTime - traceStartTime) / 1000 / duration) * 100;
-    spans[i].fill = (spans[i].duration / 1000 / duration) * 100;
-  }
+    if (!candidateSpan) {
+      candidateSpan = spans[i];
+      continue;
+    }
 
-  for (let i = 0; i < spans.length; i++) {
-    const span = spans[i];
+    const thisRefLength = (spans[i].references && spans[i].references.length) || 0;
+    const candidateRefLength = (candidateSpan.references && candidateSpan.references.length) || 0;
 
-    if (span.references && span.references.length > 0) {
-      const ref = span.references.filter((reference) => reference.refType === 'CHILD_OF');
-
-      if (ref.length > 0 && map.hasOwnProperty(ref[0].spanID)) {
-        spans[map[ref[0].spanID]].childs?.push(span);
-      }
-    } else {
-      roots.push(span);
+    if (
+      thisRefLength < candidateRefLength ||
+      (thisRefLength === candidateRefLength && spans[i].startTime < candidateSpan.startTime)
+    ) {
+      candidateSpan = spans[i];
     }
   }
 
-  return roots;
+  return candidateSpan ? `${candidateSpan.process.serviceName}: ${candidateSpan.operationName}` : '';
 };
 
-// IProcessColors is the interface we use to store a map of process and colors, so that we can reuse the color for
-// processes with the same service name.
-interface IProcessColors {
-  [key: string]: string;
-}
+// deduplicateTags deduplicates the tags of a given span.
+// See: https://github.com/jaegertracing/jaeger-ui/blob/master/packages/jaeger-ui/src/model/transform-trace-data.tsx
+const deduplicateTags = (spanTags: IKeyValuePair[]): IDeduplicateTags => {
+  const warningsHash: Map<string, string> = new Map<string, string>();
+  const tags: IKeyValuePair[] = spanTags.reduce<IKeyValuePair[]>((uniqueTags, tag) => {
+    if (!uniqueTags.some((t) => t.key === tag.key && t.value === tag.value)) {
+      uniqueTags.push(tag);
+    } else {
+      warningsHash.set(`${tag.key}:${tag.value}`, `Duplicate tag "${tag.key}:${tag.value}"`);
+    }
+    return uniqueTags;
+  }, []);
+  const warnings = Array.from(warningsHash.values());
+  return { tags, warnings };
+};
 
-// addColorForProcesses add a color to each process in all the given traces. If a former trace already uses a process,
-// with the same service name we reuse the former color.
-export const addColorForProcesses = (traces: ITrace[]): ITrace[] => {
-  const usedColors: IProcessColors = {};
+// getTraceSpanIdsAsTree returns a new TreeNode object, which is used to sort the spans of a trace. The tree is
+// necessary to sort the spans, so children follow parents, and siblings are sorted by start time.
+// See: https://github.com/jaegertracing/jaeger-ui/blob/master/packages/jaeger-ui/src/selectors/trace.js
+const getTraceSpanIdsAsTree = (trace: ITrace): TreeNode => {
+  const nodesById = new Map(trace.spans.map((span) => [span.spanID, new TreeNode(span.spanID)]));
+  const spansById = new Map(trace.spans.map((span) => [span.spanID, span]));
+  const root = new TreeNode('__root__');
 
-  for (let i = 0; i < traces.length; i++) {
-    const processes = Object.keys(traces[i].processes);
-
-    for (let j = 0; j < processes.length; j++) {
-      const process = processes[j];
-
-      if (usedColors.hasOwnProperty(traces[i].processes[process].serviceName)) {
-        traces[i].processes[process].color = usedColors[traces[i].processes[process].serviceName];
+  trace.spans.forEach((span) => {
+    const node = nodesById.get(span.spanID);
+    if (Array.isArray(span.references) && span.references.length) {
+      const { refType, spanID: parentID } = span.references[0];
+      if (refType === 'CHILD_OF' || refType === 'FOLLOWS_FROM') {
+        const parent = nodesById.get(parentID) || root;
+        parent.children.push(node);
       } else {
-        const color = getColor(j);
-        usedColors[traces[i].processes[process].serviceName] = color;
-        traces[i].processes[process].color = color;
+        throw new Error(`Unrecognized ref type: ${refType}`);
       }
+    } else {
+      root.children.push(node);
     }
+  });
+
+  const comparator = (nodeA: TreeNode, nodeB: TreeNode): number => {
+    const a = spansById.get(nodeA.value);
+    const b = spansById.get(nodeB.value);
+    if (!a || !b) return -1;
+    return +(a.startTime > b.startTime) || +(a.startTime === b.startTime) - 1;
+  };
+
+  trace.spans.forEach((span) => {
+    const node = nodesById.get(span.spanID);
+    if (node && node.children.length > 1) {
+      node.children.sort(comparator);
+    }
+  });
+
+  root.children.sort(comparator);
+  return root;
+};
+
+// transformTraceData transforms a given trace so we can used it within our ui.
+// See: https://github.com/jaegertracing/jaeger-ui/blob/master/packages/jaeger-ui/src/model/transform-trace-data.tsx
+export const transformTraceData = (data: ITrace): ITrace | null => {
+  let { traceID } = data;
+  if (!traceID) {
+    return null;
+  }
+  traceID = traceID.toLowerCase();
+
+  let traceEndTime = 0;
+  let traceStartTime = Number.MAX_SAFE_INTEGER;
+  const spanIdCounts = new Map();
+  const spanMap = new Map<string, ISpan>();
+
+  // filter out spans with empty start times
+  data.spans = data.spans.filter((span) => Boolean(span.startTime));
+
+  const max = data.spans.length;
+  for (let i = 0; i < max; i++) {
+    const span: ISpan = data.spans[i] as ISpan;
+    const { startTime, duration, processID } = span;
+
+    let spanID = span.spanID;
+
+    // check for start / end time for the trace
+    if (startTime < traceStartTime) {
+      traceStartTime = startTime;
+    }
+    if (startTime + duration > traceEndTime) {
+      traceEndTime = startTime + duration;
+    }
+
+    // make sure span IDs are unique
+    const idCount = spanIdCounts.get(spanID);
+    if (idCount != null) {
+      spanIdCounts.set(spanID, idCount + 1);
+      spanID = `${spanID}_${idCount}`;
+      span.spanID = spanID;
+    } else {
+      spanIdCounts.set(spanID, 1);
+    }
+    span.process = data.processes[processID];
+    spanMap.set(spanID, span);
   }
 
-  return traces;
+  const tree = getTraceSpanIdsAsTree(data);
+  const spans: ISpan[] = [];
+  const svcCounts: Record<string, number> = {};
+
+  tree.walk((spanID: string, node: TreeNode, depth = 0) => {
+    if (spanID === '__root__') {
+      return;
+    }
+    const span = spanMap.get(spanID) as ISpan;
+    if (!span) {
+      return;
+    }
+    const { serviceName } = span.process;
+    svcCounts[serviceName] = (svcCounts[serviceName] || 0) + 1;
+    span.relativeStartTime = span.startTime - traceStartTime;
+    span.depth = depth - 1;
+    span.hasChildren = node.children.length > 0;
+    span.warnings = span.warnings || [];
+    span.tags = span.tags || [];
+    span.references = span.references || [];
+    const tagsInfo = deduplicateTags(span.tags);
+    span.tags = tagsInfo.tags;
+    span.warnings = span.warnings.concat(tagsInfo.warnings);
+    span.references.forEach((ref, index) => {
+      const refSpan = spanMap.get(ref.spanID) as ISpan;
+      if (refSpan) {
+        ref.span = refSpan;
+        if (index > 0) {
+          // Don't take into account the parent, just other references.
+          refSpan.subsidiarilyReferencedBy = refSpan.subsidiarilyReferencedBy || [];
+          refSpan.subsidiarilyReferencedBy.push({
+            refType: ref.refType,
+            span,
+            spanID,
+            traceID,
+          });
+        }
+      }
+    });
+
+    spans.push(span);
+  });
+
+  const traceName = getTraceName(spans);
+  const services = Object.keys(svcCounts).map((name) => ({ name, numberOfSpans: svcCounts[name] }));
+
+  return {
+    duration: traceEndTime - traceStartTime,
+    endTime: traceEndTime,
+    processes: data.processes,
+    services,
+    spans,
+    startTime: traceStartTime,
+    traceID,
+    traceName,
+  };
 };

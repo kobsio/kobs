@@ -5,8 +5,8 @@ import { SquareIcon } from '@patternfly/react-icons';
 import { TooltipWrapper } from '@nivo/tooltip';
 import Trace from './details/Trace';
 
-import { doesTraceContainsError, getDuration, getRootSpan } from '../../utils/helpers';
 import { ITrace } from '../../utils/interfaces';
+import { doesTraceContainsError } from '../../utils/helpers';
 
 interface IDatum extends Datum {
   label: string;
@@ -39,27 +39,13 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
         maximalSpans = trace.spans.length;
       }
 
-      const rootSpan = getRootSpan(trace.spans);
-      if (!rootSpan) {
-        result.push({
-          label: `${trace.traceID}`,
-          size: trace.spans.length,
-          trace,
-          x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
-          y: getDuration(trace.spans),
-        });
-      } else {
-        const rootSpanProcess = trace.processes[rootSpan.processID];
-        const rootSpanService = rootSpanProcess.serviceName;
-
-        result.push({
-          label: `${rootSpanService}: ${rootSpan.operationName}`,
-          size: trace.spans.length,
-          trace,
-          x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
-          y: getDuration(trace.spans),
-        });
-      }
+      result.push({
+        label: trace.traceName,
+        size: trace.spans.length,
+        trace,
+        x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
+        y: trace.duration / 1000,
+      });
     });
 
     return {
@@ -90,7 +76,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
             enableGridX={false}
             enableGridY={false}
             margin={{ bottom: 25, left: 0, right: 0, top: 0 }}
-            nodeSize={{ key: 'size', sizes: [15, 20], values: [min, max] }}
+            nodeSize={{ key: 'size', sizes: [15, 75], values: [min, max] }}
             theme={{
               background: '#ffffff',
               fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',

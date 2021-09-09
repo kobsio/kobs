@@ -5,7 +5,10 @@ import {
   Button,
   ButtonVariant,
   Card,
+  CardActions,
   CardBody,
+  CardHeader,
+  CardHeaderMain,
   CardTitle,
   Grid,
   GridItem,
@@ -28,7 +31,6 @@ interface IPageLogsProps {
   query: string;
   selectField: (field: string) => void;
   times: IPluginTimes;
-  showDetails: (details: React.ReactNode) => void;
 }
 
 const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
@@ -37,7 +39,6 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   query,
   selectField,
   times,
-  showDetails,
 }: IPageLogsProps) => {
   const history = useHistory();
 
@@ -118,19 +119,27 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
         <Card isCompact={true}>
-          <CardTitle className="pf-u-text-align-center">
-            {data.pages[0].hits} Documents in {data.pages[0].took} Milliseconds
-          </CardTitle>
+          <CardHeader>
+            <CardHeaderMain>
+              <CardTitle>
+                {data.pages[0].hits} Documents in {data.pages[0].took} Milliseconds
+              </CardTitle>
+            </CardHeaderMain>
+            <CardActions>{isFetching && <Spinner size="md" />}</CardActions>
+          </CardHeader>
+
           <CardBody>
             <LogsChart buckets={data.pages[0].buckets} />
           </CardBody>
         </Card>
         <p>&nbsp;</p>
-        <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
-          <CardBody>
-            <LogsDocuments pages={data.pages} fields={fields} showDetails={showDetails} />
-          </CardBody>
-        </Card>
+        {data.pages[0].documents.length > 0 ? (
+          <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
+            <CardBody>
+              <LogsDocuments pages={data.pages} fields={fields} />
+            </CardBody>
+          </Card>
+        ) : null}
         <p>&nbsp;</p>
         {data.pages[0].documents.length > 0 ? (
           <Card isCompact={true}>
