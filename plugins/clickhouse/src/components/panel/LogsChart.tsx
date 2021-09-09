@@ -83,7 +83,7 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
                   <b>{tooltip.data.intervalFormatted}</b>
                 </div>
                 <div>
-                  <SquareIcon color="#0066cc" /> Documents: {tooltip.data.count}
+                  <SquareIcon color="#0066cc" /> Documents: {tooltip.data.count || 0}
                 </div>
               </div>
             </TooltipWrapper>
