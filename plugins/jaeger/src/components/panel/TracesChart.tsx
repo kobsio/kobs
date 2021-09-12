@@ -88,12 +88,16 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
                 showDetails(<Trace name={name} trace={node.data.trace} close={(): void => showDetails(undefined)} />);
               }
             }}
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore as the typing expects NodeProps but actually has Node
             renderNode={(ctx: CanvasRenderingContext2D, props: Node): void => {
+              // eslint-disable-next-line react/prop-types
               const hasError = isIDatum(props.data) ? doesTraceContainsError(props.data.trace) : false;
 
               ctx.beginPath();
+              // eslint-disable-next-line react/prop-types
               ctx.arc(props.x, props.y, props.size / 2, 0, 2 * Math.PI);
+              // eslint-disable-next-line react/prop-types
               ctx.fillStyle = hasError ? '#c9190b' : props.style.color;
               ctx.fill();
             }}
