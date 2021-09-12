@@ -6,6 +6,7 @@ import { TooltipWrapper } from '@nivo/tooltip';
 import Trace from './details/Trace';
 
 import { ITrace } from '../../utils/interfaces';
+import { doesTraceContainsError } from '../../utils/helpers';
 
 interface IDatum extends Datum {
   label: string;
@@ -87,8 +88,19 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
                 showDetails(<Trace name={name} trace={node.data.trace} close={(): void => showDetails(undefined)} />);
               }
             }}
+            // @ts-ignore as the typing expects NodeProps but actually has Node
+            renderNode={(ctx: CanvasRenderingContext2D, props: Node): void => {
+              const hasError = isIDatum(props.data) ? doesTraceContainsError(props.data.trace) : false;
+
+              ctx.beginPath();
+              ctx.arc(props.x, props.y, props.size / 2, 0, 2 * Math.PI);
+              ctx.fillStyle = hasError ? '#c9190b' : props.style.color;
+              ctx.fill();
+            }}
             tooltip={(tooltip): ReactNode => {
               const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
+              const hasError = isIDatum(tooltip.node.data) ? doesTraceContainsError(tooltip.node.data.trace) : false;
+              const squareColor = hasError ? '#c9190b' : '#0066cc';
 
               return (
                 <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
@@ -105,7 +117,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
                       <b>{tooltip.node.data.formattedX}</b>
                     </div>
                     <div>
-                      <SquareIcon color="#0066cc" /> {(tooltip.node.data as unknown as IDatum).label}{' '}
+                      <SquareIcon color={squareColor} /> {(tooltip.node.data as unknown as IDatum).label}{' '}
                       {tooltip.node.data.formattedY}
                     </div>
                   </div>

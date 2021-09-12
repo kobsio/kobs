@@ -26,6 +26,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#132](https://github.com/kobsio/kobs/pull/132): Support the download of log lines in their JSON representation in the ClickHouse and Elasticsearch plugin.
 - [#136](https://github.com/kobsio/kobs/pull/136): Allow custom order for the returned logs and add `!~` and `_exists_` operator for ClickHouse plugin.
 - [#138](https://github.com/kobsio/kobs/pull/138): Add option to stream (follow) logs via WebSockets.
+- [#117](https://github.com/kobsio/kobs/pull/117): Change Jaeger chart node color to red for erroneous traces.
 
 ### Fixed
 
