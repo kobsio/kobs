@@ -9,7 +9,7 @@ import {
   Spinner,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import { IQuery, ITrace } from '../../utils/interfaces';
@@ -81,6 +81,12 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
       }
     },
   );
+
+  useEffect(() => {
+    if (queries.length === 1) {
+      setSelectedQuery(queries[0]);
+    }
+  }, [queries]);
 
   const select = (
     event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,

@@ -43,6 +43,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#129](https://github.com/kobsio/kobs/pull/129): Fix handling of traces in the Jaeger plugin by using some function from the [jaegertracing/jaeger-ui](https://github.com/jaegertracing/jaeger-ui).
 - [#134](https://github.com/kobsio/kobs/pull/134): Fix time in log buckets of the ClickHouse plugin.
 - [#135](https://github.com/kobsio/kobs/pull/135): Fix read and write i/o timeouts for web terminal.
+- [#143](https://github.com/kobsio/kobs/pull/143): Fix a bug in the Jaeger plugin, where results were not refreshed after a user selected another service, operation, etc.
 
 ### Changed
 
@@ -55,6 +56,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#137](https://github.com/kobsio/kobs/pull/137): Change log view for the ClickHouse and Elasticsearch plugin.
 - [#139](https://github.com/kobsio/kobs/pull/139): Update Go and JavaScript dependencies.
 - [#140](https://github.com/kobsio/kobs/pull/140): Fill the chart for the distribution of the log lines with zero value.
+- [#141](https://github.com/kobsio/kobs/pull/141): Add `node_modules` to `.dockerignore`.
+- [#144](https://github.com/kobsio/kobs/pull/144): Avoid timeouts for long running requests in the ClickHouse plugin.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

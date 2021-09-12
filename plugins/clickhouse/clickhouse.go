@@ -3,6 +3,7 @@ package clickhouse
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
@@ -126,11 +127,35 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Query for larger time ranges can took several minutes to be completed. To avoid that the connection is closed for
+	// these long running requests by a load balancer which sits infront of kobs, we are writing a newline character
+	// every 10 seconds. We shouldn't write sth. else, because this would make parsing the response in the React UI more
+	// diffucult and with the newline character parsing works in the same ways as it was before.
+	done := make(chan bool)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			default:
+				if f, ok := w.(http.Flusher); ok {
+					w.Write([]byte("\n"))
+					w.WriteHeader(http.StatusContinue)
+					f.Flush()
+					time.Sleep(10 * time.Second)
+				}
+			}
+		}
+	}()
+
 	documents, fields, count, took, buckets, newOffset, newTimeStart, err := i.GetLogs(r.Context(), query, order, orderBy, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
 	}
+
+	done <- true
 
 	data := struct {
 		Documents []map[string]interface{} `json:"documents"`
