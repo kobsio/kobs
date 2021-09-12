@@ -99,6 +99,8 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
             }}
             tooltip={(tooltip): ReactNode => {
               const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
+              const hasError = isIDatum(tooltip.node.data) ? doesTraceContainsError(tooltip.node.data.trace) : false;
+              const squareColor = hasError ? '#c9190b' : '#0066cc';
 
               return (
                 <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
@@ -115,7 +117,7 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
                       <b>{tooltip.node.data.formattedX}</b>
                     </div>
                     <div>
-                      <SquareIcon color="#0066cc" /> {(tooltip.node.data as unknown as IDatum).label}{' '}
+                      <SquareIcon color={squareColor} /> {(tooltip.node.data as unknown as IDatum).label}{' '}
                       {tooltip.node.data.formattedY}
                     </div>
                   </div>
