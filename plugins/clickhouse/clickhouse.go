@@ -87,12 +87,13 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
 	order := r.URL.Query().Get("order")
 	orderBy := r.URL.Query().Get("orderBy")
+	maxDocuments := r.URL.Query().Get("maxDocuments")
 	limit := r.URL.Query().Get("limit")
 	offset := r.URL.Query().Get("offset")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "order": order, "orderBy": orderBy, "limit": limit, "offset": offset, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
+	log.WithFields(logrus.Fields{"name": name, "query": query, "order": order, "orderBy": orderBy, "maxDocuments": maxDocuments, "limit": limit, "offset": offset, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -111,6 +112,15 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		parsedOffset, err = strconv.ParseInt(offset, 10, 64)
 		if err != nil {
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse offset")
+			return
+		}
+	}
+
+	parsedMaxDocuments := int64(1000)
+	if maxDocuments != "" {
+		parsedMaxDocuments, err = strconv.ParseInt(maxDocuments, 10, 64)
+		if err != nil {
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse maxDocuments")
 			return
 		}
 	}
@@ -151,7 +161,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	documents, fields, count, took, buckets, newOffset, newTimeStart, err := i.GetLogs(r.Context(), query, order, orderBy, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
+	documents, fields, count, took, buckets, newOffset, newTimeStart, err := i.GetLogs(r.Context(), query, order, orderBy, parsedMaxDocuments, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return

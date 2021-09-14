@@ -27,6 +27,7 @@ import LogsFields from './LogsFields';
 interface IPageLogsProps {
   name: string;
   fields?: string[];
+  maxDocuments: string;
   order: string;
   orderBy: string;
   query: string;
@@ -37,6 +38,7 @@ interface IPageLogsProps {
 const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   name,
   fields,
+  maxDocuments,
   order,
   orderBy,
   query,
@@ -46,13 +48,13 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   const history = useHistory();
 
   const { isError, isFetching, isLoading, data, error, fetchNextPage, refetch } = useInfiniteQuery<ILogsData, Error>(
-    ['clickhouse/logs', query, order, orderBy, times],
+    ['clickhouse/logs', query, order, orderBy, maxDocuments, times],
     async ({ pageParam }) => {
       try {
         const response = await fetch(
           `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(
             query,
-          )}&order=${order}&orderBy=${encodeURIComponent(orderBy)}&timeStart=${
+          )}&order=${order}&orderBy=${encodeURIComponent(orderBy)}&maxDocuments=${maxDocuments}&timeStart=${
             pageParam && pageParam.timeStart ? pageParam.timeStart : times.timeStart
           }&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam && pageParam.offset ? pageParam.offset : ''}`,
           {

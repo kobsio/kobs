@@ -73,7 +73,7 @@ func (i *Instance) GetSQL(ctx context.Context, query string) ([][]interface{}, [
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, int64, int64, error) {
+func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, maxDocuments, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, int64, int64, error) {
 	var count int64
 	var buckets []Bucket
 	var documents []map[string]interface{}
@@ -97,28 +97,6 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	// following queries we can reuse the data returned by the first query, because the number of documents shouldn't
 	// change in the selected time range.
 	if offset == 0 {
-		// Determine the number of documents, which are available in the users selected time range. We are using the same
-		// query as to get the documents, but we are skipping the limit and offset parameters.
-		sqlQueryCount := fmt.Sprintf("SELECT count(*) FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s SETTINGS skip_unavailable_shards = 1", i.database, conditions)
-		log.WithFields(logrus.Fields{"query": sqlQueryCount, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql count query")
-		rowsCount, err := i.client.QueryContext(ctx, sqlQueryCount, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
-		if err != nil {
-			return nil, nil, 0, 0, nil, offset, timeStart, err
-		}
-		defer rowsCount.Close()
-
-		for rowsCount.Next() {
-			if err := rowsCount.Scan(&count); err != nil {
-				return nil, nil, 0, 0, nil, offset, timeStart, err
-			}
-		}
-
-		// If the document count returns zero documents we can skip the other database calls and immediately return the
-		// result of the API request.
-		if count == 0 {
-			return nil, nil, count, time.Now().Sub(queryStartTime).Milliseconds(), nil, offset, timeStart, nil
-		}
-
 		// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is
 		// used to render the distribution chart, which shows how many documents/rows are available within a bucket.
 		if timeEnd-timeStart > 30 {
@@ -153,23 +131,33 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 				return buckets[i].Interval < buckets[j].Interval
 			})
 
-			// We are only returning the first 10000 documents in buckets of the given limit, to speed up the following
-			// query to get the documents. For that we are looping through the sorted buckets and using the timestamp from
-			// the bucket where the sum of all newer buckets contains 10000 docuemnts.
-			// This new start time is then also returned in the response and can be used for the "load more" call as the new
-			// start date. In these follow up calls the start time isn't changed again, because we are skipping the count
-			// and bucket queries.
-			// NOTE: If a user has problems with this limit in the future, we can provide an option for this via the
-			// config.yaml file or maybe even better via an additional field in the Options component in the React UI.
+			// We are only returning the first 1000 documents in buckets of the given limit, to speed up the following
+			// query to get the documents. For that we are looping through the sorted buckets and using the timestamp
+			// from the bucket where the sum of all newer buckets contains 1000 docuemnts.
+			// This new start time is then also returned in the response and can be used for the "load more" call as the
+			// new start date. In these follow up calls the start time isn't changed again, because we are skipping the
+			// count and bucket queries.
+			// The default value of 1000 documents can be overwritten by a user, by providing the maxDocuments parameter
+			// in the request.
 			var bucketCount int64
 			for i := len(buckets) - 1; i >= 0; i-- {
 				bucketCount = bucketCount + buckets[i].Count
-				if bucketCount > 10000 {
+				if bucketCount > maxDocuments {
 					timeStart = buckets[i].Interval
 					break
 				}
 			}
+
+			for _, bucket := range buckets {
+				count = count + bucket.Count
+			}
 		}
+	}
+
+	// If the provided max documents option is zero or negative we just return the count and buckets for the provided
+	// query.
+	if maxDocuments <= 0 {
+		return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, offset + limit, timeStart, nil
 	}
 
 	parsedOrder := parseOrder(order, orderBy)

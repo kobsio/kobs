@@ -14,8 +14,6 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
     return <div style={{ height: '250px' }}></div>;
   }
 
-  console.log(buckets);
-
   return (
     <div style={{ height: '250px' }}>
       <ResponsiveBarCanvas

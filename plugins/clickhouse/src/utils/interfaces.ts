@@ -7,6 +7,7 @@ export interface IOptions {
   fields?: string[];
   order: string;
   orderBy: string;
+  maxDocuments: string;
   query: string;
   times: IPluginTimes;
 }
@@ -24,6 +25,7 @@ export interface IQuery {
   fields?: string[];
   order?: string;
   orderBy?: string;
+  maxDocuments?: string;
 }
 
 // ILogsData is the interface of the data returned from our Go API for the logs view of the ClickHouse plugin.
