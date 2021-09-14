@@ -20,9 +20,11 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
 
     history.push({
       pathname: location.pathname,
-      search: `?query=${opts.query}&order=${opts.order}&orderBy=${opts.orderBy}&time=${opts.times.time}&timeEnd=${
-        opts.times.timeEnd
-      }&timeStart=${opts.times.timeStart}${fields.length > 0 ? fields.join('') : ''}`,
+      search: `?query=${opts.query}&order=${opts.order}&orderBy=${opts.orderBy}&maxDocuments=${
+        opts.maxDocuments
+      }&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${
+        fields.length > 0 ? fields.join('') : ''
+      }`,
     });
   };
 
@@ -65,6 +67,7 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
           query={options.query}
           order={options.order}
           orderBy={options.orderBy}
+          maxDocuments={options.maxDocuments}
           fields={options.fields}
           times={options.times}
           setOptions={changeOptions}
@@ -79,6 +82,7 @@ const LogsPage: React.FunctionComponent<IPluginPageProps> = ({ name, displayName
             query={options.query}
             order={options.order}
             orderBy={options.orderBy}
+            maxDocuments={options.maxDocuments}
             selectField={selectField}
             times={options.times}
           />

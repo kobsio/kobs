@@ -50,9 +50,9 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
         const response = await fetch(
           `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(selectedQuery.query)}&order=${
             selectedQuery.order || ''
-          }&orderBy=${encodeURIComponent(selectedQuery.orderBy || '')}&timeStart=${times.timeStart}&timeEnd=${
-            times.timeEnd
-          }&limit=100&offset=${pageParam || ''}`,
+          }&orderBy=${encodeURIComponent(selectedQuery.orderBy || '')}&maxDocuments=${
+            selectedQuery.maxDocuments || ''
+          }&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam || ''}`,
           {
             method: 'get',
           },

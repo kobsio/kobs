@@ -59,6 +59,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#140](https://github.com/kobsio/kobs/pull/140): Fill the chart for the distribution of the log lines with zero value.
 - [#141](https://github.com/kobsio/kobs/pull/141): Add `node_modules` to `.dockerignore`.
 - [#144](https://github.com/kobsio/kobs/pull/144): Avoid timeouts for long running requests in the ClickHouse plugin.
+- [#147](https://github.com/kobsio/kobs/pull/147): Improve query performance for ClickHouse plugin and allow custom values for the maximum amount of documents, which should be returned (see [#133](https://github.com/kobsio/kobs/pull/133)).
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 
