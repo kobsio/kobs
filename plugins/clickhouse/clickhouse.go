@@ -134,16 +134,18 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	done := make(chan bool)
 
 	go func() {
+		ticker := time.NewTicker(10 * time.Second)
+		defer ticker.Stop()
+
 		for {
 			select {
 			case <-done:
 				return
-			default:
+			case <-ticker.C:
 				if f, ok := w.(http.Flusher); ok {
 					w.Write([]byte("\n"))
 					w.WriteHeader(http.StatusContinue)
 					f.Flush()
-					time.Sleep(10 * time.Second)
 				}
 			}
 		}

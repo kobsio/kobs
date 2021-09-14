@@ -16,6 +16,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#112](https://github.com/kobsio/kobs/pull/112): Allow mapping values in Prometheus table panel.
 - [#113](https://github.com/kobsio/kobs/pull/113): Allow and improve customization of axis scaling.
 - [#116](https://github.com/kobsio/kobs/pull/116): Open details when clicking on Jaeger chart nodes.
+- [#117](https://github.com/kobsio/kobs/pull/117): Change Jaeger chart node color to red for erroneous traces.
 - [#119](https://github.com/kobsio/kobs/pull/119): Add Flux plugin to view and reconcile [Flux](https://fluxcd.io) resources.
 - [#122](https://github.com/kobsio/kobs/pull/122): Add ClickHouse plugin, to query show logs ingested by the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) Fluent Bit plugin.
 - [#124](https://github.com/kobsio/kobs/pull/124): Add `sql` mode for ClickHouse to execute raw SQL queries.
@@ -26,7 +27,6 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#132](https://github.com/kobsio/kobs/pull/132): Support the download of log lines in their JSON representation in the ClickHouse and Elasticsearch plugin.
 - [#136](https://github.com/kobsio/kobs/pull/136): Allow custom order for the returned logs and add `!~` and `_exists_` operator for ClickHouse plugin.
 - [#138](https://github.com/kobsio/kobs/pull/138): Add option to stream (follow) logs via WebSockets.
-- [#117](https://github.com/kobsio/kobs/pull/117): Change Jaeger chart node color to red for erroneous traces.
 
 ### Fixed
 
@@ -44,6 +44,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#134](https://github.com/kobsio/kobs/pull/134): Fix time in log buckets of the ClickHouse plugin.
 - [#135](https://github.com/kobsio/kobs/pull/135): Fix read and write i/o timeouts for web terminal.
 - [#143](https://github.com/kobsio/kobs/pull/143): Fix a bug in the Jaeger plugin, where results were not refreshed after a user selected another service, operation, etc.
+- [#146](https://github.com/kobsio/kobs/pull/146): Fix logic for long running requests introduced in [#144](https://github.com/kobsio/kobs/pull/144).
 
 ### Changed
 
