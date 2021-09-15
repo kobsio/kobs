@@ -161,13 +161,15 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+	defer func() {
+		done <- true
+	}()
+
 	documents, fields, count, took, buckets, newOffset, newTimeStart, err := i.GetLogs(r.Context(), query, order, orderBy, parsedMaxDocuments, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
 	}
-
-	done <- true
 
 	data := struct {
 		Documents []map[string]interface{} `json:"documents"`
