@@ -1,22 +1,95 @@
-import React from 'react';
+import { PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
+import { IOptions } from '../../utils/interfaces';
 import { IPluginPageProps } from '@kobsio/plugin-core';
-import LogsPage from './LogsPage';
-import SQLPage from './SQLPage';
+import Logs from './Logs';
+import LogsToolbar from './LogsToolbar';
+import { getOptionsFromSearch } from '../../utils/helpers';
 
-const Page: React.FunctionComponent<IPluginPageProps> = ({
-  name,
-  displayName,
-  description,
-  options,
-}: IPluginPageProps) => {
-  if (options && options.type && options.type === 'logs') {
-    return <LogsPage name={name} displayName={displayName} description={description} />;
-  } else if (options && options.type && options.type === 'sql') {
-    return <SQLPage name={name} displayName={displayName} description={description} />;
-  }
+const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
+  const location = useLocation();
+  const history = useHistory();
+  const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
 
-  return null;
+  // changeOptions is used to change the options for an ClickHouse query. Instead of directly modifying the options
+  // state we change the URL parameters.
+  const changeOptions = (opts: IOptions): void => {
+    const fields = opts.fields ? opts.fields.map((field) => `&field=${field}`) : [];
+
+    history.push({
+      pathname: location.pathname,
+      search: `?query=${opts.query}&order=${opts.order}&orderBy=${opts.orderBy}&maxDocuments=${
+        opts.maxDocuments
+      }&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${
+        fields.length > 0 ? fields.join('') : ''
+      }`,
+    });
+  };
+
+  // selectField is used to add a field as parameter, when it isn't present and to remove a fields from as parameter,
+  // when it is already present via the changeOptions function.
+  const selectField = (field: string): void => {
+    let tmpFields: string[] = [];
+    if (options.fields) {
+      tmpFields = [...options.fields];
+    }
+
+    if (tmpFields.includes(field)) {
+      tmpFields = tmpFields.filter((f) => f !== field);
+    } else {
+      tmpFields.push(field);
+    }
+
+    changeOptions({ ...options, fields: tmpFields });
+  };
+
+  // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
+  // via the changeOptions function. When the search location is changed we modify the options state.
+  useEffect(() => {
+    setOptions(getOptionsFromSearch(location.search));
+  }, [location.search]);
+
+  return (
+    <React.Fragment>
+      <PageSection variant={PageSectionVariants.light}>
+        <Title headingLevel="h6" size="xl">
+          {displayName}
+          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
+            <a href="https://kobs.io/plugins/clickhouse/" target="_blank" rel="noreferrer">
+              Documentation
+            </a>
+          </span>
+        </Title>
+        <p>{description}</p>
+        <LogsToolbar
+          query={options.query}
+          order={options.order}
+          orderBy={options.orderBy}
+          maxDocuments={options.maxDocuments}
+          fields={options.fields}
+          times={options.times}
+          setOptions={changeOptions}
+        />
+      </PageSection>
+
+      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+        {options.query.length > 0 ? (
+          <Logs
+            name={name}
+            fields={options.fields}
+            query={options.query}
+            order={options.order}
+            orderBy={options.orderBy}
+            maxDocuments={options.maxDocuments}
+            selectField={selectField}
+            times={options.times}
+          />
+        ) : null}
+      </PageSection>
+    </React.Fragment>
+  );
 };
 
 export default Page;

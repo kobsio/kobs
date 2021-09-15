@@ -36,41 +36,6 @@ type Instance struct {
 	client   *sql.DB
 }
 
-// GetSQL returns all rows for the user provided SQL query.
-func (i *Instance) GetSQL(ctx context.Context, query string) ([][]interface{}, []string, error) {
-	rows, err := i.client.QueryContext(ctx, query)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer rows.Close()
-
-	var columns []string
-	columns, err = rows.Columns()
-	if err != nil {
-		return nil, nil, err
-	}
-	columnsLen := len(columns)
-
-	var result [][]interface{}
-
-	for rows.Next() {
-		var r []interface{}
-		r = make([]interface{}, columnsLen)
-
-		for i := 0; i < columnsLen; i++ {
-			r[i] = new(interface{})
-		}
-
-		if err := rows.Scan(r...); err != nil {
-			return nil, nil, err
-		}
-
-		result = append(result, r)
-	}
-
-	return result, columns, nil
-}
-
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
 func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, maxDocuments, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, int64, int64, error) {

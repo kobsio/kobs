@@ -1,11 +1,9 @@
 # ClickHouse
 
-!!! warning
-    The ClickHouse plugin is in a very early stage and might be changed heavily in the future.
+!!! note
+    The ClickHouse plugin can only be used with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) Fluent Bit plugin. If you want to use kobs to run raw SQL commands against a ClickHouse instance you can use the [SQL plugin](sql.md).
 
-The [ClickHouse](https://clickhouse.tech) plugin can be used to get the data from a configured ClickHouse instance.
-
-The ClickHouse plugin can be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) output plugin for [Fluent Bit](https://fluentbit.io). For this the `type` in the plugin options must be set to `logs`. You can then use the specified [Query Syntax](#query-syntax) to get the logs from ClickHouse.
+The ClickHouse plugin can be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) output plugin for [Fluent Bit](https://fluentbit.io). You can then use the specified [Query Syntax](#query-syntax) to get the logs from ClickHouse.
 
 ![Logs](assets/clickhouse-logs.png)
 
@@ -15,8 +13,7 @@ The following options can be used for a panel with the ClickHouse plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | Set the type for which you want to use the ClickHouse instance. This must be `sql` or `logs` | Yes |
-| showChart | boolean | If this is `true` the chart with the distribution of the Documents over the selected time range will be shown. This option is only available when type is `logs`. | No |
+| type | string | Set the type which should be used to visualize your logs. Currently this must be `logs`. | Yes |
 | queries | [[]Query](#query) | A list of queries, which can be selected by the user. | Yes |
 
 ### Query
@@ -48,7 +45,6 @@ spec:
           plugin:
             name: clickhouse
             options:
-              showChart: true
               queries:
                 - name: Istio Logs
                   query: "namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content.upstream_cluster~'inbound.*'"

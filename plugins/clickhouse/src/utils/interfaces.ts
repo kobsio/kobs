@@ -15,7 +15,6 @@ export interface IOptions {
 // IPanelOptions are the options for the panel component of the ClickHouse plugin.
 export interface IPanelOptions {
   type: string;
-  showChart?: boolean;
   queries?: IQuery[];
 }
 
@@ -48,10 +47,4 @@ export interface IBucket extends BarDatum {
   interval: number;
   intervalFormatted: string;
   count: number;
-}
-
-// ISQLData is the interface of the data returned from our Go API for the sql view of the ClickHouse plugin.
-export interface ISQLData {
-  columns?: string[];
-  rows?: string[][];
 }
