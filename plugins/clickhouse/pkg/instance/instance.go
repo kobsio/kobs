@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go"
+	_ "github.com/ClickHouse/clickhouse-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -241,15 +241,17 @@ func New(config Config) (*Instance, error) {
 		return nil, err
 	}
 
-	if err := client.Ping(); err != nil {
-		if exception, ok := err.(*clickhouse.Exception); ok {
-			log.WithError(err).WithFields(logrus.Fields{"code": exception.Code, "message": exception.Message, "stacktrace": exception.StackTrace}).Errorf("could not ping database")
-		} else {
-			log.WithError(err).Errorf("could not ping database")
-		}
+	// We do not execute the Ping command anymore to increase the reliability of kobs. So that kobs also starts when
+	// the ClickHouse instance isn't available during the start of kobs.
+	// if err := client.Ping(); err != nil {
+	// 	if exception, ok := err.(*clickhouse.Exception); ok {
+	// 		log.WithError(err).WithFields(logrus.Fields{"code": exception.Code, "message": exception.Message, "stacktrace": exception.StackTrace}).Errorf("could not ping database")
+	// 	} else {
+	// 		log.WithError(err).Errorf("could not ping database")
+	// 	}
 
-		return nil, err
-	}
+	// 	return nil, err
+	// }
 
 	return &Instance{
 		Name:     config.Name,
