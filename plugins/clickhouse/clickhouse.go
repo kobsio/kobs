@@ -25,12 +25,6 @@ var (
 // Config is the structure of the configuration for the clickhouse plugin.
 type Config []instance.Config
 
-type logsResponse struct {
-	Documents []map[string]interface{} `json:"documents"`
-	Fields    []string                 `json:"fields"`
-	Offset    int64                    `json:"offset"`
-}
-
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
@@ -46,35 +40,6 @@ func (router *Router) getInstance(name string) *instance.Instance {
 	}
 
 	return nil
-}
-
-func (router *Router) getSQL(w http.ResponseWriter, r *http.Request) {
-	name := chi.URLParam(r, "name")
-	query := r.URL.Query().Get("query")
-
-	log.WithFields(logrus.Fields{"name": name, "query": query}).Tracef("getSQL")
-
-	i := router.getInstance(name)
-	if i == nil {
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
-		return
-	}
-
-	rows, columns, err := i.GetSQL(r.Context(), query)
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get result for SQL query")
-		return
-	}
-
-	data := struct {
-		Rows    [][]interface{} `json:"rows"`
-		Columns []string        `json:"columns"`
-	}{
-		rows,
-		columns,
-	}
-
-	render.JSON(w, r, data)
 }
 
 // getLogs implements the special handling when the user selected the "logs" options for the "view" configuration. This
@@ -204,16 +169,11 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 		instances = append(instances, instance)
 
-		var options map[string]interface{}
-		options = make(map[string]interface{})
-		options["type"] = cfg.Type
-
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,
 			DisplayName: cfg.DisplayName,
 			Description: cfg.Description,
 			Type:        "clickhouse",
-			Options:     options,
 		})
 	}
 
@@ -223,7 +183,6 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/sql/{name}", router.getSQL)
 	router.Get("/logs/{name}", router.getLogs)
 
 	return router

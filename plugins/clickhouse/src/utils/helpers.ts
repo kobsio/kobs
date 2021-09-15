@@ -31,13 +31,6 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   };
 };
 
-// getQueryFromSearch is used to get the sql query from a given search location.
-export const getQueryFromSearch = (search: string): string => {
-  const params = new URLSearchParams(search);
-  const query = params.get('query');
-  return query ? query : '';
-};
-
 // formatTimeWrapper is a wrapper for our shared formatTime function. It is needed to convert a given time string to the
 // corresponding timestamp representation, which we need for the formatTime function.
 export const formatTimeWrapper = (time: string): string => {

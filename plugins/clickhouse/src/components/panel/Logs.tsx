@@ -24,18 +24,10 @@ interface ILogsProps {
   title: string;
   description?: string;
   queries: IQuery[];
-  showChart: boolean;
   times: IPluginTimes;
 }
 
-const Logs: React.FunctionComponent<ILogsProps> = ({
-  name,
-  title,
-  description,
-  queries,
-  showChart,
-  times,
-}: ILogsProps) => {
+const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, queries, times }: ILogsProps) => {
   const [showSelect, setShowSelect] = useState<boolean>(false);
   const [selectedQuery, setSelectedQuery] = useState<IQuery>(queries[0]);
 
@@ -138,12 +130,8 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
           </Alert>
         ) : data && data.pages.length > 0 ? (
           <div>
-            {showChart ? (
-              <div>
-                <LogsChart buckets={data.pages[0].buckets} />
-                <p>&nbsp;</p>
-              </div>
-            ) : null}
+            <LogsChart buckets={data.pages[0].buckets} />
+            <p>&nbsp;</p>
 
             <LogsDocuments pages={data.pages} fields={selectedQuery.fields} />
             <p>&nbsp;</p>
