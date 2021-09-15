@@ -12,6 +12,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | opsgenie | [[]Opsgenie](#opsgenie) | Configure the Opsgenie API, which can be used within kobs. | No |
 | prometheus | [[]Prometheus](#prometheus) | Configure multiple Prometheus instances, which can be used within kobs. | No |
 | resources | [Resources](#resources) | Configuration for the resources plugin. | No |
+| sql | [SQL](#sql) | Configure multiple SQL databases, which can be used within kobs. | No |
 
 ## Applications
 
@@ -202,3 +203,24 @@ plugins:
 | webSocket.address | string | The address, which should be used for the WebSocket connection. By default this will be the current host, but it can be overwritten for development purposes. | No |
 | webSocket.allowAllOrigins | boolean | When this is `true`, WebSocket connections are allowed for all origins. This should only be used for development. | No |
 | ephemeralContainers | [[]EphemeralContainer](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#ephemeralcontainer-v1-core) | A list of templates for Ephemeral Containers, which can be used to [debug running pods](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-running-pod/#ephemeral-container). | No |
+
+## SQL
+
+The following config can be used to grant kobs access to a ClickHouse database running at `clickhouse-clickhouse.logging.svc.cluster.local:9000`. To access ClickHouse the user `admin` with the password provided via the `CLICKHOUSE_PASSWORD` environment variable is used.
+
+```yaml
+plugins:
+  sql:
+    - name: sql
+      displayName: SQL
+      connection: tcp://clickhouse-clickhouse.logging.svc.cluster.local:9000?username=admin&password=${CLICKHOUSE_PASSWORD}&database=logs
+      driver: clickhouse
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the ClickHouse instance. | Yes |
+| displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
+| descriptions | string | Description of the ClickHouse instance. | No |
+| connection | string | The connection string, to connect to a SQL database. | Yes |
+| driver | string | The driver which should be used for the database instance. This must be `clickhouse`, `postgres` or `mysql`. | Yes |

@@ -19,6 +19,7 @@ import opsgeniePlugin from '@kobsio/plugin-opsgenie';
 import markdownPlugin from '@kobsio/plugin-markdown';
 import rssPlugin from '@kobsio/plugin-rss';
 import clickhousePlugin from '@kobsio/plugin-clickhouse';
+import sqlPlugin from '@kobsio/plugin-sql';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -36,6 +37,7 @@ ReactDOM.render(
       ...markdownPlugin,
       ...rssPlugin,
       ...clickhousePlugin,
+      ...sqlPlugin,
     }} />
   </React.StrictMode>,
   document.getElementById('root')

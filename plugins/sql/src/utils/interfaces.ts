@@ -1,0 +1,21 @@
+// IOptions is the interface for all options, which can be set for an ClickHouse query.
+export interface IOptions {
+  query: string;
+}
+
+// IPanelOptions are the options for the panel component of the ClickHouse plugin.
+export interface IPanelOptions {
+  type?: string;
+  queries?: IQuery[];
+}
+
+export interface IQuery {
+  name?: string;
+  query?: string;
+}
+
+// ISQLData is the interface of the data returned from our Go API for the get query results call.
+export interface ISQLData {
+  columns?: string[];
+  rows?: string[][];
+}
