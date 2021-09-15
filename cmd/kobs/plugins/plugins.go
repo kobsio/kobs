@@ -23,6 +23,7 @@ import (
 	"github.com/kobsio/kobs/plugins/prometheus"
 	"github.com/kobsio/kobs/plugins/resources"
 	"github.com/kobsio/kobs/plugins/rss"
+	"github.com/kobsio/kobs/plugins/sql"
 	"github.com/kobsio/kobs/plugins/teams"
 )
 
@@ -41,6 +42,7 @@ type Config struct {
 	Markdown      markdown.Config      `json:"markdown"`
 	RSS           rss.Config           `json:"rss"`
 	Clickhouse    clickhouse.Config    `json:"clickhouse"`
+	SQL           sql.Config           `json:"sql"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -76,6 +78,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(flux.Route, flux.Register(clusters, router.plugins, config.Flux))
 	router.Mount(opsgenie.Route, opsgenie.Register(clusters, router.plugins, config.Opsgenie))
 	router.Mount(clickhouse.Route, clickhouse.Register(clusters, router.plugins, config.Clickhouse))
+	router.Mount(sql.Route, sql.Register(clusters, router.plugins, config.SQL))
 	router.Mount(markdown.Route, markdown.Register(clusters, router.plugins, config.Markdown))
 	router.Mount(rss.Route, rss.Register(clusters, router.plugins, config.RSS))
 

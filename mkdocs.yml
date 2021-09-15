@@ -46,6 +46,7 @@ nav:
       - Prometheus: plugins/prometheus.md
       - Resources: plugins/resources.md
       - RSS: plugins/rss.md
+      - SQL: plugins/sql.md
       - Teams: plugins/teams.md
   - Contributing:
       - Getting Started: contributing/getting-started.md
