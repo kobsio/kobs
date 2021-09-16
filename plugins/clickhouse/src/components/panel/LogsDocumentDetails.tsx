@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { Tab, TabTitleText, Tabs } from '@patternfly/react-core';
-import { TableComposable, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
+import { TableComposable, TableVariant, Tbody } from '@patternfly/react-table';
 
 import { Editor } from '@kobsio/plugin-core';
 import { IDocument } from '../../utils/interfaces';
+import LogsDocumentDetailsRow from './LogsDocumentDetailsRow';
 
 export interface ILogsDocumentDetailsProps {
   document: IDocument;
+  addFilter?: (filter: string) => void;
+  selectField?: (field: string) => void;
 }
 
 const LogsDocumentDetails: React.FunctionComponent<ILogsDocumentDetailsProps> = ({
   document,
+  addFilter,
+  selectField,
 }: ILogsDocumentDetailsProps) => {
   const [activeTab, setActiveTab] = useState<string>('table');
 
@@ -26,14 +31,13 @@ const LogsDocumentDetails: React.FunctionComponent<ILogsDocumentDetailsProps> = 
           <TableComposable aria-label="Details" variant={TableVariant.compact} borders={false}>
             <Tbody>
               {Object.keys(document).map((key) => (
-                <Tr key={key}>
-                  <Td noPadding={true} dataLabel="Key">
-                    <b>{key}</b>
-                  </Td>
-                  <Td className="pf-u-text-wrap pf-u-text-break-word" noPadding={true} dataLabel="Value">
-                    <div style={{ whiteSpace: 'pre-wrap' }}>{document[key]}</div>
-                  </Td>
-                </Tr>
+                <LogsDocumentDetailsRow
+                  key={key}
+                  documentKey={key}
+                  documentValue={document[key]}
+                  addFilter={addFilter}
+                  selectField={selectField}
+                />
               ))}
             </Tbody>
           </TableComposable>

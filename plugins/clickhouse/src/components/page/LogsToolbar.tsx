@@ -9,7 +9,7 @@ import {
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IOptionsAdditionalFields, Options, TTime } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
@@ -82,6 +82,11 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
       });
     }
   };
+
+  useEffect(() => {
+    setData({ ...data, query: query });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   return (
     <Toolbar id="clickhouse-logs-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>

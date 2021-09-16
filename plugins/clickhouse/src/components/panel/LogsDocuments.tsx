@@ -7,9 +7,16 @@ import LogsDocument from './LogsDocument';
 interface ILogsDocumentsProps {
   pages: ILogsData[];
   fields?: string[];
+  addFilter?: (filter: string) => void;
+  selectField?: (field: string) => void;
 }
 
-const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({ pages, fields }: ILogsDocumentsProps) => {
+const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
+  pages,
+  fields,
+  addFilter,
+  selectField,
+}: ILogsDocumentsProps) => {
   return (
     <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={false}>
       <Thead>
@@ -28,7 +35,13 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({ pages, fi
         {pages.map((page, pageIndex) =>
           page.documents
             ? page.documents.map((document, documentIndex) => (
-                <LogsDocument key={`${pageIndex}_${documentIndex}`} document={document} fields={fields} />
+                <LogsDocument
+                  key={`${pageIndex}_${documentIndex}`}
+                  document={document}
+                  fields={fields}
+                  addFilter={addFilter}
+                  selectField={selectField}
+                />
               ))
             : null,
         )}

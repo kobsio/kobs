@@ -31,6 +31,7 @@ interface IPageLogsProps {
   order: string;
   orderBy: string;
   query: string;
+  addFilter: (filter: string) => void;
   selectField: (field: string) => void;
   times: IPluginTimes;
 }
@@ -42,6 +43,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   order,
   orderBy,
   query,
+  addFilter,
   selectField,
   times,
 }: IPageLogsProps) => {
@@ -141,7 +143,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
 
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
           <CardBody>
-            <LogsDocuments pages={data.pages} fields={fields} />
+            <LogsDocuments pages={data.pages} fields={fields} addFilter={addFilter} selectField={selectField} />
           </CardBody>
         </Card>
 

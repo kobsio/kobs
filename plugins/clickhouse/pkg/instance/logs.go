@@ -175,7 +175,7 @@ func handleExistsCondition(key string) string {
 		return fmt.Sprintf("%s IS NOT NULL", key)
 	}
 
-	return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] IS NOT NULL AND fields_number.value[indexOf(fields_number.key, '%s')] IS NOT NULL", key, key)
+	return fmt.Sprintf("(has(fields_string.key, '%s') = 1 OR has(fields_number.key, '%s') = 1)", key, key)
 }
 
 func parseOrder(order, orderBy string) string {
