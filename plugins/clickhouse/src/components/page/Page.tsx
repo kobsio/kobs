@@ -45,6 +45,10 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
     changeOptions({ ...options, fields: tmpFields });
   };
 
+  const addFilter = (filter: string): void => {
+    changeOptions({ ...options, query: `${options.query} ${filter}` });
+  };
+
   // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
   // via the changeOptions function. When the search location is changed we modify the options state.
   useEffect(() => {
@@ -83,6 +87,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
             order={options.order}
             orderBy={options.orderBy}
             maxDocuments={options.maxDocuments}
+            addFilter={addFilter}
             selectField={selectField}
             times={options.times}
           />

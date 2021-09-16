@@ -28,6 +28,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#136](https://github.com/kobsio/kobs/pull/136): Allow custom order for the returned logs and add `!~` and `_exists_` operator for ClickHouse plugin.
 - [#138](https://github.com/kobsio/kobs/pull/138): Add option to stream (follow) logs via WebSockets.
 - [#149](https://github.com/kobsio/kobs/pull/149): Add SQL plugin to run queries against a configured SQL database instance. For now we are supporting the `clickhouse`, `postgres` and `mysql` driver.
+- [#151](https://github.com/kobsio/kobs/pull/151): Add actions for in log details view of the ClickHouse, so that users can filter based on the value of a field.
 
 ### Fixed
 
