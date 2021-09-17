@@ -11,7 +11,6 @@ interface IApplicationsGalleryProps {
   clusters: string[];
   namespaces: string[];
   team?: IReference;
-  showDetails?: (details: React.ReactNode) => void;
 }
 
 // ApplicationsGallery is the component to display all applications inside a gallery view.
@@ -19,7 +18,6 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
   clusters,
   namespaces,
   team,
-  showDetails,
 }: IApplicationsGalleryProps) => {
   const times: IPluginTimes = {
     time: 'last15Minutes',
@@ -99,7 +97,7 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
     <Gallery hasGutter={true}>
       {data.map((application, index) => (
         <GalleryItem key={index}>
-          <ApplicationsGalleryItem times={times} application={application} showDetails={showDetails} />
+          <ApplicationsGalleryItem times={times} application={application} />
         </GalleryItem>
       ))}
     </Gallery>

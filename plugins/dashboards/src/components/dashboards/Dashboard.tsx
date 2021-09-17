@@ -1,6 +1,7 @@
 import { Alert, AlertActionLink, AlertVariant, Grid, GridItem, Spinner, Title } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { memo, useContext, useState } from 'react';
+import { InView } from 'react-intersection-observer';
 
 import {
   ClustersContext,
@@ -197,23 +198,39 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                 span={toGridSpans(12, forceDefaultSpan, panel.colSpan)}
                 rowSpan={toGridSpans(1, forceDefaultSpan, panel.rowSpan)}
               >
-                <div
-                  style={
-                    row.size !== undefined && row.size === -1
-                      ? undefined
-                      : { height: rowHeight(row.size, panel.rowSpan), overflow: 'scroll' }
-                  }
-                >
-                  <PluginPanel
-                    defaults={defaults}
-                    times={times}
-                    title={panel.title}
-                    description={panel.description}
-                    name={panel.plugin.name}
-                    options={panel.plugin.options}
-                    showDetails={showDetails}
-                  />
-                </div>
+                <InView>
+                  {({ inView, ref }): React.ReactNode => (
+                    <div ref={ref}>
+                      {inView ? (
+                        <div
+                          style={
+                            row.size !== undefined && row.size === -1
+                              ? undefined
+                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'scroll' }
+                          }
+                        >
+                          <PluginPanel
+                            defaults={defaults}
+                            times={times}
+                            title={panel.title}
+                            description={panel.description}
+                            name={panel.plugin.name}
+                            options={panel.plugin.options}
+                            showDetails={showDetails}
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          style={
+                            row.size !== undefined && row.size === -1
+                              ? undefined
+                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'scroll' }
+                          }
+                        ></div>
+                      )}
+                    </div>
+                  )}
+                </InView>
               </GridItem>
             ))}
           </React.Fragment>
