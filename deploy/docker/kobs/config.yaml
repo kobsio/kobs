@@ -52,10 +52,19 @@ plugins:
         degraded: 1
         failure: 5
 
-  opsgenie:
-    - name: opsgenie
-      displayName: Opsgenie
-      description: On-call and alert management to keep services always on.
-      apiUrl: api.eu.opsgenie.com
-      apiKey: ${OPSGENIE_API_KEY}
-      url: https://<mycompany>.app.eu.opsgenie.com
+  # opsgenie:
+  #   - name: opsgenie
+  #     displayName: Opsgenie
+  #     description: On-call and alert management to keep services always on.
+  #     apiUrl: api.eu.opsgenie.com
+  #     apiKey: ${OPSGENIE_API_KEY}
+  #     url: https://<mycompany>.app.eu.opsgenie.com
+
+  clickhouse:
+    - name: clickhouse-logging
+      displayName: ClickHouse (Logging)
+      description: ClickHouse is a fast open-source OLAP database management system.
+      address: localhost:9000
+      database: logs
+      username: ${CLICKHOUSE_USERNAME}
+      password: ${CLICKHOUSE_PASSWORD}
