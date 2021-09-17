@@ -75,7 +75,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       clusters={options.clusters || [defaults.cluster]}
       namespaces={options.namespaces || [defaults.namespace]}
       team={options.team}
-      showDetails={showDetails}
     />
   );
 
