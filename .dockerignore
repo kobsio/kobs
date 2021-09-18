@@ -5,7 +5,13 @@ app/node_modules
 bin
 deploy
 docs
+node_modules
 plugins/*/lib
 plugins/*/lib-esm
 plugins/*/node_modules
-node_modules
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE
+README.md
+mkdocs.yml
