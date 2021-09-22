@@ -112,14 +112,24 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			for _, namespace := range namespaces {
-				application, err := cluster.GetApplications(r.Context(), namespace)
+			if namespaces == nil {
+				application, err := cluster.GetApplications(r.Context(), "")
 				if err != nil {
 					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get applications")
 					return
 				}
 
 				applications = append(applications, application...)
+			} else {
+				for _, namespace := range namespaces {
+					application, err := cluster.GetApplications(r.Context(), namespace)
+					if err != nil {
+						errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get applications")
+						return
+					}
+
+					applications = append(applications, application...)
+				}
 			}
 		}
 

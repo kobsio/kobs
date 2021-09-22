@@ -93,8 +93,8 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
               style={data.view === 'topology' ? { height: '100%', minHeight: '100%' } : { minHeight: '100%' }}
               variant={PageSectionVariants.default}
             >
-              {data.clusters.length === 0 || data.namespaces.length === 0 ? (
-                <Alert variant={AlertVariant.info} title="Select clusters and namespaces">
+              {data.clusters.length === 0 ? (
+                <Alert variant={AlertVariant.info} title="You have to select at least one cluster">
                   <p>Select a list of clusters and namespaces from the toolbar.</p>
                 </Alert>
               ) : (
