@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-NOTE: As semantic versioning states all 0.y.z releases can contain breaking changes in API (flags, grpc API, any backward compatibility). We use :warning: *Breaking change:* :warning: to mark changes that are not backward compatible (relates only to v0.y.z releases).
+NOTE: As semantic versioning states all 0.y.z releases can contain breaking changes in API (flags, grpc API, any backward compatibility). We use :warning: _Breaking change:_ :warning: to mark changes that are not backward compatible (relates only to v0.y.z releases).
 
 ## Unreleased
 
@@ -50,11 +50,11 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Changed
 
-- [#106](https://github.com/kobsio/kobs/pull/106): :warning: *Breaking change:* :warning: Change Prometheus sparkline chart to allow the usage of labels.
+- [#106](https://github.com/kobsio/kobs/pull/106): :warning: _Breaking change:_ :warning: Change Prometheus sparkline chart to allow the usage of labels.
 - [#107](https://github.com/kobsio/kobs/pull/107): Add new option for Prometheus chart legend and change formatting of values.
 - [#108](https://github.com/kobsio/kobs/pull/108): Improve tooltip position in all nivo charts.
-- [#121](https://github.com/kobsio/kobs/pull/121): :warning: *Breaking change:* :warning: Allow multiple queries in the panel options for the Elasticsearch plugin.
-- [#130](https://github.com/kobsio/kobs/pull/130): :warning: *Breaking change:* :warning: Allow multiple queries in the panel options for the Jaeger plugin.
+- [#121](https://github.com/kobsio/kobs/pull/121): :warning: _Breaking change:_ :warning: Allow multiple queries in the panel options for the Elasticsearch plugin.
+- [#130](https://github.com/kobsio/kobs/pull/130): :warning: _Breaking change:_ :warning: Allow multiple queries in the panel options for the Jaeger plugin.
 - [#133](https://github.com/kobsio/kobs/pull/133): Improve querie performance to get logs from ClickHouse.
 - [#137](https://github.com/kobsio/kobs/pull/137): Change log view for the ClickHouse and Elasticsearch plugin.
 - [#139](https://github.com/kobsio/kobs/pull/139): Update Go and JavaScript dependencies.
@@ -63,8 +63,9 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#144](https://github.com/kobsio/kobs/pull/144): Avoid timeouts for long running requests in the ClickHouse plugin.
 - [#147](https://github.com/kobsio/kobs/pull/147): Improve query performance for ClickHouse plugin and allow custom values for the maximum amount of documents, which should be returned (see [#133](https://github.com/kobsio/kobs/pull/133)).
 - [#148](https://github.com/kobsio/kobs/pull/148): Improve reliability of kobs, by do not checking the database connection for a configured ClickHouse instance.
-- [#150](https://github.com/kobsio/kobs/pull/150): :warning: *Breaking change:* :warning: The ClickHouse plugin can now only be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) output plugin for [Fluent Bit](https://fluentbit.io). For raw SQL queries against a ClickHouse instance the SQL plugin added in [#149](https://github.com/kobsio/kobs/pull/149) can be used.
+- [#150](https://github.com/kobsio/kobs/pull/150): :warning: _Breaking change:_ :warning: The ClickHouse plugin can now only be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) output plugin for [Fluent Bit](https://fluentbit.io). For raw SQL queries against a ClickHouse instance the SQL plugin added in [#149](https://github.com/kobsio/kobs/pull/149) can be used.
 - [#152](https://github.com/kobsio/kobs/pull/152): Improve performance for large dashboards and open Application page in gallery view.
+- [#155](https://github.com/kobsio/kobs/pull/155): Allow users to get all Applications from all namespaces, by allowing an empty namespace list.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 
@@ -107,11 +108,11 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Changed
 
-- [#71](https://github.com/kobsio/kobs/pull/71): :warning: *Breaking change:* :warning: Remove protobuf as requirement and rework project structure for better plugin support.
-- [#73](https://github.com/kobsio/kobs/pull/73): :warning: *Breaking change:* :warning: Add a new version for the Applications and Teams Custom Resource Definitions (v1beta1).
-- [#77](https://github.com/kobsio/kobs/pull/77): :warning: *Breaking change:* :warning: Rework Prometheus plugin.
-- [#78](https://github.com/kobsio/kobs/pull/78): :warning: *Breaking change:* :warning: Rework Elasticsearch plugin.
-- [#79](https://github.com/kobsio/kobs/pull/79): :warning: *Breaking change:* :warning: Rework Jaeger plugin.
+- [#71](https://github.com/kobsio/kobs/pull/71): :warning: _Breaking change:_ :warning: Remove protobuf as requirement and rework project structure for better plugin support.
+- [#73](https://github.com/kobsio/kobs/pull/73): :warning: _Breaking change:_ :warning: Add a new version for the Applications and Teams Custom Resource Definitions (v1beta1).
+- [#77](https://github.com/kobsio/kobs/pull/77): :warning: _Breaking change:_ :warning: Rework Prometheus plugin.
+- [#78](https://github.com/kobsio/kobs/pull/78): :warning: _Breaking change:_ :warning: Rework Elasticsearch plugin.
+- [#79](https://github.com/kobsio/kobs/pull/79): :warning: _Breaking change:_ :warning: Rework Jaeger plugin.
 - [#80](https://github.com/kobsio/kobs/pull/80): Adjust documentation, demo, Helm chart and Kustomize files for the new CRDs and plugins.
 
 ## [v0.3.0](https://github.com/kobsio/kobs/releases/tag/v0.3.0) (2021-06-03)
@@ -146,7 +147,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#61](https://github.com/kobsio/kobs/pull/61): Improve caching logic, by generating the teams and topology graph only when it is requested and not via an additional goroutine.
 - [#62](https://github.com/kobsio/kobs/pull/62): Show the name of a variable within the select box in the Prometheus dashboards.
 - [#64](https://github.com/kobsio/kobs/pull/64): Recreate Pods when ConfigMap in Helm chart is changed.
-- [#67](https://github.com/kobsio/kobs/pull/67): :warning: *Breaking change:* :warning: Adjust Pod and Service labels, which can now be set via the `pod.labels`, `pod.annotations`, `service.labels` and `service.annotations` values.
+- [#67](https://github.com/kobsio/kobs/pull/67): :warning: _Breaking change:_ :warning: Adjust Pod and Service labels, which can now be set via the `pod.labels`, `pod.annotations`, `service.labels` and `service.annotations` values.
 
 ## [v0.2.0](https://github.com/kobsio/kobs/releases/tag/v0.2.0) (2021-04-23)
 
@@ -155,7 +156,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#29](https://github.com/kobsio/kobs/pull/29): Add a new dependencies section to the Application CR. These dependencies are used to show a topology graph for all Applications.
 - [#31](https://github.com/kobsio/kobs/pull/31): Add plugin support for Kubernetes resources.
 - [#32](https://github.com/kobsio/kobs/pull/32): Add support for container logs via the Kubernetes API.
-- [#34](https://github.com/kobsio/kobs/pull/34): Add a new Custom Resource Definition for Teams. Teams can be used to define the ownership for Applications and other Kubernetes resources. :warning: *Breaking change:* :warning: We are now using the `apiextensions.k8s.io/v1` API for the Custom Resource Definitions of kobs.
+- [#34](https://github.com/kobsio/kobs/pull/34): Add a new Custom Resource Definition for Teams. Teams can be used to define the ownership for Applications and other Kubernetes resources. :warning: _Breaking change:_ :warning: We are now using the `apiextensions.k8s.io/v1` API for the Custom Resource Definitions of kobs.
 - [#39](https://github.com/kobsio/kobs/pull/39): Add Opsgenie plugin to view alerts within an Application.
 - [#40](https://github.com/kobsio/kobs/pull/40): Add metric name suggestions for Prometheus plugin.
 - [#41](https://github.com/kobsio/kobs/pull/41): Add overview and Pods tab for resource details.
@@ -178,7 +179,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#6](https://github.com/kobsio/kobs/pull/6): Add Prometheus as datasource for Application metrics.
 - [#8](https://github.com/kobsio/kobs/pull/8): Add new page to directly query a configured Prometheus datasource.
 - [#10](https://github.com/kobsio/kobs/pull/10): Add Elasticsearch as datasource for Application logs.
-- [#12](https://github.com/kobsio/kobs/pull/12): :warning: *Breaking change:* :warning: Add plugin system and readd Prometheus and Elasticsearch as plugins.
+- [#12](https://github.com/kobsio/kobs/pull/12): :warning: _Breaking change:_ :warning: Add plugin system and readd Prometheus and Elasticsearch as plugins.
 - [#13](https://github.com/kobsio/kobs/pull/13): Add Jaeger plugin to show traces for an Application and to compare traces.
 - [#16](https://github.com/kobsio/kobs/pull/16): Add support for multiple queries in the Prometheus plugin page.
 - [#18](https://github.com/kobsio/kobs/pull/18): Add metrics and logs for the gRPC server.
@@ -199,7 +200,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#7](https://github.com/kobsio/kobs/pull/7): Share datasource options between components and allow sharing of URLs.
-- [#11](https://github.com/kobsio/kobs/pull/11): :warning: *Breaking change:* :warning: Refactor cluster and application handling.
+- [#11](https://github.com/kobsio/kobs/pull/11): :warning: _Breaking change:_ :warning: Refactor cluster and application handling.
 - [#17](https://github.com/kobsio/kobs/pull/17): Use location to load applications, which allows user to share their applications view.
 - [#20](https://github.com/kobsio/kobs/pull/20): Rework usage of icons, links handling and drawer layout.
 - [#25](https://github.com/kobsio/kobs/pull/25): Change the URL for the Helm repository to [helm.kobs.io](https://helm.kobs.io).

@@ -146,10 +146,18 @@ func Generate(topology *Topology, clusters, namespaces []string) *Topology {
 	var namespaceNodes []Node
 
 	for _, clusterName := range clusters {
-		for _, namespace := range namespaces {
+		if namespaces == nil {
 			for _, edge := range topology.Edges {
-				if (edge.Data.SourceCluster == clusterName && edge.Data.SourceNamespace == namespace) || (edge.Data.TargetCluster == clusterName && edge.Data.TargetNamespace == namespace) {
+				if (edge.Data.SourceCluster == clusterName) || (edge.Data.TargetCluster == clusterName) {
 					edges = appendEdgeIfMissing(edges, edge)
+				}
+			}
+		} else {
+			for _, namespace := range namespaces {
+				for _, edge := range topology.Edges {
+					if (edge.Data.SourceCluster == clusterName && edge.Data.SourceNamespace == namespace) || (edge.Data.TargetCluster == clusterName && edge.Data.TargetNamespace == namespace) {
+						edges = appendEdgeIfMissing(edges, edge)
+					}
 				}
 			}
 		}
