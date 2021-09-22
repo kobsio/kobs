@@ -43,8 +43,11 @@ jobs:
         with:
           path: |
             node_modules
-            plugins/*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+            */node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Cache Go
         uses: actions/cache@v2
