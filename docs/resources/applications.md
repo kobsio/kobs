@@ -19,6 +19,7 @@ In the following you can found the specification for the Application CRD. On the
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | description | string | Provide a descriptions for the application with additional details. | No |
+| tags | []string | A list of tags to describe the application. | No |
 | links | [[]Link](#link) | A list of links (e.g. a link to the GitHub repository for this application). | No |
 | teams | [[]Team](#team) | A list of teams to define the ownership for the application. | No |
 | dependencies | [[]Dependency](#dependency) | Add other applications as dependencies for this application. This can be used to render a topology graph for your applications. | No |

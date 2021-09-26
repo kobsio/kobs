@@ -177,6 +177,10 @@ spec:
                 - plugin
                 - title
                 type: object
+              tags:
+                items:
+                  type: string
+                type: array
               teams:
                 items:
                   properties:

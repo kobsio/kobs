@@ -1,4 +1,4 @@
-import { Card, CardBody, CardTitle } from '@patternfly/react-core';
+import { Badge, Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
 import { IPluginTimes, LinkWrapper, PluginPreview } from '@kobsio/plugin-core';
@@ -36,10 +36,19 @@ const ApplicationsGalleryItem: React.FunctionComponent<IApplicationsGalleryItemP
                 options={application.preview.plugin.options}
               />
             </div>
-          ) : application.description ? (
-            <div style={{ height: '124px', overflow: 'scroll' }}>{application.description}</div>
           ) : (
-            <div style={{ height: '124px', overflow: 'scroll' }}></div>
+            <div style={{ height: '124px', overflow: 'scroll' }}>
+              {application.tags && (
+                <p>
+                  {application.tags.map((tag) => (
+                    <Badge key={tag} className="pf-u-mr-sm">
+                      {tag.toLowerCase()}
+                    </Badge>
+                  ))}
+                </p>
+              )}
+              {application.description && <p>{application.description}</p>}
+            </div>
           )}
         </CardBody>
       </Card>

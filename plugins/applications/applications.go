@@ -133,6 +133,8 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		// TODO: Check if the user provided a list of tags and filter the applications for this tag.
+
 		log.WithFields(logrus.Fields{"count": len(applications)}).Tracef("getApplications")
 		render.JSON(w, r, applications)
 		return

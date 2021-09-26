@@ -32,6 +32,7 @@ type ApplicationSpec struct {
 	Namespace    string                `json:"namespace,omitempty"`
 	Name         string                `json:"name,omitempty"`
 	Description  string                `json:"description,omitempty"`
+	Tags         []string              `json:"tags,omitempty"`
 	Links        []Link                `json:"links,omitempty"`
 	Teams        []Reference           `json:"teams,omitempty"`
 	Dependencies []Reference           `json:"dependencies,omitempty"`
