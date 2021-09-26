@@ -9,6 +9,7 @@ export interface IApplication {
   namespace: string;
   name: string;
   description?: string;
+  tags?: string[];
   links?: ILink[];
   teams?: IReference[];
   dependencies?: IReference[];

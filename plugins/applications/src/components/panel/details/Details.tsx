@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   ButtonVariant,
   DrawerActions,
@@ -40,7 +41,16 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
 
       <DrawerPanelBody>
         <div>
-          <p>{application.description}</p>
+          {application.tags && (
+            <p>
+              {application.tags.map((tag) => (
+                <Badge key={tag} className="pf-u-mr-sm">
+                  {tag.toLowerCase()}
+                </Badge>
+              ))}
+            </p>
+          )}
+          {application.description && <p>{application.description}</p>}
           {(application.teams && application.teams.length > 0) ||
           (application.dependencies && application.dependencies.length > 0) ||
           (application.links && application.links.length > 0) ? (
