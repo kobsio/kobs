@@ -67,6 +67,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#150](https://github.com/kobsio/kobs/pull/150): :warning: _Breaking change:_ :warning: The ClickHouse plugin can now only be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) output plugin for [Fluent Bit](https://fluentbit.io). For raw SQL queries against a ClickHouse instance the SQL plugin added in [#149](https://github.com/kobsio/kobs/pull/149) can be used.
 - [#152](https://github.com/kobsio/kobs/pull/152): Improve performance for large dashboards and open Application page in gallery view.
 - [#155](https://github.com/kobsio/kobs/pull/155): Allow users to get all Applications from all namespaces, by allowing an empty namespace list.
+- [#157](https://github.com/kobsio/kobs/pull/157): Imporve query performance for ClickHouse plugin.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

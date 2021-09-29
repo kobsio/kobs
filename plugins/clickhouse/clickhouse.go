@@ -45,49 +45,20 @@ func (router *Router) getInstance(name string) *instance.Instance {
 // getLogs implements the special handling when the user selected the "logs" options for the "view" configuration. This
 // options is intended to use together with the kobsio/fluent-bit-clickhouse Fluent Bit plugin and provides a custom
 // query language to get the logs from ClickHouse.
-// Next to the query and time range, a user can also provide a limit and offset to page through all the logs. The limit
-// shouldn't be larger then 1000 and if the offset is empty we use 0, which indicates a new query in our React UI.
 func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 	order := r.URL.Query().Get("order")
 	orderBy := r.URL.Query().Get("orderBy")
-	maxDocuments := r.URL.Query().Get("maxDocuments")
-	limit := r.URL.Query().Get("limit")
-	offset := r.URL.Query().Get("offset")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "order": order, "orderBy": orderBy, "maxDocuments": maxDocuments, "limit": limit, "offset": offset, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
+	log.WithFields(logrus.Fields{"name": name, "query": query, "order": order, "orderBy": orderBy, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
 
 	i := router.getInstance(name)
 	if i == nil {
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
-	}
-
-	parsedLimit, err := strconv.ParseInt(limit, 10, 64)
-	if err != nil || parsedLimit > 1000 {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse limit")
-		return
-	}
-
-	parsedOffset := int64(0)
-	if offset != "" {
-		parsedOffset, err = strconv.ParseInt(offset, 10, 64)
-		if err != nil {
-			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse offset")
-			return
-		}
-	}
-
-	parsedMaxDocuments := int64(1000)
-	if maxDocuments != "" {
-		parsedMaxDocuments, err = strconv.ParseInt(maxDocuments, 10, 64)
-		if err != nil {
-			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse maxDocuments")
-			return
-		}
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
@@ -118,8 +89,13 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 				return
 			case <-ticker.C:
 				if f, ok := w.(http.Flusher); ok {
+					// We do not set the processing status code, so that the queries always are returning a 200. This is
+					// necessary because Go doesn't allow to set a new status code once the header was written.
+					// See: https://github.com/golang/go/issues/36734
+					// For that we also have to handle errors, when the status code is 200 in the React UI.
+					// See plugins/clickhouse/src/components/page/Logs.tsx#L64
+					// w.WriteHeader(http.StatusProcessing)
 					w.Write([]byte("\n"))
-					w.WriteHeader(http.StatusContinue)
 					f.Flush()
 				}
 			}
@@ -130,7 +106,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		done <- true
 	}()
 
-	documents, fields, count, took, buckets, newOffset, newTimeStart, err := i.GetLogs(r.Context(), query, order, orderBy, parsedMaxDocuments, parsedLimit, parsedOffset, parsedTimeStart, parsedTimeEnd)
+	documents, fields, count, took, buckets, err := i.GetLogs(r.Context(), query, order, orderBy, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
@@ -142,16 +118,12 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		Count     int64                    `json:"count"`
 		Took      int64                    `json:"took"`
 		Buckets   []instance.Bucket        `json:"buckets"`
-		Offset    int64                    `json:"offset"`
-		TimeStart int64                    `json:"timeStart"`
 	}{
 		documents,
 		fields,
 		count,
 		took,
 		buckets,
-		newOffset,
-		newTimeStart,
 	}
 
 	render.JSON(w, r, data)

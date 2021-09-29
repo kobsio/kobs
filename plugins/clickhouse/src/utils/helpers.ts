@@ -5,7 +5,6 @@ import { IOptions } from './interfaces';
 export const getOptionsFromSearch = (search: string): IOptions => {
   const params = new URLSearchParams(search);
   const fields = params.getAll('field');
-  const maxDocuments = params.get('maxDocuments');
   const order = params.get('order');
   const orderBy = params.get('orderBy');
   const query = params.get('query');
@@ -15,7 +14,6 @@ export const getOptionsFromSearch = (search: string): IOptions => {
 
   return {
     fields: fields.length > 0 ? fields : undefined,
-    maxDocuments: maxDocuments ? maxDocuments : '',
     order: order ? order : 'ascending',
     orderBy: orderBy ? orderBy : '',
     query: query ? query : '',

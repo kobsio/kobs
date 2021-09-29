@@ -22,13 +22,11 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
   query,
   order,
   orderBy,
-  maxDocuments,
   fields,
   times,
   setOptions,
 }: ILogsToolbarProps) => {
   const [data, setData] = useState<IOptions>({
-    maxDocuments: maxDocuments,
     order: order,
     orderBy: orderBy,
     query: query,
@@ -59,14 +57,13 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
     timeEnd: number,
     timeStart: number,
   ): void => {
-    if (additionalFields && additionalFields.length === 3) {
+    if (additionalFields && additionalFields.length === 2) {
       const tmpData = { ...data };
 
       if (refresh) {
         setOptions({
           ...tmpData,
           fields: fields,
-          maxDocuments: additionalFields[2].value,
           order: additionalFields[1].value,
           orderBy: additionalFields[0].value,
           times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
@@ -75,7 +72,6 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
 
       setData({
         ...tmpData,
-        maxDocuments: additionalFields[2].value,
         order: additionalFields[1].value,
         orderBy: additionalFields[0].value,
         times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
@@ -112,12 +108,6 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
                     type: 'select',
                     value: data.order,
                     values: ['ascending', 'descending'],
-                  },
-                  {
-                    label: 'Max Documents',
-                    name: 'maxDocuments',
-                    placeholder: '1000',
-                    value: data.maxDocuments,
                   },
                 ]}
                 time={data.times.time}
