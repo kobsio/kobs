@@ -1,18 +1,18 @@
-import { TableComposable, TableVariant, Tbody, Th, Thead, Tr } from '@patternfly/react-table';
+import { TableComposable, TableVariant, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
 
-import { ILogsData } from '../../utils/interfaces';
+import { IDocument } from '../../utils/interfaces';
 import LogsDocument from './LogsDocument';
 
 interface ILogsDocumentsProps {
-  pages: ILogsData[];
+  documents?: IDocument[];
   fields?: string[];
   addFilter?: (filter: string) => void;
   selectField?: (field: string) => void;
 }
 
 const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
-  pages,
+  documents,
   fields,
   addFilter,
   selectField,
@@ -31,21 +31,17 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
           <Th />
         </Tr>
       </Thead>
-      <Tbody>
-        {pages.map((page, pageIndex) =>
-          page.documents
-            ? page.documents.map((document, documentIndex) => (
-                <LogsDocument
-                  key={`${pageIndex}_${documentIndex}`}
-                  document={document}
-                  fields={fields}
-                  addFilter={addFilter}
-                  selectField={selectField}
-                />
-              ))
-            : null,
-        )}
-      </Tbody>
+      {documents
+        ? documents.map((document, index) => (
+            <LogsDocument
+              key={index}
+              document={document}
+              fields={fields}
+              addFilter={addFilter}
+              selectField={selectField}
+            />
+          ))
+        : null}
     </TableComposable>
   );
 };

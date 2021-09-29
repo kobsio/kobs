@@ -2,8 +2,6 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Button,
-  ButtonVariant,
   Card,
   CardActions,
   CardBody,
@@ -14,7 +12,7 @@ import {
   GridItem,
   Spinner,
 } from '@patternfly/react-core';
-import { InfiniteData, InfiniteQueryObserverResult, QueryObserverResult, useInfiniteQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -27,7 +25,6 @@ import LogsFields from './LogsFields';
 interface IPageLogsProps {
   name: string;
   fields?: string[];
-  maxDocuments: string;
   order: string;
   orderBy: string;
   query: string;
@@ -39,7 +36,6 @@ interface IPageLogsProps {
 const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   name,
   fields,
-  maxDocuments,
   order,
   orderBy,
   query,
@@ -49,16 +45,16 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
 }: IPageLogsProps) => {
   const history = useHistory();
 
-  const { isError, isFetching, isLoading, data, error, fetchNextPage, refetch } = useInfiniteQuery<ILogsData, Error>(
-    ['clickhouse/logs', query, order, orderBy, maxDocuments, times],
-    async ({ pageParam }) => {
+  const { isError, isFetching, isLoading, data, error, refetch } = useQuery<ILogsData, Error>(
+    ['clickhouse/logs', query, order, orderBy, times],
+    async () => {
       try {
         const response = await fetch(
           `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(
             query,
-          )}&order=${order}&orderBy=${encodeURIComponent(orderBy)}&maxDocuments=${maxDocuments}&timeStart=${
-            pageParam && pageParam.timeStart ? pageParam.timeStart : times.timeStart
-          }&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam && pageParam.offset ? pageParam.offset : ''}`,
+          )}&order=${order}&orderBy=${encodeURIComponent(orderBy)}&timeStart=${times.timeStart}&timeEnd=${
+            times.timeEnd
+          }`,
           {
             method: 'get',
           },
@@ -66,6 +62,14 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
+          // Go doesn't support HTTP status code 102 (processing) followed by another status code, so that the response
+          // always returns 200 when it is running for more then 10 seconds. To be able to show errors we are checking
+          // if the JSON response contains the error field and throwing the error also for 200 responses.
+          // See: https://github.com/golang/go/issues/36734
+          if (json.error) {
+            throw new Error(json.error);
+          }
+
           return json;
         } else {
           if (json.error) {
@@ -79,9 +83,6 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
       }
     },
     {
-      getNextPageParam: (lastPage, pages) => {
-        return { offset: lastPage.offset, timeStart: lastPage.timeStart };
-      },
       keepPreviousData: true,
     },
   );
@@ -102,7 +103,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<InfiniteData<ILogsData>, Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<ILogsData, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -113,7 +114,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
     );
   }
 
-  if (!data || data.pages.length === 0) {
+  if (!data) {
     return null;
   }
 
@@ -121,7 +122,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
     <Grid hasGutter={true}>
       <GridItem sm={12} md={12} lg={3} xl={2} xl2={2}>
         <Card>
-          <LogsFields fields={data.pages[0].fields} selectField={selectField} selectedFields={fields} />
+          <LogsFields fields={data.fields} selectField={selectField} selectedFields={fields} />
         </Card>
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
@@ -129,13 +130,13 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
           <CardHeader>
             <CardHeaderMain>
               <CardTitle>
-                {data.pages[0].count} Documents in {data.pages[0].took} Milliseconds
+                {data.count} Documents in {data.took} Milliseconds
               </CardTitle>
             </CardHeaderMain>
             <CardActions>{isFetching && <Spinner size="md" />}</CardActions>
           </CardHeader>
           <CardBody>
-            <LogsChart buckets={data.pages[0].buckets} />
+            <LogsChart buckets={data.buckets} />
           </CardBody>
         </Card>
 
@@ -143,27 +144,9 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
 
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
           <CardBody>
-            <LogsDocuments pages={data.pages} fields={fields} addFilter={addFilter} selectField={selectField} />
+            <LogsDocuments documents={data.documents} fields={fields} addFilter={addFilter} selectField={selectField} />
           </CardBody>
         </Card>
-
-        <p>&nbsp;</p>
-
-        {data.pages[0].documents && data.pages[0].documents.length > 0 ? (
-          <Card isCompact={true}>
-            <CardBody>
-              <Button
-                variant={ButtonVariant.primary}
-                isBlock={true}
-                isDisabled={isFetching}
-                isLoading={isFetching}
-                onClick={(): Promise<InfiniteQueryObserverResult<ILogsData, Error>> => fetchNextPage()}
-              >
-                Load more
-              </Button>
-            </CardBody>
-          </Card>
-        ) : null}
       </GridItem>
       <p>&nbsp;</p>
     </Grid>

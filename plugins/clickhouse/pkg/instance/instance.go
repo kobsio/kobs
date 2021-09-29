@@ -38,12 +38,15 @@ type Instance struct {
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, maxDocuments, limit, offset, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, int64, int64, error) {
+func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, error) {
 	var count int64
 	var buckets []Bucket
 	var documents []map[string]interface{}
+	var timeConditions string
+
 	fields := defaultFields
 	queryStartTime := time.Now()
+	interval := (timeEnd - timeStart) / 30
 
 	// When the user provides a query, we have to build the additional conditions for the sql query. This is done via
 	// the parseLogsQuery which is responsible for parsing our simple query language and returning the corresponding
@@ -52,77 +55,74 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ma
 	if query != "" {
 		parsedQuery, err := parseLogsQuery(query)
 		if err != nil {
-			return nil, nil, 0, 0, nil, offset, timeStart, err
+			return nil, nil, 0, 0, nil, err
 		}
 
 		conditions = fmt.Sprintf("AND %s", parsedQuery)
+		// conditions = parsedQuery
 	}
 
-	// The count of documents and the buckets are only needed for the first query where the offset is 0. For the
-	// following queries we can reuse the data returned by the first query, because the number of documents shouldn't
-	// change in the selected time range.
-	if offset == 0 {
-		// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is
-		// used to render the distribution chart, which shows how many documents/rows are available within a bucket.
-		if timeEnd-timeStart > 30 {
-			interval := (timeEnd - timeStart) / 30
-			// sqlQueryBuckets := fmt.Sprintf("SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data , count(*) AS count_data FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s GROUP BY interval_data SETTINGS skip_unavailable_shards = 1", interval, i.database, conditions)
-			sqlQueryBuckets := fmt.Sprintf(`SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data , count(*) AS count_data FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s GROUP BY interval_data ORDER BY interval_data WITH FILL FROM toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) TO toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) STEP %d SETTINGS skip_unavailable_shards = 1`, interval, i.database, conditions, timeStart, interval, timeEnd, interval, interval)
-			log.WithFields(logrus.Fields{"query": sqlQueryBuckets, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql buckets query")
-			rowsBuckets, err := i.client.QueryContext(ctx, sqlQueryBuckets, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
-			if err != nil {
-				return nil, nil, 0, 0, nil, offset, timeStart, err
-			}
-			defer rowsBuckets.Close()
+	// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is used
+	// to render the distribution chart, which shows how many documents/rows are available within a bucket.
+	if timeEnd-timeStart > 30 {
+		sqlQueryBuckets := fmt.Sprintf(`SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data , count(*) AS count_data FROM %s.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) %s GROUP BY interval_data ORDER BY interval_data WITH FILL FROM toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) TO toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) STEP %d SETTINGS skip_unavailable_shards = 1`, interval, i.database, timeStart, timeEnd, conditions, timeStart, interval, timeEnd, interval, interval)
+		log.WithFields(logrus.Fields{"query": sqlQueryBuckets}).Tracef("sql query buckets")
+		rowsBuckets, err := i.client.QueryContext(ctx, sqlQueryBuckets)
+		if err != nil {
+			return nil, nil, 0, 0, nil, err
+		}
+		defer rowsBuckets.Close()
 
-			for rowsBuckets.Next() {
-				var intervalData time.Time
-				var countData int64
+		for rowsBuckets.Next() {
+			var intervalData time.Time
+			var countData int64
 
-				if err := rowsBuckets.Scan(&intervalData, &countData); err != nil {
-					return nil, nil, 0, 0, nil, offset, timeStart, err
-				}
-
-				buckets = append(buckets, Bucket{
-					Interval:          intervalData.Unix(),
-					IntervalFormatted: "",
-					Count:             countData,
-					// Formatting is handled on the client side.
-					// IntervalFormatted: intervalData.Format("01-02 15:04:05"),
-				})
+			if err := rowsBuckets.Scan(&intervalData, &countData); err != nil {
+				return nil, nil, 0, 0, nil, err
 			}
 
-			sort.Slice(buckets, func(i, j int) bool {
-				return buckets[i].Interval < buckets[j].Interval
+			buckets = append(buckets, Bucket{
+				Interval:          intervalData.Unix(),
+				IntervalFormatted: "",
+				Count:             countData,
+				// Formatting is handled on the client side.
+				// IntervalFormatted: intervalData.Format("01-02 15:04:05"),
 			})
+		}
 
-			// We are only returning the first 1000 documents in buckets of the given limit, to speed up the following
-			// query to get the documents. For that we are looping through the sorted buckets and using the timestamp
-			// from the bucket where the sum of all newer buckets contains 1000 docuemnts.
-			// This new start time is then also returned in the response and can be used for the "load more" call as the
-			// new start date. In these follow up calls the start time isn't changed again, because we are skipping the
-			// count and bucket queries.
-			// The default value of 1000 documents can be overwritten by a user, by providing the maxDocuments parameter
-			// in the request.
-			var bucketCount int64
-			for i := len(buckets) - 1; i >= 0; i-- {
-				bucketCount = bucketCount + buckets[i].Count
-				if bucketCount > maxDocuments {
-					timeStart = buckets[i].Interval
-					break
+		if err := rowsBuckets.Err(); err != nil {
+			return nil, nil, 0, 0, nil, err
+		}
+
+		sort.Slice(buckets, func(i, j int) bool {
+			return buckets[i].Interval < buckets[j].Interval
+		})
+
+		// We are only returning the first 1000 documents in buckets of the given limit, to speed up the following query
+		// to get the documents. For that we are looping through the sorted buckets and using the timestamp from the
+		// bucket where the sum of all newer buckets contains 1000 docuemnts.
+		// This new start time is then also returned in the response and can be used for the "load more" call as the new
+		// start date. In these follow up calls the start time isn't changed again, because we are skipping the count
+		// and bucket queries.
+		for i := len(buckets) - 1; i >= 0; i-- {
+			if count < 1000 && buckets[i].Count > 0 {
+				if timeConditions == "" {
+					timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", buckets[i].Interval, buckets[i].Interval+interval)
+				} else {
+					timeConditions = fmt.Sprintf("%s OR (timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", timeConditions, buckets[i].Interval, buckets[i].Interval+interval)
 				}
 			}
 
-			for _, bucket := range buckets {
-				count = count + bucket.Count
-			}
+			count = count + buckets[i].Count
 		}
 	}
 
-	// If the provided max documents option is zero or negative we just return the count and buckets for the provided
-	// query.
-	if maxDocuments <= 0 {
-		return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, offset + limit, timeStart, nil
+	log.WithFields(logrus.Fields{"count": count, "buckets": buckets}).Tracef("sql result buckets")
+
+	// If the count of documents is 0 we can already return the result, because the following query wouldn't return any
+	// documents.
+	if count == 0 {
+		return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
 	}
 
 	parsedOrder := parseOrder(order, orderBy)
@@ -130,13 +130,13 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ma
 	// Now we are building and executing our sql query. We always return all fields from the logs table, where the
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
-	sqlQuery := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= ? AND timestamp <= ? %s ORDER BY %s LIMIT %d OFFSET %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, conditions, parsedOrder, limit, offset)
-	log.WithFields(logrus.Fields{"query": sqlQuery, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("sql query")
-	rows, err := i.client.QueryContext(ctx, sqlQuery, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
+	sqlQueryRawLogs := fmt.Sprintf("SELECT %s FROM %s.logs WHERE (%s) %s ORDER BY %s LIMIT 1000 SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, timeConditions, conditions, parsedOrder)
+	log.WithFields(logrus.Fields{"query": sqlQueryRawLogs}).Tracef("sql query raw logs")
+	rowsRawLogs, err := i.client.QueryContext(ctx, sqlQueryRawLogs)
 	if err != nil {
-		return nil, nil, 0, 0, nil, offset, timeStart, err
+		return nil, nil, 0, 0, nil, err
 	}
-	defer rows.Close()
+	defer rowsRawLogs.Close()
 
 	// Now we are going throw all the returned rows and passing them to the Row struct. After that we are converting
 	// each row to a JSON document for the React UI, which contains all the default fields and all the items from the
@@ -144,10 +144,10 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ma
 	// When the offset is 0 (user starts a new query) we are also checking all the fields from the nested fields_string
 	// and fields_number array and adding them to the fields slice. This slice can then be used by the user in our React
 	// UI to show only a list of selected fields in the table.
-	for rows.Next() {
+	for rowsRawLogs.Next() {
 		var r Row
-		if err := rows.Scan(&r.Timestamp, &r.Cluster, &r.Namespace, &r.App, &r.Pod, &r.Container, &r.Host, &r.FieldsString.Key, &r.FieldsString.Value, &r.FieldsNumber.Key, &r.FieldsNumber.Value, &r.Log); err != nil {
-			return nil, nil, 0, 0, nil, offset, timeStart, err
+		if err := rowsRawLogs.Scan(&r.Timestamp, &r.Cluster, &r.Namespace, &r.App, &r.Pod, &r.Container, &r.Host, &r.FieldsString.Key, &r.FieldsString.Value, &r.FieldsNumber.Key, &r.FieldsNumber.Value, &r.Log); err != nil {
+			return nil, nil, 0, 0, nil, err
 		}
 
 		var document map[string]interface{}
@@ -163,29 +163,25 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ma
 
 		for index, field := range r.FieldsNumber.Key {
 			document[field] = r.FieldsNumber.Value[index]
-
-			if offset == 0 {
-				fields = appendIfMissing(fields, field)
-			}
+			fields = appendIfMissing(fields, field)
 		}
 
 		for index, field := range r.FieldsString.Key {
 			document[field] = r.FieldsString.Value[index]
-
-			if offset == 0 {
-				fields = appendIfMissing(fields, field)
-			}
+			fields = appendIfMissing(fields, field)
 		}
 
 		documents = append(documents, document)
 	}
 
-	if err := rows.Err(); err != nil {
-		return nil, nil, 0, 0, nil, offset, timeStart, err
+	if err := rowsRawLogs.Err(); err != nil {
+		return nil, nil, 0, 0, nil, err
 	}
 
 	sort.Strings(fields)
-	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, offset + limit, timeStart, nil
+	log.WithFields(logrus.Fields{"documents": len(documents)}).Tracef("sql result raw logs")
+
+	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
 }
 
 // New returns a new ClickHouse instance for the given configuration.

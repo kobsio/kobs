@@ -25,7 +25,6 @@ The following options can be used for a panel with the ClickHouse plugin:
 | fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. This field is only available for the `logs`. | No |
 | order | string | Order for the returned logs. Must be `ascending` or `descending`. The default value for this field is `descending`. | No |
 | orderBy | string | The name of the field, by which the results should be orderd. The default value for this field is `timestamp`. | No |
-| maxDocuments | string | The maximum amount of documents, which should be returned. The default value for this field is `1000`. | No |
 
 ```yaml
 ---

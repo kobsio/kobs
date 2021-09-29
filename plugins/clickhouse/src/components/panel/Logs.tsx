@@ -2,15 +2,13 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Button,
-  ButtonVariant,
   Select,
   SelectOption,
   SelectOptionObject,
   SelectVariant,
   Spinner,
 } from '@patternfly/react-core';
-import { InfiniteData, InfiniteQueryObserverResult, QueryObserverResult, useInfiniteQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 
 import { ILogsData, IQuery } from '../../utils/interfaces';
@@ -31,9 +29,9 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
   const [showSelect, setShowSelect] = useState<boolean>(false);
   const [selectedQuery, setSelectedQuery] = useState<IQuery>(queries[0]);
 
-  const { isError, isFetching, isLoading, data, error, fetchNextPage, refetch } = useInfiniteQuery<ILogsData, Error>(
+  const { isError, isFetching, isLoading, data, error, refetch } = useQuery<ILogsData, Error>(
     ['clickhouse/logs', selectedQuery, times],
-    async ({ pageParam }) => {
+    async () => {
       try {
         if (!selectedQuery.query) {
           throw new Error('Query is missing');
@@ -42,9 +40,9 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
         const response = await fetch(
           `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(selectedQuery.query)}&order=${
             selectedQuery.order || ''
-          }&orderBy=${encodeURIComponent(selectedQuery.orderBy || '')}&maxDocuments=${
-            selectedQuery.maxDocuments || ''
-          }&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&limit=100&offset=${pageParam || ''}`,
+          }&orderBy=${encodeURIComponent(selectedQuery.orderBy || '')}&timeStart=${times.timeStart}&timeEnd=${
+            times.timeEnd
+          }`,
           {
             method: 'get',
           },
@@ -52,6 +50,10 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
+          if (json.error) {
+            throw new Error(json.error);
+          }
+
           return json;
         } else {
           if (json.error) {
@@ -65,7 +67,6 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
       }
     },
     {
-      getNextPageParam: (lastPage, pages) => lastPage.offset,
       keepPreviousData: true,
     },
   );
@@ -83,9 +84,13 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
 
   return (
     <PluginCard
-      title={title}
+      title={
+        data && data.count !== undefined && data.took !== undefined
+          ? `${title} (${data.count} Documents in ${data.took} Milliseconds)`
+          : title
+      }
       description={description}
-      actions={<LogsActions name={name} queries={queries} times={times} />}
+      actions={<LogsActions name={name} queries={queries} times={times} isFetching={isFetching} />}
     >
       <div>
         {queries.length > 1 ? (
@@ -118,9 +123,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
             title="Could not get logs"
             actionLinks={
               <React.Fragment>
-                <AlertActionLink
-                  onClick={(): Promise<QueryObserverResult<InfiniteData<ILogsData>, Error>> => refetch()}
-                >
+                <AlertActionLink onClick={(): Promise<QueryObserverResult<ILogsData, Error>> => refetch()}>
                   Retry
                 </AlertActionLink>
               </React.Fragment>
@@ -128,25 +131,12 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
           >
             <p>{error?.message}</p>
           </Alert>
-        ) : data && data.pages.length > 0 ? (
+        ) : data ? (
           <div>
-            <LogsChart buckets={data.pages[0].buckets} />
+            <LogsChart buckets={data.buckets} />
             <p>&nbsp;</p>
 
-            <LogsDocuments pages={data.pages} fields={selectedQuery.fields} />
-            <p>&nbsp;</p>
-
-            {data.pages[0].documents && data.pages[0].documents.length > 0 ? (
-              <Button
-                variant={ButtonVariant.primary}
-                isBlock={true}
-                isDisabled={isFetching}
-                isLoading={isFetching}
-                onClick={(): Promise<InfiniteQueryObserverResult<ILogsData, Error>> => fetchNextPage()}
-              >
-                Load more
-              </Button>
-            ) : null}
+            <LogsDocuments documents={data.documents} fields={selectedQuery.fields} />
           </div>
         ) : null}
       </div>
