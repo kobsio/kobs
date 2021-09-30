@@ -80,9 +80,9 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
   };
 
   useEffect(() => {
-    setData({ ...data, query: query, times: times });
+    setData({ ...data, order: order, orderBy: orderBy, query: query, times: times });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, times]);
+  }, [order, orderBy, query, times]);
 
   return (
     <Toolbar id="clickhouse-logs-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>

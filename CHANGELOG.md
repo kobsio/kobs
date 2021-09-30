@@ -31,6 +31,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#151](https://github.com/kobsio/kobs/pull/151): Add actions for in log details view of the ClickHouse, so that users can filter based on the value of a field.
 - [#156](https://github.com/kobsio/kobs/pull/156): Add tags for applications.
 - [#159](https://github.com/kobsio/kobs/pull/159): Allow users to select a time range within the logs chart in the ClickHouse plugin.
+- [#160](https://github.com/kobsio/kobs/pull/160): Allow users to sort the returned logs within the documents table in the ClickHouse plugin.
 
 ### Fixed
 
