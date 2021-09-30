@@ -30,6 +30,7 @@ interface IPageLogsProps {
   query: string;
   addFilter: (filter: string) => void;
   changeTime: (times: IPluginTimes) => void;
+  changeOrder: (order: string, orderBy: string) => void;
   selectField: (field: string) => void;
   times: IPluginTimes;
 }
@@ -41,8 +42,9 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   orderBy,
   query,
   addFilter,
-  selectField,
   changeTime,
+  changeOrder,
+  selectField,
   times,
 }: IPageLogsProps) => {
   const history = useHistory();
@@ -146,7 +148,15 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
 
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
           <CardBody>
-            <LogsDocuments documents={data.documents} fields={fields} addFilter={addFilter} selectField={selectField} />
+            <LogsDocuments
+              documents={data.documents}
+              fields={fields}
+              order={order}
+              orderBy={orderBy}
+              addFilter={addFilter}
+              changeOrder={changeOrder}
+              selectField={selectField}
+            />
           </CardBody>
         </Card>
       </GridItem>

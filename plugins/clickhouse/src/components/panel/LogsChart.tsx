@@ -18,8 +18,8 @@ interface ILogsChartProps {
 
 const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTime }: ILogsChartProps) => {
   const refChart = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
+  const [width, setWidth] = useState<number>(1);
+  const [height, setHeight] = useState<number>(1);
 
   // useEffect is executed on every render of this component. This is needed, so that we are able to use a width of 100%
   // and a static height for the chart.
@@ -30,9 +30,9 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
     }
   }, []);
 
-  const data: IDatum[] | undefined =
+  const data: IDatum[] =
     !buckets || buckets.length === 0
-      ? undefined
+      ? []
       : buckets.map((bucket) => {
           return {
             x: new Date(bucket.interval * 1000),
@@ -40,17 +40,11 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
           };
         });
 
-  if (!data) {
-    return <div style={{ height: '250px' }}></div>;
-  }
-
-  const CursorVoronoiContainer = changeTime
-    ? createContainer('voronoi', 'brush')
-    : createContainer('voronoi', 'cursor');
+  const CursorVoronoiContainer = createContainer('voronoi', 'brush');
   const legendData = [{ childName: 'count', name: 'Document Count' }];
 
   return (
-    <div style={{ height: '250px' }} ref={refChart}>
+    <div style={{ height: '250px', width: '100%' }} ref={refChart}>
       <Chart
         containerComponent={
           <CursorVoronoiContainer
@@ -60,7 +54,9 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
             labelComponent={
               <ChartLegendTooltip
                 legendData={legendData}
-                title={(datum: IDatum): string => formatTime(Math.floor(datum.x.getTime() / 1000))}
+                title={(datum: IDatum): string =>
+                  data.length > 0 ? formatTime(Math.floor(datum.x.getTime() / 1000)) : ''
+                }
               />
             }
             mouseFollowTooltips={true}
@@ -94,7 +90,7 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
           }
           showGrid={false}
         />
-        <ChartBar data={data} name="count" barWidth={width / data.length} />
+        <ChartBar data={data} name="count" barWidth={data && width / data.length} />
       </Chart>
     </div>
   );

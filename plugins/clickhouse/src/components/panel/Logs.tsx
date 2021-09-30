@@ -136,7 +136,12 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
             <LogsChart buckets={data.buckets} />
             <p>&nbsp;</p>
 
-            <LogsDocuments documents={data.documents} fields={selectedQuery.fields} />
+            <LogsDocuments
+              documents={data.documents}
+              fields={selectedQuery.fields}
+              order={selectedQuery.order}
+              orderBy={selectedQuery.orderBy}
+            />
           </div>
         ) : null}
       </div>
