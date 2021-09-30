@@ -29,6 +29,7 @@ interface IPageLogsProps {
   orderBy: string;
   query: string;
   addFilter: (filter: string) => void;
+  changeTime: (times: IPluginTimes) => void;
   selectField: (field: string) => void;
   times: IPluginTimes;
 }
@@ -41,6 +42,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   query,
   addFilter,
   selectField,
+  changeTime,
   times,
 }: IPageLogsProps) => {
   const history = useHistory();
@@ -136,7 +138,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
             <CardActions>{isFetching && <Spinner size="md" />}</CardActions>
           </CardHeader>
           <CardBody>
-            <LogsChart buckets={data.buckets} />
+            <LogsChart buckets={data.buckets} changeTime={changeTime} />
           </CardBody>
         </Card>
 
