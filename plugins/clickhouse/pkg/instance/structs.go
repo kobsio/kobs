@@ -33,7 +33,6 @@ type Row struct {
 // Bucket is the struct which is used to represent the distribution of the returned rows for a logs query for the given
 // time range.
 type Bucket struct {
-	Interval          int64  `json:"interval"`
-	IntervalFormatted string `json:"intervalFormatted"`
-	Count             int64  `json:"count"`
+	Interval int64 `json:"interval"`
+	Count    int64 `json:"count"`
 }

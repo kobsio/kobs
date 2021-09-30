@@ -82,11 +82,8 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ti
 			}
 
 			buckets = append(buckets, Bucket{
-				Interval:          intervalData.Unix(),
-				IntervalFormatted: "",
-				Count:             countData,
-				// Formatting is handled on the client side.
-				// IntervalFormatted: intervalData.Format("01-02 15:04:05"),
+				Interval: intervalData.Unix(),
+				Count:    countData,
 			})
 		}
 

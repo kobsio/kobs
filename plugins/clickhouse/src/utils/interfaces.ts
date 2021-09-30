@@ -1,5 +1,3 @@
-import { BarDatum } from '@nivo/bar';
-
 import { IPluginTimes } from '@kobsio/plugin-core';
 
 // IOptions is the interface for all options, which can be set for an ClickHouse query.
@@ -41,8 +39,24 @@ export interface IDocument {
   [key: string]: any;
 }
 
-export interface IBucket extends BarDatum {
+export interface IBucket {
   interval: number;
-  intervalFormatted: string;
   count: number;
+}
+
+// IDatum, ILabel and IDomain interfaces are used for the logs chart. IDatum is the formate of the data points required
+// by '@patternfly/react-charts. ILabel is the formate of the label and IDomain is the formate returned by the
+// onBrushDomainChangeEnd function.
+export interface IDatum {
+  x: Date;
+  y: number;
+}
+
+export interface ILabel {
+  datum: IDatum;
+}
+
+export interface IDomain {
+  x: Date[];
+  y: number[];
 }
