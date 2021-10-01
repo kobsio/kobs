@@ -20,7 +20,7 @@ COPY plugins/rss/package.json /kobs/plugins/rss/
 COPY plugins/sql/package.json /kobs/plugins/sql/
 COPY plugins/teams/package.json /kobs/plugins/teams/
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --network-timeout 3600000
 
 
 FROM --platform=linux/amd64 node:14 as app
