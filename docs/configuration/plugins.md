@@ -55,6 +55,7 @@ plugins:
 | address | string | Address of the ClickHouse instance. | Yes |
 | username | string | Username to access a ClickHouse instance. | No |
 | password | string | Password to access a ClickHouse instance. | No |
+| materializedColumns | []string | A list of materialized columns. See [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse#configuration) for more information. | No |
 
 ## Elasticsearch
 
