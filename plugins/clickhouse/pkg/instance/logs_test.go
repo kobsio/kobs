@@ -19,7 +19,7 @@ func TestParseLogsQuery(t *testing.T) {
 		{query: "kubernetes.label_foo_bar ~ 'hello.*'", where: "match(fields_string.value[indexOf(fields_string.key, 'kubernetes.label_foo_bar')], 'hello.*')", isInvalid: false},
 	} {
 		t.Run(tc.query, func(t *testing.T) {
-			parsedWhere, err := parseLogsQuery(tc.query)
+			parsedWhere, err := parseLogsQuery(tc.query, nil)
 			if tc.isInvalid {
 				require.Error(t, err)
 			} else {
