@@ -198,6 +198,53 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ti
 	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
 }
 
+// GetVisualization build an aggregation query for the given parameters and returns the result as slice of label, value
+// pairs.
+func (i *Instance) GetVisualization(ctx context.Context, limit int64, groupBy, operation, operationField, order, query string, timeStart, timeEnd int64) ([]VisualizationRow, error) {
+	var data []VisualizationRow
+
+	// As we also do it for the logs query we have to build our where condition for the SQL query first.
+	whereConditions := ""
+	if query != "" {
+		parsedQuery, err := parseLogsQuery(query, i.materializedColumns)
+		if err != nil {
+			return nil, err
+		}
+
+		whereConditions = fmt.Sprintf("timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND %s", timeStart, timeEnd, parsedQuery)
+	}
+
+	// Now we have to transform all the given fields / values into a format, which we can use in our SQL query. This
+	// query is built in the following and then run against ClickHouse. All the returned rows are added to our data
+	// slice and returned, so that we can used it later in the React UI.
+	groupBy = formatField(groupBy, i.materializedColumns)
+	operationField = formatField(operationField, i.materializedColumns)
+	order = formatOrder(order)
+
+	sql := fmt.Sprintf("SELECT %s as label, %s(%s) as value FROM %s.logs WHERE %s GROUP BY %s ORDER BY value %s LIMIT %d SETTINGS skip_unavailable_shards = 1", groupBy, operation, operationField, i.database, whereConditions, groupBy, order, limit)
+	log.WithFields(logrus.Fields{"query": sql}).Tracef("sql query visualization")
+	rows, err := i.client.QueryContext(ctx, sql)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var r VisualizationRow
+		if err := rows.Scan(&r.Label, &r.Value); err != nil {
+			return nil, err
+		}
+
+		data = append(data, r)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 // New returns a new ClickHouse instance for the given configuration.
 func New(config Config) (*Instance, error) {
 	if config.WriteTimeout == "" {

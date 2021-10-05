@@ -2185,6 +2185,15 @@
     "@react-spring/web" "9.2.4"
     lodash "^4.17.21"
 
+"@nivo/arcs@0.73.0":
+  version "0.73.0"
+  resolved "https://registry.yarnpkg.com/@nivo/arcs/-/arcs-0.73.0.tgz#2211a0c41e8f6ed67374aeebdad607fbb3a1db2f"
+  integrity sha512-jIjqr3McQUrDWoP6X4CZh8Tg0HphLZdU6K1IDfna2nkG8Dkr2LcB7Ejt5SFbhff+0SC/hjvjNC//h8vcynl7yA==
+  dependencies:
+    "@nivo/colors" "0.73.0"
+    "@react-spring/web" "9.2.4"
+    d3-shape "^1.3.5"
+
 "@nivo/axes@0.73.0":
   version "0.73.0"
   resolved "https://registry.yarnpkg.com/@nivo/axes/-/axes-0.73.0.tgz#d4982bda3c21d318507e4c61b9cce31549f8c894"
@@ -2260,6 +2269,17 @@
     "@nivo/tooltip" "0.73.0"
     "@nivo/voronoi" "0.73.0"
     "@react-spring/web" "9.2.4"
+    d3-shape "^1.3.5"
+
+"@nivo/pie@^0.73.0":
+  version "0.73.0"
+  resolved "https://registry.yarnpkg.com/@nivo/pie/-/pie-0.73.0.tgz#4370bfdaaded5b0ba159cc544548b02373baf55a"
+  integrity sha512-CWwpK9NSs1hfqvhcVvYJMTk+qD/tuxKDloURjfgJglUOs5m2NT1osDJN64jr02aZ6wZyplkP6WvJuc4K6mej6Q==
+  dependencies:
+    "@nivo/arcs" "0.73.0"
+    "@nivo/colors" "0.73.0"
+    "@nivo/legends" "0.73.0"
+    "@nivo/tooltip" "0.73.0"
     d3-shape "^1.3.5"
 
 "@nivo/recompose@0.73.0":

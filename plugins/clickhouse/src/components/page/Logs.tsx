@@ -22,7 +22,7 @@ import LogsChart from '../panel/LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
 import LogsFields from './LogsFields';
 
-interface IPageLogsProps {
+interface ILogsProps {
   name: string;
   fields?: string[];
   order: string;
@@ -35,7 +35,7 @@ interface IPageLogsProps {
   times: IPluginTimes;
 }
 
-const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
+const Logs: React.FunctionComponent<ILogsProps> = ({
   name,
   fields,
   order,
@@ -46,11 +46,11 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   changeOrder,
   selectField,
   times,
-}: IPageLogsProps) => {
+}: ILogsProps) => {
   const history = useHistory();
 
   const { isError, isFetching, isLoading, data, error, refetch } = useQuery<ILogsData, Error>(
-    ['clickhouse/logs', query, order, orderBy, times],
+    ['clickhouse/logs', name, query, order, orderBy, times],
     async () => {
       try {
         const response = await fetch(
@@ -165,4 +165,4 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   );
 };
 
-export default PageLogs;
+export default Logs;

@@ -9,6 +9,18 @@ export interface IOptions {
   times: IPluginTimes;
 }
 
+// IVisualizationOptions is the interface for all options, which can be set to visualize an aggregation query.
+export interface IVisualizationOptions {
+  query: string;
+  times: IPluginTimes;
+  operationField: string;
+  operation: string;
+  groupBy: string;
+  order: string;
+  limit: string;
+  chart: string;
+}
+
 // IPanelOptions are the options for the panel component of the ClickHouse plugin.
 export interface IPanelOptions {
   type: string;
@@ -59,4 +71,10 @@ export interface ILabel {
 export interface IDomain {
   x: Date[];
   y: number[];
+}
+
+// IVisualizationData is the data returned by ClickHouse to render a chart.
+export interface IVisualizationData {
+  label: string;
+  value: number;
 }
