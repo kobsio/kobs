@@ -36,3 +36,9 @@ type Bucket struct {
 	Interval int64 `json:"interval"`
 	Count    int64 `json:"count"`
 }
+
+// VisualizationRow is the structure of a single row for a visualization.
+type VisualizationRow struct {
+	Label string  `json:"label"`
+	Value float64 `json:"value"`
+}

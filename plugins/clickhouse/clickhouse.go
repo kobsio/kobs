@@ -129,6 +129,83 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
+// getVisualization runs an aggregation for the given values and returns an array of data point which can be used in a
+// chart in the React UI. All fields except the limit, start and end time must be strings. The mentioned fields must be
+// numbers so we can parse them. If the groupBy field isn't present we use the operationField as groupBy field.
+func (router *Router) getVisualization(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	groupBy := r.URL.Query().Get("groupBy")
+	limit := r.URL.Query().Get("limit")
+	order := r.URL.Query().Get("order")
+	operation := r.URL.Query().Get("operation")
+	operationField := r.URL.Query().Get("operationField")
+	query := r.URL.Query().Get("query")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+
+	log.WithFields(logrus.Fields{"name": name, "query": query, "groupBy": groupBy, "limit": limit, "operation": operation, "operationField": operationField, "order": order, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	parsedLimit, err := strconv.ParseInt(limit, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse limit")
+		return
+	}
+
+	if groupBy == "" {
+		groupBy = operationField
+	}
+
+	done := make(chan bool)
+
+	go func() {
+		ticker := time.NewTicker(10 * time.Second)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-done:
+				return
+			case <-ticker.C:
+				if f, ok := w.(http.Flusher); ok {
+					// w.WriteHeader(http.StatusProcessing)
+					w.Write([]byte("\n"))
+					f.Flush()
+				}
+			}
+		}
+	}()
+
+	defer func() {
+		done <- true
+	}()
+
+	data, err := i.GetVisualization(r.Context(), parsedLimit, groupBy, operation, operationField, order, query, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
+		return
+	}
+
+	render.JSON(w, r, data)
+}
+
 // Register returns a new router which can be used in the router for the kobs rest api.
 func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
 	var instances []*instance.Instance
@@ -156,6 +233,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	}
 
 	router.Get("/logs/{name}", router.getLogs)
+	router.Get("/visualization/{name}", router.getVisualization)
 
 	return router
 }
