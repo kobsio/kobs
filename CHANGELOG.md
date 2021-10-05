@@ -52,6 +52,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#135](https://github.com/kobsio/kobs/pull/135): Fix read and write i/o timeouts for web terminal.
 - [#143](https://github.com/kobsio/kobs/pull/143): Fix a bug in the Jaeger plugin, where results were not refreshed after a user selected another service, operation, etc.
 - [#146](https://github.com/kobsio/kobs/pull/146): Fix logic for long running requests introduced in [#144](https://github.com/kobsio/kobs/pull/144).
+- [#163](https://github.com/kobsio/kobs/pull/163): Remove legend from logs chart and use `useDimensions` hook.
 
 ### Changed
 

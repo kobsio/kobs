@@ -6,10 +6,10 @@ import {
   ChartThemeColor,
   createContainer,
 } from '@patternfly/react-charts';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 
 import { IBucket, IDatum, IDomain, ILabel } from '../../utils/interfaces';
-import { IPluginTimes, formatTime } from '@kobsio/plugin-core';
+import { IPluginTimes, formatTime, useDimensions } from '@kobsio/plugin-core';
 
 interface ILogsChartProps {
   buckets?: IBucket[];
@@ -18,17 +18,7 @@ interface ILogsChartProps {
 
 const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTime }: ILogsChartProps) => {
   const refChart = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState<number>(1);
-  const [height, setHeight] = useState<number>(1);
-
-  // useEffect is executed on every render of this component. This is needed, so that we are able to use a width of 100%
-  // and a static height for the chart.
-  useEffect(() => {
-    if (refChart && refChart.current) {
-      setWidth(refChart.current.getBoundingClientRect().width);
-      setHeight(refChart.current.getBoundingClientRect().height);
-    }
-  }, []);
+  const chartSize = useDimensions(refChart, { height: 1, width: 1 });
 
   const data: IDatum[] =
     !buckets || buckets.length === 0
@@ -73,13 +63,11 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
             voronoiPadding={0}
           />
         }
-        height={height}
-        legendData={legendData}
-        legendPosition={undefined}
+        height={chartSize.height}
         padding={{ bottom: 30, left: 0, right: 0, top: 0 }}
         scale={{ x: 'time', y: 'linear' }}
         themeColor={ChartThemeColor.multiOrdered}
-        width={width}
+        width={chartSize.width}
       >
         <ChartAxis
           dependentAxis={false}
@@ -90,7 +78,7 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
           }
           showGrid={false}
         />
-        <ChartBar data={data} name="count" barWidth={data && width / data.length} />
+        <ChartBar data={data} name="count" barWidth={data && chartSize.width / data.length} />
       </Chart>
     </div>
   );

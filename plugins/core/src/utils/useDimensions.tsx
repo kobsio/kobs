@@ -5,11 +5,11 @@ export interface IDimensions {
   width: number;
 }
 
-export const useDimensions = (targetRef: React.RefObject<HTMLDivElement>): IDimensions => {
+export const useDimensions = (targetRef: React.RefObject<HTMLDivElement>, defaults?: IDimensions): IDimensions => {
   const getDimensions = (): IDimensions => {
     return {
-      height: targetRef.current ? targetRef.current.offsetHeight : 0,
-      width: targetRef.current ? targetRef.current.offsetWidth : 0,
+      height: targetRef.current ? targetRef.current.offsetHeight : defaults ? defaults.height : 0,
+      width: targetRef.current ? targetRef.current.offsetWidth : defaults ? defaults.height : 0,
     };
   };
 
