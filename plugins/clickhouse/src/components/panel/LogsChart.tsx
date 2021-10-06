@@ -64,19 +64,30 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
           />
         }
         height={chartSize.height}
-        padding={{ bottom: 30, left: 0, right: 0, top: 0 }}
+        padding={{ bottom: 20, left: 0, right: 0, top: 0 }}
         scale={{ x: 'time', y: 'linear' }}
         themeColor={ChartThemeColor.multiOrdered}
         width={chartSize.width}
       >
         <ChartAxis
           dependentAxis={false}
+          tickValues={data
+            .filter((datum, index) => index !== 0 && index !== data.length - 1 && (index + 1) % 2 === 0)
+            .map((datum) => datum.x)}
           tickFormat={(tick: Date): string =>
             `${('0' + (tick.getMonth() + 1)).slice(-2)}-${('0' + tick.getDate()).slice(-2)} ${(
               '0' + tick.getHours()
             ).slice(-2)}:${('0' + tick.getMinutes()).slice(-2)}:${('0' + tick.getSeconds()).slice(-2)}`
           }
           showGrid={false}
+          style={{
+            tickLabels: {
+              fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
+              fontSize: 10,
+              fontWeight: 'bold',
+              padding: 5,
+            },
+          }}
         />
         <ChartBar data={data} name="count" barWidth={data && chartSize.width / data.length} />
       </Chart>

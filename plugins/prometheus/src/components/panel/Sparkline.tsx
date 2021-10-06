@@ -3,11 +3,10 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { ResponsiveLineCanvas } from '@nivo/line';
 
+import { COLOR_SCALE, IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import { IPanelOptions, ISeries } from '../../utils/interfaces';
-import { IPluginTimes, PluginCard } from '@kobsio/plugin-core';
 import { convertMetrics, getMappingValue, roundNumber } from '../../utils/helpers';
 import Actions from './Actions';
-import { COLOR_SCALE } from '../../utils/colors';
 
 interface ISpakrlineProps {
   name: string;

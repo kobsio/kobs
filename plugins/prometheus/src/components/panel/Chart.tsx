@@ -1,11 +1,9 @@
 import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
 import { ScaleSpec } from '@nivo/scales';
-import { SquareIcon } from '@patternfly/react-icons';
-import { TooltipWrapper } from '@nivo/tooltip';
 
+import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
 import { ILabels, IPanelOptions, IYAxis } from '../../utils/interfaces';
-import { COLOR_SCALE } from '../../utils/colors';
 import { formatAxisBottom } from '../../utils/helpers';
 
 const getYScale = (yAxis: IYAxis | undefined, stacked: boolean | undefined, min: number, max: number): ScaleSpec => {
@@ -71,36 +69,19 @@ export const Chart: React.FunctionComponent<IChartProps> = ({
       xFormat="time:%Y-%m-%d %H:%M:%S"
       lineWidth={1}
       margin={{ bottom: 25, left: 50, right: 0, top: 0 }}
-      theme={{
-        background: '#ffffff',
-        fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-        fontSize: 10,
-        textColor: '#000000',
-      }}
+      theme={CHART_THEME}
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       tooltip={(tooltip) => {
         const isFirstHalf = new Date(tooltip.point.data.x).getTime() < (endTime + startTime) / 2;
 
         return (
-          <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
-            <div
-              className="pf-u-box-shadow-sm"
-              style={{
-                background: '#ffffff',
-                fontSize: '12px',
-                padding: '12px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <div>
-                <b>{tooltip.point.data.xFormatted}</b>
-              </div>
-              <div>
-                <SquareIcon color={tooltip.point.color} /> {labels[tooltip.point.id.split('.')[0]]}:{' '}
-                {tooltip.point.data.yFormatted} {options.unit}
-              </div>
-            </div>
-          </TooltipWrapper>
+          <ChartTooltip
+            anchor={isFirstHalf ? 'right' : 'left'}
+            color={tooltip.point.color}
+            label={`${labels[tooltip.point.id.split('.')[0]]}: ${tooltip.point.data.yFormatted} ${options.unit}`}
+            position={[0, 20]}
+            title={tooltip.point.data.xFormatted.toString()}
+          />
         );
       }}
       xScale={{ max: new Date(endTime), min: new Date(startTime), type: 'time' }}

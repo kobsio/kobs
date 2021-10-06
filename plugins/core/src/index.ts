@@ -2,6 +2,8 @@ import 'xterm/css/xterm.css';
 
 export * from './components/app/App';
 
+export * from './components/chart/ChartTooltip';
+
 export * from './components/misc/DrawerLink';
 export * from './components/misc/Editor';
 export * from './components/misc/ExternalLink';
@@ -18,6 +20,8 @@ export * from './context/ClustersContext';
 export * from './context/PluginsContext';
 export * from './context/TerminalsContext';
 
+export * from './utils/chart';
+export * from './utils/colors';
 export * from './utils/manifests';
 export * from './utils/resources';
 export * from './utils/time';

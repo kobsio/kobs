@@ -15,11 +15,11 @@ const Visualization: React.FunctionComponent<IVisualizationProps> = ({ name, opt
   const history = useHistory();
 
   const { isError, isLoading, data, error, refetch } = useQuery<IVisualizationData[], Error>(
-    ['clickhouse/visualization', name, options],
+    ['clickhouse/aggregation', name, options],
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/clickhouse/visualization/${name}?query=${encodeURIComponent(options.query)}&timeStart=${
+          `/api/plugins/clickhouse/aggregation/${name}?query=${encodeURIComponent(options.query)}&timeStart=${
             options.times.timeStart
           }&timeEnd=${options.times.timeEnd}&limit=${options.limit}&groupBy=${options.groupBy}&operation=${
             options.operation
@@ -83,7 +83,7 @@ const Visualization: React.FunctionComponent<IVisualizationProps> = ({ name, opt
   return (
     <Card isCompact={true} style={{ height: '100%' }}>
       <CardBody>
-        <VisualizationChart chart={options.chart} operation={options.operation} data={data} />
+        <VisualizationChart chart={options.chart} data={data} />
       </CardBody>
     </Card>
   );

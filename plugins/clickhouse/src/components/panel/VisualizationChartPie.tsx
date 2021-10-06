@@ -1,26 +1,21 @@
 import React, { useRef } from 'react';
 import { ResponsivePieCanvas } from '@nivo/pie';
-import { SquareIcon } from '@patternfly/react-icons';
-import { TooltipWrapper } from '@nivo/tooltip';
 
-import { COLOR_SCALE } from '../../utils/colors';
+import { CHART_THEME, COLOR_SCALE, ChartTooltip, useDimensions } from '@kobsio/plugin-core';
 import { IVisualizationData } from '../../utils/interfaces';
-import { useDimensions } from '@kobsio/plugin-core';
 
 interface IVisualizationChartPieProps {
-  operation: string;
   data: IVisualizationData[];
 }
 
 const VisualizationChartPie: React.FunctionComponent<IVisualizationChartPieProps> = ({
-  operation,
   data,
 }: IVisualizationChartPieProps) => {
   const refChartContainer = useRef<HTMLDivElement>(null);
   const chartContainerSize = useDimensions(refChartContainer);
 
   return (
-    <div ref={refChartContainer} style={{ height: '100%', width: '100%' }}>
+    <div ref={refChartContainer} style={{ height: '100%', minHeight: '500px', width: '100%' }}>
       <div style={{ height: `${chartContainerSize.height}px`, width: '100%' }}>
         <ResponsivePieCanvas
           arcLabelsSkipAngle={10}
@@ -37,31 +32,16 @@ const VisualizationChartPie: React.FunctionComponent<IVisualizationChartPieProps
           innerRadius={0}
           isInteractive={true}
           margin={{ bottom: 25, left: 25, right: 25, top: 25 }}
-          theme={{
-            background: '#ffffff',
-            fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-            fontSize: 10,
-            textColor: '#000000',
-          }}
+          theme={CHART_THEME}
           // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
           tooltip={(tooltip) => {
             return (
-              <TooltipWrapper anchor="right" position={[0, 5]}>
-                <div
-                  style={{
-                    background: '#151515',
-                    color: '#f0f0f0',
-                    fontFamily: '"RedHatText", "Overpass", overpass, helvetica, arial, sans-serif',
-                    fontSize: '14px',
-                    padding: '8px',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  <div>
-                    <SquareIcon color={tooltip.datum.color} /> {tooltip.datum.label}: {tooltip.datum.value}
-                  </div>
-                </div>
-              </TooltipWrapper>
+              <ChartTooltip
+                anchor="right"
+                color={tooltip.datum.color}
+                label={`${tooltip.datum.label}: ${tooltip.datum.value}`}
+                position={[0, 5]}
+              />
             );
           }}
           value="value"

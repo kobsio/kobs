@@ -1,8 +1,7 @@
 import React from 'react';
 import { ResponsiveBarCanvas } from '@nivo/bar';
-import { SquareIcon } from '@patternfly/react-icons';
-import { TooltipWrapper } from '@nivo/tooltip';
 
+import { CHART_THEME, ChartTooltip } from '@kobsio/plugin-core';
 import { IBucket } from '../../utils/interfaces';
 
 interface ILogsChartProps {
@@ -46,35 +45,19 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsC
         maxValue="auto"
         minValue="auto"
         reverse={false}
-        theme={{
-          background: '#ffffff',
-          fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-          fontSize: 10,
-          textColor: '#000000',
-        }}
+        theme={CHART_THEME}
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         tooltip={(tooltip) => {
           const isFirstHalf = tooltip.index < buckets.length / 2;
 
           return (
-            <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
-              <div
-                className="pf-u-box-shadow-sm"
-                style={{
-                  background: '#ffffff',
-                  fontSize: '12px',
-                  padding: '12px',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <div>
-                  <b>{tooltip.data.time}</b>
-                </div>
-                <div>
-                  <SquareIcon color="#0066cc" /> Documents: {tooltip.data.documents}
-                </div>
-              </div>
-            </TooltipWrapper>
+            <ChartTooltip
+              anchor={isFirstHalf ? 'right' : 'left'}
+              color="#0066cc"
+              label={`Documents: ${tooltip.data.documents}`}
+              position={[0, 20]}
+              title={tooltip.data.time}
+            />
           );
         }}
         valueFormat=""

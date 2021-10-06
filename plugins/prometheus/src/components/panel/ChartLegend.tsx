@@ -4,7 +4,7 @@ import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patter
 import React from 'react';
 import { Serie } from '@nivo/line';
 
-import { getColor } from '../../utils/colors';
+import { getColor } from '@kobsio/plugin-core';
 import { roundNumber } from '../../utils/helpers';
 
 interface IChartLegendProps {

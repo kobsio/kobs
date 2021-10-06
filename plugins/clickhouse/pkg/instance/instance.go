@@ -198,9 +198,9 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ti
 	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
 }
 
-// GetVisualization build an aggregation query for the given parameters and returns the result as slice of label, value
+// GetAggregation build an aggregation query for the given parameters and returns the result as slice of label, value
 // pairs.
-func (i *Instance) GetVisualization(ctx context.Context, limit int64, groupBy, operation, operationField, order, query string, timeStart, timeEnd int64) ([]VisualizationRow, error) {
+func (i *Instance) GetAggregation(ctx context.Context, limit int64, groupBy, operation, operationField, order, query string, timeStart, timeEnd int64) ([]VisualizationRow, error) {
 	var data []VisualizationRow
 
 	// As we also do it for the logs query we have to build our where condition for the SQL query first.
