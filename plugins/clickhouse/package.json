@@ -13,7 +13,6 @@
     "@kobsio/plugin-core": "*",
     "@nivo/bar": "^0.73.1",
     "@nivo/pie": "^0.73.0",
-    "@nivo/tooltip": "^0.73.0",
     "@patternfly/react-charts": "^6.15.23",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.10.11",

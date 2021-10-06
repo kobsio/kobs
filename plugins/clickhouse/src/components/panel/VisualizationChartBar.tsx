@@ -1,19 +1,14 @@
 import { BarDatum, ResponsiveBarCanvas } from '@nivo/bar';
 import React, { useRef } from 'react';
-import { SquareIcon } from '@patternfly/react-icons';
-import { TooltipWrapper } from '@nivo/tooltip';
 
-import { COLOR_SCALE } from '../../utils/colors';
+import { CHART_THEME, COLOR_SCALE, ChartTooltip, useDimensions } from '@kobsio/plugin-core';
 import { IVisualizationData } from '../../utils/interfaces';
-import { useDimensions } from '@kobsio/plugin-core';
 
 interface IVisualizationChartBarProps {
-  operation: string;
   data: IVisualizationData[];
 }
 
 const VisualizationChartBar: React.FunctionComponent<IVisualizationChartBarProps> = ({
-  operation,
   data,
 }: IVisualizationChartBarProps) => {
   const refChartContainer = useRef<HTMLDivElement>(null);
@@ -27,7 +22,7 @@ const VisualizationChartBar: React.FunctionComponent<IVisualizationChartBarProps
   });
 
   return (
-    <div ref={refChartContainer} style={{ height: '100%', width: '100%' }}>
+    <div ref={refChartContainer} style={{ height: '100%', minHeight: '500px', width: '100%' }}>
       <div style={{ height: `${chartContainerSize.height}px`, width: '100%' }}>
         <ResponsiveBarCanvas
           axisLeft={{
@@ -59,33 +54,18 @@ const VisualizationChartBar: React.FunctionComponent<IVisualizationChartBarProps
           maxValue="auto"
           minValue="auto"
           reverse={false}
-          theme={{
-            background: '#ffffff',
-            fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-            fontSize: 10,
-            textColor: '#000000',
-          }}
+          theme={CHART_THEME}
           // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
           tooltip={(tooltip) => {
             const isFirstHalf = tooltip.index < barData.length / 2;
 
             return (
-              <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 5]}>
-                <div
-                  style={{
-                    background: '#151515',
-                    color: '#f0f0f0',
-                    fontFamily: '"RedHatText", "Overpass", overpass, helvetica, arial, sans-serif',
-                    fontSize: '14px',
-                    padding: '8px',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  <div>
-                    <SquareIcon color={tooltip.color} /> {tooltip.data.label}: {tooltip.data.value}
-                  </div>
-                </div>
-              </TooltipWrapper>
+              <ChartTooltip
+                anchor={isFirstHalf ? 'right' : 'left'}
+                color={tooltip.color}
+                label={`${tooltip.data.label}: ${tooltip.data.value}`}
+                position={[0, 5]}
+              />
             );
           }}
           valueFormat=""

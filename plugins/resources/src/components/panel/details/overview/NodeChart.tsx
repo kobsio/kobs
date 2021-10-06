@@ -1,6 +1,8 @@
 import { BarDatum, ResponsiveBarCanvas } from '@nivo/bar';
 import React from 'react';
 
+import { CHART_THEME } from '@kobsio/plugin-core';
+
 interface INodeChartProps {
   data: BarDatum[];
   legend: string;
@@ -37,12 +39,7 @@ const NodeChart: React.FunctionComponent<INodeChartProps> = ({ data, legend }: I
         maxValue="auto"
         minValue="auto"
         reverse={false}
-        theme={{
-          background: '#ffffff',
-          fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-          fontSize: 10,
-          textColor: '#000000',
-        }}
+        theme={CHART_THEME}
         valueFormat=""
         valueScale={{ type: 'linear' }}
       />

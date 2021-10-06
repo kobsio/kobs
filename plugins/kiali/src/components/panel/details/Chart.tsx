@@ -1,9 +1,8 @@
 import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 import { ResponsiveLineCanvas } from '@nivo/line';
-import { SquareIcon } from '@patternfly/react-icons';
 
-import { COLOR_SCALE } from '../../../utils/colors';
+import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
 import { IChart } from '../../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 import { formatAxisBottom } from '../../../utils/helpers';
@@ -39,31 +38,16 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, chart }: IC
             xFormat="time:%Y-%m-%d %H:%M:%S"
             lineWidth={1}
             margin={{ bottom: 25, left: 50, right: 0, top: 0 }}
-            theme={{
-              background: '#ffffff',
-              fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-              fontSize: 10,
-              textColor: '#000000',
-            }}
+            theme={CHART_THEME}
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             tooltip={(tooltip) => (
-              <div
-                className="pf-u-box-shadow-sm"
-                style={{
-                  background: '#ffffff',
-                  fontSize: '12px',
-                  padding: '12px',
-                }}
-              >
-                <div>
-                  <b>{tooltip.point.data.xFormatted}</b>
-                </div>
-                <div>
-                  <SquareIcon color={tooltip.point.color} />{' '}
-                  {chart.series.filter((serie) => serie.id === tooltip.point.serieId)[0].label}:{' '}
-                  {tooltip.point.data.yFormatted} {chart.unit}
-                </div>
-              </div>
+              <ChartTooltip
+                color={tooltip.point.color}
+                label={`${chart.series.filter((serie) => serie.id === tooltip.point.serieId)[0].label}: ${
+                  tooltip.point.data.yFormatted
+                } ${chart.unit}`}
+                title={tooltip.point.data.xFormatted.toString()}
+              />
             )}
             xScale={{ type: 'time' }}
             yScale={{ max: 'auto', min: 'auto', stacked: false, type: 'linear' }}

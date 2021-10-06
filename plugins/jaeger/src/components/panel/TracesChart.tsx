@@ -1,10 +1,9 @@
 import { Card, CardBody } from '@patternfly/react-core';
 import { Datum, Node, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
 import React, { ReactNode, useMemo } from 'react';
-import { SquareIcon } from '@patternfly/react-icons';
-import { TooltipWrapper } from '@nivo/tooltip';
 import Trace from './details/Trace';
 
+import { CHART_THEME, ChartTooltip } from '@kobsio/plugin-core';
 import { ITrace } from '../../utils/interfaces';
 import { doesTraceContainsError } from '../../utils/helpers';
 
@@ -77,12 +76,6 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
             enableGridY={false}
             margin={{ bottom: 25, left: 0, right: 0, top: 0 }}
             nodeSize={{ key: 'size', sizes: [15, 75], values: [min, max] }}
-            theme={{
-              background: '#ffffff',
-              fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-              fontSize: 10,
-              textColor: '#000000',
-            }}
             onClick={(node: Node): void => {
               if (showDetails && isIDatum(node.data)) {
                 showDetails(<Trace name={name} trace={node.data.trace} close={(): void => showDetails(undefined)} />);
@@ -101,31 +94,20 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
               ctx.fillStyle = hasError ? '#c9190b' : props.style.color;
               ctx.fill();
             }}
+            theme={CHART_THEME}
             tooltip={(tooltip): ReactNode => {
               const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
               const hasError = isIDatum(tooltip.node.data) ? doesTraceContainsError(tooltip.node.data.trace) : false;
               const squareColor = hasError ? '#c9190b' : '#0066cc';
 
               return (
-                <TooltipWrapper anchor={isFirstHalf ? 'right' : 'left'} position={[0, 20]}>
-                  <div
-                    className="pf-u-box-shadow-sm"
-                    style={{
-                      background: '#ffffff',
-                      fontSize: '12px',
-                      padding: '12px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    <div>
-                      <b>{tooltip.node.data.formattedX}</b>
-                    </div>
-                    <div>
-                      <SquareIcon color={squareColor} /> {(tooltip.node.data as unknown as IDatum).label}{' '}
-                      {tooltip.node.data.formattedY}
-                    </div>
-                  </div>
-                </TooltipWrapper>
+                <ChartTooltip
+                  anchor={isFirstHalf ? 'right' : 'left'}
+                  color={squareColor}
+                  label={`${(tooltip.node.data as unknown as IDatum).label} ${tooltip.node.data.formattedY}`}
+                  position={[0, 20]}
+                  title={tooltip.node.data.formattedX.toString()}
+                />
               );
             }}
             xFormat="time:%Y-%m-%d %H:%M:%S.%L"
