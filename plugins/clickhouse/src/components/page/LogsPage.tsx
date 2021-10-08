@@ -26,9 +26,9 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
 
     history.push({
       pathname: location.pathname,
-      search: `?query=${opts.query}&order=${opts.order}&orderBy=${opts.orderBy}&time=${opts.times.time}&timeEnd=${
-        opts.times.timeEnd
-      }&timeStart=${opts.times.timeStart}${fields.length > 0 ? fields.join('') : ''}`,
+      search: `?query=${encodeURIComponent(opts.query)}&order=${opts.order}&orderBy=${opts.orderBy}&time=${
+        opts.times.time
+      }&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${fields.length > 0 ? fields.join('') : ''}`,
     });
   };
 
