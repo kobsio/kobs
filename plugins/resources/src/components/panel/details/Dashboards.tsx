@@ -73,7 +73,6 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ resource }: IDa
         namespace: resource.namespace.title,
       }}
       references={dashboards}
-      useDrawer={false}
     />
   );
 };

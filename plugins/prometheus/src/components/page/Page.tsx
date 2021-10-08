@@ -48,7 +48,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         />
       </PageSection>
 
-      <PageSection style={{ height: '100%', minHeight: '100%' }} variant={PageSectionVariants.default}>
+      <PageSection variant={PageSectionVariants.default}>
         {options.queries.length > 0 && options.queries[0] !== '' ? (
           <PageChart name={name} queries={options.queries} resolution={options.resolution} times={options.times} />
         ) : null}

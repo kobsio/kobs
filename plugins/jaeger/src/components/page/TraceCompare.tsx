@@ -14,7 +14,7 @@ interface ITraceCompareProps {
 const TraceCompare: React.FunctionComponent<ITraceCompareProps> = ({ name, trace }: ITraceCompareProps) => {
   return (
     <React.Fragment>
-      <Grid>
+      <Grid style={{ minHeight: 'calc(100% - 78px)' }}>
         <GridItem sm={11} md={11} lg={11} xl={11} xl2={11}>
           <PageSection style={{ height: '100%' }} variant={PageSectionVariants.light}>
             <Title className="pf-u-text-nowrap pf-u-text-truncate" headingLevel="h6" size="xl">
@@ -35,11 +35,9 @@ const TraceCompare: React.FunctionComponent<ITraceCompareProps> = ({ name, trace
           </PageSection>
         </GridItem>
 
-        <GridItem sm={12} md={12} lg={12} xl={12} xl2={12}>
-          <PageSection variant={PageSectionVariants.default}>
-            <div style={{ position: 'relative' }}>
-              <Spans name={name} trace={trace} />
-            </div>
+        <GridItem style={{ minHeight: '100%' }} sm={12} md={12} lg={12} xl={12} xl2={12}>
+          <PageSection style={{ height: '100%' }} variant={PageSectionVariants.default}>
+            <Spans name={name} trace={trace} />
           </PageSection>
         </GridItem>
       </Grid>

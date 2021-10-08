@@ -12,10 +12,10 @@ interface ITracesListProps {
 const TracesList: React.FunctionComponent<ITracesListProps> = ({ name, traces, showDetails }: ITracesListProps) => {
   return (
     <React.Fragment>
-      {traces.map((trace) => (
+      {traces.map((trace, index) => (
         <React.Fragment key={trace.traceID}>
           <TracesListItem name={name} trace={trace} showDetails={showDetails} />
-          <p>&nbsp;</p>
+          {index !== traces.length - 1 ? <p>&nbsp;</p> : null}
         </React.Fragment>
       ))}
     </React.Fragment>

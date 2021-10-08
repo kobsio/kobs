@@ -1,4 +1,14 @@
-import { Divider, Flex, FlexItem, PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
+import {
+  Divider,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  Flex,
+  FlexItem,
+  PageSection,
+  PageSectionVariants,
+  Title,
+} from '@patternfly/react-core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 
@@ -97,22 +107,28 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
         />
       </PageSection>
 
-      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-        {options.query.length > 0 ? (
-          <Logs
-            name={name}
-            fields={options.fields}
-            query={options.query}
-            order={options.order}
-            orderBy={options.orderBy}
-            addFilter={addFilter}
-            changeTime={changeTime}
-            changeOrder={changeOrder}
-            selectField={selectField}
-            times={options.times}
-          />
-        ) : null}
-      </PageSection>
+      <Drawer isExpanded={false}>
+        <DrawerContent panelContent={undefined}>
+          <DrawerContentBody>
+            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+              {options.query.length > 0 ? (
+                <Logs
+                  name={name}
+                  fields={options.fields}
+                  query={options.query}
+                  order={options.order}
+                  orderBy={options.orderBy}
+                  addFilter={addFilter}
+                  changeTime={changeTime}
+                  changeOrder={changeOrder}
+                  selectField={selectField}
+                  times={options.times}
+                />
+              ) : null}
+            </PageSection>
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </React.Fragment>
   );
 };

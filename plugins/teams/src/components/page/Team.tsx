@@ -2,6 +2,9 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
   List,
   ListItem,
   ListVariant,
@@ -10,8 +13,8 @@ import {
   Spinner,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
+import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import React from 'react';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
 import { DashboardsWrapper } from '@kobsio/plugin-dashboards';
@@ -28,6 +31,7 @@ interface ITeamParams {
 const Team: React.FunctionComponent = () => {
   const history = useHistory();
   const params = useParams<ITeamParams>();
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const { isError, isLoading, error, data, refetch } = useQuery<ITeam, Error>(
     ['teams/team', params.cluster, params.namespace, params.name],
@@ -106,11 +110,17 @@ const Team: React.FunctionComponent = () => {
         </div>
       </PageSection>
 
-      {data.dashboards ? (
-        <DashboardsWrapper defaults={data} references={data.dashboards} useDrawer={true} />
-      ) : (
-        <PageSection variant={PageSectionVariants.default}></PageSection>
-      )}
+      <Drawer isExpanded={details !== undefined}>
+        <DrawerContent panelContent={details}>
+          <DrawerContentBody>
+            {data.dashboards ? (
+              <DashboardsWrapper defaults={data} references={data.dashboards} showDetails={setDetails} />
+            ) : (
+              <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}></PageSection>
+            )}
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </React.Fragment>
   );
 };

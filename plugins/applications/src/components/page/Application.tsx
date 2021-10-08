@@ -4,6 +4,9 @@ import {
   AlertVariant,
   Button,
   ButtonVariant,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
   List,
   ListItem,
   ListVariant,
@@ -13,7 +16,7 @@ import {
 } from '@patternfly/react-core';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { QueryObserverResult, useQuery } from 'react-query';
-import React from 'react';
+import React, { useState } from 'react';
 import { UsersIcon } from '@patternfly/react-icons';
 
 import { ExternalLink, Title } from '@kobsio/plugin-core';
@@ -32,6 +35,7 @@ interface IApplicationsParams {
 const Application: React.FunctionComponent = () => {
   const history = useHistory();
   const params = useParams<IApplicationsParams>();
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IApplication, Error>(
     ['applications/application', params.cluster, params.namespace, params.name],
@@ -127,11 +131,17 @@ const Application: React.FunctionComponent = () => {
         </div>
       </PageSection>
 
-      {data.dashboards ? (
-        <DashboardsWrapper defaults={data} references={data.dashboards} useDrawer={true} />
-      ) : (
-        <PageSection variant={PageSectionVariants.default}></PageSection>
-      )}
+      <Drawer isExpanded={details !== undefined}>
+        <DrawerContent panelContent={details}>
+          <DrawerContentBody>
+            {data.dashboards ? (
+              <DashboardsWrapper defaults={data} references={data.dashboards} showDetails={setDetails} />
+            ) : (
+              <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}></PageSection>
+            )}
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </React.Fragment>
   );
 };

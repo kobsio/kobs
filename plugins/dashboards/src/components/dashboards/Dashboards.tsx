@@ -2,10 +2,6 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Drawer,
-  DrawerColorVariant,
-  DrawerContent,
-  DrawerContentBody,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -25,7 +21,7 @@ import { getOptionsFromSearch } from '../../utils/dashboard';
 interface IDashboardsProps {
   defaults: IPluginDefaults;
   references: IReference[];
-  useDrawer: boolean;
+  showDetails?: (details: React.ReactNode) => void;
   forceDefaultSpan: boolean;
 }
 
@@ -35,15 +31,14 @@ interface IDashboardsProps {
 const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   defaults,
   references,
-  useDrawer,
+  showDetails,
   forceDefaultSpan,
 }: IDashboardsProps) => {
   const location = useLocation();
   const history = useHistory();
   const [options, setOptions] = useState<IDashboardsOptions>(
-    getOptionsFromSearch(location.search, references, useDrawer),
+    getOptionsFromSearch(location.search, references, showDetails !== undefined),
   );
-  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   // changeOptions adjusts the search location (query paramters). We do not set the options directly (except when the
   // Dashboards component is rendered inside a drawer), so that a user can share the url and a other users gets the same
@@ -60,10 +55,10 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   // a drawer it can happen that we already show some dashboards in the main view and so we can not rely on the query
   // parameters.
   useEffect(() => {
-    if (useDrawer) {
-      setOptions(getOptionsFromSearch(location.search, references, useDrawer));
+    if (showDetails !== undefined) {
+      setOptions(getOptionsFromSearch(location.search, references, showDetails !== undefined));
     }
-  }, [location.search, references, useDrawer]);
+  }, [location.search, references, showDetails]);
 
   // Fetch all dashboards. The dashboards are available via the data variable. To fetch the dashboards we have to pass
   // the defaults and the references to the API. The defaults are required so that a user can omit the cluster and
@@ -109,7 +104,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   // call.
   if (isError) {
     return (
-      <PageSection variant={PageSectionVariants.default}>
+      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
         <Alert
           variant={AlertVariant.danger}
           title="Could not get dashboards"
@@ -128,16 +123,14 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   }
 
   if (!data) {
-    return <PageSection variant={PageSectionVariants.default}></PageSection>;
+    return <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}></PageSection>;
   }
 
-  // Create the tabs component. If the useDrawer value is false, we only render the tabs. If the value of the useDrawer
-  // variable is true we render the tabs as content inside the drawer component.
-  const tabs = (
+  return (
     <Tabs
       activeKey={options.dashboard}
       onSelect={(event, tabIndex): void =>
-        useDrawer
+        showDetails
           ? changeOptions({ ...options, dashboard: tabIndex.toString() })
           : setOptions({ ...options, dashboard: tabIndex.toString() })
       }
@@ -146,31 +139,19 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
     >
       {data.map((dashboard) => (
         <Tab key={dashboard.title} eventKey={dashboard.title} title={<TabTitleText>{dashboard.title}</TabTitleText>}>
-          <PageSection variant={PageSectionVariants.default} isFilled={true}>
+          <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
             <Dashboard
               activeKey={options.dashboard}
               eventKey={dashboard.title}
               defaults={defaults}
               dashboard={dashboard}
               forceDefaultSpan={forceDefaultSpan}
-              showDetails={useDrawer ? setDetails : undefined}
+              showDetails={showDetails}
             />
           </PageSection>
         </Tab>
       ))}
     </Tabs>
-  );
-
-  if (!useDrawer) {
-    return tabs;
-  }
-
-  return (
-    <Drawer isExpanded={details !== undefined}>
-      <DrawerContent panelContent={details} colorVariant={DrawerColorVariant.light200}>
-        <DrawerContentBody>{tabs}</DrawerContentBody>
-      </DrawerContent>
-    </Drawer>
   );
 };
 

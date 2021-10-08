@@ -1,5 +1,8 @@
 import {
   Divider,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
   Flex,
   FlexItem,
   Grid,
@@ -73,19 +76,24 @@ const VisualizationPage: React.FunctionComponent<IVisualizationPageProps> = ({
         <VisualizationToolbar options={tmpOptions} setOptions={setTmpOptions} />
       </PageSection>
 
-      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-        <Grid hasGutter={true}>
-          <GridItem sm={12} md={12} lg={3} xl={4} xl2={3}>
-            <VisualizationOptions options={tmpOptions} setOptions={setTmpOptions} changeOptions={changeOptions} />
-          </GridItem>
-          <GridItem sm={12} md={12} lg={9} xl={8} xl2={9}>
-            {options.query !== '' && options.operationField !== '' ? (
-              <Visualization name={name} options={options} />
-            ) : null}
-          </GridItem>
-          <p>&nbsp;</p>
-        </Grid>
-      </PageSection>
+      <Drawer isExpanded={false}>
+        <DrawerContent panelContent={undefined}>
+          <DrawerContentBody>
+            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+              <Grid hasGutter={true}>
+                <GridItem sm={12} md={12} lg={3} xl={4} xl2={3}>
+                  <VisualizationOptions options={tmpOptions} setOptions={setTmpOptions} changeOptions={changeOptions} />
+                </GridItem>
+                <GridItem sm={12} md={12} lg={9} xl={8} xl2={9}>
+                  {options.query !== '' && options.operationField !== '' ? (
+                    <Visualization name={name} options={options} />
+                  ) : null}
+                </GridItem>
+              </Grid>
+            </PageSection>
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </React.Fragment>
   );
 };

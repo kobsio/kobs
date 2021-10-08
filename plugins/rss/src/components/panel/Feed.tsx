@@ -71,7 +71,7 @@ const Alerts: React.FunctionComponent<IFeedProps> = ({ urls, sortBy, setDetails 
       {data.map((item, index) => (
         <div key={index}>
           <FeedItem item={item} setDetails={setDetails} />
-          <p>&nbsp;</p>
+          {index !== data.length - 1 ? <p>&nbsp;</p> : null}
         </div>
       ))}
     </div>

@@ -7,7 +7,7 @@ import { IReference } from '../../utils/interfaces';
 interface IDashboardsWrapperProps {
   defaults: IPluginDefaults;
   references: IReference[];
-  useDrawer: boolean;
+  showDetails?: (details: React.ReactNode) => void;
 }
 
 // The DashboardsWrapper component is a wrapper for the Dashboards component. It is used to determine the dimensions for
@@ -18,17 +18,17 @@ interface IDashboardsWrapperProps {
 export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps> = ({
   defaults,
   references,
-  useDrawer,
+  showDetails,
 }: IDashboardsWrapperProps) => {
   const refTabs = useRef<HTMLDivElement>(null);
   const tabsSize = useDimensions(refTabs);
 
   return (
-    <div ref={refTabs}>
+    <div className="kobsio-dashboards-tabs-fill" ref={refTabs}>
       <Dashboards
         defaults={defaults}
         references={references}
-        useDrawer={useDrawer}
+        showDetails={showDetails}
         forceDefaultSpan={tabsSize.width < 1200}
       />
     </div>

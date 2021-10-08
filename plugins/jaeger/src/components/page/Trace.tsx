@@ -65,7 +65,7 @@ const JaegerPageCompare: React.FunctionComponent<IJaegerPageCompareProps> = ({ n
   }
 
   return (
-    <Grid>
+    <Grid style={{ height: '100%' }}>
       <GridItem sm={12} md={12} lg={compareTrace ? 6 : 12} xl={compareTrace ? 6 : 12} xl2={compareTrace ? 6 : 12}>
         {uploadedTrace ? (
           <TraceCompareData name={name} traceData={uploadedTrace} />

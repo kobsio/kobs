@@ -1,4 +1,11 @@
-import { PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  PageSection,
+  PageSectionVariants,
+  Title,
+} from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -37,9 +44,15 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         <PageToolbar query={query} setQuery={changeOptions} />
       </PageSection>
 
-      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-        {query.length > 0 && <PageSQL name={name} query={query} />}
-      </PageSection>
+      <Drawer isExpanded={false}>
+        <DrawerContent panelContent={undefined}>
+          <DrawerContentBody>
+            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+              {query.length > 0 && <PageSQL name={name} query={query} />}
+            </PageSection>
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </React.Fragment>
   );
 };

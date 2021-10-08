@@ -33,7 +33,9 @@ const Trace: React.FunctionComponent<ITraceProps> = ({ name, trace, close }: ITr
       <DrawerPanelBody>
         <TraceHeader trace={trace} />
         <p>&nbsp;</p>
-        <Spans name={name} trace={trace} />
+        <div style={{ height: 'calc(100% - 48px)' }}>
+          <Spans name={name} trace={trace} />
+        </div>
         <p>&nbsp;</p>
       </DrawerPanelBody>
     </DrawerPanelContent>
