@@ -75,6 +75,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#157](https://github.com/kobsio/kobs/pull/157): Imporve query performance for ClickHouse plugin.
 - [#158](https://github.com/kobsio/kobs/pull/158): Improve Pormetheus HTTP metrics and create a metric to find the most used fields in queries.
 - [#164](https://github.com/kobsio/kobs/pull/164): Improve chart handling across plugins.
+- [#167](https://github.com/kobsio/kobs/pull/167): Improve styling across plugins.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 

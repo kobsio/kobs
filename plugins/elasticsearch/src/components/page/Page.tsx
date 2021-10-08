@@ -1,4 +1,11 @@
-import { PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  PageSection,
+  PageSectionVariants,
+  Title,
+} from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -64,17 +71,23 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         <PageToolbar query={options.query} fields={options.fields} times={options.times} setOptions={changeOptions} />
       </PageSection>
 
-      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-        {options.query.length > 0 ? (
-          <PageLogs
-            name={name}
-            fields={options.fields}
-            query={options.query}
-            selectField={selectField}
-            times={options.times}
-          />
-        ) : null}
-      </PageSection>
+      <Drawer isExpanded={false}>
+        <DrawerContent panelContent={undefined}>
+          <DrawerContentBody>
+            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+              {options.query.length > 0 ? (
+                <PageLogs
+                  name={name}
+                  fields={options.fields}
+                  query={options.query}
+                  selectField={selectField}
+                  times={options.times}
+                />
+              ) : null}
+            </PageSection>
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </React.Fragment>
   );
 };

@@ -2,6 +2,9 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
   Gallery,
   GalleryItem,
   PageSection,
@@ -54,42 +57,48 @@ const Teams: React.FunctionComponent<ITeamsProps> = ({ displayName, description 
         <p>{description}</p>
       </PageSection>
 
-      <PageSection style={{ height: '100%', minHeight: '100%' }} variant={PageSectionVariants.default}>
-        {isLoading ? (
-          <div className="pf-u-text-align-center">
-            <Spinner />
-          </div>
-        ) : isError ? (
-          <Alert
-            variant={AlertVariant.danger}
-            title="Could not get teams"
-            actionLinks={
-              <React.Fragment>
-                <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-                <AlertActionLink onClick={(): Promise<QueryObserverResult<ITeam[], Error>> => refetch()}>
-                  Retry
-                </AlertActionLink>
-              </React.Fragment>
-            }
-          >
-            <p>{error?.message}</p>
-          </Alert>
-        ) : data ? (
-          <Gallery hasGutter={true}>
-            {data.map((team, index) => (
-              <GalleryItem key={index}>
-                <TeamsItem
-                  cluster={team.cluster}
-                  namespace={team.namespace}
-                  name={team.name}
-                  description={team.description}
-                  logo={team.logo}
-                />
-              </GalleryItem>
-            ))}
-          </Gallery>
-        ) : null}
-      </PageSection>
+      <Drawer isExpanded={false}>
+        <DrawerContent panelContent={undefined}>
+          <DrawerContentBody>
+            <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+              {isLoading ? (
+                <div className="pf-u-text-align-center">
+                  <Spinner />
+                </div>
+              ) : isError ? (
+                <Alert
+                  variant={AlertVariant.danger}
+                  title="Could not get teams"
+                  actionLinks={
+                    <React.Fragment>
+                      <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
+                      <AlertActionLink onClick={(): Promise<QueryObserverResult<ITeam[], Error>> => refetch()}>
+                        Retry
+                      </AlertActionLink>
+                    </React.Fragment>
+                  }
+                >
+                  <p>{error?.message}</p>
+                </Alert>
+              ) : data ? (
+                <Gallery hasGutter={true}>
+                  {data.map((team, index) => (
+                    <GalleryItem key={index}>
+                      <TeamsItem
+                        cluster={team.cluster}
+                        namespace={team.namespace}
+                        name={team.name}
+                        description={team.description}
+                        logo={team.logo}
+                      />
+                    </GalleryItem>
+                  ))}
+                </Gallery>
+              ) : null}
+            </PageSection>
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </React.Fragment>
   );
 };

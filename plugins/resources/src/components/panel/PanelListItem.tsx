@@ -64,7 +64,6 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
       aria-label={resource.title}
       variant="compact"
       borders={false}
-      isStickyHeader={true}
       cells={resource.columns}
       rows={
         data && data.length > 0 && data[0].cells?.length === resource.columns.length

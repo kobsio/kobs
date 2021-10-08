@@ -1,5 +1,5 @@
 import { Accordion, Card, CardBody } from '@patternfly/react-core';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { ITrace } from '../../../utils/interfaces';
@@ -12,6 +12,15 @@ export interface ISpansProps {
 }
 
 const Spans: React.FunctionComponent<ISpansProps> = ({ name, trace }: ISpansProps) => {
+  const refContainer = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>(0);
+
+  useEffect(() => {
+    if (refContainer.current?.offsetHeight) {
+      setHeight(refContainer.current?.offsetHeight);
+    }
+  }, [refContainer.current?.offsetHeight]);
+
   return (
     <React.Fragment>
       {trace.spans.length <= 100 && (
@@ -39,10 +48,18 @@ const Spans: React.FunctionComponent<ISpansProps> = ({ name, trace }: ISpansProp
         </div>
       )}
 
-      <Card>
-        <Accordion asDefinitionList={false}>
-          <div style={{ height: 'calc(100vh - 76px - 154px - 84px - 72px)' }}>
+      <Card
+        style={{
+          height:
+            trace.spans.length <= 100
+              ? `calc(100% - ${trace.spans.length > 20 ? 100 : trace.spans.length * 5}px - 48px - 24px)`
+              : '100%',
+        }}
+      >
+        <div ref={refContainer} style={{ height: '100%' }}>
+          <Accordion style={{ height: '100%' }} asDefinitionList={false}>
             <Virtuoso
+              style={{ height: `${height}px` }}
               useWindowScroll={false}
               data={trace.spans}
               itemContent={(index, span): React.ReactNode => (
@@ -55,8 +72,8 @@ const Spans: React.FunctionComponent<ISpansProps> = ({ name, trace }: ISpansProp
                 />
               )}
             />
-          </div>
-        </Accordion>
+          </Accordion>
+        </div>
       </Card>
     </React.Fragment>
   );

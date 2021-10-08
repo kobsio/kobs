@@ -69,10 +69,10 @@ const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, times, set
 
   return (
     <div>
-      {data.map((alert) => (
+      {data.map((alert, index) => (
         <div key={alert.id}>
           <AlertsItem name={name} alert={alert} setDetails={setDetails} />
-          <p>&nbsp;</p>
+          {index !== data.length - 1 ? <p>&nbsp;</p> : null}
         </div>
       ))}
     </div>

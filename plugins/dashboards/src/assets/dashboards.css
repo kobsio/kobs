@@ -2,3 +2,11 @@
   background-color: #ffffff;
   margin-top: 0px !important;
 }
+
+.kobsio-dashboards-tabs-fill {
+  height: calc(100% - 40px);
+}
+
+.kobsio-dashboards-tabs-fill .pf-c-tab-content {
+  height: 100% !important;
+}

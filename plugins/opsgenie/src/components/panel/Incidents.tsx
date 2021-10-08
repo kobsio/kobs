@@ -69,10 +69,10 @@ const Incidents: React.FunctionComponent<IIncidentsProps> = ({ name, query, time
 
   return (
     <div>
-      {data.map((incident) => (
+      {data.map((incident, index) => (
         <div key={incident.id}>
           <IncidentsItem name={name} incident={incident} setDetails={setDetails} />
-          <p>&nbsp;</p>
+          {index !== data.length - 1 ? <p>&nbsp;</p> : null}
         </div>
       ))}
     </div>

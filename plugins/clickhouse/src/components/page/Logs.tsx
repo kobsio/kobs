@@ -160,7 +160,6 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
           </CardBody>
         </Card>
       </GridItem>
-      <p>&nbsp;</p>
     </Grid>
   );
 };
