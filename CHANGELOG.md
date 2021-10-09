@@ -34,6 +34,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#160](https://github.com/kobsio/kobs/pull/160): Allow users to sort the returned logs within the documents table in the ClickHouse plugin.
 - [#161](https://github.com/kobsio/kobs/pull/161): Add support for materialized columns, to improve query performance for most frequently queried field.
 - [#162](https://github.com/kobsio/kobs/pull/162): Add support to visualize logs in the ClickHouse plugin.
+- [#170](https://github.com/kobsio/kobs/pull/170): Add Custom Resource Definition for Users.
 
 ### Fixed
 

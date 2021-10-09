@@ -16,16 +16,16 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 
 import { IPluginPageProps, useDebounce } from '@kobsio/plugin-core';
-import { ITeam } from '../../utils/interfaces';
-import TeamsItem from '../page/TeamsItem';
+import { IUser } from '../../utils/interfaces';
+import UsersItem from '../page/UsersItem';
 
 const Home: React.FunctionComponent<IPluginPageProps> = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<ITeam[], Error>(['teams/teams'], async () => {
+  const { isError, isLoading, error, data, refetch } = useQuery<IUser[], Error>(['users/users'], async () => {
     try {
-      const response = await fetch(`/api/plugins/teams/teams`, { method: 'get' });
+      const response = await fetch(`/api/plugins/users/users`, { method: 'get' });
       const json = await response.json();
 
       if (response.status >= 200 && response.status < 300) {
@@ -54,10 +54,10 @@ const Home: React.FunctionComponent<IPluginPageProps> = () => {
     return (
       <Alert
         variant={AlertVariant.danger}
-        title="Could not get teams"
+        title="Could not get users"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<ITeam[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IUser[], Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -75,7 +75,7 @@ const Home: React.FunctionComponent<IPluginPageProps> = () => {
   return (
     <React.Fragment>
       <Card>
-        <Toolbar id="teams-toolbar">
+        <Toolbar id="users-toolbar">
           <ToolbarContent>
             <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
               <ToolbarItem style={{ width: '100%' }}>
@@ -96,22 +96,25 @@ const Home: React.FunctionComponent<IPluginPageProps> = () => {
 
       <Gallery hasGutter={true}>
         {data
-          .filter((team) =>
+          .filter((user) =>
             !debouncedSearchTerm
               ? true
-              : team.cluster.includes(debouncedSearchTerm) ||
-                team.namespace.includes(debouncedSearchTerm) ||
-                team.name.includes(debouncedSearchTerm) ||
-                team.description?.includes(debouncedSearchTerm),
+              : user.cluster.includes(debouncedSearchTerm) ||
+                user.namespace.includes(debouncedSearchTerm) ||
+                user.name.includes(debouncedSearchTerm) ||
+                user.fullName.includes(debouncedSearchTerm) ||
+                user.email.includes(debouncedSearchTerm) ||
+                user.position?.includes(debouncedSearchTerm),
           )
-          .map((team, index) => (
+          .map((user, index) => (
             <GalleryItem key={index}>
-              <TeamsItem
-                cluster={team.cluster}
-                namespace={team.namespace}
-                name={team.name}
-                description={team.description}
-                logo={team.logo}
+              <UsersItem
+                cluster={user.cluster}
+                namespace={user.namespace}
+                name={user.name}
+                fullName={user.fullName}
+                email={user.email}
+                position={user.position}
               />
             </GalleryItem>
           ))}

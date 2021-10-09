@@ -5,7 +5,7 @@ REPO      ?= github.com/kobsio/kobs
 REVISION  ?= $(shell git rev-parse HEAD)
 VERSION   ?= $(shell git describe --tags)
 
-CRDS ?= team application dashboard
+CRDS ?= team application dashboard user
 
 .PHONY: build
 build:
@@ -27,6 +27,7 @@ generate-crds:
 		rm -rf ./pkg/api/clients/$$crd/clientset; \
 		rm -rf ./pkg/api/clients/$$crd/informers; \
 		rm -rf ./pkg/api/clients/$$crd/listers; \
+		mkdir -p ./pkg/api/clients/$$crd; \
 		mv ./tmp/github.com/kobsio/kobs/pkg/api/apis/$$crd/v1beta1/zz_generated.deepcopy.go ./pkg/api/apis/$$crd/v1beta1; \
 		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/clientset ./pkg/api/clients/$$crd/clientset; \
 		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/informers ./pkg/api/clients/$$crd/informers; \
@@ -34,7 +35,7 @@ generate-crds:
 		rm -rf ./tmp; \
 	done
 
-	controller-gen "crd:crdVersions={v1},trivialVersions=true" paths="./..." output:crd:artifacts:config=deploy/kustomize/crds
+	controller-gen "crd:crdVersions={v1},trivialVersions=true" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
 
 	for crd in $(CRDS); do \
 		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \

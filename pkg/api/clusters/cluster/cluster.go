@@ -14,9 +14,11 @@ import (
 	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
 	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
+	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
 	applicationClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/application/clientset/versioned"
 	dashboardClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned"
 	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/team/clientset/versioned"
+	userClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/user/clientset/versioned"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster/terminal"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -43,6 +45,7 @@ type Cluster struct {
 	applicationClientset *applicationClientsetVersioned.Clientset
 	teamClientset        *teamClientsetVersioned.Clientset
 	dashboardClientset   *dashboardClientsetVersioned.Clientset
+	userClientset        *userClientsetVersioned.Clientset
 	name                 string
 	crds                 []CRD
 }
@@ -434,6 +437,45 @@ func (c *Cluster) GetDashboard(ctx context.Context, namespace, name string) (*da
 	return &dashboard, nil
 }
 
+// GetUsers returns a list of users for the given namespace. It also adds the cluster, namespace and user name to the
+// User CR, so that this information must not be specified by the user in the CR.
+func (c *Cluster) GetUsers(ctx context.Context, namespace string) ([]user.UserSpec, error) {
+	usersList, err := c.userClientset.KobsV1beta1().Users(namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	var users []user.UserSpec
+
+	for _, userItem := range usersList.Items {
+		user := userItem.Spec
+		user.Cluster = c.name
+		user.Namespace = userItem.Namespace
+		user.Name = userItem.Name
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+// GetUser returns a user for the given namespace and name. After the user is retrieved we replace, the cluster,
+// namespace and name in the spec of the User CR. This is needed, so that the user doesn't have to, provide these
+// fields.
+func (c *Cluster) GetUser(ctx context.Context, namespace, name string) (*user.UserSpec, error) {
+	userCR, err := c.userClientset.KobsV1beta1().Users(namespace).Get(ctx, name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	user := userCR.Spec
+	user.Cluster = c.name
+	user.Namespace = namespace
+	user.Name = name
+
+	return &user, nil
+}
+
 // loadCRDs retrieves all CRDs from the Kubernetes API of this cluster. Then the CRDs are transformed into our internal
 // CRD format and saved within the cluster. Since this function is only called once after a cluster was loaded, we call
 // it in a endless loop until it succeeds.
@@ -521,7 +563,13 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 
 	dashboardClientset, err := dashboardClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.WithError(err).Debugf("Could not create team clientset.")
+		log.WithError(err).Debugf("Could not create dashboard clientset.")
+		return nil, err
+	}
+
+	userClientset, err := userClientsetVersioned.NewForConfig(restConfig)
+	if err != nil {
+		log.WithError(err).Debugf("Could not create user clientset.")
 		return nil, err
 	}
 
@@ -533,6 +581,7 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 		applicationClientset: applicationClientset,
 		teamClientset:        teamClientset,
 		dashboardClientset:   dashboardClientset,
+		userClientset:        userClientset,
 		name:                 name,
 	}
 

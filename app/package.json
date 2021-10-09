@@ -18,6 +18,7 @@
     "@kobsio/plugin-resources": "*",
     "@kobsio/plugin-rss": "*",
     "@kobsio/plugin-teams": "*",
+    "@kobsio/plugin-users": "*",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "react": "^17.0.2",
