@@ -217,6 +217,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		Name:        "applications",
 		DisplayName: "Applications",
 		Description: "Monitor your Kubernetes workloads.",
+		Home:        true,
 		Type:        "applications",
 	})
 

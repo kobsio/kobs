@@ -7,6 +7,7 @@ type Plugin struct {
 	Name        string                 `json:"name"`
 	DisplayName string                 `json:"displayName"`
 	Description string                 `json:"description"`
+	Home        bool                   `json:"home"`
 	Type        string                 `json:"type"`
 	Options     map[string]interface{} `json:"options"`
 }
