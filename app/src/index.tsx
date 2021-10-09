@@ -8,6 +8,7 @@ import './index.css';
 import { App } from '@kobsio/plugin-core';
 import resourcesPlugin from '@kobsio/plugin-resources';
 import teamsPlugin from '@kobsio/plugin-teams';
+import usersPlugin from '@kobsio/plugin-users';
 import applicationsPlugin from '@kobsio/plugin-applications';
 import dashboardsPlugin from '@kobsio/plugin-dashboards';
 import prometheusPlugin from '@kobsio/plugin-prometheus';
@@ -26,6 +27,7 @@ ReactDOM.render(
     <App plugins={{
       ...resourcesPlugin,
       ...teamsPlugin,
+      ...usersPlugin,
       ...applicationsPlugin,
       ...dashboardsPlugin,
       ...prometheusPlugin,

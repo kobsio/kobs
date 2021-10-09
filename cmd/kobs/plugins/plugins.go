@@ -25,6 +25,7 @@ import (
 	"github.com/kobsio/kobs/plugins/rss"
 	"github.com/kobsio/kobs/plugins/sql"
 	"github.com/kobsio/kobs/plugins/teams"
+	"github.com/kobsio/kobs/plugins/users"
 )
 
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
@@ -32,6 +33,7 @@ type Config struct {
 	Applications  applications.Config  `json:"applications"`
 	Resources     resources.Config     `json:"resources"`
 	Teams         teams.Config         `json:"teams"`
+	Users         users.Config         `json:"users"`
 	Dashboards    dashboards.Config    `json:"dashboards"`
 	Prometheus    prometheus.Config    `json:"prometheus"`
 	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
@@ -70,6 +72,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(resources.Route, resources.Register(clusters, router.plugins, config.Resources))
 	router.Mount(applications.Route, applications.Register(clusters, router.plugins, config.Applications))
 	router.Mount(teams.Route, teams.Register(clusters, router.plugins, config.Teams))
+	router.Mount(users.Route, users.Register(clusters, router.plugins, config.Users))
 	router.Mount(dashboards.Route, dashboards.Register(clusters, router.plugins, config.Dashboards))
 	router.Mount(prometheus.Route, prometheus.Register(clusters, router.plugins, config.Prometheus))
 	router.Mount(elasticsearch.Route, elasticsearch.Register(clusters, router.plugins, config.Elasticsearch))

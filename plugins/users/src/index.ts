@@ -6,11 +6,8 @@ import Home from './components/home/Home';
 import Page from './components/page/Page';
 import Panel from './components/panel/Panel';
 
-import { ITeam } from './utils/interfaces';
-import TeamsItem from './components/page/TeamsItem';
-
-const teamsPlugin: IPluginComponents = {
-  teams: {
+const usersPlugin: IPluginComponents = {
+  users: {
     home: Home,
     icon: icon,
     page: Page,
@@ -18,7 +15,4 @@ const teamsPlugin: IPluginComponents = {
   },
 };
 
-export default teamsPlugin;
-
-export { TeamsItem };
-export type ITeamTeam = ITeam;
+export default usersPlugin;
