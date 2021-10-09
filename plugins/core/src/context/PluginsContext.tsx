@@ -28,6 +28,7 @@ export interface IPluginData {
   name: string;
   displayName: string;
   description: string;
+  home: boolean;
   type: string;
   options?: IPluginDataOptions;
 }
@@ -72,6 +73,7 @@ export interface IPluginPreviewProps {
 // IPluginComponent is the interface which must be implemented by each plugin. It must contain an icon and panel
 // component. The page and preview component is optional for each plugin.
 export interface IPluginComponent {
+  home?: React.FunctionComponent<IPluginPageProps>;
   icon: string;
   page?: React.FunctionComponent<IPluginPageProps>;
   panel: React.FunctionComponent<IPluginPanelProps>;
@@ -88,6 +90,7 @@ export interface IPluginComponents {
 export interface IPluginsContext {
   components: IPluginComponents;
   getPluginDetails: (name: string) => IPluginData | undefined;
+  getPluginHome: () => IPluginData[];
   getPluginIcon: (type: string) => string;
   plugins: IPluginData[];
 }
@@ -97,6 +100,9 @@ export const PluginsContext = React.createContext<IPluginsContext>({
   components: {},
   getPluginDetails: (name: string) => {
     return undefined;
+  },
+  getPluginHome: () => {
+    return [];
   },
   getPluginIcon: (type: string) => {
     return '';
@@ -161,6 +167,11 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
     return undefined;
   };
 
+  const getPluginHome = (): IPluginData[] => {
+    const pluginHome = data?.filter((p) => p.home);
+    return pluginHome || [];
+  };
+
   const getPluginIcon = (type: string): string => {
     if (components.hasOwnProperty(type)) {
       return components[type].icon;
@@ -206,6 +217,7 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
       value={{
         components: components,
         getPluginDetails: getPluginDetails,
+        getPluginHome: getPluginHome,
         getPluginIcon: getPluginIcon,
         plugins: data,
       }}

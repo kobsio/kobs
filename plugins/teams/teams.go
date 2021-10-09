@@ -82,6 +82,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		Name:        "teams",
 		DisplayName: "Teams",
 		Description: "Define an ownership for your Kubernetes resources.",
+		Home:        true,
 		Type:        "teams",
 	})
 
