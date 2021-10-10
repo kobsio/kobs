@@ -12,7 +12,7 @@ In the following you can found the specification for the User CRD.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| id | string | A unique id for the user. The id must be unique across all clusters and namespace. | Yes |
+| id | string | A unique id for the user. The id must be unique across all clusters and namespace. If authentication and authorization is enabled this should be the value passed in the configured user details header (`--api.auth.header`). | Yes |
 | fullName | string | The full name of the user. | Yes |
 | email | string | The email address of the user. | Yes |
 | position | string | The position of the user. | No |

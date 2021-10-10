@@ -130,7 +130,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ request, resource, show, se
           resource.namespace ? `&namespace=${resource.namespace.title}` : ''
         }&name=${resource.name.title}&container=${container}&regex=${encodeURIComponent(regex)}&since=${since}&tail=${
           TERMINAL_OPTIONS.scrollback
-        }&previous=${previous}&follow=true`,
+        }&previous=${previous}&follow=false`,
         { method: 'get' },
       );
       const json = await response.json();

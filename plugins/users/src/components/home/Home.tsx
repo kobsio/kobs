@@ -15,15 +15,14 @@ import {
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 
-import { IPluginPageProps, useDebounce } from '@kobsio/plugin-core';
-import { IUser } from '../../utils/interfaces';
+import { IAuthProfile, IPluginPageProps, useDebounce } from '@kobsio/plugin-core';
 import UsersItem from '../page/UsersItem';
 
 const Home: React.FunctionComponent<IPluginPageProps> = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IUser[], Error>(['users/users'], async () => {
+  const { isError, isLoading, error, data, refetch } = useQuery<IAuthProfile[], Error>(['users/users'], async () => {
     try {
       const response = await fetch(`/api/plugins/users/users`, { method: 'get' });
       const json = await response.json();
@@ -57,7 +56,7 @@ const Home: React.FunctionComponent<IPluginPageProps> = () => {
         title="Could not get users"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IUser[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IAuthProfile[], Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>

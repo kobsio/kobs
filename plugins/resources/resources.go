@@ -10,6 +10,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster/terminal"
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 
@@ -72,6 +73,12 @@ func (router *Router) isForbidden(resource string) bool {
 // getResources returns a list of resources for the given clusters and namespaces. The result can limited by the
 // paramName and param query parameter.
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the resource")
+		return
+	}
+
 	clusterNames := r.URL.Query()["cluster"]
 	namespaces := r.URL.Query()["namespace"]
 	name := r.URL.Query().Get("name")
@@ -102,6 +109,11 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 		// provided we loop through all the namespaces and return the resources for these namespaces. All results are
 		// added to the resources slice, which is then returned by the api.
 		if namespaces == nil {
+			if !user.HasResourceAccess(clusterName, "*", resource) {
+				errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: *, resource: %s", clusterName, resource), http.StatusForbidden, "You are not authorized to access the resource")
+				return
+			}
+
 			list, err := cluster.GetResources(r.Context(), "", name, path, resource, paramName, param)
 			if err != nil {
 				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
@@ -122,6 +134,11 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 			})
 		} else {
 			for _, namespace := range namespaces {
+				if !user.HasResourceAccess(clusterName, namespace, resource) {
+					errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
+					return
+				}
+
 				list, err := cluster.GetResources(r.Context(), namespace, name, path, resource, paramName, param)
 				if err != nil {
 					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
@@ -153,6 +170,12 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 // When the user sets the "force" parameter to "true" we will set a body on the delete request, where we set the
 // "gracePeriodSeconds" to 0. This will cause the same behaviour as "kubectl delete --force --grace-period 0".
 func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the resource")
+		return
+	}
+
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -161,6 +184,11 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 	force := r.URL.Query().Get("force")
 
 	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "resource": resource, "path": path}).Tracef("deleteResource")
+
+	if !user.HasResourceAccess(clusterName, namespace, resource) {
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
+		return
+	}
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
@@ -196,6 +224,12 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 // patchResource hadnles patch operations for resources. The resource can be identified by the given cluster,
 // namespace, name, resource and path. The patch operation must be provided in the request body.
 func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the resource")
+		return
+	}
+
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -203,6 +237,11 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("path")
 
 	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "resource": resource, "path": path}).Tracef("patchResource")
+
+	if !user.HasResourceAccess(clusterName, namespace, resource) {
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
+		return
+	}
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
@@ -233,6 +272,12 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 // createResource hadnles patch operations for resources. The resource can be identified by the given cluster,
 // namespace, name, resource and path. The resource must be provided in the request body.
 func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the resource")
+		return
+	}
+
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -241,6 +286,11 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("path")
 
 	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "path": path, "resource": resource, "subResource": subResource}).Tracef("createResource")
+
+	if !user.HasResourceAccess(clusterName, namespace, resource) {
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
+		return
+	}
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
@@ -345,6 +395,17 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 			}
 		}()
 
+		user, err := authContext.GetUser(r.Context())
+		if err != nil {
+			c.WriteMessage(websocket.TextMessage, []byte("You are not authorized to access the resource"))
+			return
+		}
+
+		if !user.HasResourceAccess(clusterName, namespace, "pods") {
+			c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("You are not authorized to access the resource: cluster: %s, namespace: %s, resource: pods", clusterName, namespace)))
+			return
+		}
+
 		err = cluster.StreamLogs(r.Context(), c, namespace, name, container, parsedSince, parsedTail, parsedFollow)
 		if err != nil {
 			c.WriteMessage(websocket.TextMessage, []byte("Could not stream logs: "+err.Error()))
@@ -352,6 +413,17 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		}
 
 		log.Tracef("Logs stream was closed")
+		return
+	}
+
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the resource")
+		return
+	}
+
+	if !user.HasResourceAccess(clusterName, namespace, "pods") {
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
 		return
 	}
 
@@ -407,6 +479,27 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}()
+
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		msg, _ := json.Marshal(terminal.Message{
+			Op:   "stdout",
+			Data: "You are not authorized to access the resource",
+		})
+
+		c.WriteMessage(websocket.TextMessage, msg)
+		return
+	}
+
+	if !user.HasResourceAccess(clusterName, namespace, "pods") {
+		msg, _ := json.Marshal(terminal.Message{
+			Op:   "stdout",
+			Data: fmt.Sprintf("You are not authorized to access the resource: cluster: %s, namespace: %s, resource: pods", clusterName, namespace),
+		})
+
+		c.WriteMessage(websocket.TextMessage, msg)
+		return
+	}
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {

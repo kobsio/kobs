@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
-	"github.com/kobsio/kobs/pkg/api/middleware/auth"
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/plugins/opsgenie/pkg/instance"
@@ -17,8 +17,7 @@ import (
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const (
-	Route       = "/opsgenie"
-	DefaultUser = "kobs.io"
+	Route = "/opsgenie"
 )
 
 var (
@@ -214,6 +213,12 @@ func (router *Router) getIncidentTimeline(w http.ResponseWriter, r *http.Request
 }
 
 func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to acknowledge the alert")
+		return
+	}
+
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
@@ -230,12 +235,7 @@ func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := auth.GetUser(r.Context())
-	if user == "" {
-		user = DefaultUser
-	}
-
-	err := i.AcknowledgeAlert(r.Context(), id, user)
+	err = i.AcknowledgeAlert(r.Context(), id, user.ID)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not acknowledge alert")
 		return
@@ -245,6 +245,12 @@ func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 }
 
 func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to snooze the alert")
+		return
+	}
+
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 	snooze := r.URL.Query().Get("snooze")
@@ -268,12 +274,7 @@ func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := auth.GetUser(r.Context())
-	if user == "" {
-		user = DefaultUser
-	}
-
-	err = i.SnoozeAlert(r.Context(), id, user, snoozeParsed)
+	err = i.SnoozeAlert(r.Context(), id, user.ID, snoozeParsed)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not snooze alert")
 		return
@@ -283,6 +284,12 @@ func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 }
 
 func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to close the alert")
+		return
+	}
+
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
@@ -299,12 +306,7 @@ func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := auth.GetUser(r.Context())
-	if user == "" {
-		user = DefaultUser
-	}
-
-	err := i.CloseAlert(r.Context(), id, user)
+	err = i.CloseAlert(r.Context(), id, user.ID)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not close alert")
 		return

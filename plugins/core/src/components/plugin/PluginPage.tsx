@@ -2,6 +2,7 @@ import { Alert, AlertActionLink, AlertVariant, PageSection } from '@patternfly/r
 import React, { useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import { AuthContext, IAuthContext } from '../../context/AuthContext';
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
 
 // IPluginParams are the parameters for the PluginPage component. For the PluginPage we only require the name of the
@@ -16,6 +17,9 @@ interface IPluginParams {
 export const PluginPage: React.FunctionComponent = () => {
   const history = useHistory();
   const params = useParams<IPluginParams>();
+
+  const authContext = useContext<IAuthContext>(AuthContext);
+
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const pluginDetails = pluginsContext.getPluginDetails(params.name);
   const Component =
@@ -23,7 +27,7 @@ export const PluginPage: React.FunctionComponent = () => {
       ? pluginsContext.components[pluginDetails.type].page
       : undefined;
 
-  if (!pluginDetails) {
+  if (!pluginDetails || !authContext.hasPluginAccess(pluginDetails.name)) {
     return (
       <PageSection>
         <Alert

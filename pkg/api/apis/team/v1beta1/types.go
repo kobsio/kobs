@@ -34,6 +34,7 @@ type TeamSpec struct {
 	Description string                `json:"description,omitempty"`
 	Links       []Link                `json:"links,omitempty"`
 	Logo        string                `json:"logo,omitempty"`
+	Permissions Permissions           `json:"permissions,omitempty"`
 	Dashboards  []dashboard.Reference `json:"dashboards,omitempty"`
 }
 
@@ -47,4 +48,15 @@ type Reference struct {
 	Namespace   string `json:"namespace,omitempty"`
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
+}
+
+type Permissions struct {
+	Plugins   []string               `json:"plugins"`
+	Resources []PermissionsResources `json:"resources"`
+}
+
+type PermissionsResources struct {
+	Clusters   []string `json:"clusters"`
+	Namespaces []string `json:"namespaces"`
+	Resources  []string `json:"resources"`
 }

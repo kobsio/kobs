@@ -16,7 +16,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IUser } from '../../utils/interfaces';
+import { IAuthProfile } from '@kobsio/plugin-core';
 import UsersItem from './UsersItem';
 
 export interface IUsersProps {
@@ -29,7 +29,7 @@ export interface IUsersProps {
 const Users: React.FunctionComponent<IUsersProps> = ({ displayName, description }: IUsersProps) => {
   const history = useHistory();
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IUser[], Error>(['users/users'], async () => {
+  const { isError, isLoading, error, data, refetch } = useQuery<IAuthProfile[], Error>(['users/users'], async () => {
     try {
       const response = await fetch(`/api/plugins/users/users`, { method: 'get' });
       const json = await response.json();
@@ -72,7 +72,7 @@ const Users: React.FunctionComponent<IUsersProps> = ({ displayName, description 
                   actionLinks={
                     <React.Fragment>
                       <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-                      <AlertActionLink onClick={(): Promise<QueryObserverResult<IUser[], Error>> => refetch()}>
+                      <AlertActionLink onClick={(): Promise<QueryObserverResult<IAuthProfile[], Error>> => refetch()}>
                         Retry
                       </AlertActionLink>
                     </React.Fragment>

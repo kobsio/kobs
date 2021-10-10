@@ -92,10 +92,11 @@ func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopm
 		r.Use(middleware.Recoverer)
 		r.Use(middleware.URLFormat)
 		r.Use(metrics.Metrics)
-		r.Use(auth.Auth)
+		r.Use(auth.Handler(loadedClusters))
 		r.Use(httplog.NewStructuredLogger(log.Logger))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
+		r.Get("/user", auth.UserHandler)
 		r.Mount("/clusters", clusters.NewRouter(loadedClusters))
 		r.Mount("/plugins", pluginsRouter)
 	})

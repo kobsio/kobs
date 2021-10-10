@@ -12,17 +12,33 @@ In the following you can found the specification for the Team CRD.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| description | string | A description for the team. | Yes |
-| logo | string | The logo for the team. Must be a path to an image file. | Yes |
+| description | string | A description for the team. | No |
+| logo | string | The logo for the team. Must be a path to an image file. | No |
 | links | [[]Link](#link) | A list of links (e.g. a link to the teams Slack channel, Confluence page, etc.) | No |
+| permissions | [Permissions](#permissions) | Permissions for the members of this team, when authentication and authorization is enabled. | No |
 | dashboards | [[]Dashboard](#dashboard) | No |
 
 ### Link
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| title | string | Title for the link | Yes |
-| link | string | The actuall link | Yes |
+| title | string | Title for the link. | Yes |
+| link | string | The actuall link. | Yes |
+
+### Permissions
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| plugins | []string | A list of plugins, which can be accessed by the members of the team. The special list entry `*` allows access to all plugins. | Yes |
+| resources | [[]PermissionResources](#permissionresources) | A list of resources, which can be accessed by the members of the team. | Yes |
+
+### PermissionResources
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| clusters | []string | A list of clusters to allow access to. The special list entry `*` allows access to all clusters. | Yes |
+| namespaces | []string | A list of namespaces to allow access to. The special list entry `*` allows access to all namespaces. | Yes |
+| resources | []string | A list of resources to allow access to. The special list entry `*` allows access to all resources. | Yes |
 
 ### Dashboard
 
@@ -76,4 +92,26 @@ spec:
       placeholders:
         namespace: bookinfo
         pod: ".*"
+```
+
+The following Team CR allows all members of `team-diablo` access to all plugins and resources, when authentication and authorization is enabled.
+
+```yaml
+---
+apiVersion: kobs.io/v1beta1
+kind: Team
+metadata:
+  name: team-diablo
+  namespace: kobs
+spec:
+  permissions:
+    plugins:
+      - "*"
+    resources:
+      - clusters:
+          - "*"
+        namespaces:
+          - "*"
+        resources:
+          - "*"
 ```
