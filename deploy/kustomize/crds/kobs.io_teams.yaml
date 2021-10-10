@@ -147,6 +147,37 @@ spec:
                 type: string
               namespace:
                 type: string
+              permissions:
+                properties:
+                  plugins:
+                    items:
+                      type: string
+                    type: array
+                  resources:
+                    items:
+                      properties:
+                        clusters:
+                          items:
+                            type: string
+                          type: array
+                        namespaces:
+                          items:
+                            type: string
+                          type: array
+                        resources:
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - clusters
+                      - namespaces
+                      - resources
+                      type: object
+                    type: array
+                required:
+                - plugins
+                - resources
+                type: object
             type: object
         type: object
     served: true

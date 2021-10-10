@@ -1,6 +1,7 @@
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import React, { useContext } from 'react';
 
+import { AuthContext, IAuthContext } from '../../context/AuthContext';
 import { IPluginPanelProps, IPluginsContext, PluginsContext } from '../../context/PluginsContext';
 import { PluginCard } from './PluginCard';
 
@@ -18,6 +19,8 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   options,
   showDetails,
 }: IPluginPanelProps) => {
+  const authContext = useContext<IAuthContext>(AuthContext);
+
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const pluginDetails = pluginsContext.getPluginDetails(name);
   const Component =
@@ -25,7 +28,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
       ? pluginsContext.components[pluginDetails.type].panel
       : undefined;
 
-  if (!pluginDetails || !Component) {
+  if (!pluginDetails || !Component || !authContext.hasPluginAccess(pluginDetails.name)) {
     return (
       <PluginCard title={title} description={description}>
         <Alert variant={AlertVariant.danger} isInline={true} title="Plugin was not found">

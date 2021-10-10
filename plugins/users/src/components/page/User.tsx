@@ -15,9 +15,8 @@ import { useHistory, useParams } from 'react-router-dom';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
-import { IUser } from '../../utils/interfaces';
+import { IAuthProfile, getGravatarImageUrl } from '@kobsio/plugin-core';
 import Teams from './Teams';
-import { getGravatarImageUrl } from '../../utils/helpers';
 
 interface IUserParams {
   cluster: string;
@@ -31,7 +30,7 @@ const User: React.FunctionComponent = () => {
   const history = useHistory();
   const params = useParams<IUserParams>();
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IUser, Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IAuthProfile, Error>(
     ['users/user', params.cluster, params.namespace, params.name],
     async () => {
       try {
@@ -73,7 +72,7 @@ const User: React.FunctionComponent = () => {
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
             <AlertActionLink onClick={(): void => history.push('/users')}>Users</AlertActionLink>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IUser, Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IAuthProfile, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>

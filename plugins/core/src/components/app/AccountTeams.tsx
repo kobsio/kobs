@@ -2,15 +2,15 @@ import { Gallery, GalleryItem, PageSection, PageSectionVariants } from '@pattern
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import { ITeamTeam, TeamsItem } from '@kobsio/plugin-teams';
-import { IAuthProfile } from '@kobsio/plugin-core';
+import { IAuthProfile, IAuthProfileTeam } from '../../context/AuthContext';
+import AccountTeamsItem from './AccountTeamsItem';
 
-export interface ITeamsProps {
+export interface IAccountTeamsProps {
   user: IAuthProfile;
 }
 
-const Teams: React.FunctionComponent<ITeamsProps> = ({ user }: ITeamsProps) => {
-  const { isError, isLoading, data } = useQuery<ITeamTeam[], Error>(['users/teams', user], async () => {
+const AccountTeams: React.FunctionComponent<IAccountTeamsProps> = ({ user }: IAccountTeamsProps) => {
+  const { isError, isLoading, data } = useQuery<IAuthProfileTeam[], Error>(['users/teams', user], async () => {
     try {
       const response = await fetch(`/api/plugins/users/teams?cluster=${user.cluster}&namespace=${user.namespace}`, {
         body: JSON.stringify({
@@ -43,7 +43,7 @@ const Teams: React.FunctionComponent<ITeamsProps> = ({ user }: ITeamsProps) => {
       <Gallery hasGutter={true}>
         {data.map((team, index) => (
           <GalleryItem key={index}>
-            <TeamsItem
+            <AccountTeamsItem
               cluster={team.cluster}
               namespace={team.namespace}
               name={team.name}
@@ -57,4 +57,4 @@ const Teams: React.FunctionComponent<ITeamsProps> = ({ user }: ITeamsProps) => {
   );
 };
 
-export default Teams;
+export default AccountTeams;

@@ -8,6 +8,7 @@ import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/patternfly/patternfly-addons.css';
 
 import { IPluginComponents, PluginsContextProvider } from '../../context/PluginsContext';
+import { AuthContextProvider } from '../../context/AuthContext';
 import { ClustersContextProvider } from '../../context/ClustersContext';
 import HomePage from './HomePage';
 import { PluginPage } from '../plugin/PluginPage';
@@ -42,20 +43,22 @@ export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) 
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ClustersContextProvider>
-        <PluginsContextProvider components={plugins}>
-          <TerminalsContextProvider>
-            <Router>
-              <Page header={Header}>
-                <Switch>
-                  <Route exact={true} path="/" component={HomePage} />
-                  <Route exact={false} path="/:name" component={PluginPage} />
-                </Switch>
-              </Page>
-            </Router>
-          </TerminalsContextProvider>
-        </PluginsContextProvider>
-      </ClustersContextProvider>
+      <AuthContextProvider>
+        <ClustersContextProvider>
+          <PluginsContextProvider components={plugins}>
+            <TerminalsContextProvider>
+              <Router>
+                <Page header={Header}>
+                  <Switch>
+                    <Route exact={true} path="/" component={HomePage} />
+                    <Route exact={false} path="/:name" component={PluginPage} />
+                  </Switch>
+                </Page>
+              </Router>
+            </TerminalsContextProvider>
+          </PluginsContextProvider>
+        </ClustersContextProvider>
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 };

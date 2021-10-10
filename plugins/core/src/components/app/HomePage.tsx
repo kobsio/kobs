@@ -1,6 +1,5 @@
 import {
-  Gallery,
-  GalleryItem,
+  Divider,
   Grid,
   GridItem,
   Menu,
@@ -13,14 +12,16 @@ import {
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import { AuthContext, IAuthContext } from '../../context/AuthContext';
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
-import HomeItem from './HomeItem';
+import Account from './Account';
+import Plugins from './Plugins';
 
-// HomePage renders a list of all registered plugin instances via the HomeItem component.
 const HomePage: React.FunctionComponent = () => {
   const history = useHistory();
   const location = useLocation();
 
+  const authContext = useContext<IAuthContext>(AuthContext);
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const pluginHome = pluginsContext.getPluginHome();
   const [activePage, setActivePage] = useState<string>('plugins');
@@ -65,26 +66,28 @@ const HomePage: React.FunctionComponent = () => {
                     {plugin.displayName}
                   </MenuItem>
                 ))}
+                {authContext.user.hasProfile && (
+                  <React.Fragment>
+                    <Divider component="li" />
+                    <MenuItem itemId="account">My Account</MenuItem>
+                  </React.Fragment>
+                )}
               </MenuList>
             </MenuContent>
           </Menu>
         </GridItem>
         <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
-          {activePage !== 'plugins' && pluginDetails && Component ? (
+          {activePage !== 'plugins' && activePage !== 'account' && pluginDetails && Component ? (
             <Component
               name={pluginDetails.name}
               displayName={pluginDetails.displayName}
               description={pluginDetails.description}
               options={pluginDetails.options}
             />
+          ) : activePage === 'account' ? (
+            <Account />
           ) : (
-            <Gallery hasGutter={true}>
-              {pluginsContext.plugins.map((plugin) => (
-                <GalleryItem key={plugin.name}>
-                  <HomeItem plugin={plugin} />
-                </GalleryItem>
-              ))}
-            </Gallery>
+            <Plugins plugins={pluginsContext.plugins} />
           )}
         </GridItem>
       </Grid>

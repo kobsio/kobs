@@ -16,12 +16,14 @@ export * from './components/plugin/PluginOptionsMissing';
 export * from './components/plugin/PluginPanel';
 export * from './components/plugin/PluginPreview';
 
+export * from './context/AuthContext';
 export * from './context/ClustersContext';
 export * from './context/PluginsContext';
 export * from './context/TerminalsContext';
 
 export * from './utils/chart';
 export * from './utils/colors';
+export * from './utils/gravatar';
 export * from './utils/manifests';
 export * from './utils/resources';
 export * from './utils/time';

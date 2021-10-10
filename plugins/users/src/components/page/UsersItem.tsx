@@ -1,8 +1,7 @@
 import { Avatar, Card, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
-import { LinkWrapper } from '@kobsio/plugin-core';
-import { getGravatarImageUrl } from '../../utils/helpers';
+import { LinkWrapper, getGravatarImageUrl } from '@kobsio/plugin-core';
 
 interface IUsersItemProps {
   cluster: string;

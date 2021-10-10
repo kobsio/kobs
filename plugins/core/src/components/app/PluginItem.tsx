@@ -4,14 +4,14 @@ import React, { useContext } from 'react';
 import { IPluginData, IPluginsContext, PluginsContext } from '../../context/PluginsContext';
 import { LinkWrapper } from '../misc/LinkWrapper';
 
-// IHomeItemProps is the interface for an item on the home page. Each item contains a title, body, link and icon.
-interface IHomeItemProps {
+// IPluginItemProps is the interface for an item on the home page. Each item contains a title, body, link and icon.
+interface IPluginItemProps {
   plugin: IPluginData;
 }
 
-// HomeItem is used to render an item in the home page. It requires a title, body, link and icon. When the card is
+// PluginItem is used to render an item in the home page. It requires a title, body, link and icon. When the card is
 // clicked, the user is redirected to the provided link.
-const HomeItem: React.FunctionComponent<IHomeItemProps> = ({ plugin }: IHomeItemProps) => {
+const PluginItem: React.FunctionComponent<IPluginItemProps> = ({ plugin }: IPluginItemProps) => {
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
 
   return (
@@ -32,4 +32,4 @@ const HomeItem: React.FunctionComponent<IHomeItemProps> = ({ plugin }: IHomeItem
   );
 };
 
-export default HomeItem;
+export default PluginItem;

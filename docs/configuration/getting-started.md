@@ -9,7 +9,10 @@ The following command-line arguments and environment variables are available.
 | Command-line Argument | Environment Variable | Description | Default |
 | --------------------- | -------------------- | ----------- | ------- |
 | `--api.address` | `KOBS_API_ADDRESS` | The address, where the API server is listen on. | `:15220` |
-| `--api.auth-header` | `KOBS_API_AUTH_HEADER` | The header, which contains the details about the authenticated user. More information can be found in the [Authentication](authentication.md) section. | `X-Auth-Request-Email` |
+| `--api.auth.default-team` | `KOBS_API_AUTH_DEFAULT_TEAM` | The name of the team, which should be used for a users permissions when a user hasn't any teams. The team is specified in the following format: `cluster,namespace,name` | |
+| `--api.auth.enabled` | | Enable the authentication and authorization middleware. | `false` |
+| `--api.auth.header` | `KOBS_API_AUTH_HEADER` | The header, which contains the details about the authenticated user. More information can be found in the [Authentication](authentication.md) section. | `X-Auth-Request-Email` |
+| `--api.auth.interval` | `KOBS_API_AUTH_INTERVAL` | The interval to refresh the internal users list and there permissions. | `1h0m0s` |
 | `--app.address` | `KOBS_APP_ADDRESS` | The address, where the Application server is listen on. | `:15219` |
 | `--app.assets` | `KOBS_APP_ASSETS` | The location of the assets directory. | `app/build` |
 | `--clusters.cache-duration.namespaces` | `KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES` | The duration, for how long requests to get the list of namespaces should be cached. | `5m` |
