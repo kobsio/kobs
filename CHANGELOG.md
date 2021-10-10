@@ -36,6 +36,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#162](https://github.com/kobsio/kobs/pull/162): Add support to visualize logs in the ClickHouse plugin.
 - [#170](https://github.com/kobsio/kobs/pull/170): Add Custom Resource Definition for Users.
 - [#171](https://github.com/kobsio/kobs/pull/171): :warning: _Breaking change:_ :warning: Add authentication and authorization mechanism for plugins and resources. These settings are configured via the `--api.auth.<SETTING>` flags. Permissions are always granted on a team level. A users gets all permissions of the team where he is a member of.
+- [#172](https://github.com/kobsio/kobs/pull/172): Add authentication and authorization settings to Helm chart.
 
 ### Fixed
 

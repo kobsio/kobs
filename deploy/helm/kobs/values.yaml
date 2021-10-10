@@ -83,6 +83,11 @@ kobs:
   ## Specify some settings like log level, log format, etc. for kobs.
   ##
   settings:
+    auth:
+      enabled: false
+      defaultTeam: ""
+      header: X-Auth-Request-Email
+      interval: 1h0m0s
     clustersCacheDurationNamespaces: 5m
     logFormat: plain
     logLevel: info
