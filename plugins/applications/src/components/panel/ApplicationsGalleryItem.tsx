@@ -1,8 +1,7 @@
 import { Badge, Card, CardBody, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginTimes, LinkWrapper, PluginPreview } from '@kobsio/plugin-core';
-import { IApplication } from '../../utils/interfaces';
+import { IApplication, IPluginTimes, LinkWrapper, PluginPreview } from '@kobsio/plugin-core';
 
 interface IApplicationsGalleryItemProps {
   times: IPluginTimes;

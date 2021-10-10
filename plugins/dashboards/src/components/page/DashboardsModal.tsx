@@ -14,8 +14,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
-import { ClustersContext, IClusterContext } from '@kobsio/plugin-core';
-import { IDashboard, IPlaceholders } from '../../utils/interfaces';
+import { ClustersContext, IClusterContext, IDashboard, IPlaceholders } from '@kobsio/plugin-core';
 import { getPlaceholdersObject } from '../../utils/dashboard';
 
 interface IDashboardsModalProps {

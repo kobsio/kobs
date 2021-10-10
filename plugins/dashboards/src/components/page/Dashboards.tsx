@@ -13,12 +13,11 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { IDashboard, useDebounce } from '@kobsio/plugin-core';
 import DashboardsItem from './DashboardsItem';
 import DashboardsModal from './DashboardsModal';
 import DashboardsToolbar from './DashboardsToolbar';
-import { IDashboard } from '../../utils/interfaces';
 import { filterDashboards } from '../../utils/dashboard';
-import { useDebounce } from '@kobsio/plugin-core';
 
 export interface IDashboardsProps {
   displayName: string;

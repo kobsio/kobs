@@ -10,7 +10,7 @@ import '@patternfly/patternfly/patternfly-addons.css';
 import { IPluginComponents, PluginsContextProvider } from '../../context/PluginsContext';
 import { AuthContextProvider } from '../../context/AuthContext';
 import { ClustersContextProvider } from '../../context/ClustersContext';
-import HomePage from './HomePage';
+import Home from './Home';
 import { PluginPage } from '../plugin/PluginPage';
 import { TerminalsContextProvider } from '../../context/TerminalsContext';
 
@@ -50,7 +50,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) 
               <Router>
                 <Page header={Header}>
                   <Switch>
-                    <Route exact={true} path="/" component={HomePage} />
+                    <Route exact={true} path="/" component={Home} />
                     <Route exact={false} path="/:name" component={PluginPage} />
                   </Switch>
                 </Page>

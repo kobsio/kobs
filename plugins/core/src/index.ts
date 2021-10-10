@@ -21,6 +21,11 @@ export * from './context/ClustersContext';
 export * from './context/PluginsContext';
 export * from './context/TerminalsContext';
 
+export * from './crds/application';
+export * from './crds/dashboard';
+export * from './crds/team';
+export * from './crds/user';
+
 export * from './utils/chart';
 export * from './utils/colors';
 export * from './utils/gravatar';

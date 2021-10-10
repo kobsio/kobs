@@ -3,14 +3,13 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { memo } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IApplication, IReference } from '../../utils/interfaces';
+import { IApplication, IApplicationReference, IPluginTimes } from '@kobsio/plugin-core';
 import ApplicationsGalleryItem from './ApplicationsGalleryItem';
-import { IPluginTimes } from '@kobsio/plugin-core';
 
 interface IApplicationsGalleryProps {
   clusters: string[];
   namespaces: string[];
-  team?: IReference;
+  team?: IApplicationReference;
 }
 
 // ApplicationsGallery is the component to display all applications inside a gallery view.

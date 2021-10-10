@@ -16,7 +16,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { ITeam } from '../../utils/interfaces';
+import { ITeam } from '@kobsio/plugin-core';
 import TeamsItem from './TeamsItem';
 
 export interface ITeamsProps {

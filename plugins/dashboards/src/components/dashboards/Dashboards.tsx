@@ -13,9 +13,9 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { IDashboard, IDashboardsOptions, IReference } from '../../utils/interfaces';
+import { IDashboard, IPluginDefaults, IReference } from '@kobsio/plugin-core';
 import Dashboard from './Dashboard';
-import { IPluginDefaults } from '@kobsio/plugin-core';
+import { IDashboardsOptions } from '../../utils/interfaces';
 import { getOptionsFromSearch } from '../../utils/dashboard';
 
 interface IDashboardsProps {

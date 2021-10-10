@@ -15,8 +15,7 @@ import {
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 
-import { IPluginPageProps, useDebounce } from '@kobsio/plugin-core';
-import { ITeam } from '../../utils/interfaces';
+import { IPluginPageProps, ITeam, useDebounce } from '@kobsio/plugin-core';
 import TeamsItem from '../page/TeamsItem';
 
 const Home: React.FunctionComponent<IPluginPageProps> = () => {

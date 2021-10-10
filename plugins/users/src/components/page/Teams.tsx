@@ -2,15 +2,15 @@ import { Gallery, GalleryItem, PageSection, PageSectionVariants } from '@pattern
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import { ITeamTeam, TeamsItem } from '@kobsio/plugin-teams';
-import { IAuthProfile } from '@kobsio/plugin-core';
+import { ITeam, IUser } from '@kobsio/plugin-core';
+import { TeamsItem } from '@kobsio/plugin-teams';
 
 export interface ITeamsProps {
-  user: IAuthProfile;
+  user: IUser;
 }
 
 const Teams: React.FunctionComponent<ITeamsProps> = ({ user }: ITeamsProps) => {
-  const { isError, isLoading, data } = useQuery<ITeamTeam[], Error>(['users/teams', user], async () => {
+  const { isError, isLoading, data } = useQuery<ITeam[], Error>(['users/teams', user], async () => {
     try {
       const response = await fetch(`/api/plugins/users/teams?cluster=${user.cluster}&namespace=${user.namespace}`, {
         body: JSON.stringify({

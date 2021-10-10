@@ -6,15 +6,17 @@ import { InView } from 'react-intersection-observer';
 import {
   ClustersContext,
   IClusterContext,
+  IDashboard,
   IPluginDefaults,
   IPluginTimes,
   IPluginsContext,
+  IRow,
   PluginPanel,
   PluginsContext,
 } from '@kobsio/plugin-core';
-import { IDashboard, IRow, IVariableValues } from '../../utils/interfaces';
 import { interpolate, rowHeight, toGridSpans } from '../../utils/dashboard';
 import DashboardToolbar from './DashboardToolbar';
+import { IVariableValues } from '../../utils/interfaces';
 
 interface IDashboardProps {
   activeKey: string;

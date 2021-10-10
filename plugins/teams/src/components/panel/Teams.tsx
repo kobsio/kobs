@@ -2,7 +2,7 @@ import { Alert, AlertActionLink, AlertVariant, Gallery, GalleryItem, Spinner } f
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
-import { ITeam } from '../../utils/interfaces';
+import { ITeam } from '@kobsio/plugin-core';
 import TeamsItem from '../page/TeamsItem';
 
 // The Teams component is used to load all teams within the teams panel component. It is very similar to the Teams

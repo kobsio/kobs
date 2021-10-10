@@ -1,40 +1,6 @@
-import { IDashboardReference, IPlugin } from '@kobsio/plugin-dashboards';
 import cytoscape from 'cytoscape';
 
-// IApplication implements the Application CR, which can be created by a user to describe an application. While we have
-// to omit the cluster, namespace and name field in the Go implementation of the CR, we can assume that these fields are
-// present in the frontend, because they will always be set when an application is returned from the Kubernetes API.
-export interface IApplication {
-  cluster: string;
-  namespace: string;
-  name: string;
-  description?: string;
-  tags?: string[];
-  links?: ILink[];
-  teams?: IReference[];
-  dependencies?: IReference[];
-  preview?: IPreview;
-  dashboards?: IDashboardReference[];
-}
-
-export interface IPreview {
-  title: string;
-  plugin: IPlugin;
-}
-
-export interface ILink {
-  title: string;
-  link: string;
-}
-
-// IReference is the interface, which is used to create a reference to an team or an application. Will the team can be
-// used to describe the ownership of the application, the application references are used to identify dependencies.
-export interface IReference {
-  cluster?: string;
-  namespace?: string;
-  name: string;
-  description?: string;
-}
+import { IApplication, IApplicationReference } from '@kobsio/plugin-core';
 
 // TView are the two options we have to present a list of applications to the user. This can be a gallery view, where
 // it will be possible add a single plugin to the card or the topology view, which can be used to display the
@@ -47,7 +13,7 @@ export interface IPanelOptions {
   view?: TView;
   clusters?: string[];
   namespaces?: string[];
-  team?: IReference;
+  team?: IApplicationReference;
 }
 
 // INode is a single node for the topology graph. It implements the ElementDefinition interface from cytoscape.

@@ -1,7 +1,7 @@
 import { gridSpans } from '@patternfly/react-core';
 
-import { IDashboard, IDashboardsOptions, IPlaceholders, IReference, IVariableValues } from './interfaces';
-import { IPluginDefaults } from '@kobsio/plugin-core';
+import { IDashboard, IPlaceholders, IPluginDefaults, IReference } from '@kobsio/plugin-core';
+import { IDashboardsOptions, IVariableValues } from './interfaces';
 
 // toGridSpans is used to convert the provided col and row span value to the corresponding gridSpans value, so that it
 // can be used within the Patternfly Grid component. The function requires a default value which is 12 for columns and

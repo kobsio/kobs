@@ -81,6 +81,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#164](https://github.com/kobsio/kobs/pull/164): Improve chart handling across plugins.
 - [#167](https://github.com/kobsio/kobs/pull/167): Improve styling across plugins.
 - [#169](https://github.com/kobsio/kobs/pull/169): Rework home page to include plugins, applications and teams.
+- [#173](https://github.com/kobsio/kobs/pull/173): Move CRD interfaces to core plugin, so that we can use them within the plugin.
 
 ## [v0.5.0](https://github.com/kobsio/kobs/releases/tag/v0.5.0) (2021-08-03)
 
