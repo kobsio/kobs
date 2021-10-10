@@ -32,6 +32,10 @@ spec:
           image: "{{ .Values.kobs.image.repository }}:{{ .Values.kobs.image.tag }}"
           imagePullPolicy: {{ .Values.kobs.image.pullPolicy }}
           args:
+            - --api.auth.default-team={{ .Values.kobs.settings.auth.defaultTeam }}
+            - --api.auth.enabled={{ .Values.kobs.settings.auth.enabled }}
+            - --api.auth.header={{ .Values.kobs.settings.auth.header }}
+            - --api.auth.interval={{ .Values.kobs.settings.auth.interval }}
             - --clusters.cache-duration.namespaces={{ .Values.kobs.settings.clustersCacheDurationNamespaces }}
             - --log.format={{ .Values.kobs.settings.logFormat }}
             - --log.level={{ .Values.kobs.settings.logLevel }}

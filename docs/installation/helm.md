@@ -64,6 +64,10 @@ helm upgrade kobs kobs/kobs
 | `kobs.securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `kobs.resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
 | `kobs.env` | Set additional environment variables for the kobs container. | `[]` |
+| `kobs.settings.auth.enabled` | Enable the authentication and authorization middleware. | `false` |
+| `kobs.settings.auth.defaultTeam` | The name of the team, which should be used for a users permissions when a user hasn't any teams. The team is specified in the following format: `cluster,namespace,name`. | `""` |
+| `kobs.settings.auth.header` | The header, which contains the details about the authenticated user. | `X-Auth-Request-Email` |
+| `kobs.settings.auth.interval` | The interval to refresh the internal users list and there permissions. | `1h0m0s` |
 | `kobs.settings.clustersCacheDurationNamespaces` | The duration for how long the list of namespaces for each cluster should be cached. | `5m` |
 | `kobs.settings.logFormat` | Set the output format of the logs. Must be `plain` or `json`. | `plain` |
 | `kobs.settings.logLevel` | Set the log level. Must be `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |
