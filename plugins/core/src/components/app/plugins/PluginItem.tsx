@@ -1,8 +1,8 @@
 import { Card, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
 import React, { useContext } from 'react';
 
-import { IPluginData, IPluginsContext, PluginsContext } from '../../context/PluginsContext';
-import { LinkWrapper } from '../misc/LinkWrapper';
+import { IPluginData, IPluginsContext, PluginsContext } from '../../../context/PluginsContext';
+import { LinkWrapper } from '../../misc/LinkWrapper';
 
 // IPluginItemProps is the interface for an item on the home page. Each item contains a title, body, link and icon.
 interface IPluginItemProps {

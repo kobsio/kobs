@@ -18,8 +18,14 @@ import {
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useContext, useState } from 'react';
 
-import { ClustersContext, IClusterContext, IPluginPageProps, LinkWrapper, useDebounce } from '@kobsio/plugin-core';
-import { IApplication } from '../../utils/interfaces';
+import {
+  ClustersContext,
+  IApplication,
+  IClusterContext,
+  IPluginPageProps,
+  LinkWrapper,
+  useDebounce,
+} from '@kobsio/plugin-core';
 
 const Home: React.FunctionComponent<IPluginPageProps> = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');

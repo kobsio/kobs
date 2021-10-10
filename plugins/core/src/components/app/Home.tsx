@@ -1,5 +1,7 @@
 import {
-  Divider,
+  Avatar,
+  Card,
+  CardBody,
   Grid,
   GridItem,
   Menu,
@@ -14,8 +16,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { AuthContext, IAuthContext } from '../../context/AuthContext';
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
-import Account from './Account';
-import Plugins from './Plugins';
+import Account from './account/Account';
+import Plugins from './plugins/Plugins';
+import { getGravatarImageUrl } from '../../utils/gravatar';
 
 const HomePage: React.FunctionComponent = () => {
   const history = useHistory();
@@ -57,6 +60,29 @@ const HomePage: React.FunctionComponent = () => {
     <PageSection variant={PageSectionVariants.default}>
       <Grid hasGutter={true}>
         <GridItem sm={12} md={12} lg={3} xl={2} xl2={2}>
+          {authContext.user.hasProfile && (
+            <React.Fragment>
+              <Card
+                style={{ cursor: 'pointer' }}
+                isCompact={true}
+                isHoverable={true}
+                onClick={(): void => changeActivePage(undefined, 'account')}
+              >
+                <CardBody>
+                  <div className="pf-u-text-align-center">
+                    <Avatar
+                      src={getGravatarImageUrl(authContext.user.profile.email, 64)}
+                      alt={authContext.user.profile.fullName}
+                      style={{ height: '64px', width: '64px' }}
+                    />
+                    <div className="pf-c-title pf-m-xl">{authContext.user.profile.fullName}</div>
+                    <div className="pf-u-font-size-md pf-u-color-400">{authContext.user.profile.position}</div>
+                  </div>
+                </CardBody>
+              </Card>
+              <p>&nbsp;</p>
+            </React.Fragment>
+          )}
           <Menu activeItemId={activePage} onSelect={changeActivePage}>
             <MenuContent>
               <MenuList>
@@ -66,12 +92,6 @@ const HomePage: React.FunctionComponent = () => {
                     {plugin.displayName}
                   </MenuItem>
                 ))}
-                {authContext.user.hasProfile && (
-                  <React.Fragment>
-                    <Divider component="li" />
-                    <MenuItem itemId="account">My Account</MenuItem>
-                  </React.Fragment>
-                )}
               </MenuList>
             </MenuContent>
           </Menu>

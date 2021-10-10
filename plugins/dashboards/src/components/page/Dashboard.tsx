@@ -13,10 +13,9 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
+import { IDashboard, Title } from '@kobsio/plugin-core';
 import { getDefaultsFromSearch, getPlaceholdersFromSearch } from '../../utils/dashboard';
 import DashboardWrapper from '../dashboards/DashboardWrapper';
-import { IDashboard } from '../../utils/interfaces';
-import { Title } from '@kobsio/plugin-core';
 
 interface IDashboardParams {
   cluster: string;

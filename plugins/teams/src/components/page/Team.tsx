@@ -16,9 +16,8 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { ExternalLink, Title } from '@kobsio/plugin-core';
+import { ExternalLink, ITeam, Title } from '@kobsio/plugin-core';
 import { DashboardsWrapper } from '@kobsio/plugin-dashboards';
-import { ITeam } from '../../utils/interfaces';
 
 interface ITeamParams {
   cluster: string;

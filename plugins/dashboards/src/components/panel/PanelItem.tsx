@@ -1,8 +1,7 @@
 import { Card, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginDefaults, LinkWrapper } from '@kobsio/plugin-core';
-import { IReference } from '../../utils/interfaces';
+import { IPluginDefaults, IReference, LinkWrapper } from '@kobsio/plugin-core';
 
 interface IPanelItemProps {
   defaults: IPluginDefaults;

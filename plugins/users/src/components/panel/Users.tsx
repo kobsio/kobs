@@ -2,7 +2,7 @@ import { Alert, AlertActionLink, AlertVariant, Gallery, GalleryItem, Spinner } f
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
-import { IAuthProfile } from '@kobsio/plugin-core';
+import { IUser } from '@kobsio/plugin-core';
 import UsersItem from '../page/UsersItem';
 
 interface IUsersProps {
@@ -13,7 +13,7 @@ interface IUsersProps {
 
 // The Users component is used to load all users for the specified team.
 const Users: React.FunctionComponent<IUsersProps> = ({ cluster, namespace, name }: IUsersProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<IAuthProfile[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IUser[], Error>(
     ['users/team', cluster, namespace, name],
     async () => {
       try {
@@ -52,7 +52,7 @@ const Users: React.FunctionComponent<IUsersProps> = ({ cluster, namespace, name 
         title="Could not get users"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IAuthProfile[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IUser[], Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>

@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 
-import { IPluginDefaults, useDimensions } from '@kobsio/plugin-core';
+import { IPluginDefaults, IReference, useDimensions } from '@kobsio/plugin-core';
 import Dashboards from './Dashboards';
-import { IReference } from '../../utils/interfaces';
 
 interface IDashboardsWrapperProps {
   defaults: IPluginDefaults;

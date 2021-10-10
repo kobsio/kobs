@@ -1,8 +1,7 @@
 import { Gallery, GalleryItem } from '@patternfly/react-core';
 import React, { memo } from 'react';
 
-import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
-import { IReference } from '../../utils/interfaces';
+import { IPluginPanelProps, IReference, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
 import PanelItem from './PanelItem';
 
 interface IPanelProps extends IPluginPanelProps {

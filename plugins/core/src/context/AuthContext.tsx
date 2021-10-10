@@ -2,37 +2,13 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
+import { IUser } from '../crds/user';
+
 export interface IAuth {
   id: string;
   hasProfile: boolean;
-  profile: IAuthProfile;
+  profile: IUser;
   permissions: IAuthPermissions;
-}
-
-export interface IAuthProfile {
-  cluster: string;
-  namespace: string;
-  name: string;
-  id: string;
-  fullName: string;
-  email: string;
-  position?: string;
-  bio?: string;
-  teams?: IAuthProfileTeamReference[];
-}
-
-export interface IAuthProfileTeamReference {
-  cluster?: string;
-  namespace?: string;
-  name: string;
-}
-
-export interface IAuthProfileTeam {
-  cluster: string;
-  namespace: string;
-  name: string;
-  description?: string;
-  logo?: string;
 }
 
 export interface IAuthPermissions {

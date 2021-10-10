@@ -1,8 +1,8 @@
 import { Avatar, Card, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
-import { LinkWrapper } from '../misc/LinkWrapper';
-import teamsIcon from '../../assets/teamsIcon.png';
+import { LinkWrapper } from '../../misc/LinkWrapper';
+import teamsIcon from '../../../assets/teamsIcon.png';
 
 interface IAccountTeamsItemProps {
   cluster: string;

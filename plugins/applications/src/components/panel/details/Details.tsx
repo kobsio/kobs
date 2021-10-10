@@ -15,10 +15,9 @@ import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-import { ExternalLink, Title } from '@kobsio/plugin-core';
+import { ExternalLink, IApplication, Title } from '@kobsio/plugin-core';
 import { DashboardsWrapper } from '@kobsio/plugin-dashboards';
 import DetailsLink from './DetailsLink';
-import { IApplication } from '../../../utils/interfaces';
 
 interface IDetailsProps {
   application: IApplication;

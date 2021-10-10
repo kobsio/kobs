@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { DrawerLink } from '@kobsio/plugin-core';
-import { IApplication } from '../../../utils/interfaces';
+import { DrawerLink, IApplication } from '@kobsio/plugin-core';
 
 interface IDetailsLinkProps {
   application: IApplication;

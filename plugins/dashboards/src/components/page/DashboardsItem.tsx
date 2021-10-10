@@ -1,7 +1,7 @@
 import { Card, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
 import React from 'react';
 
-import { IDashboard } from '../../utils/interfaces';
+import { IDashboard } from '@kobsio/plugin-core';
 
 interface IDashboardsItemProps {
   dashboard: IDashboard;
