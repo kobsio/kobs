@@ -19,6 +19,7 @@ COPY plugins/resources/package.json /kobs/plugins/resources/
 COPY plugins/rss/package.json /kobs/plugins/rss/
 COPY plugins/sql/package.json /kobs/plugins/sql/
 COPY plugins/teams/package.json /kobs/plugins/teams/
+COPY plugins/users/package.json /kobs/plugins/users/
 
 RUN yarn install --frozen-lockfile --network-timeout 3600000
 
@@ -47,6 +48,7 @@ COPY --from=baseapp /kobs/plugins/resources/node_modules /kobs/plugins/resources
 COPY --from=baseapp /kobs/plugins/rss/node_modules /kobs/plugins/rss/node_modules
 COPY --from=baseapp /kobs/plugins/sql/node_modules /kobs/plugins/sql/node_modules
 COPY --from=baseapp /kobs/plugins/teams/node_modules /kobs/plugins/teams/node_modules
+COPY --from=baseapp /kobs/plugins/users/node_modules /kobs/plugins/users/node_modules
 
 RUN yarn build
 
