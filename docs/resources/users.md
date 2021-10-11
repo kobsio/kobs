@@ -4,8 +4,6 @@ Users are an extension of kobs via the [User Custom Resource Definition](https:/
 
 You can access all users via the **Users** item on the home page of kobs.
 
-![Users](assets/users.png)
-
 ## Specification
 
 In the following you can found the specification for the User CRD.
