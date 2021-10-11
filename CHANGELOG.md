@@ -10,6 +10,14 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+### Fixed
+
+### Changed
+
+## [v0.6.0](https://github.com/kobsio/kobs/releases/tag/v0.6.0) (2021-10-11)
+
+### Added
+
 - [#103](https://github.com/kobsio/kobs/pull/103): Add option to get user information from a request.
 - [#104](https://github.com/kobsio/kobs/pull/104): Add actions for Opsgenie plugin to acknowledge, snooze and close alerts.
 - [#105](https://github.com/kobsio/kobs/pull/105): Add Prometheus metrics for API requests.

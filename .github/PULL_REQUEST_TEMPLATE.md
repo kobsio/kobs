@@ -1,5 +1,5 @@
 <!--
-  Keep PR title verbose enough.
+  Keep PR title verbose enough and add prefix telling about what plugin it touches e.g "[prometheus]" or "[core]"
 -->
 
 <!--
@@ -10,7 +10,7 @@
   Place an '[x]' (no spaces) in all applicable fields.
 
   The changelog entry format looks as follow:
-    - [#<PR-ID>](<PR-URL>): ...
+    - [#<PR-ID>](<PR-URL>): [<PLUGIN>] ...
 -->
 
 - [ ] I added a [CHANGELOG](https://github.com/kobsio/kobs/blob/master/CHANGELOG.md) entry for this change.
