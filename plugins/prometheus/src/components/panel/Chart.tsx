@@ -78,7 +78,9 @@ export const Chart: React.FunctionComponent<IChartProps> = ({
           <ChartTooltip
             anchor={isFirstHalf ? 'right' : 'left'}
             color={tooltip.point.color}
-            label={`${labels[tooltip.point.id.split('.')[0]]}: ${tooltip.point.data.yFormatted} ${options.unit}`}
+            label={`${labels[tooltip.point.id.split('.')[0]]}: ${tooltip.point.data.yFormatted} ${
+              options.unit && options.unit
+            }`}
             position={[0, 20]}
             title={tooltip.point.data.xFormatted.toString()}
           />

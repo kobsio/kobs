@@ -12,6 +12,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#175](https://github.com/kobsio/kobs/pull/175): [prometheus] Fix tooltip when no unit is provided.
+
 ### Changed
 
 ## [v0.6.0](https://github.com/kobsio/kobs/releases/tag/v0.6.0) (2021-10-11)
