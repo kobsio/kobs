@@ -45,7 +45,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, chart }: IC
                 color={tooltip.point.color}
                 label={`${chart.series.filter((serie) => serie.id === tooltip.point.serieId)[0].label}: ${
                   tooltip.point.data.yFormatted
-                } ${chart.unit}`}
+                } ${chart.unit && chart.unit}`}
                 title={tooltip.point.data.xFormatted.toString()}
               />
             )}
