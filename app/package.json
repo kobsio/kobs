@@ -10,6 +10,7 @@
     "@kobsio/plugin-dashboards": "*",
     "@kobsio/plugin-elasticsearch": "*",
     "@kobsio/plugin-flux": "*",
+    "@kobsio/plugin-istio": "*",
     "@kobsio/plugin-jaeger": "*",
     "@kobsio/plugin-kiali": "*",
     "@kobsio/plugin-markdown": "*",

@@ -1,20 +1,18 @@
 import { IPluginComponents } from '@kobsio/plugin-core';
 
+import './assets/istio.css';
+
 import icon from './assets/icon.png';
 
 import Page from './components/page/Page';
 import Panel from './components/panel/Panel';
-import Preview from './components/preview/Preview';
 
-const prometheusPlugin: IPluginComponents = {
-  prometheus: {
+const istioPlugin: IPluginComponents = {
+  istio: {
     icon: icon,
     page: Page,
     panel: Panel,
-    preview: Preview,
   },
 };
 
-export default prometheusPlugin;
-
-export * from './utils/interfaces';
+export default istioPlugin;
