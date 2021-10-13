@@ -182,7 +182,7 @@ func (router *Router) getLabels(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) (chi.Router, []*instance.Instance) {
 	var instances []*instance.Instance
 
 	for _, cfg := range config {
@@ -212,5 +212,5 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	router.Post("/table/{name}", router.getTable)
 	router.Get("/labels/{name}", router.getLabels)
 
-	return router
+	return router, instances
 }

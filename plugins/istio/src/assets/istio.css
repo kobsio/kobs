@@ -1,0 +1,10 @@
+.kobsio-istio-label {
+  max-height: 280px;
+  max-width: 180px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.kobsio-istio-list {
+  row-gap: 0px !important;
+}

@@ -16,6 +16,7 @@ import (
 	"github.com/kobsio/kobs/plugins/dashboards"
 	"github.com/kobsio/kobs/plugins/elasticsearch"
 	"github.com/kobsio/kobs/plugins/flux"
+	"github.com/kobsio/kobs/plugins/istio"
 	"github.com/kobsio/kobs/plugins/jaeger"
 	"github.com/kobsio/kobs/plugins/kiali"
 	"github.com/kobsio/kobs/plugins/markdown"
@@ -31,20 +32,21 @@ import (
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
 type Config struct {
 	Applications  applications.Config  `json:"applications"`
-	Resources     resources.Config     `json:"resources"`
-	Teams         teams.Config         `json:"teams"`
-	Users         users.Config         `json:"users"`
+	Clickhouse    clickhouse.Config    `json:"clickhouse"`
 	Dashboards    dashboards.Config    `json:"dashboards"`
-	Prometheus    prometheus.Config    `json:"prometheus"`
 	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
+	Flux          flux.Config          `json:"flux"`
+	Istio         istio.Config         `json:"istio"`
 	Jaeger        jaeger.Config        `json:"jaeger"`
 	Kiali         kiali.Config         `json:"kiali"`
-	Flux          flux.Config          `json:"flux"`
 	Opsgenie      opsgenie.Config      `json:"opsgenie"`
+	Prometheus    prometheus.Config    `json:"prometheus"`
 	Markdown      markdown.Config      `json:"markdown"`
+	Resources     resources.Config     `json:"resources"`
 	RSS           rss.Config           `json:"rss"`
-	Clickhouse    clickhouse.Config    `json:"clickhouse"`
 	SQL           sql.Config           `json:"sql"`
+	Teams         teams.Config         `json:"teams"`
+	Users         users.Config         `json:"users"`
 }
 
 // Router implements the router for the plugins package. This only registeres one route which is used to return all the
@@ -68,22 +70,41 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 
 	router.Get("/", router.getPlugins)
 
+	// Initialize all plugins
+	resourcesRouter := resources.Register(clusters, router.plugins, config.Resources)
+	applicationsRouter := applications.Register(clusters, router.plugins, config.Applications)
+	teamsRouter := teams.Register(clusters, router.plugins, config.Teams)
+	usersRouter := users.Register(clusters, router.plugins, config.Users)
+	dashboardsRouter := dashboards.Register(clusters, router.plugins, config.Dashboards)
+	prometheusRouter, prometheusInstances := prometheus.Register(clusters, router.plugins, config.Prometheus)
+	elasticsearchRouter := elasticsearch.Register(clusters, router.plugins, config.Elasticsearch)
+	clickhouseRouter := clickhouse.Register(clusters, router.plugins, config.Clickhouse)
+	jaegerRouter := jaeger.Register(clusters, router.plugins, config.Jaeger)
+	kialiRouter := kiali.Register(clusters, router.plugins, config.Kiali)
+	istioRouter := istio.Register(clusters, router.plugins, config.Istio, prometheusInstances)
+	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
+	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
+	sqlRouter := sql.Register(clusters, router.plugins, config.SQL)
+	markdownRouter := markdown.Register(clusters, router.plugins, config.Markdown)
+	rssRouter := rss.Register(clusters, router.plugins, config.RSS)
+
 	// Register all plugins
-	router.Mount(resources.Route, resources.Register(clusters, router.plugins, config.Resources))
-	router.Mount(applications.Route, applications.Register(clusters, router.plugins, config.Applications))
-	router.Mount(teams.Route, teams.Register(clusters, router.plugins, config.Teams))
-	router.Mount(users.Route, users.Register(clusters, router.plugins, config.Users))
-	router.Mount(dashboards.Route, dashboards.Register(clusters, router.plugins, config.Dashboards))
-	router.Mount(prometheus.Route, prometheus.Register(clusters, router.plugins, config.Prometheus))
-	router.Mount(elasticsearch.Route, elasticsearch.Register(clusters, router.plugins, config.Elasticsearch))
-	router.Mount(jaeger.Route, jaeger.Register(clusters, router.plugins, config.Jaeger))
-	router.Mount(kiali.Route, kiali.Register(clusters, router.plugins, config.Kiali))
-	router.Mount(flux.Route, flux.Register(clusters, router.plugins, config.Flux))
-	router.Mount(opsgenie.Route, opsgenie.Register(clusters, router.plugins, config.Opsgenie))
-	router.Mount(clickhouse.Route, clickhouse.Register(clusters, router.plugins, config.Clickhouse))
-	router.Mount(sql.Route, sql.Register(clusters, router.plugins, config.SQL))
-	router.Mount(markdown.Route, markdown.Register(clusters, router.plugins, config.Markdown))
-	router.Mount(rss.Route, rss.Register(clusters, router.plugins, config.RSS))
+	router.Mount(resources.Route, resourcesRouter)
+	router.Mount(applications.Route, applicationsRouter)
+	router.Mount(teams.Route, teamsRouter)
+	router.Mount(users.Route, usersRouter)
+	router.Mount(dashboards.Route, dashboardsRouter)
+	router.Mount(prometheus.Route, prometheusRouter)
+	router.Mount(elasticsearch.Route, elasticsearchRouter)
+	router.Mount(clickhouse.Route, clickhouseRouter)
+	router.Mount(jaeger.Route, jaegerRouter)
+	router.Mount(kiali.Route, kialiRouter)
+	router.Mount(istio.Route, istioRouter)
+	router.Mount(flux.Route, fluxRouter)
+	router.Mount(opsgenie.Route, opsgenieRouter)
+	router.Mount(sql.Route, sqlRouter)
+	router.Mount(markdown.Route, markdownRouter)
+	router.Mount(rss.Route, rssRouter)
 
 	return router
 }
