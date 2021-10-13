@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:14 as baseapp
+FROM --platform=linux/amd64 node:14.18.1 as baseapp
 WORKDIR /kobs
 COPY lerna.json package.json yarn.lock /kobs/
 
@@ -10,6 +10,7 @@ COPY plugins/core/package.json /kobs/plugins/core/
 COPY plugins/dashboards/package.json /kobs/plugins/dashboards/
 COPY plugins/elasticsearch/package.json /kobs/plugins/elasticsearch/
 COPY plugins/flux/package.json /kobs/plugins/flux/
+COPY plugins/istio/package.json /kobs/plugins/istio/
 COPY plugins/jaeger/package.json /kobs/plugins/jaeger/
 COPY plugins/kiali/package.json /kobs/plugins/kiali/
 COPY plugins/markdown/package.json /kobs/plugins/markdown/
@@ -24,7 +25,7 @@ COPY plugins/users/package.json /kobs/plugins/users/
 RUN yarn install --frozen-lockfile --network-timeout 3600000
 
 
-FROM --platform=linux/amd64 node:14 as app
+FROM --platform=linux/amd64 node:14.18.1 as app
 WORKDIR /kobs
 COPY lerna.json package.json tsconfig.json typings.d.ts yarn.lock /kobs/
 COPY app /kobs/app
@@ -39,6 +40,7 @@ COPY --from=baseapp /kobs/plugins/core/node_modules /kobs/plugins/core/node_modu
 COPY --from=baseapp /kobs/plugins/dashboards/node_modules /kobs/plugins/dashboards/node_modules
 COPY --from=baseapp /kobs/plugins/elasticsearch/node_modules /kobs/plugins/elasticsearch/node_modules
 COPY --from=baseapp /kobs/plugins/flux/node_modules /kobs/plugins/flux/node_modules
+COPY --from=baseapp /kobs/plugins/istio/node_modules /kobs/plugins/istio/node_modules
 COPY --from=baseapp /kobs/plugins/jaeger/node_modules /kobs/plugins/jaeger/node_modules
 COPY --from=baseapp /kobs/plugins/kiali/node_modules /kobs/plugins/kiali/node_modules
 COPY --from=baseapp /kobs/plugins/markdown/node_modules /kobs/plugins/markdown/node_modules
@@ -53,7 +55,7 @@ COPY --from=baseapp /kobs/plugins/users/node_modules /kobs/plugins/users/node_mo
 RUN yarn build
 
 
-FROM golang:1.17.0-alpine3.14 as api
+FROM golang:1.17.2-alpine3.14 as api
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 RUN echo "Building on $BUILDPLATFORM, for $TARGETPLATFORM" > /log
