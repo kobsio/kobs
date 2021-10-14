@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TableText, Td, Tr } from '@patternfly/react-table';
 
-import { formatTimeWrapper, getProperty } from '../../utils/helpers';
+import { formatTime, getProperty } from '../../utils/helpers';
 import { IDocument } from '../../utils/interfaces';
 import LogsDocumentDetails from './LogsDocumentDetails';
 import LogsDocumentPreview from './LogsDocumentPreview';
@@ -37,7 +37,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({ document, f
           expand={{ isExpanded: isExpanded, onToggle: (): void => setIsExpanded(!isExpanded), rowIndex: 0 }}
         />
         <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Time">
-          <TableText wrapModifier="nowrap"> {formatTimeWrapper(document['_source']['@timestamp'])}</TableText>
+          <TableText wrapModifier="nowrap"> {formatTime(document['_source']['@timestamp'])}</TableText>
         </Td>
         {fields && fields.length > 0 ? (
           fields.map((field, index) => (
