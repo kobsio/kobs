@@ -32,14 +32,31 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
   selectField,
 }: ILogsDocumentsProps) => {
   const activeSortIndex = fields && orderBy ? fields?.indexOf(orderBy) : -1;
-  const activeSortDirection = order === 'descending' ? 'desc' : 'asc';
+  const activeSortDirection = order === 'ascending' ? 'asc' : 'desc';
 
   return (
     <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={false}>
       <Thead>
         <Tr>
           <Th />
-          <Th>Time</Th>
+          <Th
+            sort={{
+              columnIndex: -1,
+              onSort: (
+                event: React.MouseEvent,
+                columnIndex: number,
+                sortByDirection: SortByDirection,
+                extraData: IExtraColumnData,
+              ): void => {
+                if (changeOrder) {
+                  changeOrder(sortByDirection === 'asc' ? 'ascending' : 'descending', 'timestamp');
+                }
+              },
+              sortBy: { direction: activeSortDirection, index: activeSortIndex },
+            }}
+          >
+            Time
+          </Th>
           {fields && fields.length > 0 ? (
             fields.map((field, index) => (
               <Th
@@ -53,7 +70,7 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
                     extraData: IExtraColumnData,
                   ): void => {
                     if (changeOrder) {
-                      changeOrder(sortByDirection === 'desc' ? 'descending' : 'ascending', field);
+                      changeOrder(sortByDirection === 'asc' ? 'ascending' : 'descending', field);
                     }
                   },
                   sortBy: { direction: activeSortDirection, index: activeSortIndex },

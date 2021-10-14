@@ -1,5 +1,5 @@
 import { IDocument, IKeyValue, IOptions } from './interfaces';
-import { TTime, TTimeOptions, formatTime } from '@kobsio/plugin-core';
+import { TTime, TTimeOptions } from '@kobsio/plugin-core';
 
 // getOptionsFromSearch is used to get the Elasticsearch options from a given search location.
 export const getOptionsFromSearch = (search: string): IOptions => {
@@ -57,10 +57,15 @@ export const getFields = (documents: IDocument[]): string[] => {
   return uniqueFields;
 };
 
-// formatTimeWrapper is a wrapper for our shared formatTime function. It is needed to convert a given time string to the
-// corresponding timestamp representation, which we need for the formatTime function.
-export const formatTimeWrapper = (time: string): string => {
-  return formatTime(Math.floor(new Date(time).getTime() / 1000));
+// formatTime formate the given time string. We do not use the formatTime function from the core package, because we
+// also want to include milliseconds in the logs timestamp, which we show.
+export const formatTime = (time: string): string => {
+  const d = new Date(time);
+  return `${d.getFullYear()}-${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${(
+    '0' + d.getHours()
+  ).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}.${(
+    '00' + d.getMilliseconds()
+  ).slice(-3)}`;
 };
 
 // getProperty returns the property of an object for a given key.

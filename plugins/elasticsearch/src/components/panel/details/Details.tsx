@@ -15,7 +15,7 @@ import { Editor, Title } from '@kobsio/plugin-core';
 import Actions from './Actions';
 import Document from './Document';
 import { IDocument } from '../../../utils/interfaces';
-import { formatTimeWrapper } from '../../../utils/helpers';
+import { formatTime } from '../../../utils/helpers';
 
 export interface IDetailsProps {
   document: IDocument;
@@ -31,7 +31,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ document, close }: ID
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
         <Title
-          title={formatTimeWrapper(document['_source']['@timestamp'])}
+          title={formatTime(document['_source']['@timestamp'])}
           subtitle={`${document['_id']} (${document['_index']})`}
           size="lg"
         />

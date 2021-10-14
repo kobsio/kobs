@@ -18,6 +18,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Changed
 
+- [#179](https://github.com/kobsio/kobs/pull/179): [clickhouse] Add sorting and show milliseconds in time column.
+
 ## [v0.6.0](https://github.com/kobsio/kobs/releases/tag/v0.6.0) (2021-10-11)
 
 ### Added

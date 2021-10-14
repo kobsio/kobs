@@ -4,7 +4,7 @@ import { InView } from 'react-intersection-observer';
 
 import { IDocument } from '../../utils/interfaces';
 import LogsDocumentDetails from './LogsDocumentDetails';
-import { formatTimeWrapper } from '../../utils/helpers';
+import { formatTime } from '../../utils/helpers';
 
 interface ILogsDocumentProps {
   document: IDocument;
@@ -48,7 +48,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
                   expand={{ isExpanded: isExpanded, onToggle: (): void => setIsExpanded(!isExpanded), rowIndex: 0 }}
                 />
                 <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Time">
-                  <TableText wrapModifier="nowrap">{formatTimeWrapper(document['timestamp'])}</TableText>
+                  <TableText wrapModifier="nowrap">{formatTime(document['timestamp'])}</TableText>
                 </Td>
                 {fields && fields.length > 0 ? (
                   fields.map((field, index) => (
