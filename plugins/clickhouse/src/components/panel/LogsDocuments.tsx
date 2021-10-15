@@ -31,7 +31,7 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
   changeOrder,
   selectField,
 }: ILogsDocumentsProps) => {
-  const activeSortIndex = fields && orderBy ? fields?.indexOf(orderBy) : -1;
+  const activeSortIndex = fields && orderBy && orderBy !== 'timestamp' ? fields?.indexOf(orderBy) : -1;
   const activeSortDirection = order === 'ascending' ? 'asc' : 'desc';
 
   return (
