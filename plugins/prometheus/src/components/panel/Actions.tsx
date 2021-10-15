@@ -36,7 +36,7 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({
               key={0}
               component={
                 <Link
-                  to={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}${
+                  to={`/${name}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}${
                     queryParams.length > 0 ? queryParams.join('') : ''
                   }`}
                 >

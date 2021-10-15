@@ -13,7 +13,7 @@ import {
 import { FilterIcon, MinusIcon, PlusIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 
-import { IOptionsAdditionalFields, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 import { PageToolbarAutocomplete } from './PageToolbarAutocomplete';
 
@@ -62,7 +62,6 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ): void => {
@@ -73,14 +72,14 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
         setOptions({
           ...tmpData,
           resolution: additionalFields[0].value,
-          times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+          times: { timeEnd: timeEnd, timeStart: timeStart },
         });
       }
 
       setData({
         ...tmpData,
         resolution: additionalFields[0].value,
-        times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+        times: { timeEnd: timeEnd, timeStart: timeStart },
       });
     }
   };
@@ -135,7 +134,6 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
                     value: data.resolution,
                   },
                 ]}
-                time={data.times.time}
                 timeEnd={data.times.timeEnd}
                 timeStart={data.times.timeStart}
                 setOptions={changeOptions}

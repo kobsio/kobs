@@ -33,9 +33,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({ name, displayName, desc
       pathname: location.pathname,
       search: `?limit=${opts.limit}&maxDuration=${opts.maxDuration}&minDuration=${opts.minDuration}&operation=${
         opts.operation === 'All Operations' ? '' : opts.operation
-      }&service=${opts.service}&tags=${opts.tags}&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${
-        opts.times.timeStart
-      }`,
+      }&service=${opts.service}&tags=${opts.tags}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}`,
     });
   };
 

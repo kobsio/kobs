@@ -36,8 +36,7 @@ export interface IOptionsAdditionalFields {
 // TTime is the type with all possible values for the time property. A value of "custom" identifies that a user
 // specified a custom start and end time via the text input fields. The other values are used for the quick select
 // options.
-export type TTime =
-  | 'custom'
+type TTime =
   | 'last12Hours'
   | 'last15Minutes'
   | 'last1Day'
@@ -52,26 +51,6 @@ export type TTime =
   | 'last6Months'
   | 'last7Days'
   | 'last90Days';
-
-// TTimeOptions is an array with all available type for TTime. It is used to verify that the value of a string is an
-//valid option for the TTime type.
-export const TTimeOptions = [
-  'custom',
-  'last12Hours',
-  'last15Minutes',
-  'last1Day',
-  'last1Hour',
-  'last1Year',
-  'last2Days',
-  'last30Days',
-  'last30Minutes',
-  'last3Hours',
-  'last5Minutes',
-  'last6Hours',
-  'last6Months',
-  'last7Days',
-  'last90Days',
-];
 
 // ITime is the interface for a time in the times map. It contains a label which should be displayed in the Options
 // component and the seconds between the start and the end time.
@@ -110,13 +89,11 @@ const times: ITimes = {
 // properties in the parent component.
 interface IOptionsProps {
   additionalFields?: IOptionsAdditionalFields[];
-  time: TTime;
   timeEnd: number;
   timeStart: number;
   setOptions: (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ) => void;
@@ -130,7 +107,6 @@ interface IOptionsProps {
 // second button can be used to refresh the start and end time for the current selection.
 export const Options: React.FunctionComponent<IOptionsProps> = ({
   additionalFields,
-  time,
   timeEnd,
   timeStart,
   setOptions,
@@ -148,21 +124,6 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   // change the start and end time to the new values. If the string couldn't be parsed, the user will see an error below
   // the corresponding input field.
   const apply = (): void => {
-    // If the time wasn't changed by the user, we keep the selected time interval and only refresh the time for the
-    // selected interval and change the additional fields. This allows a user to adjust an additional field without
-    // switching to a custom time interval.
-    if (customTimeEnd === formatTime(timeEnd) && customTimeStart === formatTime(timeStart) && time !== 'custom') {
-      setOptions(
-        false,
-        additionalFields,
-        time,
-        Math.floor(Date.now() / 1000),
-        Math.floor(Date.now() / 1000) - times[time].seconds,
-      );
-      setShow(false);
-      return;
-    }
-
     // Get a new date object for the users current timezone. This allows us to ignore the timezone, while parsing the
     // provided time string. The parsed date object will be in UTC, to transform the parsed date into the users timezone
     // we have to add the minutes between UTC and the users timezon (getTimezoneOffset()).
@@ -186,7 +147,6 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
       setOptions(
         false,
         additionalFields,
-        'custom',
         Math.floor(parsedTimeEnd.getTime() / 1000),
         Math.floor(parsedTimeStart.getTime() / 1000),
       );
@@ -200,7 +160,6 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
     setOptions(
       false,
       additionalFields,
-      t,
       Math.floor(Date.now() / 1000),
       Math.floor(Date.now() / 1000) - times[t].seconds,
     );
@@ -219,15 +178,12 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   // refreshTimes is used to refresh the start and end time, when the user selected a time range from the quick
   // selection list.
   const refreshTimes = (): void => {
-    if (time !== 'custom') {
-      setOptions(
-        true,
-        additionalFields,
-        time,
-        Math.floor(Date.now() / 1000),
-        Math.floor(Date.now() / 1000) - times[time].seconds,
-      );
-    }
+    setOptions(
+      true,
+      additionalFields,
+      Math.floor(Date.now() / 1000),
+      Math.floor(Date.now() / 1000) - (timeEnd - timeStart),
+    );
   };
 
   // useEffect is used to update the UI, every time a property changes.
@@ -240,7 +196,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   return (
     <React.Fragment>
       <Button variant={ButtonVariant.control} onClick={(): void => setShow(true)}>
-        {time === 'custom' ? `${formatTime(timeStart)} to ${formatTime(timeEnd)}` : times[time].label}
+        {formatTime(timeStart)} to {formatTime(timeEnd)}
       </Button>
 
       <Button variant={ButtonVariant.control} onClick={refreshTimes}>

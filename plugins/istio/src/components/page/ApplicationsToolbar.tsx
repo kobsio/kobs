@@ -15,7 +15,7 @@ import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 
-import { IOptionsAdditionalFields, IPluginTimes, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Options } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 
 interface IPageToolbarProps extends IOptions {
@@ -73,22 +73,17 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ): void => {
     if (refresh) {
       setOptions({
         namespaces: selectedNamespaces,
-        times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+        times: { timeEnd: timeEnd, timeStart: timeStart },
       });
     }
 
-    setSelectedTimes({
-      time: time,
-      timeEnd: timeEnd,
-      timeStart: timeStart,
-    });
+    setSelectedTimes({ timeEnd: timeEnd, timeStart: timeStart });
   };
 
   return (
@@ -125,12 +120,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
               )}
             </ToolbarItem>
             <ToolbarItem>
-              <Options
-                time={selectedTimes.time}
-                timeEnd={selectedTimes.timeEnd}
-                timeStart={selectedTimes.timeStart}
-                setOptions={changeOptions}
-              />
+              <Options timeEnd={selectedTimes.timeEnd} timeStart={selectedTimes.timeStart} setOptions={changeOptions} />
             </ToolbarItem>
             <ToolbarItem>
               <Button

@@ -43,7 +43,7 @@ const VisualizationPage: React.FunctionComponent<IVisualizationPageProps> = ({
   const changeOptions = (): void => {
     history.push({
       pathname: location.pathname,
-      search: `?query=${tmpOptions.query}&time=${tmpOptions.times.time}&timeEnd=${tmpOptions.times.timeEnd}&timeStart=${tmpOptions.times.timeStart}&chart=${tmpOptions.chart}&limit=${tmpOptions.limit}&groupBy=${tmpOptions.groupBy}&operation=${tmpOptions.operation}&operationField=${tmpOptions.operationField}&order=${tmpOptions.order}`,
+      search: `?query=${tmpOptions.query}&timeEnd=${tmpOptions.times.timeEnd}&timeStart=${tmpOptions.times.timeStart}&chart=${tmpOptions.chart}&limit=${tmpOptions.limit}&groupBy=${tmpOptions.groupBy}&operation=${tmpOptions.operation}&operationField=${tmpOptions.operationField}&order=${tmpOptions.order}`,
     });
   };
 

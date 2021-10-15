@@ -2,7 +2,7 @@ import { Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem, ToolbarToggleGroup 
 import { FilterIcon } from '@patternfly/react-icons';
 import React from 'react';
 
-import { IOptionsAdditionalFields, IPluginTimes, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Options } from '@kobsio/plugin-core';
 
 interface IApplicationToolbarProps {
   name: string;
@@ -18,11 +18,10 @@ const ApplicationToolbar: React.FunctionComponent<IApplicationToolbarProps> = ({
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ): void => {
-    setOptions({ time: time, timeEnd: timeEnd, timeStart: timeStart });
+    setOptions({ timeEnd: timeEnd, timeStart: timeStart });
   };
 
   return (
@@ -32,12 +31,7 @@ const ApplicationToolbar: React.FunctionComponent<IApplicationToolbarProps> = ({
           <ToolbarGroup style={{ width: '100%' }}>
             <ToolbarItem style={{ width: '100%' }}></ToolbarItem>
             <ToolbarItem>
-              <Options
-                time={times.time}
-                timeEnd={times.timeEnd}
-                timeStart={times.timeStart}
-                setOptions={changeOptions}
-              />
+              <Options timeEnd={times.timeEnd} timeStart={times.timeStart} setOptions={changeOptions} />
             </ToolbarItem>
           </ToolbarGroup>
         </ToolbarToggleGroup>

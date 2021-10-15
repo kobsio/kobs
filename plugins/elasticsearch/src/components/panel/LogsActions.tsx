@@ -26,9 +26,9 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({ name, queries,
             key={index}
             component={
               <Link
-                to={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${
-                  query.query
-                }${query.fields ? query.fields.map((field) => `&field=${field}`).join('') : ''}`}
+                to={`/${name}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${query.query}${
+                  query.fields ? query.fields.map((field) => `&field=${field}`).join('') : ''
+                }`}
               >
                 {query.name}
               </Link>

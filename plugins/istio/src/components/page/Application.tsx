@@ -43,7 +43,7 @@ const Team: React.FunctionComponent<IApplicationProps> = ({ name, pluginOptions 
   const changeOptions = (tmpTimes: IPluginTimes): void => {
     history.push({
       pathname: location.pathname,
-      search: `?time=${tmpTimes.time}&timeEnd=${tmpTimes.timeEnd}&timeStart=${tmpTimes.timeStart}`,
+      search: `?timeEnd=${tmpTimes.timeEnd}&timeStart=${tmpTimes.timeStart}`,
     });
   };
 

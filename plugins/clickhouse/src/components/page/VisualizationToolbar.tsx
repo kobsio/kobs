@@ -9,7 +9,7 @@ import {
 import { FilterIcon } from '@patternfly/react-icons';
 import React from 'react';
 
-import { IOptionsAdditionalFields, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
 import { IVisualizationOptions } from '../../utils/interfaces';
 
 interface IVisualizationToolbarProps {
@@ -31,11 +31,10 @@ const VisualizationToolbar: React.FunctionComponent<IVisualizationToolbarProps> 
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ): void => {
-    setOptions({ ...options, times: { time: time, timeEnd: timeEnd, timeStart: timeStart } });
+    setOptions({ ...options, times: { timeEnd: timeEnd, timeStart: timeStart } });
   };
 
   return (
@@ -47,12 +46,7 @@ const VisualizationToolbar: React.FunctionComponent<IVisualizationToolbarProps> 
               <TextInput aria-label="Query" type="text" value={options.query} onChange={changeQuery} />
             </ToolbarItem>
             <ToolbarItem>
-              <Options
-                time={options.times.time}
-                timeEnd={options.times.timeEnd}
-                timeStart={options.times.timeStart}
-                setOptions={changeOptions}
-              />
+              <Options timeEnd={options.times.timeEnd} timeStart={options.times.timeStart} setOptions={changeOptions} />
             </ToolbarItem>
           </ToolbarGroup>
         </ToolbarToggleGroup>

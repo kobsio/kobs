@@ -11,7 +11,7 @@ import {
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useEffect, useState } from 'react';
 
-import { IOptionsAdditionalFields, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 
 interface ILogsToolbarProps extends IOptions {
@@ -53,7 +53,6 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ): void => {
@@ -66,7 +65,7 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
           fields: fields,
           order: additionalFields[1].value,
           orderBy: additionalFields[0].value,
-          times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+          times: { timeEnd: timeEnd, timeStart: timeStart },
         });
       }
 
@@ -74,7 +73,7 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
         ...tmpData,
         order: additionalFields[1].value,
         orderBy: additionalFields[0].value,
-        times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+        times: { timeEnd: timeEnd, timeStart: timeStart },
       });
     }
   };
@@ -110,7 +109,6 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({
                     values: ['ascending', 'descending'],
                   },
                 ]}
-                time={data.times.time}
                 timeEnd={data.times.timeEnd}
                 timeStart={data.times.timeStart}
                 setOptions={changeOptions}
