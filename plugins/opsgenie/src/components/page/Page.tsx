@@ -27,7 +27,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
   const changeOptions = (opts: IOptions): void => {
     history.push({
       pathname: location.pathname,
-      search: `?query=${opts.query}&type=${opts.type}&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}`,
+      search: `?query=${opts.query}&type=${opts.type}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}`,
     });
   };
 

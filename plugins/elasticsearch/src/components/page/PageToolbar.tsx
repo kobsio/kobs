@@ -11,7 +11,7 @@ import {
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 
-import { IOptionsAdditionalFields, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 
 interface IPageToolbarProps extends IOptions {
@@ -51,7 +51,6 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ): void => {
@@ -61,13 +60,13 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
       setOptions({
         ...tmpData,
         fields: fields,
-        times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+        times: { timeEnd: timeEnd, timeStart: timeStart },
       });
     }
 
     setData({
       ...tmpData,
-      times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+      times: { timeEnd: timeEnd, timeStart: timeStart },
     });
   };
 
@@ -80,12 +79,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
               <TextInput aria-label="Query" type="text" value={data.query} onChange={changeQuery} onKeyDown={onEnter} />
             </ToolbarItem>
             <ToolbarItem>
-              <Options
-                time={data.times.time}
-                timeEnd={data.times.timeEnd}
-                timeStart={data.times.timeStart}
-                setOptions={changeOptions}
-              />
+              <Options timeEnd={data.times.timeEnd} timeStart={data.times.timeStart} setOptions={changeOptions} />
             </ToolbarItem>
             <ToolbarItem>
               <Button

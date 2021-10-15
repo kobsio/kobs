@@ -1,4 +1,3 @@
-import { TTime, TTimeOptions } from '../components/misc/Options';
 import { IPluginTimes } from '../context/PluginsContext';
 
 // timeDifference calculates the difference of two given timestamps and returns a human readable string for the
@@ -34,17 +33,11 @@ export const formatTime = (timestamp: number): string => {
 
 // getTimeParams returns a times object for the parsed time parameters from a URL.
 export const getTimeParams = (params: URLSearchParams): IPluginTimes => {
-  const time = params.get('time');
   const timeEnd = params.get('timeEnd');
   const timeStart = params.get('timeStart');
 
   return {
-    time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
-    timeEnd:
-      time && TTimeOptions.includes(time) && timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
-    timeStart:
-      time && TTimeOptions.includes(time) && timeStart
-        ? parseInt(timeStart as string)
-        : Math.floor(Date.now() / 1000) - 900,
+    timeEnd: timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
+    timeStart: timeStart ? parseInt(timeStart as string) : Math.floor(Date.now() / 1000) - 900,
   };
 };

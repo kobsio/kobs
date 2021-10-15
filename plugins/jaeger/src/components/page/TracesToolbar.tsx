@@ -11,7 +11,7 @@ import {
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 
-import { IOptionsAdditionalFields, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 import TracesToolbarOperations from './TracesToolbarOperations';
 import TracesToolbarServices from './TracesToolbarServices';
@@ -45,7 +45,6 @@ const TracesToolbar: React.FunctionComponent<ITracesToolbarProps> = ({
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
-    time: TTime,
     timeEnd: number,
     timeStart: number,
   ): void => {
@@ -58,7 +57,7 @@ const TracesToolbar: React.FunctionComponent<ITracesToolbarProps> = ({
           limit: additionalFields[0].value,
           maxDuration: additionalFields[1].value,
           minDuration: additionalFields[2].value,
-          times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+          times: { timeEnd: timeEnd, timeStart: timeStart },
         });
       }
 
@@ -67,7 +66,7 @@ const TracesToolbar: React.FunctionComponent<ITracesToolbarProps> = ({
         limit: additionalFields[0].value,
         maxDuration: additionalFields[1].value,
         minDuration: additionalFields[2].value,
-        times: { time: time, timeEnd: timeEnd, timeStart: timeStart },
+        times: { timeEnd: timeEnd, timeStart: timeStart },
       });
     }
   };
@@ -126,7 +125,6 @@ const TracesToolbar: React.FunctionComponent<ITracesToolbarProps> = ({
                     value: data.minDuration,
                   },
                 ]}
-                time={data.times.time}
                 timeEnd={data.times.timeEnd}
                 timeStart={data.times.timeStart}
                 setOptions={changeOptions}

@@ -20,9 +20,9 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
 
     history.push({
       pathname: location.pathname,
-      search: `?resolution=${opts.resolution}&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${
-        opts.times.timeStart
-      }${queries.length > 0 ? queries.join('') : ''}`,
+      search: `?resolution=${opts.resolution}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${
+        queries.length > 0 ? queries.join('') : ''
+      }`,
     });
   };
 

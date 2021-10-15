@@ -29,11 +29,7 @@ export const GraphActions: React.FunctionComponent<IGraphActionsProps> = ({
           <DropdownItem
             key={0}
             component={
-              <Link
-                to={`/${name}?time=${times.time}&timeStart=${times.timeStart}&timeEnd${
-                  times.timeEnd
-                }${namespaceParams.join('')}`}
-              >
+              <Link to={`/${name}?timeStart=${times.timeStart}&timeEnd${times.timeEnd}${namespaceParams.join('')}`}>
                 Explore
               </Link>
             }

@@ -2,7 +2,7 @@ import { Card, Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem, ToolbarToggle
 import { FilterIcon } from '@patternfly/react-icons';
 import React from 'react';
 
-import { IOptionsAdditionalFields, IPluginTimes, Options, TTime } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Options } from '@kobsio/plugin-core';
 import DashboardToolbarVariable from './DashboardToolbarVariable';
 import { IVariableValues } from '../../utils/interfaces';
 
@@ -48,16 +48,14 @@ const DashboardToolbar: React.FunctionComponent<IDashboardToolbarProps> = ({
             <ToolbarGroup style={{ width: '100%' }}>
               <ToolbarItem alignment={{ default: 'alignRight' }}>
                 <Options
-                  time={times.time}
                   timeEnd={times.timeEnd}
                   timeStart={times.timeStart}
                   setOptions={(
                     refresh: boolean,
                     additionalFields: IOptionsAdditionalFields[] | undefined,
-                    time: TTime,
                     timeEnd: number,
                     timeStart: number,
-                  ): void => setTimes({ time: time, timeEnd: timeEnd, timeStart: timeStart })}
+                  ): void => setTimes({ timeEnd: timeEnd, timeStart: timeStart })}
                 />
               </ToolbarItem>
             </ToolbarGroup>

@@ -28,7 +28,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
 
     history.push({
       pathname: location.pathname,
-      search: `?time=${opts.times.time}&timeStart=${opts.times.timeStart}&timeEnd=${opts.times.timeEnd}${
+      search: `?timeStart=${opts.times.timeStart}&timeEnd=${opts.times.timeEnd}${
         namespaces.length > 0 ? namespaces.join('') : ''
       }`,
     });
