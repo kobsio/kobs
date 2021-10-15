@@ -1,5 +1,5 @@
 import { IOptions, IVisualizationOptions } from './interfaces';
-import { TTime, TTimeOptions } from '@kobsio/plugin-core';
+import { getTimeParams } from '@kobsio/plugin-core';
 
 // getOptionsFromSearch is used to get the ClickHouse options from a given search location.
 export const getOptionsFromSearch = (search: string): IOptions => {
@@ -8,24 +8,13 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   const order = params.get('order');
   const orderBy = params.get('orderBy');
   const query = params.get('query');
-  const time = params.get('time');
-  const timeEnd = params.get('timeEnd');
-  const timeStart = params.get('timeStart');
 
   return {
     fields: fields.length > 0 ? fields : undefined,
-    order: order ? order : 'ascending',
+    order: order ? order : 'descending',
     orderBy: orderBy ? orderBy : '',
     query: query ? query : '',
-    times: {
-      time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
-      timeEnd:
-        time && TTimeOptions.includes(time) && timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
-      timeStart:
-        time && TTimeOptions.includes(time) && timeStart
-          ? parseInt(timeStart as string)
-          : Math.floor(Date.now() / 1000) - 900,
-    },
+    times: getTimeParams(params),
   };
 };
 
@@ -40,9 +29,6 @@ export const getVisualizationOptionsFromSearch = (search: string): IVisualizatio
   const operationField = params.get('operationField');
   const order = params.get('order');
   const query = params.get('query');
-  const time = params.get('time');
-  const timeEnd = params.get('timeEnd');
-  const timeStart = params.get('timeStart');
 
   return {
     chart: chart ? chart : 'bar',
@@ -50,17 +36,9 @@ export const getVisualizationOptionsFromSearch = (search: string): IVisualizatio
     limit: limit ? limit : '10',
     operation: operation ? operation : 'count',
     operationField: operationField ? operationField : '',
-    order: order ? order : 'ascending',
+    order: order ? order : 'descending',
     query: query ? query : '',
-    times: {
-      time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
-      timeEnd:
-        time && TTimeOptions.includes(time) && timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
-      timeStart:
-        time && TTimeOptions.includes(time) && timeStart
-          ? parseInt(timeStart as string)
-          : Math.floor(Date.now() / 1000) - 900,
-    },
+    times: getTimeParams(params),
   };
 };
 

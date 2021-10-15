@@ -1,7 +1,7 @@
 import { DatumValue, Serie } from '@nivo/line';
 
 import { ILabels, IMappings, IMetric, IOptions, ISeries } from './interfaces';
-import { TTime, TTimeOptions } from '@kobsio/plugin-core';
+import { getTimeParams } from '@kobsio/plugin-core';
 
 // getOptionsFromSearch is used to parse the given search location and return is as options for Prometheus. This is
 // needed, so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we
@@ -10,22 +10,11 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   const params = new URLSearchParams(search);
   const queries = params.getAll('query');
   const resolution = params.get('resolution');
-  const time = params.get('time');
-  const timeEnd = params.get('timeEnd');
-  const timeStart = params.get('timeStart');
 
   return {
     queries: queries.length > 0 ? queries : [''],
     resolution: resolution ? resolution : '',
-    times: {
-      time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
-      timeEnd:
-        time && TTimeOptions.includes(time) && timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
-      timeStart:
-        time && TTimeOptions.includes(time) && timeStart
-          ? parseInt(timeStart as string)
-          : Math.floor(Date.now() / 1000) - 900,
-    },
+    times: getTimeParams(params),
   };
 };
 

@@ -1,25 +1,14 @@
 import { IMetric, INodeData, IOptions, ISerie } from './interfaces';
-import { IPluginTimes, TTime, TTimeOptions } from '@kobsio/plugin-core';
+import { IPluginTimes, getTimeParams } from '@kobsio/plugin-core';
 
 // getOptionsFromSearch is used to get the Kiali options from a given search location.
 export const getOptionsFromSearch = (search: string): IOptions => {
   const params = new URLSearchParams(search);
   const namespaces = params.getAll('namespace');
-  const time = params.get('time');
-  const timeEnd = params.get('timeEnd');
-  const timeStart = params.get('timeStart');
 
   return {
     namespaces: namespaces.length > 0 ? namespaces : undefined,
-    times: {
-      time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
-      timeEnd:
-        time && TTimeOptions.includes(time) && timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
-      timeStart:
-        time && TTimeOptions.includes(time) && timeStart
-          ? parseInt(timeStart as string)
-          : Math.floor(Date.now() / 1000) - 900,
-    },
+    times: getTimeParams(params),
   };
 };
 

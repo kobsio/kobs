@@ -1,5 +1,5 @@
 import { IDeduplicateTags, IKeyValuePair, IOptions, ISpan, ITrace } from './interfaces';
-import { IPluginTimes, TTime, TTimeOptions, formatTime } from '@kobsio/plugin-core';
+import { IPluginTimes, formatTime, getTimeParams } from '@kobsio/plugin-core';
 import TreeNode from './TreeNode';
 
 // getOptionsFromSearch is used to get the Jaeger options from a given search location.
@@ -11,9 +11,6 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   const operation = params.get('operation');
   const service = params.get('service');
   const tags = params.get('tags');
-  const time = params.get('time');
-  const timeEnd = params.get('timeEnd');
-  const timeStart = params.get('timeStart');
 
   return {
     limit: limit ? limit : '20',
@@ -22,15 +19,7 @@ export const getOptionsFromSearch = (search: string): IOptions => {
     operation: operation ? operation : '',
     service: service ? service : '',
     tags: tags ? tags : '',
-    times: {
-      time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
-      timeEnd:
-        time && TTimeOptions.includes(time) && timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
-      timeStart:
-        time && TTimeOptions.includes(time) && timeStart
-          ? parseInt(timeStart as string)
-          : Math.floor(Date.now() / 1000) - 900,
-    },
+    times: getTimeParams(params),
   };
 };
 
