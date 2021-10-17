@@ -90,13 +90,13 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
                     <MetricsTable
                       name={name}
                       namespaces={options.namespaces}
-                      groupBy="destination_workload_namespace, destination_workload"
-                      label="destination_workload"
+                      groupBy="destination_workload_namespace, destination_app"
+                      label="destination_app"
                       reporter="destination"
                       times={options.times}
                       goTo={(row: IRowValues): void =>
                         history.push({
-                          pathname: `/${name}/${row['destination_workload_namespace']}/${row['destination_workload']}`,
+                          pathname: `/${name}/${row['destination_workload_namespace']}/${row['destination_app']}`,
                         })
                       }
                     />

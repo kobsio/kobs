@@ -31,7 +31,10 @@ export interface IFilters {
 
 // IPanelOptions is the interface for the options property for the Istio panel component.
 export interface IPanelOptions {
+  type?: string;
   namespaces?: string[];
+  application?: string;
+  filters?: IFilters;
 }
 
 export interface ITopology {

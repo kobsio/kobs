@@ -7,6 +7,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | applications | [Applications](#applications) | Configure the caching behaviour for the applications plugin. | No |
 | clickhouse | [[]ClickHouse](#clickhouse) | Configure multiple ClickHouse instances, which can be used within kobs. | No |
 | elasticsearch | [[]Elasticsearch](#elasticsearch) | Configure multiple Elasticsearch instances, which can be used within kobs. | No |
+| istio | [[]Istio](#istio) | Configure multiple Istio instances, which can be used within kobs. | No |
 | jaeger | [[]Jaeger](#jaeger) | Configure multiple Jaeger instances, which can be used within kobs. | No |
 | kiali | [[]Kiali](#kiali) | Configure multiple Kiali instances, which can be used within kobs. | No |
 | opsgenie | [[]Opsgenie](#opsgenie) | Configure the Opsgenie API, which can be used within kobs. | No |
@@ -80,6 +81,34 @@ plugins:
 | username | string | Username to access an Elasticsearch instance via basic authentication. | No |
 | password | string | Password to access an Elasticsearch instance via basic authentication. | No |
 | token | string | Token to access an Elasticsearch instance via token based authentication. | No |
+
+## Istio
+
+The following configuration can be used to access a Istio instances using a Prometheus plugin named `prometheus` and an Clickhouse plugin named `clickhouse`.
+
+```yaml
+plugins:
+  istio:
+    - name: istio
+      displayName: Istio
+      description: Simplify observability, traffic management, security, and policy with the leading service mesh.
+      prometheus:
+        enabled: true
+        name: prometheus
+      clickhouse:
+        enabled: true
+        name: clickhouse
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Istio instance. | Yes |
+| displayName | string | Name of the Istio as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Istio instance. | No |
+| prometheus.enabled | boolean | Enabled the Prometheus integration for Istio. | No |
+| prometheus.name | string | The name of the Prometheus instance which should be used for the Istio instance. | No |
+| clickhouse.enabled | boolean | Enabled the Clickhouse integration for Istio. | No |
+| clickhouse.name | string | The name of the Clickhouse instance which should be used for the Istio instance. | No |
 
 ## Jaeger
 

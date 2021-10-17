@@ -12,7 +12,7 @@ import { getApplicationOptionsFromSearch } from '../../utils/helpers';
 
 interface IApplicationParams {
   namespace: string;
-  name: string;
+  application: string;
 }
 
 export interface IApplicationProps {
@@ -57,7 +57,7 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Title title={params.name} subtitle={params.namespace} size="xl" />
+        <Title title={params.application} subtitle={params.namespace} size="xl" />
         <ApplicationToolbar
           view={options.view}
           times={options.times}
@@ -72,7 +72,7 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
             <ApplicationMetrics
               name={name}
               namespace={params.namespace}
-              application={params.name}
+              application={params.application}
               times={options.times}
               filters={options.filters}
               view={options.view}
@@ -83,7 +83,7 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
             <ApplicationTop
               name={name}
               namespace={params.namespace}
-              application={params.name}
+              application={params.application}
               times={options.times}
               filters={options.filters}
               view={options.view}
@@ -95,7 +95,7 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
             <ApplicationTap
               name={name}
               namespace={params.namespace}
-              application={params.name}
+              application={params.application}
               times={options.times}
               filters={options.filters}
               view={options.view}

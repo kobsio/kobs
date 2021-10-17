@@ -63,23 +63,23 @@ func (i *Instance) GetMetrics(ctx context.Context, namespaces []string, applicat
 	queries := []prometheusInstance.Query{
 		{
 			Label: label,
-			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="%s",destination_workload_namespace=~"%s",destination_workload=~"%s",response_code!~"5.*"}[5m])) by (%s) / sum(irate(istio_requests_total{reporter="%s",destination_workload_namespace=~"%s",destination_workload=~"%s"}[5m])) by (%s) * 100`, reporter, namespacesStr, application, groupBy, reporter, namespacesStr, application, groupBy),
+			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="%s",destination_workload_namespace=~"%s",destination_app=~"%s",response_code!~"5.*"}[5m])) by (%s) / sum(irate(istio_requests_total{reporter="%s",destination_workload_namespace=~"%s",destination_app=~"%s"}[5m])) by (%s) * 100`, reporter, namespacesStr, application, groupBy, reporter, namespacesStr, application, groupBy),
 		},
 		{
 			Label: label,
-			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="%s",destination_workload_namespace=~"%s",destination_workload=~"%s"}[5m])) by (%s), 0.001)`, reporter, namespacesStr, application, groupBy),
+			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="%s",destination_workload_namespace=~"%s",destination_app=~"%s"}[5m])) by (%s), 0.001)`, reporter, namespacesStr, application, groupBy),
 		},
 		{
 			Label: label,
-			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, %s))`, reporter, namespacesStr, application, groupBy),
+			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, %s))`, reporter, namespacesStr, application, groupBy),
 		},
 		{
 			Label: label,
-			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, %s))`, reporter, namespacesStr, application, groupBy),
+			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, %s))`, reporter, namespacesStr, application, groupBy),
 		},
 		{
 			Label: label,
-			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, %s))`, reporter, namespacesStr, application, groupBy),
+			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, %s))`, reporter, namespacesStr, application, groupBy),
 		},
 	}
 
@@ -93,25 +93,25 @@ func (i *Instance) GetMetricsDetails(ctx context.Context, metric, reporter, dest
 	if metric == "sr" {
 		queries = append(queries, prometheusInstance.Query{
 			Label: "SR",
-			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="%s",destination_workload=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="%s",destination_workload=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[5m])) * 100`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
+			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="%s",destination_app=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="%s",destination_app=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[5m])) * 100`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
 		})
 	} else if metric == "rps" {
 		queries = append(queries, prometheusInstance.Query{
 			Label: "RPS",
-			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="%s",destination_workload=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[5m])), 0.001)`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
+			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="%s",destination_app=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[5m])), 0.001)`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
 		})
 	} else if metric == "latency" {
 		queries = append(queries, prometheusInstance.Query{
 			Label: "P50",
-			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[1m])) by (le))`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
+			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_app=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[1m])) by (le))`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
 		})
 		queries = append(queries, prometheusInstance.Query{
 			Label: "P90",
-			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[1m])) by (le))`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
+			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_app=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[1m])) by (le))`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
 		})
 		queries = append(queries, prometheusInstance.Query{
 			Label: "P99",
-			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_workload=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[1m])) by (le))`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
+			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="%s",destination_app=~"%s",destination_workload_namespace=~"%s",destination_version=~"%s",destination_service=~"%s",source_workload=~"%s",source_workload_namespace=~"%s",pod=~"%s"}[1m])) by (le))`, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod),
 		})
 	} else {
 		return nil, fmt.Errorf("invalid metric")
@@ -165,27 +165,27 @@ func (i *Instance) GetMetricsPod(ctx context.Context, metric, namespace, pod str
 // GetTopology creates a simple topology graph for the given application, with all the incoming sources and outgoing
 // destinations for the application.
 func (i *Instance) GetTopology(ctx context.Context, namespace, application string, timeStart int64, timeEnd int64) ([]Edge, []Node, error) {
-	currentLabel := "{% .destination_workload_namespace %}_{% .destination_workload %}"
+	currentLabel := "{% .destination_workload_namespace %}_{% .destination_app %}"
 	currentQueries := []prometheusInstance.Query{
 		{
 			Label: currentLabel,
-			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s",response_code!~"5.*"}[5m])) by (destination_workload, destination_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[5m])) by (destination_workload, destination_workload_namespace) * 100`, namespace, application, namespace, application),
+			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s",response_code!~"5.*"}[5m])) by (destination_app, destination_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[5m])) by (destination_app, destination_workload_namespace) * 100`, namespace, application, namespace, application),
 		},
 		{
 			Label: currentLabel,
-			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[5m])) by (destination_workload, destination_workload_namespace), 0.001)`, namespace, application),
+			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[5m])) by (destination_app, destination_workload_namespace), 0.001)`, namespace, application),
 		},
 		{
 			Label: currentLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, destination_workload, destination_workload_namespace))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, destination_app, destination_workload_namespace))`, namespace, application),
 		},
 		{
 			Label: currentLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, destination_workload, destination_workload_namespace))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, destination_app, destination_workload_namespace))`, namespace, application),
 		},
 		{
 			Label: currentLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, destination_workload, destination_workload_namespace))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, destination_app, destination_workload_namespace))`, namespace, application),
 		},
 	}
 
@@ -198,23 +198,23 @@ func (i *Instance) GetTopology(ctx context.Context, namespace, application strin
 	incomingQueries := []prometheusInstance.Query{
 		{
 			Label: incomingLabel,
-			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s",response_code!~"5.*"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[5m])) by (source_workload, source_workload_namespace) * 100`, namespace, application, namespace, application),
+			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s",response_code!~"5.*"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[5m])) by (source_workload, source_workload_namespace) * 100`, namespace, application, namespace, application),
 		},
 		{
 			Label: incomingLabel,
-			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[5m])) by (source_workload, source_workload_namespace), 0.001)`, namespace, application),
+			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[5m])) by (source_workload, source_workload_namespace), 0.001)`, namespace, application),
 		},
 		{
 			Label: incomingLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, source_workload, source_workload_namespace))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, source_workload, source_workload_namespace))`, namespace, application),
 		},
 		{
 			Label: incomingLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, source_workload, source_workload_namespace))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, source_workload, source_workload_namespace))`, namespace, application),
 		},
 		{
 			Label: incomingLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_workload=~"%s"}[1m])) by (le, source_workload, source_workload_namespace))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_workload_namespace=~"%s",destination_app=~"%s"}[1m])) by (le, source_workload, source_workload_namespace))`, namespace, application),
 		},
 	}
 
@@ -227,23 +227,23 @@ func (i *Instance) GetTopology(ctx context.Context, namespace, application strin
 	outgoingQueries := []prometheusInstance.Query{
 		{
 			Label: outgoingLabel,
-			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="source",source_workload_namespace=~"%s",source_workload=~"%s",response_code!~"5.*"}[5m])) by (destination_service) / sum(irate(istio_requests_total{reporter="source",source_workload_namespace=~"%s",source_workload=~"%s"}[5m])) by (destination_service) * 100`, namespace, application, namespace, application),
+			Query: fmt.Sprintf(`sum(irate(istio_requests_total{reporter="source",source_workload_namespace=~"%s",source_app=~"%s",response_code!~"5.*"}[5m])) by (destination_service) / sum(irate(istio_requests_total{reporter="source",source_workload_namespace=~"%s",source_app=~"%s"}[5m])) by (destination_service) * 100`, namespace, application, namespace, application),
 		},
 		{
 			Label: outgoingLabel,
-			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="source",source_workload_namespace=~"%s",source_workload=~"%s"}[5m])) by (destination_service), 0.001)`, namespace, application),
+			Query: fmt.Sprintf(`round(sum(irate(istio_requests_total{reporter="source",source_workload_namespace=~"%s",source_app=~"%s"}[5m])) by (destination_service), 0.001)`, namespace, application),
 		},
 		{
 			Label: outgoingLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",source_workload_namespace=~"%s",source_workload=~"%s"}[1m])) by (le, destination_service))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",source_workload_namespace=~"%s",source_app=~"%s"}[1m])) by (le, destination_service))`, namespace, application),
 		},
 		{
 			Label: outgoingLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",source_workload_namespace=~"%s",source_workload=~"%s"}[1m])) by (le, destination_service))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",source_workload_namespace=~"%s",source_app=~"%s"}[1m])) by (le, destination_service))`, namespace, application),
 		},
 		{
 			Label: outgoingLabel,
-			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",source_workload_namespace=~"%s",source_workload=~"%s"}[1m])) by (le, destination_service))`, namespace, application),
+			Query: fmt.Sprintf(`histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",source_workload_namespace=~"%s",source_app=~"%s"}[1m])) by (le, destination_service))`, namespace, application),
 		},
 	}
 

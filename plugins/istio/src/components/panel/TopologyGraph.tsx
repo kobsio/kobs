@@ -57,8 +57,8 @@ const styleSheet: cytoscape.Stylesheet[] = [
 ];
 
 const nodeLabel = (node: INodeData): string => {
-  const application = node.metrics.hasOwnProperty('destination_workload')
-    ? node.metrics['destination_workload']
+  const application = node.metrics.hasOwnProperty('destination_app')
+    ? node.metrics['destination_app']
     : node.metrics.hasOwnProperty('source_workload')
     ? node.metrics['source_workload']
     : node.metrics['destination_service'];

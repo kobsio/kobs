@@ -51,6 +51,7 @@ nav:
       - Dashboards: plugins/dashboards.md
       - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md
+      - Istio: plugins/istio.md
       - Jaeger: plugins/jaeger.md
       - Kiali: plugins/kiali.md
       - Markdown: plugins/markdown.md

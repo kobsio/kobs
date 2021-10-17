@@ -130,7 +130,7 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
                       <DetailsMetrics
                         name={name}
                         namespace={data[key]['destination_workload_namespace']}
-                        application={data[key]['destination_workload']}
+                        application={data[key]['destination_app']}
                         row={data[key]}
                         times={times}
                         close={(): void => setDetails(undefined)}
@@ -139,7 +139,7 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
                 : undefined
             }
           >
-            <Td dataLabel="Application">{data[key]['destination_workload']}</Td>
+            <Td dataLabel="Application">{data[key]['destination_app']}</Td>
             <Td dataLabel="Namespace">{data[key]['destination_workload_namespace']}</Td>
             {additionalColumns
               ? additionalColumns.map((column, index) => (
