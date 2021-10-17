@@ -4,6 +4,7 @@ import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patter
 import React from 'react';
 
 import { IRowValues, IRows } from '@kobsio/plugin-prometheus';
+import DetailsMetrics from './details/DetailsMetrics';
 import { IPluginTimes } from '@kobsio/plugin-core';
 import { formatNumber } from '../../utils/helpers';
 
@@ -21,7 +22,8 @@ export interface IMetricsTableProps {
   reporter: string;
   times: IPluginTimes;
   additionalColumns?: IAdditionalColumns[];
-  showDetails?: (row: IRowValues) => void;
+  setDetails?: (details: React.ReactNode) => void;
+  goTo?: (row: IRowValues) => void;
 }
 
 const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
@@ -33,7 +35,8 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
   reporter,
   times,
   additionalColumns,
-  showDetails,
+  setDetails,
+  goTo,
 }: IMetricsTableProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IRows, Error>(
     ['istio/metrics', name, namespaces, application, label, groupBy, reporter, times],
@@ -81,7 +84,7 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
       <Alert
         variant={AlertVariant.danger}
         isInline={true}
-        title="Could not get applications"
+        title="Could not get metrics"
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): Promise<QueryObserverResult<IRows, Error>> => refetch()}>
@@ -117,8 +120,24 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
         {Object.keys(data).map((key) => (
           <Tr
             key={key}
-            isHoverable={showDetails ? true : false}
-            onClick={showDetails ? (): void => showDetails(data[key]) : undefined}
+            isHoverable={goTo || setDetails ? true : false}
+            onClick={
+              goTo
+                ? (): void => goTo(data[key])
+                : setDetails
+                ? (): void =>
+                    setDetails(
+                      <DetailsMetrics
+                        name={name}
+                        namespace={data[key]['destination_workload_namespace']}
+                        application={data[key]['destination_workload']}
+                        row={data[key]}
+                        times={times}
+                        close={(): void => setDetails(undefined)}
+                      />,
+                    )
+                : undefined
+            }
           >
             <Td dataLabel="Application">{data[key]['destination_workload']}</Td>
             <Td dataLabel="Namespace">{data[key]['destination_workload_namespace']}</Td>

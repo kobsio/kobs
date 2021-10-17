@@ -6,7 +6,8 @@ import nodeHtmlLabel from 'cytoscape-node-html-label';
 import dagre from 'cytoscape-dagre';
 
 import { IEdge, INode, INodeData } from '../../utils/interfaces';
-import { IRowValues } from '@kobsio/plugin-prometheus';
+import DetailsMetrics from './details/DetailsMetrics';
+import { IPluginTimes } from '@kobsio/plugin-core';
 import { formatNumber } from '../../utils/helpers';
 
 cytoscape.use(dagre);
@@ -124,15 +125,23 @@ const nodeLabel = (node: INodeData): string => {
 };
 
 interface ITopologyGraphProps {
+  name: string;
   edges: IEdge[];
   nodes: INode[];
-  showDetails?: (row: IRowValues) => void;
+  namespace: string;
+  application: string;
+  times: IPluginTimes;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const TopologyGraph: React.FunctionComponent<ITopologyGraphProps> = ({
+  name,
   edges,
   nodes,
-  showDetails,
+  namespace,
+  application,
+  times,
+  setDetails,
 }: ITopologyGraphProps) => {
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
@@ -146,11 +155,20 @@ const TopologyGraph: React.FunctionComponent<ITopologyGraphProps> = ({
       const node = event.target;
       const data: INodeData = node.data();
 
-      if (data.metrics && showDetails) {
-        showDetails(data.metrics);
+      if (data.metrics && setDetails) {
+        setDetails(
+          <DetailsMetrics
+            name={name}
+            namespace={namespace}
+            application={application}
+            row={data.metrics}
+            times={times}
+            close={(): void => setDetails(undefined)}
+          />,
+        );
       }
     },
-    [showDetails],
+    [name, namespace, application, times, setDetails],
   );
 
   const cyCallback = useCallback(

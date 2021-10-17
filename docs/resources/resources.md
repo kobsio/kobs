@@ -18,7 +18,7 @@ If you want to view the Yaml representation of the resource you can select the c
 
 ![YAML](assets/resources-yaml.png)
 
-Next to the yaml representation, you find a seconde tab events, which shows all events, which are related to the selected object. The events are retrieved with a field selector and the name of the resource: `fieldSelector=involvedObject.name=<NAME-OF-THE-RESOURCE>`.
+Next to the yaml representation, you find a second tab events, which shows all events, which are related to the selected object. The events are retrieved with a field selector and the name of the resource: `fieldSelector=involvedObject.name=<NAME-OF-THE-RESOURCE>`.
 
 ![Events](assets/resources-events.png)
 

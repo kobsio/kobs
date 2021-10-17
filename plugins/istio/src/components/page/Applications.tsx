@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { IOptions, IPluginOptions } from '../../utils/interfaces';
+import { IApplicationsOptions, IPluginOptions } from '../../utils/interfaces';
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { IRowValues } from '@kobsio/plugin-prometheus';
 import MetricsTable from '../panel/MetricsTable';
@@ -35,9 +35,9 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 }: IApplicationsProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(getApplicationsOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IApplicationsOptions>(getApplicationsOptionsFromSearch(location.search));
 
-  const changeOptions = (opts: IOptions): void => {
+  const changeOptions = (opts: IApplicationsOptions): void => {
     const namespaces = opts.namespaces ? opts.namespaces.map((namespace) => `&namespace=${namespace}`) : [];
 
     history.push({
@@ -94,7 +94,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
                       label="destination_workload"
                       reporter="destination"
                       times={options.times}
-                      showDetails={(row: IRowValues): void =>
+                      goTo={(row: IRowValues): void =>
                         history.push({
                           pathname: `/${name}/${row['destination_workload_namespace']}/${row['destination_workload']}`,
                         })

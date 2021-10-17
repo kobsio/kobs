@@ -7,6 +7,7 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	clickhouseInstance "github.com/kobsio/kobs/plugins/clickhouse/pkg/instance"
 	"github.com/kobsio/kobs/plugins/istio/pkg/instance"
 	prometheusInstance "github.com/kobsio/kobs/plugins/prometheus/pkg/instance"
 
@@ -119,6 +120,88 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, metrics)
 }
 
+func (router *Router) getMetricsDetails(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+	metric := r.URL.Query().Get("metric")
+	reporter := r.URL.Query().Get("reporter")
+	destinationWorkload := r.URL.Query().Get("destinationWorkload")
+	destinationWorkloadNamespace := r.URL.Query().Get("destinationWorkloadNamespace")
+	destinationVersion := r.URL.Query().Get("destinationVersion")
+	destinationService := r.URL.Query().Get("destinationService")
+	sourceWorkload := r.URL.Query().Get("sourceWorkload")
+	sourceWorkloadNamespace := r.URL.Query().Get("sourceWorkloadNamespace")
+	pod := r.URL.Query().Get("pod")
+
+	log.WithFields(logrus.Fields{"name": name, "timeEnd": timeEnd, "timeStart": timeStart, "metric": metric, "reporter": reporter, "destinationWorkload": destinationWorkload, "destinationWorkloadNamespace": destinationWorkloadNamespace, "destinationVersion": destinationVersion, "destinationService": destinationService, "sourceWorkload": sourceWorkload, "sourceWorkloadNamespace": sourceWorkloadNamespace, "pod": pod}).Tracef("getMetricsDetails")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	metrics, err := i.GetMetricsDetails(r.Context(), metric, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
+		return
+	}
+
+	log.Tracef("getMetricsDetails")
+	render.JSON(w, r, metrics)
+}
+
+func (router *Router) getMetricsPod(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+	metric := r.URL.Query().Get("metric")
+	namespace := r.URL.Query().Get("namespace")
+	pod := r.URL.Query().Get("pod")
+
+	log.WithFields(logrus.Fields{"name": name, "timeEnd": timeEnd, "timeStart": timeStart, "metric": metric, "namespace": namespace, "pod": pod}).Tracef("getMetricsPod")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	metrics, err := i.GetMetricsPod(r.Context(), metric, namespace, pod, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
+		return
+	}
+
+	log.Tracef("getMetricsPod")
+	render.JSON(w, r, metrics)
+}
+
 func (router *Router) getTopology(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	timeStart := r.URL.Query().Get("timeStart")
@@ -164,12 +247,135 @@ func (router *Router) getTopology(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
+func (router *Router) getTap(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+	application := r.URL.Query().Get("application")
+	namespace := r.URL.Query().Get("namespace")
+	filterName := r.URL.Query().Get("filterName")
+	filterMethod := r.URL.Query().Get("filterMethod")
+	filterPath := r.URL.Query().Get("filterPath")
+
+	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterName": filterName, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTap")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	logs, err := i.Tap(r.Context(), namespace, application, filterName, filterMethod, filterPath, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
+		return
+	}
+
+	log.WithFields(logrus.Fields{"logs": len(logs)}).Tracef("getTap")
+	render.JSON(w, r, logs)
+}
+
+func (router *Router) getTop(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+	application := r.URL.Query().Get("application")
+	namespace := r.URL.Query().Get("namespace")
+	filterName := r.URL.Query().Get("filterName")
+	filterMethod := r.URL.Query().Get("filterMethod")
+	filterPath := r.URL.Query().Get("filterPath")
+	sortBy := r.URL.Query().Get("sortBy")
+	sortDirection := r.URL.Query().Get("sortDirection")
+
+	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterName": filterName, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTop")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	logs, err := i.Top(r.Context(), namespace, application, filterName, filterMethod, filterPath, sortBy, sortDirection, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
+		return
+	}
+
+	log.WithFields(logrus.Fields{"logs": len(logs)}).Tracef("getTop")
+	render.JSON(w, r, logs)
+}
+
+func (router *Router) getTopDetails(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+	application := r.URL.Query().Get("application")
+	namespace := r.URL.Query().Get("namespace")
+	upstreamCluster := r.URL.Query().Get("upstreamCluster")
+	authority := r.URL.Query().Get("authority")
+	method := r.URL.Query().Get("method")
+	path := r.URL.Query().Get("path")
+
+	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "upstreamCluster": upstreamCluster, "authority": authority, "method": method, "path": path}).Tracef("getTopDetails")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	metrics, err := i.TopDetails(r.Context(), namespace, application, upstreamCluster, authority, method, path, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get success rate")
+		return
+	}
+
+	log.Tracef("getTopDetails")
+	render.JSON(w, r, metrics)
+}
+
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config, prometheusInstances []*prometheusInstance.Instance) chi.Router {
+func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config, prometheusInstances []*prometheusInstance.Instance, clickhouseInstances []*clickhouseInstance.Instance) chi.Router {
 	var instances []*instance.Instance
 
 	for _, cfg := range config {
-		instance, err := instance.New(cfg, prometheusInstances)
+		instance, err := instance.New(cfg, prometheusInstances, clickhouseInstances)
 		if err != nil {
 			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Istio instance")
 		}
@@ -179,6 +385,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		var options map[string]interface{}
 		options = make(map[string]interface{})
 		options["prometheus"] = cfg.Prometheus.Enabled
+		options["clickhouse"] = cfg.Clickhouse.Enabled
 
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,
@@ -197,7 +404,12 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router.Get("/namespaces/{name}", router.getNamespaces)
 	router.Get("/metrics/{name}", router.getMetrics)
+	router.Get("/metricsdetails/{name}", router.getMetricsDetails)
+	router.Get("/metricspod/{name}", router.getMetricsPod)
 	router.Get("/topology/{name}", router.getTopology)
+	router.Get("/tap/{name}", router.getTap)
+	router.Get("/top/{name}", router.getTop)
+	router.Get("/topdetails/{name}", router.getTopDetails)
 
 	return router
 }

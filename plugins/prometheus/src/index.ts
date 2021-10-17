@@ -18,3 +18,5 @@ const prometheusPlugin: IPluginComponents = {
 export default prometheusPlugin;
 
 export * from './utils/interfaces';
+export * from './utils/helpers';
+export * from './components/panel/Chart';

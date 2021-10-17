@@ -1,36 +1,41 @@
 import { Card, CardBody, CardTitle } from '@patternfly/react-core';
+import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
-import { ResponsiveLineCanvas } from '@nivo/line';
 
-import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
-import { IChart } from '../../../utils/interfaces';
-import { IPluginTimes } from '@kobsio/plugin-core';
+import { CHART_THEME, COLOR_SCALE, ChartTooltip, IPluginTimes } from '@kobsio/plugin-core';
 import { formatAxisBottom } from '@kobsio/plugin-prometheus';
 
-interface IChartProps {
+interface IDetailsTopChartProps {
+  title: string;
+  unit: string;
+  series: Serie[];
   times: IPluginTimes;
-  chart: IChart;
 }
 
-export const Chart: React.FunctionComponent<IChartProps> = ({ times, chart }: IChartProps) => {
+const DetailsTopChart: React.FunctionComponent<IDetailsTopChartProps> = ({
+  title,
+  unit,
+  series,
+  times,
+}: IDetailsTopChartProps) => {
   return (
     <Card isCompact={true}>
-      <CardTitle>{chart.title}</CardTitle>
+      <CardTitle>{title}</CardTitle>
       <CardBody>
-        <div style={{ height: '300px', width: '100%' }}>
+        <div style={{ height: '300px' }}>
           <ResponsiveLineCanvas
             axisBottom={{
               format: formatAxisBottom(times.timeStart, times.timeEnd),
             }}
             axisLeft={{
               format: '>-.2f',
-              legend: chart.unit,
+              legend: unit,
               legendOffset: -40,
               legendPosition: 'middle',
             }}
             colors={COLOR_SCALE}
             curve="monotoneX"
-            data={chart.series}
+            data={series}
             enableArea={false}
             enableGridX={false}
             enableGridY={true}
@@ -48,9 +53,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, chart }: IC
                 <ChartTooltip
                   anchor={isFirstHalf ? 'right' : 'left'}
                   color={tooltip.point.color}
-                  label={`${chart.series.filter((serie) => serie.id === tooltip.point.serieId)[0].label}: ${
-                    tooltip.point.data.yFormatted
-                  } ${chart.unit ? chart.unit : ''}`}
+                  label={`${tooltip.point.serieId}: ${tooltip.point.data.yFormatted} ${unit ? unit : ''}`}
                   position={[0, 20]}
                   title={tooltip.point.data.xFormatted.toString()}
                 />
@@ -58,7 +61,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, chart }: IC
             }}
             xScale={{ type: 'time' }}
             yScale={{ max: 'auto', min: 'auto', stacked: false, type: 'linear' }}
-            yFormat=" >-.2f"
+            yFormat=" >-.4f"
           />
         </div>
       </CardBody>
@@ -66,4 +69,4 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ times, chart }: IC
   );
 };
 
-export default Chart;
+export default DetailsTopChart;

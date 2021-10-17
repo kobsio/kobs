@@ -17,6 +17,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
   }
 
   const pluginOptions: IPluginOptions = {
+    clickhouse: options['clickhouse'],
     prometheus: options['prometheus'],
   };
 

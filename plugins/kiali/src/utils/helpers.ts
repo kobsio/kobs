@@ -1,5 +1,5 @@
 import { IMetric, INodeData, IOptions, ISerie } from './interfaces';
-import { IPluginTimes, getTimeParams } from '@kobsio/plugin-core';
+import { getTimeParams } from '@kobsio/plugin-core';
 
 // getOptionsFromSearch is used to get the Kiali options from a given search location.
 export const getOptionsFromSearch = (search: string): IOptions => {
@@ -61,19 +61,6 @@ const getMetricLabel = (metric: IMetric): string => {
   }
 
   return '';
-};
-
-// formatAxisBottom calculates the format for the bottom axis based on the specified start and end time.
-export const formatAxisBottom = (times: IPluginTimes): string => {
-  if (times.timeEnd - times.timeStart < 3600) {
-    return '%H:%M:%S';
-  } else if (times.timeEnd - times.timeStart < 86400) {
-    return '%H:%M';
-  } else if (times.timeEnd - times.timeStart < 604800) {
-    return '%m-%d %H:%M';
-  }
-
-  return '%m-%d';
 };
 
 export const getSteps = (start: number, end: number): string => {

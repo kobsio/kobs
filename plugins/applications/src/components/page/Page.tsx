@@ -7,7 +7,7 @@ import { IPluginPageProps } from '@kobsio/plugin-core';
 
 // The page for the applications plugin, supports two different routes: One for showing a gallery / topology of
 // applications, where the user can select a list of clusters and namespaces for which he wants to get the applications
-// and a seconde one for showing a single application.
+// and a second one for showing a single application.
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   return (
     <Switch>
