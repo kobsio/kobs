@@ -26,7 +26,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
       <Route exact={true} path={`/${name}`}>
         <Applications name={name} displayName={displayName} description={description} pluginOptions={pluginOptions} />
       </Route>
-      <Route exact={true} path={`/${name}/:namespace/:name`}>
+      <Route exact={true} path={`/${name}/:namespace/:application`}>
         <Application name={name} pluginOptions={pluginOptions} />
       </Route>
     </Switch>
