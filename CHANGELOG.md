@@ -11,6 +11,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Added
 
 - [#177](https://github.com/kobsio/kobs/pull/177): [istio] Add Istio plugin to get an overview of all applications in the service mesh.
+- [#182](https://github.com/kobsio/kobs/pull/182): [istio] Add top and tap commands and add details view for metrics.
 
 ### Fixed
 

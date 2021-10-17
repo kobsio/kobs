@@ -1,3 +1,4 @@
+import { Serie } from '@nivo/line';
 import cytoscape from 'cytoscape';
 
 import { IPluginTimes } from '@kobsio/plugin-core';
@@ -5,12 +6,27 @@ import { IRowValues } from '@kobsio/plugin-prometheus';
 
 export interface IPluginOptions {
   prometheus: boolean;
+  clickhouse: boolean;
 }
 
-// IOptions is the interface for the options on the Istio page.
-export interface IOptions {
+// IApplicationsOptions is the interface for the Istio applications page.
+export interface IApplicationsOptions {
   namespaces: string[];
   times: IPluginTimes;
+}
+
+// IApplicationOptions is the interface for the Istio application page.
+export interface IApplicationOptions {
+  view: string;
+  times: IPluginTimes;
+  filters: IFilters;
+}
+
+// IFilters is the interface to specify filters for the tab and top view of an Istio application.
+export interface IFilters {
+  name: string;
+  method: string;
+  path: string;
 }
 
 // IPanelOptions is the interface for the options property for the Istio panel component.
@@ -42,4 +58,16 @@ export interface IEdgeData {
   id: string;
   source: string;
   target: string;
+}
+
+// ILogLine represents a single log line.
+export interface ILogLine {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
+
+// ITopDetailsMetrics contains the success rate and the latency series which can be used within our charts.
+export interface ITopDetailsMetrics {
+  sr: Serie[];
+  latency: Serie[];
 }

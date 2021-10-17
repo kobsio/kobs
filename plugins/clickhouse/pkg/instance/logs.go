@@ -99,14 +99,14 @@ func splitOperator(condition string, materializedColumns []string) (string, erro
 		return handleConditionParts(notIlike[0], notIlike[1], "!~", materializedColumns)
 	}
 
-	equal := strings.Split(condition, "=")
-	if len(equal) == 2 {
-		return handleConditionParts(equal[0], equal[1], "=", materializedColumns)
-	}
-
 	regex := strings.Split(condition, "~")
 	if len(regex) == 2 {
 		return handleConditionParts(regex[0], regex[1], "~", materializedColumns)
+	}
+
+	equal := strings.Split(condition, "=")
+	if len(equal) == 2 {
+		return handleConditionParts(equal[0], equal[1], "=", materializedColumns)
 	}
 
 	if strings.Contains(condition, "_exists_ ") {

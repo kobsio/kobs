@@ -16,11 +16,11 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { IOptionsAdditionalFields, IPluginTimes, Options } from '@kobsio/plugin-core';
-import { IOptions } from '../../utils/interfaces';
+import { IApplicationsOptions } from '../../utils/interfaces';
 
-interface IPageToolbarProps extends IOptions {
+interface IPageToolbarProps extends IApplicationsOptions {
   name: string;
-  setOptions: (data: IOptions) => void;
+  setOptions: (data: IApplicationsOptions) => void;
 }
 
 const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({

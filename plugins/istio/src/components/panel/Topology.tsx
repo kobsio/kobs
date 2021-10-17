@@ -3,7 +3,6 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
 import { IPluginTimes } from '@kobsio/plugin-core';
-import { IRowValues } from '@kobsio/plugin-prometheus';
 import { ITopology } from '../../utils/interfaces';
 import TopologyGraph from './TopologyGraph';
 
@@ -17,7 +16,7 @@ export interface ITopologyProps {
   namespace: string;
   application: string;
   times: IPluginTimes;
-  showDetails?: (row: IRowValues) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const Topology: React.FunctionComponent<ITopologyProps> = ({
@@ -25,7 +24,7 @@ const Topology: React.FunctionComponent<ITopologyProps> = ({
   namespace,
   application,
   times,
-  showDetails,
+  setDetails,
 }: ITopologyProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<ITopology, Error>(
     ['istio/topology', name, namespace, application, times],
@@ -84,7 +83,17 @@ const Topology: React.FunctionComponent<ITopologyProps> = ({
     return null;
   }
 
-  return <TopologyGraph edges={data.edges} nodes={data.nodes} showDetails={showDetails} />;
+  return (
+    <TopologyGraph
+      name={name}
+      edges={data.edges}
+      nodes={data.nodes}
+      namespace={namespace}
+      application={application}
+      times={times}
+      setDetails={setDetails}
+    />
+  );
 };
 
 export default Topology;

@@ -51,7 +51,7 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
     },
   );
 
-  // refetchhWithDelay is used to call the refetch function to get the resource, but with a delay of 3 seconde. This is
+  // refetchhWithDelay is used to call the refetch function to get the resource, but with a delay of 3 seconds. This is
   // required, because sometime the Kubenretes isn't that fast after an action (edit, delete, ...) was triggered.
   const refetchhWithDelay = (): void => {
     setTimeout(() => {

@@ -1,28 +1,16 @@
-import {
-  Alert,
-  AlertActionLink,
-  AlertVariant,
-  Card,
-  CardBody,
-  CardTitle,
-  Drawer,
-  DrawerColorVariant,
-  DrawerContent,
-  DrawerContentBody,
-  PageSection,
-  PageSectionVariants,
-} from '@patternfly/react-core';
+import { Drawer, DrawerColorVariant, DrawerContent, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
-import { IPluginTimes, Title } from '@kobsio/plugin-core';
+import { IApplicationOptions, IFilters, IPluginOptions } from '../../utils/interfaces';
+import ApplicationMetrics from './ApplicationMetrics';
+import ApplicationTap from './ApplicationTap';
 import ApplicationToolbar from './ApplicationToolbar';
-import { IPluginOptions } from '../../utils/interfaces';
-import MetricsTable from '../panel/MetricsTable';
-import Topology from '../panel/Topology';
+import ApplicationTop from './ApplicationTop';
+import { Title } from '@kobsio/plugin-core';
 import { getApplicationOptionsFromSearch } from '../../utils/helpers';
 
-interface ITeamParams {
+interface IApplicationParams {
   namespace: string;
   name: string;
 }
@@ -32,99 +20,94 @@ export interface IApplicationProps {
   pluginOptions: IPluginOptions;
 }
 
-const Team: React.FunctionComponent<IApplicationProps> = ({ name, pluginOptions }: IApplicationProps) => {
-  const params = useParams<ITeamParams>();
+const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginOptions }: IApplicationProps) => {
+  const params = useParams<IApplicationParams>();
   const location = useLocation();
   const history = useHistory();
-  const [details] = useState<React.ReactNode>(undefined);
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
-  const [times, setTimes] = useState<IPluginTimes>(getApplicationOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IApplicationOptions>(getApplicationOptionsFromSearch(location.search));
 
-  const changeOptions = (tmpTimes: IPluginTimes): void => {
+  const changeOptions = (tmpOptions: IApplicationOptions): void => {
     history.push({
       pathname: location.pathname,
-      search: `?timeEnd=${tmpTimes.timeEnd}&timeStart=${tmpTimes.timeStart}`,
+      search: `?timeEnd=${tmpOptions.times.timeEnd}&timeStart=${tmpOptions.times.timeStart}&view=${
+        tmpOptions.view
+      }&filterName=${encodeURIComponent(tmpOptions.filters.name)}&filterMethod=${encodeURIComponent(
+        tmpOptions.filters.method,
+      )}&filterPath=${encodeURIComponent(tmpOptions.filters.path)}`,
+    });
+  };
+
+  const setFilters = (filters: IFilters): void => {
+    history.push({
+      pathname: location.pathname,
+      search: `?timeEnd=${options.times.timeEnd}&timeStart=${options.times.timeStart}&view=${
+        options.view
+      }&filterName=${encodeURIComponent(filters.name)}&filterMethod=${encodeURIComponent(
+        filters.method,
+      )}&filterPath=${encodeURIComponent(filters.path)}`,
     });
   };
 
   useEffect(() => {
-    setTimes(getApplicationOptionsFromSearch(location.search));
+    setOptions(getApplicationOptionsFromSearch(location.search));
   }, [location.search]);
 
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <Title title={params.name} subtitle={params.namespace} size="xl" />
-        <ApplicationToolbar name={name} times={times} setOptions={changeOptions} />
+        <ApplicationToolbar
+          view={options.view}
+          times={options.times}
+          filters={options.filters}
+          setOptions={changeOptions}
+        />
       </PageSection>
 
       <Drawer isExpanded={details !== undefined}>
         <DrawerContent panelContent={details} colorVariant={DrawerColorVariant.light200}>
-          {!pluginOptions.prometheus ? (
-            <DrawerContentBody>
-              <PageSection variant={PageSectionVariants.default}>
-                <Alert
-                  variant={AlertVariant.warning}
-                  isInline={true}
-                  title="Prometheus plugin is not enabled"
-                  actionLinks={
-                    <React.Fragment>
-                      <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-                    </React.Fragment>
-                  }
-                >
-                  <p>You have to enable the Prometheus integration in the Istio plugin configuration.</p>
-                </Alert>
-              </PageSection>
-            </DrawerContentBody>
-          ) : (
-            <DrawerContentBody>
-              <PageSection variant={PageSectionVariants.default}>
-                <div style={{ height: '500px' }}>
-                  <Topology name={name} namespace={params.namespace} application={params.name} times={times} />
-                </div>
-              </PageSection>
-
-              <PageSection variant={PageSectionVariants.default}>
-                <Card>
-                  <CardTitle>Versions</CardTitle>
-                  <CardBody>
-                    <MetricsTable
-                      name={name}
-                      namespaces={[params.namespace]}
-                      application={params.name}
-                      groupBy="destination_workload_namespace, destination_workload, destination_version"
-                      label="destination_version"
-                      reporter="destination"
-                      times={times}
-                      additionalColumns={[{ label: 'destination_version', title: 'Version' }]}
-                    />
-                  </CardBody>
-                </Card>
-              </PageSection>
-              <PageSection variant={PageSectionVariants.default}>
-                <Card isCompact={true}>
-                  <CardTitle>Pods</CardTitle>
-                  <CardBody>
-                    <MetricsTable
-                      name={name}
-                      namespaces={[params.namespace]}
-                      application={params.name}
-                      groupBy="destination_workload_namespace, destination_workload, pod"
-                      label="pod"
-                      reporter="destination"
-                      additionalColumns={[{ label: 'pod', title: 'Pod' }]}
-                      times={times}
-                    />
-                  </CardBody>
-                </Card>
-              </PageSection>
-            </DrawerContentBody>
-          )}
+          {options.view === 'metrics' ? (
+            <ApplicationMetrics
+              name={name}
+              namespace={params.namespace}
+              application={params.name}
+              times={options.times}
+              filters={options.filters}
+              view={options.view}
+              pluginOptions={pluginOptions}
+              setDetails={setDetails}
+            />
+          ) : options.view === 'top' ? (
+            <ApplicationTop
+              name={name}
+              namespace={params.namespace}
+              application={params.name}
+              times={options.times}
+              filters={options.filters}
+              view={options.view}
+              pluginOptions={pluginOptions}
+              setFilters={setFilters}
+              setDetails={setDetails}
+            />
+          ) : options.view === 'tap' ? (
+            <ApplicationTap
+              name={name}
+              namespace={params.namespace}
+              application={params.name}
+              times={options.times}
+              filters={options.filters}
+              view={options.view}
+              pluginOptions={pluginOptions}
+              setFilters={setFilters}
+              setDetails={setDetails}
+            />
+          ) : null}
         </DrawerContent>
       </Drawer>
     </React.Fragment>
   );
 };
 
-export default Team;
+export default Application;

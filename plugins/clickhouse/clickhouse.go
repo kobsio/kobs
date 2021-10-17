@@ -106,7 +106,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		done <- true
 	}()
 
-	documents, fields, count, took, buckets, err := i.GetLogs(r.Context(), query, order, orderBy, parsedTimeStart, parsedTimeEnd)
+	documents, fields, count, took, buckets, err := i.GetLogs(r.Context(), query, order, orderBy, 1000, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
@@ -207,7 +207,7 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) (chi.Router, []*instance.Instance) {
 	var instances []*instance.Instance
 
 	for _, cfg := range config {
@@ -235,5 +235,5 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	router.Get("/logs/{name}", router.getLogs)
 	router.Get("/aggregation/{name}", router.getAggregation)
 
-	return router
+	return router, instances
 }

@@ -39,7 +39,7 @@ type Instance struct {
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, error) {
+func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, error) {
 	var count int64
 	var buckets []Bucket
 	var documents []map[string]interface{}
@@ -120,7 +120,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ti
 	// start date. In these follow up calls the start time isn't changed again, because we are skipping the count
 	// and bucket queries.
 	for i := len(buckets) - 1; i >= 0; i-- {
-		if count < 1000 && buckets[i].Count > 0 {
+		if count < limit && buckets[i].Count > 0 {
 			if timeConditions == "" {
 				timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", buckets[i].Interval, buckets[i].Interval+interval)
 			} else {
@@ -144,7 +144,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, ti
 	// Now we are building and executing our sql query. We always return all fields from the logs table, where the
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
-	sqlQueryRawLogs := fmt.Sprintf("SELECT %s FROM %s.logs WHERE (%s) %s ORDER BY %s LIMIT 1000 SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, timeConditions, conditions, parsedOrder)
+	sqlQueryRawLogs := fmt.Sprintf("SELECT %s FROM %s.logs WHERE (%s) %s ORDER BY %s LIMIT %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, timeConditions, conditions, parsedOrder, limit)
 	log.WithFields(logrus.Fields{"query": sqlQueryRawLogs}).Tracef("sql query raw logs")
 	rowsRawLogs, err := i.client.QueryContext(ctx, sqlQueryRawLogs)
 	if err != nil {
@@ -243,6 +243,45 @@ func (i *Instance) GetAggregation(ctx context.Context, limit int64, groupBy, ope
 	}
 
 	return data, nil
+}
+
+// GetRawQueryResults returns all rows for the user provided SQL query. This function should only be used by other
+// plugins. If users should be able to directly access a Clickhouse instance you can expose the instance using the SQL
+// plugin.
+func (i *Instance) GetRawQueryResults(ctx context.Context, query string) ([][]interface{}, []string, error) {
+	log.WithFields(logrus.Fields{"query": query}).Tracef("raw sql query")
+
+	rows, err := i.client.QueryContext(ctx, query)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
+
+	var columns []string
+	columns, err = rows.Columns()
+	if err != nil {
+		return nil, nil, err
+	}
+	columnsLen := len(columns)
+
+	var result [][]interface{}
+
+	for rows.Next() {
+		var r []interface{}
+		r = make([]interface{}, columnsLen)
+
+		for i := 0; i < columnsLen; i++ {
+			r[i] = new(interface{})
+		}
+
+		if err := rows.Scan(r...); err != nil {
+			return nil, nil, err
+		}
+
+		result = append(result, r)
+	}
+
+	return result, columns, nil
 }
 
 // New returns a new ClickHouse instance for the given configuration.
