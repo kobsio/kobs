@@ -12,6 +12,7 @@
   "dependencies": {
     "@kobsio/plugin-core": "*",
     "@nivo/bar": "^0.73.1",
+    "@nivo/line": "^0.74.0",
     "@nivo/pie": "^0.73.0",
     "@patternfly/react-charts": "^6.15.23",
     "@patternfly/react-core": "^4.128.2",
@@ -22,7 +23,6 @@
     "@types/react-router-dom": "^5.1.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-intersection-observer": "^8.32.1",
     "react-query": "^3.17.2",
     "react-router-dom": "^5.2.0",
     "typescript": "^4.3.4"
