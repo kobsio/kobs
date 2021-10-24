@@ -22,7 +22,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#179](https://github.com/kobsio/kobs/pull/179): [clickhouse] Add sorting and show milliseconds in time column.
-- [#181](https://github.com/kobsio/kobs/pull/181): :warning: _Breaking change:_ :warning: [core] Make the time selection across all plugins more intuitive. For that we removed the `time` property from the Options component and showing the formatted timestamp instead.
+- [#181](https://github.com/kobsio/kobs/pull/181): [core] :warning: _Breaking change:_ :warning: Make the time selection across all plugins more intuitive. For that we removed the `time` property from the Options component and showing the formatted timestamp instead.
+- [#185](https://github.com/kobsio/kobs/pull/185): [clickhouse] Use pagination instead of Intersection Observer API to display logs.
 
 ## [v0.6.0](https://github.com/kobsio/kobs/releases/tag/v0.6.0) (2021-10-11)
 
