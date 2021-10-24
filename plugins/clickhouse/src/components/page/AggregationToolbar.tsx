@@ -10,17 +10,17 @@ import { FilterIcon } from '@patternfly/react-icons';
 import React from 'react';
 
 import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
-import { IVisualizationOptions } from '../../utils/interfaces';
+import { IAggregationOptions } from '../../utils/interfaces';
 
-interface IVisualizationToolbarProps {
-  options: IVisualizationOptions;
-  setOptions: (data: IVisualizationOptions) => void;
+interface IAggregationToolbarProps {
+  options: IAggregationOptions;
+  setOptions: (data: IAggregationOptions) => void;
 }
 
-const VisualizationToolbar: React.FunctionComponent<IVisualizationToolbarProps> = ({
+const AggregationToolbar: React.FunctionComponent<IAggregationToolbarProps> = ({
   options,
   setOptions,
-}: IVisualizationToolbarProps) => {
+}: IAggregationToolbarProps) => {
   const changeQuery = (value: string): void => {
     setOptions({ ...options, query: value });
   };
@@ -38,7 +38,7 @@ const VisualizationToolbar: React.FunctionComponent<IVisualizationToolbarProps> 
   };
 
   return (
-    <Toolbar id="clickhouse-visualization-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
+    <Toolbar id="clickhouse-aggregation-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
       <ToolbarContent style={{ padding: '0px' }}>
         <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
           <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
@@ -55,4 +55,4 @@ const VisualizationToolbar: React.FunctionComponent<IVisualizationToolbarProps> 
   );
 };
 
-export default VisualizationToolbar;
+export default AggregationToolbar;

@@ -85,7 +85,7 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
           <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
             <Flex>
               <FlexItem>
-                <Link to={`/${name}/visualization`}>Visualization</Link>
+                <Link to={`/${name}/aggregation`}>Aggregation</Link>
               </FlexItem>
               <Divider isVertical={true} />
               <FlexItem>

@@ -13,8 +13,9 @@ The following options can be used for a panel with the ClickHouse plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | Set the type which should be used to visualize your logs. Currently this must be `logs`. | Yes |
-| queries | [[]Query](#query) | A list of queries, which can be selected by the user. | Yes |
+| type | string | Set the type which should be used to visualize your logs. This can be `logs` or `aggregation`. | Yes |
+| queries | [[]Query](#query) | A list of queries, which can be selected by the user. This is only required for type `logs`. | Yes |
+| aggregation | [Aggregation](#aggregation) | Options for the aggregation. This is only required for type `aggregation`. | Yes |
 
 ### Query
 
@@ -31,11 +32,6 @@ The following options can be used for a panel with the ClickHouse plugin:
 apiVersion: kobs.io/v1beta1
 kind: Dashboard
 spec:
-  placeholders:
-    - name: namespace
-      description: The workload namespace
-    - name: app
-      description: The workloads app label
   rows:
     - size: -1
       panels:
@@ -44,6 +40,7 @@ spec:
           plugin:
             name: clickhouse
             options:
+              type: logs
               queries:
                 - name: Istio Logs
                   query: "namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content.upstream_cluster~'inbound.*'"
@@ -59,6 +56,101 @@ spec:
                     - "content.bytes_received"
                     - "content.bytes_sent"
 ```
+
+### Aggregation
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| query | string | The query, which should be used for the aggregation. | Yes |
+| chart | string | The visualization type for the aggregation. This can be `pie`, `bar`, `line` or `area`. | Yes |
+| options | [Aggregation Options](#aggregation-options) | Options for the aggregation. | Yes |
+
+The following dashboard, shows an example of how to use aggregations within a dashboard:
+
+```yaml
+---
+apiVersion: kobs.io/v1beta1
+kind: Dashboard
+metadata:
+  name: logs
+  namespace: kobs
+spec:
+  title: Logs
+  description: The dashboard shows some examples of aggregation based on logs.
+  rows:
+    - size: 3
+      panels:
+        - title: Number of Logs per App
+          colSpan: 6
+          plugin:
+            name: clickhouse-logging
+            options:
+              type: aggregation
+              aggregation:
+                query: "cluster='kobs-demo'"
+                chart: bar
+                options:
+                  horizontalAxisOperation: top
+                  horizontalAxisField: app
+                  horizontalAxisOrder: descending
+                  horizontalAxisLimit: "10"
+                  verticalAxisOperation: count
+        - title: Log Levels for MyApplication
+          colSpan: 6
+          plugin:
+            name: clickhouse-logging
+            options:
+              type: aggregation
+              aggregation:
+                query: "cluster='kobs-demo' _and_ app='myapplication' _and_ container_name='myapplication'"
+                chart: pie
+                options:
+                  sliceBy: content.level
+                  sizeByOperation: count
+    - size: 3
+      panels:
+        - title: Request Duration for MyApplication by Response Code
+          colSpan: 12
+          plugin:
+            name: clickhouse-logging
+            options:
+              type: aggregation
+              aggregation:
+                query: "cluster='kobs-demo' _and_ app='myapplication' _and_ container_name='istio-proxy' _and_ content.response_code>0"
+                chart: line
+                options:
+                  horizontalAxisOperation: time
+                  verticalAxisOperation: avg
+                  verticalAxisField: content.duration
+                  breakDownByFields:
+                    - content.response_code
+```
+
+![Aggregation Example](assets/clickhouse-aggregation.png)
+
+### Aggregation Options
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| sliceBy | string | Field which should be used for slicing in a `pie` chart. | No |
+| sizeByOperation | string | Operation to size the slices. This can be `count`, `min`, `max`, `sum` or `avg`. | No |
+| sizeByField | string | When the sizeByOperation is `min`, `max`, `sum` or `avg`, this must be the name of a field for the sizing of the slices. | No |
+| horizontalAxisOperation | string | The operation for the chart. This must be `time` or `top`. | No |
+| horizontalAxisField | string | The name of the field for the horizontal axis. | No |
+| horizontalAxisOrder | string | The order of the top values. Must be `ascending` or `descending`. | No |
+| horizontalAxisLimit | string | The maximum number of top values, which should be shown. | No |
+| verticalAxisOperation | string | The operation for the vertical axis. This can be `count`, `min`, `max`, `sum` or `avg`. | No |
+| verticalAxisField | string | When the verticalAxisOperation is `min`, `max`, `sum` or `avg`, this must be the name of a field for the vertical axis. | No |
+| breakDownByFields | []string | A list of field names, which should be used to break down the data. | No |
+| breakDownByFilters | [[]Aggregation Filters](#aggregation-filters) | A list of filters, which should be used to break down the data. | No |
+
+### Aggregation Filters
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| field | string | The name of the field, which should be used for the filter. | Yes |
+| operator | string | The operator, which should be used for comparing the field value. This can be `=`, `<`, `>`, `<=` or `>=`. | Yes |
+| value | string | The value against which the field should be compared for the filter. | Yes |
 
 ## Query Syntax
 

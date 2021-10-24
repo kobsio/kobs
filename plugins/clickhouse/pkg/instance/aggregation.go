@@ -1,0 +1,336 @@
+package instance
+
+import (
+	"context"
+	"fmt"
+	"math"
+	"strings"
+
+	"github.com/sirupsen/logrus"
+)
+
+// Aggregation is the structure of the data, which is required to run an aggregation.
+type Aggregation struct {
+	Query   string             `json:"query"`
+	Chart   string             `json:"chart"`
+	Times   AggregationTimes   `json:"times"`
+	Options AggregationOptions `json:"options"`
+}
+
+// AggregationOptions is the structure of the options for an aggregation. It contains all the fields, which are required
+// to build the query for the choosen chart type.
+type AggregationOptions struct {
+	SliceBy         string `json:"sliceBy"`
+	SizeByOperation string `json:"sizeByOperation"`
+	SizeByField     string `json:"sizeByField"`
+
+	HorizontalAxisOperation string `json:"horizontalAxisOperation"`
+	HorizontalAxisField     string `json:"horizontalAxisField"`
+	HorizontalAxisOrder     string `json:"horizontalAxisOrder"`
+	HorizontalAxisLimit     string `json:"horizontalAxisLimit"`
+
+	VerticalAxisOperation string `json:"verticalAxisOperation"`
+	VerticalAxisField     string `json:"verticalAxisField"`
+
+	BreakDownBy        string                          `json:"breakDownBy"`
+	BreakDownByFields  []string                        `json:"breakDownByFields"`
+	BreakDownByFilters []AggregationBreakDownByFilters `json:"breakDownByFilters"`
+}
+
+// AggregationTimes is the structure, which defines the time interval for the aggregation.
+type AggregationTimes struct {
+	TimeEnd   int64 `json:"timeEnd"`
+	TimeStart int64 `json:"timeStart"`
+}
+
+// AggregationBreakDownByFilters is the structure of a single filter, which should be applied to an aggregation.
+type AggregationBreakDownByFilters struct {
+	Field    string `json:"field"`
+	Operator string `json:"operator"`
+	Value    string `json:"value"`
+}
+
+// generateFieldName generates the field name for an aggregation. For that we are using the user defined field and we
+// are checking if this field is a default field or a materialized column. If this is the case we can directly use the
+// field name. If it is a custom field, we check against the array of the loaded fields to check if it is a string or
+// number field.
+// We can also directly say that the passed in field must be a number field, e.g. aggregation with the min, max, sum or
+// avg operation can only run against number fields.
+func generateFieldName(fieldName string, materializedColumns []string, customFields Fields, mustNumber bool) string {
+	if contains(defaultFields, fieldName) || contains(materializedColumns, fieldName) {
+		return fieldName
+	}
+
+	if mustNumber {
+		return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')]", fieldName)
+	}
+
+	for _, field := range customFields.Number {
+		if field == fieldName {
+			return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')]", fieldName)
+		}
+	}
+
+	return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')]", fieldName)
+}
+
+// getOrderBy returns the SQL keyword for the user defined order in the aggregation.
+func getOrderBy(order string) string {
+	if order == "descending" {
+		return "DESC"
+	}
+
+	return "ASC"
+}
+
+// buildAggregationQuery is our helper function to build the different parts of the SQL statement for the user defined
+// chart and aggregation. The function returns the SELECT, GROUP BY, ORDER BY and LIMIT statement for the SQL query, to
+// get the results of the aggregation.
+func buildAggregationQuery(chart string, options AggregationOptions, materializedColumns []string, customFields Fields) (string, string, string, string, error) {
+	var selectStatement, groupByStatement, orderByStatement, limitByStatement string
+
+	if chart != "pie" && chart != "bar" && chart != "line" && chart != "area" {
+		return "", "", "", "", fmt.Errorf("invalid chart type")
+	}
+
+	if chart == "pie" {
+		if options.SliceBy == "" {
+			return "", "", "", "", fmt.Errorf("slice by field is required")
+		}
+
+		if options.SizeByOperation != "count" && options.SizeByOperation != "min" && options.SizeByOperation != "max" && options.SizeByOperation != "sum" && options.SizeByOperation != "avg" {
+			return "", "", "", "", fmt.Errorf("invalid size by operation")
+		}
+
+		if options.SizeByOperation == "count" {
+			options.SizeByField = options.SliceBy
+		}
+
+		sliceBy := generateFieldName(options.SliceBy, materializedColumns, customFields, false)
+		sizeBy := generateFieldName(options.SizeByField, materializedColumns, customFields, true)
+		selectStatement = fmt.Sprintf("%s, %s(%s) as %s_data", sliceBy, options.SizeByOperation, sizeBy, options.SizeByOperation)
+		groupByStatement = sliceBy
+		return selectStatement, groupByStatement, "", "", nil
+	}
+
+	if chart == "bar" && options.HorizontalAxisOperation == "top" {
+		if options.HorizontalAxisField == "" {
+			return "", "", "", "", fmt.Errorf("horizontal axis field is required")
+		}
+
+		if options.VerticalAxisOperation != "count" && options.VerticalAxisOperation != "min" && options.VerticalAxisOperation != "max" && options.VerticalAxisOperation != "sum" && options.VerticalAxisOperation != "avg" {
+			return "", "", "", "", fmt.Errorf("invalid vertical axis operation")
+		}
+
+		if len(options.BreakDownByFields) == 0 && len(options.BreakDownByFilters) == 0 {
+			if options.VerticalAxisOperation == "count" {
+				options.VerticalAxisField = options.HorizontalAxisField
+			}
+
+			horizontalAxisField := generateFieldName(options.HorizontalAxisField, materializedColumns, customFields, false)
+			verticalAxisField := generateFieldName(options.VerticalAxisField, materializedColumns, customFields, true)
+			selectStatement = fmt.Sprintf("%s, %s(%s) as %s_data", horizontalAxisField, options.VerticalAxisOperation, verticalAxisField, options.VerticalAxisOperation)
+			groupByStatement = horizontalAxisField
+			orderByStatement = fmt.Sprintf("%s_data %s", options.VerticalAxisOperation, getOrderBy(options.HorizontalAxisOrder))
+			limitByStatement = strings.TrimSpace(options.HorizontalAxisLimit)
+
+			return selectStatement, groupByStatement, orderByStatement, limitByStatement, nil
+		} else if len(options.BreakDownByFields) > 0 && len(options.BreakDownByFilters) == 0 {
+			if options.VerticalAxisOperation == "count" {
+				options.VerticalAxisField = options.HorizontalAxisField
+			}
+
+			var breakDownByFields []string
+			for _, breakDownByField := range options.BreakDownByFields {
+				breakDownByFields = append(breakDownByFields, generateFieldName(breakDownByField, materializedColumns, customFields, false))
+			}
+
+			horizontalAxisField := generateFieldName(options.HorizontalAxisField, materializedColumns, customFields, false)
+			verticalAxisField := generateFieldName(options.VerticalAxisField, materializedColumns, customFields, true)
+			selectStatement = fmt.Sprintf("%s, %s, %s(%s) as %s_data", horizontalAxisField, strings.Join(breakDownByFields, ", "), options.VerticalAxisOperation, verticalAxisField, options.VerticalAxisOperation)
+			groupByStatement = fmt.Sprintf("%s, %s", horizontalAxisField, strings.Join(breakDownByFields, ", "))
+			orderByStatement = fmt.Sprintf("%s_data %s", options.VerticalAxisOperation, getOrderBy(options.HorizontalAxisOrder))
+			limitByStatement = strings.TrimSpace(options.HorizontalAxisLimit)
+			return selectStatement, groupByStatement, orderByStatement, limitByStatement, nil
+		} else if len(options.BreakDownByFilters) > 0 {
+			if options.VerticalAxisOperation == "count" {
+				options.VerticalAxisField = options.HorizontalAxisField
+			}
+
+			var breakDownByFields []string
+			for _, breakDownByField := range options.BreakDownByFields {
+				breakDownByFields = append(breakDownByFields, generateFieldName(breakDownByField, materializedColumns, customFields, false))
+			}
+
+			var breakDownByFilters []string
+			for _, breakDownByFilter := range options.BreakDownByFilters {
+				breakDownByFilters = append(breakDownByFilters, fmt.Sprintf("%s %s %s", generateFieldName(breakDownByFilter.Field, materializedColumns, customFields, false), breakDownByFilter.Operator, breakDownByFilter.Value))
+			}
+
+			horizontalAxisField := generateFieldName(options.HorizontalAxisField, materializedColumns, customFields, false)
+			verticalAxisField := generateFieldName(options.VerticalAxisField, materializedColumns, customFields, true)
+
+			selectStatement = horizontalAxisField
+			if len(breakDownByFields) > 0 {
+				selectStatement = fmt.Sprintf("%s, %s", selectStatement, strings.Join(breakDownByFields, ", "))
+			}
+
+			for index, breakDownByFilter := range breakDownByFilters {
+				if options.VerticalAxisOperation == "count" {
+					selectStatement = fmt.Sprintf("%s, countIf(%s) as count_data_filter%d", selectStatement, breakDownByFilter, index)
+				} else {
+					selectStatement = fmt.Sprintf("%s, %sIf(%s, %s) as %s_data_filter%d", selectStatement, options.VerticalAxisOperation, verticalAxisField, breakDownByFilter, options.VerticalAxisOperation, index)
+				}
+			}
+
+			groupByStatement = horizontalAxisField
+			if len(breakDownByFields) > 0 {
+				groupByStatement = fmt.Sprintf("%s, %s", groupByStatement, strings.Join(breakDownByFields, ", "))
+			}
+
+			return selectStatement, groupByStatement, "", "", nil
+		}
+	}
+
+	if (chart == "bar" || chart == "line" || chart == "area") && options.HorizontalAxisOperation == "time" {
+		if options.VerticalAxisField == "" && options.VerticalAxisOperation != "count" {
+			return "", "", "", "", fmt.Errorf("vertical axis field is required")
+		}
+
+		if options.VerticalAxisOperation != "count" && options.VerticalAxisOperation != "min" && options.VerticalAxisOperation != "max" && options.VerticalAxisOperation != "sum" && options.VerticalAxisOperation != "avg" {
+			return "", "", "", "", fmt.Errorf("invalid vertical axis operation")
+		}
+
+		var breakDownByFields []string
+		for _, breakDownByField := range options.BreakDownByFields {
+			breakDownByFields = append(breakDownByFields, generateFieldName(breakDownByField, materializedColumns, customFields, false))
+		}
+
+		var breakDownByFilters []string
+		for _, breakDownByFilter := range options.BreakDownByFilters {
+			breakDownByFilters = append(breakDownByFilters, fmt.Sprintf("%s %s %s", generateFieldName(breakDownByFilter.Field, materializedColumns, customFields, false), breakDownByFilter.Operator, breakDownByFilter.Value))
+		}
+
+		verticalAxisField := generateFieldName(options.VerticalAxisField, materializedColumns, customFields, true)
+
+		selectStatement = "toStartOfInterval(timestamp, INTERVAL 30 second) AS time"
+		if len(breakDownByFields) > 0 {
+			selectStatement = fmt.Sprintf("%s, %s", selectStatement, strings.Join(breakDownByFields, ", "))
+		}
+
+		if len(breakDownByFilters) > 0 {
+			for index, breakDownByFilter := range breakDownByFilters {
+				if options.VerticalAxisOperation == "count" {
+					selectStatement = fmt.Sprintf("%s, countIf(%s) as count_data_filter%d", selectStatement, breakDownByFilter, index)
+				} else {
+					selectStatement = fmt.Sprintf("%s, %sIf(%s, %s) as %s_data_filter%d", selectStatement, options.VerticalAxisOperation, verticalAxisField, breakDownByFilter, options.VerticalAxisOperation, index)
+				}
+			}
+		} else {
+			if options.VerticalAxisOperation == "count" {
+				selectStatement = fmt.Sprintf("%s, count(*) as count_data", selectStatement)
+			} else {
+				selectStatement = fmt.Sprintf("%s, %s(%s) as %s_data", selectStatement, options.VerticalAxisOperation, verticalAxisField, options.VerticalAxisOperation)
+			}
+		}
+
+		groupByStatement = "time"
+		if len(breakDownByFields) > 0 {
+			groupByStatement = fmt.Sprintf("%s, %s", groupByStatement, strings.Join(breakDownByFields, ", "))
+		}
+
+		orderByStatement = "time"
+
+		return selectStatement, groupByStatement, orderByStatement, "", nil
+	}
+
+	return "", "", "", "", fmt.Errorf("invalid aggregation")
+}
+
+// GetAggregation returns the data for the given aggregation. To get the data we have to build the aggregation query.
+// Then we can reuse the parseLogsQuery function from getting the logs, to build the WHERE statement. Finally we are
+// running the query and parsing all rows into a map with the column names as keys and the value of each row.
+func (i *Instance) GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]interface{}, []string, error) {
+	log.WithFields(logrus.Fields{"aggregation": fmt.Sprintf("%#v", aggregation)}).Tracef("aggregation data")
+
+	// Build the SELECT, GROUP BY, ORDER BY and LIMIT statement for the SQL query. When the function returns an error
+	// the user provided an invalid aggregation. If the function doesn't return a ORDER BY or LIMIT statement we can
+	// also omit it in the SQL query.
+	selectStatement, groupByStatement, orderByStatement, limitByStatement, err := buildAggregationQuery(aggregation.Chart, aggregation.Options, i.materializedColumns, i.cachedFields)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if orderByStatement != "" {
+		orderByStatement = "ORDER BY " + orderByStatement
+	}
+
+	if limitByStatement != "" {
+		limitByStatement = "LIMIT " + limitByStatement
+	}
+
+	// To build the conditions (WHERE) we can reuse the logic from getting the logs, because we can use the same query
+	// syntax to filter down the aggregation results.
+	conditions := ""
+	if aggregation.Query != "" {
+		parsedQuery, err := parseLogsQuery(aggregation.Query, i.materializedColumns)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		conditions = fmt.Sprintf("AND %s", parsedQuery)
+	}
+
+	// Now we are building the final query and then we execute the query. We are saving all returned rows in the result
+	// map with the column name as key.
+	query := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) %s GROUP BY %s %s %s SETTINGS skip_unavailable_shards = 1", selectStatement, i.database, aggregation.Times.TimeStart, aggregation.Times.TimeEnd, conditions, groupByStatement, orderByStatement, limitByStatement)
+	log.WithFields(logrus.Fields{"query": query}).Tracef("aggregation query")
+
+	rows, err := i.client.QueryContext(ctx, query)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
+
+	columns, err := rows.Columns()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var result []map[string]interface{}
+
+	for rows.Next() {
+		values := make([]interface{}, len(columns))
+		pointers := make([]interface{}, len(columns))
+
+		for i := range values {
+			pointers[i] = &values[i]
+		}
+
+		if err := rows.Scan(pointers...); err != nil {
+			return nil, nil, err
+		}
+
+		// When we assign the correct value to an row, we also have to check if the returned value is of type float and
+		// if the value is NaN or Inf, because then the json encoding would fail if we add the value.
+		resultMap := make(map[string]interface{})
+		for i, val := range values {
+			switch v := val.(type) {
+			case float64:
+				if !math.IsNaN(v) && !math.IsInf(v, 0) {
+					resultMap[columns[i]] = val
+				}
+			default:
+				resultMap[columns[i]] = val
+			}
+		}
+
+		result = append(result, resultMap)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, nil, err
+	}
+
+	return result, columns, nil
+}
