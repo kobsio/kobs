@@ -1,6 +1,7 @@
 package clickhouse
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -40,6 +41,24 @@ func (router *Router) getInstance(name string) *instance.Instance {
 	}
 
 	return nil
+}
+
+func (router *Router) getFields(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	filter := r.URL.Query().Get("filter")
+	fieldType := r.URL.Query().Get("fieldType")
+
+	log.WithFields(logrus.Fields{"name": name, "filter": filter, "fieldType": fieldType}).Tracef("getFields")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	fields := i.GetFields(filter, fieldType)
+	log.WithFields(logrus.Fields{"fields": len(fields)}).Tracef("getFields")
+	render.JSON(w, r, fields)
 }
 
 // getLogs implements the special handling when the user selected the "logs" options for the "view" configuration. This
@@ -129,21 +148,12 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
-// getAggregation runs an aggregation for the given values and returns an array of data point which can be used in a
-// chart in the React UI. All fields except the limit, start and end time must be strings. The mentioned fields must be
-// numbers so we can parse them. If the groupBy field isn't present we use the operationField as groupBy field.
+// getAggregation returns the columns and rows for the user given aggregation request. The aggregation data must
+// provided in the body of the request and is the run against the specified Clichouse instance.
 func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
-	groupBy := r.URL.Query().Get("groupBy")
-	limit := r.URL.Query().Get("limit")
-	order := r.URL.Query().Get("order")
-	operation := r.URL.Query().Get("operation")
-	operationField := r.URL.Query().Get("operationField")
-	query := r.URL.Query().Get("query")
-	timeStart := r.URL.Query().Get("timeStart")
-	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "groupBy": groupBy, "limit": limit, "operation": operation, "operationField": operationField, "order": order, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
+	log.WithFields(logrus.Fields{"name": name}).Tracef("getAggregation")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -151,26 +161,12 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
-		return
-	}
+	var aggregationData instance.Aggregation
 
-	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	err := json.NewDecoder(r.Body).Decode(&aggregationData)
 	if err != nil {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
-	}
-
-	parsedLimit, err := strconv.ParseInt(limit, 10, 64)
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse limit")
-		return
-	}
-
-	if groupBy == "" {
-		groupBy = operationField
 	}
 
 	done := make(chan bool)
@@ -197,10 +193,18 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 		done <- true
 	}()
 
-	data, err := i.GetAggregation(r.Context(), parsedLimit, groupBy, operation, operationField, order, query, parsedTimeStart, parsedTimeEnd)
+	rows, columns, err := i.GetAggregation(r.Context(), aggregationData)
 	if err != nil {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Error while running aggregation")
 		return
+	}
+
+	data := struct {
+		Rows    []map[string]interface{} `json:"rows"`
+		Columns []string                 `json:"columns"`
+	}{
+		rows,
+		columns,
 	}
 
 	render.JSON(w, r, data)
@@ -232,8 +236,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
+	router.Get("/fields/{name}", router.getFields)
 	router.Get("/logs/{name}", router.getLogs)
-	router.Get("/aggregation/{name}", router.getAggregation)
+	router.Post("/aggregation/{name}", router.getAggregation)
 
 	return router, instances
 }

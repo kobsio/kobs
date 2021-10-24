@@ -1,9 +1,9 @@
 import { Route, Switch } from 'react-router-dom';
 import React from 'react';
 
+import AggregationPage from './AggregationPage';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import LogsPage from './LogsPage';
-import VisualizationPage from './VisualizationPage';
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   return (
@@ -11,8 +11,8 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       <Route exact={true} path={`/${name}`}>
         <LogsPage name={name} displayName={displayName} description={description} />
       </Route>
-      <Route exact={true} path={`/${name}/visualization`}>
-        <VisualizationPage name={name} displayName={displayName} description={description} />
+      <Route exact={true} path={`/${name}/aggregation`}>
+        <AggregationPage name={name} displayName={displayName} description={description} />
       </Route>
     </Switch>
   );

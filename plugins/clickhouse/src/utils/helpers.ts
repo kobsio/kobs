@@ -1,4 +1,4 @@
-import { IOptions, IVisualizationOptions } from './interfaces';
+import { IAggregationOptions, IAggregationOptionsAggregation, IOptions } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
 // getOptionsFromSearch is used to get the ClickHouse options from a given search location.
@@ -18,28 +18,52 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   };
 };
 
-// getOptionsFromSearch is used to get the ClickHouse options for a visualization from a given search location.
-export const getVisualizationOptionsFromSearch = (search: string): IVisualizationOptions => {
+// getAggregationOptionsFromSearch is used to get the ClickHouse options for an aggregation from a given search
+// location.
+export const getAggregationOptionsFromSearch = (search: string): IAggregationOptions => {
   const params = new URLSearchParams(search);
 
   const chart = params.get('chart');
-  const limit = params.get('limit');
-  const groupBy = params.get('groupBy');
-  const operation = params.get('operation');
-  const operationField = params.get('operationField');
-  const order = params.get('order');
   const query = params.get('query');
+  const aggregationParams = params.get('aggregation');
 
-  return {
-    chart: chart ? chart : 'bar',
-    groupBy: groupBy ? groupBy : '',
-    limit: limit ? limit : '10',
-    operation: operation ? operation : 'count',
-    operationField: operationField ? operationField : '',
-    order: order ? order : 'descending',
-    query: query ? query : '',
-    times: getTimeParams(params),
-  };
+  try {
+    let aggregationOptions = aggregationOptionDefaults;
+    if (aggregationParams) {
+      aggregationOptions = { ...aggregationOptions, ...JSON.parse(aggregationParams) };
+    }
+
+    return {
+      chart: chart ? chart : 'pie',
+      options: aggregationOptions,
+      query: query ? query : '',
+      times: getTimeParams(params),
+    };
+  } catch (err) {
+    return {
+      chart: chart ? chart : 'pie',
+      options: aggregationOptionDefaults,
+      query: query ? query : '',
+      times: getTimeParams(params),
+    };
+  }
+};
+
+export const aggregationOptionDefaults: IAggregationOptionsAggregation = {
+  breakDownByFields: [],
+  breakDownByFilters: [],
+
+  horizontalAxisField: '',
+  horizontalAxisLimit: '',
+  horizontalAxisOperation: 'time',
+  horizontalAxisOrder: 'ascending',
+
+  sizeByField: '',
+  sizeByOperation: 'count',
+  sliceBy: '',
+
+  verticalAxisField: '',
+  verticalAxisOperation: 'count',
 };
 
 // formatTime formate the given time string. We do not use the formatTime function from the core package, because we

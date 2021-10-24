@@ -4,6 +4,12 @@ import (
 	"time"
 )
 
+// Fields is the struct for cached fields, which can be of type number or string.
+type Fields struct {
+	String []string
+	Number []string
+}
+
 // FieldString is the struct for the nested fields for all JSON fields of a log line, which are containing a string.
 type FieldString struct {
 	Key   []string

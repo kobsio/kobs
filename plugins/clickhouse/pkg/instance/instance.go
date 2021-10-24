@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	_ "github.com/ClickHouse/clickhouse-go"
@@ -35,6 +36,106 @@ type Instance struct {
 	database            string
 	client              *sql.DB
 	materializedColumns []string
+	cachedFields        Fields
+}
+
+func (i *Instance) getFields(ctx context.Context) (Fields, error) {
+	fields := Fields{}
+	now := time.Now().Unix()
+
+	for _, fieldType := range []string{"string", "number"} {
+		rowsFieldsString, err := i.client.QueryContext(ctx, fmt.Sprintf("SELECT DISTINCT arrayJoin(fields_%s.key) FROM %s.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) SETTINGS skip_unavailable_shards = 1", fieldType, i.database, now-3600, now))
+		if err != nil {
+			return fields, err
+		}
+		defer rowsFieldsString.Close()
+
+		for rowsFieldsString.Next() {
+			var field string
+
+			if err := rowsFieldsString.Scan(&field); err != nil {
+				return fields, err
+			}
+
+			if fieldType == "string" {
+				fields.String = append(fields.String, field)
+			} else if fieldType == "number" {
+				fields.Number = append(fields.Number, field)
+			}
+		}
+
+		if err := rowsFieldsString.Err(); err != nil {
+			return fields, err
+		}
+	}
+
+	return fields, nil
+}
+
+// refreshCachedFields retrieves all fields for the last 24 hours and merges them with the already cached fields. To get
+// the initial list of cached fields we are running the query before starting the ticker.
+func (i *Instance) refreshCachedFields() []string {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+
+	fields, err := i.getFields(ctx)
+	if err != nil {
+		log.WithError(err).Errorf("could not refresh cached fields")
+	} else {
+		log.WithFields(logrus.Fields{"string": len(fields.String), "number": len(fields.Number)}).Infof("refreshed fields")
+		i.cachedFields = fields
+	}
+
+	ticker := time.NewTicker(24 * time.Hour)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+			defer cancel()
+
+			fields, err := i.getFields(ctx)
+			if err != nil {
+				log.WithError(err).Errorf("could not refresh cached fields")
+			} else {
+				log.WithFields(logrus.Fields{"string": len(fields.String), "number": len(fields.Number)}).Infof("refreshed fields")
+
+				for _, field := range fields.String {
+					i.cachedFields.String = appendIfMissing(i.cachedFields.String, field)
+				}
+
+				for _, field := range fields.Number {
+					i.cachedFields.Number = appendIfMissing(i.cachedFields.Number, field)
+				}
+			}
+		}
+	}
+}
+
+// GetFields returns all cahced fields which are containing the filter term. The cached fields are refreshed every 24.
+func (i *Instance) GetFields(filter string, fieldType string) []string {
+	var fields []string
+
+	if fieldType == "string" || fieldType == "" {
+		for _, field := range i.cachedFields.String {
+			if strings.Contains(field, filter) {
+				fields = append(fields, field)
+			}
+		}
+
+		fields = append(fields, defaultFields...)
+	}
+
+	if fieldType == "number" || fieldType == "" {
+		for _, field := range i.cachedFields.Number {
+			if strings.Contains(field, filter) {
+				fields = append(fields, field)
+			}
+		}
+	}
+
+	return fields
 }
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
@@ -198,53 +299,6 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
 }
 
-// GetAggregation build an aggregation query for the given parameters and returns the result as slice of label, value
-// pairs.
-func (i *Instance) GetAggregation(ctx context.Context, limit int64, groupBy, operation, operationField, order, query string, timeStart, timeEnd int64) ([]VisualizationRow, error) {
-	var data []VisualizationRow
-
-	// As we also do it for the logs query we have to build our where condition for the SQL query first.
-	whereConditions := ""
-	if query != "" {
-		parsedQuery, err := parseLogsQuery(query, i.materializedColumns)
-		if err != nil {
-			return nil, err
-		}
-
-		whereConditions = fmt.Sprintf("timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND %s", timeStart, timeEnd, parsedQuery)
-	}
-
-	// Now we have to transform all the given fields / values into a format, which we can use in our SQL query. This
-	// query is built in the following and then run against ClickHouse. All the returned rows are added to our data
-	// slice and returned, so that we can used it later in the React UI.
-	groupBy = formatField(groupBy, i.materializedColumns)
-	operationField = formatField(operationField, i.materializedColumns)
-	order = formatOrder(order)
-
-	sql := fmt.Sprintf("SELECT %s as label, %s(%s) as value FROM %s.logs WHERE %s GROUP BY %s ORDER BY value %s LIMIT %d SETTINGS skip_unavailable_shards = 1", groupBy, operation, operationField, i.database, whereConditions, groupBy, order, limit)
-	log.WithFields(logrus.Fields{"query": sql}).Tracef("sql query visualization")
-	rows, err := i.client.QueryContext(ctx, sql)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var r VisualizationRow
-		if err := rows.Scan(&r.Label, &r.Value); err != nil {
-			return nil, err
-		}
-
-		data = append(data, r)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return data, nil
-}
-
 // GetRawQueryResults returns all rows for the user provided SQL query. This function should only be used by other
 // plugins. If users should be able to directly access a Clickhouse instance you can expose the instance using the SQL
 // plugin.
@@ -314,10 +368,13 @@ func New(config Config) (*Instance, error) {
 	// 	return nil, err
 	// }
 
-	return &Instance{
+	instance := &Instance{
 		Name:                config.Name,
 		database:            config.Database,
 		client:              client,
 		materializedColumns: config.MaterializedColumns,
-	}, nil
+	}
+
+	go instance.refreshCachedFields()
+	return instance, nil
 }

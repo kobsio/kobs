@@ -3,31 +3,25 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IVisualizationData, IVisualizationOptions } from '../../utils/interfaces';
-import VisualizationChart from '../panel/VisualizationChart';
+import { IAggregationData, IAggregationOptions } from '../../utils/interfaces';
+import AggregationChart from '../panel/AggregationChart';
 
-interface IVisualizationProps {
+interface IAggregationProps {
   name: string;
-  options: IVisualizationOptions;
+  options: IAggregationOptions;
 }
 
-const Visualization: React.FunctionComponent<IVisualizationProps> = ({ name, options }: IVisualizationProps) => {
+const Aggregation: React.FunctionComponent<IAggregationProps> = ({ name, options }: IAggregationProps) => {
   const history = useHistory();
 
-  const { isError, isLoading, data, error, refetch } = useQuery<IVisualizationData[], Error>(
+  const { isError, isLoading, data, error, refetch } = useQuery<IAggregationData, Error>(
     ['clickhouse/aggregation', name, options],
     async () => {
       try {
-        const response = await fetch(
-          `/api/plugins/clickhouse/aggregation/${name}?query=${encodeURIComponent(options.query)}&timeStart=${
-            options.times.timeStart
-          }&timeEnd=${options.times.timeEnd}&limit=${options.limit}&groupBy=${options.groupBy}&operation=${
-            options.operation
-          }&operationField=${options.operationField}&order=${options.order}`,
-          {
-            method: 'get',
-          },
-        );
+        const response = await fetch(`/api/plugins/clickhouse/aggregation/${name}`, {
+          body: JSON.stringify(options),
+          method: 'post',
+        });
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
@@ -61,11 +55,11 @@ const Visualization: React.FunctionComponent<IVisualizationProps> = ({ name, opt
     return (
       <Alert
         variant={AlertVariant.danger}
-        title="Could not get visualization data"
+        title="Could not get aggregation data"
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVisualizationData[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IAggregationData, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -76,17 +70,17 @@ const Visualization: React.FunctionComponent<IVisualizationProps> = ({ name, opt
     );
   }
 
-  if (!data) {
+  if (!data || !data.rows || !data.columns) {
     return null;
   }
 
   return (
     <Card isCompact={true} style={{ height: '100%' }}>
       <CardBody>
-        <VisualizationChart chart={options.chart} data={data} />
+        <AggregationChart minHeight={500} options={options} data={data} />
       </CardBody>
     </Card>
   );
 };
 
-export default Visualization;
+export default Aggregation;
