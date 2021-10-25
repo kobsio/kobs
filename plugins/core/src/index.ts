@@ -28,6 +28,7 @@ export * from './crds/user';
 
 export * from './utils/chart';
 export * from './utils/colors';
+export * from './utils/fileDownload';
 export * from './utils/gravatar';
 export * from './utils/manifests';
 export * from './utils/resources';

@@ -3,7 +3,6 @@ import {
   AlertActionLink,
   AlertVariant,
   Card,
-  CardActions,
   CardBody,
   CardHeader,
   CardHeaderMain,
@@ -18,6 +17,7 @@ import { useHistory } from 'react-router-dom';
 
 import { ILogsData } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
+import LogsActions from './LogsActions';
 import LogsChart from '../panel/LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
 import LogsFields from './LogsFields';
@@ -137,7 +137,14 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
                 {data.count} Documents in {data.took} Milliseconds
               </CardTitle>
             </CardHeaderMain>
-            <CardActions>{isFetching && <Spinner size="md" />}</CardActions>
+            <LogsActions
+              name={name}
+              query={query}
+              times={times}
+              documents={data.documents}
+              fields={fields}
+              isFetching={isFetching}
+            />
           </CardHeader>
           <CardBody>
             <LogsChart buckets={data.buckets} changeTime={changeTime} />
