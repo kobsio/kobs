@@ -18,6 +18,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Fixed
 
 - [#175](https://github.com/kobsio/kobs/pull/175): [prometheus] Fix tooltip when no unit is provided.
+- [#186](https://github.com/kobsio/kobs/pull/186): [jaeger] Fix tooltip position in traces chart.
 
 ### Changed
 

@@ -24,18 +24,33 @@ function isIDatum(object: Datum): object is IDatum {
 }
 
 const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces, showDetails }: ITracesChartProps) => {
-  const { series, min, max } = useMemo<{ series: Serie[]; min: number; max: number }>(() => {
+  const { series, min, max, first, last } = useMemo<{
+    series: Serie[];
+    min: number;
+    max: number;
+    first: number;
+    last: number;
+  }>(() => {
     // Initialize min and max so that we can simply compare during traversing.
     let minimalSpans = Number.MAX_SAFE_INTEGER;
     let maximalSpans = 0;
+    let firstTime = 0;
+    let lastTime = 0;
     const result: IDatum[] = [];
 
-    traces.forEach((trace) => {
+    traces.forEach((trace, index) => {
       if (trace.spans.length < minimalSpans) {
         minimalSpans = trace.spans.length;
       }
       if (trace.spans.length > maximalSpans) {
         maximalSpans = trace.spans.length;
+      }
+
+      if (trace.startTime < firstTime || index === 0) {
+        firstTime = trace.startTime;
+      }
+      if (trace.startTime > lastTime || index === 0) {
+        lastTime = trace.startTime;
       }
 
       result.push({
@@ -48,6 +63,8 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
     });
 
     return {
+      first: firstTime,
+      last: lastTime,
       max: maximalSpans,
       min: minimalSpans,
       series: [
@@ -96,7 +113,8 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
             }}
             theme={CHART_THEME}
             tooltip={(tooltip): ReactNode => {
-              const isFirstHalf = tooltip.node.index < series[0].data.length / 2;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const isFirstHalf = (tooltip.node.data as any).trace.startTime < (last + first) / 2;
               const hasError = isIDatum(tooltip.node.data) ? doesTraceContainsError(tooltip.node.data.trace) : false;
               const squareColor = hasError ? '#c9190b' : '#0066cc';
 
