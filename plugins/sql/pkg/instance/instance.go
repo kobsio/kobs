@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"math"
 
 	_ "github.com/ClickHouse/clickhouse-go"
 	_ "github.com/go-sql-driver/mysql"
@@ -31,35 +32,51 @@ type Instance struct {
 }
 
 // GetQueryResults returns all rows for the user provided SQL query.
-func (i *Instance) GetQueryResults(ctx context.Context, query string) ([][]interface{}, []string, error) {
+func (i *Instance) GetQueryResults(ctx context.Context, query string) ([]map[string]interface{}, []string, error) {
 	rows, err := i.client.QueryContext(ctx, query)
 	if err != nil {
 		return nil, nil, err
 	}
 	defer rows.Close()
 
-	var columns []string
-	columns, err = rows.Columns()
+	columns, err := rows.Columns()
 	if err != nil {
 		return nil, nil, err
 	}
-	columnsLen := len(columns)
 
-	var result [][]interface{}
+	var result []map[string]interface{}
 
 	for rows.Next() {
-		var r []interface{}
-		r = make([]interface{}, columnsLen)
+		values := make([]interface{}, len(columns))
+		pointers := make([]interface{}, len(columns))
 
-		for i := 0; i < columnsLen; i++ {
-			r[i] = new(interface{})
+		for i := range values {
+			pointers[i] = &values[i]
 		}
 
-		if err := rows.Scan(r...); err != nil {
+		if err := rows.Scan(pointers...); err != nil {
 			return nil, nil, err
 		}
 
-		result = append(result, r)
+		// When we assign the correct value to an row, we also have to check if the returned value is of type float and
+		// if the value is NaN or Inf, because then the json encoding would fail if we add the value.
+		resultMap := make(map[string]interface{})
+		for i, val := range values {
+			switch v := val.(type) {
+			case float64:
+				if !math.IsNaN(v) && !math.IsInf(v, 0) {
+					resultMap[columns[i]] = val
+				}
+			default:
+				resultMap[columns[i]] = val
+			}
+		}
+
+		result = append(result, resultMap)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, nil, err
 	}
 
 	return result, columns, nil

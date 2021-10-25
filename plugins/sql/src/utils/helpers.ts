@@ -4,3 +4,11 @@ export const getQueryFromSearch = (search: string): string => {
   const query = params.get('query');
   return query ? query : '';
 };
+
+export const renderCellValue = (value: string | number | string[] | number[]): string => {
+  if (Array.isArray(value)) {
+    return `[${value.join(', ')}]`;
+  }
+
+  return `${value}`;
+};
