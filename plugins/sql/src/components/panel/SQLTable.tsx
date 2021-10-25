@@ -2,6 +2,7 @@ import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patter
 import React from 'react';
 
 import { ISQLData } from '../../utils/interfaces';
+import { renderCellValue } from '../../utils/helpers';
 
 type ISQLTableProps = ISQLData;
 
@@ -20,11 +21,13 @@ const SQLTable: React.FunctionComponent<ISQLTableProps> = ({ rows, columns }: IS
         </Tr>
       </Thead>
       <Tbody>
-        {rows
+        {rows && rows.length > 0
           ? rows.map((row, rowIndex) => (
               <Tr key={rowIndex}>
-                {row.map((column, columnIndex) => (
-                  <Td key={`${rowIndex}_${columnIndex}`}>{column}</Td>
+                {columns.map((column, columnIndex) => (
+                  <Td key={`${rowIndex}_${columnIndex}`}>
+                    {row.hasOwnProperty(column) ? renderCellValue(row[column]) : ''}
+                  </Td>
                 ))}
               </Tr>
             ))
