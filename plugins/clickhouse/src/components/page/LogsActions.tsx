@@ -26,7 +26,7 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
   const [show, setShow] = useState<boolean>(false);
 
   // downloadLogs lets a user download the returned documents as raw logs.
-  const downloadLogs = (documents?: IDocument[]): void => {
+  const downloadLogs = (): void => {
     if (documents) {
       let log = '';
 
@@ -41,7 +41,7 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
   };
 
   // downloadCSV lets a user donwload the returned documents as csv file, with the selected fields as columns.
-  const downloadCSV = (documents?: IDocument[], fields?: string[]): void => {
+  const downloadCSV = (): void => {
     if (documents && fields) {
       let csv = '';
 
@@ -49,7 +49,7 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
         csv = csv + formatTime(document['timestamp']);
 
         for (const field of fields) {
-          csv = csv + ';' + field;
+          csv = csv + ';' + (document.hasOwnProperty(field) ? document[field] : '-');
         }
 
         csv = csv + '\r\n';
@@ -80,14 +80,10 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
                 </Link>
               }
             />,
-            <DropdownItem key={1} isDisabled={!documents} onClick={(): void => downloadLogs(documents)}>
+            <DropdownItem key={1} isDisabled={!documents} onClick={(): void => downloadLogs()}>
               Download Logs
             </DropdownItem>,
-            <DropdownItem
-              key={2}
-              isDisabled={!documents || !fields}
-              onClick={(): void => downloadCSV(documents, fields)}
-            >
+            <DropdownItem key={2} isDisabled={!documents || !fields} onClick={(): void => downloadCSV()}>
               Download CSV
             </DropdownItem>,
           ]}
