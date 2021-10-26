@@ -1,3 +1,4 @@
+import { Menu, MenuContent, MenuList } from '@patternfly/react-core';
 import React from 'react';
 
 import { ITrace } from '../../utils/interfaces';
@@ -11,14 +12,15 @@ interface ITracesListProps {
 
 const TracesList: React.FunctionComponent<ITracesListProps> = ({ name, traces, showDetails }: ITracesListProps) => {
   return (
-    <React.Fragment>
-      {traces.map((trace, index) => (
-        <React.Fragment key={trace.traceID}>
-          <TracesListItem name={name} trace={trace} showDetails={showDetails} />
-          {index !== traces.length - 1 ? <p>&nbsp;</p> : null}
-        </React.Fragment>
-      ))}
-    </React.Fragment>
+    <Menu>
+      <MenuContent>
+        <MenuList>
+          {traces.map((trace, index) => (
+            <TracesListItem key={trace.traceID} name={name} trace={trace} showDetails={showDetails} />
+          ))}
+        </MenuList>
+      </MenuContent>
+    </Menu>
   );
 };
 

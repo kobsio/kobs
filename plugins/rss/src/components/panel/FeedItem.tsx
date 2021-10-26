@@ -1,4 +1,4 @@
-import { Avatar, Card, CardBody, Split, SplitItem } from '@patternfly/react-core';
+import { Avatar, MenuItem } from '@patternfly/react-core';
 import React from 'react';
 
 import { IItem } from '../../utils/interfaces';
@@ -12,32 +12,19 @@ interface IFeedItemProps {
 
 const FeedItem: React.FunctionComponent<IFeedItemProps> = ({ item, setDetails }: IFeedItemProps) => {
   return (
-    <Card
-      style={{ cursor: 'pointer' }}
-      isCompact={true}
-      isHoverable={true}
+    <MenuItem
+      icon={
+        item.feedImage ? (
+          <Avatar src={item.feedImage} alt={item.title || ''} style={{ height: '16px', width: '16px' }} />
+        ) : undefined
+      }
+      description={item.published ? `${formatTime(item.published)} - ${item.feedTitle}` : item.feedTitle}
       onClick={
         setDetails ? (): void => setDetails(<Item item={item} close={(): void => setDetails(undefined)} />) : undefined
       }
     >
-      <CardBody>
-        <Split>
-          {item.feedImage && (
-            <SplitItem>
-              <Avatar src={item.feedImage} alt={item.title || ''} style={{ height: '42px', width: '42px' }} />
-            </SplitItem>
-          )}
-          <SplitItem className="pf-u-pl-md" style={{ maxWidth: '100%' }} isFilled={true}>
-            <p className="pf-u-text-truncate">
-              <strong>{item.title}</strong>
-            </p>
-            <p className="pf-u-text-truncate pf-u-font-size-sm pf-u-color-400">
-              {item.published ? `${formatTime(item.published)} - ${item.feedTitle}` : item.feedTitle}
-            </p>
-          </SplitItem>
-        </Split>
-      </CardBody>
-    </Card>
+      {item.title}
+    </MenuItem>
   );
 };
 

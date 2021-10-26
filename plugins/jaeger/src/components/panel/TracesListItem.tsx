@@ -1,4 +1,4 @@
-import { Badge, Card, CardActions, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
+import { Badge, MenuItem } from '@patternfly/react-core';
 import { ExclamationIcon } from '@patternfly/react-icons';
 import React from 'react';
 
@@ -20,59 +20,55 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
   trace,
   showDetails,
 }: ITracesListItemProps) => {
-  const card = (
-    <Card
-      style={{ cursor: 'pointer' }}
-      isCompact={true}
-      isHoverable={true}
+  const item = (
+    <MenuItem
+      className="kobsio-jaeger-trace-list-item"
+      description={
+        <span>
+          <Badge className="pf-u-mr-xl" isRead={true}>
+            {trace.spans.length} Spans
+          </Badge>
+
+          {trace.services.map((service, index) => (
+            <Badge
+              key={index}
+              className="pf-u-ml-sm"
+              style={{ backgroundColor: getColorForService(trace.processes, service.name) }}
+            >
+              {service.name} ({service.numberOfSpans})
+            </Badge>
+          ))}
+
+          <span className="pf-u-float-right pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+            {formatTraceTime(trace.startTime)}
+          </span>
+        </span>
+      }
       onClick={
         showDetails
           ? (): void => showDetails(<Trace name={name} trace={trace} close={(): void => showDetails(undefined)} />)
           : undefined
       }
     >
-      <CardHeader>
-        <CardTitle>
-          {trace.traceName}
-          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
-            {trace.traceID}
-            {doesTraceContainsError(trace) ? (
-              <ExclamationIcon
-                className="pf-u-ml-sm pf-u-font-size-sm"
-                style={{ color: 'var(--pf-global--danger-color--100)' }}
-              />
-            ) : null}
-          </span>
-        </CardTitle>
-        <CardActions>
-          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{trace.duration / 1000}ms</span>
-        </CardActions>
-      </CardHeader>
-      <CardBody>
-        <Badge className="pf-u-mr-xl" isRead={true}>
-          {trace.spans.length} Spans
-        </Badge>
-
-        {trace.services.map((service, index) => (
-          <Badge
-            key={index}
-            className="pf-u-ml-sm"
-            style={{ backgroundColor: getColorForService(trace.processes, service.name) }}
-          >
-            {service.name} ({service.numberOfSpans})
-          </Badge>
-        ))}
-
-        <span style={{ float: 'right' }}>{formatTraceTime(trace.startTime)}</span>
-      </CardBody>
-    </Card>
+      {trace.traceName}
+      <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+        {trace.traceID}
+        {doesTraceContainsError(trace) ? (
+          <ExclamationIcon
+            className="pf-u-ml-sm pf-u-font-size-sm"
+            style={{ color: 'var(--pf-global--danger-color--100)' }}
+          />
+        ) : null}
+      </span>
+      <span className="pf-u-float-right pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{trace.duration / 1000}ms</span>
+    </MenuItem>
   );
 
   if (!showDetails) {
-    return <LinkWrapper link={`/${name}/trace/${trace.traceID}`}>{card}</LinkWrapper>;
+    return <LinkWrapper link={`/${name}/trace/${trace.traceID}`}>{item}</LinkWrapper>;
   }
 
-  return card;
+  return item;
 };
 
 export default TracesListItem;

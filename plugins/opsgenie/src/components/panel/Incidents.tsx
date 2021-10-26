@@ -1,4 +1,4 @@
-import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
+import { Alert, AlertActionLink, AlertVariant, Menu, MenuContent, MenuList, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
@@ -63,19 +63,20 @@ const Incidents: React.FunctionComponent<IIncidentsProps> = ({ name, query, time
     </Alert>;
   }
 
-  if (!data) {
+  if (!data || data.length === 0) {
     return null;
   }
 
   return (
-    <div>
-      {data.map((incident, index) => (
-        <div key={incident.id}>
-          <IncidentsItem name={name} incident={incident} setDetails={setDetails} />
-          {index !== data.length - 1 ? <p>&nbsp;</p> : null}
-        </div>
-      ))}
-    </div>
+    <Menu>
+      <MenuContent>
+        <MenuList>
+          {data.map((incident, index) => (
+            <IncidentsItem key={incident.id} name={name} incident={incident} setDetails={setDetails} />
+          ))}
+        </MenuList>
+      </MenuContent>
+    </Menu>
   );
 };
 

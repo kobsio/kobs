@@ -5,3 +5,7 @@
   width: 100%;
   text-align: left;
 }
+
+.kobsio-jaeger-trace-list-item .pf-c-menu__item-description {
+  width: 100%;
+}

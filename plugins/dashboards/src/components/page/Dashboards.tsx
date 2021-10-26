@@ -2,8 +2,9 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Gallery,
-  GalleryItem,
+  Menu,
+  MenuContent,
+  MenuList,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -64,7 +65,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ displayName, de
 
       <DashboardsModal dashboard={dashboard} setDashboard={setDashboard} />
 
-      <PageSection style={{ height: '100%', minHeight: '100%' }} variant={PageSectionVariants.default}>
+      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
         {isLoading ? (
           <div className="pf-u-text-align-center">
             <Spinner />
@@ -85,13 +86,19 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ displayName, de
             <p>{error?.message}</p>
           </Alert>
         ) : data ? (
-          <Gallery hasGutter={true} maxWidths={{ default: '100%' }}>
-            {filterDashboards(data, debouncedSearchTerm).map((dashboard, index) => (
-              <GalleryItem key={index}>
-                <DashboardsItem dashboard={dashboard} setDashboard={setDashboard} />
-              </GalleryItem>
-            ))}
-          </Gallery>
+          <Menu>
+            <MenuContent>
+              <MenuList>
+                {filterDashboards(data, debouncedSearchTerm).map((dashboard) => (
+                  <DashboardsItem
+                    key={`${dashboard.cluster}-${dashboard.namespace}-${dashboard.name}`}
+                    dashboard={dashboard}
+                    setDashboard={setDashboard}
+                  />
+                ))}
+              </MenuList>
+            </MenuContent>
+          </Menu>
         ) : null}
       </PageSection>
     </React.Fragment>
