@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
+import { MenuItem } from '@patternfly/react-core';
 import React from 'react';
 
 import { IPluginDefaults, IReference, LinkWrapper } from '@kobsio/plugin-core';
@@ -23,12 +23,7 @@ const PanelItem: React.FunctionComponent<IPanelItemProps> = ({ defaults, referen
         placeholderParams && placeholderParams.length > 0 ? placeholderParams.join('') : ''
       }`}
     >
-      <Card isCompact={true} isHoverable={true}>
-        <CardHeader>
-          <CardTitle>{reference.title}</CardTitle>
-        </CardHeader>
-        <CardBody>{reference.description || ''}</CardBody>
-      </Card>
+      <MenuItem description={reference.description}>{reference.title}</MenuItem>
     </LinkWrapper>
   );
 };

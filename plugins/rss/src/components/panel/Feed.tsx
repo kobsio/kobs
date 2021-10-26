@@ -1,4 +1,4 @@
-import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
+import { Alert, AlertActionLink, AlertVariant, Menu, MenuContent, MenuList, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
@@ -67,14 +67,15 @@ const Alerts: React.FunctionComponent<IFeedProps> = ({ urls, sortBy, setDetails 
   }
 
   return (
-    <div>
-      {data.map((item, index) => (
-        <div key={index}>
-          <FeedItem item={item} setDetails={setDetails} />
-          {index !== data.length - 1 ? <p>&nbsp;</p> : null}
-        </div>
-      ))}
-    </div>
+    <Menu>
+      <MenuContent>
+        <MenuList>
+          {data.map((item, index) => (
+            <FeedItem key={index} item={item} setDetails={setDetails} />
+          ))}
+        </MenuList>
+      </MenuContent>
+    </Menu>
   );
 };
 

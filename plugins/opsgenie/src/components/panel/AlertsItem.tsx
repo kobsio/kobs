@@ -1,4 +1,4 @@
-import { Card, CardActions, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
+import { MenuItem } from '@patternfly/react-core';
 import React from 'react';
 
 import Alert from './details/alert/Alert';
@@ -14,28 +14,21 @@ interface IAlertsItemProps {
 
 const AlertsItem: React.FunctionComponent<IAlertsItemProps> = ({ name, alert, setDetails }: IAlertsItemProps) => {
   return (
-    <Card
-      style={{ cursor: 'pointer' }}
-      isCompact={true}
-      isHoverable={true}
+    <MenuItem
+      description={<Infos alert={alert} />}
       onClick={
         setDetails
           ? (): void => setDetails(<Alert name={name} alert={alert} close={(): void => setDetails(undefined)} />)
           : undefined
       }
     >
-      <CardHeader>
-        {alert.createdAt ? (
-          <CardActions>
-            <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{formatTimeWrapper(alert.createdAt)}</span>
-          </CardActions>
-        ) : null}
-        <CardTitle>{alert.message}</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <Infos alert={alert} />
-      </CardBody>
-    </Card>
+      {alert.message}
+      {alert.createdAt ? (
+        <span className="pf-u-float-right pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+          {formatTimeWrapper(alert.createdAt)}
+        </span>
+      ) : null}
+    </MenuItem>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Card, CardActions, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
+import { MenuItem } from '@patternfly/react-core';
 import React from 'react';
 
 import { IIncident } from '../../utils/interfaces';
@@ -18,10 +18,8 @@ const IncidentsItem: React.FunctionComponent<IIncidentsItemProps> = ({
   setDetails,
 }: IIncidentsItemProps) => {
   return (
-    <Card
-      style={{ cursor: 'pointer' }}
-      isCompact={true}
-      isHoverable={true}
+    <MenuItem
+      description={<Infos incident={incident} />}
       onClick={
         setDetails
           ? (): void =>
@@ -29,18 +27,13 @@ const IncidentsItem: React.FunctionComponent<IIncidentsItemProps> = ({
           : undefined
       }
     >
-      <CardHeader>
-        {incident.createdAt ? (
-          <CardActions>
-            <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{formatTimeWrapper(incident.createdAt)}</span>
-          </CardActions>
-        ) : null}
-        <CardTitle>{incident.message}</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <Infos incident={incident} />
-      </CardBody>
-    </Card>
+      {incident.message}
+      {incident.createdAt ? (
+        <span className="pf-u-float-right pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+          {formatTimeWrapper(incident.createdAt)}
+        </span>
+      ) : null}
+    </MenuItem>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Gallery, GalleryItem } from '@patternfly/react-core';
+import { Menu, MenuContent, MenuList } from '@patternfly/react-core';
 import React, { memo } from 'react';
 
 import { IPluginPanelProps, IReference, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
@@ -23,13 +23,15 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, d
 
   return (
     <PluginCard title={title} description={description} transparent={true}>
-      <Gallery hasGutter={true} maxWidths={{ default: '100%' }}>
-        {options.map((reference, index) => (
-          <GalleryItem key={index}>
-            <PanelItem defaults={defaults} reference={reference} />
-          </GalleryItem>
-        ))}
-      </Gallery>
+      <Menu>
+        <MenuContent>
+          <MenuList>
+            {options.map((reference, index) => (
+              <PanelItem key={index} defaults={defaults} reference={reference} />
+            ))}
+          </MenuList>
+        </MenuContent>
+      </Menu>
     </PluginCard>
   );
 };
