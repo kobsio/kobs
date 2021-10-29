@@ -75,7 +75,11 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
             <DropdownItem
               key={0}
               component={
-                <Link to={`/${name}/aggregation?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${query}`}>
+                <Link
+                  to={`/${name}/aggregation?timeEnd=${times.timeEnd}&timeStart=${
+                    times.timeStart
+                  }&query=${encodeURIComponent(query)}`}
+                >
                   Aggregation
                 </Link>
               }
