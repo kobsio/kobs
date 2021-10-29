@@ -9,7 +9,7 @@ import {
   ToolbarToggleGroup,
 } from '@patternfly/react-core';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
@@ -69,6 +69,11 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
       times: { timeEnd: timeEnd, timeStart: timeStart },
     });
   };
+
+  useEffect(() => {
+    setData({ ...data, query: query, times: times });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, times]);
 
   return (
     <Toolbar id="elasticsearch-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>

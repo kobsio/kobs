@@ -16,6 +16,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#184](https://github.com/kobsio/kobs/pull/184): [clickhouse] Add aggregations to visualize logs.
 - [#187](https://github.com/kobsio/kobs/pull/187): [clickhouse] Add options to download returned logs as `.log` or `.csv` file.
 - [#192](https://github.com/kobsio/kobs/pull/192): [clickhouse] Add options to download aggregation results as `.csv` file.
+- [#193](https://github.com/kobsio/kobs/pull/193): [elasticsearch] Adjust selected time range via logs chart and allow filtering via fields.
 
 ### Fixed
 
