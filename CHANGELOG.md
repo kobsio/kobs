@@ -21,6 +21,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#175](https://github.com/kobsio/kobs/pull/175): [prometheus] Fix tooltip when no unit is provided.
 - [#186](https://github.com/kobsio/kobs/pull/186): [jaeger] Fix tooltip position in traces chart.
 - [#189](https://github.com/kobsio/kobs/pull/189): [clickhouse] Fix download of `.csv` fiels.
+- [#191](https://github.com/kobsio/kobs/pull/191): [clickhouse] Fix returned logs, when user selected a custom order.
 
 ### Changed
 
