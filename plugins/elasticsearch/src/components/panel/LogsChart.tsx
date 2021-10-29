@@ -1,68 +1,95 @@
-import React from 'react';
-import { ResponsiveBarCanvas } from '@nivo/bar';
+import {
+  Chart,
+  ChartAxis,
+  ChartBar,
+  ChartLegendTooltip,
+  ChartThemeColor,
+  createContainer,
+} from '@patternfly/react-charts';
+import React, { useRef } from 'react';
 
-import { CHART_THEME, ChartTooltip } from '@kobsio/plugin-core';
-import { IBucket } from '../../utils/interfaces';
+import { IBucket, IDatum, IDomain, ILabel } from '../../utils/interfaces';
+import { IPluginTimes, formatTime, useDimensions } from '@kobsio/plugin-core';
 
 interface ILogsChartProps {
   buckets?: IBucket[];
+  changeTime?: (times: IPluginTimes) => void;
 }
 
-const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets }: ILogsChartProps) => {
-  if (!buckets || buckets.length === 0) {
-    return <div style={{ height: '250px' }}></div>;
-  }
+const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTime }: ILogsChartProps) => {
+  const refChart = useRef<HTMLDivElement>(null);
+  const chartSize = useDimensions(refChart, { height: 1, width: 1 });
+
+  const data: IDatum[] =
+    !buckets || buckets.length === 0
+      ? []
+      : buckets.map((bucket) => {
+          return {
+            x: new Date(bucket.key),
+            y: bucket.doc_count,
+          };
+        });
+
+  const CursorVoronoiContainer = createContainer('voronoi', 'brush');
+  const legendData = [{ childName: 'count', name: 'Document Count' }];
 
   return (
-    <div style={{ height: '250px' }}>
-      <ResponsiveBarCanvas
-        axisBottom={{
-          legend: '',
-          tickValues: buckets.filter((bucket, index) => index % 2 === 0).map((bucket) => bucket.time),
-        }}
-        axisLeft={{
-          format: '>-.0s',
-          legend: 'Count',
-          legendOffset: -40,
-          legendPosition: 'middle',
-        }}
-        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-        borderRadius={0}
-        borderWidth={0}
-        colorBy="id"
-        colors={['#0066cc']}
-        data={buckets}
-        enableLabel={false}
-        enableGridX={false}
-        enableGridY={true}
-        groupMode="stacked"
-        indexBy="time"
-        indexScale={{ round: true, type: 'band' }}
-        isInteractive={true}
-        keys={['documents']}
-        layout="vertical"
-        margin={{ bottom: 25, left: 50, right: 0, top: 0 }}
-        maxValue="auto"
-        minValue="auto"
-        reverse={false}
-        theme={CHART_THEME}
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        tooltip={(tooltip) => {
-          const isFirstHalf = tooltip.index < buckets.length / 2;
-
-          return (
-            <ChartTooltip
-              anchor={isFirstHalf ? 'right' : 'left'}
-              color="#0066cc"
-              label={`Documents: ${tooltip.data.documents}`}
-              position={[0, 20]}
-              title={tooltip.data.time}
-            />
-          );
-        }}
-        valueFormat=""
-        valueScale={{ type: 'linear' }}
-      />
+    <div style={{ height: '250px', width: '100%' }} ref={refChart}>
+      <Chart
+        containerComponent={
+          <CursorVoronoiContainer
+            cursorDimension="x"
+            brushDimension="x"
+            labels={({ datum }: ILabel): string => `${datum.y}`}
+            labelComponent={
+              <ChartLegendTooltip
+                legendData={legendData}
+                title={(datum: IDatum): string =>
+                  data.length > 0 ? formatTime(Math.floor(datum.x.getTime() / 1000)) : ''
+                }
+              />
+            }
+            mouseFollowTooltips={true}
+            onBrushDomainChangeEnd={(domain: IDomain): void => {
+              if (changeTime && domain.x.length === 2) {
+                changeTime({
+                  timeEnd: Math.floor(domain.x[1].getTime() / 1000),
+                  timeStart: Math.floor(domain.x[0].getTime() / 1000),
+                });
+              }
+            }}
+            voronoiDimension="x"
+            voronoiPadding={0}
+          />
+        }
+        height={chartSize.height}
+        padding={{ bottom: 20, left: 0, right: 0, top: 0 }}
+        scale={{ x: 'time', y: 'linear' }}
+        themeColor={ChartThemeColor.multiOrdered}
+        width={chartSize.width}
+      >
+        <ChartAxis
+          dependentAxis={false}
+          tickValues={data
+            .filter((datum, index) => index !== 0 && index !== data.length - 1 && (index + 1) % 2 === 0)
+            .map((datum) => datum.x)}
+          tickFormat={(tick: Date): string =>
+            `${('0' + (tick.getMonth() + 1)).slice(-2)}-${('0' + tick.getDate()).slice(-2)} ${(
+              '0' + tick.getHours()
+            ).slice(-2)}:${('0' + tick.getMinutes()).slice(-2)}:${('0' + tick.getSeconds()).slice(-2)}`
+          }
+          showGrid={false}
+          style={{
+            tickLabels: {
+              fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
+              fontSize: 10,
+              fontWeight: 'bold',
+              padding: 5,
+            },
+          }}
+        />
+        <ChartBar data={data} name="count" barWidth={data && chartSize.width / data.length} />
+      </Chart>
     </div>
   );
 };

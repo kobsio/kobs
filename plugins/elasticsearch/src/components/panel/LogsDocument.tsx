@@ -9,9 +9,16 @@ import LogsDocumentPreview from './LogsDocumentPreview';
 interface ILogsDocumentProps {
   document: IDocument;
   fields?: string[];
+  addFilter?: (filter: string) => void;
+  selectField?: (field: string) => void;
 }
 
-const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({ document, fields }: ILogsDocumentProps) => {
+const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
+  document,
+  fields,
+  addFilter,
+  selectField,
+}: ILogsDocumentProps) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const defaultActions = [
@@ -55,7 +62,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({ document, f
       <Tr isExpanded={isExpanded}>
         <Td />
         <Td colSpan={fields && fields.length > 0 ? fields.length + 1 : 2}>
-          {isExpanded && <LogsDocumentDetails document={document} />}
+          {isExpanded && <LogsDocumentDetails document={document} addFilter={addFilter} selectField={selectField} />}
         </Td>
         <Td />
       </Tr>

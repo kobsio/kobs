@@ -2634,6 +2634,32 @@
     victory-voronoi-container "^35.9.1"
     victory-zoom-container "^35.9.0"
 
+"@patternfly/react-charts@^6.21.8":
+  version "6.21.8"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-charts/-/react-charts-6.21.8.tgz#5dfd484605e0b5ab3db66adf1ab9ca04e73785d7"
+  integrity sha512-DmS0Ue4zXPodeRptEcPS+sXuiEBypZ2/hbUkxZtrt8tLvezbh9FCNLRZ7NsDXpsLwx6vtD89w3+zFzTHnqngQA==
+  dependencies:
+    "@patternfly/react-styles" "^4.18.8"
+    "@patternfly/react-tokens" "^4.20.8"
+    hoist-non-react-statics "^3.3.0"
+    lodash "^4.17.19"
+    tslib "^2.0.0"
+    victory-area "^35.9.0"
+    victory-axis "^35.9.0"
+    victory-bar "^35.9.0"
+    victory-chart "^35.9.0"
+    victory-core "^35.9.0"
+    victory-create-container "^35.9.1"
+    victory-group "^35.9.0"
+    victory-legend "^35.9.0"
+    victory-line "^35.9.0"
+    victory-pie "^35.9.0"
+    victory-scatter "^35.9.0"
+    victory-stack "^35.9.0"
+    victory-tooltip "^35.9.1"
+    victory-voronoi-container "^35.9.1"
+    victory-zoom-container "^35.9.0"
+
 "@patternfly/react-core@^4.128.2", "@patternfly/react-core@^4.157.3":
   version "4.157.3"
   resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.157.3.tgz#038c98b21ef4d7459f2120c27be4518afbcf1395"
@@ -2657,6 +2683,11 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.11.16.tgz#55327c57d086aadb9f0f4c0e67ab38856c3ca165"
   integrity sha512-4ZFynQuJmRF7VbZeQSs44MX6MEvW7l7ZR8lMeChd8mxnQpG8pWtVUbcHdj9FFHPZVa+sPrgrZQl8QmhbqYyOsg==
 
+"@patternfly/react-styles@^4.18.8":
+  version "4.18.8"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.18.8.tgz#92b314c41a8df27cf4c531ab60fc9daf11da8150"
+  integrity sha512-136N/Whs0qXDtPpsh5JeNJld5BeFPsbmmcgI5LlMQ+P9dioddh24rTqaaOIea67tHiXUB7orxaqKpBBILXqcPQ==
+
 "@patternfly/react-table@^4.27.24":
   version "4.30.3"
   resolved "https://registry.yarnpkg.com/@patternfly/react-table/-/react-table-4.30.3.tgz#17a854d7d994a1ca8ede9f5f16870ee4f86e16b6"
@@ -2673,6 +2704,11 @@
   version "4.12.18"
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.12.18.tgz#e8c75f19ecc33de180cef6cb3e9a6679c5ffeb7c"
   integrity sha512-3bNUOSOMLmhxPku4fvopxt3StotaHGqHvlIDMxp9pGIgb0o02RyZ8JIioCCO1GkvPPIn6pKs/cGJDlB7zHV48Q==
+
+"@patternfly/react-tokens@^4.20.8":
+  version "4.20.8"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.20.8.tgz#8413af8516fdcdaea1da81912434eef4c9c7865a"
+  integrity sha512-OFlgTknFBNAETWVYYoLdISJBjPMQ8e3tcLpWb3h/KgKk/Tn1NR+P7Pl1gQGvTL/9liBZfS/HKDD5+P8c70w+2Q==
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"

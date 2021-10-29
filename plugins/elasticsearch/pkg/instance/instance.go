@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/kobsio/kobs/pkg/api/middleware/roundtripper"
 
@@ -75,25 +74,12 @@ func (i *Instance) GetLogs(ctx context.Context, query, scrollID string, timeStar
 			return nil, err
 		}
 
-		var buckets []Bucket
-
-		// When the response from the Elasticsearch API contains a list of buckets, we have to transform them into the
-		// format needed by our UI.
-		if len(res.Aggregations.LogCount.Buckets) > 0 {
-			for _, bucket := range res.Aggregations.LogCount.Buckets {
-				buckets = append(buckets, Bucket{
-					Time:      time.Unix(bucket.Key/1000, 0).Format("01-02 15:04:05"),
-					Documents: bucket.DocCount,
-				})
-			}
-		}
-
 		data := &Data{
 			ScrollID:  res.ScrollID,
 			Took:      res.Took,
 			Hits:      res.Hits.Total.Value,
 			Documents: res.Hits.Hits,
-			Buckets:   buckets,
+			Buckets:   res.Aggregations.LogCount.Buckets,
 		}
 
 		log.WithFields(logrus.Fields{"scrollID": data.ScrollID, "took": data.Took, "hits": data.Hits, "documents": len(data.Documents), "buckets": len(data.Buckets)}).Debugf("Elasticsearch query results")

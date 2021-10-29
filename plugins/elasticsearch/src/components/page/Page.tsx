@@ -9,8 +9,8 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import { IPluginPageProps, IPluginTimes } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
-import { IPluginPageProps } from '@kobsio/plugin-core';
 import PageLogs from './PageLogs';
 import PageToolbar from './PageToolbar';
 import { getOptionsFromSearch } from '../../utils/helpers';
@@ -50,6 +50,14 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
     changeOptions({ ...options, fields: tmpFields });
   };
 
+  const addFilter = (filter: string): void => {
+    changeOptions({ ...options, query: `${options.query} ${filter}` });
+  };
+
+  const changeTime = (times: IPluginTimes): void => {
+    changeOptions({ ...options, times: times });
+  };
+
   // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
   // via the changeOptions function. When the search location is changed we modify the options state.
   useEffect(() => {
@@ -80,6 +88,8 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                   name={name}
                   fields={options.fields}
                   query={options.query}
+                  addFilter={addFilter}
+                  changeTime={changeTime}
                   selectField={selectField}
                   times={options.times}
                 />

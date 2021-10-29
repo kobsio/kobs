@@ -29,6 +29,8 @@ interface IPageLogsProps {
   name: string;
   fields?: string[];
   query: string;
+  addFilter: (filter: string) => void;
+  changeTime: (times: IPluginTimes) => void;
   selectField: (field: string) => void;
   times: IPluginTimes;
 }
@@ -37,6 +39,8 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
   name,
   fields,
   query,
+  addFilter,
+  changeTime,
   selectField,
   times,
 }: IPageLogsProps) => {
@@ -129,14 +133,14 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
           </CardHeader>
 
           <CardBody>
-            <LogsChart buckets={data.pages[0].buckets} />
+            <LogsChart buckets={data.pages[0].buckets} changeTime={changeTime} />
           </CardBody>
         </Card>
         <p>&nbsp;</p>
         {data.pages[0].documents.length > 0 ? (
           <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
             <CardBody>
-              <LogsDocuments pages={data.pages} fields={fields} />
+              <LogsDocuments pages={data.pages} fields={fields} addFilter={addFilter} selectField={selectField} />
             </CardBody>
           </Card>
         ) : null}

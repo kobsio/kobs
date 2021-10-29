@@ -20,13 +20,16 @@ type Response struct {
 	} `json:"hits"`
 	Aggregations struct {
 		LogCount struct {
-			Buckets []struct {
-				KeyAsString string `json:"key_as_string"`
-				Key         int64  `json:"key"`
-				DocCount    int64  `json:"doc_count"`
-			} `json:"buckets"`
+			Buckets []Bucket `json:"buckets"`
 		} `json:"logcount"`
 	} `json:"aggregations"`
+}
+
+// Bucket is the structure of a bucket returned by the Elasticsearch API.
+type Bucket struct {
+	KeyAsString string `json:"key_as_string"`
+	Key         int64  `json:"key"`
+	DocCount    int64  `json:"doc_count"`
 }
 
 // ResponseError is the structure of failed Elasticsearch API call.
@@ -54,12 +57,4 @@ type Data struct {
 	Hits      int64                    `json:"hits"`
 	Documents []map[string]interface{} `json:"documents"`
 	Buckets   []Bucket                 `json:"buckets"`
-}
-
-// Bucket is the transformed result from a Elasticsearch API response. It only contains the formatted time and the
-// number of documents for this time. We use a capitalized key for the JSON representation of the documents field,
-// because the name of this field is also shown in the UI as label.
-type Bucket struct {
-	Time      string `json:"time"`
-	Documents int64  `json:"documents"`
 }

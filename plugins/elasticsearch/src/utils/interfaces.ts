@@ -36,13 +36,33 @@ export interface IDocument {
   [key: string]: any;
 }
 
+// IBucket is the interface for a single bucket returned by the Elasticsearch API. For that we are using the naming
+// convention from Elasticsearch.
 export interface IBucket extends BarDatum {
-  time: string;
-  documents: number;
+  key: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  doc_count: number;
 }
 
 // IKeyValue is the interface for a single field in a document, with it's key and value.
 export interface IKeyValue {
   key: string;
   value: string;
+}
+
+// IDatum, ILabel and IDomain interfaces are used for the logs chart. IDatum is the formate of the data points required
+// by '@patternfly/react-charts. ILabel is the formate of the label and IDomain is the formate returned by the
+// onBrushDomainChangeEnd function.
+export interface IDatum {
+  x: Date;
+  y: number;
+}
+
+export interface ILabel {
+  datum: IDatum;
+}
+
+export interface IDomain {
+  x: Date[];
+  y: number[];
 }
