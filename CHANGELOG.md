@@ -15,6 +15,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#183](https://github.com/kobsio/kobs/pull/183): [istio] Add panels and documentation and use the `destination_app` label instead of `destination_workload` for the Prometheus metrics.
 - [#184](https://github.com/kobsio/kobs/pull/184): [clickhouse] Add aggregations to visualize logs.
 - [#187](https://github.com/kobsio/kobs/pull/187): [clickhouse] Add options to download returned logs as `.log` or `.csv` file.
+- [#192](https://github.com/kobsio/kobs/pull/192): [clickhouse] Add options to download aggregation results as `.csv` file.
 
 ### Fixed
 

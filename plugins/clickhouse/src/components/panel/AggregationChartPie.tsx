@@ -28,6 +28,7 @@ const AggregationChartPie: React.FunctionComponent<IAggregationChartPieProps> = 
       arcLabelsSkipAngle={10}
       arcLabelsTextColor="#151515"
       arcLinkLabelsColor={{ from: 'color' }}
+      arcLinkLabelsSkipAngle={10}
       arcLinkLabelsTextColor="#151515"
       arcLinkLabelsThickness={2}
       borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}

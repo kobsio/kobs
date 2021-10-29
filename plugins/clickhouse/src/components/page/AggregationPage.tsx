@@ -41,7 +41,7 @@ const AggregationPage: React.FunctionComponent<IAggregationPageProps> = ({
   const changeOptions = (): void => {
     history.push({
       pathname: location.pathname,
-      search: `?query=${tmpOptions.query}&timeEnd=${tmpOptions.times.timeEnd}&timeStart=${
+      search: `?query=${encodeURIComponent(tmpOptions.query)}&timeEnd=${tmpOptions.times.timeEnd}&timeStart=${
         tmpOptions.times.timeStart
       }&chart=${tmpOptions.chart}&aggregation=${encodeURIComponent(JSON.stringify(tmpOptions.options))}`,
     });

@@ -1,9 +1,10 @@
-import { Alert, AlertActionLink, AlertVariant, Card, CardBody, Spinner } from '@patternfly/react-core';
+import { Alert, AlertActionLink, AlertVariant, Card, CardBody, CardHeader, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { IAggregationData, IAggregationOptions } from '../../utils/interfaces';
+import AggregationActions from './AggregationActions';
 import AggregationChart from '../panel/AggregationChart';
 
 interface IAggregationProps {
@@ -14,7 +15,7 @@ interface IAggregationProps {
 const Aggregation: React.FunctionComponent<IAggregationProps> = ({ name, options }: IAggregationProps) => {
   const history = useHistory();
 
-  const { isError, isLoading, data, error, refetch } = useQuery<IAggregationData, Error>(
+  const { isError, isFetching, isLoading, data, error, refetch } = useQuery<IAggregationData, Error>(
     ['clickhouse/aggregation', name, options],
     async () => {
       try {
@@ -40,6 +41,9 @@ const Aggregation: React.FunctionComponent<IAggregationProps> = ({ name, options
       } catch (err) {
         throw err;
       }
+    },
+    {
+      keepPreviousData: true,
     },
   );
 
@@ -76,6 +80,15 @@ const Aggregation: React.FunctionComponent<IAggregationProps> = ({ name, options
 
   return (
     <Card isCompact={true} style={{ height: '100%' }}>
+      <CardHeader>
+        <AggregationActions
+          name={name}
+          query={options.query}
+          times={options.times}
+          data={data}
+          isFetching={isFetching}
+        />
+      </CardHeader>
       <CardBody>
         <AggregationChart minHeight={500} options={options} data={data} />
       </CardBody>
