@@ -24,7 +24,7 @@ export interface IApplicationOptions {
 
 // IFilters is the interface to specify filters for the tab and top view of an Istio application.
 export interface IFilters {
-  name: string;
+  upstreamCluster: string;
   method: string;
   path: string;
 }

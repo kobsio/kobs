@@ -33,9 +33,11 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
       pathname: location.pathname,
       search: `?timeEnd=${tmpOptions.times.timeEnd}&timeStart=${tmpOptions.times.timeStart}&view=${
         tmpOptions.view
-      }&filterName=${encodeURIComponent(tmpOptions.filters.name)}&filterMethod=${encodeURIComponent(
-        tmpOptions.filters.method,
-      )}&filterPath=${encodeURIComponent(tmpOptions.filters.path)}`,
+      }&filterUpstreamCluster=${encodeURIComponent(
+        tmpOptions.filters.upstreamCluster,
+      )}&filterMethod=${encodeURIComponent(tmpOptions.filters.method)}&filterPath=${encodeURIComponent(
+        tmpOptions.filters.path,
+      )}`,
     });
   };
 
@@ -44,7 +46,7 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
       pathname: location.pathname,
       search: `?timeEnd=${options.times.timeEnd}&timeStart=${options.times.timeStart}&view=${
         options.view
-      }&filterName=${encodeURIComponent(filters.name)}&filterMethod=${encodeURIComponent(
+      }&filterUpstreamCluster=${encodeURIComponent(filters.upstreamCluster)}&filterMethod=${encodeURIComponent(
         filters.method,
       )}&filterPath=${encodeURIComponent(filters.path)}`,
     });

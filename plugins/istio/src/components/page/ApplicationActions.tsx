@@ -36,7 +36,7 @@ const ApplicationActions: React.FunctionComponent<IApplicationActionsProps> = ({
   const [internalFilters, setInternalFilters] = useState<IFilters>(filters);
 
   const clearFilter = (): void => {
-    setFilters({ method: '', name: '', path: '' });
+    setFilters({ method: '', path: '', upstreamCluster: '' });
     setShowDropdown(false);
   };
 
@@ -106,15 +106,15 @@ const ApplicationActions: React.FunctionComponent<IApplicationActionsProps> = ({
         ]}
       >
         <Form isHorizontal={true}>
-          <FormGroup label="Name" fieldId="form-tab-name">
+          <FormGroup label="Upstream Cluster" fieldId="form-tab-upstreamcluster">
             <TextInput
-              value={internalFilters.name}
+              value={internalFilters.upstreamCluster}
               isRequired
               type="text"
-              id="form-tab-name"
-              aria-describedby="form-tab-name"
-              name="form-tab-name"
-              onChange={(value): void => setInternalFilters({ ...internalFilters, name: value })}
+              id="form-tab-upstreamcluster"
+              aria-describedby="form-tab-upstreamcluster"
+              name="form-tab-upstreamcluster"
+              onChange={(value): void => setInternalFilters({ ...internalFilters, upstreamCluster: value })}
             />
           </FormGroup>
           <FormGroup label="Method" fieldId="form-tab-method">

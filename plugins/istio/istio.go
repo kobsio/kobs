@@ -253,11 +253,11 @@ func (router *Router) getTap(w http.ResponseWriter, r *http.Request) {
 	timeEnd := r.URL.Query().Get("timeEnd")
 	application := r.URL.Query().Get("application")
 	namespace := r.URL.Query().Get("namespace")
-	filterName := r.URL.Query().Get("filterName")
+	filterUpstreamCluster := r.URL.Query().Get("filterUpstreamCluster")
 	filterMethod := r.URL.Query().Get("filterMethod")
 	filterPath := r.URL.Query().Get("filterPath")
 
-	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterName": filterName, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTap")
+	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterUpstreamCluster": filterUpstreamCluster, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTap")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -277,7 +277,7 @@ func (router *Router) getTap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logs, err := i.Tap(r.Context(), namespace, application, filterName, filterMethod, filterPath, parsedTimeStart, parsedTimeEnd)
+	logs, err := i.Tap(r.Context(), namespace, application, filterUpstreamCluster, filterMethod, filterPath, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
@@ -293,13 +293,13 @@ func (router *Router) getTop(w http.ResponseWriter, r *http.Request) {
 	timeEnd := r.URL.Query().Get("timeEnd")
 	application := r.URL.Query().Get("application")
 	namespace := r.URL.Query().Get("namespace")
-	filterName := r.URL.Query().Get("filterName")
+	filterUpstreamCluster := r.URL.Query().Get("filterUpstreamCluster")
 	filterMethod := r.URL.Query().Get("filterMethod")
 	filterPath := r.URL.Query().Get("filterPath")
 	sortBy := r.URL.Query().Get("sortBy")
 	sortDirection := r.URL.Query().Get("sortDirection")
 
-	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterName": filterName, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTop")
+	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterUpstreamCluster": filterUpstreamCluster, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTop")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -319,7 +319,7 @@ func (router *Router) getTop(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logs, err := i.Top(r.Context(), namespace, application, filterName, filterMethod, filterPath, sortBy, sortDirection, parsedTimeStart, parsedTimeEnd)
+	logs, err := i.Top(r.Context(), namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
@@ -336,11 +336,10 @@ func (router *Router) getTopDetails(w http.ResponseWriter, r *http.Request) {
 	application := r.URL.Query().Get("application")
 	namespace := r.URL.Query().Get("namespace")
 	upstreamCluster := r.URL.Query().Get("upstreamCluster")
-	authority := r.URL.Query().Get("authority")
 	method := r.URL.Query().Get("method")
 	path := r.URL.Query().Get("path")
 
-	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "upstreamCluster": upstreamCluster, "authority": authority, "method": method, "path": path}).Tracef("getTopDetails")
+	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "upstreamCluster": upstreamCluster, "method": method, "path": path}).Tracef("getTopDetails")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -360,7 +359,7 @@ func (router *Router) getTopDetails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	metrics, err := i.TopDetails(r.Context(), namespace, application, upstreamCluster, authority, method, path, parsedTimeStart, parsedTimeEnd)
+	metrics, err := i.TopDetails(r.Context(), namespace, application, upstreamCluster, method, path, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get success rate")
 		return
