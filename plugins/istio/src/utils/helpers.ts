@@ -18,15 +18,15 @@ export const getApplicationsOptionsFromSearch = (search: string): IApplicationsO
 export const getApplicationOptionsFromSearch = (search: string): IApplicationOptions => {
   const params = new URLSearchParams(search);
   const view = params.get('view');
-  const filterName = params.get('filterName');
+  const filterUpstreamCluster = params.get('filterUpstreamCluster');
   const filterMethod = params.get('filterMethod');
   const filterPath = params.get('filterPath');
 
   return {
     filters: {
       method: filterMethod ? filterMethod : '',
-      name: filterName ? filterName : '',
       path: filterPath ? filterPath : '',
+      upstreamCluster: filterUpstreamCluster ? filterUpstreamCluster : '',
     },
     times: getTimeParams(params),
     view: view ? view : 'metrics',

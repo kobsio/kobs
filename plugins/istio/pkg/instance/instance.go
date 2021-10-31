@@ -301,10 +301,10 @@ func (i *Instance) GetTopology(ctx context.Context, namespace, application strin
 }
 
 // Tap returns the logs for the specified Istio application.
-func (i *Instance) Tap(ctx context.Context, namespace, application, filterName, filterMethod, filterPath string, timeStart int64, timeEnd int64) ([]map[string]interface{}, error) {
+func (i *Instance) Tap(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath string, timeStart int64, timeEnd int64) ([]map[string]interface{}, error) {
 	var filters string
-	if filterName != "" {
-		filters = filters + fmt.Sprintf(" _and_ content.authority~'%s'", filterName)
+	if filterUpstreamCluster != "" {
+		filters = filters + fmt.Sprintf(" _and_ content.upstream_cluster~'%s'", filterUpstreamCluster)
 	}
 	if filterMethod != "" {
 		filters = filters + fmt.Sprintf(" _and_ content.method~'%s'", filterMethod)
@@ -322,10 +322,10 @@ func (i *Instance) Tap(ctx context.Context, namespace, application, filterName, 
 }
 
 // Top returns the aggregated logs for the specified Istio application.
-func (i *Instance) Top(ctx context.Context, namespace, application, filterName, filterMethod, filterPath, sortBy, sortDirection string, timeStart int64, timeEnd int64) ([][]interface{}, error) {
+func (i *Instance) Top(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection string, timeStart int64, timeEnd int64) ([][]interface{}, error) {
 	var filters string
-	if filterName != "" {
-		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.authority')], '%s')", filterName)
+	if filterUpstreamCluster != "" {
+		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '%s')", filterUpstreamCluster)
 	}
 	if filterMethod != "" {
 		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.method')], '%s')", filterMethod)
@@ -336,9 +336,8 @@ func (i *Instance) Top(ctx context.Context, namespace, application, filterName, 
 
 	rows, _, err := i.clickhouse.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT
     fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')] as upstream,
-    fields_string.value[indexOf(fields_string.key, 'content.authority')] as name,
     fields_string.value[indexOf(fields_string.key, 'content.method')] as method,
-    fields_string.value[indexOf(fields_string.key, 'content.path')] as path,
+    path(fields_string.value[indexOf(fields_string.key, 'content.path')]) as path,
     count(*) as count,
     min(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as min,
     max(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as max,
@@ -349,9 +348,8 @@ FROM logs.logs
 WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND namespace = '%s' AND app = '%s' AND container_name = 'istio-proxy' %s
 GROUP BY
     fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')],
-    fields_string.value[indexOf(fields_string.key, 'content.authority')],
     fields_string.value[indexOf(fields_string.key, 'content.method')],
-    fields_string.value[indexOf(fields_string.key, 'content.path')]
+    path(fields_string.value[indexOf(fields_string.key, 'content.path')])
 ORDER BY %s %s
 LIMIT 100
 SETTINGS skip_unavailable_shards = 1`, timeStart, timeEnd, namespace, application, filters, sortBy, sortDirection))
@@ -362,22 +360,19 @@ SETTINGS skip_unavailable_shards = 1`, timeStart, timeEnd, namespace, applicatio
 	return rows, nil
 }
 
-// TopDetails returns the success rate and latency for the specified upstream cluster. authority, method and path.
-func (i *Instance) TopDetails(ctx context.Context, namespace, application, upstreamCluster, authority, method, path string, timeStart int64, timeEnd int64) ([][]interface{}, error) {
+// TopDetails returns the success rate and latency for the specified upstream cluster, method and path.
+func (i *Instance) TopDetails(ctx context.Context, namespace, application, upstreamCluster, method, path string, timeStart int64, timeEnd int64) ([][]interface{}, error) {
 	interval := (timeEnd - timeStart) / 30
 	filters := fmt.Sprintf(" AND namespace = '%s' AND app = '%s' AND container_name = 'istio-proxy'", namespace, application)
 
 	if upstreamCluster != "" {
 		filters = filters + fmt.Sprintf(" AND fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')] = '%s'", upstreamCluster)
 	}
-	if authority != "" {
-		filters = filters + fmt.Sprintf(" AND fields_string.value[indexOf(fields_string.key, 'content.authority')] = '%s'", authority)
-	}
 	if method != "" {
 		filters = filters + fmt.Sprintf(" AND fields_string.value[indexOf(fields_string.key, 'content.method')] = '%s'", method)
 	}
 	if path != "" {
-		filters = filters + fmt.Sprintf(" AND fields_string.value[indexOf(fields_string.key, 'content.path')] = '%s'", path)
+		filters = filters + fmt.Sprintf(" AND path(fields_string.value[indexOf(fields_string.key, 'content.path')]) = '%s'", path)
 	}
 
 	rows, _, err := i.clickhouse.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT

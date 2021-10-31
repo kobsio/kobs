@@ -44,8 +44,8 @@ const Tap: React.FunctionComponent<ITapProps> = ({
           : times.timeStart;
 
         const response = await fetch(
-          `/api/plugins/istio/tap/${name}?timeStart=${timeStart}&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterName=${encodeURIComponent(
-            filters.name,
+          `/api/plugins/istio/tap/${name}?timeStart=${timeStart}&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterUpstreamCluster=${encodeURIComponent(
+            filters.upstreamCluster,
           )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(filters.path)}`,
           {
             method: 'get',
@@ -129,7 +129,9 @@ const Tap: React.FunctionComponent<ITapProps> = ({
             <Td dataLabel="Direction">
               {line.hasOwnProperty('content.upstream_cluster') ? getDirection(line['content.upstream_cluster']) : '-'}
             </Td>
-            <Td dataLabel="Name">{line.hasOwnProperty('content.authority') ? line['content.authority'] : '-'}</Td>
+            <Td dataLabel="Upstream Cluster">
+              {line.hasOwnProperty('content.upstream_cluster') ? line['content.upstream_cluster'] : '-'}
+            </Td>
             <Td dataLabel="Method">{line.hasOwnProperty('content.method') ? line['content.method'] : '-'}</Td>
             <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Path">
               {line.hasOwnProperty('content.path') ? line['content.path'] : '-'}

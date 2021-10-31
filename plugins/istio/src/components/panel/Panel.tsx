@@ -172,8 +172,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   ) {
     const filters = {
       method: options.filters && options.filters.method ? options.filters.method : '',
-      name: options.filters && options.filters.name ? options.filters.name : '',
       path: options.filters && options.filters.path ? options.filters.path : '',
+      upstreamCluster: options.filters && options.filters.upstreamCluster ? options.filters.upstreamCluster : '',
     };
 
     return (
@@ -185,9 +185,9 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           <PanelActions
             link={`/${name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${
               times.timeStart
-            }&view=top&filterName=${encodeURIComponent(filters.name)}&filterMethod=${encodeURIComponent(
-              filters.method,
-            )}&filterPath=${encodeURIComponent(filters.path)}`}
+            }&view=top&filterUpstreamCluster=${encodeURIComponent(
+              filters.upstreamCluster,
+            )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(filters.path)}`}
           />
         }
       >
@@ -215,8 +215,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   ) {
     const filters = {
       method: options.filters && options.filters.method ? options.filters.method : '',
-      name: options.filters && options.filters.name ? options.filters.name : '',
       path: options.filters && options.filters.path ? options.filters.path : '',
+      upstreamCluster: options.filters && options.filters.upstreamCluster ? options.filters.upstreamCluster : '',
     };
 
     return (
@@ -228,9 +228,9 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           <PanelActions
             link={`/${name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${
               times.timeStart
-            }&view=tap&filterName=${encodeURIComponent(filters.name)}&filterMethod=${encodeURIComponent(
-              filters.method,
-            )}&filterPath=${encodeURIComponent(filters.path)}`}
+            }&view=tap&filterUpstreamCluster=${encodeURIComponent(
+              filters.upstreamCluster,
+            )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(filters.path)}`}
           />
         }
       >

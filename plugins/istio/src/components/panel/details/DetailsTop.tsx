@@ -43,8 +43,8 @@ const DetailsTop: React.FunctionComponent<IDetailsTopProps> = ({
             times.timeEnd
           }&application=${application}&namespace=${namespace}&upstreamCluster=${encodeURIComponent(
             row[0],
-          )}&authority=${encodeURIComponent(row[1])}&method=${encodeURIComponent(row[2])}&path=${encodeURIComponent(
-            row[3],
+          )}&authority=${encodeURIComponent(row[1])}&method=${encodeURIComponent(row[1])}&path=${encodeURIComponent(
+            row[2],
           )}`,
           {
             method: 'get',
@@ -78,8 +78,8 @@ const DetailsTop: React.FunctionComponent<IDetailsTopProps> = ({
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
         <Title
-          title={`${getDirection(row[0]) || '-'}: ${row[1] || '-'}`}
-          subtitle={`${row[2] || '-'}: ${row[3] || '-'}`}
+          title={`${getDirection(row[0]) || '-'}: ${row[0] || '-'}`}
+          subtitle={`${row[1] || '-'}: ${row[2] || '-'}`}
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>

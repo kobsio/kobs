@@ -79,8 +79,8 @@ const Top: React.FunctionComponent<ITopProps> = ({
         const response = await fetch(
           `/api/plugins/istio/top/${name}?timeStart=${
             times.timeStart
-          }&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterName=${encodeURIComponent(
-            filters.name,
+          }&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterUpstreamCluster=${encodeURIComponent(
+            filters.upstreamCluster,
           )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(
             filters.path,
           )}&sortBy=${sortBy}&sortDirection=${sortDirection}`,
@@ -190,40 +190,40 @@ const Top: React.FunctionComponent<ITopProps> = ({
             <Td dataLabel="Direction" onClick={(): void => onTdClick(row)}>
               {getDirection(row[0]) || '-'}
             </Td>
-            <Td dataLabel="Name" onClick={(): void => onTdClick(row)}>
-              {row[1] || '-'}
+            <Td dataLabel="Upstream Cluster" onClick={(): void => onTdClick(row)}>
+              {row[0] || '-'}
             </Td>
             <Td dataLabel="Method" onClick={(): void => onTdClick(row)}>
-              {row[2] || '-'}
+              {row[1] || '-'}
             </Td>
             <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Path" onClick={(): void => onTdClick(row)}>
-              {row[3] || '-'}
+              {row[2] || '-'}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="Count" onClick={(): void => onTdClick(row)}>
-              {formatNumber(row[4])}
+              {formatNumber(row[3])}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="Best" onClick={(): void => onTdClick(row)}>
-              {formatNumber(row[5], 'ms', 0)}
+              {formatNumber(row[4], 'ms', 0)}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="Worst" onClick={(): void => onTdClick(row)}>
-              {formatNumber(row[6], 'ms', 0)}
+              {formatNumber(row[5], 'ms', 0)}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="Avg" onClick={(): void => onTdClick(row)}>
-              {formatNumber(row[7], 'ms', 0)}
+              {formatNumber(row[6], 'ms', 0)}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="Last" onClick={(): void => onTdClick(row)}>
-              {formatNumber(row[8], 'ms', 0)}
+              {formatNumber(row[7], 'ms', 0)}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="SR" onClick={(): void => onTdClick(row)}>
-              {formatNumber(row[9], '%', 2)}
+              {formatNumber(row[8], '%', 2)}
             </Td>
             <Td noPadding={true} style={{ padding: 0 }}>
               <Link
                 to={`/${name}/${namespace}/${application}?view=tap&timeStart=${times.timeStart}&timeEnd=${
                   times.timeEnd
-                }&filterName=${encodeURIComponent(row[1])}&filterMethod=${encodeURIComponent(
-                  row[2],
-                )}&filterPath=${encodeURIComponent(escapeRegExp(row[3]))}`}
+                }&filterUpstreamCluster=${encodeURIComponent(row[0])}&filterMethod=${encodeURIComponent(
+                  row[1],
+                )}&filterPath=${encodeURIComponent(escapeRegExp(row[2]))}`}
               >
                 <Button variant={ButtonVariant.plain}>
                   <MicroscopeIcon />

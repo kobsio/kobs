@@ -33,6 +33,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#188](https://github.com/kobsio/kobs/pull/188): [sql] Replace the `GetQueryResults` function with the implemention used in the Clickhouse plugin, to have a proper handling for float values.
 - [#190](https://github.com/kobsio/kobs/pull/190): [core] Unify list layout across plugin.
 - [#194](https://github.com/kobsio/kobs/pull/194): [elasticsearch] Use pagination instead of infinite scrolling to display logs.
+- [#195](https://github.com/kobsio/kobs/pull/195): [istio] Display upstream cluster instead of authority in the React UI and ignore query string in path.
 
 ## [v0.6.0](https://github.com/kobsio/kobs/releases/tag/v0.6.0) (2021-10-11)
 
