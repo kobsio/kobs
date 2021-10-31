@@ -16,7 +16,7 @@ interface IChartProps {
 export const Chart: React.FunctionComponent<IChartProps> = ({ name, times, title, options }: IChartProps) => {
   const { isError, isLoading, data, error } = useQuery<ILogsData, Error>(
     ['elasticsearch/logs', name, options, times],
-    async ({ pageParam }) => {
+    async () => {
       try {
         if (
           !options ||
@@ -29,7 +29,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ name, times, title
         }
 
         const response = await fetch(
-          `/api/plugins/elasticsearch/logs/${name}?query=${options.queries[0].query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&scrollID=`,
+          `/api/plugins/elasticsearch/logs/${name}?query=${options.queries[0].query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },
@@ -50,7 +50,6 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ name, times, title
       }
     },
     {
-      getNextPageParam: (lastPage, pages) => lastPage.scrollID,
       keepPreviousData: true,
     },
   );

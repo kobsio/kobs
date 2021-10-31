@@ -43,17 +43,16 @@ func (router *Router) getInstance(name string) *instance.Instance {
 
 // getLogs returns the raw documents for a given query from Elasticsearch. The result also contains the distribution of
 // the documents in the given time range. The name of the Elasticsearch instance must be set via the name path
-// parameter, all other values like the query, scrollID, start and end time are set via query parameters. These
+// parameter, all other values like the query, start and end time are set via query parameters. These
 // parameters are then passed to the GetLogs function of the Elasticsearch instance, which returns the documents and
 // buckets.
 func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
-	scrollID := r.URL.Query().Get("scrollID")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "scrollID": scrollID, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
+	log.WithFields(logrus.Fields{"name": name, "query": query, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -73,7 +72,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := i.GetLogs(r.Context(), query, scrollID, parsedTimeStart, parsedTimeEnd)
+	data, err := i.GetLogs(r.Context(), query, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get logs")
 		return

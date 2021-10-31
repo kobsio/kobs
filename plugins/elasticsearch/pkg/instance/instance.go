@@ -36,20 +36,14 @@ type Instance struct {
 }
 
 // GetLogs returns the raw log documents and the buckets for the distribution of the logs accross the selected time
-// range. We have to pass a query, start and end time to the function. The scrollID can be an empty string to start a
-// new query. If a scrollID is provided it will be used for pagination.
-func (i *Instance) GetLogs(ctx context.Context, query, scrollID string, timeStart, timeEnd int64) (*Data, error) {
+// range. We have to pass a query, start and end time to the function.
+func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd int64) (*Data, error) {
 	var err error
 	var body []byte
 	var url string
 
-	if scrollID == "" {
-		url = fmt.Sprintf("%s/_search?scroll=15m", i.address)
-		body = []byte(fmt.Sprintf(`{"size":100,"sort":[{"@timestamp":{"order":"desc"}}],"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%d","lte":"%d"}}},{"query_string":{"query":"%s"}}]}},"aggs":{"logcount":{"auto_date_histogram":{"field":"@timestamp","buckets":30}}}}`, timeStart*1000, timeEnd*1000, strings.ReplaceAll(query, "\"", "\\\"")))
-	} else {
-		url = fmt.Sprintf("%s/_search/scroll", i.address)
-		body = []byte(`{"scroll" : "15m", "scroll_id" : "` + scrollID + `"}`)
-	}
+	url = fmt.Sprintf("%s/_search", i.address)
+	body = []byte(fmt.Sprintf(`{"size":1000,"sort":[{"@timestamp":{"order":"desc"}}],"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%d","lte":"%d"}}},{"query_string":{"query":"%s"}}]}},"aggs":{"logcount":{"auto_date_histogram":{"field":"@timestamp","buckets":30}}}}`, timeStart*1000, timeEnd*1000, strings.ReplaceAll(query, "\"", "\\\"")))
 
 	log.WithFields(logrus.Fields{"query": string(body)}).Debugf("Run Elasticsearch query")
 
@@ -75,14 +69,13 @@ func (i *Instance) GetLogs(ctx context.Context, query, scrollID string, timeStar
 		}
 
 		data := &Data{
-			ScrollID:  res.ScrollID,
 			Took:      res.Took,
 			Hits:      res.Hits.Total.Value,
 			Documents: res.Hits.Hits,
 			Buckets:   res.Aggregations.LogCount.Buckets,
 		}
 
-		log.WithFields(logrus.Fields{"scrollID": data.ScrollID, "took": data.Took, "hits": data.Hits, "documents": len(data.Documents), "buckets": len(data.Buckets)}).Debugf("Elasticsearch query results")
+		log.WithFields(logrus.Fields{"took": data.Took, "hits": data.Hits, "documents": len(data.Documents), "buckets": len(data.Buckets)}).Debugf("Elasticsearch query results")
 
 		return data, nil
 	}
