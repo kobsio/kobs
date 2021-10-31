@@ -24,7 +24,6 @@ export interface IQuery {
 // ILogsData is the interface of the data returned from our Go API for the Elasticsearch plugin. The interface must
 // have the same fields as the Data struct from the Go implementation.
 export interface ILogsData {
-  scrollID: string;
   took: number;
   hits: number;
   documents: IDocument[];

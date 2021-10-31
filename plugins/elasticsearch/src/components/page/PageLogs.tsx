@@ -2,8 +2,6 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Button,
-  ButtonVariant,
   Card,
   CardActions,
   CardBody,
@@ -14,7 +12,7 @@ import {
   GridItem,
   Spinner,
 } from '@patternfly/react-core';
-import { InfiniteData, InfiniteQueryObserverResult, QueryObserverResult, useInfiniteQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -46,14 +44,12 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
 }: IPageLogsProps) => {
   const history = useHistory();
 
-  const { isError, isFetching, isLoading, data, error, fetchNextPage, refetch } = useInfiniteQuery<ILogsData, Error>(
+  const { isError, isFetching, isLoading, data, error, refetch } = useQuery<ILogsData, Error>(
     ['elasticsearch/logs', query, times],
-    async ({ pageParam }) => {
+    async () => {
       try {
         const response = await fetch(
-          `/api/plugins/elasticsearch/logs/${name}?query=${query}&timeStart=${times.timeStart}&timeEnd=${
-            times.timeEnd
-          }&scrollID=${pageParam || ''}`,
+          `/api/plugins/elasticsearch/logs/${name}?query=${query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },
@@ -74,7 +70,6 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
       }
     },
     {
-      getNextPageParam: (lastPage, pages) => lastPage.scrollID,
       keepPreviousData: true,
     },
   );
@@ -95,7 +90,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<InfiniteData<ILogsData>, Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<ILogsData, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -106,7 +101,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
     );
   }
 
-  if (!data || data.pages.length === 0) {
+  if (!data) {
     return null;
   }
 
@@ -114,11 +109,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
     <Grid hasGutter={true}>
       <GridItem sm={12} md={12} lg={3} xl={2} xl2={2}>
         <Card>
-          <PageLogsFields
-            fields={getFields(data.pages[0].documents)}
-            selectField={selectField}
-            selectedFields={fields}
-          />
+          <PageLogsFields fields={getFields(data.documents)} selectField={selectField} selectedFields={fields} />
         </Card>
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
@@ -126,42 +117,32 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
           <CardHeader>
             <CardHeaderMain>
               <CardTitle>
-                {data.pages[0].hits} Documents in {data.pages[0].took} Milliseconds
+                {data.hits} Documents in {data.took} Milliseconds
               </CardTitle>
             </CardHeaderMain>
             <CardActions>{isFetching && <Spinner size="md" />}</CardActions>
           </CardHeader>
 
           <CardBody>
-            <LogsChart buckets={data.pages[0].buckets} changeTime={changeTime} />
+            <LogsChart buckets={data.buckets} changeTime={changeTime} />
           </CardBody>
         </Card>
+
         <p>&nbsp;</p>
-        {data.pages[0].documents.length > 0 ? (
+
+        {data.documents.length > 0 ? (
           <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
             <CardBody>
-              <LogsDocuments pages={data.pages} fields={fields} addFilter={addFilter} selectField={selectField} />
-            </CardBody>
-          </Card>
-        ) : null}
-        <p>&nbsp;</p>
-        {data.pages[0].documents.length > 0 ? (
-          <Card isCompact={true}>
-            <CardBody>
-              <Button
-                variant={ButtonVariant.primary}
-                isBlock={true}
-                isDisabled={isFetching}
-                isLoading={isFetching}
-                onClick={(): Promise<InfiniteQueryObserverResult<ILogsData, Error>> => fetchNextPage()}
-              >
-                Load more
-              </Button>
+              <LogsDocuments
+                documents={data.documents}
+                fields={fields}
+                addFilter={addFilter}
+                selectField={selectField}
+              />
             </CardBody>
           </Card>
         ) : null}
       </GridItem>
-      <p>&nbsp;</p>
     </Grid>
   );
 };

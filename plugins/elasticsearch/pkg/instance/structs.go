@@ -50,9 +50,8 @@ type ResponseError struct {
 }
 
 // Data is the transformed Response result, which is passed to the React UI. It contains only the important fields, like
-// the scrollID, the time a request took, the number of hits, the documents and the buckets.
+// the time a request took, the number of hits, the documents and the buckets.
 type Data struct {
-	ScrollID  string                   `json:"scrollID"`
 	Took      int64                    `json:"took"`
 	Hits      int64                    `json:"hits"`
 	Documents []map[string]interface{} `json:"documents"`
