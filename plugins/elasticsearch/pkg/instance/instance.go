@@ -68,9 +68,14 @@ func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 			return nil, err
 		}
 
+		var hits int64
+		for _, bucket := range res.Aggregations.LogCount.Buckets {
+			hits = hits + bucket.DocCount
+		}
+
 		data := &Data{
 			Took:      res.Took,
-			Hits:      res.Hits.Total.Value,
+			Hits:      hits,
 			Documents: res.Hits.Hits,
 			Buckets:   res.Aggregations.LogCount.Buckets,
 		}
