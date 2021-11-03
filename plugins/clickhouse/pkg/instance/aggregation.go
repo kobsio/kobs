@@ -32,22 +32,15 @@ type AggregationOptions struct {
 	VerticalAxisOperation string `json:"verticalAxisOperation"`
 	VerticalAxisField     string `json:"verticalAxisField"`
 
-	BreakDownBy        string                          `json:"breakDownBy"`
-	BreakDownByFields  []string                        `json:"breakDownByFields"`
-	BreakDownByFilters []AggregationBreakDownByFilters `json:"breakDownByFilters"`
+	BreakDownBy        string   `json:"breakDownBy"`
+	BreakDownByFields  []string `json:"breakDownByFields"`
+	BreakDownByFilters []string `json:"breakDownByFilters"`
 }
 
 // AggregationTimes is the structure, which defines the time interval for the aggregation.
 type AggregationTimes struct {
 	TimeEnd   int64 `json:"timeEnd"`
 	TimeStart int64 `json:"timeStart"`
-}
-
-// AggregationBreakDownByFilters is the structure of a single filter, which should be applied to an aggregation.
-type AggregationBreakDownByFilters struct {
-	Field    string `json:"field"`
-	Operator string `json:"operator"`
-	Value    string `json:"value"`
 }
 
 // generateFieldName generates the field name for an aggregation. For that we are using the user defined field and we
@@ -86,7 +79,7 @@ func getOrderBy(order string) string {
 // buildAggregationQuery is our helper function to build the different parts of the SQL statement for the user defined
 // chart and aggregation. The function returns the SELECT, GROUP BY, ORDER BY and LIMIT statement for the SQL query, to
 // get the results of the aggregation.
-func buildAggregationQuery(chart string, options AggregationOptions, materializedColumns []string, customFields Fields) (string, string, string, string, error) {
+func buildAggregationQuery(chart string, options AggregationOptions, materializedColumns []string, customFields Fields, timeStart, timeEnd int64) (string, string, string, string, error) {
 	var selectStatement, groupByStatement, orderByStatement, limitByStatement string
 
 	if chart != "pie" && chart != "bar" && chart != "line" && chart != "area" {
@@ -164,7 +157,12 @@ func buildAggregationQuery(chart string, options AggregationOptions, materialize
 
 			var breakDownByFilters []string
 			for _, breakDownByFilter := range options.BreakDownByFilters {
-				breakDownByFilters = append(breakDownByFilters, fmt.Sprintf("%s %s %s", generateFieldName(breakDownByFilter.Field, materializedColumns, customFields, false), breakDownByFilter.Operator, breakDownByFilter.Value))
+				f, err := parseLogsQuery(breakDownByFilter, materializedColumns)
+				if err != nil {
+					return "", "", "", "", fmt.Errorf("invalid break down filter")
+				}
+
+				breakDownByFilters = append(breakDownByFilters, f)
 			}
 
 			horizontalAxisField := generateFieldName(options.HorizontalAxisField, materializedColumns, customFields, false)
@@ -208,12 +206,35 @@ func buildAggregationQuery(chart string, options AggregationOptions, materialize
 
 		var breakDownByFilters []string
 		for _, breakDownByFilter := range options.BreakDownByFilters {
-			breakDownByFilters = append(breakDownByFilters, fmt.Sprintf("%s %s %s", generateFieldName(breakDownByFilter.Field, materializedColumns, customFields, false), breakDownByFilter.Operator, breakDownByFilter.Value))
+			f, err := parseLogsQuery(breakDownByFilter, materializedColumns)
+			if err != nil {
+				return "", "", "", "", fmt.Errorf("invalid break down filter")
+			}
+
+			breakDownByFilters = append(breakDownByFilters, f)
 		}
 
 		verticalAxisField := generateFieldName(options.VerticalAxisField, materializedColumns, customFields, true)
 
-		selectStatement = "toStartOfInterval(timestamp, INTERVAL 30 second) AS time"
+		// Create an interval for the selected start and end time, so that we always return the same amount of data
+		// points, so that our charts are rendered in the same ways for each selected time range.
+		var interval int64
+		switch seconds := timeEnd - timeStart; {
+		case seconds <= 2:
+			interval = (timeEnd - timeStart) / 1
+		case seconds <= 10:
+			interval = (timeEnd - timeStart) / 5
+		case seconds <= 30:
+			interval = (timeEnd - timeStart) / 15
+		case seconds <= 60:
+			interval = (timeEnd - timeStart) / 30
+		case seconds <= 120:
+			interval = (timeEnd - timeStart) / 60
+		default:
+			interval = (timeEnd - timeStart) / 100
+		}
+
+		selectStatement = fmt.Sprintf("toStartOfInterval(timestamp, INTERVAL %d second) AS time", interval)
 		if len(breakDownByFields) > 0 {
 			selectStatement = fmt.Sprintf("%s, %s", selectStatement, strings.Join(breakDownByFields, ", "))
 		}
@@ -256,7 +277,7 @@ func (i *Instance) GetAggregation(ctx context.Context, aggregation Aggregation) 
 	// Build the SELECT, GROUP BY, ORDER BY and LIMIT statement for the SQL query. When the function returns an error
 	// the user provided an invalid aggregation. If the function doesn't return a ORDER BY or LIMIT statement we can
 	// also omit it in the SQL query.
-	selectStatement, groupByStatement, orderByStatement, limitByStatement, err := buildAggregationQuery(aggregation.Chart, aggregation.Options, i.materializedColumns, i.cachedFields)
+	selectStatement, groupByStatement, orderByStatement, limitByStatement, err := buildAggregationQuery(aggregation.Chart, aggregation.Options, i.materializedColumns, i.cachedFields, aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
 	if err != nil {
 		return nil, nil, err
 	}
