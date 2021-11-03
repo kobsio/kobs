@@ -2,11 +2,11 @@ import React from 'react';
 import { ResponsiveBarCanvas } from '@nivo/bar';
 
 import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
-import { IAggregationData, IAggregationOptionsAggregationFilter } from '../../utils/interfaces';
 import { convertToBarChartTopData, formatFilter } from '../../utils/aggregation';
+import { IAggregationData } from '../../utils/interfaces';
 
 interface IAggregationChartBarTopProps {
-  filters: IAggregationOptionsAggregationFilter[];
+  filters: string[];
   data: IAggregationData;
 }
 

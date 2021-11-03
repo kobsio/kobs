@@ -94,16 +94,7 @@ export interface IAggregationOptionsAggregation {
   verticalAxisField: string;
 
   breakDownByFields: string[];
-  breakDownByFilters: IAggregationOptionsAggregationFilter[];
-}
-
-// IAggregationOptionsAggregationFilter are the filters which can be set for an aggregation. Each filter required the
-// name of a field, an operator like ">", "<", ">=", "<=" or "=" and a value against which the field value should be
-// compared.
-export interface IAggregationOptionsAggregationFilter {
-  field: string;
-  operator: string;
-  value: string;
+  breakDownByFilters: string[];
 }
 
 // IAggregationData is the data returned by the aggregation API call. It contains a list of columns and a list of rows.
@@ -116,5 +107,5 @@ export interface IAggregationData {
 // key and the cell value for the row/column as value. The value could be a string, for the selected fields in the
 // aggregation or a number for the value of the fields combination.
 export interface IAggregationDataRow {
-  [key: string]: string | number;
+  [key: string]: string | number | null;
 }

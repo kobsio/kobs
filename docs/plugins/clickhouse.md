@@ -142,15 +142,7 @@ spec:
 | verticalAxisOperation | string | The operation for the vertical axis. This can be `count`, `min`, `max`, `sum` or `avg`. | No |
 | verticalAxisField | string | When the verticalAxisOperation is `min`, `max`, `sum` or `avg`, this must be the name of a field for the vertical axis. | No |
 | breakDownByFields | []string | A list of field names, which should be used to break down the data. | No |
-| breakDownByFilters | [[]Aggregation Filters](#aggregation-filters) | A list of filters, which should be used to break down the data. | No |
-
-### Aggregation Filters
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| field | string | The name of the field, which should be used for the filter. | Yes |
-| operator | string | The operator, which should be used for comparing the field value. This can be `=`, `<`, `>`, `<=` or `>=`. | Yes |
-| value | string | The value against which the field should be compared for the filter. | Yes |
+| breakDownByFilters | []string | A list of filters, which should be used to break down the data. | No |
 
 ## Query Syntax
 

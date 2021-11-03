@@ -2,11 +2,11 @@ import React from 'react';
 import { ResponsiveBarCanvas } from '@nivo/bar';
 
 import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
-import { IAggregationData, IAggregationOptionsAggregationFilter } from '../../utils/interfaces';
 import { convertToBarChartTimeData, formatFilter } from '../../utils/aggregation';
+import { IAggregationData } from '../../utils/interfaces';
 
 interface IAggregationChartBarTimeProps {
-  filters: IAggregationOptionsAggregationFilter[];
+  filters: string[];
   data: IAggregationData;
 }
 
@@ -66,7 +66,9 @@ const AggregationChartBarTime: React.FunctionComponent<IAggregationChartBarTimeP
           <ChartTooltip
             anchor={isFirstHalf ? 'right' : 'left'}
             color={tooltip.color}
-            label={`${label ? `${label} - ${formatFilter(filter, filters)}` : filter}: ${tooltip.value}`}
+            label={`${label ? `${label} - ${formatFilter(filter, filters)}` : formatFilter(filter, filters)}: ${
+              tooltip.value
+            }`}
             position={[0, 20]}
             title={tooltip.data.time as string}
           />

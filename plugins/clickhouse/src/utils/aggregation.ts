@@ -1,7 +1,7 @@
 import { Datum, Serie } from '@nivo/line';
 import { BarDatum } from '@nivo/bar';
 
-import { IAggregationData, IAggregationDataRow, IAggregationOptionsAggregationFilter } from './interfaces';
+import { IAggregationData, IAggregationDataRow } from './interfaces';
 import { formatTime } from '@kobsio/plugin-core';
 
 // formatAxisBottom calculates the format for the bottom axis based on the specified start and end time.
@@ -27,14 +27,14 @@ export const convertToBarChartTimeData = (data: IAggregationData): BarDatum[] =>
   // times is an array of all times returned from the API. This array is then used to create the bar data. We also have
   // to parse the time to convert the UTC formatted time to the local time.
   const times = data.rows
-    .map((row) => formatTime(Math.floor(new Date(row.time).getTime() / 1000)))
+    .map((row) => formatTime(Math.floor(new Date(row.time as string).getTime() / 1000)))
     .filter((value, index, self) => self.indexOf(value) === index);
 
   return times.map((time) => {
     return {
       time: time,
       ...generateKeys(
-        data.rows.filter((row) => formatTime(Math.floor(new Date(row.time).getTime() / 1000)) === time),
+        data.rows.filter((row) => formatTime(Math.floor(new Date(row.time as string).getTime() / 1000)) === time),
         labelColumns,
         dataColumns,
       ),
@@ -78,8 +78,8 @@ export const convertToLineChartData = (data: IAggregationData): Serie[] => {
         seriesData[i].push({
           filter: dataColumns[i],
           label: label,
-          x: new Date(row.time),
-          y: row[dataColumns[i]],
+          x: new Date(row.time as string),
+          y: row.hasOwnProperty(dataColumns[i]) ? row[dataColumns[i]] : null,
         });
       }
     }
@@ -96,7 +96,7 @@ export const convertToLineChartData = (data: IAggregationData): Serie[] => {
 };
 
 // formatFilter returns a readable string for the applied filters.
-export const formatFilter = (filter: string, filters: IAggregationOptionsAggregationFilter[]): string => {
+export const formatFilter = (filter: string, filters: string[]): string => {
   const filterParts = filter.split('_data');
   let formattedFilter = '';
 
@@ -113,10 +113,9 @@ export const formatFilter = (filter: string, filters: IAggregationOptionsAggrega
   return formattedFilter;
 };
 
-const formatFilterValue = (filter: string, filters: IAggregationOptionsAggregationFilter[]): string => {
+const formatFilterValue = (filter: string, filters: string[]): string => {
   if (filter.startsWith('_filter')) {
-    const breakDownByFilter = filters[parseInt(filter.slice(-1))];
-    return `${breakDownByFilter.field} ${breakDownByFilter.operator} ${breakDownByFilter.value}`;
+    return filters[parseInt(filter.slice(-1))];
   }
 
   return filter;
@@ -151,7 +150,7 @@ const generateKeys = (
     const label = getLabel(row, labelColumns);
 
     for (const dataColumn of dataColumns) {
-      keys[`${label} - ${dataColumn}`] = row[dataColumn];
+      keys[`${label} - ${dataColumn}`] = row.hasOwnProperty(dataColumn) ? row[dataColumn] : null;
     }
   }
 

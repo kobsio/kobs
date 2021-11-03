@@ -2,14 +2,14 @@ import React from 'react';
 import { ResponsiveLineCanvas } from '@nivo/line';
 
 import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
-import { IAggregationData, IAggregationOptionsAggregationFilter } from '../../utils/interfaces';
 import { convertToLineChartData, formatAxisBottom, formatFilter } from '../../utils/aggregation';
+import { IAggregationData } from '../../utils/interfaces';
 
 interface IAggregationChartLineProps {
   isArea: boolean;
   startTime: number;
   endTime: number;
-  filters: IAggregationOptionsAggregationFilter[];
+  filters: string[];
   data: IAggregationData;
 }
 

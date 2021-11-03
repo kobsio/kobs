@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
 
-import { IAggregationOptions, IAggregationOptionsAggregationFilter } from '../../utils/interfaces';
+import { IAggregationOptions } from '../../utils/interfaces';
 
 interface IAggregationOptionsFiltersProps {
   options: IAggregationOptions;
@@ -23,7 +23,7 @@ const AggregationOptionsFilters: React.FunctionComponent<IAggregationOptionsFilt
   setOptions,
 }: IAggregationOptionsFiltersProps) => {
   const [show, setShow] = useState<boolean>(false);
-  const [state, setState] = useState<IAggregationOptionsAggregationFilter>({ field: '', operator: '', value: '' });
+  const [filter, setFilter] = useState<string>('');
 
   const addFilter = (): void => {
     setOptions({
@@ -31,11 +31,11 @@ const AggregationOptionsFilters: React.FunctionComponent<IAggregationOptionsFilt
       options: {
         ...options.options,
         breakDownByFilters: options.options?.breakDownByFilters
-          ? [...options.options?.breakDownByFilters, state]
-          : [state],
+          ? [...options.options?.breakDownByFilters, filter]
+          : [filter],
       },
     });
-    setState({ field: '', operator: '', value: '' });
+    setFilter('');
     setShow(false);
   };
 
@@ -58,9 +58,7 @@ const AggregationOptionsFilters: React.FunctionComponent<IAggregationOptionsFilt
           isFlat={true}
           onClick={(): void => removeFilter(index)}
         >
-          <CardBody>
-            {filter.field} {filter.operator} {filter.value}
-          </CardBody>
+          <CardBody>{filter}</CardBody>
         </Card>
       ))}
       <Card style={{ cursor: 'pointer' }} isCompact={true} isFlat={true} onClick={(): void => setShow(true)}>
@@ -82,39 +80,15 @@ const AggregationOptionsFilters: React.FunctionComponent<IAggregationOptionsFilt
         ]}
       >
         <Form isHorizontal={true}>
-          <FormGroup label="Field" fieldId="form-field">
+          <FormGroup label="Filter" fieldId="form-filter">
             <TextInput
-              value={state.field}
+              value={filter}
               isRequired
               type="text"
-              id="form-field"
-              aria-describedby="form-field"
-              name="form-field"
-              onChange={(value): void => setState({ ...state, field: value })}
-            />
-          </FormGroup>
-
-          <FormGroup label="Operator" fieldId="form-operator">
-            <TextInput
-              value={state.operator}
-              isRequired
-              type="text"
-              id="form-operator"
-              aria-describedby="form-operator"
-              name="form-operator"
-              onChange={(value): void => setState({ ...state, operator: value })}
-            />
-          </FormGroup>
-
-          <FormGroup label="Value" fieldId="form-value">
-            <TextInput
-              value={state.value}
-              isRequired
-              type="text"
-              id="form-value"
-              aria-describedby="form-value"
-              name="form-value"
-              onChange={(value): void => setState({ ...state, value: value })}
+              id="form-filter"
+              aria-describedby="form-filter"
+              name="form-filter"
+              onChange={(value): void => setFilter(value)}
             />
           </FormGroup>
         </Form>
