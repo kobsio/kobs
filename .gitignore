@@ -36,3 +36,4 @@ lib-esm
 # test files
 /config.yaml
 /test.yaml
+/values.yaml
