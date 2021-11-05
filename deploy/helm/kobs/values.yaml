@@ -36,6 +36,17 @@ tolerations: []
 ##
 affinity: {}
 
+## Specify additional volumes for the kobs deployment.
+## See: https://kubernetes.io/docs/concepts/storage/volumes/
+##
+## For example this can be used to mount a kubeconfig from a ConfigMap, so that we can use the kubeconfig provider
+## within the Helm chart. A complete example can be found in the documentation at https://kobs.io/installation/helm/.
+##
+volumes: []
+  # - name: kubeconfig
+  #   configMap:
+  #     name: kubeconfig
+
 ## Specify all infromation for the kobs pods.
 ##
 kobs:
@@ -43,7 +54,7 @@ kobs:
   ##
   image:
     repository: kobsio/kobs
-    tag: v0.5.0
+    tag: v0.6.0
     pullPolicy: IfNotPresent
 
   ## Specify additional labels and annotations for the created Pods.
@@ -76,6 +87,15 @@ kobs:
     #   cpu: 100m
     #   memory: 128Mi
 
+  ## Specify additional volumeMounts for the kobs container.
+  ## See: https://kubernetes.io/docs/concepts/storage/volumes/
+  ##
+  volumeMounts: []
+    # - name: kubeconfig
+    #   mountPath: /kobs/kubeconfig.yaml
+    #   subPath: kubeconfig.yaml
+    #   readOnly: true
+
   ## Specify additional environment variables for the kobs container.
   ##
   env: []
@@ -83,6 +103,7 @@ kobs:
   ## Specify some settings like log level, log format, etc. for kobs.
   ##
   settings:
+    development: false
     auth:
       enabled: false
       defaultTeam: ""

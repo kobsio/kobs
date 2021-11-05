@@ -41,7 +41,7 @@ helm search repo -l kobs/
 To update your deployed Helm chart run:
 
 ```sh
-helm upgrade kobs kobs/kobs
+helm upgrade --install kobs kobs/kobs
 ```
 
 ## Values
@@ -56,6 +56,7 @@ helm upgrade kobs kobs/kobs
 | `nodeSelector` | Specify a map of key-value pairs, to assign the Pods to a specific set of nodes. | `{}` |
 | `tolerations` | Specify the tolerations for the kobs Pods. | `[]` |
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
+| `volumes` | Specify additional volumes for the kobs deployment. | `[]` |
 | `kobs.image.repository` | The repository for the Docker image. | `kobsio/kobs` |
 | `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.6.0` |
 | `kobs.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
@@ -63,7 +64,9 @@ helm upgrade kobs kobs/kobs
 | `kobs.labels` | Specify additional labels for the created Pods. | `{}` |
 | `kobs.securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `kobs.resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
+| `kobs.volumeMounts` | Specify additional volumeMounts for the kobs container. | `[]` |
 | `kobs.env` | Set additional environment variables for the kobs container. | `[]` |
+| `kobs.settings.development` | Run kobs in development mode. | `false` |
 | `kobs.settings.auth.enabled` | Enable the authentication and authorization middleware. | `false` |
 | `kobs.settings.auth.defaultTeam` | The name of the team, which should be used for a users permissions when a user hasn't any teams. The team is specified in the following format: `cluster,namespace,name`. | `""` |
 | `kobs.settings.auth.header` | The header, which contains the details about the authenticated user. | `X-Auth-Request-Email` |
@@ -96,3 +99,59 @@ helm upgrade kobs kobs/kobs
 | `serviceMonitor.honorLabels` | Chooses the metric's labels on collisions with target labels. | `false` |
 | `serviceMonitor.metricRelabelings` | Metric relabel config. | `[]` |
 | `serviceMonitor.relabelings` | Relabel config. | `[]` |
+
+## Examples
+
+### Use the `kubeconfig` Provider
+
+The following values can be set to use the Helm chart with the `kubeconfig` provider.
+
+```yaml
+volumes:
+  - name: kubeconfig
+    configMap:
+      name: kubeconfig
+
+kobs:
+  volumeMounts:
+    - name: kubeconfig
+      mountPath: /kobs/kubeconfig.yaml
+      subPath: kubeconfig.yaml
+      readOnly: true
+
+  config: |
+    clusters:
+      providers:
+        - provider: kubeconfig
+          kubeconfig:
+            path: /kobs/kubeconfig.yaml
+```
+
+The example from above assumes that you create a ConfigMap with your kubeconfig file:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubeconfig
+data:
+  kubeconfig.yaml: |
+    apiVersion: v1
+    clusters:
+    - cluster:
+        certificate-authority-data: <CERTIFICATE-AUTHORITY-DATA>
+        server: <SERVER>
+      name: kobs-demo
+    contexts:
+    - context:
+        cluster: kobs-demo
+        user: admin
+      name: kobs-demo
+    current-context: kobs-demo
+    kind: Config
+    preferences: {}
+    users:
+    - name: admin
+      user:
+        token: <TOKEN>
+```

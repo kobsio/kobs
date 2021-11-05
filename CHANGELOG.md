@@ -25,6 +25,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#189](https://github.com/kobsio/kobs/pull/189): [clickhouse] Fix download of `.csv` fiels.
 - [#191](https://github.com/kobsio/kobs/pull/191): [clickhouse] Fix returned logs, when user selected a custom order.
 - [#196](https://github.com/kobsio/kobs/pull/196): [elasticsearch] Fix number of documents.
+- [#199](https://github.com/kobsio/kobs/pull/199): Add `volumes` and `volumeMounts` properties to the Helm chart, to support the kubeconfig provider.
 
 ### Changed
 
