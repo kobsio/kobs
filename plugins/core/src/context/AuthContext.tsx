@@ -109,7 +109,7 @@ export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderPr
       <Alert
         style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
         variant={AlertVariant.danger}
-        title="Could not initialize plugins context"
+        title="Could not initialize auth context"
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): Promise<QueryObserverResult<IAuth, Error>> => refetch()}>

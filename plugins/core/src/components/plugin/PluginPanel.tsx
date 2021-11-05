@@ -54,6 +54,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
       name={pluginDetails.name}
       title={title}
       description={description}
+      pluginOptions={pluginDetails.options}
       options={options}
       showDetails={showDetails}
     />

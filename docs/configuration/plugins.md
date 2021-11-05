@@ -13,6 +13,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | opsgenie | [[]Opsgenie](#opsgenie) | Configure the Opsgenie API, which can be used within kobs. | No |
 | prometheus | [[]Prometheus](#prometheus) | Configure multiple Prometheus instances, which can be used within kobs. | No |
 | resources | [Resources](#resources) | Configuration for the resources plugin. | No |
+| sonarqube | [[]SonarQube](#sonarqube) | Configure multiple SonarQube instances, which can be used within kobs. | No |
 | sql | [SQL](#sql) | Configure multiple SQL databases, which can be used within kobs. | No |
 
 ## Applications
@@ -206,7 +207,7 @@ plugins:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Prometheus instance. | Yes |
-| displayName | string | Name of the Elasticsearch as it is shown in the UI. | Yes |
+| displayName | string | Name of the Prometheus as it is shown in the UI. | Yes |
 | descriptions | string | Description of the Prometheus instance. | No |
 | address | string | Address of the Prometheus instance. | Yes |
 | username | string | Username to access a Prometheus instance via basic authentication. | No |
@@ -233,6 +234,30 @@ plugins:
 | webSocket.address | string | The address, which should be used for the WebSocket connection. By default this will be the current host, but it can be overwritten for development purposes. | No |
 | webSocket.allowAllOrigins | boolean | When this is `true`, WebSocket connections are allowed for all origins. This should only be used for development. | No |
 | ephemeralContainers | [[]EphemeralContainer](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#ephemeralcontainer-v1-core) | A list of templates for Ephemeral Containers, which can be used to [debug running pods](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-running-pod/#ephemeral-container). | No |
+
+## SonarQube
+
+The following configuration can be used to access a SonarQube instance, which is running at `https://sonarqube.kobs.io` and a token from the `SONARQUBE_TOKEN` environment variable.
+
+```yaml
+plugins:
+  sonarqube:
+    - name: SonarQube
+      description: SonarQube empowers all developers to write cleaner and safer code.
+      address: https://sonarqube.kobs.io
+      username: ${SONARQUBE_TOKEN}
+      password:
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the SonarQube instance. | Yes |
+| displayName | string | Name of the SonarQube as it is shown in the UI. | Yes |
+| descriptions | string | Description of the SonarQube instance. | No |
+| address | string | Address of the SonarQube instance. | Yes |
+| username | string | Username to access a SonarQube instance via basic authentication. | No |
+| password | string | Password to access a SonarQube instance via basic authentication. | No |
+| metricKeys | []string | An optional list of metric keys which should be displayed for all projects. If this value is not provided the following list will be used: `alert_status`, `bugs`, `reliability_rating`, `vulnerabilities`, `security_rating`, `security_hotspots_reviewed`, `security_review_rating`, `code_smells`, `sqale_rating`, `coverage`, `duplicated_lines_density`. | No |
 
 ## SQL
 

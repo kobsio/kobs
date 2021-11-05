@@ -19,6 +19,7 @@ import opsgeniePlugin from '@kobsio/plugin-opsgenie';
 import prometheusPlugin from '@kobsio/plugin-prometheus';
 import resourcesPlugin from '@kobsio/plugin-resources';
 import rssPlugin from '@kobsio/plugin-rss';
+import sonarqubePlugin from '@kobsio/plugin-sonarqube';
 import sqlPlugin from '@kobsio/plugin-sql';
 import teamsPlugin from '@kobsio/plugin-teams';
 import usersPlugin from '@kobsio/plugin-users';
@@ -39,6 +40,7 @@ ReactDOM.render(
       ...prometheusPlugin,
       ...resourcesPlugin,
       ...rssPlugin,
+      ...sonarqubePlugin,
       ...sqlPlugin,
       ...teamsPlugin,
       ...usersPlugin,
