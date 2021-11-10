@@ -48,19 +48,21 @@ const Incidents: React.FunctionComponent<IIncidentsProps> = ({ name, query, time
   }
 
   if (isError) {
-    <Alert
-      variant={AlertVariant.danger}
-      title="Could not get incidents"
-      actionLinks={
-        <React.Fragment>
-          <AlertActionLink onClick={(): Promise<QueryObserverResult<IIncident[], Error>> => refetch()}>
-            Retry
-          </AlertActionLink>
-        </React.Fragment>
-      }
-    >
-      <p>{error?.message}</p>
-    </Alert>;
+    return (
+      <Alert
+        variant={AlertVariant.danger}
+        title="Could not get incidents"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IIncident[], Error>> => refetch()}>
+              Retry
+            </AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>{error?.message}</p>
+      </Alert>
+    );
   }
 
   if (!data || data.length === 0) {

@@ -3,11 +3,12 @@
 - [Feedback, Issues and Questions](#feedback--issues-and-questions)
 - [Adding new Features](#adding-new-features)
 - [Development](#development)
+  - [Repository Structure](#repository-structure)
   - [Prerequisites](#prerequisites)
   - [Components](#components)
     - [React UI](#react-ui)
     - [Server](#server)
-    - [Envoy](#envoy)
+    - [Plugins](#plugins)
   - [Run kobs](#run-kobs)
 - [Documentation](#documentation)
 

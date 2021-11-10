@@ -24,6 +24,7 @@ import (
 	"github.com/kobsio/kobs/plugins/prometheus"
 	"github.com/kobsio/kobs/plugins/resources"
 	"github.com/kobsio/kobs/plugins/rss"
+	"github.com/kobsio/kobs/plugins/sonarqube"
 	"github.com/kobsio/kobs/plugins/sql"
 	"github.com/kobsio/kobs/plugins/teams"
 	"github.com/kobsio/kobs/plugins/users"
@@ -44,6 +45,7 @@ type Config struct {
 	Markdown      markdown.Config      `json:"markdown"`
 	Resources     resources.Config     `json:"resources"`
 	RSS           rss.Config           `json:"rss"`
+	Sonarqube     sonarqube.Config     `json:"sonarqube"`
 	SQL           sql.Config           `json:"sql"`
 	Teams         teams.Config         `json:"teams"`
 	Users         users.Config         `json:"users"`
@@ -84,6 +86,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	istioRouter := istio.Register(clusters, router.plugins, config.Istio, prometheusInstances, clickhouseInstances)
 	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
 	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
+	sonarqubeRouter := sonarqube.Register(clusters, router.plugins, config.Sonarqube)
 	sqlRouter := sql.Register(clusters, router.plugins, config.SQL)
 	markdownRouter := markdown.Register(clusters, router.plugins, config.Markdown)
 	rssRouter := rss.Register(clusters, router.plugins, config.RSS)
@@ -102,6 +105,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(istio.Route, istioRouter)
 	router.Mount(flux.Route, fluxRouter)
 	router.Mount(opsgenie.Route, opsgenieRouter)
+	router.Mount(sonarqube.Route, sonarqubeRouter)
 	router.Mount(sql.Route, sqlRouter)
 	router.Mount(markdown.Route, markdownRouter)
 	router.Mount(rss.Route, rssRouter)

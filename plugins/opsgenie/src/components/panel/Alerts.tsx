@@ -48,19 +48,21 @@ const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, times, set
   }
 
   if (isError) {
-    <Alert
-      variant={AlertVariant.danger}
-      title="Could not get alerts"
-      actionLinks={
-        <React.Fragment>
-          <AlertActionLink onClick={(): Promise<QueryObserverResult<IAlert[], Error>> => refetch()}>
-            Retry
-          </AlertActionLink>
-        </React.Fragment>
-      }
-    >
-      <p>{error?.message}</p>
-    </Alert>;
+    return (
+      <Alert
+        variant={AlertVariant.danger}
+        title="Could not get alerts"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IAlert[], Error>> => refetch()}>
+              Retry
+            </AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>{error?.message}</p>
+      </Alert>
+    );
   }
 
   if (!data || data.length === 0) {

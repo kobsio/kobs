@@ -53,6 +53,7 @@ export interface IPluginPanelProps {
   name: string;
   title: string;
   description?: string;
+  pluginOptions?: IPluginDataOptions;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
   showDetails?: (details: React.ReactNode) => void;

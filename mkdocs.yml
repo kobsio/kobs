@@ -59,6 +59,7 @@ nav:
       - Prometheus: plugins/prometheus.md
       - Resources: plugins/resources.md
       - RSS: plugins/rss.md
+      - SonarQube: plugins/sonarqube.md
       - SQL: plugins/sql.md
       - Teams: plugins/teams.md
       - Users: plugins/users.md
