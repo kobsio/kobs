@@ -152,7 +152,7 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.WithFields(logrus.Fields{"cluster": data.Cluster, "namespace": data.Namespace, "name": data.Name}).Tracef("getDashboard")
+	log.WithFields(logrus.Fields{"cluster": data.Cluster, "namespace": data.Namespace, "name": data.Name, "placeholders": data.Placeholders}).Tracef("getDashboard")
 
 	cluster := router.clusters.GetCluster(data.Cluster)
 	if cluster == nil {
@@ -166,15 +166,21 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if data.Placeholders != nil {
-		dashboard, err = placeholders.Replace(data.Placeholders, *dashboard)
-		if err != nil {
-			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
-			return
-		}
+	if data.Placeholders == nil {
+		log.WithFields(logrus.Fields{"cluster": data.Cluster, "namespace": data.Namespace, "name": data.Name}).Tracef("return dashboard without replacing placeholders")
+		render.JSON(w, r, dashboard)
+		return
 	}
 
-	render.JSON(w, r, dashboard)
+	dashboardReplacedPlaceholders, err := placeholders.Replace(data.Placeholders, *dashboard)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
+		return
+	}
+
+	log.WithFields(logrus.Fields{"cluster": data.Cluster, "namespace": data.Namespace, "name": data.Name}).Tracef("return dashboard with replaced placeholders")
+	render.JSON(w, r, dashboardReplacedPlaceholders)
+	return
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.

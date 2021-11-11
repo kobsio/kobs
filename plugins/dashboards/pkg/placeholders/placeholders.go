@@ -9,7 +9,7 @@ import (
 )
 
 // Replace replaces the placeholders in a dashboard, with the provided values from the placeholders map. The
-// placeholders must use the following format in the dashboard to be replaced: "{% .placeholder %}".
+// placeholders must use the following format in the dashboard to be replaced: "{{ .placeholder }}".
 // To replace the placeholders we have to convert the dashboard to it's json string representation, which is then passed
 // to the template together with the placeholders. The result is then unmarshaled back to the dashboard struct and
 // returned.
