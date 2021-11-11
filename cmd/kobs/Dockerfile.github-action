@@ -1,0 +1,22 @@
+# This Dockerfile should only be used in our GitHub Action pipeline to speed up the build process for our multi platform
+# image. If you want to build the Docker image for kobs locally, you can use the other Dockerfile in this directory,
+# so that you do not have to run "yarn install" and "yarn build" locally.
+FROM golang:1.17.3-alpine3.14 as api
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+RUN echo "Building on $BUILDPLATFORM, for $TARGETPLATFORM" > /log
+RUN apk update && apk add git make
+WORKDIR /kobs
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN make build
+
+FROM alpine:3.14.2
+RUN apk update && apk add --no-cache ca-certificates
+RUN mkdir /kobs
+COPY app/build /kobs/app/build
+COPY --from=api /kobs/bin/kobs /kobs
+WORKDIR /kobs
+USER nobody
+ENTRYPOINT  [ "/kobs/kobs" ]

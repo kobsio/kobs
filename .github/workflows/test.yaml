@@ -61,7 +61,7 @@ jobs:
 
       - name: React UI
         run: |
-          yarn install
+          yarn install --frozen-lockfile
           yarn lint
           yarn build
 

@@ -39,6 +39,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#194](https://github.com/kobsio/kobs/pull/194): [elasticsearch] Use pagination instead of infinite scrolling to display logs.
 - [#195](https://github.com/kobsio/kobs/pull/195): [istio] Display upstream cluster instead of authority in the React UI and ignore query string in path.
 - [#197](https://github.com/kobsio/kobs/pull/197): [clickhouse] Change break down filter for aggregation, to allow more complex filters.
+- [#203](https://github.com/kobsio/kobs/pull/203): Speed up GitHub Action for building the Docker image for kobs.
 
 ## [v0.6.0](https://github.com/kobsio/kobs/releases/tag/v0.6.0) (2021-10-11)
 

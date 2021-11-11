@@ -2,10 +2,10 @@ name: Docker
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - v*
+    # branches:
+    #   - main
+    # tags:
+    #   - v*
 
 jobs:
   docker:
@@ -17,6 +17,32 @@ jobs:
         with:
           fetch-depth: 0
 
+      # To speed up our pipeline for building the Docker image, we are building the frontend in the GitHub action and
+      # not within the Dockerfile, so that we do this only once and not for every platform.
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: Cache Node.js
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: React UI
+        run: |
+          yarn install --frozen-lockfile
+          yarn lint
+          yarn build
+
+      # Now we define the tag for our Docker image, setting up all GitHub actions and we build the image using the
+      # Dockerfile.github-action Dockerfile.
       - name: Set Docker Tag
         id: tag
         run: |
@@ -51,9 +77,10 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          push: true
+          # push: true
+          push: false
           context: .
-          file: ./cmd/kobs/Dockerfile
+          file: ./cmd/kobs/Dockerfile.github-action
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           tags: kobsio/kobs:${{ steps.tag.outputs.tag }}
           cache-from: type=local,src=/tmp/.buildx-cache
