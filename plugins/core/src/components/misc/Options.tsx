@@ -12,6 +12,8 @@ import {
   SimpleList,
   SimpleListItem,
   TextInput,
+  Tooltip,
+  TooltipPosition,
 } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { RedoIcon } from '@patternfly/react-icons';
@@ -186,6 +188,19 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
     );
   };
 
+  const refreshTimesTooltip = (): React.ReactNode => {
+    const timeDiff = timeEnd - timeStart;
+    const time = Object.keys(times)
+      .map((key) => times[key])
+      .filter((time) => time.seconds === timeDiff);
+
+    if (time.length === 1) {
+      return <div>{time[0].label}</div>;
+    }
+
+    return <div>Custom</div>;
+  };
+
   // useEffect is used to update the UI, every time a property changes.
   useEffect(() => {
     setInternalAdditionalFields(additionalFields);
@@ -199,9 +214,11 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
         {formatTime(timeStart)} to {formatTime(timeEnd)}
       </Button>
 
-      <Button variant={ButtonVariant.control} onClick={refreshTimes}>
-        <RedoIcon />
-      </Button>
+      <Tooltip position={TooltipPosition.left} content={refreshTimesTooltip()}>
+        <Button variant={ButtonVariant.control} onClick={refreshTimes}>
+          <RedoIcon />
+        </Button>
+      </Tooltip>
 
       <Modal
         title="Options"
