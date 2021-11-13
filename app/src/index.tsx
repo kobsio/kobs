@@ -11,6 +11,7 @@ import applicationsPlugin from '@kobsio/plugin-applications';
 import dashboardsPlugin from '@kobsio/plugin-dashboards';
 import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
 import fluxPlugin from '@kobsio/plugin-flux';
+import grafanaPlugin from '@kobsio/plugin-grafana';
 import istioPlugin from '@kobsio/plugin-istio';
 import jaegerPlugin from '@kobsio/plugin-jaeger';
 import kialiPlugin from '@kobsio/plugin-kiali';
@@ -32,6 +33,7 @@ ReactDOM.render(
       ...dashboardsPlugin,
       ...elasticsearchPlugin,
       ...fluxPlugin,
+      ...grafanaPlugin,
       ...istioPlugin,
       ...jaegerPlugin,
       ...kialiPlugin,
