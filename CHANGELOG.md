@@ -19,6 +19,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#193](https://github.com/kobsio/kobs/pull/193): [elasticsearch] Adjust selected time range via logs chart and allow filtering via fields.
 - [#201](https://github.com/kobsio/kobs/pull/201): [sonarqube] Add SonarQube plugin to view projects and their measures within kobs.
 - [#202](https://github.com/kobsio/kobs/pull/202): [core] Add tooltip to refresh button to show selected time interval.
+- [#204](https://github.com/kobsio/kobs/pull/204): [grafana] Add Grafana plugin, to show dashboards from a Grafana instance and to embed Grafana panels into kobs dashboards.
 
 ### Fixed
 

@@ -7,6 +7,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | applications | [Applications](#applications) | Configure the caching behaviour for the applications plugin. | No |
 | clickhouse | [[]ClickHouse](#clickhouse) | Configure multiple ClickHouse instances, which can be used within kobs. | No |
 | elasticsearch | [[]Elasticsearch](#elasticsearch) | Configure multiple Elasticsearch instances, which can be used within kobs. | No |
+| grafana | [[]Grafana](#grafana) | Configure multiple Grafana instances, which can be used within kobs. | No |
 | istio | [[]Istio](#istio) | Configure multiple Istio instances, which can be used within kobs. | No |
 | jaeger | [[]Jaeger](#jaeger) | Configure multiple Jaeger instances, which can be used within kobs. | No |
 | kiali | [[]Kiali](#kiali) | Configure multiple Kiali instances, which can be used within kobs. | No |
@@ -82,6 +83,30 @@ plugins:
 | username | string | Username to access an Elasticsearch instance via basic authentication. | No |
 | password | string | Password to access an Elasticsearch instance via basic authentication. | No |
 | token | string | Token to access an Elasticsearch instance via token based authentication. | No |
+
+## Grafana
+
+The following config can be used to grant kobs access to a Grafana instance running on `grafana.kobs.io`.
+
+```yaml
+plugins:
+  grafana:
+    - name: Grafana
+      description: Query, visualize, alert on, and understand your data no matter where it’s stored. With Grafana you can create, explore and share all of your data through beautiful, flexible dashboards.
+      internalAddress: http://grafana.monitoring.svc.cluster.local:3000
+      publicAddress: https://grafana.kobs.io
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Grafana instance. | Yes |
+| displayName | string | Name of the Grafana as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Grafana instance. | No |
+| internalAddress | string | The cluster internal address of the Grafana instance. | Yes |
+| publicAddress | string | The public address of the Grafana instance. | Yes |
+| username | string | Username to access an Grafana instance via basic authentication. | No |
+| password | string | Password to access an Grafana instance via basic authentication. | No |
+| token | string | Token to access an Grafana instance via token based authentication. | No |
 
 ## Istio
 

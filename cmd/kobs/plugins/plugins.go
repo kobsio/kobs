@@ -16,6 +16,7 @@ import (
 	"github.com/kobsio/kobs/plugins/dashboards"
 	"github.com/kobsio/kobs/plugins/elasticsearch"
 	"github.com/kobsio/kobs/plugins/flux"
+	"github.com/kobsio/kobs/plugins/grafana"
 	"github.com/kobsio/kobs/plugins/istio"
 	"github.com/kobsio/kobs/plugins/jaeger"
 	"github.com/kobsio/kobs/plugins/kiali"
@@ -37,6 +38,7 @@ type Config struct {
 	Dashboards    dashboards.Config    `json:"dashboards"`
 	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
 	Flux          flux.Config          `json:"flux"`
+	Grafana       grafana.Config       `json:"grafana"`
 	Istio         istio.Config         `json:"istio"`
 	Jaeger        jaeger.Config        `json:"jaeger"`
 	Kiali         kiali.Config         `json:"kiali"`
@@ -84,6 +86,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	jaegerRouter := jaeger.Register(clusters, router.plugins, config.Jaeger)
 	kialiRouter := kiali.Register(clusters, router.plugins, config.Kiali)
 	istioRouter := istio.Register(clusters, router.plugins, config.Istio, prometheusInstances, clickhouseInstances)
+	grafanaRouter := grafana.Register(clusters, router.plugins, config.Grafana)
 	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
 	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
 	sonarqubeRouter := sonarqube.Register(clusters, router.plugins, config.Sonarqube)
@@ -103,6 +106,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(jaeger.Route, jaegerRouter)
 	router.Mount(kiali.Route, kialiRouter)
 	router.Mount(istio.Route, istioRouter)
+	router.Mount(grafana.Route, grafanaRouter)
 	router.Mount(flux.Route, fluxRouter)
 	router.Mount(opsgenie.Route, opsgenieRouter)
 	router.Mount(sonarqube.Route, sonarqubeRouter)
