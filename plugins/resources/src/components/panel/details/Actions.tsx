@@ -5,6 +5,7 @@ import { IRow } from '@patternfly/react-table';
 import CreateEphemeralContainer from './actions/CreateEphemeralContainer';
 import CreateJob from './actions/CreateJob';
 import Delete from './actions/Delete';
+import DownloadFile from './actions/DownloadFile';
 import Edit from './actions/Edit';
 import { IAlert } from '../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
@@ -12,6 +13,7 @@ import Logs from './actions/Logs';
 import Restart from './actions/Restart';
 import Scale from './actions/Scale';
 import Terminal from './actions/Terminal';
+import UploadFile from './actions/UploadFile';
 
 interface IActionProps {
   request: IResource;
@@ -27,6 +29,8 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
   const [showCreateJob, setShowCreateJob] = useState<boolean>(false);
   const [showLogs, setShowLogs] = useState<boolean>(false);
   const [showTerminal, setShowTerminal] = useState<boolean>(false);
+  const [showDownloadFile, setShowDownloadFile] = useState<boolean>(false);
+  const [showUploadFile, setShowUploadFile] = useState<boolean>(false);
   const [showCreateEphemeralContainer, setShowCreateEphemeralContainer] = useState<boolean>(false);
   const [showEdit, setShowEdit] = useState<boolean>(false);
   const [showDelete, setShowDelete] = useState<boolean>(false);
@@ -108,6 +112,34 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
         }}
       >
         Terminal
+      </DropdownItem>,
+    );
+  }
+
+  if (request.resource === 'pods') {
+    dropdownItems.push(
+      <DropdownItem
+        key="donwloadfile"
+        onClick={(): void => {
+          setShowDropdown(false);
+          setShowDownloadFile(true);
+        }}
+      >
+        Download File
+      </DropdownItem>,
+    );
+  }
+
+  if (request.resource === 'pods') {
+    dropdownItems.push(
+      <DropdownItem
+        key="uploadfile"
+        onClick={(): void => {
+          setShowDropdown(false);
+          setShowUploadFile(true);
+        }}
+      >
+        Upload File
       </DropdownItem>,
     );
   }
@@ -203,6 +235,20 @@ const Actions: React.FunctionComponent<IActionProps> = ({ request, resource, ref
       <Logs request={request} resource={resource} show={showLogs} setShow={setShowLogs} />
 
       <Terminal request={request} resource={resource} show={showTerminal} setShow={setShowTerminal} />
+
+      <DownloadFile
+        resource={resource}
+        show={showDownloadFile}
+        setShow={setShowDownloadFile}
+        setAlert={(alert: IAlert): void => setAlerts([...alerts, alert])}
+      />
+
+      <UploadFile
+        resource={resource}
+        show={showUploadFile}
+        setShow={setShowUploadFile}
+        setAlert={(alert: IAlert): void => setAlerts([...alerts, alert])}
+      />
 
       <CreateEphemeralContainer
         request={request}

@@ -5,12 +5,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"mime/multipart"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/gorilla/websocket"
 	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
 	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
@@ -19,7 +20,10 @@ import (
 	dashboardClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned"
 	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/team/clientset/versioned"
 	userClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/user/clientset/versioned"
+	"github.com/kobsio/kobs/pkg/api/clusters/cluster/copy"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster/terminal"
+
+	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -316,6 +320,28 @@ func (c *Cluster) GetTerminal(conn *websocket.Conn, namespace, name, container, 
 
 	cmd := []string{shell}
 	return terminal.StartProcess(c.config, reqURL, cmd, session)
+}
+
+// CopyFileFromPod creates the request URL for downloading a file from the specified container.
+func (c *Cluster) CopyFileFromPod(w http.ResponseWriter, namespace, name, container, srcPath string) error {
+	command := fmt.Sprintf("&command=tar&command=cf&command=-&command=%s", srcPath)
+	reqURL, err := url.Parse(fmt.Sprintf("%s/api/v1/namespaces/%s/pods/%s/exec?container=%s&stdin=true&stdout=true&stderr=true&tty=false%s", c.config.Host, namespace, name, container, command))
+	if err != nil {
+		return err
+	}
+
+	return copy.FileFromPod(w, c.config, reqURL)
+}
+
+// CopyFileToPod creates the request URL for uploading a file to the specified container.
+func (c *Cluster) CopyFileToPod(namespace, name, container string, srcFile multipart.File, destPath string) error {
+	command := fmt.Sprintf("&command=cp&command=/dev/stdin&command=%s", destPath)
+	reqURL, err := url.Parse(fmt.Sprintf("%s/api/v1/namespaces/%s/pods/%s/exec?container=%s&stdin=true&stdout=true&stderr=true&tty=false%s", c.config.Host, namespace, name, container, command))
+	if err != nil {
+		return err
+	}
+
+	return copy.FileToPod(c.config, reqURL, srcFile, destPath)
 }
 
 // GetApplications returns a list of applications gor the given namespace. It also adds the cluster, namespace and
