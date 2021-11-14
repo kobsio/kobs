@@ -526,6 +526,65 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 	log.Tracef("Terminal connection was closed")
 }
 
+// getFile allows a user to download a file from a given container. For that the file/folder which should be downloaded
+// must be specified as source path (srcPath).
+func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
+	clusterName := r.URL.Query().Get("cluster")
+	namespace := r.URL.Query().Get("namespace")
+	name := r.URL.Query().Get("name")
+	container := r.URL.Query().Get("container")
+	srcPath := r.URL.Query().Get("srcPath")
+
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "container": container, "srcPath": srcPath}).Tracef("getFile")
+
+	cluster := router.clusters.GetCluster(clusterName)
+	if cluster == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
+		return
+	}
+
+	err := cluster.CopyFileFromPod(w, namespace, name, container, srcPath)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not copy file")
+		return
+	}
+}
+
+// postFile allows a user to upload a file to a given container. For that the file must be sent as form data, so that it
+// can be created in the destination (destPath).
+func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
+	clusterName := r.URL.Query().Get("cluster")
+	namespace := r.URL.Query().Get("namespace")
+	name := r.URL.Query().Get("name")
+	container := r.URL.Query().Get("container")
+	destPath := r.URL.Query().Get("destPath")
+
+	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name, "container": container, "destPath": destPath}).Tracef("postFile")
+
+	f, h, err := r.FormFile("file")
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not upload file")
+		return
+	}
+	defer f.Close()
+
+	cluster := router.clusters.GetCluster(clusterName)
+	if cluster == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
+		return
+	}
+
+	destPath = destPath + "/" + h.Filename
+
+	err = cluster.CopyFileToPod(namespace, name, container, f, destPath)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not copy file")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
 // Register returns a new router which can be used in the router for the kobs rest api.
 func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
 	var options map[string]interface{}
@@ -553,6 +612,8 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	router.Post("/resources", router.createResource)
 	router.Get("/logs", router.getLogs)
 	router.HandleFunc("/terminal", router.getTerminal)
+	router.Get("/file", router.getFile)
+	router.Post("/file", router.postFile)
 
 	return router
 }
