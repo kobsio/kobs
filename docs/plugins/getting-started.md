@@ -14,5 +14,3 @@ Plugins can also be used as preview for an application or within a dashboard pan
 | ----- | ---- | ----------- | -------- |
 | name | string | The name of the plugin as it is defined in the [configuration file](../configuration/plugins.md). Or one of the special values `applications`, `dashboards`, `resources` or `dashboards` for these core plugins. | Yes |
 | options | any | Plugin specific options as they are defined at the plugins page (e.g. PromQL query). | Yes |
-
-## Community Plugins

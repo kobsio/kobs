@@ -124,4 +124,4 @@ If you want to develop your own private plugins within your version of the [kobs
 
 To get a better idea for the structure of your plugin you can take a look at the `helloworld` plugin in the `app/src/plugins/helloworld` and `pkg/plugins/helloworld` folders.
 
-More information on the development of a plugin can be found in the documentation: [Add a Plugin](./add-a-plugin.md).
+More information on the development of a plugin can be found in the documentation: [Develop a Plugin](./develop-a-plugin.md).
