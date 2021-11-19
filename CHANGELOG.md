@@ -10,6 +10,14 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+### Fixed
+
+### Changed
+
+## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
+
+### Added
+
 - [#177](https://github.com/kobsio/kobs/pull/177): [istio] Add Istio plugin to get an overview of all applications in the service mesh.
 - [#182](https://github.com/kobsio/kobs/pull/182): [istio] Add top and tap commands and add details view for metrics.
 - [#183](https://github.com/kobsio/kobs/pull/183): [istio] Add panels and documentation and use the `destination_app` label instead of `destination_workload` for the Prometheus metrics.
