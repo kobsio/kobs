@@ -6,6 +6,37 @@ The Opsgenie plugin can be used to retrieve alerts and incidents from Opsgenie.
 
 ![Alert Details](assets/opsgenie-alerts-details.png)
 
+## Configuration
+
+The following configuration can be used to access the Opsgenie API.
+
+```yaml
+plugins:
+  opsgenie:
+    - name: opsgenie
+      displayName: Opsgenie
+      description: On-call and alert management to keep services always on.
+      apiUrl: api.eu.opsgenie.com
+      apiKey: ${OPSGENIE_API_KEY}
+      url: https://<your-organisation>.app.eu.opsgenie.com
+      actions:
+        acknowledge: true
+        snooze: true
+        close: true
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Opsgenie instance. | Yes |
+| displayName | string | Name of the Opsgenie instance as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Opsgenie instance. | No |
+| apiKey | string | API Key for the Opsgenie API. More information can be found at [API key management](https://support.atlassian.com/opsgenie/docs/api-key-management/). | Yes |
+| apiUrl | string | API URL for the Opsgenie API. Must be `api.opsgenie.com` or `api.eu.opsgenie.com`. | Yes |
+| url | string | The address for the Opsgenie account of your organisation. | No |
+| actions.acknowledge | boolean | Allow users to acknowledge Opsgenie alerts via kobs. | No |
+| actions.snooze | boolean | Allow users to snooze Opsgenie alerts via kobs. | No |
+| actions.close | boolean | Allow users to close Opsgenie alerts via kobs. | No |
+
 ## Options
 
 The following options can be used for a panel with the Opsgenie plugin:

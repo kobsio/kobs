@@ -65,9 +65,11 @@ nav:
       - SQL: plugins/sql.md
       - Teams: plugins/teams.md
       - Users: plugins/users.md
+  - Community Plugins:
+      - Getting Started: community-plugins/getting-started.md
   - Contributing:
       - Getting Started: contributing/getting-started.md
-      - Add a Plugin: contributing/add-a-plugin.md
+      - Develop a Plugin: contributing/develop-a-plugin.md
       - Development using the Demo: contributing/development-using-the-demo.md
       - Using the kobsio/app: contributing/using-the-kobsio-app.md
       - Release: contributing/release.md

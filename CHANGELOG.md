@@ -21,6 +21,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#202](https://github.com/kobsio/kobs/pull/202): [core] Add tooltip to refresh button to show selected time interval.
 - [#204](https://github.com/kobsio/kobs/pull/204): [grafana] Add Grafana plugin, to show dashboards from a Grafana instance and to embed Grafana panels into kobs dashboards.
 - [#205](https://github.com/kobsio/kobs/pull/205): [resources] Add support to download/upload files from/to a container.
+- [#208](https://github.com/kobsio/kobs/pull/208): Add documentation about how to [**Develop a Plugin**](https://kobs.io/contributing/develop-a-plugin/).
 - [#209](https://github.com/kobsio/kobs/pull/209): [harbor] Add Harbor plugin, to show projects, repositories and artifacts including there vulnerabilities and build history from a Harbor instance.
 
 ### Fixed

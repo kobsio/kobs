@@ -6,6 +6,28 @@ The Prometheus plugin can be used to retrieve metrics from a configured Promethe
 
 ![Queries](assets/prometheus-queries.png)
 
+## Configuration
+
+The following configuration can be used to access a Prometheus instance, which is running in the same cluster as kobs.
+
+```yaml
+plugins:
+  prometheus:
+    - name: Prometheus
+      description: Prometheus can be used for the metrics of your application.
+      address: http://prometheus.istio-system.svc.cluster.local:9090
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Prometheus instance. | Yes |
+| displayName | string | Name of the Prometheus as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Prometheus instance. | No |
+| address | string | Address of the Prometheus instance. | Yes |
+| username | string | Username to access a Prometheus instance via basic authentication. | No |
+| password | string | Password to access a Prometheus instance via basic authentication. | No |
+| token | string | Token to access a Prometheus instance via token based authentication. | No |
+
 ## Options
 
 The following options can be used for a panel with the Prometheus plugin:

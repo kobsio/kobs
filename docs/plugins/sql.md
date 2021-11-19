@@ -2,6 +2,27 @@
 
 The SQL plugin can be used to get run queries against a SQL database. Currently we are supporting ClickHouse, Postgres and MySQL databases.
 
+## Configuration
+
+The following config can be used to grant kobs access to a ClickHouse database running at `clickhouse-clickhouse.logging.svc.cluster.local:9000`. To access ClickHouse the user `admin` with the password provided via the `CLICKHOUSE_PASSWORD` environment variable is used.
+
+```yaml
+plugins:
+  sql:
+    - name: sql
+      displayName: SQL
+      connection: tcp://clickhouse-clickhouse.logging.svc.cluster.local:9000?username=admin&password=${CLICKHOUSE_PASSWORD}&database=logs
+      driver: clickhouse
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the ClickHouse instance. | Yes |
+| displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
+| descriptions | string | Description of the ClickHouse instance. | No |
+| connection | string | The connection string, to connect to a SQL database. | Yes |
+| driver | string | The driver which should be used for the database instance. This must be `clickhouse`, `postgres` or `mysql`. | Yes |
+
 ## Options
 
 The following options can be used for a panel with the SQL plugin:
