@@ -58,7 +58,7 @@ helm upgrade --install kobs kobs/kobs
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
 | `volumes` | Specify additional volumes for the kobs deployment. | `[]` |
 | `kobs.image.repository` | The repository for the Docker image. | `kobsio/kobs` |
-| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.6.0` |
+| `kobs.image.tag` | The tag of the Docker image which should be used. | `v0.7.0` |
 | `kobs.image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
 | `kobs.annotations` | Specify additional annotations for the created Pods. | `{}` |
 | `kobs.labels` | Specify additional labels for the created Pods. | `{}` |
