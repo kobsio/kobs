@@ -29,8 +29,8 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
   const history = useHistory();
   const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
 
-  // changeOptions is used to change the options for an ClickHouse query. Instead of directly modifying the options
-  // state we change the URL parameters.
+  // changeOptions is used to change the options for an klogs query. Instead of directly modifying the options state we
+  // change the URL parameters.
   const changeOptions = (opts: IOptions): void => {
     const fields = opts.fields ? opts.fields.map((field) => `&field=${field}`) : [];
 
@@ -89,7 +89,7 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
               </FlexItem>
               <Divider isVertical={true} />
               <FlexItem>
-                <a href="https://kobs.io/plugins/clickhouse/" target="_blank" rel="noreferrer">
+                <a href="https://kobs.io/plugins/klogs/" target="_blank" rel="noreferrer">
                   Documentation
                 </a>
               </FlexItem>

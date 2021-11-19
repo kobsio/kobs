@@ -1,4 +1,4 @@
-package clickhouse
+package klogs
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
-	"github.com/kobsio/kobs/plugins/clickhouse/pkg/instance"
+	"github.com/kobsio/kobs/plugins/klogs/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -17,13 +17,13 @@ import (
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
-const Route = "/clickhouse"
+const Route = "/klogs"
 
 var (
-	log = logrus.WithFields(logrus.Fields{"package": "clickhouse"})
+	log = logrus.WithFields(logrus.Fields{"package": "klogs"})
 )
 
-// Config is the structure of the configuration for the clickhouse plugin.
+// Config is the structure of the configuration for the klogs plugin.
 type Config []instance.Config
 
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
@@ -62,8 +62,8 @@ func (router *Router) getFields(w http.ResponseWriter, r *http.Request) {
 }
 
 // getLogs implements the special handling when the user selected the "logs" options for the "view" configuration. This
-// options is intended to use together with the kobsio/fluent-bit-clickhouse Fluent Bit plugin and provides a custom
-// query language to get the logs from ClickHouse.
+// options is intended to use together with the kobsio/klogs Fluent Bit plugin and provides a custom query language to
+// get the logs from ClickHouse ingested via kobsio/klogs.
 func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
@@ -112,7 +112,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 					// necessary because Go doesn't allow to set a new status code once the header was written.
 					// See: https://github.com/golang/go/issues/36734
 					// For that we also have to handle errors, when the status code is 200 in the React UI.
-					// See plugins/clickhouse/src/components/page/Logs.tsx#L64
+					// See plugins/klogs/src/components/page/Logs.tsx#L64
 					// w.WriteHeader(http.StatusProcessing)
 					w.Write([]byte("\n"))
 					f.Flush()
@@ -217,7 +217,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create ClickHouse instance")
+			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create klogs instance")
 		}
 
 		instances = append(instances, instance)
@@ -226,7 +226,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 			Name:        cfg.Name,
 			DisplayName: cfg.DisplayName,
 			Description: cfg.Description,
-			Type:        "clickhouse",
+			Type:        "klogs",
 		})
 	}
 

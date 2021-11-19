@@ -25,9 +25,9 @@ const AggregationToolbar: React.FunctionComponent<IAggregationToolbarProps> = ({
     setOptions({ ...options, query: value });
   };
 
-  // changeOptions changes the ClickHouse option. If the options are changed via the refresh button of the Options
-  // component we directly modify the options of the parent component, if not we only change the data of the toolbar
-  // component and the user can trigger an action via the search button.
+  // changeOptions changes the klogs option. If the options are changed via the refresh button of the Options component
+  // we directly modify the options of the parent component, if not we only change the data of the toolbar component and
+  // the user can trigger an action via the search button.
   const changeOptions = (
     refresh: boolean,
     additionalFields: IOptionsAdditionalFields[] | undefined,
@@ -38,7 +38,7 @@ const AggregationToolbar: React.FunctionComponent<IAggregationToolbarProps> = ({
   };
 
   return (
-    <Toolbar id="clickhouse-aggregation-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
+    <Toolbar id="klogs-aggregation-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
       <ToolbarContent style={{ padding: '0px' }}>
         <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
           <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>

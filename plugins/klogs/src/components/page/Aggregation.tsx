@@ -16,10 +16,10 @@ const Aggregation: React.FunctionComponent<IAggregationProps> = ({ name, options
   const history = useHistory();
 
   const { isError, isFetching, isLoading, data, error, refetch } = useQuery<IAggregationData, Error>(
-    ['clickhouse/aggregation', name, options],
+    ['klogs/aggregation', name, options],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/clickhouse/aggregation/${name}`, {
+        const response = await fetch(`/api/plugins/klogs/aggregation/${name}`, {
           body: JSON.stringify(options),
           method: 'post',
         });

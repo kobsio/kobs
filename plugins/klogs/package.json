@@ -1,5 +1,5 @@
 {
-  "name": "@kobsio/plugin-clickhouse",
+  "name": "@kobsio/plugin-klogs",
   "version": "0.0.0",
   "license": "MIT",
   "private": false,

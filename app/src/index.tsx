@@ -6,7 +6,6 @@ import './index.css';
 // Import plugins. Here we import all plugins, which we want to add to the current kobs app. By default this are all
 // first party plugins from the /plugins folder.
 import { App } from '@kobsio/plugin-core';
-import clickhousePlugin from '@kobsio/plugin-clickhouse';
 import applicationsPlugin from '@kobsio/plugin-applications';
 import dashboardsPlugin from '@kobsio/plugin-dashboards';
 import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
@@ -16,6 +15,7 @@ import harborPlugin from '@kobsio/plugin-harbor';
 import istioPlugin from '@kobsio/plugin-istio';
 import jaegerPlugin from '@kobsio/plugin-jaeger';
 import kialiPlugin from '@kobsio/plugin-kiali';
+import klogsPlugin from '@kobsio/plugin-klogs';
 import markdownPlugin from '@kobsio/plugin-markdown';
 import opsgeniePlugin from '@kobsio/plugin-opsgenie';
 import prometheusPlugin from '@kobsio/plugin-prometheus';
@@ -30,7 +30,6 @@ ReactDOM.render(
   <React.StrictMode>
     <App plugins={{
       ...applicationsPlugin,
-      ...clickhousePlugin,
       ...dashboardsPlugin,
       ...elasticsearchPlugin,
       ...fluxPlugin,
@@ -39,6 +38,7 @@ ReactDOM.render(
       ...istioPlugin,
       ...jaegerPlugin,
       ...kialiPlugin,
+      ...klogsPlugin,
       ...markdownPlugin,
       ...opsgeniePlugin,
       ...prometheusPlugin,

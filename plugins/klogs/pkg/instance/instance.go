@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	log = logrus.WithFields(logrus.Fields{"package": "clickhouse"})
+	log = logrus.WithFields(logrus.Fields{"package": "klogs"})
 )
 
-// Config is the structure of the configuration for a single ClickHouse instance.
+// Config is the structure of the configuration for a single klogs instance.
 type Config struct {
 	Name                string   `json:"name"`
 	DisplayName         string   `json:"displayName"`
@@ -30,7 +30,7 @@ type Config struct {
 	MaterializedColumns []string `json:"materializedColumns"`
 }
 
-// Instance represents a single ClickHouse instance, which can be added via the configuration file.
+// Instance represents a single klogs instance, which can be added via the configuration file.
 type Instance struct {
 	Name                string
 	database            string
@@ -364,7 +364,7 @@ func (i *Instance) GetRawQueryResults(ctx context.Context, query string) ([][]in
 	return result, columns, nil
 }
 
-// New returns a new ClickHouse instance for the given configuration.
+// New returns a new klogs instance for the given configuration.
 func New(config Config) (*Instance, error) {
 	if config.WriteTimeout == "" {
 		config.WriteTimeout = "30"
@@ -381,18 +381,6 @@ func New(config Config) (*Instance, error) {
 		log.WithError(err).Errorf("could not initialize database connection")
 		return nil, err
 	}
-
-	// We do not execute the Ping command anymore to increase the reliability of kobs. So that kobs also starts when
-	// the ClickHouse instance isn't available during the start of kobs.
-	// if err := client.Ping(); err != nil {
-	// 	if exception, ok := err.(*clickhouse.Exception); ok {
-	// 		log.WithError(err).WithFields(logrus.Fields{"code": exception.Code, "message": exception.Message, "stacktrace": exception.StackTrace}).Errorf("could not ping database")
-	// 	} else {
-	// 		log.WithError(err).Errorf("could not ping database")
-	// 	}
-
-	// 	return nil, err
-	// }
 
 	instance := &Instance{
 		Name:                config.Name,

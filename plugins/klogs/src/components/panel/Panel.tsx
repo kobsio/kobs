@@ -41,9 +41,9 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   return (
     <PluginOptionsMissing
       title={title}
-      message="Options for ClickHouse panel are missing or invalid"
-      details="The panel doesn't contain the required options to render get the ClickHouse data or the provided options are invalid."
-      documentation="https://kobs.io/plugins/clickhouse"
+      message="Options for klogs panel are missing or invalid"
+      details="The panel doesn't contain the required options to render get the klogs data or the provided options are invalid."
+      documentation="https://kobs.io/plugins/klogs"
     />
   );
 };

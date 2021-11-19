@@ -1,15 +1,12 @@
-# ClickHouse
+# klogs
 
-!!! note
-    The ClickHouse plugin can only be used with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) Fluent Bit plugin. If you want to use kobs to run raw SQL commands against a ClickHouse instance you can use the [SQL plugin](sql.md).
+The klogs plugin can be used together with the [kobsio/klogs](https://github.com/kobsio/klogs) output plugin for [Fluent Bit](https://fluentbit.io). You can then use the specified [Query Syntax](#query-syntax) to get the logs from ClickHouse.
 
-The ClickHouse plugin can be used together with the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) output plugin for [Fluent Bit](https://fluentbit.io). You can then use the specified [Query Syntax](#query-syntax) to get the logs from ClickHouse.
-
-![Logs](assets/clickhouse-logs.png)
+![Logs](assets/klogs-logs.png)
 
 ## Options
 
-The following options can be used for a panel with the ClickHouse plugin:
+The following options can be used for a panel with the klogs plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -21,8 +18,8 @@ The following options can be used for a panel with the ClickHouse plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | A name for the ClickHouse query, which is displayed in the select box. | Yes |
-| query | string | The query which should be run against ClickHouse. See [Query Syntax](#query-syntax) for more information on the syntax, when ClickHouse is used in the `logs` mode. | Yes |
+| name | string | A name for the klogs query, which is displayed in the select box. | Yes |
+| query | string | The query which should be run against ClickHouse. See [Query Syntax](#query-syntax) for more information on the syntax. | Yes |
 | fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. This field is only available for the `logs`. | No |
 | order | string | Order for the returned logs. Must be `ascending` or `descending`. The default value for this field is `descending`. | No |
 | orderBy | string | The name of the field, by which the results should be orderd. The default value for this field is `timestamp`. | No |
@@ -38,7 +35,7 @@ spec:
         - title: Istio Logs
           colSpan: 12
           plugin:
-            name: clickhouse
+            name: klogs
             options:
               type: logs
               queries:
@@ -83,7 +80,7 @@ spec:
         - title: Number of Logs per App
           colSpan: 6
           plugin:
-            name: clickhouse-logging
+            name: klogs
             options:
               type: aggregation
               aggregation:
@@ -98,7 +95,7 @@ spec:
         - title: Log Levels for MyApplication
           colSpan: 6
           plugin:
-            name: clickhouse-logging
+            name: klogs
             options:
               type: aggregation
               aggregation:
@@ -112,7 +109,7 @@ spec:
         - title: Request Duration for MyApplication by Response Code
           colSpan: 12
           plugin:
-            name: clickhouse-logging
+            name: klogs
             options:
               type: aggregation
               aggregation:
@@ -126,7 +123,7 @@ spec:
                     - content.response_code
 ```
 
-![Aggregation Example](assets/clickhouse-aggregation.png)
+![Aggregation Example](assets/klogs-aggregation.png)
 
 ### Aggregation Options
 

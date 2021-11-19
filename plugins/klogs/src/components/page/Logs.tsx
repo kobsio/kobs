@@ -50,11 +50,11 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
   const history = useHistory();
 
   const { isError, isFetching, isLoading, data, error, refetch } = useQuery<ILogsData, Error>(
-    ['clickhouse/logs', name, query, order, orderBy, times],
+    ['klogs/logs', name, query, order, orderBy, times],
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(
+          `/api/plugins/klogs/logs/${name}?query=${encodeURIComponent(
             query,
           )}&order=${order}&orderBy=${encodeURIComponent(orderBy)}&timeStart=${times.timeStart}&timeEnd=${
             times.timeEnd

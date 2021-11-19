@@ -60,10 +60,10 @@ plugins:
   #     apiKey: ${OPSGENIE_API_KEY}
   #     url: https://<mycompany>.app.eu.opsgenie.com
 
-  clickhouse:
-    - name: clickhouse-logging
-      displayName: ClickHouse (Logging)
-      description: ClickHouse is a fast open-source OLAP database management system.
+  klogs:
+    - name: klogs
+      displayName: klogs
+      description: Fast, scalable and reliable logging using Fluent Bit, Kafka and ClickHouse.
       address: localhost:9000
       database: logs
       username: ${CLICKHOUSE_USERNAME}

@@ -30,7 +30,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
   const [selectedQuery, setSelectedQuery] = useState<IQuery>(queries[0]);
 
   const { isError, isFetching, isLoading, data, error, refetch } = useQuery<ILogsData, Error>(
-    ['clickhouse/logs', selectedQuery, times],
+    ['klogs/logs', selectedQuery, times],
     async () => {
       try {
         if (!selectedQuery.query) {
@@ -38,7 +38,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
         }
 
         const response = await fetch(
-          `/api/plugins/clickhouse/logs/${name}?query=${encodeURIComponent(selectedQuery.query)}&order=${
+          `/api/plugins/klogs/logs/${name}?query=${encodeURIComponent(selectedQuery.query)}&order=${
             selectedQuery.order || ''
           }&orderBy=${encodeURIComponent(selectedQuery.orderBy || '')}&timeStart=${times.timeStart}&timeEnd=${
             times.timeEnd
