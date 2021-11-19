@@ -52,6 +52,7 @@ nav:
       - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md
       - Grafana: plugins/grafana.md
+      - Harbor: plugins/harbor.md
       - Istio: plugins/istio.md
       - Jaeger: plugins/jaeger.md
       - Kiali: plugins/kiali.md

@@ -6,7 +6,7 @@ The Grafana plugin can be used to search through all your Grafana dashboards and
 
 ## Options
 
-The following options can be used for a panel with the Elasticsearch plugin:
+The following options can be used for a panel with the Grafana plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
