@@ -36,8 +36,8 @@ const AggregationPage: React.FunctionComponent<IAggregationPageProps> = ({
   const [tmpOptions, setTmpOptions] = useState<IAggregationOptions>(getAggregationOptionsFromSearch(location.search));
   const [options, setOptions] = useState<IAggregationOptions>(getAggregationOptionsFromSearch(location.search));
 
-  // changeOptions is used to change the options for an ClickHouse query. Instead of directly modifying the options
-  // state we change the URL parameters.
+  // changeOptions is used to change the options for an klogs query. Instead of directly modifying the options  state we
+  // change the URL parameters.
   const changeOptions = (): void => {
     history.push({
       pathname: location.pathname,
@@ -65,7 +65,7 @@ const AggregationPage: React.FunctionComponent<IAggregationPageProps> = ({
               </FlexItem>
               <Divider isVertical={true} />
               <FlexItem>
-                <a href="https://kobs.io/plugins/clickhouse/" target="_blank" rel="noreferrer">
+                <a href="https://kobs.io/plugins/klogs/" target="_blank" rel="noreferrer">
                   Documentation
                 </a>
               </FlexItem>

@@ -7,8 +7,8 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
-	clickhouseInstance "github.com/kobsio/kobs/plugins/clickhouse/pkg/instance"
 	"github.com/kobsio/kobs/plugins/istio/pkg/instance"
+	klogsInstance "github.com/kobsio/kobs/plugins/klogs/pkg/instance"
 	prometheusInstance "github.com/kobsio/kobs/plugins/prometheus/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
@@ -370,11 +370,11 @@ func (router *Router) getTopDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config, prometheusInstances []*prometheusInstance.Instance, clickhouseInstances []*clickhouseInstance.Instance) chi.Router {
+func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config, prometheusInstances []*prometheusInstance.Instance, klogsInstances []*klogsInstance.Instance) chi.Router {
 	var instances []*instance.Instance
 
 	for _, cfg := range config {
-		instance, err := instance.New(cfg, prometheusInstances, clickhouseInstances)
+		instance, err := instance.New(cfg, prometheusInstances, klogsInstances)
 		if err != nil {
 			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Istio instance")
 		}
@@ -384,7 +384,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		var options map[string]interface{}
 		options = make(map[string]interface{})
 		options["prometheus"] = cfg.Prometheus.Enabled
-		options["clickhouse"] = cfg.Clickhouse.Enabled
+		options["klogs"] = cfg.Klogs.Enabled
 
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,

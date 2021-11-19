@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	clickhouseInstance "github.com/kobsio/kobs/plugins/clickhouse/pkg/instance"
+	klogsInstance "github.com/kobsio/kobs/plugins/klogs/pkg/instance"
 	prometheusInstance "github.com/kobsio/kobs/plugins/prometheus/pkg/instance"
 
 	"github.com/sirupsen/logrus"
@@ -21,7 +21,7 @@ type Config struct {
 	DisplayName string           `json:"displayName"`
 	Description string           `json:"description"`
 	Prometheus  ConfigPrometheus `json:"prometheus"`
-	Clickhouse  ConfigClickhouse `json:"clickhouse"`
+	Klogs       ConfigKlogs      `json:"klogs"`
 }
 
 // ConfigPrometheus is the structure of the configuration, which is required to enabled the Prometheus integration for
@@ -31,9 +31,9 @@ type ConfigPrometheus struct {
 	Name    string `json:"name"`
 }
 
-// ConfigClickhouse is the structure of the configuration, which is required to enabled the Clickhouse integration for
-// the Istio plugin.
-type ConfigClickhouse struct {
+// ConfigKlogs is the structure of the configuration, which is required to enabled the klogs integration for the Istio
+// plugin.
+type ConfigKlogs struct {
 	Enabled bool   `json:"enabled"`
 	Name    string `json:"name"`
 }
@@ -42,7 +42,7 @@ type ConfigClickhouse struct {
 type Instance struct {
 	Name       string
 	prometheus *prometheusInstance.Instance
-	clickhouse *clickhouseInstance.Instance
+	klogs      *klogsInstance.Instance
 }
 
 // GetNamespaces returns a list of namespaces, which can be selected to get the applications from.
@@ -313,7 +313,7 @@ func (i *Instance) Tap(ctx context.Context, namespace, application, filterUpstre
 		filters = filters + fmt.Sprintf(" _and_ content.path~'%s'", filterPath)
 	}
 
-	logs, _, _, _, _, err := i.clickhouse.GetLogs(ctx, fmt.Sprintf("namespace='%s' _and_ app='%s' _and_ container_name='istio-proxy' %s", namespace, application, filters), "", "", 100, timeStart, timeEnd)
+	logs, _, _, _, _, err := i.klogs.GetLogs(ctx, fmt.Sprintf("namespace='%s' _and_ app='%s' _and_ container_name='istio-proxy' %s", namespace, application, filters), "", "", 100, timeStart, timeEnd)
 	if err != nil {
 		return nil, err
 	}
@@ -334,7 +334,7 @@ func (i *Instance) Top(ctx context.Context, namespace, application, filterUpstre
 		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.path')], '%s')", filterPath)
 	}
 
-	rows, _, err := i.clickhouse.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT
+	rows, _, err := i.klogs.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT
     fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')] as upstream,
     fields_string.value[indexOf(fields_string.key, 'content.method')] as method,
     path(fields_string.value[indexOf(fields_string.key, 'content.path')]) as path,
@@ -375,7 +375,7 @@ func (i *Instance) TopDetails(ctx context.Context, namespace, application, upstr
 		filters = filters + fmt.Sprintf(" AND path(fields_string.value[indexOf(fields_string.key, 'content.path')]) = '%s'", path)
 	}
 
-	rows, _, err := i.clickhouse.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT
+	rows, _, err := i.klogs.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT
     toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data,
     count(*) AS count_data,
     countIf(fields_number.value[indexOf(fields_number.key, 'content.response_code')] < 500) / count_data * 100 as sr_data,
@@ -396,9 +396,9 @@ SETTINGS skip_unavailable_shards = 1`, interval, timeStart, timeEnd, filters, ti
 }
 
 // New returns a new Elasticsearch instance for the given configuration.
-func New(config Config, prometheusInstances []*prometheusInstance.Instance, clickhouseInstances []*clickhouseInstance.Instance) (*Instance, error) {
+func New(config Config, prometheusInstances []*prometheusInstance.Instance, klogsInstances []*klogsInstance.Instance) (*Instance, error) {
 	var prometheusInstance *prometheusInstance.Instance
-	var clickhouseInstance *clickhouseInstance.Instance
+	var klogsInstance *klogsInstance.Instance
 
 	if config.Prometheus.Enabled {
 		for _, instance := range prometheusInstances {
@@ -412,21 +412,21 @@ func New(config Config, prometheusInstances []*prometheusInstance.Instance, clic
 		}
 	}
 
-	if config.Clickhouse.Enabled {
-		for _, instance := range clickhouseInstances {
-			if instance.Name == config.Clickhouse.Name {
-				clickhouseInstance = instance
+	if config.Klogs.Enabled {
+		for _, instance := range klogsInstances {
+			if instance.Name == config.Klogs.Name {
+				klogsInstance = instance
 			}
 		}
 
-		if clickhouseInstance == nil {
-			return nil, fmt.Errorf("Clickhouse instance \"%s\" was not found", config.Clickhouse.Name)
+		if klogsInstance == nil {
+			return nil, fmt.Errorf("klogs instance \"%s\" was not found", config.Klogs.Name)
 		}
 	}
 
 	return &Instance{
 		Name:       config.Name,
 		prometheus: prometheusInstance,
-		clickhouse: clickhouseInstance,
+		klogs:      klogsInstance,
 	}, nil
 }

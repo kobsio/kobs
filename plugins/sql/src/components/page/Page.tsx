@@ -19,8 +19,8 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
   const history = useHistory();
   const [query, setQuery] = useState<string>(getQueryFromSearch(location.search));
 
-  // changeOptions is used to change the options for an ClickHouse query. Instead of directly modifying the options
-  // state we change the URL parameters.
+  // changeOptions is used to change the options for an SQL query. Instead of directly modifying the options state we
+  // change the URL parameters.
   const changeOptions = (q: string): void => {
     history.push({
       pathname: location.pathname,

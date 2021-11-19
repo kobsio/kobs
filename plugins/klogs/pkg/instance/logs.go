@@ -14,7 +14,7 @@ var (
 
 	fieldsMetric = promauto.NewCounterVec(prometheus.CounterOpts{
 		Namespace: "kobs",
-		Name:      "clickhouse_fields_total",
+		Name:      "klogs_fields_total",
 		Help:      "Number how often a field was used in a query.",
 	}, []string{"field"})
 )
@@ -132,7 +132,7 @@ func handleConditionParts(key, value, operator string, materializedColumns []str
 	key = strings.TrimSpace(key)
 	value = strings.TrimSpace(value)
 
-	// The kobs_clickhouse_fields_total metric can be used to determine how often a field is used. This information can
+	// The kobs_klogs_fields_total metric can be used to determine how often a field is used. This information can
 	// then be used to create an additional column for this field via the following SQL commands:
 	// ALTER TABLE logs.logs ON CLUSTER '{cluster}' ADD COLUMN <FIELD> String DEFAULT fields_string.value[indexOf(fields_string.key, '<FIELD>')];
 	// ALTER TABLE logs.logs ON CLUSTER '{cluster}' ADD COLUMN <FIELD> String DEFAULT fields_number.value[indexOf(fields_number.key, '<FIELD>')];

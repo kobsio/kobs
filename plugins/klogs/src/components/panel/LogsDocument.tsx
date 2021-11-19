@@ -53,7 +53,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
           ))
         ) : (
           <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Log">
-            <div className="kobsio-clickhouse-logs-preview">
+            <div className="kobsio-klogs-logs-preview">
               <span className="pf-u-mr-sm pf-u-mb-sm">
                 <span className="pf-u-background-color-200 pf-u-p-xs">cluster:</span>
                 <span className="pf-u-p-xs"> {document['cluster']}</span>

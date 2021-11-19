@@ -1,7 +1,7 @@
 import { IAggregationOptions, IAggregationOptionsAggregation, IOptions } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
-// getOptionsFromSearch is used to get the ClickHouse options from a given search location.
+// getOptionsFromSearch is used to get the klogs options from a given search location.
 export const getOptionsFromSearch = (search: string): IOptions => {
   const params = new URLSearchParams(search);
   const fields = params.getAll('field');
@@ -18,8 +18,7 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   };
 };
 
-// getAggregationOptionsFromSearch is used to get the ClickHouse options for an aggregation from a given search
-// location.
+// getAggregationOptionsFromSearch is used to get the klogs options for an aggregation from a given search location.
 export const getAggregationOptionsFromSearch = (search: string): IAggregationOptions => {
   const params = new URLSearchParams(search);
 

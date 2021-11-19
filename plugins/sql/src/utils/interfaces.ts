@@ -1,9 +1,9 @@
-// IOptions is the interface for all options, which can be set for an ClickHouse query.
+// IOptions is the interface for all options, which can be set for an SQL query.
 export interface IOptions {
   query: string;
 }
 
-// IPanelOptions are the options for the panel component of the ClickHouse plugin.
+// IPanelOptions are the options for the panel component of the SQL plugin.
 export interface IPanelOptions {
   type?: string;
   queries?: IQuery[];
