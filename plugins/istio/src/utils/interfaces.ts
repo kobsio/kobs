@@ -6,7 +6,7 @@ import { IRowValues } from '@kobsio/plugin-prometheus';
 
 export interface IPluginOptions {
   prometheus: boolean;
-  clickhouse: boolean;
+  klogs: boolean;
 }
 
 // IApplicationsOptions is the interface for the Istio applications page.

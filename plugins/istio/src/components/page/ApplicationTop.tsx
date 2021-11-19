@@ -39,20 +39,20 @@ const ApplicationTop: React.FunctionComponent<IApplicationTopProps> = ({
   const history = useHistory();
   const [liveUpdate, setLiveUpdate] = useState<boolean>(false);
 
-  if (!pluginOptions.clickhouse) {
+  if (!pluginOptions.klogs) {
     return (
       <DrawerContentBody>
         <PageSection variant={PageSectionVariants.default}>
           <Alert
             variant={AlertVariant.warning}
-            title="Clickhouse plugin is not enabled"
+            title="klogs plugin is not enabled"
             actionLinks={
               <React.Fragment>
                 <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
               </React.Fragment>
             }
           >
-            <p>You have to enable the Clickhouse integration in the Istio plugin configuration.</p>
+            <p>You have to enable the klogs integration in the Istio plugin configuration.</p>
           </Alert>
         </PageSection>
       </DrawerContentBody>

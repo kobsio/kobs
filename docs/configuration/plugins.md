@@ -5,12 +5,13 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | applications | [Applications](#applications) | Configure the caching behaviour for the applications plugin. | No |
-| clickhouse | [[]ClickHouse](#clickhouse) | Configure multiple ClickHouse instances, which can be used within kobs. | No |
 | elasticsearch | [[]Elasticsearch](#elasticsearch) | Configure multiple Elasticsearch instances, which can be used within kobs. | No |
 | grafana | [[]Grafana](#grafana) | Configure multiple Grafana instances, which can be used within kobs. | No |
+| harbor | [[]Harbor](#harbor) | Configure multiple Harbor instances, which can be used within kobs. | No |
 | istio | [[]Istio](#istio) | Configure multiple Istio instances, which can be used within kobs. | No |
 | jaeger | [[]Jaeger](#jaeger) | Configure multiple Jaeger instances, which can be used within kobs. | No |
 | kiali | [[]Kiali](#kiali) | Configure multiple Kiali instances, which can be used within kobs. | No |
+| klogs | [[]klogs](#klogs) | Configure multiple klogs instances, which can be used within kobs. | No |
 | opsgenie | [[]Opsgenie](#opsgenie) | Configure the Opsgenie API, which can be used within kobs. | No |
 | prometheus | [[]Prometheus](#prometheus) | Configure multiple Prometheus instances, which can be used within kobs. | No |
 | resources | [Resources](#resources) | Configuration for the resources plugin. | No |
@@ -32,33 +33,6 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | topologyCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the topology graph should be cached. The default value is `1h`. | No |
 | teamsCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the teams for an application should be cached. The default value is `1h`. | No |
-
-## ClickHouse
-
-The ClickHouse plugin provides a user interface for the [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse) Fluent Bit plugin.
-
-The following config can be used to grant kobs access to a ClickHouse instance running at `clickhouse-clickhouse.logging.svc.cluster.local:9000`, where the logs are save in a database named `logs`. To access ClickHouse the user `admin` with the password `admin` is used.
-
-```yaml
-plugins:
-  clickhouse:
-    - name: ClickHouse
-      description: ClickHouse is a fast open-source OLAP database management system.
-      address: clickhouse-clickhouse.logging.svc.cluster.local:9000
-      database: logs
-      username: admin
-      password: admin
-```
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| name | string | Name of the ClickHouse instance. | Yes |
-| displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
-| descriptions | string | Description of the ClickHouse instance. | No |
-| address | string | Address of the ClickHouse instance. | Yes |
-| username | string | Username to access a ClickHouse instance. | No |
-| password | string | Password to access a ClickHouse instance. | No |
-| materializedColumns | []string | A list of materialized columns. See [kobsio/fluent-bit-clickhouse](https://github.com/kobsio/fluent-bit-clickhouse#configuration) for more information. | No |
 
 ## Elasticsearch
 
@@ -108,9 +82,33 @@ plugins:
 | password | string | Password to access an Grafana instance via basic authentication. | No |
 | token | string | Token to access an Grafana instance via token based authentication. | No |
 
+## Harbor
+
+The following config can be used to grant kobs access to a Harbor instance running on `harbor.kobs.io` and is protected with basic authentication. The credentials will be provided by the environment variables `HARBOR_USERANME` and `HARBOR_PASSWORD`.
+
+```yaml
+plugins:
+  harbor:
+    - name: Harbor
+      description: Harbor is an open source registry that secures artifacts with policies and role-based access control, ensures images are scanned and free from vulnerabilities, and signs images as trusted.
+      address: https://harbor.kobs.io
+      username: ${ES_USERNAME}
+      password: ${ES_PASSWORD}
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Harbor instance. | Yes |
+| displayName | string | Name of the Harbor as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Harbor instance. | No |
+| address | string | Address of the Harbor instance. | Yes |
+| username | string | Username to access an Harbor instance via basic authentication. | No |
+| password | string | Password to access an Harbor instance via basic authentication. | No |
+| token | string | Token to access an Harbor instance via token based authentication. | No |
+
 ## Istio
 
-The following configuration can be used to access a Istio instances using a Prometheus plugin named `prometheus` and an Clickhouse plugin named `clickhouse`.
+The following configuration can be used to access a Istio instances using a Prometheus plugin named `prometheus` and an klogs plugin named `klogs`.
 
 ```yaml
 plugins:
@@ -121,9 +119,9 @@ plugins:
       prometheus:
         enabled: true
         name: prometheus
-      clickhouse:
+      klogs:
         enabled: true
-        name: clickhouse
+        name: klogs
 ```
 
 | Field | Type | Description | Required |
@@ -133,8 +131,8 @@ plugins:
 | descriptions | string | Description of the Istio instance. | No |
 | prometheus.enabled | boolean | Enabled the Prometheus integration for Istio. | No |
 | prometheus.name | string | The name of the Prometheus instance which should be used for the Istio instance. | No |
-| clickhouse.enabled | boolean | Enabled the Clickhouse integration for Istio. | No |
-| clickhouse.name | string | The name of the Clickhouse instance which should be used for the Istio instance. | No |
+| klogs.enabled | boolean | Enabled the klogs integration for Istio. | No |
+| klogs.name | string | The name of the klogs instance which should be used for the Istio instance. | No |
 
 ## Jaeger
 
@@ -185,6 +183,33 @@ plugins:
 | token | string | Token to access a Kiali instance via token based authentication. | No |
 | traffic.failure | number | Threshold to mark edges with failures. This must be a number between `0` and `100`. The default value is `5`. | No |
 | traffic.degraded | number | Threshold to mark edges with degraded performance. This must be a number between `0` and `100`. The default value is `1`. | No |
+
+## klogs
+
+The klogs plugin provides a user interface for the [kobsio/klogs](https://github.com/kobsio/klogs) Fluent Bit plugin, which allows you to collect logs via Fluent Bit and save them in ClickHouse.
+
+The following config can be used to grant kobs access to a ClickHouse instance running at `clickhouse-clickhouse.logging.svc.cluster.local:9000`, where the logs are save in a database named `logs`. To access ClickHouse the user `admin` with the password `admin` is used.
+
+```yaml
+plugins:
+  klogs:
+    - name: klogs
+      description: Fast, scalable and reliable logging using Fluent Bit, Kafka and ClickHouse.
+      address: clickhouse-clickhouse.logging.svc.cluster.local:9000
+      database: logs
+      username: admin
+      password: admin
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the ClickHouse instance. | Yes |
+| displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
+| descriptions | string | Description of the ClickHouse instance. | No |
+| address | string | Address of the ClickHouse instance. | Yes |
+| username | string | Username to access a ClickHouse instance. | No |
+| password | string | Password to access a ClickHouse instance. | No |
+| materializedColumns | []string | A list of materialized columns. See [kobsio/klogs](https://github.com/kobsio/klogs#configuration) for more information. | No |
 
 ## Opsgenie
 

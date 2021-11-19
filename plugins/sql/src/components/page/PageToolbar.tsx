@@ -35,7 +35,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, setQue
   };
 
   return (
-    <Toolbar id="clickhouse-sql-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
+    <Toolbar id="sql-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
       <ToolbarContent style={{ padding: '0px' }}>
         <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
           <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>

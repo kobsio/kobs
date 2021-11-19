@@ -12,14 +12,15 @@ import (
 	// Import all plugins, which should be used with the kobs instance. By default this are all first party plugins from
 	// the plugins folder.
 	"github.com/kobsio/kobs/plugins/applications"
-	"github.com/kobsio/kobs/plugins/clickhouse"
 	"github.com/kobsio/kobs/plugins/dashboards"
 	"github.com/kobsio/kobs/plugins/elasticsearch"
 	"github.com/kobsio/kobs/plugins/flux"
 	"github.com/kobsio/kobs/plugins/grafana"
+	"github.com/kobsio/kobs/plugins/harbor"
 	"github.com/kobsio/kobs/plugins/istio"
 	"github.com/kobsio/kobs/plugins/jaeger"
 	"github.com/kobsio/kobs/plugins/kiali"
+	"github.com/kobsio/kobs/plugins/klogs"
 	"github.com/kobsio/kobs/plugins/markdown"
 	"github.com/kobsio/kobs/plugins/opsgenie"
 	"github.com/kobsio/kobs/plugins/prometheus"
@@ -34,14 +35,15 @@ import (
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
 type Config struct {
 	Applications  applications.Config  `json:"applications"`
-	Clickhouse    clickhouse.Config    `json:"clickhouse"`
 	Dashboards    dashboards.Config    `json:"dashboards"`
 	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
 	Flux          flux.Config          `json:"flux"`
 	Grafana       grafana.Config       `json:"grafana"`
+	Harbor        harbor.Config        `json:"harbor"`
 	Istio         istio.Config         `json:"istio"`
 	Jaeger        jaeger.Config        `json:"jaeger"`
 	Kiali         kiali.Config         `json:"kiali"`
+	Klogs         klogs.Config         `json:"klogs"`
 	Opsgenie      opsgenie.Config      `json:"opsgenie"`
 	Prometheus    prometheus.Config    `json:"prometheus"`
 	Markdown      markdown.Config      `json:"markdown"`
@@ -82,11 +84,12 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	dashboardsRouter := dashboards.Register(clusters, router.plugins, config.Dashboards)
 	prometheusRouter, prometheusInstances := prometheus.Register(clusters, router.plugins, config.Prometheus)
 	elasticsearchRouter := elasticsearch.Register(clusters, router.plugins, config.Elasticsearch)
-	clickhouseRouter, clickhouseInstances := clickhouse.Register(clusters, router.plugins, config.Clickhouse)
+	klogsRouter, klogsInstances := klogs.Register(clusters, router.plugins, config.Klogs)
 	jaegerRouter := jaeger.Register(clusters, router.plugins, config.Jaeger)
 	kialiRouter := kiali.Register(clusters, router.plugins, config.Kiali)
-	istioRouter := istio.Register(clusters, router.plugins, config.Istio, prometheusInstances, clickhouseInstances)
+	istioRouter := istio.Register(clusters, router.plugins, config.Istio, prometheusInstances, klogsInstances)
 	grafanaRouter := grafana.Register(clusters, router.plugins, config.Grafana)
+	harborRouter := harbor.Register(clusters, router.plugins, config.Harbor)
 	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
 	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
 	sonarqubeRouter := sonarqube.Register(clusters, router.plugins, config.Sonarqube)
@@ -102,11 +105,12 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(dashboards.Route, dashboardsRouter)
 	router.Mount(prometheus.Route, prometheusRouter)
 	router.Mount(elasticsearch.Route, elasticsearchRouter)
-	router.Mount(clickhouse.Route, clickhouseRouter)
+	router.Mount(klogs.Route, klogsRouter)
 	router.Mount(jaeger.Route, jaegerRouter)
 	router.Mount(kiali.Route, kialiRouter)
 	router.Mount(istio.Route, istioRouter)
 	router.Mount(grafana.Route, grafanaRouter)
+	router.Mount(harbor.Route, harborRouter)
 	router.Mount(flux.Route, fluxRouter)
 	router.Mount(opsgenie.Route, opsgenieRouter)
 	router.Mount(sonarqube.Route, sonarqubeRouter)

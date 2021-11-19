@@ -22,6 +22,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#204](https://github.com/kobsio/kobs/pull/204): [grafana] Add Grafana plugin, to show dashboards from a Grafana instance and to embed Grafana panels into kobs dashboards.
 - [#205](https://github.com/kobsio/kobs/pull/205): [resources] Add support to download/upload files from/to a container.
 - [#208](https://github.com/kobsio/kobs/pull/208): Add documentation about how to [**Develop a Plugin**](https://kobs.io/contributing/develop-a-plugin/).
+- [#209](https://github.com/kobsio/kobs/pull/209): [harbor] Add Harbor plugin, to show projects, repositories and artifacts including there vulnerabilities and build history from a Harbor instance.
 
 ### Fixed
 
@@ -42,6 +43,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#194](https://github.com/kobsio/kobs/pull/194): [elasticsearch] Use pagination instead of infinite scrolling to display logs.
 - [#195](https://github.com/kobsio/kobs/pull/195): [istio] Display upstream cluster instead of authority in the React UI and ignore query string in path.
 - [#197](https://github.com/kobsio/kobs/pull/197): [clickhouse] Change break down filter for aggregation, to allow more complex filters.
+- [#210](https://github.com/kobsio/kobs/pull/210): [klogs] :warning: _Breaking change:_ :warning: Rename `clickhouse` plugin to `klogs`.
 
 ## [v0.6.0](https://github.com/kobsio/kobs/releases/tag/v0.6.0) (2021-10-11)
 

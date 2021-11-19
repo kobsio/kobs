@@ -1,6 +1,6 @@
 # Istio
 
-The Istio plugin can be used to observe your service mesh within kobs. For that kobs uses an existing Prometheus and Clickhouse instance to get the metrics for your applications which are part of the service mesh and to build a simple topology graph for them.
+The Istio plugin can be used to observe your service mesh within kobs. For that kobs uses an existing Prometheus and klogs instance to get the metrics for your applications which are part of the service mesh and to build a simple topology graph for them.
 
 ![Overview](assets/istio-page-overview.png)
 
@@ -10,7 +10,7 @@ For each application you have a metrics, top and tap view. The metrics view show
 
 ![Metrics Details](assets/istio-page-metrics.png)
 
-The top view can be used to get the aggregated metrics, based on the request direction, service, method and path. These metrics are generated based on the access logs via the Clickhouse plugin. The top view shows the number of requests, the best, worst, average, and last request duration and the success rate. You can also go to the tap view, for a specific request type.
+The top view can be used to get the aggregated metrics, based on the request direction, service, method and path. These metrics are generated based on the access logs via the klogs plugin. The top view shows the number of requests, the best, worst, average, and last request duration and the success rate. You can also go to the tap view, for a specific request type.
 
 ![Top](assets/istio-page-top.png)
 
