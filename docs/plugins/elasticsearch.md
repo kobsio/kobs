@@ -8,6 +8,30 @@ The Elasticsearch plugin can be used to retrieve logs from a configured Elastics
 
 ![Document](assets/elasticsearch-document.png)
 
+## Configuration
+
+The following config can be used to grant kobs access to a Elasticsearch instance running on `elasticsearch.kobs.io` and is protected with basic authentication. The credentials will be provided by the environment variables `ES_USERANME` and `ES_PASSWORD`.
+
+```yaml
+plugins:
+  elasticsearch:
+    - name: Elasticsearch
+      description: Elasticsearch can be used for the logs of your application.
+      address: https://elasticsearch.kobs.io
+      username: ${ES_USERNAME}
+      password: ${ES_PASSWORD}
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Elasticsearch instance. | Yes |
+| displayName | string | Name of the Elasticsearch as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Elasticsearch instance. | No |
+| address | string | Address of the Elasticsearch instance. | Yes |
+| username | string | Username to access an Elasticsearch instance via basic authentication. | No |
+| password | string | Password to access an Elasticsearch instance via basic authentication. | No |
+| token | string | Token to access an Elasticsearch instance via token based authentication. | No |
+
 ## Options
 
 The following options can be used for a panel with the Elasticsearch plugin:

@@ -6,6 +6,30 @@ The Harbor plugin can be used to access all your projects, repositories and arti
 
 ![Artifacts Details](assets/harbor-artifacts-details.png)
 
+## Configuration
+
+The following config can be used to grant kobs access to a Harbor instance running on `harbor.kobs.io` and is protected with basic authentication. The credentials will be provided by the environment variables `HARBOR_USERANME` and `HARBOR_PASSWORD`.
+
+```yaml
+plugins:
+  harbor:
+    - name: Harbor
+      description: Harbor is an open source registry that secures artifacts with policies and role-based access control, ensures images are scanned and free from vulnerabilities, and signs images as trusted.
+      address: https://harbor.kobs.io
+      username: ${ES_USERNAME}
+      password: ${ES_PASSWORD}
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Harbor instance. | Yes |
+| displayName | string | Name of the Harbor as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Harbor instance. | No |
+| address | string | Address of the Harbor instance. | Yes |
+| username | string | Username to access an Harbor instance via basic authentication. | No |
+| password | string | Password to access an Harbor instance via basic authentication. | No |
+| token | string | Token to access an Harbor instance via token based authentication. | No |
+
 ## Options
 
 The following options can be used for a panel with the Harbor plugin:

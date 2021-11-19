@@ -2,6 +2,22 @@
 
 The applications plugin allows you to show a list of application on a dashboard. More information can be found on the [Applications Page](../resources/applications.md).
 
+## Configuration
+
+The following configuration can be used to configure the cache duration for applications.
+
+```yaml
+plugins:
+  applications:
+    topologyCacheDuration: 5m
+    teamsCacheDuration: 5m
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| topologyCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the topology graph should be cached. The default value is `1h`. | No |
+| teamsCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the teams for an application should be cached. The default value is `1h`. | No |
+
 ## Options
 
 | Field | Type | Description | Required |

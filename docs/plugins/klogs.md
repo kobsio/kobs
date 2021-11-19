@@ -4,6 +4,31 @@ The klogs plugin can be used together with the [kobsio/klogs](https://github.com
 
 ![Logs](assets/klogs-logs.png)
 
+## Configuration
+
+The following config can be used to grant kobs access to a ClickHouse instance running at `clickhouse-clickhouse.logging.svc.cluster.local:9000`, where the logs are save in a database named `logs`. To access ClickHouse the user `admin` with the password `admin` is used.
+
+```yaml
+plugins:
+  klogs:
+    - name: klogs
+      description: Fast, scalable and reliable logging using Fluent Bit, Kafka and ClickHouse.
+      address: clickhouse-clickhouse.logging.svc.cluster.local:9000
+      database: logs
+      username: admin
+      password: admin
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the ClickHouse instance. | Yes |
+| displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
+| descriptions | string | Description of the ClickHouse instance. | No |
+| address | string | Address of the ClickHouse instance. | Yes |
+| username | string | Username to access a ClickHouse instance. | No |
+| password | string | Password to access a ClickHouse instance. | No |
+| materializedColumns | []string | A list of materialized columns. See [kobsio/klogs](https://github.com/kobsio/klogs#configuration) for more information. | No |
+
 ## Options
 
 The following options can be used for a panel with the klogs plugin:

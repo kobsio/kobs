@@ -8,6 +8,29 @@ The Jaeger plugin can be used to retrieve traces from a configured Jaeger instan
 
 ![Compare Traces](assets/jaeger-compare-traces.png)
 
+## Configuration
+
+The following configuration can be used to access a Jaeger instances running on `jaeger.kobs.io` and is protected using token based authentication. The token is loaded from the `JAEGER_TOKEN` environment variable.
+
+```yaml
+plugins:
+  jaeger:
+    - name: Jaeger
+      description: Jaeger can be used for the traces of your application.
+      address: https://jaeger.kobs.io
+      token: ${JAEGER_TOKEN}
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Jaeger instance. | Yes |
+| displayName | string | Name of the Jaeger as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Jaeger instance. | No |
+| address | string | Address of the Jaeger instance. | Yes |
+| username | string | Username to access a Jaeger instance via basic authentication. | No |
+| password | string | Password to access a Jaeger instance via basic authentication. | No |
+| token | string | Token to access a Jaeger instance via token based authentication. | No |
+
 ## Options
 
 The following options can be used for a panel with the Jaeger plugin:

@@ -20,6 +20,34 @@ The tap view can be used to live tail all requests. You can filter the view by t
 
 ![Tap](assets/istio-page-tap.png)
 
+## Configuration
+
+The following configuration can be used to access a Istio instances using a Prometheus plugin named `prometheus` and an klogs plugin named `klogs`.
+
+```yaml
+plugins:
+  istio:
+    - name: istio
+      displayName: Istio
+      description: Simplify observability, traffic management, security, and policy with the leading service mesh.
+      prometheus:
+        enabled: true
+        name: prometheus
+      klogs:
+        enabled: true
+        name: klogs
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Istio instance. | Yes |
+| displayName | string | Name of the Istio as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Istio instance. | No |
+| prometheus.enabled | boolean | Enabled the Prometheus integration for Istio. | No |
+| prometheus.name | string | The name of the Prometheus instance which should be used for the Istio instance. | No |
+| klogs.enabled | boolean | Enabled the klogs integration for Istio. | No |
+| klogs.name | string | The name of the klogs instance which should be used for the Istio instance. | No |
+
 ## Options
 
 The following options can be used for a panel with the Istio plugin:

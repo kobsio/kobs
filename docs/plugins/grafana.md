@@ -4,6 +4,30 @@ The Grafana plugin can be used to search through all your Grafana dashboards and
 
 ![Grafana](assets/grafana.png)
 
+## Configuration
+
+The following config can be used to grant kobs access to a Grafana instance running on `grafana.kobs.io`.
+
+```yaml
+plugins:
+  grafana:
+    - name: Grafana
+      description: Query, visualize, alert on, and understand your data no matter where it’s stored. With Grafana you can create, explore and share all of your data through beautiful, flexible dashboards.
+      internalAddress: http://grafana.monitoring.svc.cluster.local:3000
+      publicAddress: https://grafana.kobs.io
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Grafana instance. | Yes |
+| displayName | string | Name of the Grafana as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Grafana instance. | No |
+| internalAddress | string | The cluster internal address of the Grafana instance. | Yes |
+| publicAddress | string | The public address of the Grafana instance. | Yes |
+| username | string | Username to access an Grafana instance via basic authentication. | No |
+| password | string | Password to access an Grafana instance via basic authentication. | No |
+| token | string | Token to access an Grafana instance via token based authentication. | No |
+
 ## Options
 
 The following options can be used for a panel with the Grafana plugin:
