@@ -8,6 +8,7 @@ Plugins can be used to extend the functions of kobs. They can be configured usin
 | clickhouse | [[]ClickHouse](#clickhouse) | Configure multiple ClickHouse instances, which can be used within kobs. | No |
 | elasticsearch | [[]Elasticsearch](#elasticsearch) | Configure multiple Elasticsearch instances, which can be used within kobs. | No |
 | grafana | [[]Grafana](#grafana) | Configure multiple Grafana instances, which can be used within kobs. | No |
+| harbor | [[]Harbor](#harbor) | Configure multiple Harbor instances, which can be used within kobs. | No |
 | istio | [[]Istio](#istio) | Configure multiple Istio instances, which can be used within kobs. | No |
 | jaeger | [[]Jaeger](#jaeger) | Configure multiple Jaeger instances, which can be used within kobs. | No |
 | kiali | [[]Kiali](#kiali) | Configure multiple Kiali instances, which can be used within kobs. | No |
@@ -107,6 +108,30 @@ plugins:
 | username | string | Username to access an Grafana instance via basic authentication. | No |
 | password | string | Password to access an Grafana instance via basic authentication. | No |
 | token | string | Token to access an Grafana instance via token based authentication. | No |
+
+## Harbor
+
+The following config can be used to grant kobs access to a Harbor instance running on `harbor.kobs.io` and is protected with basic authentication. The credentials will be provided by the environment variables `HARBOR_USERANME` and `HARBOR_PASSWORD`.
+
+```yaml
+plugins:
+  harbor:
+    - name: Harbor
+      description: Harbor is an open source registry that secures artifacts with policies and role-based access control, ensures images are scanned and free from vulnerabilities, and signs images as trusted.
+      address: https://harbor.kobs.io
+      username: ${ES_USERNAME}
+      password: ${ES_PASSWORD}
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | Name of the Harbor instance. | Yes |
+| displayName | string | Name of the Harbor as it is shown in the UI. | Yes |
+| descriptions | string | Description of the Harbor instance. | No |
+| address | string | Address of the Harbor instance. | Yes |
+| username | string | Username to access an Harbor instance via basic authentication. | No |
+| password | string | Password to access an Harbor instance via basic authentication. | No |
+| token | string | Token to access an Harbor instance via token based authentication. | No |
 
 ## Istio
 
