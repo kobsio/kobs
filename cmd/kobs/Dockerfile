@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:14.18.1 as app
+FROM --platform=linux/amd64 node:16.13.0 as app
 WORKDIR /kobs
 COPY lerna.json package.json tsconfig.json typings.d.ts yarn.lock /kobs/
 COPY app /kobs/app

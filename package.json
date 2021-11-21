@@ -19,6 +19,7 @@
   },
   "eslintConfig": {
     "plugins": [
+      "jest",
       "react-hooks"
     ],
     "extends": [
@@ -136,20 +137,21 @@
   },
   "dependencies": {
     "@types/node": "^16.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.27.0",
-    "@typescript-eslint/parser": "^4.27.0",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^6.0.0",
-    "eslint-plugin-flowtype": "^6.1.0",
+    "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^25.2.4",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "lerna": "^4.0.0",
     "prettier": "^2.3.1",
-    "typescript": "^4.3.4"
+    "typescript": "^4.5.2"
   }
 }

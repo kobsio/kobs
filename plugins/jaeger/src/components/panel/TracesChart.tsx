@@ -1,15 +1,20 @@
 import { Card, CardBody } from '@patternfly/react-core';
-import { Datum, Node, ResponsiveScatterPlotCanvas, Serie } from '@nivo/scatterplot';
-import React, { ReactNode, useMemo } from 'react';
+import React, { useMemo } from 'react';
+import {
+  ResponsiveScatterPlotCanvas,
+  ScatterPlotDatum,
+  ScatterPlotNodeData,
+  ScatterPlotRawSerie,
+} from '@nivo/scatterplot';
 import Trace from './details/Trace';
 
 import { CHART_THEME, ChartTooltip } from '@kobsio/plugin-core';
 import { ITrace } from '../../utils/interfaces';
 import { doesTraceContainsError } from '../../utils/helpers';
 
-interface IDatum extends Datum {
+interface IDatum extends ScatterPlotDatum {
   label: string;
-  size: number;
+  spans: number;
   trace: ITrace;
 }
 
@@ -19,13 +24,13 @@ interface ITracesChartProps {
   showDetails?: (details: React.ReactNode) => void;
 }
 
-function isIDatum(object: Datum): object is IDatum {
+function isIDatum(object: ScatterPlotDatum): object is IDatum {
   return (object as IDatum).trace !== undefined;
 }
 
 const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces, showDetails }: ITracesChartProps) => {
   const { series, min, max, first, last } = useMemo<{
-    series: Serie[];
+    series: ScatterPlotRawSerie<ScatterPlotDatum>[];
     min: number;
     max: number;
     first: number;
@@ -55,8 +60,8 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
 
       result.push({
         label: trace.traceName,
-        size: trace.spans.length,
-        trace,
+        spans: trace.spans.length,
+        trace: trace,
         x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
         y: trace.duration / 1000,
       });
@@ -92,15 +97,13 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
             enableGridX={false}
             enableGridY={false}
             margin={{ bottom: 25, left: 0, right: 0, top: 0 }}
-            nodeSize={{ key: 'size', sizes: [15, 75], values: [min, max] }}
-            onClick={(node: Node): void => {
+            nodeSize={{ key: 'data.spans', sizes: [15, 75], values: [min, max] }}
+            onClick={(node: ScatterPlotNodeData<ScatterPlotDatum>): void => {
               if (showDetails && isIDatum(node.data)) {
                 showDetails(<Trace name={name} trace={node.data.trace} close={(): void => showDetails(undefined)} />);
               }
             }}
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore as the typing expects NodeProps but actually has Node
-            renderNode={(ctx: CanvasRenderingContext2D, props: Node): void => {
+            renderNode={(ctx: CanvasRenderingContext2D, props: ScatterPlotNodeData<ScatterPlotDatum>): void => {
               // eslint-disable-next-line react/prop-types
               const hasError = isIDatum(props.data) ? doesTraceContainsError(props.data.trace) : false;
 
@@ -108,13 +111,12 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
               // eslint-disable-next-line react/prop-types
               ctx.arc(props.x, props.y, props.size / 2, 0, 2 * Math.PI);
               // eslint-disable-next-line react/prop-types
-              ctx.fillStyle = hasError ? '#c9190b' : props.style.color;
+              ctx.fillStyle = hasError ? '#c9190b' : props.color;
               ctx.fill();
             }}
             theme={CHART_THEME}
-            tooltip={(tooltip): ReactNode => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const isFirstHalf = (tooltip.node.data as any).trace.startTime < (last + first) / 2;
+            tooltip={(tooltip): React.ReactElement => {
+              const isFirstHalf = (tooltip.node.data as IDatum).trace.startTime < (last + first) / 2;
               const hasError = isIDatum(tooltip.node.data) ? doesTraceContainsError(tooltip.node.data.trace) : false;
               const squareColor = hasError ? '#c9190b' : '#0066cc';
 
@@ -122,9 +124,9 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
                 <ChartTooltip
                   anchor={isFirstHalf ? 'right' : 'left'}
                   color={squareColor}
-                  label={`${(tooltip.node.data as unknown as IDatum).label} ${tooltip.node.data.formattedY}`}
+                  label={`${(tooltip.node.data as unknown as IDatum).label} ${tooltip.node.formattedY}`}
                   position={[0, 20]}
-                  title={tooltip.node.data.formattedX.toString()}
+                  title={tooltip.node.formattedX.toString()}
                 />
               );
             }}

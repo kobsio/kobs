@@ -10,8 +10,8 @@ import {
   ModalVariant,
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
-import { V1EphemeralContainer, V1EphemeralContainers } from '@kubernetes/client-node';
 import { IRow } from '@patternfly/react-table';
+import { V1EphemeralContainer } from '@kubernetes/client-node';
 import yaml from 'js-yaml';
 
 import { Editor, IPluginsContext, IResource, PluginsContext } from '@kobsio/plugin-core';
@@ -47,7 +47,7 @@ const CreateEphemeralContainer: React.FunctionComponent<ICreateEphemeralContaine
   const createEphemeralContainer = async (): Promise<void> => {
     try {
       const parsedEphemeralContainer = yaml.load(ephemeralContainer) as V1EphemeralContainer;
-      const manifest: V1EphemeralContainers = {
+      const manifest = {
         apiVersion: 'v1',
         ephemeralContainers: [parsedEphemeralContainer],
         kind: 'EphemeralContainers',
