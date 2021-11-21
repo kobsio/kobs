@@ -20,6 +20,6 @@
     "react-intersection-observer": "^8.32.1",
     "react-query": "^3.17.2",
     "react-router-dom": "^5.2.0",
-    "typescript": "^4.3.4"
+    "typescript": "^4.5.2"
   }
 }
