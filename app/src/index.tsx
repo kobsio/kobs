@@ -24,6 +24,7 @@ import rssPlugin from '@kobsio/plugin-rss';
 import sonarqubePlugin from '@kobsio/plugin-sonarqube';
 import sqlPlugin from '@kobsio/plugin-sql';
 import teamsPlugin from '@kobsio/plugin-teams';
+import techdocsPlugin from '@kobsio/plugin-techdocs';
 import usersPlugin from '@kobsio/plugin-users';
 
 ReactDOM.render(
@@ -47,6 +48,7 @@ ReactDOM.render(
       ...sonarqubePlugin,
       ...sqlPlugin,
       ...teamsPlugin,
+      ...techdocsPlugin,
       ...usersPlugin,
     }} />
   </React.StrictMode>,

@@ -29,6 +29,7 @@ import (
 	"github.com/kobsio/kobs/plugins/sonarqube"
 	"github.com/kobsio/kobs/plugins/sql"
 	"github.com/kobsio/kobs/plugins/teams"
+	"github.com/kobsio/kobs/plugins/techdocs"
 	"github.com/kobsio/kobs/plugins/users"
 )
 
@@ -52,6 +53,7 @@ type Config struct {
 	Sonarqube     sonarqube.Config     `json:"sonarqube"`
 	SQL           sql.Config           `json:"sql"`
 	Teams         teams.Config         `json:"teams"`
+	TechDocs      techdocs.Config      `json:"techdocs"`
 	Users         users.Config         `json:"users"`
 }
 
@@ -93,6 +95,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
 	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
 	sonarqubeRouter := sonarqube.Register(clusters, router.plugins, config.Sonarqube)
+	techdocsRouter := techdocs.Register(clusters, router.plugins, config.TechDocs)
 	sqlRouter := sql.Register(clusters, router.plugins, config.SQL)
 	markdownRouter := markdown.Register(clusters, router.plugins, config.Markdown)
 	rssRouter := rss.Register(clusters, router.plugins, config.RSS)
@@ -114,6 +117,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(flux.Route, fluxRouter)
 	router.Mount(opsgenie.Route, opsgenieRouter)
 	router.Mount(sonarqube.Route, sonarqubeRouter)
+	router.Mount(techdocs.Route, techdocsRouter)
 	router.Mount(sql.Route, sqlRouter)
 	router.Mount(markdown.Route, markdownRouter)
 	router.Mount(rss.Route, rssRouter)

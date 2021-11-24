@@ -10,6 +10,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+- [#213](https://github.com/kobsio/kobs/pull/213): [techdocs] Add TechDocs plugin, to access the documentation for your services within kobs.
+
 ### Fixed
 
 ### Changed
