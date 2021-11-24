@@ -64,6 +64,7 @@ nav:
       - SonarQube: plugins/sonarqube.md
       - SQL: plugins/sql.md
       - Teams: plugins/teams.md
+      - TechDocs: plugins/techdocs.md
       - Users: plugins/users.md
   - Community Plugins:
       - Getting Started: community-plugins/getting-started.md
