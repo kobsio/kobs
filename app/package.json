@@ -5,6 +5,7 @@
   "proxy": "http://localhost:15220",
   "dependencies": {
     "@kobsio/plugin-applications": "*",
+    "@kobsio/plugin-azure": "*",
     "@kobsio/plugin-core": "*",
     "@kobsio/plugin-dashboards": "*",
     "@kobsio/plugin-elasticsearch": "*",

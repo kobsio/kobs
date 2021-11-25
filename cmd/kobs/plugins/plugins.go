@@ -12,6 +12,7 @@ import (
 	// Import all plugins, which should be used with the kobs instance. By default this are all first party plugins from
 	// the plugins folder.
 	"github.com/kobsio/kobs/plugins/applications"
+	"github.com/kobsio/kobs/plugins/azure"
 	"github.com/kobsio/kobs/plugins/dashboards"
 	"github.com/kobsio/kobs/plugins/elasticsearch"
 	"github.com/kobsio/kobs/plugins/flux"
@@ -36,6 +37,7 @@ import (
 // Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.
 type Config struct {
 	Applications  applications.Config  `json:"applications"`
+	Azure         azure.Config         `json:"azure"`
 	Dashboards    dashboards.Config    `json:"dashboards"`
 	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
 	Flux          flux.Config          `json:"flux"`
@@ -96,6 +98,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
 	sonarqubeRouter := sonarqube.Register(clusters, router.plugins, config.Sonarqube)
 	techdocsRouter := techdocs.Register(clusters, router.plugins, config.TechDocs)
+	azureRouter := azure.Register(clusters, router.plugins, config.Azure)
 	sqlRouter := sql.Register(clusters, router.plugins, config.SQL)
 	markdownRouter := markdown.Register(clusters, router.plugins, config.Markdown)
 	rssRouter := rss.Register(clusters, router.plugins, config.RSS)
@@ -118,6 +121,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Mount(opsgenie.Route, opsgenieRouter)
 	router.Mount(sonarqube.Route, sonarqubeRouter)
 	router.Mount(techdocs.Route, techdocsRouter)
+	router.Mount(azure.Route, azureRouter)
 	router.Mount(sql.Route, sqlRouter)
 	router.Mount(markdown.Route, markdownRouter)
 	router.Mount(rss.Route, rssRouter)
