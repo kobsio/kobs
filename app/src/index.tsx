@@ -7,6 +7,7 @@ import './index.css';
 // first party plugins from the /plugins folder.
 import { App } from '@kobsio/plugin-core';
 import applicationsPlugin from '@kobsio/plugin-applications';
+import azurePlugin from '@kobsio/plugin-azure';
 import dashboardsPlugin from '@kobsio/plugin-dashboards';
 import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
 import fluxPlugin from '@kobsio/plugin-flux';
@@ -31,6 +32,7 @@ ReactDOM.render(
   <React.StrictMode>
     <App plugins={{
       ...applicationsPlugin,
+      ...azurePlugin,
       ...dashboardsPlugin,
       ...elasticsearchPlugin,
       ...fluxPlugin,
