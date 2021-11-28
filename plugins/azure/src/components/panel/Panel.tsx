@@ -25,11 +25,16 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options?.type &&
     options?.type === 'containerinstances' &&
     options.containerinstances &&
-    options.containerinstances.type === 'list'
+    options.containerinstances.type === 'list' &&
+    options.containerinstances.resourceGroups
   ) {
     return (
       <PluginCard title={title} description={description} transparent={true}>
-        <CIContainerGroups name={name} setDetails={showDetails} />
+        <CIContainerGroups
+          name={name}
+          resourceGroups={options.containerinstances.resourceGroups}
+          setDetails={showDetails}
+        />
       </PluginCard>
     );
   }

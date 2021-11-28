@@ -10,11 +10,13 @@ const service = 'containerinstances';
 interface IContainerInstancesPageProps {
   name: string;
   displayName: string;
+  resourceGroups: string[];
 }
 
 const ContainerInstancesPage: React.FunctionComponent<IContainerInstancesPageProps> = ({
   name,
   displayName,
+  resourceGroups,
 }: IContainerInstancesPageProps) => {
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
@@ -29,7 +31,7 @@ const ContainerInstancesPage: React.FunctionComponent<IContainerInstancesPagePro
         <DrawerContent panelContent={details}>
           <DrawerContentBody>
             <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-              <ContainerGroups name={name} setDetails={setDetails} />
+              <ContainerGroups name={name} resourceGroups={resourceGroups} setDetails={setDetails} />
             </PageSection>
           </DrawerContentBody>
         </DrawerContent>

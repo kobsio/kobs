@@ -13,8 +13,9 @@ import (
 
 func (router *Router) getContainerGroups(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
+	resourceGroups := r.URL.Query()["resourceGroup"]
 
-	log.WithFields(logrus.Fields{"name": name}).Tracef("getContainerGroups")
+	log.WithFields(logrus.Fields{"name": name, "resourceGroups": resourceGroups}).Tracef("getContainerGroups")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -22,10 +23,16 @@ func (router *Router) getContainerGroups(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	containerGroups, err := i.ContainerInstances.ListContainerGroups(r.Context())
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list container instances")
-		return
+	var containerGroups []map[string]interface{}
+
+	for _, resourceGroup := range resourceGroups {
+		cgs, err := i.ContainerInstances.ListContainerGroups(r.Context(), resourceGroup)
+		if err != nil {
+			errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list container instances")
+			return
+		}
+
+		containerGroups = append(containerGroups, cgs...)
 	}
 
 	render.JSON(w, r, containerGroups)

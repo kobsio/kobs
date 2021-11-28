@@ -3,9 +3,11 @@ package instance
 import (
 	"os"
 
-	"github.com/Azure/go-autorest/autorest/azure/auth"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/containerinstances"
+	"github.com/kobsio/kobs/plugins/azure/pkg/instance/resourcegroups"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/go-autorest/autorest/azure/auth"
 	"github.com/sirupsen/logrus"
 )
 
@@ -23,6 +25,7 @@ type Config struct {
 // Instance represents a single Azure instance, which can be added via the configuration file.
 type Instance struct {
 	Name               string
+	ResourceGroups     *resourcegroups.Client
 	ContainerInstances *containerinstances.Client
 }
 
@@ -30,15 +33,22 @@ type Instance struct {
 func New(config Config) (*Instance, error) {
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 
+	credentials, err := azidentity.NewDefaultAzureCredential(nil)
+	if err != nil {
+		return nil, err
+	}
+
 	authorizer, err := auth.NewAuthorizerFromEnvironment()
 	if err != nil {
 		return nil, err
 	}
 
 	containerInstances := containerinstances.New(subscriptionID, authorizer)
+	resourceGroups := resourcegroups.New(subscriptionID, credentials)
 
 	return &Instance{
 		Name:               config.Name,
+		ResourceGroups:     resourceGroups,
 		ContainerInstances: containerInstances,
 	}, nil
 }

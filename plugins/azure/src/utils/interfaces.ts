@@ -3,6 +3,7 @@ export interface IPanelOptions {
   type?: string;
   containerinstances?: {
     type?: string;
+    resourceGroups?: string[];
     resourceGroup?: string;
     containerGroup?: string;
     containers?: string[];
