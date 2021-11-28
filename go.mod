@@ -4,6 +4,9 @@ go 1.17
 
 require (
 	github.com/Azure/azure-sdk-for-go v59.3.0+incompatible
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v0.20.0
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v0.12.0
+	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v0.2.0
 	github.com/Azure/go-autorest/autorest v0.11.19
 	github.com/Azure/go-autorest/autorest/azure/auth v0.5.9
 	github.com/ClickHouse/clickhouse-go v1.5.1
@@ -34,6 +37,7 @@ require (
 )
 
 require (
+	github.com/Azure/azure-sdk-for-go/sdk/internal v0.8.1 // indirect
 	github.com/Azure/go-autorest v14.2.0+incompatible // indirect
 	github.com/Azure/go-autorest/autorest/adal v0.9.14 // indirect
 	github.com/Azure/go-autorest/autorest/azure/cli v0.4.2 // indirect
@@ -85,6 +89,7 @@ require (
 	github.com/nitishm/engarde v0.1.1 // indirect
 	github.com/openshift/api v0.0.0-20200221181648-8ce0047d664f // indirect
 	github.com/opentracing/opentracing-go v1.1.0 // indirect
+	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
@@ -94,7 +99,7 @@ require (
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/vjeantet/grok v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
-	golang.org/x/net v0.0.0-20210525063256-abc453219eb5 // indirect
+	golang.org/x/net v0.0.0-20210610132358-84b48f89b13b // indirect
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20210817190340-bfb29a6856f2 // indirect

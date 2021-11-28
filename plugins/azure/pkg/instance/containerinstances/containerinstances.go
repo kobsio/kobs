@@ -24,16 +24,16 @@ type Client struct {
 
 // ContainerGroupListResult the container group list response that contains the container group properties.
 type ContainerGroupListResult struct {
-	Value    *[]map[string]interface{} `json:"value,omitempty"`
-	NextLink *string                   `json:"nextLink,omitempty"`
+	Value    []map[string]interface{} `json:"value,omitempty"`
+	NextLink string                   `json:"nextLink,omitempty"`
 }
 
 // ListContainerGroups list all container groups in a subscription.
 //
 // We can not use the containerGroupsClient for this request, because the result is missing some important fields like
 // the ids of the returned resources.
-func (c *Client) ListContainerGroups(ctx context.Context) (*[]map[string]interface{}, error) {
-	req, err := http.NewRequestWithContext(context.Background(), "GET", containerinstance.DefaultBaseURI+"/subscriptions/"+c.subscriptionID+"/providers/Microsoft.ContainerInstance/containerGroups?api-version=2021-07-01", nil)
+func (c *Client) ListContainerGroups(ctx context.Context, resourceGroup string) ([]map[string]interface{}, error) {
+	req, err := http.NewRequestWithContext(context.Background(), "GET", containerinstance.DefaultBaseURI+"/subscriptions/"+c.subscriptionID+"/resourceGroups/"+resourceGroup+"/providers/Microsoft.ContainerInstance/containerGroups?api-version=2021-07-01", nil)
 	if err != nil {
 		return nil, err
 	}

@@ -64,6 +64,8 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
+	router.Get("/resourcegroups/{name}", router.getResourceGroups)
+
 	router.Route("/containerinstances", func(r chi.Router) {
 		r.Get("/containergroups/{name}", router.getContainerGroups)
 		r.Get("/containergroup/details/{name}", router.getContainerGroup)

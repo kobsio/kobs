@@ -7,20 +7,27 @@ import { IContainerGroup } from './interfaces';
 
 interface IContainerGroupsProps {
   name: string;
+  resourceGroups: string[];
   setDetails?: (details: React.ReactNode) => void;
 }
 
 const ContainerGroups: React.FunctionComponent<IContainerGroupsProps> = ({
   name,
+  resourceGroups,
   setDetails,
 }: IContainerGroupsProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IContainerGroup[], Error>(
-    ['azure/containergroups/containergroups', name],
+    ['azure/containergroups/containergroups', name, resourceGroups],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/azure/containerinstances/containergroups/${name}`, {
-          method: 'get',
-        });
+        const resourceGroupsParams = resourceGroups.map((resourceGroup) => `resourceGroup=${resourceGroup}`).join('&');
+
+        const response = await fetch(
+          `/api/plugins/azure/containerinstances/containergroups/${name}?${resourceGroupsParams}`,
+          {
+            method: 'get',
+          },
+        );
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {

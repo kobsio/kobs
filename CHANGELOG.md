@@ -11,10 +11,13 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Added
 
 - [#213](https://github.com/kobsio/kobs/pull/213): [techdocs] Add TechDocs plugin, to access the documentation for your services within kobs.
+- [#215](https://github.com/kobsio/kobs/pull/215): [azure] Add Azure plugin, to monitor your Azure resources.
 
 ### Fixed
 
 ### Changed
+
+- [#217](https://github.com/kobsio/kobs/pull/217): [azure] Use resource groups to get a list of container instances.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 
