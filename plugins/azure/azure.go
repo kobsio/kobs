@@ -64,14 +64,16 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/resourcegroups/{name}", router.getResourceGroups)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/resourcegroups", router.getResourceGroups)
 
-	router.Route("/containerinstances", func(r chi.Router) {
-		r.Get("/containergroups/{name}", router.getContainerGroups)
-		r.Get("/containergroup/details/{name}", router.getContainerGroup)
-		r.Get("/containergroup/metrics/{name}", router.getContainerMetrics)
-		r.Get("/containergroup/logs/{name}", router.getContainerLogs)
-		r.Get("/containergroup/restart/{name}", router.restartContainerGroup)
+		r.Route("/containerinstances", func(containerInstancesRouter chi.Router) {
+			containerInstancesRouter.Get("/containergroups", router.getContainerGroups)
+			containerInstancesRouter.Get("/containergroup/details", router.getContainerGroup)
+			containerInstancesRouter.Get("/containergroup/metrics", router.getContainerMetrics)
+			containerInstancesRouter.Get("/containergroup/logs", router.getContainerLogs)
+			containerInstancesRouter.Get("/containergroup/restart", router.restartContainerGroup)
+		})
 	})
 
 	return router

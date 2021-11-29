@@ -23,7 +23,7 @@ const ContainerGroups: React.FunctionComponent<IContainerGroupsProps> = ({
         const resourceGroupsParams = resourceGroups.map((resourceGroup) => `resourceGroup=${resourceGroup}`).join('&');
 
         const response = await fetch(
-          `/api/plugins/azure/containerinstances/containergroups/${name}?${resourceGroupsParams}`,
+          `/api/plugins/azure/${name}/containerinstances/containergroups?${resourceGroupsParams}`,
           {
             method: 'get',
           },

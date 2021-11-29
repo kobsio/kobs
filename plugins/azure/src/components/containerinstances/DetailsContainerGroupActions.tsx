@@ -29,7 +29,7 @@ const DetailsContainerGroupActions: React.FunctionComponent<IDetailsContainerGro
   const restart = async (): Promise<void> => {
     try {
       const response = await fetch(
-        `/api/plugins/azure/containerinstances/containergroup/restart/${name}?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}`,
+        `/api/plugins/azure/${name}/containerinstances/containergroup/restart?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}`,
         {
           method: 'get',
         },

@@ -2,6 +2,7 @@ package context
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
@@ -83,6 +84,28 @@ func (u *User) HasResourceAccess(cluster, namespace, name string) bool {
 	}
 
 	return false
+}
+
+// GetPluginPermissions returns the custom plugin permissions for a user. For that the name of the plugin must be
+// provided.
+func (u *User) GetPluginPermissions(name string) (interface{}, error) {
+	if u.Permissions.Custom == nil {
+		return nil, fmt.Errorf("custom permissions are empty for the user")
+	}
+
+	var customPermissions map[string]interface{}
+	customPermissions = make(map[string]interface{})
+
+	err := json.Unmarshal(u.Permissions.Custom.Raw, customPermissions)
+	if err != nil {
+		return nil, err
+	}
+
+	if customPluginPermissions, ok := customPermissions[name]; ok {
+		return customPluginPermissions, nil
+	}
+
+	return nil, fmt.Errorf("plugin is missing in custom permissions for the user")
 }
 
 // GetUser returns a user from the given context if one is present. Returns the empty string if a user can not be found.

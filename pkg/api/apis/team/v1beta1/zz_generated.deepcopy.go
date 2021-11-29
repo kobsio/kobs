@@ -23,6 +23,7 @@ package v1beta1
 
 import (
 	dashboardv1beta1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
+	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -56,6 +57,11 @@ func (in *Permissions) DeepCopyInto(out *Permissions) {
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
+	}
+	if in.Custom != nil {
+		in, out := &in.Custom, &out.Custom
+		*out = new(v1.JSON)
+		(*in).DeepCopyInto(*out)
 	}
 	return
 }

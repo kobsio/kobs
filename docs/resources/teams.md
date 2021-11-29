@@ -31,6 +31,7 @@ In the following you can found the specification for the Team CRD.
 | ----- | ---- | ----------- | -------- |
 | plugins | []string | A list of plugins, which can be accessed by the members of the team. The special list entry `*` allows access to all plugins. | Yes |
 | resources | [[]PermissionResources](#permissionresources) | A list of resources, which can be accessed by the members of the team. | Yes |
+| custom | map<string, any> | A map of custom permissions for plugins. The key must be the name of the plugin. The format and examples of the value for each plugin can be found on the corresponding plugin page. | Yes |
 
 ### PermissionResources
 
