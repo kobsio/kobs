@@ -1,6 +1,7 @@
 package v1beta1
 
 import (
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
@@ -53,6 +54,12 @@ type Reference struct {
 type Permissions struct {
 	Plugins   []string               `json:"plugins"`
 	Resources []PermissionsResources `json:"resources"`
+	Custom    []PermissionsCustom    `json:"custom,omitempty"`
+}
+
+type PermissionsCustom struct {
+	Name        string               `json:"name"`
+	Permissions apiextensionsv1.JSON `json:"permissions"`
 }
 
 type PermissionsResources struct {

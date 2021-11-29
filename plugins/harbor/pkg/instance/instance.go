@@ -37,7 +37,6 @@ type Instance struct {
 }
 
 func (i *Instance) doRequest(ctx context.Context, url string) ([]byte, int64, error) {
-	fmt.Println(url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/v2.0/%s", i.address, url), nil)
 	if err != nil {
 		return nil, 0, err

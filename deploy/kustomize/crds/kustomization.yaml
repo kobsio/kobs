@@ -5,3 +5,4 @@ resources:
   - kobs.io_applications.yaml
   - kobs.io_dashboards.yaml
   - kobs.io_teams.yaml
+  - kobs.io_users.yaml

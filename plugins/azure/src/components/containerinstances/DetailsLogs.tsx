@@ -38,7 +38,7 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
       try {
         if (container !== '') {
           const response = await fetch(
-            `/api/plugins/azure/containerinstances/containergroup/logs/${name}?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}&container=${container}`,
+            `/api/plugins/azure/${name}/containerinstances/containergroup/logs?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}&container=${container}`,
             {
               method: 'get',
             },
