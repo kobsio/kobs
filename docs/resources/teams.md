@@ -31,6 +31,7 @@ In the following you can found the specification for the Team CRD.
 | ----- | ---- | ----------- | -------- |
 | plugins | []string | A list of plugins, which can be accessed by the members of the team. The special list entry `*` allows access to all plugins. | Yes |
 | resources | [[]PermissionResources](#permissionresources) | A list of resources, which can be accessed by the members of the team. | Yes |
+| custom | [[]PermissionsCustom](#permissionscustom) | A list of custom permissions. | Yes |
 
 ### PermissionResources
 
@@ -39,6 +40,15 @@ In the following you can found the specification for the Team CRD.
 | clusters | []string | A list of clusters to allow access to. The special list entry `*` allows access to all clusters. | Yes |
 | namespaces | []string | A list of namespaces to allow access to. The special list entry `*` allows access to all namespaces. | Yes |
 | resources | []string | A list of resources to allow access to. The special list entry `*` allows access to all resources. | Yes |
+
+### PermissionsCustom
+
+Custom permissions can be used by plugin to have a fine grained permission model.
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | The name of the plugin instance as it is defined in the configuration. | Yes |
+| permissions | any | The permissions, which should be grant to a user. The format of this property is different for each plugin. You can find an example for each plugin on the corresponding plugin page in the documentation. | Yes |
 
 ### Dashboard
 

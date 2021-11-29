@@ -22,7 +22,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
     ['azure/resourcegroups', name],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/azure/resourcegroups/${name}`, { method: 'get' });
+        const response = await fetch(`/api/plugins/azure/${name}/resourcegroups`, { method: 'get' });
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {

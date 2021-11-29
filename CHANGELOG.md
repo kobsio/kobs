@@ -12,6 +12,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#213](https://github.com/kobsio/kobs/pull/213): [techdocs] Add TechDocs plugin, to access the documentation for your services within kobs.
 - [#215](https://github.com/kobsio/kobs/pull/215): [azure] Add Azure plugin, to monitor your Azure resources.
+- [#219](https://github.com/kobsio/kobs/pull/219): [azure] Add permissions for Azure plugin, so that access to resources and actions can be restricted based on resource groups.
 
 ### Fixed
 

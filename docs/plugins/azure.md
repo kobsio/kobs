@@ -23,6 +23,7 @@ plugins:
 | name | string | Name of the Azure instance. | Yes |
 | displayName | string | Name of the Azure instance as it is shown in the UI. | Yes |
 | descriptions | string | Description of the Azure instance. | No |
+| permissionsEnabled | boolean | Enable the permission handling. The permissions can be defined via the [PermissionsCustom](../resources/teams.md#permissionscustom) in a team. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 
 To authenticate against the Azure API you have to set the following environment variables:
 
@@ -49,6 +50,82 @@ The following options can be used for a panel with the Azure plugin:
 | containerGroup | string | The name of the container group. This is not required if the type is `list`. | No |
 | containers | string[] | A list of container names. This is only required if the type is `logs`. | No |
 | metric | string | The name of the metric for which the data should be displayed. Supported values are `CPUUsage`, `MemoryUsage`, `NetworkBytesReceivedPerSecond` and `NetworkBytesTransmittedPerSecond`. This is only required if the type is `metrics`. | No |
+
+## Usage
+
+### Permissions
+
+You can define fine grained permissions to access your Azure resources via kobs. The permissions are defined via the `permissions.cusomt` field of a [Team](../resources/teams.md). Each user which is member of this team, will then get the defined permissions.
+
+In the following example each member of `team1` will get access to all Azure resource, while members of `team2` can only access container instances in the `development` resource group:
+
+??? note "team1"
+
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1beta1
+    kind: Team
+    metadata:
+      name: team1
+    spec:
+      permissions:
+        plugins:
+          - "*"
+        resources:
+          - clusters:
+              - "*"
+            namespaces:
+              - "*"
+            resources:
+              - "*"
+        custom:
+          - name: azure
+            permissions:
+              - resources:
+                  - "*"
+                resourceGroups:
+                  - "*"
+                verbs:
+                  - "*"
+    ```
+
+??? note "team2"
+
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1beta1
+    kind: Team
+    metadata:
+      name: team2
+    spec:
+      permissions:
+        plugins:
+          - "*"
+        resources:
+          - clusters:
+              - "*"
+            namespaces:
+              - "*"
+            resources:
+              - "*"
+        custom:
+          - name: azure
+            permissions:
+              - resources:
+                  - "containerinstances"
+                resourceGroups:
+                  - "development"
+                verbs:
+                  - "*"
+    ```
+
+The `*` value is a special value, which allows access to all resources, resource groups and action. The following values can also be used for resources and verbs:
+
+- `resources`: `containerinstances`
+- `verbs`: `get`, `put`, `post` and `delete`
+
+!!! note
+    You have to set the `permissionsEnabled` property in the configuration to `true` and you must enable [authentication](../configuration/authentication.md) for kobs to use this feature.
 
 ## Examples
 

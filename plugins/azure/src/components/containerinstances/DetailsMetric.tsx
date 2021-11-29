@@ -28,7 +28,7 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/azure/containerinstances/containergroup/metrics/${name}?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}&metricName=${metricName}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/azure/${name}/containerinstances/containergroup/metrics?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}&metricName=${metricName}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },

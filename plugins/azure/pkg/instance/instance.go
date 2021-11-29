@@ -17,14 +17,16 @@ var (
 
 // Config is the structure of the configuration for a single Azure instance.
 type Config struct {
-	Name        string `json:"name"`
-	DisplayName string `json:"displayName"`
-	Description string `json:"description"`
+	Name               string `json:"name"`
+	DisplayName        string `json:"displayName"`
+	Description        string `json:"description"`
+	PermissionsEnabled bool   `json:"permissionsEnabled"`
 }
 
 // Instance represents a single Azure instance, which can be added via the configuration file.
 type Instance struct {
 	Name               string
+	PermissionsEnabled bool
 	ResourceGroups     *resourcegroups.Client
 	ContainerInstances *containerinstances.Client
 }
@@ -48,6 +50,7 @@ func New(config Config) (*Instance, error) {
 
 	return &Instance{
 		Name:               config.Name,
+		PermissionsEnabled: config.PermissionsEnabled,
 		ResourceGroups:     resourceGroups,
 		ContainerInstances: containerInstances,
 	}, nil

@@ -26,13 +26,16 @@ func (router *Router) getContainerGroups(w http.ResponseWriter, r *http.Request)
 	var containerGroups []map[string]interface{}
 
 	for _, resourceGroup := range resourceGroups {
-		cgs, err := i.ContainerInstances.ListContainerGroups(r.Context(), resourceGroup)
-		if err != nil {
-			errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list container instances")
-			return
-		}
+		err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+		if err == nil {
+			cgs, err := i.ContainerInstances.ListContainerGroups(r.Context(), resourceGroup)
+			if err != nil {
+				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list container groups")
+				return
+			}
 
-		containerGroups = append(containerGroups, cgs...)
+			containerGroups = append(containerGroups, cgs...)
+		}
 	}
 
 	render.JSON(w, r, containerGroups)
@@ -48,6 +51,12 @@ func (router *Router) getContainerGroup(w http.ResponseWriter, r *http.Request) 
 	i := router.getInstance(name)
 	if i == nil {
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the container instance")
 		return
 	}
 
@@ -73,6 +82,12 @@ func (router *Router) getContainerMetrics(w http.ResponseWriter, r *http.Request
 	i := router.getInstance(name)
 	if i == nil {
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the metrics of the container instance")
 		return
 	}
 
@@ -110,7 +125,13 @@ func (router *Router) restartContainerGroup(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err := i.ContainerInstances.RestartContainerGroup(r.Context(), resourceGroup, containerGroup)
+	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to restart the container instance")
+		return
+	}
+
+	err = i.ContainerInstances.RestartContainerGroup(r.Context(), resourceGroup, containerGroup)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get restart container group")
 		return
@@ -130,6 +151,12 @@ func (router *Router) getContainerLogs(w http.ResponseWriter, r *http.Request) {
 	i := router.getInstance(name)
 	if i == nil {
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the logs of the container instance")
 		return
 	}
 

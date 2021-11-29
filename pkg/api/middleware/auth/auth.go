@@ -188,6 +188,7 @@ func getUserPermissions(user user.UserSpec, teams []team.TeamSpec) authContext.U
 			if c == team.Cluster && n == team.Namespace && userTeam.Name == team.Name {
 				u.Permissions.Plugins = append(u.Permissions.Plugins, team.Permissions.Plugins...)
 				u.Permissions.Resources = append(u.Permissions.Resources, team.Permissions.Resources...)
+				u.Permissions.Custom = append(u.Permissions.Custom, team.Permissions.Custom...)
 			}
 		}
 	}

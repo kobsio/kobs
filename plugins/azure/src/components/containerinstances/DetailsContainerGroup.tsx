@@ -34,7 +34,7 @@ const DetailsContainerGroup: React.FunctionComponent<IDetailsContainerGroupProps
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/azure/containerinstances/containergroup/details/${name}?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}`,
+          `/api/plugins/azure/${name}/containerinstances/containergroup/details?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}`,
           {
             method: 'get',
           },
