@@ -4,7 +4,7 @@ import React from 'react';
 import { ResponsiveLineCanvas } from '@nivo/line';
 
 import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
-import { formatAxisBottom, formatMetrics } from '../../utils/helpers';
+import { convertMetric, formatAxisBottom, formatMetric } from '../../utils/helpers';
 import { IMetric } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 
@@ -23,7 +23,7 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
   metricName,
   times,
 }: IDetailsMetricProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<IMetric[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IMetric, Error>(
     ['azure/containergroups/containergroup/metrics', name, resourceGroup, containerGroup, metricName, times],
     async () => {
       try {
@@ -36,6 +36,11 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
+          if (json && json.length === 1) {
+            return formatMetric(json[0]);
+          }
+
+          return null;
           return json;
         } else {
           if (json.error) {
@@ -66,7 +71,7 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
         title="Could not get container group metrics"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetric[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetric, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -77,7 +82,7 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
     );
   }
 
-  if (!data || data.length !== 1) {
+  if (!data) {
     return null;
   }
 
@@ -88,13 +93,13 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
       }}
       axisLeft={{
         format: '>-.2f',
-        legend: data[0].unit,
+        legend: data.unit,
         legendOffset: -40,
         legendPosition: 'middle',
       }}
       colors={COLOR_SCALE}
       curve="monotoneX"
-      data={formatMetrics(data[0])}
+      data={convertMetric(data)}
       enableArea={true}
       enableGridX={false}
       enableGridY={true}
@@ -112,14 +117,14 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
           <ChartTooltip
             anchor={isFirstHalf ? 'right' : 'left'}
             color={tooltip.point.color}
-            label={`${tooltip.point.data.yFormatted} ${data[0].unit}`}
+            label={`${tooltip.point.serieId}: ${tooltip.point.data.yFormatted} ${data.unit}`}
             position={[0, 20]}
             title={tooltip.point.data.xFormatted.toString()}
           />
         );
       }}
       xScale={{ type: 'time' }}
-      yScale={{ max: 'auto', min: 'auto', stacked: false, type: 'linear' }}
+      yScale={{ max: 'auto', min: 0, stacked: false, type: 'linear' }}
       yFormat=" >-.4f"
     />
   );

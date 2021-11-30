@@ -62,7 +62,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
             mountOnEnter={true}
           >
             <Tab eventKey="details" title={<TabTitleText>Details</TabTitleText>}>
-              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+              <div style={{ maxWidth: '100%', padding: '24px 24px' }}>
                 <Card isCompact={true}>
                   <CardBody>
                     <DetailsContainerGroup name={name} resourceGroup={resourceGroup} containerGroup={containerGroup} />
@@ -72,20 +72,13 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
             </Tab>
 
             <Tab eventKey="metrics" title={<TabTitleText>Metrics</TabTitleText>}>
-              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+              <div style={{ maxWidth: '100%', padding: '24px 24px' }}>
                 <DetailsMetrics name={name} resourceGroup={resourceGroup} containerGroup={containerGroup} />
               </div>
             </Tab>
 
             <Tab eventKey="logs" title={<TabTitleText>Logs</TabTitleText>}>
-              <div
-                style={{
-                  height: `${tabsWrapperSize.height - 32}px`,
-                  maxWidth: '100%',
-                  overflowX: 'scroll',
-                  padding: '24px 24px',
-                }}
-              >
+              <div style={{ height: `${tabsWrapperSize.height - 32}px`, maxWidth: '100%', padding: '24px 24px' }}>
                 <Card isCompact={true} style={{ height: '100%' }}>
                   <CardBody>
                     <DetailsLogs

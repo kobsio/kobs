@@ -61,8 +61,6 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
     },
   );
 
-  console.log(wrapperSize);
-
   return (
     <div style={{ height: '100%', maxWidth: '100%', overflow: 'scroll' }} ref={refWrapper}>
       <Select
