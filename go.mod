@@ -3,12 +3,13 @@ module github.com/kobsio/kobs
 go 1.17
 
 require (
-	github.com/Azure/azure-sdk-for-go v59.3.0+incompatible
+	github.com/Azure/azure-sdk-for-go v59.4.0+incompatible
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v0.20.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v0.12.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v0.2.0
 	github.com/Azure/go-autorest/autorest v0.11.19
 	github.com/Azure/go-autorest/autorest/azure/auth v0.5.9
+	github.com/Azure/go-autorest/autorest/date v0.3.0
 	github.com/ClickHouse/clickhouse-go v1.5.1
 	github.com/fluxcd/helm-controller/api v0.13.0
 	github.com/fluxcd/kustomize-controller/api v0.18.0
@@ -41,7 +42,6 @@ require (
 	github.com/Azure/go-autorest v14.2.0+incompatible // indirect
 	github.com/Azure/go-autorest/autorest/adal v0.9.14 // indirect
 	github.com/Azure/go-autorest/autorest/azure/cli v0.4.2 // indirect
-	github.com/Azure/go-autorest/autorest/date v0.3.0 // indirect
 	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
 	github.com/Azure/go-autorest/autorest/validation v0.3.1 // indirect
 	github.com/Azure/go-autorest/logger v0.2.1 // indirect
@@ -96,6 +96,7 @@ require (
 	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/rs/xid v1.2.1 // indirect
 	github.com/rs/zerolog v1.20.0 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/vjeantet/grok v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect

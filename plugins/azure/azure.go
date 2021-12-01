@@ -43,12 +43,12 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	var instances []*instance.Instance
 
 	for _, cfg := range config {
-		instance, err := instance.New(cfg)
+		inst, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Azure instance")
+			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Azure inst")
 		}
 
-		instances = append(instances, instance)
+		instances = append(instances, inst)
 
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,
@@ -73,6 +73,10 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 			containerInstancesRouter.Get("/containergroup/metrics", router.getContainerMetrics)
 			containerInstancesRouter.Get("/containergroup/logs", router.getContainerLogs)
 			containerInstancesRouter.Put("/containergroup/restart", router.restartContainerGroup)
+		})
+
+		r.Route("/costmanagment", func(costManagementRouter chi.Router) {
+			costManagementRouter.Get("/actualCost", router.getActualCost)
 		})
 	})
 

@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/containerinstances"
+	"github.com/kobsio/kobs/plugins/azure/pkg/instance/costmanagement"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/resourcegroups"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -29,6 +30,7 @@ type Instance struct {
 	PermissionsEnabled bool
 	ResourceGroups     *resourcegroups.Client
 	ContainerInstances *containerinstances.Client
+	CostManagement     *costmanagement.Client
 }
 
 // New returns a new Elasticsearch instance for the given configuration.
@@ -47,11 +49,13 @@ func New(config Config) (*Instance, error) {
 
 	containerInstances := containerinstances.New(subscriptionID, authorizer)
 	resourceGroups := resourcegroups.New(subscriptionID, credentials)
+	costManagement := costmanagement.New(subscriptionID, authorizer)
 
 	return &Instance{
 		Name:               config.Name,
 		PermissionsEnabled: config.PermissionsEnabled,
 		ResourceGroups:     resourceGroups,
 		ContainerInstances: containerInstances,
+		CostManagement:     costManagement,
 	}, nil
 }
