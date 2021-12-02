@@ -4,15 +4,12 @@ import React from 'react';
 
 import { IOptionsAdditionalFields, IPluginTimes, Options } from '@kobsio/plugin-core';
 
-interface IDetailsMetricsToolbarProps {
+interface IMetricsToolbarProps {
   times: IPluginTimes;
   setTimes: (times: IPluginTimes) => void;
 }
 
-const DetailsMetricsToolbar: React.FunctionComponent<IDetailsMetricsToolbarProps> = ({
-  times,
-  setTimes,
-}: IDetailsMetricsToolbarProps) => {
+const MetricsToolbar: React.FunctionComponent<IMetricsToolbarProps> = ({ times, setTimes }: IMetricsToolbarProps) => {
   return (
     <Card style={{ maxWidth: '100%' }}>
       <Toolbar id="dashboard-toolbar" style={{ zIndex: 300 }}>
@@ -39,4 +36,4 @@ const DetailsMetricsToolbar: React.FunctionComponent<IDetailsMetricsToolbarProps
   );
 };
 
-export default DetailsMetricsToolbar;
+export default MetricsToolbar;

@@ -1,4 +1,20 @@
-package containerinstances
+package monitor
+
+import (
+	"time"
+)
+
+// getMetricsOptions returns the options for a metrics request.
+func getMetricsOptions(timeStart, timeEnd int64) (string, string, int32) {
+	interval := getInterval(timeStart, timeEnd)
+	top := int32(500)
+
+	timeStartISO := time.Unix(timeStart, 0).UTC()
+	timeEndISO := time.Unix(timeEnd, 0).UTC()
+	timespan := timeStartISO.Format("2006-01-02T15:04:05") + "/" + timeEndISO.Format("2006-01-02T15:04:05")
+
+	return interval, timespan, top
+}
 
 // getInterval returns the duration for the Prometheus resolution for a given start and end time.
 func getInterval(start, end int64) string {

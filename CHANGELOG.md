@@ -14,6 +14,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#215](https://github.com/kobsio/kobs/pull/215): [azure] Add Azure plugin, to monitor your Azure resources.
 - [#219](https://github.com/kobsio/kobs/pull/219): [azure] Add permissions for Azure plugin, so that access to resources and actions can be restricted based on resource groups.
 - [#220](https://github.com/kobsio/kobs/pull/220): [azure] Add auto formatting for the returned metrics of a container instance and fix the tooltip positioning in the metrics chart.
+- [#221](https://github.com/kobsio/kobs/pull/221): [azure] :warning: _Breaking change:_ :warning: Add support for kubernetes services and refactor various places in the Azure plugin.
 - [#222](https://github.com/kobsio/kobs/pull/222): [azure] Simple cost management on subscription level
 
 ### Fixed

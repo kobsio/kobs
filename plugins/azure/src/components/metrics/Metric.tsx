@@ -8,27 +8,27 @@ import { convertMetric, formatAxisBottom, formatMetric } from '../../utils/helpe
 import { IMetric } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 
-interface IDetailsMetricProps {
+interface IMetricProps {
   name: string;
   resourceGroup: string;
-  containerGroup: string;
+  provider: string;
   metricName: string;
   times: IPluginTimes;
 }
 
-const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
+const Metric: React.FunctionComponent<IMetricProps> = ({
   name,
   resourceGroup,
-  containerGroup,
+  provider,
   metricName,
   times,
-}: IDetailsMetricProps) => {
+}: IMetricProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IMetric, Error>(
-    ['azure/containergroups/containergroup/metrics', name, resourceGroup, containerGroup, metricName, times],
+    ['azure/monitor/metrics', name, resourceGroup, provider, metricName, times],
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/azure/${name}/containerinstances/containergroup/metrics?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}&metricName=${metricName}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/azure/${name}/monitor/metrics?resourceGroup=${resourceGroup}&provider=${provider}&metricName=${metricName}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },
@@ -68,7 +68,7 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
       <Alert
         variant={AlertVariant.danger}
         isInline={true}
-        title="Could not get container group metrics"
+        title="Could not get metrics"
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetric, Error>> => refetch()}>
@@ -130,4 +130,4 @@ const DetailsMetric: React.FunctionComponent<IDetailsMetricProps> = ({
   );
 };
 
-export default DetailsMetric;
+export default Metric;
