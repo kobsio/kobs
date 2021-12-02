@@ -45,7 +45,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		inst, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Azure inst")
+			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Azure instance")
 		}
 
 		instances = append(instances, inst)

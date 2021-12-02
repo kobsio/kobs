@@ -51,12 +51,14 @@ func buildQueryParams(timeframe int) costmanagement.QueryDefinition {
 		Grouping:      &grouping,
 		Filter:        nil,
 	}
+
 	now := date.Time{Time: time.Now()}
 	from := date.Time{Time: now.AddDate(0, 0, timeframe*-1)}
 	tp := costmanagement.QueryTimePeriod{
 		From: &from,
 		To:   &now,
 	}
+
 	return costmanagement.QueryDefinition{
 		Type:       costmanagement.ExportTypeActualCost,
 		Timeframe:  costmanagement.TimeframeTypeCustom,

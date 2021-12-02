@@ -2,7 +2,7 @@ package instance
 
 import (
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/containerinstances"
-        "github.com/kobsio/kobs/plugins/azure/pkg/instance/costmanagement"
+	"github.com/kobsio/kobs/plugins/azure/pkg/instance/costmanagement"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/kubernetesservices"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/monitor"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/resourcegroups"
