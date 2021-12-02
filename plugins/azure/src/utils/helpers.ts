@@ -2,6 +2,7 @@ import { Serie } from '@nivo/line';
 
 import { IMetric } from './interfaces';
 import { formatTime as formatTimeCore } from '@kobsio/plugin-core';
+import {IQueryResult, PieDatum} from "../components/costmanagement/interfaces";
 
 // getResourceGroupFromID returns the resource group name from a given Azure ID. For that we are splitting the ID by "/"
 // and looking for the resourceGroups parameter. Then the next parameter must be the name of the resource group. If the
@@ -53,6 +54,21 @@ export const convertMetric = (metric: IMetric): Serie[] => {
   }
 
   return series;
+};
+
+// convertQueryResult returns the cost management query result in the format required for nivo pie canvas.
+export const convertQueryResult = (data: IQueryResult): PieDatum[] => {
+  const pieData: PieDatum[] = [];
+
+  for (let i = 0; i < data.properties.rows.length; i++) {
+    pieData.push({
+      id: data.properties.rows[i][1],
+      label: data.properties.rows[i][1],
+      value: data.properties.rows[i][0],
+    });
+  }
+
+  return pieData;
 };
 
 // formatMetric is used to auto format the values of a metric. When the unit of a metric is "Bytes" we auto format the

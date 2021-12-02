@@ -1,4 +1,5 @@
 import containerInstancesIcon from '../assets/services/container-instances.svg';
+import costManagementIcon from '../assets/services/cost-management.svg';
 
 export interface IServices {
   [key: string]: IService;
@@ -16,5 +17,10 @@ export const services: IServices = {
     description: 'Easily run containers on Azure without managing servers',
     icon: containerInstancesIcon,
     name: 'Container Instances',
+  },
+  costmanagement: {
+    description: 'Cost Management helps you understand your Azure invoice',
+    icon: costManagementIcon,
+    name: 'Cost Management',
   },
 };

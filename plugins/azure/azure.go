@@ -75,7 +75,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 			containerInstancesRouter.Put("/containergroup/restart", router.restartContainerGroup)
 		})
 
-		r.Route("/costmanagment", func(costManagementRouter chi.Router) {
+		r.Route("/costmanagement", func(costManagementRouter chi.Router) {
 			costManagementRouter.Get("/actualCost", router.getActualCost)
 		})
 	})

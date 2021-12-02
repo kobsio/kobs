@@ -17,10 +17,10 @@ type Client struct {
 	queryClient    *costmanagement.QueryClient
 }
 
-// GetActualCost query the actual costs
-func (c *Client) GetActualCost(ctx context.Context) (costmanagement.QueryResult, error) {
+// GetActualCost query the actual costs for the configured subscription and given timeframe grouped by resourceGroup
+func (c *Client) GetActualCost(ctx context.Context, timeframe int) (costmanagement.QueryResult, error) {
 	scope := fmt.Sprintf("subscriptions/%s", c.subscriptionID)
-	res, err := c.queryClient.Usage(ctx, scope, buildQueryParams())
+	res, err := c.queryClient.Usage(ctx, scope, buildQueryParams(timeframe))
 	if err != nil {
 		return costmanagement.QueryResult{}, err
 	}
@@ -28,7 +28,7 @@ func (c *Client) GetActualCost(ctx context.Context) (costmanagement.QueryResult,
 	return res, nil
 }
 
-func buildQueryParams() costmanagement.QueryDefinition {
+func buildQueryParams(timeframe int) costmanagement.QueryDefinition {
 	agg := make(map[string]*costmanagement.QueryAggregation)
 	tc := costmanagement.QueryAggregation{
 		Name:     to.StringPtr("Cost"),
@@ -51,7 +51,7 @@ func buildQueryParams() costmanagement.QueryDefinition {
 		Filter:        nil,
 	}
 	now := date.Time{Time: time.Now()}
-	from := date.Time{Time: now.AddDate(0, 0, -7)}
+	from := date.Time{Time: now.AddDate(0, 0, timeframe*-1)}
 	tp := costmanagement.QueryTimePeriod{
 		From: &from,
 		To:   &now,

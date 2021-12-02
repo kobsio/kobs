@@ -6,6 +6,7 @@ import React from 'react';
 import ContainerInstancesPage from '../containerinstances/Page';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import OverviewPage from './OverviewPage';
+import CostManagementPage from "../costmanagement/Page";
 
 // IResourceGroup is the interface for a resource group returned by the Azure API. This interface is only required for
 // the returned data, because we are only passing the name of the resource group to the other components.
@@ -74,6 +75,9 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       </Route>
       <Route exact={true} path={`/${name}/containerinstances`}>
         <ContainerInstancesPage name={name} displayName={displayName} resourceGroups={data} />
+      </Route>
+      <Route exact={true} path={`/${name}/costmanagement`}>
+        <CostManagementPage name={name} displayName={displayName} />
       </Route>
     </Switch>
   );
