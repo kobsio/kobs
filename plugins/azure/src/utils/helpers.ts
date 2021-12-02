@@ -8,7 +8,11 @@ import { formatTime as formatTimeCore } from '@kobsio/plugin-core';
 // ID isn't available we return an empty string.
 export const getResourceGroupFromID = (id: string): string => {
   const parts = id.split('/');
-  const index = parts.indexOf('resourceGroups');
+
+  let index = parts.indexOf('resourceGroups');
+  if (index === -1) {
+    index = parts.indexOf('resourcegroups');
+  }
 
   if (index > -1 && parts.length >= index + 1) {
     return parts[index + 1];

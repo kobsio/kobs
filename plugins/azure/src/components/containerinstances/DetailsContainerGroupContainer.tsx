@@ -28,7 +28,7 @@ const DetailsContainerGroupContainer: React.FunctionComponent<IDetailsContainerG
         <Td dataLabel="Previous State">{container.properties?.instanceView?.previousState?.state || '-'}</Td>
       </Tr>
       <Tr isExpanded={isExpanded}>
-        <Td colSpan={10}>
+        <Td colSpan={4}>
           <ExpandableRowContent>
             <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
               {container.properties?.image && (

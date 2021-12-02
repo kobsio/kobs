@@ -70,9 +70,18 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		r.Route("/containerinstances", func(containerInstancesRouter chi.Router) {
 			containerInstancesRouter.Get("/containergroups", router.getContainerGroups)
 			containerInstancesRouter.Get("/containergroup/details", router.getContainerGroup)
-			containerInstancesRouter.Get("/containergroup/metrics", router.getContainerMetrics)
 			containerInstancesRouter.Get("/containergroup/logs", router.getContainerLogs)
 			containerInstancesRouter.Put("/containergroup/restart", router.restartContainerGroup)
+		})
+
+		r.Route("/kubernetesservices", func(kubernetesServicesRouter chi.Router) {
+			kubernetesServicesRouter.Get("/managedclusters", router.getManagedClusters)
+			kubernetesServicesRouter.Get("/managedcluster/details", router.getManagedCluster)
+			kubernetesServicesRouter.Get("/managedcluster/nodepools", router.getNodePools)
+		})
+
+		r.Route("/monitor", func(monitorRouter chi.Router) {
+			monitorRouter.Get("/metrics", router.getMetrics)
 		})
 	})
 
