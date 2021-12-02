@@ -29,7 +29,7 @@ func (c *Client) ListResourceGroups(ctx context.Context) ([]*armresources.Resour
 }
 
 // New returns a new client to interact with the container instances API.
-func New(subscriptionID string, credentials *azidentity.DefaultAzureCredential) *Client {
+func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) *Client {
 	resourceGroupsClient := armresources.NewResourceGroupsClient(subscriptionID, credentials, &arm.ClientOptions{})
 
 	return &Client{

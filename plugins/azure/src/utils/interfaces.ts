@@ -9,6 +9,13 @@ export interface IPanelOptions {
     containers?: string[];
     metric?: string;
   };
+  kubernetesservices?: {
+    type?: string;
+    resourceGroups?: string[];
+    resourceGroup?: string;
+    managedCluster?: string;
+    metric?: string;
+  };
 }
 
 // IMetric is the interface for all metrics returned by Azure.

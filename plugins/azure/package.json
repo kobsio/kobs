@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@azure/arm-containerinstance": "^7.1.0",
+    "@azure/arm-containerservice": "^14.3.0",
     "@kobsio/plugin-core": "*",
     "@nivo/line": "^0.74.0",
     "@patternfly/react-core": "^4.128.2",

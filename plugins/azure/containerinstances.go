@@ -2,10 +2,10 @@ package azure
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerinstance/armcontainerinstance"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
@@ -23,7 +23,7 @@ func (router *Router) getContainerGroups(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	var containerGroups []map[string]interface{}
+	var containerGroups []*armcontainerinstance.ContainerGroup
 
 	for _, resourceGroup := range resourceGroups {
 		err := i.CheckPermissions(r, "containerinstances", resourceGroup)
@@ -67,49 +67,6 @@ func (router *Router) getContainerGroup(w http.ResponseWriter, r *http.Request) 
 	}
 
 	render.JSON(w, r, cg)
-}
-
-func (router *Router) getContainerMetrics(w http.ResponseWriter, r *http.Request) {
-	name := chi.URLParam(r, "name")
-	resourceGroup := r.URL.Query().Get("resourceGroup")
-	containerGroup := r.URL.Query().Get("containerGroup")
-	metricName := r.URL.Query().Get("metricName")
-	timeStart := r.URL.Query().Get("timeStart")
-	timeEnd := r.URL.Query().Get("timeEnd")
-
-	log.WithFields(logrus.Fields{"name": name, "resourceGroup": resourceGroup, "containerGroup": containerGroup, "metricName": metricName, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getContainerMetrics")
-
-	i := router.getInstance(name)
-	if i == nil {
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
-		return
-	}
-
-	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the metrics of the container instance")
-		return
-	}
-
-	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
-		return
-	}
-
-	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
-		return
-	}
-
-	metrics, err := i.ContainerInstances.GetContainerGroupMetrics(r.Context(), resourceGroup, containerGroup, metricName, parsedTimeStart, parsedTimeEnd)
-	if err != nil {
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get container group metrics")
-		return
-	}
-
-	render.JSON(w, r, metrics)
 }
 
 func (router *Router) restartContainerGroup(w http.ResponseWriter, r *http.Request) {

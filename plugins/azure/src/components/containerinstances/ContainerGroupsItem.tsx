@@ -19,17 +19,17 @@ const getContainers = (containers?: IContainer[]): string[] => {
   return names;
 };
 
-interface IAlertsItemProps {
+interface IContainerGroupsItemProps {
   name: string;
   containerGroup: IContainerGroup;
   setDetails?: (details: React.ReactNode) => void;
 }
 
-const AlertsItem: React.FunctionComponent<IAlertsItemProps> = ({
+const ContainerGroupsItem: React.FunctionComponent<IContainerGroupsItemProps> = ({
   name,
   containerGroup,
   setDetails,
-}: IAlertsItemProps) => {
+}: IContainerGroupsItemProps) => {
   const resourceGroup = containerGroup.id ? getResourceGroupFromID(containerGroup.id) : '';
 
   return (
@@ -76,4 +76,4 @@ const AlertsItem: React.FunctionComponent<IAlertsItemProps> = ({
   );
 };
 
-export default AlertsItem;
+export default ContainerGroupsItem;

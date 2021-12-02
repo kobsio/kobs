@@ -5,6 +5,7 @@ import React from 'react';
 
 import ContainerInstancesPage from '../containerinstances/Page';
 import { IPluginPageProps } from '@kobsio/plugin-core';
+import KubernetesServicesPage from '../kubernetesservices/Page';
 import OverviewPage from './OverviewPage';
 
 // IResourceGroup is the interface for a resource group returned by the Azure API. This interface is only required for
@@ -74,6 +75,9 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       </Route>
       <Route exact={true} path={`/${name}/containerinstances`}>
         <ContainerInstancesPage name={name} displayName={displayName} resourceGroups={data} />
+      </Route>
+      <Route exact={true} path={`/${name}/kubernetesservices`}>
+        <KubernetesServicesPage name={name} displayName={displayName} resourceGroups={data} />
       </Route>
     </Switch>
   );

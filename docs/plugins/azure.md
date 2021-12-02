@@ -16,6 +16,11 @@ plugins:
     - name: azure
       displayName: Azure
       description: The innovate-anywhere, create-anything cloud.
+      credentials:
+        subscriptionID: ${AZURE_SUBSCRIPTION_ID}
+        tenantID: ${AZURE_TENANT_ID}
+        clientID: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
 ```
 
 | Field | Type | Description | Required |
@@ -24,13 +29,16 @@ plugins:
 | displayName | string | Name of the Azure instance as it is shown in the UI. | Yes |
 | descriptions | string | Description of the Azure instance. | No |
 | permissionsEnabled | boolean | Enable the permission handling. The permissions can be defined via the [PermissionsCustom](../resources/teams.md#permissionscustom) in a team. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
+| credentials | [Credentials](#credentials) | The credentials to access the Azure API. | Yes |
 
-To authenticate against the Azure API you have to set the following environment variables:
+### Credentials
 
-- `AZURE_SUBSCRIPTION_ID`
-- `AZURE_TENANT_ID`
-- `AZURE_CLIENT_ID`
-- `AZURE_CLIENT_SECRET`
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| subscriptionID | string | The id of your Azure subscription. | Yes |
+| tenantID | string | The tenant id. | Yes |
+| clientID | string | The client id. | Yes |
+| clientSecret | string | The client secret. | Yes |
 
 ## Options
 
@@ -38,8 +46,9 @@ The following options can be used for a panel with the Azure plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The service type which should be used for the panel Currently only `containerinstances` is supported. | Yes |
+| type | string | The service type which should be used for the panel Currently only `containerinstances` and `kubernetesservices` is supported. | Yes |
 | containerinstances | [Container Instances](#container-instances) | The configuration for the panel if the type is `containerinstances`. | No |
+| kubernetesservices | [Kubernetes Services](#kubernetes-services) | The configuration for the panel if the type is `kubernetesservices`. | No |
 
 ### Container Instances
 
@@ -50,6 +59,15 @@ The following options can be used for a panel with the Azure plugin:
 | containerGroup | string | The name of the container group. This is not required if the type is `list`. | No |
 | containers | string[] | A list of container names. This is only required if the type is `logs`. | No |
 | metric | string | The name of the metric for which the data should be displayed. Supported values are `CPUUsage`, `MemoryUsage`, `NetworkBytesReceivedPerSecond` and `NetworkBytesTransmittedPerSecond`. This is only required if the type is `metrics`. | No |
+
+### Kubernetes Services
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The type of the panel for which the Kubernetes Services data should be displayed. This can be `list`, `details`, `nodePools` or `metrics`. | Yes |
+| resourceGroup | string | The name of the resource group for the Kubernetes Services. This is not required if the type is `list`. | No |
+| managedCluster | string | The name of the managed cluster. This is not required if the type is `list`. | No |
+| metric | string | The name of the metric for which the data should be displayed. Supported values are `apiserver_current_inflight_requests`, `kube_node_status_allocatable_cpu_cores`, `kube_node_status_allocatable_memory_bytes`, `kube_node_status_condition`, `node_cpu_usage_percentage`, `node_memory_rss_percentage`, `node_memory_working_set_percentage`, `node_disk_usage_percentage`, `node_network_in_bytes`, `node_network_out_bytes` and `kube_pod_status_ready`. This is only required if the type is `metrics`. | No |
 
 ## Usage
 
@@ -121,8 +139,8 @@ In the following example each member of `team1` will get access to all Azure res
 
 The `*` value is a special value, which allows access to all resources, resource groups and action. The following values can also be used for resources and verbs:
 
-- `resources`: `containerinstances`
-- `verbs`: `get`, `put`, `post` and `delete`
+- `resources`: `containerinstances`, `kubernetesservices` and `monitor`
+- `verbs`: `delete`, `get`, `post` and `put`
 
 !!! note
     You have to set the `permissionsEnabled` property in the configuration to `true` and you must enable [authentication](../configuration/authentication.md) for kobs to use this feature.

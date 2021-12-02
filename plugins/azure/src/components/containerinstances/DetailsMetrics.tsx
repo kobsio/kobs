@@ -1,9 +1,12 @@
 import { Card, CardBody, CardHeader, CardTitle } from '@patternfly/react-core';
 import React, { useState } from 'react';
 
-import DetailsMetric from './DetailsMetric';
-import DetailsMetricsToolbar from './DetailsMetricsToolbar';
 import { IPluginTimes } from '@kobsio/plugin-core';
+import Metric from '../metrics/Metric';
+import MetricsToolbar from '../metrics/MetricsToolbar';
+import { services } from '../../utils/services';
+
+const provider = services['containerinstances'].provider;
 
 interface IDetailsMetricsProps {
   name: string;
@@ -23,7 +26,7 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
 
   return (
     <div>
-      <DetailsMetricsToolbar times={times} setTimes={setTimes} />
+      <MetricsToolbar times={times} setTimes={setTimes} />
       <p>&nbsp;</p>
       <Card isCompact={true}>
         <CardHeader>
@@ -31,10 +34,10 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
-            <DetailsMetric
+            <Metric
               name={name}
               resourceGroup={resourceGroup}
-              containerGroup={containerGroup}
+              provider={provider + containerGroup}
               metricName="CPUUsage"
               times={times}
             />
@@ -49,10 +52,10 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
-            <DetailsMetric
+            <Metric
               name={name}
               resourceGroup={resourceGroup}
-              containerGroup={containerGroup}
+              provider={provider + containerGroup}
               metricName="MemoryUsage"
               times={times}
             />
@@ -67,10 +70,10 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
-            <DetailsMetric
+            <Metric
               name={name}
               resourceGroup={resourceGroup}
-              containerGroup={containerGroup}
+              provider={provider + containerGroup}
               metricName="NetworkBytesReceivedPerSecond"
               times={times}
             />
@@ -85,10 +88,10 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
-            <DetailsMetric
+            <Metric
               name={name}
               resourceGroup={resourceGroup}
-              containerGroup={containerGroup}
+              provider={provider + containerGroup}
               metricName="NetworkBytesTransmittedPerSecond"
               times={times}
             />
