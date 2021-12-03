@@ -1,29 +1,26 @@
-import React from "react";
-import {Alert, AlertActionLink, AlertVariant, Spinner} from "@patternfly/react-core";
-import {QueryObserverResult, useQuery} from "react-query";
-import {IQueryResult} from "./interfaces";
-import {CostPieChart} from "./CostPieChart";
+import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
+import { QueryObserverResult, useQuery } from 'react-query';
+import React from 'react';
+
+import { CostPieChart } from './CostPieChart';
+import { IQueryResult } from './interfaces';
 
 interface IActualCostsProps {
   name: string;
-  timeframe: number
+  timeframe: number;
 }
 
-const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({
-                                                                   name,
-                                                                   timeframe,
-                                                                 }: IActualCostsProps) => {
-  const {isError, isLoading, error, data, refetch} = useQuery<IQueryResult, Error>(
+const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timeframe }: IActualCostsProps) => {
+  const { isError, isLoading, error, data, refetch } = useQuery<IQueryResult, Error>(
     ['azure/costmanagement/actualCost', name, timeframe],
     async () => {
       try {
         const timeframeParam = `timeframe=${timeframe}`;
-        const response = await fetch(
-          `/api/plugins/azure/${name}/costmanagement/actualCost?${timeframeParam}`,
-          {
-            method: 'get',
-          },
-        );
+
+        const response = await fetch(`/api/plugins/azure/${name}/costmanagement/actualCost?${timeframeParam}`, {
+          method: 'get',
+        });
+
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
@@ -44,7 +41,7 @@ const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({
   if (isLoading) {
     return (
       <div className="pf-u-text-align-center">
-        <Spinner/>
+        <Spinner />
       </div>
     );
   }
@@ -67,14 +64,14 @@ const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({
     );
   }
 
-  console.log(data)
+  console.log(data);
   if (!data) {
     return null;
   }
 
   return (
-    <div style={{height: '500px'}}>
-      <CostPieChart data={data}/>
+    <div style={{ height: '500px' }}>
+      <CostPieChart data={data} />
     </div>
   );
 };

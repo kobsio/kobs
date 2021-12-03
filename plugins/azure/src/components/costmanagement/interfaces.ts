@@ -4,6 +4,7 @@ export interface IQueryResult {
 
 export interface IQueryProperties {
   columns: IQueryColumn[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rows: any[][];
 }
 
@@ -12,7 +13,7 @@ export interface IQueryColumn {
   type: string;
 }
 
-export interface PieDatum {
+export interface IPieDatum {
   id: string;
   label: string;
   value: number;

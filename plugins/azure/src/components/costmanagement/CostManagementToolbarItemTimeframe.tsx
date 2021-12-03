@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Select, SelectOption, SelectVariant} from '@patternfly/react-core';
+import React, { useState } from 'react';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core';
 
 export interface ICostManagementToolbarItemTimeframeProps {
   timeframe: number;
@@ -8,14 +8,11 @@ export interface ICostManagementToolbarItemTimeframeProps {
 
 // CostManagementToolbarItemTimeframe lets the user select the timeframe
 const CostManagementToolbarItemTimeframe: React.FunctionComponent<ICostManagementToolbarItemTimeframeProps> = ({
-                                                                                                            timeframe,
-                                                                                                            setTimeframe,
-                                                                                                          }: ICostManagementToolbarItemTimeframeProps) => {
+  timeframe,
+  setTimeframe,
+}: ICostManagementToolbarItemTimeframeProps) => {
   const [showSelect, setShowSelect] = useState<boolean>(false);
-  const options = [
-    {value: '7'},
-    {value: '30'}
-  ];
+  const options = [{ value: '7' }, { value: '30' }];
 
   return (
     <Select
@@ -28,7 +25,7 @@ const CostManagementToolbarItemTimeframe: React.FunctionComponent<ICostManagemen
       isOpen={showSelect}
     >
       {options.map((tf, index) => (
-        <SelectOption key={index} value={tf.value} description="days"/>
+        <SelectOption key={index} value={tf.value} description="days" />
       ))}
     </Select>
   );

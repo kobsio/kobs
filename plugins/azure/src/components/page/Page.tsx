@@ -4,10 +4,10 @@ import { Route, Switch } from 'react-router-dom';
 import React from 'react';
 
 import ContainerInstancesPage from '../containerinstances/Page';
+import CostManagementPage from '../costmanagement/Page';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import KubernetesServicesPage from '../kubernetesservices/Page';
 import OverviewPage from './OverviewPage';
-import CostManagementPage from "../costmanagement/Page";
 
 // IResourceGroup is the interface for a resource group returned by the Azure API. This interface is only required for
 // the returned data, because we are only passing the name of the resource group to the other components.

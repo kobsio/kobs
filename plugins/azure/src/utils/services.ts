@@ -1,5 +1,6 @@
 import containerInstancesIcon from '../assets/services/container-instances.svg';
-(??)
+import costManagementIcon from '../assets/services/cost-management.svg';
+import kubernetesServicesIcon from '../assets/services/kubernetes-services.svg';
 
 export interface IServices {
   [key: string]: IService;
@@ -24,6 +25,7 @@ export const services: IServices = {
     description: 'Cost Management helps you understand your Azure invoice',
     icon: costManagementIcon,
     name: 'Cost Management',
+    provider: 'Microsoft.CostManagement/query/',
   },
   kubernetesservices: {
     description: 'Deploy and scale containers on managed Kubernetes',
