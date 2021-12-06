@@ -85,12 +85,24 @@ type Artifact struct {
 	ProjectID         int64                           `json:"project_id"`
 	PullTime          time.Time                       `json:"pull_time"`
 	PushTime          time.Time                       `json:"push_time"`
-	References        interface{}                     `json:"references"`
+	References        []ArtifactReference             `json:"references"`
 	RepositoryID      int64                           `json:"repository_id"`
 	ScanOverview      map[string]ArtifactScanOverview `json:"scan_overview"`
 	Size              int64                           `json:"size"`
 	Tags              []ArtifactTag                   `json:"tags"`
 	Type              string                          `json:"type"`
+}
+
+type ArtifactReference struct {
+	ChildDigest string `json:"child_digest"`
+	ChildID     int64  `json:"child_id"`
+	ParentID    int64  `json:"parent_id"`
+	Platform    struct {
+		OsFeatures   []string `json:"OsFeatures"`
+		Architecture string   `json:"architecture"`
+		Os           string   `json:"os"`
+	} `json:"platform"`
+	Urls []string `json:"urls"`
 }
 
 type ArtifactScanOverview struct {
