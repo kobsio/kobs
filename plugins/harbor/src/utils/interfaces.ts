@@ -115,7 +115,7 @@ export interface IArtifact {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   push_time: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  references: any;
+  references?: IArtifactReference[];
   // eslint-disable-next-line @typescript-eslint/naming-convention
   repository_id: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -123,6 +123,21 @@ export interface IArtifact {
   size: number;
   tags: IArtifactTag[];
   type: string;
+}
+
+export interface IArtifactReference {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  child_digest: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  child_id: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  parent_id: number;
+  platform: {
+    OsFeatures: string[];
+    architecture: string;
+    os: string;
+  };
+  urls: string[];
 }
 
 export interface IArtifactScanOverview {

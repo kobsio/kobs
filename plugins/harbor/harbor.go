@@ -113,6 +113,29 @@ func (router *Router) getArtifacts(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, artifactsData)
 }
 
+func (router *Router) getArtifact(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	projectName := r.URL.Query().Get("projectName")
+	repositoryName := r.URL.Query().Get("repositoryName")
+	artifactReference := r.URL.Query().Get("artifactReference")
+
+	log.WithFields(logrus.Fields{"name": name, "projectName": projectName, "repositoryName": repositoryName, "artifactReference": artifactReference}).Tracef("getArtifact")
+
+	i := router.getInstance(name)
+	if i == nil {
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	artifact, err := i.GetArtifact(r.Context(), projectName, repositoryName, artifactReference)
+	if err != nil {
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get artifact")
+		return
+	}
+
+	render.JSON(w, r, artifact)
+}
+
 func (router *Router) getVulnerabilities(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	projectName := r.URL.Query().Get("projectName")
@@ -193,6 +216,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	router.Get("/projects/{name}", router.getProjects)
 	router.Get("/repositories/{name}", router.getRepositories)
 	router.Get("/artifacts/{name}", router.getArtifacts)
+	router.Get("/artifact/{name}", router.getArtifact)
 	router.Get("/vulnerabilities/{name}", router.getVulnerabilities)
 	router.Get("/buildhistory/{name}", router.getBuildHistory)
 
