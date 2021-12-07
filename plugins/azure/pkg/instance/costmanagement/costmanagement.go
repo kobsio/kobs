@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
-	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/services/costmanagement/mgmt/2019-11-01/costmanagement"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/date"
@@ -68,7 +67,7 @@ func buildQueryParams(timeframe int) costmanagement.QueryDefinition {
 }
 
 // New returns a new client to interact with the cost management API.
-func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) *Client {
+func New(subscriptionID string, authorizer autorest.Authorizer) *Client {
 	client := costmanagement.NewQueryClient(subscriptionID)
 	client.Authorizer = authorizer
 

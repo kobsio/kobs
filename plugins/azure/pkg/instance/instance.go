@@ -8,6 +8,7 @@ import (
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/resourcegroups"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/go-autorest/autorest/azure/auth"
 	"github.com/sirupsen/logrus"
 )
 
@@ -50,11 +51,17 @@ func New(config Config) (*Instance, error) {
 		return nil, err
 	}
 
+	authorizerClientCredentialsConfig := auth.NewClientCredentialsConfig(config.Credentials.ClientID, config.Credentials.ClientSecret, config.Credentials.TenantID)
+	authorizer, err := authorizerClientCredentialsConfig.Authorizer()
+	if err != nil {
+		return nil, err
+	}
+
 	resourceGroups := resourcegroups.New(config.Credentials.SubscriptionID, credentials)
 	kubernetesServices := kubernetesservices.New(config.Credentials.SubscriptionID, credentials)
 	containerInstances := containerinstances.New(config.Credentials.SubscriptionID, credentials)
 	monitor := monitor.New(config.Credentials.SubscriptionID, credentials)
-	costManagement := costmanagement.New(config.Credentials.SubscriptionID, credentials)
+	costManagement := costmanagement.New(config.Credentials.SubscriptionID, authorizer)
 
 	return &Instance{
 		Name:               config.Name,
