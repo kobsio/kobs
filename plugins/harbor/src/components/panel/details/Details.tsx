@@ -8,14 +8,19 @@ import {
   DrawerHead,
   DrawerPanelBody,
   DrawerPanelContent,
+  Tab,
+  TabTitleText,
+  Tabs,
   Tooltip,
 } from '@patternfly/react-core';
+import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { CopyIcon } from '@patternfly/react-icons';
-import React from 'react';
 
 import BuildHistory from './BuildHistory';
 import { IArtifact } from '../../../utils/interfaces';
+import Overview from './Overview';
+import Reference from './Reference';
 import { Title } from '@kobsio/plugin-core';
 import Vulnerabilities from './Vulnerabilities';
 import { formatTime } from '../../../utils/helpers';
@@ -37,6 +42,10 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
   artifact,
   close,
 }: IDetailsProps) => {
+  const [activeTab, setActiveTab] = useState<string>(
+    artifact.references && artifact.references.length > 0 ? artifact.references[0].child_digest : '',
+  );
+
   const copyPullCommand = (tag: string): void => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(
@@ -98,113 +107,62 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
           </div>
         )}
 
-        {artifact.extra_attrs && (
+        {artifact.references && artifact.references.length > 0 ? (
+          <Tabs
+            activeKey={activeTab}
+            onSelect={(event, tabIndex): void => setActiveTab(tabIndex.toString())}
+            className="pf-u-mt-md"
+            isFilled={true}
+            mountOnEnter={true}
+          >
+            {artifact.references.map((reference) => (
+              <Tab
+                key={reference.child_digest}
+                eventKey={reference.child_digest}
+                title={
+                  <TabTitleText>
+                    {reference.child_digest.substring(0, 15)} ({reference.platform.os}/{reference.platform.architecture}
+                    )
+                  </TabTitleText>
+                }
+              >
+                <div style={{ maxWidth: '100%', padding: '24px 24px' }}>
+                  <Reference
+                    name={name}
+                    projectName={projectName}
+                    repositoryName={repositoryName}
+                    artifactReference={reference.child_digest}
+                  />
+                </div>
+              </Tab>
+            ))}
+          </Tabs>
+        ) : (
           <div>
-            <Card isCompact={true}>
-              <CardTitle>Overview</CardTitle>
-              <CardBody>
-                <TableComposable aria-label="Details" variant={TableVariant.compact} borders={false}>
-                  <Tbody>
-                    {artifact.extra_attrs.created && (
-                      <Tr key="created">
-                        <Td>Created</Td>
-                        <Td>{formatTime(artifact.extra_attrs.created)}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.author && (
-                      <Tr key="author">
-                        <Td>Author</Td>
-                        <Td>{artifact.extra_attrs.author}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.architecture && (
-                      <Tr key="architecture">
-                        <Td>Architecture</Td>
-                        <Td>{artifact.extra_attrs.architecture}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.os && (
-                      <Tr key="os">
-                        <Td>OS</Td>
-                        <Td>{artifact.extra_attrs.os}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.config.Cmd && (
-                      <Tr key="cmd">
-                        <Td>Cmd</Td>
-                        <Td style={{ whiteSpace: 'pre-wrap' }}>{artifact.extra_attrs.config.Cmd.join('\n')}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.config.Entrypoint && (
-                      <Tr key="entrypoint">
-                        <Td>Entrypoint</Td>
-                        <Td style={{ whiteSpace: 'pre-wrap' }}>{artifact.extra_attrs.config.Entrypoint.join('\n')}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.config.Env && (
-                      <Tr key="env">
-                        <Td>Env</Td>
-                        <Td style={{ whiteSpace: 'pre-wrap' }}>{artifact.extra_attrs.config.Env.join('\n')}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.config.ExposedPorts && (
-                      <Tr key="ports">
-                        <Td>Ports</Td>
-                        <Td style={{ whiteSpace: 'pre-wrap' }}>
-                          {Object.keys(artifact.extra_attrs.config.ExposedPorts).join('\n')}
-                        </Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.config.Labels && (
-                      <Tr key="labels">
-                        <Td>Labels</Td>
-                        <Td style={{ whiteSpace: 'pre-wrap' }}>
-                          {Object.keys(artifact.extra_attrs.config.Labels)
-                            .map(
-                              (key) =>
-                                `${key}=${
-                                  artifact.extra_attrs.config.Labels && artifact.extra_attrs.config.Labels[key]
-                                }`,
-                            )
-                            .join('\n')}
-                        </Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.config.User && (
-                      <Tr key="user">
-                        <Td>User</Td>
-                        <Td>{artifact.extra_attrs.config.User}</Td>
-                      </Tr>
-                    )}
-                    {artifact.extra_attrs.config.WorkingDir && (
-                      <Tr key="workingdir">
-                        <Td>Workind Dir</Td>
-                        <Td>{artifact.extra_attrs.config.WorkingDir}</Td>
-                      </Tr>
-                    )}
-                  </Tbody>
-                </TableComposable>
-              </CardBody>
-            </Card>
+            {artifact.extra_attrs && (
+              <div>
+                <Overview artifact={artifact} />
+                <p>&nbsp;</p>
+              </div>
+            )}
+
+            <BuildHistory
+              name={name}
+              projectName={projectName}
+              repositoryName={repositoryName}
+              artifactReference={artifact.digest}
+            />
+            <p>&nbsp;</p>
+
+            <Vulnerabilities
+              name={name}
+              projectName={projectName}
+              repositoryName={repositoryName}
+              artifactReference={artifact.digest}
+            />
             <p>&nbsp;</p>
           </div>
         )}
-
-        <BuildHistory
-          name={name}
-          projectName={projectName}
-          repositoryName={repositoryName}
-          artifactReference={artifact.digest}
-        />
-        <p>&nbsp;</p>
-
-        <Vulnerabilities
-          name={name}
-          projectName={projectName}
-          repositoryName={repositoryName}
-          artifactReference={artifact.digest}
-        />
-        <p>&nbsp;</p>
       </DrawerPanelBody>
     </DrawerPanelContent>
   );

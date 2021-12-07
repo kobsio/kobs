@@ -48,3 +48,18 @@ You can also try the provided [demo](https://kobs.io/installation/demo/) to have
 Every contribution to kobs is welcome, whether it is reporting a bug, submitting a fix, proposing new features or becoming a maintainer. To make contributing to kobs as easy as possible you will find more details for the development flow in our [Contribution Guideline](https://github.com/kobsio/kobs/blob/master/CONTRIBUTING.md).
 
 Please also follow our [Code of Conduct](https://github.com/kobsio/kobs/blob/master/CODE_OF_CONDUCT.md) in all your interactions with the project.
+
+## Sponsors
+
+<table>
+  <tr>
+    <td>
+      <img src="docs/assets/images/sponsors/staffbase.png" alt="Staffbase GmbH" width="96" />
+    </td>
+    <td>
+      <b>Staffbase GmbH</b>
+      <br />Staffbase is an internal communications platform built to revolutionize the way you work and unite your company. Staffbase is hiring: <a href="https://jobs.staffbase.com" target="_blank" rel="noreferrer">jobs.staffbase.com</a>
+      <br /><a href="https://github.com/Staffbase" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://staffbase.com/" target="_blank" rel="noreferrer">Website</a> | <a href="https://jobs.staffbase.com" target="_blank" rel="noreferrer">Jobs</a>
+    </td>
+  </tr>
+</table>

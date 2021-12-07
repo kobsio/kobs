@@ -42,6 +42,8 @@ func (i *Instance) doRequest(ctx context.Context, url string) ([]byte, int64, er
 		return nil, 0, err
 	}
 
+	req.Header.Set("X-Accept-Vulnerabilities", "application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0")
+
 	resp, err := i.client.Do(req)
 	if err != nil {
 		return nil, 0, err
@@ -146,6 +148,23 @@ func (i *Instance) GetArtifacts(ctx context.Context, projectName, repositoryName
 		Artifacts: artifacts,
 		Total:     total,
 	}, nil
+}
+
+// GetArtifact returns a single artifact from the Harbor instance.
+func (i *Instance) GetArtifact(ctx context.Context, projectName, repositoryName, artifactReference string) (*Artifact, error) {
+	repositoryName = url.PathEscape(repositoryName)
+
+	body, _, err := i.doRequest(ctx, fmt.Sprintf("projects/%s/repositories/%s/artifacts/%s", projectName, repositoryName, artifactReference))
+	if err != nil {
+		return nil, err
+	}
+
+	var artifact Artifact
+	if err := json.Unmarshal(body, &artifact); err != nil {
+		return nil, err
+	}
+
+	return &artifact, nil
 }
 
 // GetVulnerabilities returns a list of artifacts for a repository from the Harbor instance.

@@ -19,3 +19,18 @@ kobs brings your metrics, logs, traces and Kubernetes into one place, to provide
 - **Elasticsearch and Jaeger:** View the logs from Elasticsearch and traces from Jaeger, where it matters.
 - **Istio:** Get the topology graph from Kiali for your Istio service mesh directly in kobs.
 - **Authentication and Authorization:** Manage the access to kobs via [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) and provide your developers the permissions they need via Teams and Users CRs.
+
+## Sponsors
+
+<table>
+  <tr>
+    <td>
+      <img src="assets/images/sponsors/staffbase.png" alt="Staffbase GmbH" width="96" />
+    </td>
+    <td>
+      <b>Staffbase GmbH</b>
+      <br />Staffbase is an internal communications platform built to revolutionize the way you work and unite your company. Staffbase is hiring: <a href="https://jobs.staffbase.com" target="_blank" rel="noreferrer">jobs.staffbase.com</a>
+      <br /><a href="https://github.com/Staffbase" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://staffbase.com/" target="_blank" rel="noreferrer">Website</a> | <a href="https://jobs.staffbase.com" target="_blank" rel="noreferrer">Jobs</a>
+    </td>
+  </tr>
+</table>
