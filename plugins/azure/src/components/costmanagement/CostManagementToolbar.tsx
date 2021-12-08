@@ -1,7 +1,8 @@
 import { Toolbar, ToolbarContent, ToolbarItem, ToolbarToggleGroup } from '@patternfly/react-core';
-import CostManagementToolbarItemTimeframe from './CostManagementToolbarItemTimeframe';
 import { FilterIcon } from '@patternfly/react-icons';
 import React from 'react';
+
+import CostManagementToolbarItemTimeframe from './CostManagementToolbarItemTimeframe';
 
 export interface ICostManagementToolbarProps {
   timeframe: number;
