@@ -36,7 +36,7 @@ const ContainerGroups: React.FunctionComponent<IContainerGroupsProps> = ({
           if (json.error) {
             throw new Error(json.error);
           } else {
-            throw new Error('An unknown error occured');
+            throw new Error('An unknown error occurred');
           }
         }
       } catch (err) {

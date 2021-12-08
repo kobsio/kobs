@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import React from 'react';
 
 import ContainerInstancesPage from '../containerinstances/Page';
+import CostManagementPage from '../costmanagement/Page';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import KubernetesServicesPage from '../kubernetesservices/Page';
 import OverviewPage from './OverviewPage';
@@ -75,6 +76,9 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       </Route>
       <Route exact={true} path={`/${name}/containerinstances`}>
         <ContainerInstancesPage name={name} displayName={displayName} resourceGroups={data} />
+      </Route>
+      <Route exact={true} path={`/${name}/costmanagement`}>
+        <CostManagementPage name={name} displayName={displayName} />
       </Route>
       <Route exact={true} path={`/${name}/kubernetesservices`}>
         <KubernetesServicesPage name={name} displayName={displayName} resourceGroups={data} />
