@@ -75,7 +75,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		})
 
 		r.Route("/costmanagement", func(costManagementRouter chi.Router) {
-			costManagementRouter.Get("/actualCost", router.getActualCost)
+			costManagementRouter.Get("/actualcost", router.getActualCost)
 		})
 
 		r.Route("/kubernetesservices", func(kubernetesServicesRouter chi.Router) {

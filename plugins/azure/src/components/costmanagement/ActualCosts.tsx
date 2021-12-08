@@ -12,12 +12,12 @@ interface IActualCostsProps {
 
 const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timeframe }: IActualCostsProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IQueryResult, Error>(
-    ['azure/costmanagement/actualCost', name, timeframe],
+    ['azure/costmanagement/actualcost', name, timeframe],
     async () => {
       try {
         const timeframeParam = `timeframe=${timeframe}`;
 
-        const response = await fetch(`/api/plugins/azure/${name}/costmanagement/actualCost?${timeframeParam}`, {
+        const response = await fetch(`/api/plugins/azure/${name}/costmanagement/actualcost?${timeframeParam}`, {
           method: 'get',
         });
 

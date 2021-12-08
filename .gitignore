@@ -17,7 +17,6 @@ node_modules
 .env.production.local
 *.iml
 .idea
-config.yaml
 *.orig
 
 npm-debug.log*
