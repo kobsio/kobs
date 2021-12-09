@@ -19,6 +19,7 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
   team,
 }: IApplicationsGalleryProps) => {
   const times: IPluginTimes = {
+    time: 'last15Minutes',
     timeEnd: Math.floor(Date.now() / 1000),
     timeStart: Math.floor(Date.now() / 1000) - 900,
   };

@@ -45,6 +45,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // times is the state for the users selected time. The default value will always be the last 15 minutes. This is
   // required for some plugins (e.g. the Prometheus plugin), which making use of a time range.
   const [times, setTimes] = useState<IPluginTimes>({
+    time: 'last15Minutes',
     timeEnd: Math.floor(Date.now() / 1000),
     timeStart: Math.floor(Date.now() / 1000) - 900,
   });

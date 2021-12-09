@@ -6,31 +6,33 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IPluginPageProps, IPluginTimes } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 import PageLogs from './PageLogs';
 import PageToolbar from './PageToolbar';
-import { getOptionsFromSearch } from '../../utils/helpers';
+import { getInitialOptions } from '../../utils/helpers';
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
 
-  // changeOptions is used to change the options for an Elasticsearch query. Instead of directly modifying the options
-  // state we change the URL parameters.
+  // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
+  // options in the current url.
   const changeOptions = (opts: IOptions): void => {
     const fields = opts.fields ? opts.fields.map((field) => `&field=${field}`) : [];
 
     history.push({
       pathname: location.pathname,
-      search: `?query=${opts.query}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${
-        fields.length > 0 ? fields.join('') : ''
-      }`,
+      search: `?query=${opts.query}&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${
+        opts.times.timeStart
+      }${fields.length > 0 ? fields.join('') : ''}`,
     });
+
+    setOptions(opts);
   };
 
   // selectField is used to add a field as parameter, when it isn't present and to remove a fields from as parameter,
@@ -58,12 +60,6 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
     changeOptions({ ...options, times: times });
   };
 
-  // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
-  // via the changeOptions function. When the search location is changed we modify the options state.
-  useEffect(() => {
-    setOptions(getOptionsFromSearch(location.search));
-  }, [location.search]);
-
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
@@ -76,7 +72,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
           </span>
         </Title>
         <p>{description}</p>
-        <PageToolbar query={options.query} fields={options.fields} times={options.times} setOptions={changeOptions} />
+        <PageToolbar options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={false}>

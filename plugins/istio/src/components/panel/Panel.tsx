@@ -40,7 +40,9 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         description={description}
         transparent={false}
         actions={
-          <PanelActions link={`/${name}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}${namespaceParams}`} />
+          <PanelActions
+            link={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}${namespaceParams}`}
+          />
         }
       >
         <MetricsTable

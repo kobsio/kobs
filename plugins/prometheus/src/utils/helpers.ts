@@ -3,11 +3,11 @@ import { DatumValue, Serie } from '@nivo/line';
 import { ILabels, IMappings, IMetric, IOptions, ISeries } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
-// getOptionsFromSearch is used to parse the given search location and return is as options for Prometheus. This is
+// getInitialOptions is used to parse the given search location and return is as options for Prometheus. This is
 // needed, so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we
 // pass him to this page and pass the data via the URL parameters.
-export const getOptionsFromSearch = (search: string): IOptions => {
-  const params = new URLSearchParams(search);
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
   const queries = params.getAll('query');
   const resolution = params.get('resolution');
 

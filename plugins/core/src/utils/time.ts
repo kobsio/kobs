@@ -1,4 +1,5 @@
-import { IPluginTimes } from '../context/PluginsContext';
+import { IPluginTimes, TTime } from '../context/PluginsContext';
+import { TTimeOptions, timeOptions } from '../components/toolbar/Toolbar';
 
 // timeDifference calculates the difference of two given timestamps and returns a human readable string for the
 // difference. It is used to get the same style for the age of resources like it is displayed by kubectl.
@@ -33,10 +34,20 @@ export const formatTime = (timestamp: number): string => {
 
 // getTimeParams returns a times object for the parsed time parameters from a URL.
 export const getTimeParams = (params: URLSearchParams): IPluginTimes => {
+  const time = params.get('time');
   const timeEnd = params.get('timeEnd');
   const timeStart = params.get('timeStart');
 
+  if (time && TTimeOptions.includes(time) && time !== 'custom') {
+    return {
+      time: time as TTime,
+      timeEnd: Math.floor(Date.now() / 1000),
+      timeStart: Math.floor(Date.now() / 1000) - timeOptions[time].seconds,
+    };
+  }
+
   return {
+    time: time && TTimeOptions.includes(time) ? (time as TTime) : 'last15Minutes',
     timeEnd: timeEnd ? parseInt(timeEnd as string) : Math.floor(Date.now() / 1000),
     timeStart: timeStart ? parseInt(timeStart as string) : Math.floor(Date.now() / 1000) - 900,
   };

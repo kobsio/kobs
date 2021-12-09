@@ -3,9 +3,9 @@ import { Datum } from '@nivo/line';
 import { IApplicationOptions, IApplicationsOptions, ITopDetailsMetrics } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
-// getApplicationsOptionsFromSearch is used to get the Istio options from a given search location.
-export const getApplicationsOptionsFromSearch = (search: string): IApplicationsOptions => {
-  const params = new URLSearchParams(search);
+// getInitialApplicationsOptions is used to get the initial Istio options from the url.
+export const getInitialApplicationsOptions = (): IApplicationsOptions => {
+  const params = new URLSearchParams(window.location.search);
   const namespaces = params.getAll('namespace');
 
   return {
@@ -14,9 +14,9 @@ export const getApplicationsOptionsFromSearch = (search: string): IApplicationsO
   };
 };
 
-// getApplicationOptionsFromSearch is used to get the Istio options from a given search location.
-export const getApplicationOptionsFromSearch = (search: string): IApplicationOptions => {
-  const params = new URLSearchParams(search);
+// getInitialApplicationOptions is used to get the initial Istio options from the url.
+export const getInitialApplicationOptions = (): IApplicationOptions => {
+  const params = new URLSearchParams(window.location.search);
   const view = params.get('view');
   const filterUpstreamCluster = params.get('filterUpstreamCluster');
   const filterMethod = params.get('filterMethod');

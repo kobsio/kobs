@@ -53,6 +53,7 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
             onBrushDomainChangeEnd={(domain: IDomain): void => {
               if (changeTime && domain.x.length === 2) {
                 changeTime({
+                  time: 'custom',
                   timeEnd: Math.floor(domain.x[1].getTime() / 1000),
                   timeStart: Math.floor(domain.x[0].getTime() / 1000),
                 });

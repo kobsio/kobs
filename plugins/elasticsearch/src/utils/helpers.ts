@@ -1,9 +1,9 @@
 import { IDocument, IKeyValue, IOptions } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
-// getOptionsFromSearch is used to get the Elasticsearch options from a given search location.
-export const getOptionsFromSearch = (search: string): IOptions => {
-  const params = new URLSearchParams(search);
+// getInitialOptions is used to get the initial options for Elasticsearch from the url.
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
   const fields = params.getAll('field');
   const query = params.get('query');
 

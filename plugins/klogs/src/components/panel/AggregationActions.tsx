@@ -32,7 +32,7 @@ export const AggregationActions: React.FunctionComponent<IAggregationActionsProp
               key={0}
               component={
                 <Link
-                  to={`/${name}/aggregation?timeEnd=${options.times.timeEnd}&timeStart=${
+                  to={`/${name}/aggregation?time=${options.times.time}&timeEnd=${options.times.timeEnd}&timeStart=${
                     options.times.timeStart
                   }&chart=${options.chart}&query=${options.query}&aggregation=${encodeURIComponent(
                     JSON.stringify(options.options),

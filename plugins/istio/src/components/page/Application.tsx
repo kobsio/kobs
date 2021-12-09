@@ -1,5 +1,5 @@
 import { Drawer, DrawerColorVariant, DrawerContent, PageSection, PageSectionVariants } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { IApplicationOptions, IFilters, IPluginOptions } from '../../utils/interfaces';
@@ -8,7 +8,7 @@ import ApplicationTap from './ApplicationTap';
 import ApplicationToolbar from './ApplicationToolbar';
 import ApplicationTop from './ApplicationTop';
 import { Title } from '@kobsio/plugin-core';
-import { getApplicationOptionsFromSearch } from '../../utils/helpers';
+import { getInitialApplicationOptions } from '../../utils/helpers';
 
 interface IApplicationParams {
   namespace: string;
@@ -26,7 +26,9 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
   const history = useHistory();
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
-  const [options, setOptions] = useState<IApplicationOptions>(getApplicationOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IApplicationOptions>(
+    useMemo<IApplicationOptions>(() => getInitialApplicationOptions(), []),
+  );
 
   const changeOptions = (tmpOptions: IApplicationOptions): void => {
     history.push({
@@ -39,6 +41,8 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
         tmpOptions.filters.path,
       )}`,
     });
+
+    setOptions(tmpOptions);
   };
 
   const setFilters = (filters: IFilters): void => {
@@ -50,22 +54,15 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
         filters.method,
       )}&filterPath=${encodeURIComponent(filters.path)}`,
     });
-  };
 
-  useEffect(() => {
-    setOptions(getApplicationOptionsFromSearch(location.search));
-  }, [location.search]);
+    setOptions({ ...options, filters: filters });
+  };
 
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <Title title={params.application} subtitle={params.namespace} size="xl" />
-        <ApplicationToolbar
-          view={options.view}
-          times={options.times}
-          filters={options.filters}
-          setOptions={changeOptions}
-        />
+        <ApplicationToolbar options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={details !== undefined}>

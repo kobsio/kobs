@@ -64,7 +64,6 @@ const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timefra
     );
   }
 
-  console.log(data);
   if (!data) {
     return null;
   }

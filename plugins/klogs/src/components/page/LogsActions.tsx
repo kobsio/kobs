@@ -76,7 +76,7 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
               key={0}
               component={
                 <Link
-                  to={`/${name}/aggregation?timeEnd=${times.timeEnd}&timeStart=${
+                  to={`/${name}/aggregation?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${
                     times.timeStart
                   }&query=${encodeURIComponent(query)}`}
                 >

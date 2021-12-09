@@ -6,7 +6,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import Alerts from '../panel/Alerts';
@@ -14,12 +14,12 @@ import { IOptions } from '../../utils/interfaces';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import Incidents from '../panel/Incidents';
 import PageToolbar from './PageToolbar';
-import { getOptionsFromSearch } from '../../utils/helpers';
+import { getInitialOptions } from '../../utils/helpers';
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options to get a list of traces from Jaeger. Instead of directly modifying the
@@ -27,15 +27,13 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
   const changeOptions = (opts: IOptions): void => {
     history.push({
       pathname: location.pathname,
-      search: `?query=${opts.query}&type=${opts.type}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}`,
+      search: `?query=${encodeURIComponent(opts.query)}&type=${opts.type}&time=${opts.times.time}&timeEnd=${
+        opts.times.timeEnd
+      }&timeStart=${opts.times.timeStart}`,
     });
-  };
 
-  // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
-  // via the changeOptions function. When the search location is changed we modify the options state.
-  useEffect(() => {
-    setOptions(getOptionsFromSearch(location.search));
-  }, [location.search]);
+    setOptions(opts);
+  };
 
   return (
     <React.Fragment>
@@ -44,13 +42,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
           {displayName}
         </Title>
         <p>{description}</p>
-        <PageToolbar
-          name={name}
-          query={options.query}
-          type={options.type}
-          setOptions={changeOptions}
-          times={options.times}
-        />
+        <PageToolbar name={name} options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={details !== undefined}>

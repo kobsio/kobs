@@ -32,9 +32,9 @@ export const TracesActions: React.FunctionComponent<ITracesActionsProps> = ({
               <Link
                 to={`/${name}?limit=${query.limit || '20'}&maxDuration=${query.maxDuration || ''}&minDuration=${
                   query.minDuration || ''
-                }&operation=${query.operation || ''}&service=${query.service || ''}&tags=${query.tags || ''}&timeEnd=${
-                  times.timeEnd
-                }&timeStart=${times.timeStart}`}
+                }&operation=${query.operation || ''}&service=${query.service || ''}&tags=${query.tags || ''}&time=${
+                  times.time
+                }&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}`}
               >
                 {query.name}
               </Link>

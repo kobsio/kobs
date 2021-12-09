@@ -2,6 +2,26 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
+// TTime is the type with all possible values for the time property. A value of "custom" identifies that a user
+// specified a custom start and end time via the text input fields. The other values are used for the quick select
+// options.
+export type TTime =
+  | 'custom'
+  | 'last12Hours'
+  | 'last15Minutes'
+  | 'last1Day'
+  | 'last1Hour'
+  | 'last1Year'
+  | 'last2Days'
+  | 'last30Days'
+  | 'last30Minutes'
+  | 'last3Hours'
+  | 'last5Minutes'
+  | 'last6Hours'
+  | 'last6Months'
+  | 'last7Days'
+  | 'last90Days';
+
 // IPluginDefaults is the interface which is used for the default property of the plugin panel components. This is
 // required, so that a user must not define a cluster or namespace in a plugin. Instead we will use the cluster or
 // namespace of the parent team or application.
@@ -15,6 +35,7 @@ export interface IPluginDefaults {
 // only data for a selected time range in a plugin. For example the Prometheus uses these properties to show only
 // metrics for the selected time range.
 export interface IPluginTimes {
+  time: TTime;
   timeEnd: number;
   timeStart: number;
 }

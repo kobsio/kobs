@@ -10,13 +10,13 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { IOptions } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 import Logs from './Logs';
 import LogsToolbar from './LogsToolbar';
-import { getOptionsFromSearch } from '../../utils/helpers';
+import { getInitialOptions } from '../../utils/helpers';
 
 interface ILogsPageProps {
   name: string;
@@ -27,19 +27,21 @@ interface ILogsPageProps {
 const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, description }: ILogsPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
 
-  // changeOptions is used to change the options for an klogs query. Instead of directly modifying the options state we
-  // change the URL parameters.
+  // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
+  // options in the current url.
   const changeOptions = (opts: IOptions): void => {
     const fields = opts.fields ? opts.fields.map((field) => `&field=${field}`) : [];
 
     history.push({
       pathname: location.pathname,
-      search: `?query=${encodeURIComponent(opts.query)}&order=${opts.order}&orderBy=${opts.orderBy}&timeEnd=${
-        opts.times.timeEnd
-      }&timeStart=${opts.times.timeStart}${fields.length > 0 ? fields.join('') : ''}`,
+      search: `?query=${encodeURIComponent(opts.query)}&order=${opts.order}&orderBy=${opts.orderBy}&time=${
+        opts.times.time
+      }&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${fields.length > 0 ? fields.join('') : ''}`,
     });
+
+    setOptions(opts);
   };
 
   // selectField is used to add a field as parameter, when it isn't present and to remove a fields from as parameter,
@@ -59,23 +61,21 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
     changeOptions({ ...options, fields: tmpFields });
   };
 
+  // addFilter adds the given filter as string to the query, so that it can be used to filter down an existing query.
   const addFilter = (filter: string): void => {
     changeOptions({ ...options, query: `${options.query} ${filter}` });
   };
 
+  // changeTime changes the selected time range. This can be used to change the time outside of the toolbar, e.g. by
+  // selecting a time range in the chart.
   const changeTime = (times: IPluginTimes): void => {
     changeOptions({ ...options, times: times });
   };
 
+  // changeOrder changes the order parameters for a query.
   const changeOrder = (order: string, orderBy: string): void => {
     changeOptions({ ...options, order: order, orderBy: orderBy });
   };
-
-  // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
-  // via the changeOptions function. When the search location is changed we modify the options state.
-  useEffect(() => {
-    setOptions(getOptionsFromSearch(location.search));
-  }, [location.search]);
 
   return (
     <React.Fragment>
@@ -97,14 +97,7 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
           </span>
         </Title>
         <p>{description}</p>
-        <LogsToolbar
-          query={options.query}
-          order={options.order}
-          orderBy={options.orderBy}
-          fields={options.fields}
-          times={options.times}
-          setOptions={changeOptions}
-        />
+        <LogsToolbar options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={false}>

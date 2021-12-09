@@ -1,143 +1,90 @@
-import {
-  Button,
-  ButtonVariant,
-  TextInput,
-  Toolbar,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-  ToolbarToggleGroup,
-} from '@patternfly/react-core';
-import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
+import { TextInput, ToolbarItem } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 import TracesToolbarOperations from './TracesToolbarOperations';
 import TracesToolbarServices from './TracesToolbarServices';
 
-interface ITracesToolbarProps extends IOptions {
+interface ITracesToolbarProps {
   name: string;
+  options: IOptions;
   setOptions: (data: IOptions) => void;
 }
 
 const TracesToolbar: React.FunctionComponent<ITracesToolbarProps> = ({
   name,
-  limit,
-  maxDuration,
-  minDuration,
-  operation,
-  service,
-  tags,
-  times,
+  options,
   setOptions,
 }: ITracesToolbarProps) => {
-  const [data, setData] = useState<IOptions>({
-    limit: limit,
-    maxDuration: maxDuration,
-    minDuration: minDuration,
-    operation: operation === '' ? 'All Operations' : operation,
-    service: service,
-    tags: tags,
-    times: times,
-  });
+  const [service, setService] = useState<string>(options.service);
+  const [operation, setOperation] = useState<string>(options.operation === '' ? 'All Operations' : options.operation);
+  const [tags, setTags] = useState<string>(options.tags);
 
-  const changeOptions = (
-    refresh: boolean,
-    additionalFields: IOptionsAdditionalFields[] | undefined,
-    timeEnd: number,
-    timeStart: number,
-  ): void => {
+  const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
     if (additionalFields && additionalFields.length === 3) {
-      const tmpData = { ...data };
-
-      if (refresh) {
-        setOptions({
-          ...tmpData,
-          limit: additionalFields[0].value,
-          maxDuration: additionalFields[1].value,
-          minDuration: additionalFields[2].value,
-          times: { timeEnd: timeEnd, timeStart: timeStart },
-        });
-      }
-
-      setData({
-        ...tmpData,
+      setOptions({
         limit: additionalFields[0].value,
         maxDuration: additionalFields[1].value,
         minDuration: additionalFields[2].value,
-        times: { timeEnd: timeEnd, timeStart: timeStart },
+        operation: operation,
+        service: service,
+        tags: tags,
+        times: times,
       });
     }
   };
 
   return (
-    <Toolbar id="jaeger-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
-      <ToolbarContent style={{ padding: '0px' }}>
-        <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup style={{ width: '100%' }}>
-            <ToolbarItem style={{ width: '100%' }}>
-              <TracesToolbarServices
-                name={name}
-                service={data.service}
-                setService={(value): void => setData({ ...data, service: value })}
-              />
-            </ToolbarItem>
-            <ToolbarItem style={{ width: '100%' }}>
-              {data.service ? (
-                <TracesToolbarOperations
-                  name={name}
-                  service={data.service}
-                  operation={data.operation}
-                  setOperation={(value): void => setData({ ...data, operation: value })}
-                />
-              ) : null}
-            </ToolbarItem>
-            <ToolbarItem variant="label">Tags</ToolbarItem>
-            <ToolbarItem style={{ width: '100%' }}>
-              <TextInput
-                aria-label="Tags"
-                placeholder="http.status_code=200 error=true"
-                type="text"
-                value={data.tags}
-                onChange={(value: string): void => setData({ ...data, tags: value })}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <Options
-                additionalFields={[
-                  {
-                    label: 'Limit',
-                    name: 'limit',
-                    placeholder: '20',
-                    value: data.limit,
-                  },
-                  {
-                    label: 'Max Duration',
-                    name: 'maxDuration',
-                    placeholder: '100ms',
-                    value: data.maxDuration,
-                  },
-                  {
-                    label: 'Min Duration',
-                    name: 'minDuration',
-                    placeholder: '100ms',
-                    value: data.minDuration,
-                  },
-                ]}
-                timeEnd={data.times.timeEnd}
-                timeStart={data.times.timeStart}
-                setOptions={changeOptions}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setOptions(data)}>
-                Search
-              </Button>
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
+    <Toolbar
+      times={options.times}
+      additionalFields={[
+        {
+          label: 'Limit',
+          name: 'limit',
+          placeholder: '20',
+          value: options.limit,
+        },
+        {
+          label: 'Max Duration',
+          name: 'maxDuration',
+          placeholder: '100ms',
+          value: options.maxDuration,
+        },
+        {
+          label: 'Min Duration',
+          name: 'minDuration',
+          placeholder: '100ms',
+          value: options.minDuration,
+        },
+      ]}
+      showOptions={true}
+      showSearchButton={true}
+      setOptions={changeOptions}
+    >
+      <ToolbarItem style={{ width: '100%' }}>
+        <TracesToolbarServices name={name} service={service} setService={(value): void => setService(value)} />
+      </ToolbarItem>
+      <ToolbarItem style={{ width: '100%' }}>
+        {service ? (
+          <TracesToolbarOperations
+            name={name}
+            service={service}
+            operation={operation}
+            setOperation={(value): void => setOperation(value)}
+          />
+        ) : null}
+      </ToolbarItem>
+      <ToolbarItem variant="label">Tags</ToolbarItem>
+      <ToolbarItem style={{ width: '100%' }}>
+        <TextInput
+          aria-label="Tags"
+          placeholder="http.status_code=200 error=true"
+          type="text"
+          value={tags}
+          onChange={(value: string): void => setTags(value)}
+        />
+      </ToolbarItem>
     </Toolbar>
   );
 };

@@ -11,14 +11,14 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IApplicationsOptions, IPluginOptions } from '../../utils/interfaces';
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { IRowValues } from '@kobsio/plugin-prometheus';
 import MetricsTable from '../panel/MetricsTable';
-import { getApplicationsOptionsFromSearch } from '../../utils/helpers';
+import { getInitialApplicationsOptions } from '../../utils/helpers';
 
 export interface IApplicationsProps {
   name: string;
@@ -35,7 +35,9 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 }: IApplicationsProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IApplicationsOptions>(getApplicationsOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IApplicationsOptions>(
+    useMemo<IApplicationsOptions>(() => getInitialApplicationsOptions(), []),
+  );
 
   const changeOptions = (opts: IApplicationsOptions): void => {
     const namespaces = opts.namespaces ? opts.namespaces.map((namespace) => `&namespace=${namespace}`) : [];
@@ -46,11 +48,9 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
         namespaces.length > 0 ? namespaces.join('') : ''
       }`,
     });
-  };
 
-  useEffect(() => {
-    setOptions(getApplicationsOptionsFromSearch(location.search));
-  }, [location.search]);
+    setOptions(opts);
+  };
 
   return (
     <React.Fragment>
@@ -59,12 +59,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
           {displayName}
         </Title>
         <p>{description}</p>
-        <ApplicationsToolbar
-          name={name}
-          namespaces={options.namespaces}
-          times={options.times}
-          setOptions={changeOptions}
-        />
+        <ApplicationsToolbar name={name} options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={false}>
