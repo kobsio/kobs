@@ -1,42 +1,24 @@
-import {
-  Button,
-  ButtonVariant,
-  Select,
-  SelectOption,
-  SelectVariant,
-  Spinner,
-  Toolbar,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-  ToolbarToggleGroup,
-} from '@patternfly/react-core';
-import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
+import { Select, SelectOption, SelectVariant, Spinner, ToolbarItem } from '@patternfly/react-core';
 import { useQuery } from 'react-query';
 
-import { IOptionsAdditionalFields, IPluginTimes, Options } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
 import { IApplicationsOptions } from '../../utils/interfaces';
 
-interface IPageToolbarProps extends IApplicationsOptions {
+interface IPageToolbarProps {
   name: string;
+  options: IApplicationsOptions;
   setOptions: (data: IApplicationsOptions) => void;
 }
 
-const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
-  name,
-  namespaces,
-  times,
-  setOptions,
-}: IPageToolbarProps) => {
+const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ name, options, setOptions }: IPageToolbarProps) => {
   const [showNamespaces, setShowNamespaces] = useState<boolean>(false);
-  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(namespaces || []);
-  const [selectedTimes, setSelectedTimes] = useState<IPluginTimes>(times);
+  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(options.namespaces || []);
 
   const { isLoading, isError, error, data } = useQuery<string[], Error>(['istio/namespaces', name], async () => {
     try {
       const response = await fetch(
-        `/api/plugins/istio/namespaces/${name}?timeStart=${selectedTimes.timeStart}&timeEnd=${selectedTimes.timeEnd}`,
+        `/api/plugins/istio/namespaces/${name}?timeStart=${options.times.timeStart}&timeEnd=${options.times.timeEnd}`,
         {
           method: 'get',
         },
@@ -70,70 +52,37 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
     }
   };
 
-  const changeOptions = (
-    refresh: boolean,
-    additionalFields: IOptionsAdditionalFields[] | undefined,
-    timeEnd: number,
-    timeStart: number,
-  ): void => {
-    if (refresh) {
-      setOptions({
-        namespaces: selectedNamespaces,
-        times: { timeEnd: timeEnd, timeStart: timeStart },
-      });
-    }
-
-    setSelectedTimes({ timeEnd: timeEnd, timeStart: timeStart });
+  const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setOptions({
+      namespaces: selectedNamespaces,
+      times: times,
+    });
   };
 
   return (
-    <Toolbar id="istio-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
-      <ToolbarContent style={{ padding: '0px' }}>
-        <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup style={{ width: '100%' }}>
-            <ToolbarItem style={{ width: '100%' }}>
-              {isLoading ? (
-                <div className="pf-u-text-align-center">
-                  <Spinner size="md" />
-                </div>
-              ) : (
-                <Select
-                  variant={SelectVariant.typeaheadMulti}
-                  typeAheadAriaLabel="Select namespaces"
-                  placeholderText="Select namespaces"
-                  onToggle={(): void => setShowNamespaces(!showNamespaces)}
-                  onSelect={(e, value): void => selectNamespace(value as string)}
-                  onClear={(): void => setSelectedNamespaces([])}
-                  selections={selectedNamespaces}
-                  isOpen={showNamespaces}
-                >
-                  {isError || !data
-                    ? [
-                        <SelectOption
-                          key="error"
-                          isDisabled={true}
-                          value={error?.message || 'Could not get namespaces.'}
-                        />,
-                      ]
-                    : data.map((namespace, index) => <SelectOption key={index} value={namespace} />)}
-                </Select>
-              )}
-            </ToolbarItem>
-            <ToolbarItem>
-              <Options timeEnd={selectedTimes.timeEnd} timeStart={selectedTimes.timeStart} setOptions={changeOptions} />
-            </ToolbarItem>
-            <ToolbarItem>
-              <Button
-                variant={ButtonVariant.primary}
-                icon={<SearchIcon />}
-                onClick={(): void => setOptions({ namespaces: selectedNamespaces, times: selectedTimes })}
-              >
-                Search
-              </Button>
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
+    <Toolbar times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions}>
+      <ToolbarItem style={{ width: '100%' }}>
+        {isLoading ? (
+          <div className="pf-u-text-align-center">
+            <Spinner size="md" />
+          </div>
+        ) : (
+          <Select
+            variant={SelectVariant.typeaheadMulti}
+            typeAheadAriaLabel="Select namespaces"
+            placeholderText="Select namespaces"
+            onToggle={(): void => setShowNamespaces(!showNamespaces)}
+            onSelect={(e, value): void => selectNamespace(value as string)}
+            onClear={(): void => setSelectedNamespaces([])}
+            selections={selectedNamespaces}
+            isOpen={showNamespaces}
+          >
+            {isError || !data
+              ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
+              : data.map((namespace, index) => <SelectOption key={index} value={namespace} />)}
+          </Select>
+        )}
+      </ToolbarItem>
     </Toolbar>
   );
 };

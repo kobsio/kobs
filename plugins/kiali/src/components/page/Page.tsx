@@ -6,39 +6,35 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import GraphWrapper from '../panel/GraphWrapper';
 import { IOptions } from '../../utils/interfaces';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import PageToolbar from './PageToolbar';
-import { getOptionsFromSearch } from '../../utils/helpers';
+import { getInitialOptions } from '../../utils/helpers';
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
-  // changeOptions is used to change the options to get a list of traces from Jaeger. Instead of directly modifying the
-  // options state we change the URL parameters.
+  // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
+  // options in the current url.
   const changeOptions = (opts: IOptions): void => {
     const namespaces = opts.namespaces ? opts.namespaces.map((namespace) => `&namespace=${namespace}`) : [];
 
     history.push({
       pathname: location.pathname,
-      search: `?timeStart=${opts.times.timeStart}&timeEnd=${opts.times.timeEnd}${
+      search: `?time=${opts.times.time}&timeStart=${opts.times.timeStart}&timeEnd=${opts.times.timeEnd}${
         namespaces.length > 0 ? namespaces.join('') : ''
       }`,
     });
-  };
 
-  // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
-  // via the changeOptions function. When the search location is changed we modify the options state.
-  useEffect(() => {
-    setOptions(getOptionsFromSearch(location.search));
-  }, [location.search]);
+    setOptions(opts);
+  };
 
   return (
     <React.Fragment>
@@ -47,7 +43,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
           {displayName}
         </Title>
         <p>{description}</p>
-        <PageToolbar name={name} times={options.times} namespaces={options.namespaces} setOptions={changeOptions} />
+        <PageToolbar name={name} options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={details !== undefined}>

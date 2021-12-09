@@ -55,9 +55,9 @@ export const AggregationActions: React.FunctionComponent<IAggregationActionsProp
               key={0}
               component={
                 <Link
-                  to={`/${name}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${encodeURIComponent(
-                    query,
-                  )}`}
+                  to={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${
+                    times.timeStart
+                  }&query=${encodeURIComponent(query)}`}
                 >
                   Logs
                 </Link>

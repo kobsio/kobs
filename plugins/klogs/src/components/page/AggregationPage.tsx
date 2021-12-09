@@ -12,13 +12,13 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import Aggregation from './Aggregation';
 import AggregationOptions from './AggregationOptions';
 import AggregationToolbar from './AggregationToolbar';
 import { IAggregationOptions } from '../../utils/interfaces';
-import { getAggregationOptionsFromSearch } from '../../utils/helpers';
+import { getInitialAggregationOptions } from '../../utils/helpers';
 
 interface IAggregationPageProps {
   name: string;
@@ -33,25 +33,27 @@ const AggregationPage: React.FunctionComponent<IAggregationPageProps> = ({
 }: IAggregationPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [tmpOptions, setTmpOptions] = useState<IAggregationOptions>(getAggregationOptionsFromSearch(location.search));
-  const [options, setOptions] = useState<IAggregationOptions>(getAggregationOptionsFromSearch(location.search));
+  const [tmpOptions, setTmpOptions] = useState<IAggregationOptions>(
+    useMemo<IAggregationOptions>(() => getInitialAggregationOptions(), []),
+  );
+  const [options, setOptions] = useState<IAggregationOptions>(
+    useMemo<IAggregationOptions>(() => getInitialAggregationOptions(), []),
+  );
 
-  // changeOptions is used to change the options for an klogs query. Instead of directly modifying the options  state we
-  // change the URL parameters.
+  // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
+  // options in the current url.
   const changeOptions = (): void => {
     history.push({
       pathname: location.pathname,
-      search: `?query=${encodeURIComponent(tmpOptions.query)}&timeEnd=${tmpOptions.times.timeEnd}&timeStart=${
-        tmpOptions.times.timeStart
-      }&chart=${tmpOptions.chart}&aggregation=${encodeURIComponent(JSON.stringify(tmpOptions.options))}`,
+      search: `?query=${encodeURIComponent(tmpOptions.query)}&time=${tmpOptions.times.time}&timeEnd=${
+        tmpOptions.times.timeEnd
+      }&timeStart=${tmpOptions.times.timeStart}&chart=${tmpOptions.chart}&aggregation=${encodeURIComponent(
+        JSON.stringify(tmpOptions.options),
+      )}`,
     });
-  };
 
-  // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
-  // via the changeOptions function. When the search location is changed we modify the options state.
-  useEffect(() => {
-    setOptions(getAggregationOptionsFromSearch(location.search));
-  }, [location.search]);
+    setOptions(tmpOptions);
+  };
 
   return (
     <React.Fragment>

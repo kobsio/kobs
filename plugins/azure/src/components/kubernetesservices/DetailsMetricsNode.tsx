@@ -20,6 +20,7 @@ const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
   managedCluster,
 }: IDetailsMetricsNodeProps) => {
   const [times, setTimes] = useState<IPluginTimes>({
+    time: 'last15Minutes',
     timeEnd: Math.floor(Date.now() / 1000),
     timeStart: Math.floor(Date.now() / 1000) - 900,
   });

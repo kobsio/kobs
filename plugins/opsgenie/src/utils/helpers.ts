@@ -1,9 +1,9 @@
 import { IPluginTimes, formatTime, getTimeParams } from '@kobsio/plugin-core';
 import { IOptions } from './interfaces';
 
-// getOptionsFromSearch is used to get the Jaeger options from a given search location.
-export const getOptionsFromSearch = (search: string): IOptions => {
-  const params = new URLSearchParams(search);
+// getInitialOptions is used to get the initial Opsgenie options from a the url.
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
   const query = params.get('query');
   const type = params.get('type');
 

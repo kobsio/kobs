@@ -1,8 +1,7 @@
-import { Card, Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem, ToolbarToggleGroup } from '@patternfly/react-core';
-import { FilterIcon } from '@patternfly/react-icons';
+import { Card, ToolbarItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IOptionsAdditionalFields, IPluginTimes, Options } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
 import DashboardToolbarVariable from './DashboardToolbarVariable';
 import { IVariableValues } from '../../utils/interfaces';
 
@@ -30,37 +29,26 @@ const DashboardToolbar: React.FunctionComponent<IDashboardToolbarProps> = ({
     setVariables(tmpVariables);
   };
 
+  // changeOptions changes the time in a dashboard.
+  const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setTimes(times);
+  };
+
   return (
     <Card style={{ maxWidth: '100%' }}>
-      <Toolbar id="dashboard-toolbar" style={{ zIndex: 300 }}>
-        <ToolbarContent>
-          <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-            {variables.map((variable, index) =>
-              variable.hide ? null : (
-                <ToolbarItem key={variable.name}>
-                  <DashboardToolbarVariable
-                    variable={variable}
-                    selectValue={(value: string): void => selectValue(index, value)}
-                  />
-                </ToolbarItem>
-              ),
-            )}
-            <ToolbarGroup style={{ width: '100%' }}>
-              <ToolbarItem alignment={{ default: 'alignRight' }}>
-                <Options
-                  timeEnd={times.timeEnd}
-                  timeStart={times.timeStart}
-                  setOptions={(
-                    refresh: boolean,
-                    additionalFields: IOptionsAdditionalFields[] | undefined,
-                    timeEnd: number,
-                    timeStart: number,
-                  ): void => setTimes({ timeEnd: timeEnd, timeStart: timeStart })}
+      <Toolbar times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions}>
+        <React.Fragment>
+          {variables.map((variable, index) =>
+            variable.hide ? null : (
+              <ToolbarItem key={variable.name}>
+                <DashboardToolbarVariable
+                  variable={variable}
+                  selectValue={(value: string): void => selectValue(index, value)}
                 />
               </ToolbarItem>
-            </ToolbarGroup>
-          </ToolbarToggleGroup>
-        </ToolbarContent>
+            ),
+          )}
+        </React.Fragment>
       </Toolbar>
     </Card>
   );

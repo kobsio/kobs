@@ -1,9 +1,9 @@
 import { IMetric, INodeData, IOptions, ISerie } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
-// getOptionsFromSearch is used to get the Kiali options from a given search location.
-export const getOptionsFromSearch = (search: string): IOptions => {
-  const params = new URLSearchParams(search);
+// getInitialOptions is used to get the initial Kiali options from a url.
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
   const namespaces = params.getAll('namespace');
 
   return {

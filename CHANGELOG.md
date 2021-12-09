@@ -23,6 +23,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#217](https://github.com/kobsio/kobs/pull/217): [azure] Use resource groups to get a list of container instances.
+- [#225](https://github.com/kobsio/kobs/pull/225): [core] :warning: _Breaking change:_ :warning: Change options handling accross all plugins and re-add `time` property.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

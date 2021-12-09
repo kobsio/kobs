@@ -1,36 +1,32 @@
 import { PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import PageChart from './PageChartWrapper';
 import PageToolbar from './PageToolbar';
-import { getOptionsFromSearch } from '../../utils/helpers';
+import { getInitialOptions } from '../../utils/helpers';
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
 
-  // changeOptions is used to change the options for an Prometheus query. Instead of directly modifying the options
-  // state we change the URL parameters.
+  // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
+  // options in the current url.
   const changeOptions = (opts: IOptions): void => {
     const queries = opts.queries ? opts.queries.map((query) => `&query=${query}`) : [];
 
     history.push({
       pathname: location.pathname,
-      search: `?resolution=${opts.resolution}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${
-        queries.length > 0 ? queries.join('') : ''
-      }`,
+      search: `?time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}&resolution=${
+        opts.resolution
+      }${queries.length > 0 ? queries.join('') : ''}`,
     });
-  };
 
-  // useEffect is used to set the options every time the search location for the current URL changes. The URL is changed
-  // via the changeOptions function. When the search location is changed we modify the options state.
-  useEffect(() => {
-    setOptions(getOptionsFromSearch(location.search));
-  }, [location.search]);
+    setOptions(opts);
+  };
 
   return (
     <React.Fragment>
@@ -39,13 +35,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
           {displayName}
         </Title>
         <p>{description}</p>
-        <PageToolbar
-          name={name}
-          queries={options.queries}
-          resolution={options.resolution}
-          times={options.times}
-          setOptions={changeOptions}
-        />
+        <PageToolbar name={name} options={options} setOptions={changeOptions} />
       </PageSection>
 
       <PageSection variant={PageSectionVariants.default}>

@@ -1,107 +1,55 @@
-import {
-  Button,
-  ButtonVariant,
-  TextInput,
-  ToggleGroup,
-  ToggleGroupItem,
-  Toolbar,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-  ToolbarToggleGroup,
-} from '@patternfly/react-core';
-import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
+import { TextInput, ToggleGroup, ToggleGroupItem, ToolbarItem } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
 
-interface IPageToolbarProps extends IOptions {
+interface IPageToolbarProps {
   name: string;
+  options: IOptions;
   setOptions: (data: IOptions) => void;
 }
 
-const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
-  name,
-  query,
-  type,
-  times,
-  setOptions,
-}: IPageToolbarProps) => {
-  const [data, setData] = useState<IOptions>({
-    query: query,
-    times: times,
-    type: type,
-  });
-
-  // changeQuery changes the value of a query.
-  const changeQuery = (value: string): void => {
-    setData({ ...data, query: value });
-  };
+const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ name, options, setOptions }: IPageToolbarProps) => {
+  const [query, setQuery] = useState<string>(options.query);
+  const [type, setType] = useState<string>(options.type);
 
   // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we are calling the setOptions
   // function to trigger the search.
   // use "SHIFT" + "ENTER".
   const onEnter = (e: React.KeyboardEvent<HTMLInputElement> | undefined): void => {
     if (e?.key === 'Enter' && !e.shiftKey) {
-      setOptions(data);
+      setOptions({ ...options, query });
     }
   };
 
-  const changeOptions = (
-    refresh: boolean,
-    additionalFields: IOptionsAdditionalFields[] | undefined,
-    timeEnd: number,
-    timeStart: number,
-  ): void => {
-    const tmpData = { ...data };
-
-    if (refresh) {
-      setOptions({
-        ...tmpData,
-        times: { timeEnd: timeEnd, timeStart: timeStart },
-      });
-    }
-
-    setData({
-      ...tmpData,
-      times: { timeEnd: timeEnd, timeStart: timeStart },
-    });
+  // changeOptions changes the klogs option. It is used when the user clicks the search button or selects a new time
+  // range.
+  const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setOptions({ query: query, times: times, type: type });
   };
 
   return (
-    <Toolbar id="jaeger-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
-      <ToolbarContent style={{ padding: '0px' }}>
-        <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup style={{ width: '100%' }}>
-            <ToolbarItem style={{ width: '100%' }}>
-              <TextInput aria-label="Query" type="text" value={data.query} onChange={changeQuery} onKeyDown={onEnter} />
-            </ToolbarItem>
-            <ToolbarItem>
-              <ToggleGroup aria-label="View">
-                <ToggleGroupItem
-                  text="Alerts"
-                  isSelected={data.type === 'alerts'}
-                  onChange={(): void => setData({ ...data, type: 'alerts' })}
-                />
-                <ToggleGroupItem
-                  text="Incidents"
-                  isSelected={data.type === 'incidents'}
-                  onChange={(): void => setData({ ...data, type: 'incidents' })}
-                />
-              </ToggleGroup>
-            </ToolbarItem>
-            <ToolbarItem>
-              <Options timeEnd={data.times.timeEnd} timeStart={data.times.timeStart} setOptions={changeOptions} />
-            </ToolbarItem>
-            <ToolbarItem>
-              <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setOptions(data)}>
-                Search
-              </Button>
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
+    <Toolbar times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions}>
+      <ToolbarItem style={{ width: '100%' }}>
+        <TextInput
+          aria-label="Query"
+          type="text"
+          value={query}
+          onChange={(value: string): void => setQuery(value)}
+          onKeyDown={onEnter}
+        />
+      </ToolbarItem>
+      <ToolbarItem>
+        <ToggleGroup aria-label="View">
+          <ToggleGroupItem text="Alerts" isSelected={type === 'alerts'} onChange={(): void => setType('alerts')} />
+          <ToggleGroupItem
+            text="Incidents"
+            isSelected={type === 'incidents'}
+            onChange={(): void => setType('incidents')}
+          />
+        </ToggleGroup>
+      </ToolbarItem>
     </Toolbar>
   );
 };

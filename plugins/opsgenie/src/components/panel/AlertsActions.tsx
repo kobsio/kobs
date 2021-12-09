@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
-import { queryWithTime } from '../../utils/helpers';
 
 interface IAlertsActionsProps extends IOptions {
   name: string;
@@ -27,7 +26,15 @@ export const AlertsActions: React.FunctionComponent<IAlertsActionsProps> = ({
         dropdownItems={[
           <DropdownItem
             key={0}
-            component={<Link to={`/${name}?type=${type}&query=${queryWithTime(query, times)}`}>Explore</Link>}
+            component={
+              <Link
+                to={`/${name}?type=${type}&query=${encodeURIComponent(query)}&time=${times.time}&timeEnd=${
+                  times.timeEnd
+                }&timeStart=${times.timeStart}`}
+              >
+                Explore
+              </Link>
+            }
           />,
         ]}
       />

@@ -1,9 +1,9 @@
 import { IAggregationOptions, IAggregationOptionsAggregation, IOptions } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
-// getOptionsFromSearch is used to get the klogs options from a given search location.
-export const getOptionsFromSearch = (search: string): IOptions => {
-  const params = new URLSearchParams(search);
+// getInitialOptions is used to get the initial klogs options from the url.
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
   const fields = params.getAll('field');
   const order = params.get('order');
   const orderBy = params.get('orderBy');
@@ -18,9 +18,9 @@ export const getOptionsFromSearch = (search: string): IOptions => {
   };
 };
 
-// getAggregationOptionsFromSearch is used to get the klogs options for an aggregation from a given search location.
-export const getAggregationOptionsFromSearch = (search: string): IAggregationOptions => {
-  const params = new URLSearchParams(search);
+// getInitialAggregationOptions is used to get the initial options for an aggregation from the url.
+export const getInitialAggregationOptions = (): IAggregationOptions => {
+  const params = new URLSearchParams(window.location.search);
 
   const chart = params.get('chart');
   const query = params.get('query');

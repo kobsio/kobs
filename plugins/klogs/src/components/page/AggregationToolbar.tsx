@@ -1,15 +1,7 @@
-import {
-  TextInput,
-  Toolbar,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-  ToolbarToggleGroup,
-} from '@patternfly/react-core';
-import { FilterIcon } from '@patternfly/react-icons';
+import { TextInput, ToolbarItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IOptionsAdditionalFields, Options } from '@kobsio/plugin-core';
+import { IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
 import { IAggregationOptions } from '../../utils/interfaces';
 
 interface IAggregationToolbarProps {
@@ -21,36 +13,22 @@ const AggregationToolbar: React.FunctionComponent<IAggregationToolbarProps> = ({
   options,
   setOptions,
 }: IAggregationToolbarProps) => {
+  // changeQuery changes the value of a query.
   const changeQuery = (value: string): void => {
     setOptions({ ...options, query: value });
   };
 
-  // changeOptions changes the klogs option. If the options are changed via the refresh button of the Options component
-  // we directly modify the options of the parent component, if not we only change the data of the toolbar component and
-  // the user can trigger an action via the search button.
-  const changeOptions = (
-    refresh: boolean,
-    additionalFields: IOptionsAdditionalFields[] | undefined,
-    timeEnd: number,
-    timeStart: number,
-  ): void => {
-    setOptions({ ...options, times: { timeEnd: timeEnd, timeStart: timeStart } });
+  // changeOptions changes the klogs option. It is used when the user clicks the search button or selects a new time
+  // range.
+  const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setOptions({ ...options, times: times });
   };
 
   return (
-    <Toolbar id="klogs-aggregation-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
-      <ToolbarContent style={{ padding: '0px' }}>
-        <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
-            <ToolbarItem style={{ width: '100%' }}>
-              <TextInput aria-label="Query" type="text" value={options.query} onChange={changeQuery} />
-            </ToolbarItem>
-            <ToolbarItem>
-              <Options timeEnd={options.times.timeEnd} timeStart={options.times.timeStart} setOptions={changeOptions} />
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
+    <Toolbar times={options.times} showOptions={true} showSearchButton={false} setOptions={changeOptions}>
+      <ToolbarItem style={{ width: '100%' }}>
+        <TextInput aria-label="Query" type="text" value={options.query} onChange={changeQuery} />
+      </ToolbarItem>
     </Toolbar>
   );
 };

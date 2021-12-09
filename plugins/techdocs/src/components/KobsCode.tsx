@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IPanel, PluginPanel } from '@kobsio/plugin-core';
+import { IPanel, IPluginTimes, PluginPanel } from '@kobsio/plugin-core';
 
 interface IKobsCodeProps {
   panel: IPanel;
@@ -8,7 +8,11 @@ interface IKobsCodeProps {
 }
 
 const KobsCode: React.FunctionComponent<IKobsCodeProps> = ({ panel, setDetails }: IKobsCodeProps) => {
-  const times = { timeEnd: Math.floor(Date.now() / 1000), timeStart: Math.floor(Date.now() / 1000) - 900 };
+  const times: IPluginTimes = {
+    time: 'last15Minutes',
+    timeEnd: Math.floor(Date.now() / 1000),
+    timeStart: Math.floor(Date.now() / 1000) - 900,
+  };
 
   return (
     <div style={{ height: '300px', overflow: 'scroll' }}>
