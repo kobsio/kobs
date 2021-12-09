@@ -61,6 +61,18 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
     changeOptions({ ...options, fields: tmpFields });
   };
 
+  const changeFieldOrder = (oldIndex: number, newIndex: number): void => {
+    if (options.fields) {
+      const tmpFields = [...options.fields];
+      const tmpField = tmpFields[oldIndex];
+
+      tmpFields[oldIndex] = tmpFields[newIndex];
+      tmpFields[newIndex] = tmpField;
+
+      changeOptions({ ...options, fields: tmpFields });
+    }
+  };
+
   // addFilter adds the given filter as string to the query, so that it can be used to filter down an existing query.
   const addFilter = (filter: string): void => {
     changeOptions({ ...options, query: `${options.query} ${filter}` });
@@ -115,6 +127,7 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
                   changeTime={changeTime}
                   changeOrder={changeOrder}
                   selectField={selectField}
+                  changeFieldOrder={changeFieldOrder}
                   times={options.times}
                 />
               ) : null}
