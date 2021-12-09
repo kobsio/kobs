@@ -21,6 +21,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#227](https://github.com/kobsio/kobs/pull/227): [techdocs] Ignore comments in code blocks in table of contents.
+
 ### Changed
 
 - [#217](https://github.com/kobsio/kobs/pull/217): [azure] Use resource groups to get a list of container instances.
