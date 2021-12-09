@@ -1,20 +1,24 @@
 import { SimpleList, SimpleListGroup, SimpleListItem } from '@patternfly/react-core';
 import React from 'react';
 
-export interface IPageLogsFieldsProps {
+import LogsFieldsItem from './LogsFieldsItem';
+
+export interface ILogsFieldsProps {
   fields?: string[];
   selectedFields?: string[];
   selectField: (field: string) => void;
+  changeFieldOrder: (oldIndex: number, newIndex: number) => void;
 }
 
-// PageLogsFields is used to show the list of parsed and selected fields. When a user selects a field from the fields
-// list, this field is added to the list of selected fields. When the user selects a field from the selected fields list
-// this field will be removed from this list.
-const PageLogsFields: React.FunctionComponent<IPageLogsFieldsProps> = ({
+// LogsFields is used to show the list of parsed and selected fields. When a user selects a field from the fields list,
+// this field is added to the list of selected fields. When the user selects a field from the selected fields list this
+// field will be removed from this list.
+const LogsFields: React.FunctionComponent<ILogsFieldsProps> = ({
   fields,
   selectedFields,
   selectField,
-}: IPageLogsFieldsProps) => {
+  changeFieldOrder,
+}: ILogsFieldsProps) => {
   if ((!selectedFields || selectedFields.length === 0) && (!fields || fields.length === 0)) {
     return null;
   }
@@ -24,9 +28,14 @@ const PageLogsFields: React.FunctionComponent<IPageLogsFieldsProps> = ({
       {selectedFields && selectedFields.length > 0 ? (
         <SimpleListGroup title="Selected Fields">
           {selectedFields.map((selectedField, index) => (
-            <SimpleListItem key={index} onClick={(): void => selectField(selectedField)} isActive={false}>
-              {selectedField}
-            </SimpleListItem>
+            <LogsFieldsItem
+              key={index}
+              index={index}
+              length={selectedFields.length}
+              field={selectedField}
+              selectField={selectField}
+              changeFieldOrder={changeFieldOrder}
+            />
           ))}
         </SimpleListGroup>
       ) : null}
@@ -44,4 +53,4 @@ const PageLogsFields: React.FunctionComponent<IPageLogsFieldsProps> = ({
   );
 };
 
-export default PageLogsFields;
+export default LogsFields;

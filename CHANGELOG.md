@@ -17,6 +17,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#221](https://github.com/kobsio/kobs/pull/221): [azure] :warning: _Breaking change:_ :warning: Add support for kubernetes services and refactor various places in the Azure plugin.
 - [#222](https://github.com/kobsio/kobs/pull/222): [azure] Simple cost management on subscription level
 - [#224](https://github.com/kobsio/kobs/pull/224): [harbor] Add support for multi-arch images.
+- [#226](https://github.com/kobsio/kobs/pull/226): [klogs] Add option to sort fields.
 
 ### Fixed
 

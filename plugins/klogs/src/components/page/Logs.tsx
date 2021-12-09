@@ -32,6 +32,7 @@ interface ILogsProps {
   changeTime: (times: IPluginTimes) => void;
   changeOrder: (order: string, orderBy: string) => void;
   selectField: (field: string) => void;
+  changeFieldOrder: (oldIndex: number, newIndex: number) => void;
   times: IPluginTimes;
 }
 
@@ -45,6 +46,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
   changeTime,
   changeOrder,
   selectField,
+  changeFieldOrder,
   times,
 }: ILogsProps) => {
   const history = useHistory();
@@ -126,7 +128,12 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
     <Grid hasGutter={true}>
       <GridItem sm={12} md={12} lg={3} xl={2} xl2={2}>
         <Card>
-          <LogsFields fields={data.fields} selectField={selectField} selectedFields={fields} />
+          <LogsFields
+            fields={data.fields}
+            selectField={selectField}
+            selectedFields={fields}
+            changeFieldOrder={changeFieldOrder}
+          />
         </Card>
       </GridItem>
       <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
