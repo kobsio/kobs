@@ -84,6 +84,12 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 			kubernetesServicesRouter.Get("/managedcluster/nodepools", router.getNodePools)
 		})
 
+		r.Route("/virtualmachinescalesets", func(virtualMachineScaleSetsRouter chi.Router) {
+			virtualMachineScaleSetsRouter.Get("/virtualmachinescalesets", router.getVirtualMachineScaleSets)
+			virtualMachineScaleSetsRouter.Get("/virtualmachinescaleset/details", router.getVirtualMachineScaleSetDetails)
+			virtualMachineScaleSetsRouter.Get("/virtualmachines", router.getVirtualMachines)
+		})
+
 		r.Route("/monitor", func(monitorRouter chi.Router) {
 			monitorRouter.Get("/metrics", router.getMetrics)
 		})

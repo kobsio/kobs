@@ -10,13 +10,18 @@ import CIDetailsContainerGroupActions from '../containerinstances/DetailsContain
 import CIDetailsLogs from '../containerinstances/DetailsLogs';
 
 import KSDetailsKubernetesService from '../kubernetesservices/DetailsKubernetesService';
-import KSDetailsNodePools from '../kubernetesservices/DetailsNodePools';
+import KSDetailsNodePoolsWrapper from '../kubernetesservices/DetailsNodePoolsWrapper';
 import KSKubernetesServices from '../kubernetesservices/KubernetesServices';
+
+import VMSSDetailsVirtualMachineScaleSets from '../virtualmachinescalesets/DetailsVirtualMachineScaleSets';
+import VMSSDetailsVirtualMachines from '../virtualmachinescalesets/DetailsVirtualMachines';
+import VMSSVirtualMachineScaleSets from '../virtualmachinescalesets/VirtualMachineScaleSets';
 
 import Metric from '../metrics/Metric';
 
 const providerCI = services['containerinstances'].provider;
 const providerKS = services['kubernetesservices'].provider;
+const providerVMSS = services['virtualmachinescalesets'].provider;
 
 interface IPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
@@ -107,7 +112,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options.containerinstances.type === 'metrics' &&
     options.containerinstances.resourceGroup &&
     options.containerinstances.containerGroup &&
-    options.containerinstances.metric &&
+    options.containerinstances.metricNames &&
+    options.containerinstances.aggregationType &&
     times
   ) {
     return (
@@ -116,7 +122,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           name={name}
           resourceGroup={options.containerinstances.resourceGroup}
           provider={providerCI + options.containerinstances.containerGroup}
-          metricName={options.containerinstances.metric}
+          metricNames={options.containerinstances.metricNames}
+          aggregationType={options.containerinstances.aggregationType}
           times={times}
         />
       </PluginCard>
@@ -171,7 +178,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   ) {
     return (
       <PluginCard title={title} description={description}>
-        <KSDetailsNodePools
+        <KSDetailsNodePoolsWrapper
           name={name}
           resourceGroup={options.kubernetesservices.resourceGroup}
           managedCluster={options.kubernetesservices.managedCluster}
@@ -187,7 +194,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options.kubernetesservices.type === 'metrics' &&
     options.kubernetesservices.resourceGroup &&
     options.kubernetesservices.managedCluster &&
-    options.kubernetesservices.metric &&
+    options.kubernetesservices.metricNames &&
+    options.kubernetesservices.aggregationType &&
     times
   ) {
     return (
@@ -196,7 +204,100 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           name={name}
           resourceGroup={options.kubernetesservices.resourceGroup}
           provider={providerKS + options.kubernetesservices.managedCluster}
-          metricName={options.kubernetesservices.metric}
+          metricNames={options.kubernetesservices.metricNames}
+          aggregationType={options.kubernetesservices.aggregationType}
+          times={times}
+        />
+      </PluginCard>
+    );
+  }
+
+  // Panel for virtual machine scale sets
+  if (
+    options?.type &&
+    options?.type === 'virtualmachinescalesets' &&
+    options.virtualmachinescalesets &&
+    options.virtualmachinescalesets.type === 'list' &&
+    options.virtualmachinescalesets.resourceGroups
+  ) {
+    return (
+      <PluginCard title={title} description={description} transparent={true}>
+        <VMSSVirtualMachineScaleSets
+          name={name}
+          resourceGroups={options.virtualmachinescalesets.resourceGroups}
+          setDetails={showDetails}
+        />
+      </PluginCard>
+    );
+  }
+
+  if (
+    options?.type &&
+    options?.type === 'virtualmachinescalesets' &&
+    options.virtualmachinescalesets &&
+    options.virtualmachinescalesets.type === 'details' &&
+    options.virtualmachinescalesets.resourceGroup &&
+    options.virtualmachinescalesets.virtualMachineScaleSet
+  ) {
+    return (
+      <PluginCard title={title} description={description}>
+        <VMSSDetailsVirtualMachineScaleSets
+          name={name}
+          resourceGroup={options.virtualmachinescalesets.resourceGroup}
+          virtualMachineScaleSet={options.virtualmachinescalesets.virtualMachineScaleSet}
+        />
+      </PluginCard>
+    );
+  }
+
+  if (
+    options?.type &&
+    options?.type === 'virtualmachinescalesets' &&
+    options.virtualmachinescalesets &&
+    options.virtualmachinescalesets.type === 'virtualMachines' &&
+    options.virtualmachinescalesets.resourceGroup &&
+    options.virtualmachinescalesets.virtualMachineScaleSet
+  ) {
+    return (
+      <PluginCard title={title} description={description}>
+        <VMSSDetailsVirtualMachines
+          name={name}
+          resourceGroup={options.virtualmachinescalesets.resourceGroup}
+          virtualMachineScaleSet={options.virtualmachinescalesets.virtualMachineScaleSet}
+        />
+      </PluginCard>
+    );
+  }
+
+  if (
+    options?.type &&
+    options?.type === 'virtualmachinescalesets' &&
+    options.virtualmachinescalesets &&
+    options.virtualmachinescalesets.type === 'metrics' &&
+    options.virtualmachinescalesets.resourceGroup &&
+    options.virtualmachinescalesets.virtualMachineScaleSet &&
+    options.virtualmachinescalesets.metricNames &&
+    options.virtualmachinescalesets.aggregationType &&
+    times
+  ) {
+    return (
+      <PluginCard title={title} description={description}>
+        <Metric
+          name={name}
+          resourceGroup={options.virtualmachinescalesets.resourceGroup}
+          provider={
+            options.virtualmachinescalesets.virtualMachine
+              ? providerVMSS +
+                options.virtualmachinescalesets.virtualMachineScaleSet +
+                '/virtualMachines/' +
+                options.virtualmachinescalesets.virtualMachine.replace(
+                  options.virtualmachinescalesets.virtualMachineScaleSet + '_',
+                  '',
+                )
+              : providerVMSS + options.virtualmachinescalesets.virtualMachineScaleSet
+          }
+          metricNames={options.virtualmachinescalesets.metricNames}
+          aggregationType={options.virtualmachinescalesets.aggregationType}
           times={times}
         />
       </PluginCard>

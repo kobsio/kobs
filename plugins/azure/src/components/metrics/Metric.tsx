@@ -4,7 +4,7 @@ import React from 'react';
 import { ResponsiveLineCanvas } from '@nivo/line';
 
 import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/plugin-core';
-import { convertMetric, formatAxisBottom, formatMetric } from '../../utils/helpers';
+import { convertMetrics, formatAxisBottom, formatMetrics } from '../../utils/helpers';
 import { IMetric } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 
@@ -12,7 +12,8 @@ interface IMetricProps {
   name: string;
   resourceGroup: string;
   provider: string;
-  metricName: string;
+  metricNames: string;
+  aggregationType: string;
   times: IPluginTimes;
 }
 
@@ -20,15 +21,16 @@ const Metric: React.FunctionComponent<IMetricProps> = ({
   name,
   resourceGroup,
   provider,
-  metricName,
+  metricNames,
+  aggregationType,
   times,
 }: IMetricProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<IMetric, Error>(
-    ['azure/monitor/metrics', name, resourceGroup, provider, metricName, times],
+  const { isError, isLoading, error, data, refetch } = useQuery<IMetric[], Error>(
+    ['azure/monitor/metrics', name, resourceGroup, provider, metricNames, aggregationType, times],
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/azure/${name}/monitor/metrics?resourceGroup=${resourceGroup}&provider=${provider}&metricName=${metricName}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/azure/${name}/monitor/metrics?resourceGroup=${resourceGroup}&provider=${provider}&metricNames=${metricNames}&aggregationType=${aggregationType}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },
@@ -36,12 +38,11 @@ const Metric: React.FunctionComponent<IMetricProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          if (json && json.length === 1) {
-            return formatMetric(json[0]);
+          if (json && Array.isArray(json) && json.length > 0) {
+            return formatMetrics(json, aggregationType);
+          } else {
+            throw new Error('Invalid JSON data');
           }
-
-          return null;
-          return json;
         } else {
           if (json.error) {
             throw new Error(json.error);
@@ -71,7 +72,7 @@ const Metric: React.FunctionComponent<IMetricProps> = ({
         title="Could not get metrics"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetric, Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetric[], Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -82,7 +83,7 @@ const Metric: React.FunctionComponent<IMetricProps> = ({
     );
   }
 
-  if (!data) {
+  if (!data || data.length === 0) {
     return null;
   }
 
@@ -93,13 +94,13 @@ const Metric: React.FunctionComponent<IMetricProps> = ({
       }}
       axisLeft={{
         format: '>-.2f',
-        legend: data.unit,
+        legend: data[0].unit,
         legendOffset: -40,
         legendPosition: 'middle',
       }}
       colors={COLOR_SCALE}
       curve="monotoneX"
-      data={convertMetric(data)}
+      data={convertMetrics(data, aggregationType)}
       enableArea={true}
       enableGridX={false}
       enableGridY={true}
@@ -117,7 +118,8 @@ const Metric: React.FunctionComponent<IMetricProps> = ({
           <ChartTooltip
             anchor={isFirstHalf ? 'right' : 'left'}
             color={tooltip.point.color}
-            label={`${tooltip.point.serieId}: ${tooltip.point.data.yFormatted} ${data.unit}`}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            label={`${tooltip.point.serieId}: ${tooltip.point.data.yFormatted} ${(tooltip.point.data as any).unit}`}
             position={[0, 20]}
             title={tooltip.point.data.xFormatted.toString()}
           />

@@ -7,14 +7,25 @@ export interface IPanelOptions {
     resourceGroup?: string;
     containerGroup?: string;
     containers?: string[];
-    metric?: string;
+    metricNames?: string;
+    aggregationType?: string;
   };
   kubernetesservices?: {
     type?: string;
     resourceGroups?: string[];
     resourceGroup?: string;
     managedCluster?: string;
-    metric?: string;
+    metricNames?: string;
+    aggregationType?: string;
+  };
+  virtualmachinescalesets?: {
+    type?: string;
+    resourceGroups?: string[];
+    resourceGroup?: string;
+    virtualMachineScaleSet?: string;
+    virtualMachine?: string;
+    metricNames?: string;
+    aggregationType?: string;
   };
 }
 
@@ -38,5 +49,6 @@ export interface IMetricTimeseries {
 
 export interface IMetricDatum {
   timeStamp: string;
-  average?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }

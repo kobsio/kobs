@@ -3,28 +3,26 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import { TableComposable, TableVariant, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
 
-import DetailsNodePoolsItem from './DetailsNodePoolsItem';
-import { INodePool } from './interfaces';
+import DetailsVirtualMachinesItem from './DetailsVirtualMachinesItem';
+import { IVirtualMachine } from './interfaces';
 
-interface IDetailsNodePoolsProps {
+interface IDetailsVirtualMachinesProps {
   name: string;
   resourceGroup: string;
-  managedCluster: string;
-  nodeResourceGroup?: string;
+  virtualMachineScaleSet: string;
 }
 
-const DetailsNodePools: React.FunctionComponent<IDetailsNodePoolsProps> = ({
+const DetailsVirtualMachines: React.FunctionComponent<IDetailsVirtualMachinesProps> = ({
   name,
   resourceGroup,
-  managedCluster,
-  nodeResourceGroup,
-}: IDetailsNodePoolsProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<INodePool[], Error>(
-    ['azure/kubernetesservice/managedcluster/nodepools', name, resourceGroup, managedCluster],
+  virtualMachineScaleSet,
+}: IDetailsVirtualMachinesProps) => {
+  const { isError, isLoading, error, data, refetch } = useQuery<IVirtualMachine[], Error>(
+    ['azure/virtualmachinescalesets/virtualmachines', name, resourceGroup, virtualMachineScaleSet],
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/azure/${name}/kubernetesservices/managedcluster/nodepools?resourceGroup=${resourceGroup}&managedCluster=${managedCluster}`,
+          `/api/plugins/azure/${name}/virtualmachinescalesets/virtualmachines?resourceGroup=${resourceGroup}&virtualMachineScaleSet=${virtualMachineScaleSet}`,
           {
             method: 'get',
           },
@@ -59,10 +57,10 @@ const DetailsNodePools: React.FunctionComponent<IDetailsNodePoolsProps> = ({
       <Alert
         variant={AlertVariant.danger}
         isInline={true}
-        title="Could not get managed node pools"
+        title="Could not get virtual machines"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<INodePool[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVirtualMachine[], Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -79,30 +77,24 @@ const DetailsNodePools: React.FunctionComponent<IDetailsNodePoolsProps> = ({
 
   return (
     <div style={{ maxWidth: '100%', overflow: 'scroll' }}>
-      <TableComposable aria-label="Node Pools" variant={TableVariant.compact} borders={true}>
+      <TableComposable aria-label="Virtual Machines" variant={TableVariant.compact} borders={true}>
         <Thead>
           <Tr>
             <Th />
             <Th>Name</Th>
+            <Th>Computer Name</Th>
             <Th>Provisioning State</Th>
-            <Th>Power State</Th>
-            <Th>Node Count</Th>
-            <Th>Mode</Th>
-            <Th>Kubernetes Version</Th>
-            <Th>Node Size</Th>
-            <Th>Operating System</Th>
-            <Th />
+            <Th>Latest Model</Th>
           </Tr>
         </Thead>
-        {data.map((nodePool, index) => (
-          <DetailsNodePoolsItem
-            key={nodePool.id || ''}
+        {data.map((virtualMachine, index) => (
+          <DetailsVirtualMachinesItem
+            key={virtualMachine.id || ''}
             rowIndex={index}
             name={name}
             resourceGroup={resourceGroup}
-            managedCluster={managedCluster}
-            nodeResourceGroup={nodeResourceGroup}
-            nodePool={nodePool}
+            virtualMachineScaleSet={virtualMachineScaleSet}
+            virtualMachine={virtualMachine}
           />
         ))}
       </TableComposable>
@@ -110,4 +102,4 @@ const DetailsNodePools: React.FunctionComponent<IDetailsNodePoolsProps> = ({
   );
 };
 
-export default DetailsNodePools;
+export default DetailsVirtualMachines;

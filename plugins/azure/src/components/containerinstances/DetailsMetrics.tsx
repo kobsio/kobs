@@ -39,7 +39,8 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
               name={name}
               resourceGroup={resourceGroup}
               provider={provider + containerGroup}
-              metricName="CPUUsage"
+              metricNames="CPUUsage"
+              aggregationType="Average"
               times={times}
             />
           </div>
@@ -57,7 +58,8 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
               name={name}
               resourceGroup={resourceGroup}
               provider={provider + containerGroup}
-              metricName="MemoryUsage"
+              metricNames="MemoryUsage"
+              aggregationType="Average"
               times={times}
             />
           </div>
@@ -67,7 +69,7 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
       <p>&nbsp;</p>
       <Card isCompact={true}>
         <CardHeader>
-          <CardTitle>Network Bytes Received Per Second</CardTitle>
+          <CardTitle>Network Bytes</CardTitle>
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
@@ -75,25 +77,8 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
               name={name}
               resourceGroup={resourceGroup}
               provider={provider + containerGroup}
-              metricName="NetworkBytesReceivedPerSecond"
-              times={times}
-            />
-          </div>
-        </CardBody>
-      </Card>
-
-      <p>&nbsp;</p>
-      <Card isCompact={true}>
-        <CardHeader>
-          <CardTitle>Network Bytes Transmitted Per Second</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <div style={{ height: '300px' }}>
-            <Metric
-              name={name}
-              resourceGroup={resourceGroup}
-              provider={provider + containerGroup}
-              metricName="NetworkBytesTransmittedPerSecond"
+              metricNames="NetworkBytesReceivedPerSecond,NetworkBytesTransmittedPerSecond"
+              aggregationType="Average"
               times={times}
             />
           </div>

@@ -18,6 +18,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#222](https://github.com/kobsio/kobs/pull/222): [azure] Simple cost management on subscription level
 - [#224](https://github.com/kobsio/kobs/pull/224): [harbor] Add support for multi-arch images.
 - [#226](https://github.com/kobsio/kobs/pull/226): [klogs] Add option to sort fields.
+- [#228](https://github.com/kobsio/kobs/pull/228): [azure] :warning: _Breaking change:_ :warning: Add support for virtual machine scale sets and change required values to display metrics from Azure.
 
 ### Fixed
 

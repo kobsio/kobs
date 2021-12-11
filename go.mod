@@ -6,6 +6,7 @@ require (
 	github.com/Azure/azure-sdk-for-go v59.4.0+incompatible
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v0.20.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v0.12.0
+	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute v0.2.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerinstance/armcontainerinstance v0.0.0-20211201094935-a52477d726c1
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerservice/armcontainerservice v0.2.1
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/monitor/armmonitor v0.2.0

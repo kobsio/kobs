@@ -6,6 +6,7 @@ import (
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/kubernetesservices"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/monitor"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/resourcegroups"
+	"github.com/kobsio/kobs/plugins/azure/pkg/instance/virtualmachinescalesets"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
@@ -35,13 +36,14 @@ type Credentials struct {
 
 // Instance represents a single Azure instance, which can be added via the configuration file.
 type Instance struct {
-	Name               string
-	PermissionsEnabled bool
-	ResourceGroups     *resourcegroups.Client
-	KubernetesServices *kubernetesservices.Client
-	ContainerInstances *containerinstances.Client
-	CostManagement     *costmanagement.Client
-	Monitor            *monitor.Client
+	Name                    string
+	PermissionsEnabled      bool
+	ResourceGroups          *resourcegroups.Client
+	KubernetesServices      *kubernetesservices.Client
+	ContainerInstances      *containerinstances.Client
+	CostManagement          *costmanagement.Client
+	VirtualMachineScaleSets *virtualmachinescalesets.Client
+	Monitor                 *monitor.Client
 }
 
 // New returns a new Elasticsearch instance for the given configuration.
@@ -60,16 +62,18 @@ func New(config Config) (*Instance, error) {
 	resourceGroups := resourcegroups.New(config.Credentials.SubscriptionID, credentials)
 	kubernetesServices := kubernetesservices.New(config.Credentials.SubscriptionID, credentials)
 	containerInstances := containerinstances.New(config.Credentials.SubscriptionID, credentials)
-	monitor := monitor.New(config.Credentials.SubscriptionID, credentials)
 	costManagement := costmanagement.New(config.Credentials.SubscriptionID, authorizer)
+	virtualmachinescalesets := virtualmachinescalesets.New(config.Credentials.SubscriptionID, credentials)
+	monitor := monitor.New(config.Credentials.SubscriptionID, credentials)
 
 	return &Instance{
-		Name:               config.Name,
-		PermissionsEnabled: config.PermissionsEnabled,
-		ResourceGroups:     resourceGroups,
-		KubernetesServices: kubernetesServices,
-		ContainerInstances: containerInstances,
-		CostManagement:     costManagement,
-		Monitor:            monitor,
+		Name:                    config.Name,
+		PermissionsEnabled:      config.PermissionsEnabled,
+		ResourceGroups:          resourceGroups,
+		KubernetesServices:      kubernetesServices,
+		ContainerInstances:      containerInstances,
+		CostManagement:          costManagement,
+		VirtualMachineScaleSets: virtualmachinescalesets,
+		Monitor:                 monitor,
 	}, nil
 }

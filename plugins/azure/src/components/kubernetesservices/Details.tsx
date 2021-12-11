@@ -16,7 +16,7 @@ import DetailsKubernetesService from './DetailsKubernetesService';
 import DetailsMetricsAPIServer from './DetailsMetricsAPIServer';
 import DetailsMetricsNode from './DetailsMetricsNode';
 import DetailsMetricsPod from './DetailsMetricsPod';
-import DetailsNodePools from './DetailsNodePools';
+import DetailsNodePoolsWrapper from './DetailsNodePoolsWrapper';
 import { Title } from '@kobsio/plugin-core';
 
 interface IDetailsProps {
@@ -65,7 +65,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
             <div style={{ maxWidth: '100%', padding: '24px 24px' }}>
               <Card isCompact={true}>
                 <CardBody>
-                  <DetailsNodePools name={name} resourceGroup={resourceGroup} managedCluster={managedCluster} />
+                  <DetailsNodePoolsWrapper name={name} resourceGroup={resourceGroup} managedCluster={managedCluster} />
                 </CardBody>
               </Card>
             </div>
