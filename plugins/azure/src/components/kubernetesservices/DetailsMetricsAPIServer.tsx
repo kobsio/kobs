@@ -39,7 +39,8 @@ const DetailsMetricsAPIServer: React.FunctionComponent<IDetailsMetricsAPIServerP
               name={name}
               resourceGroup={resourceGroup}
               provider={provider + managedCluster}
-              metricName="apiserver_current_inflight_requests"
+              metricNames="apiserver_current_inflight_requests"
+              aggregationType="Average"
               times={times}
             />
           </div>

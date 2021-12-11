@@ -139,7 +139,7 @@ const DetailsContainerGroup: React.FunctionComponent<IDetailsContainerGroupProps
             <Title headingLevel="h4" size="lg">
               Events
             </Title>
-            <TableComposable aria-label="Events" variant={TableVariant.compact} borders={false}>
+            <TableComposable aria-label="Events" variant={TableVariant.compact} borders={true}>
               <Thead>
                 <Tr>
                   <Th>Name</Th>
@@ -164,9 +164,10 @@ const DetailsContainerGroup: React.FunctionComponent<IDetailsContainerGroupProps
             <Title headingLevel="h4" size="lg">
               Init Containers
             </Title>
-            <TableComposable aria-label="Init Containers" variant={TableVariant.compact} borders={false}>
+            <TableComposable aria-label="Init Containers" variant={TableVariant.compact} borders={true}>
               <Thead>
                 <Tr>
+                  <Th />
                   <Th>Name</Th>
                   <Th>Restarts</Th>
                   <Th>Current State</Th>
@@ -174,8 +175,12 @@ const DetailsContainerGroup: React.FunctionComponent<IDetailsContainerGroupProps
                 </Tr>
               </Thead>
               <Tbody>
-                {data.properties?.initContainers?.map((initContainer) => (
-                  <DetailsContainerGroupInitContainer key={initContainer.name} initContainer={initContainer} />
+                {data.properties?.initContainers?.map((initContainer, index) => (
+                  <DetailsContainerGroupInitContainer
+                    key={initContainer.name}
+                    rowIndex={index}
+                    initContainer={initContainer}
+                  />
                 ))}
               </Tbody>
             </TableComposable>
@@ -187,20 +192,19 @@ const DetailsContainerGroup: React.FunctionComponent<IDetailsContainerGroupProps
             <Title headingLevel="h4" size="lg">
               Containers
             </Title>
-            <TableComposable aria-label="Containers" variant={TableVariant.compact} borders={false}>
+            <TableComposable aria-label="Containers" variant={TableVariant.compact} borders={true}>
               <Thead>
                 <Tr>
+                  <Th />
                   <Th>Name</Th>
                   <Th>Restarts</Th>
                   <Th>Current State</Th>
                   <Th>Previous State</Th>
                 </Tr>
               </Thead>
-              <Tbody>
-                {data.properties?.containers?.map((container) => (
-                  <DetailsContainerGroupContainer key={container.name} container={container} />
-                ))}
-              </Tbody>
+              {data.properties?.containers?.map((container, index) => (
+                <DetailsContainerGroupContainer key={container.name} rowIndex={index} container={container} />
+              ))}
             </TableComposable>
           </React.Fragment>
         )}

@@ -1,32 +1,48 @@
 import {
+  Button,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
 } from '@patternfly/react-core';
-import { ExpandableRowContent, Td, Tr } from '@patternfly/react-table';
+import { ExpandableRowContent, Tbody, Td, Tr } from '@patternfly/react-table';
 import React, { useState } from 'react';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
 
 import { INodePool } from './interfaces';
 
 interface IDetailsNodePoolsItemProps {
+  rowIndex: number;
   name: string;
   resourceGroup: string;
   managedCluster: string;
+  nodeResourceGroup?: string;
   nodePool: INodePool;
 }
 
 const DetailsNodePoolsItem: React.FunctionComponent<IDetailsNodePoolsItemProps> = ({
+  rowIndex,
   name,
   resourceGroup,
   managedCluster,
+  nodeResourceGroup,
   nodePool,
 }: IDetailsNodePoolsItemProps) => {
   const [isExpanded, setIsExpaned] = useState<boolean>(false);
 
   return (
-    <React.Fragment>
-      <Tr onClick={(): void => setIsExpaned(!isExpanded)}>
+    <Tbody key={rowIndex} isExpanded={isExpanded}>
+      <Tr>
+        <Td
+          noPadding={true}
+          style={{ padding: 0 }}
+          expand={{
+            isExpanded: isExpanded,
+            onToggle: (): void => setIsExpaned(!isExpanded),
+            rowIndex: rowIndex,
+          }}
+        />
         <Td dataLabel="Name">{nodePool.name || '-'}</Td>
         <Td dataLabel="Provisioning State">{nodePool.properties?.provisioningState || '-'}</Td>
         <Td dataLabel="Power State">{nodePool.properties?.powerState?.code || '-'}</Td>
@@ -35,10 +51,27 @@ const DetailsNodePoolsItem: React.FunctionComponent<IDetailsNodePoolsItemProps> 
         <Td dataLabel="Kubernetes Version">{nodePool.properties?.orchestratorVersion || '-'}</Td>
         <Td dataLabel="Node Size">{nodePool.properties?.vmSize || '-'}</Td>
         <Td dataLabel="Operating System">{nodePool.properties?.osType || '-'}</Td>
+        <Td dataLabel="Details">
+          {nodeResourceGroup && nodePool.properties?.type === 'VirtualMachineScaleSets' ? (
+            <Button
+              variant="link"
+              icon={<ExternalLinkAltIcon />}
+              iconPosition="right"
+              isSmall={true}
+              component={(props): React.ReactElement => (
+                <Link {...props} to={`/${name}/virtualmachinescalesets?resourceGroup=${nodeResourceGroup}`} />
+              )}
+            >
+              VMSS
+            </Button>
+          ) : (
+            '-'
+          )}
+        </Td>
       </Tr>
 
       <Tr isExpanded={isExpanded}>
-        <Td colSpan={8}>
+        <Td colSpan={10}>
           <ExpandableRowContent>
             <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
               <DescriptionListGroup>
@@ -97,7 +130,7 @@ const DetailsNodePoolsItem: React.FunctionComponent<IDetailsNodePoolsItemProps> 
           </ExpandableRowContent>
         </Td>
       </Tr>
-    </React.Fragment>
+    </Tbody>
   );
 };
 

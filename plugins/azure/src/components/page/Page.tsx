@@ -8,6 +8,7 @@ import CostManagementPage from '../costmanagement/Page';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import KubernetesServicesPage from '../kubernetesservices/Page';
 import OverviewPage from './OverviewPage';
+import VirtualMachineScaleSetsPage from '../virtualmachinescalesets/Page';
 
 // IResourceGroup is the interface for a resource group returned by the Azure API. This interface is only required for
 // the returned data, because we are only passing the name of the resource group to the other components.
@@ -82,6 +83,9 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       </Route>
       <Route exact={true} path={`/${name}/kubernetesservices`}>
         <KubernetesServicesPage name={name} displayName={displayName} resourceGroups={data} />
+      </Route>
+      <Route exact={true} path={`/${name}/virtualmachinescalesets`}>
+        <VirtualMachineScaleSetsPage name={name} displayName={displayName} resourceGroups={data} />
       </Route>
     </Switch>
   );

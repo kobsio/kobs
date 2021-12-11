@@ -15,11 +15,12 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	resourceGroup := r.URL.Query().Get("resourceGroup")
 	provider := r.URL.Query().Get("provider")
-	metricName := r.URL.Query().Get("metricName")
+	metricNames := r.URL.Query().Get("metricNames")
+	aggregationType := r.URL.Query().Get("aggregationType")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name, "resourceGroup": resourceGroup, "provider": provider, "metricName": metricName, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getMetrics")
+	log.WithFields(logrus.Fields{"name": name, "resourceGroup": resourceGroup, "provider": provider, "metricNames": metricNames, "aggregationType": aggregationType, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getMetrics")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -45,7 +46,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	metrics, err := i.Monitor.GetMetrics(r.Context(), resourceGroup, provider, metricName, parsedTimeStart, parsedTimeEnd)
+	metrics, err := i.Monitor.GetMetrics(r.Context(), resourceGroup, provider, metricNames, aggregationType, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get metrics")
 		return

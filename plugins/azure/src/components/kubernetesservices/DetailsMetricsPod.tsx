@@ -39,7 +39,8 @@ const DetailsMetricsPod: React.FunctionComponent<IDetailsMetricsPodProps> = ({
               name={name}
               resourceGroup={resourceGroup}
               provider={provider + managedCluster}
-              metricName="kube_pod_status_ready"
+              metricNames="kube_pod_status_ready"
+              aggregationType="Average"
               times={times}
             />
           </div>

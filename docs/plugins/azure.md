@@ -46,28 +46,45 @@ The following options can be used for a panel with the Azure plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The service type which should be used for the panel Currently only `containerinstances` and `kubernetesservices` is supported. | Yes |
+| type | string | The service type which should be used for the panel Currently `containerinstances`, `kubernetesservices` and `virtualmachinescalesets` are supported values. | Yes |
 | containerinstances | [Container Instances](#container-instances) | The configuration for the panel if the type is `containerinstances`. | No |
 | kubernetesservices | [Kubernetes Services](#kubernetes-services) | The configuration for the panel if the type is `kubernetesservices`. | No |
+| virtualmachinescalesets | [Virtual Machine Scale Sets](#virtual-machine-scale-sets) | The configuration for the panel if the type is `virtualmachinescalesets`. | No |
 
 ### Container Instances
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | type | string | The type of the panel for which the Container Instances data should be displayed. This can be `list`, `details`, `logs` or `metrics`. | Yes |
+| resourceGroups | string[] | A list of resource groups for which the Container Instances should be displayed. This is only required, when the type is `list`. | No |
 | resourceGroup | string | The name of the resource group for the Container Instance. This is not required if the type is `list`. | No |
 | containerGroup | string | The name of the container group. This is not required if the type is `list`. | No |
 | containers | string[] | A list of container names. This is only required if the type is `logs`. | No |
-| metric | string | The name of the metric for which the data should be displayed. Supported values are `CPUUsage`, `MemoryUsage`, `NetworkBytesReceivedPerSecond` and `NetworkBytesTransmittedPerSecond`. This is only required if the type is `metrics`. | No |
+| metricNames | string | The name of the metric for which the data should be displayed. Supported values are `CPUUsage`, `MemoryUsage`, `NetworkBytesReceivedPerSecond` and `NetworkBytesTransmittedPerSecond`. This is only required if the type is `metrics`. | No |
+| aggregationType | string | The aggregation type for the metric. Supported values are `Average`, `Minimum`, `Maximum`, `Total` and `Count`. This is only required if the type is `metrics`. | No |
 
 ### Kubernetes Services
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | type | string | The type of the panel for which the Kubernetes Services data should be displayed. This can be `list`, `details`, `nodePools` or `metrics`. | Yes |
+| resourceGroups | string[] | A list of resource groups for which the Kubernetes Services should be displayed. This is only required, when the type is `list`. | No |
 | resourceGroup | string | The name of the resource group for the Kubernetes Services. This is not required if the type is `list`. | No |
 | managedCluster | string | The name of the managed cluster. This is not required if the type is `list`. | No |
-| metric | string | The name of the metric for which the data should be displayed. Supported values are `apiserver_current_inflight_requests`, `kube_node_status_allocatable_cpu_cores`, `kube_node_status_allocatable_memory_bytes`, `kube_node_status_condition`, `node_cpu_usage_percentage`, `node_memory_rss_percentage`, `node_memory_working_set_percentage`, `node_disk_usage_percentage`, `node_network_in_bytes`, `node_network_out_bytes` and `kube_pod_status_ready`. This is only required if the type is `metrics`. | No |
+| metricNames | string | The name of the metric for which the data should be displayed. Supported values are `apiserver_current_inflight_requests`, `kube_node_status_allocatable_cpu_cores`, `kube_node_status_allocatable_memory_bytes`, `kube_node_status_condition`, `node_cpu_usage_percentage`, `node_memory_rss_percentage`, `node_memory_working_set_percentage`, `node_disk_usage_percentage`, `node_network_in_bytes`, `node_network_out_bytes` and `kube_pod_status_ready`. This is only required if the type is `metrics`. | No |
+| aggregationType | string | The aggregation type for the metric. Supported values are `Average`, `Minimum`, `Maximum`, `Total` and `Count`. This is only required if the type is `metrics`. | No |
+
+### Virtual Machine Scale Sets
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The type of the panel for which the Virtual Machine Scale Set data should be displayed. This can be `list`, `details`, `virtualMachines` or `metrics`. | Yes |
+| resourceGroups | string[] | A list of resource groups for which the Virtual Machine Scale Sets should be displayed. This is only required, when the type is `list`. | No |
+| resourceGroup | string | The name of the resource group for the Virtual Machine Scale Set. This is not required if the type is `list`. | No |
+| virtualMachineScaleSet | string | The name of the Virtual Machine Scale Set. This is not required if the type is `list`. | No |
+| virtualMachine | string | The name of a virtual machine in a Virtual Machine Scale Set. If this value is provided the metrics for the virtual machine instead of the Virtual Machine Scale Set will be displayed, when the type is `metrics`. | No |
+| metricNames | string | The name of the metric for which the data should be displayed. Supported values are `Percentage CPU`, `Available Memory Bytes`, `Network In Total`, `Network Out Total`, `Disk Read Bytes`, `Disk Write Bytes`, `Disk Read Operations/Sec` and `Disk Write Operations/Sec`. This is only required if the type is `metrics`. | No |
+| aggregationType | string | The aggregation type for the metric. Supported values are `Average`, `Minimum`, `Maximum`, `Total` and `Count`. This is only required if the type is `metrics`. | No |
 
 ## Usage
 
@@ -145,6 +162,17 @@ The `*` value is a special value, which allows access to all resources, resource
 !!! note
     You have to set the `permissionsEnabled` property in the configuration to `true` and you must enable [authentication](../configuration/authentication.md) for kobs to use this feature.
 
+### Metrics
+
+kobs supports all Azure metrics for the supported services. To get a list of all metric names and there aggregation types one of the following commands can be used:
+
+- Container Instances: `az monitor metrics list-definitions --resource /subscriptions/<SUBSCRIPTION>/resourceGroups/<RESOURCE-GROUP>/providers/Microsoft.ContainerInstance/containerGroups/<CONTAINER-GROUP>`
+- Kubernetes Services: `az monitor metrics list-definitions --resource /subscriptions/<SUBSCRIPTION>/resourceGroups/<RESOURCE-GROUP>/providers/Microsoft.ContainerService/managedClusters/<MANAGED-CLUSTER>`
+- Virtual Machine Scale Sets: `az monitor metrics list-definitions --resource /subscriptions/<SUBSCRIPTION>/resourceGroups/<RESOURCE-GROUP>/providers/Microsoft.Compute/virtualMachineScaleSets/<VIRTUAL-MACHINE-SCALE-SET>`
+- Virtual Machine Scale Sets (Virtual Machine): `az monitor metrics list-definitions --resource /subscriptions/<SUBSCRIPTION>/resourceGroups/<RESOURCE-GROUP>/providers/Microsoft.Compute/virtualMachineScaleSets/<VIRTUAL-MACHINE-SCALE-SET>/virtualMachines/<VIRTUAL-MACHINE>`
+
+In the returned JSON array you can check the `name.value` fields for the metric names and the `supportedAggregationTypes` for all the supported aggregation types of a metric.
+
 ## Examples
 
 ### Container Instances Dashboard
@@ -207,7 +235,8 @@ spec:
                 type: metrics
                 resourceGroup: app-myciservice
                 containerGroup: "{% .var_container_group %}"
-                metric: CPUUsage
+                metricNames: CPUUsage
+                aggregationType: Average
         - title: Memory Usage {% .var_container_group %}
           colSpan: 6
           rowSpan: 1
@@ -219,7 +248,8 @@ spec:
                 type: metrics
                 resourceGroup: app-myciservice
                 containerGroup: "{% .var_container_group %}"
-                metric: MemoryUsage
+                metricNames: MemoryUsage
+                aggregationType: Average
 
     - size: 4
       panels:

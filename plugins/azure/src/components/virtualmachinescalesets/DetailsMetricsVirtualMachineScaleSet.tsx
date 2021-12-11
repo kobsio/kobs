@@ -6,19 +6,19 @@ import Metric from '../metrics/Metric';
 import MetricsToolbar from '../metrics/MetricsToolbar';
 import { services } from '../../utils/services';
 
-const provider = services['kubernetesservices'].provider;
+const provider = services['virtualmachinescalesets'].provider;
 
-interface IDetailsMetricsNodeProps {
+interface IDetailsMetricsVirtualMachineScaleSetProps {
   name: string;
   resourceGroup: string;
-  managedCluster: string;
+  virtualMachineScaleSet: string;
 }
 
-const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
+const DetailsMetricsVirtualMachineScaleSet: React.FunctionComponent<IDetailsMetricsVirtualMachineScaleSetProps> = ({
   name,
   resourceGroup,
-  managedCluster,
-}: IDetailsMetricsNodeProps) => {
+  virtualMachineScaleSet,
+}: IDetailsMetricsVirtualMachineScaleSetProps) => {
   const [times, setTimes] = useState<IPluginTimes>({
     time: 'last15Minutes',
     timeEnd: Math.floor(Date.now() / 1000),
@@ -31,15 +31,15 @@ const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
       <p>&nbsp;</p>
       <Card isCompact={true}>
         <CardHeader>
-          <CardTitle>Total Number of Available CPU Cores</CardTitle>
+          <CardTitle>CPU Usage (Average)</CardTitle>
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
             <Metric
               name={name}
               resourceGroup={resourceGroup}
-              provider={provider + managedCluster}
-              metricNames="kube_node_status_allocatable_cpu_cores"
+              provider={provider + virtualMachineScaleSet}
+              metricNames="Percentage CPU"
               aggregationType="Average"
               times={times}
             />
@@ -50,15 +50,15 @@ const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
       <p>&nbsp;</p>
       <Card isCompact={true}>
         <CardHeader>
-          <CardTitle>Total Amount of Available Memory</CardTitle>
+          <CardTitle>Available Memory Bytes (Average)</CardTitle>
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
             <Metric
               name={name}
               resourceGroup={resourceGroup}
-              provider={provider + managedCluster}
-              metricNames="kube_node_status_allocatable_memory_bytes"
+              provider={provider + virtualMachineScaleSet}
+              metricNames="Available Memory Bytes"
               aggregationType="Average"
               times={times}
             />
@@ -69,16 +69,16 @@ const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
       <p>&nbsp;</p>
       <Card isCompact={true}>
         <CardHeader>
-          <CardTitle>Statuses for Various Node Conditions</CardTitle>
+          <CardTitle>Network (Total)</CardTitle>
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
             <Metric
               name={name}
               resourceGroup={resourceGroup}
-              provider={provider + managedCluster}
-              metricNames="kube_node_status_condition"
-              aggregationType="Average"
+              provider={provider + virtualMachineScaleSet}
+              metricNames="Network In Total,Network Out Total"
+              aggregationType="Total"
               times={times}
             />
           </div>
@@ -88,16 +88,16 @@ const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
       <p>&nbsp;</p>
       <Card isCompact={true}>
         <CardHeader>
-          <CardTitle>Average CPU Utilization</CardTitle>
+          <CardTitle>Disk Bytes (Total)</CardTitle>
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
             <Metric
               name={name}
               resourceGroup={resourceGroup}
-              provider={provider + managedCluster}
-              metricNames="node_cpu_usage_percentage"
-              aggregationType="Average"
+              provider={provider + virtualMachineScaleSet}
+              metricNames="Disk Read Bytes,Disk Write Bytes"
+              aggregationType="Total"
               times={times}
             />
           </div>
@@ -107,53 +107,15 @@ const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
       <p>&nbsp;</p>
       <Card isCompact={true}>
         <CardHeader>
-          <CardTitle>Container Memory Used</CardTitle>
+          <CardTitle>Disk Operations/Sec (Average)</CardTitle>
         </CardHeader>
         <CardBody>
           <div style={{ height: '300px' }}>
             <Metric
               name={name}
               resourceGroup={resourceGroup}
-              provider={provider + managedCluster}
-              metricNames="node_memory_rss_percentage,node_memory_working_set_percentage"
-              aggregationType="Average"
-              times={times}
-            />
-          </div>
-        </CardBody>
-      </Card>
-
-      <p>&nbsp;</p>
-      <Card isCompact={true}>
-        <CardHeader>
-          <CardTitle>Disk Space Used</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <div style={{ height: '300px' }}>
-            <Metric
-              name={name}
-              resourceGroup={resourceGroup}
-              provider={provider + managedCluster}
-              metricNames="node_disk_usage_percentage"
-              aggregationType="Average"
-              times={times}
-            />
-          </div>
-        </CardBody>
-      </Card>
-
-      <p>&nbsp;</p>
-      <Card isCompact={true}>
-        <CardHeader>
-          <CardTitle>Network</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <div style={{ height: '300px' }}>
-            <Metric
-              name={name}
-              resourceGroup={resourceGroup}
-              provider={provider + managedCluster}
-              metricNames="node_network_in_bytes,node_network_out_bytes"
+              provider={provider + virtualMachineScaleSet}
+              metricNames="Disk Read Operations/Sec,Disk Write Operations/Sec"
               aggregationType="Average"
               times={times}
             />
@@ -164,4 +126,4 @@ const DetailsMetricsNode: React.FunctionComponent<IDetailsMetricsNodeProps> = ({
   );
 };
 
-export default DetailsMetricsNode;
+export default DetailsMetricsVirtualMachineScaleSet;

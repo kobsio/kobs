@@ -1,6 +1,7 @@
 import containerInstancesIcon from '../assets/services/container-instances.svg';
 import costManagementIcon from '../assets/services/cost-management.svg';
 import kubernetesServicesIcon from '../assets/services/kubernetes-services.svg';
+import virtualMachineScaleSetsIcon from '../assets/services/virtual-machine-scale-sets.svg';
 
 export interface IServices {
   [key: string]: IService;
@@ -32,5 +33,11 @@ export const services: IServices = {
     icon: kubernetesServicesIcon,
     name: 'Kubernetes Services',
     provider: 'Microsoft.ContainerService/managedClusters/',
+  },
+  virtualmachinescalesets: {
+    description: 'Manage and scale up to thousands of Linux and Windows VMs',
+    icon: virtualMachineScaleSetsIcon,
+    name: 'Virtual Machine Scale Sets',
+    provider: 'Microsoft.Compute/virtualMachineScaleSets/',
   },
 };

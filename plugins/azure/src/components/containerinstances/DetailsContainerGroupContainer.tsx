@@ -11,24 +11,35 @@ import DetailsContainerGroupEvent from './DetailsContainerGroupEvent';
 import { IContainer } from './interfaces';
 
 interface IDetailsContainerGroupContainerProps {
+  rowIndex: number;
   container: IContainer;
 }
 
 const DetailsContainerGroupContainer: React.FunctionComponent<IDetailsContainerGroupContainerProps> = ({
+  rowIndex,
   container,
 }: IDetailsContainerGroupContainerProps) => {
   const [isExpanded, setIsExpaned] = useState<boolean>(false);
 
   return (
-    <React.Fragment>
-      <Tr onClick={(): void => setIsExpaned(!isExpanded)}>
+    <Tbody key={rowIndex} isExpanded={isExpanded}>
+      <Tr>
+        <Td
+          noPadding={true}
+          style={{ padding: 0 }}
+          expand={{
+            isExpanded: isExpanded,
+            onToggle: (): void => setIsExpaned(!isExpanded),
+            rowIndex: rowIndex,
+          }}
+        />
         <Td dataLabel="Name">{container.name}</Td>
         <Td dataLabel="Restarts">{container.properties?.instanceView?.restartCount || '-'}</Td>
         <Td dataLabel="Current State">{container.properties?.instanceView?.currentState?.state || '-'}</Td>
         <Td dataLabel="Previous State">{container.properties?.instanceView?.previousState?.state || '-'}</Td>
       </Tr>
       <Tr isExpanded={isExpanded}>
-        <Td colSpan={4}>
+        <Td colSpan={5}>
           <ExpandableRowContent>
             <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
               {container.properties?.image && (
@@ -75,7 +86,7 @@ const DetailsContainerGroupContainer: React.FunctionComponent<IDetailsContainerG
                 <DescriptionListGroup>
                   <DescriptionListTerm>Events</DescriptionListTerm>
                   <DescriptionListDescription>
-                    <TableComposable aria-label="Events" variant={TableVariant.compact} borders={false}>
+                    <TableComposable aria-label="Events" variant={TableVariant.compact} borders={true}>
                       <Tbody>
                         {container.properties?.instanceView?.events.map((event, index) => (
                           <DetailsContainerGroupEvent key={index} event={event} />
@@ -89,7 +100,7 @@ const DetailsContainerGroupContainer: React.FunctionComponent<IDetailsContainerG
           </ExpandableRowContent>
         </Td>
       </Tr>
-    </React.Fragment>
+    </Tbody>
   );
 };
 

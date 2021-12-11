@@ -44,17 +44,23 @@ export const formatAxisBottom = (timeStart: number, timeEnd: number): string => 
   return '%m-%d';
 };
 
-// convertMetric returns the metric from the Azure API in the format required for nivo charts.
-export const convertMetric = (metric: IMetric): Serie[] => {
+// convertMetrics returns the metrics from the Azure API in the format required for nivo charts.
+export const convertMetrics = (metrics: IMetric[], aggregationType: string): Serie[] => {
   const series: Serie[] = [];
 
-  for (let i = 0; i < metric.timeseries.length; i++) {
-    series.push({
-      data: metric.timeseries[i].data.map((datum) => {
-        return { x: new Date(datum.timeStamp), y: datum.average === undefined ? null : datum.average };
-      }),
-      id: `${i + 1}. ${metric.name.localizedValue}`,
-    });
+  for (let i = 0; i < metrics.length; i++) {
+    for (let j = 0; j < metrics[i].timeseries.length; j++) {
+      series.push({
+        data: metrics[i].timeseries[j].data.map((datum) => {
+          return {
+            unit: metrics[i].unit,
+            x: new Date(datum.timeStamp),
+            y: datum[aggregationType.toLowerCase()] === undefined ? null : datum[aggregationType.toLowerCase()],
+          };
+        }),
+        id: metrics[i].name.localizedValue,
+      });
+    }
   }
 
   return series;
@@ -75,33 +81,37 @@ export const convertQueryResult = (data: IQueryResult): IPieDatum[] => {
   return pieData;
 };
 
-// formatMetric is used to auto format the values of a metric. When the unit of a metric is "Bytes" we auto format the
-// values to KB, MB, GB, etc.
-export const formatMetric = (metric: IMetric): IMetric => {
-  // If the unit isn't "Bytes" we use the metric as it was returned by the Azure API.
-  if (metric.unit !== 'Bytes') {
-    return metric;
-  }
+// formatMetrics is used to auto format the values of all metrics. When the unit of a metric is "Bytes" we auto format
+// the values to KB, MB, GB, etc.
+export const formatMetrics = (metrics: IMetric[], aggregationType: string): IMetric[] => {
+  const formattedMetrics: IMetric[] = [];
 
   // In the first step we have to determine the minimum and maximum value of all the returned timeseries in the metric,
   let min = 0;
   let max = 0;
 
-  for (let i = 0; i < metric.timeseries.length; i++) {
-    for (let j = 0; j < metric.timeseries[i].data.length; j++) {
-      const average = metric.timeseries[i].data[j].average;
+  for (const metric of metrics) {
+    // If the unit isn't "Bytes" we use the metric as it was returned by the Azure API.
+    if (metric.unit !== 'Bytes') {
+      return metrics;
+    }
 
-      if (i === 0 && j === 0 && average !== undefined) {
-        min = average;
-        max = average;
-      }
+    for (let i = 0; i < metric.timeseries.length; i++) {
+      for (let j = 0; j < metric.timeseries[i].data.length; j++) {
+        const value = metric.timeseries[i].data[j][aggregationType.toLowerCase()];
 
-      if (average !== undefined && average < min) {
-        min = average;
-      }
+        if (i === 0 && j === 0 && value !== undefined) {
+          min = value;
+          max = value;
+        }
 
-      if (average !== undefined && average > max) {
-        max = average;
+        if (value !== undefined && value < min) {
+          min = value;
+        }
+
+        if (value !== undefined && value > max) {
+          max = value;
+        }
       }
     }
   }
@@ -112,7 +122,7 @@ export const formatMetric = (metric: IMetric): IMetric => {
   let exponent = Math.floor(Math.log(max) / Math.log(1024));
 
   if (exponent === 0) {
-    return metric;
+    return metrics;
   }
 
   if (exponent > 8) {
@@ -121,18 +131,21 @@ export const formatMetric = (metric: IMetric): IMetric => {
 
   // Now we have to loop again through all data points to format all the values. After that we set the new unit based on
   // the exponent so that we can return the metric.
-  for (let i = 0; i < metric.timeseries.length; i++) {
-    for (let j = 0; j < metric.timeseries[i].data.length; j++) {
-      const average = metric.timeseries[i].data[j].average;
+  for (const metric of metrics) {
+    for (let i = 0; i < metric.timeseries.length; i++) {
+      for (let j = 0; j < metric.timeseries[i].data.length; j++) {
+        const value = metric.timeseries[i].data[j][aggregationType.toLowerCase()];
 
-      if (average !== undefined) {
-        metric.timeseries[i].data[j].average = average / Math.pow(1024, exponent);
+        if (value !== undefined) {
+          metric.timeseries[i].data[j][aggregationType.toLowerCase()] = value / Math.pow(1024, exponent);
+        }
       }
     }
+
+    const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+    metric.unit = sizes[exponent];
+    formattedMetrics.push(metric);
   }
 
-  const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-  metric.unit = sizes[exponent];
-
-  return metric;
+  return formattedMetrics;
 };

@@ -10,6 +10,7 @@
     "plugin": "tsc && tsc --build tsconfig.esm.json && cp -r src/assets lib && cp -r src/assets lib-esm"
   },
   "dependencies": {
+    "@azure/arm-compute": "^17.0.0",
     "@azure/arm-containerinstance": "^7.1.0",
     "@azure/arm-containerservice": "^14.3.0",
     "@kobsio/plugin-core": "*",
