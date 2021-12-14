@@ -45,6 +45,7 @@ The following options can be used for a panel with the Opsgenie plugin:
 | ----- | ---- | ----------- | -------- |
 | type | string | Specify if you want to show `alerts` or `incidents`. The default value is `alerts`. | No |
 | query | string | The Opsgenie query. The documentation for the query language can be found in the [Opsgenie Documentation](https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/). | No |
+| interval | number | An optional interval in seconds, which should be used instead of the selected time range in the Dashboard to get the alerts / incidents for. | No |
 
 For example the following dashboard shows all open alerts and incidents.
 
@@ -74,3 +75,5 @@ spec:
 
 !!! note
     kobs automatically adds the `createdAt >= <selected-start-time> AND createdAt <= <selected-end-time>` to all Opsgenie queries, so that only results for the selected time range are shown.
+
+    This behaviour can be overwritten with the `interval` property. If the `interval` property is provided, we add `createdAt >= <now - interval> AND createdAt <= <now>`.

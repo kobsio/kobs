@@ -38,7 +38,13 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         transparent={true}
         actions={<IncidentsActions name={name} query={options.query || ''} times={times} type="incidents" />}
       >
-        <Incidents name={name} query={options.query || ''} times={times} setDetails={showDetails} />
+        <Incidents
+          name={name}
+          query={options.query || ''}
+          interval={options.interval}
+          times={times}
+          setDetails={showDetails}
+        />
       </PluginCard>
     );
   }
@@ -50,7 +56,13 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       transparent={true}
       actions={<AlertsActions name={name} query={options.query || ''} times={times} type="alerts" />}
     >
-      <Alerts name={name} query={options.query || ''} times={times} setDetails={showDetails} />
+      <Alerts
+        name={name}
+        query={options.query || ''}
+        interval={options.interval}
+        times={times}
+        setDetails={showDetails}
+      />
     </PluginCard>
   );
 };

@@ -18,7 +18,16 @@ export const formatTimeWrapper = (time: string): string => {
   return formatTime(Math.floor(new Date(time).getTime() / 1000));
 };
 
-export const queryWithTime = (query: string, times: IPluginTimes): string => {
+export const queryWithTime = (query: string, times: IPluginTimes, interval?: number): string => {
+  if (interval) {
+    const timeEnd = Math.floor(Date.now() / 1000);
+    const timeStart = Math.floor(Date.now() / 1000) - interval;
+
+    return query
+      ? `${query} AND createdAt >= ${timeStart} AND createdAt <= ${timeEnd}`
+      : `createdAt >= ${timeStart} AND createdAt <= ${timeEnd}`;
+  }
+
   return query
     ? `${query} AND createdAt >= ${times.timeStart} AND createdAt <= ${times.timeEnd}`
     : `createdAt >= ${times.timeStart} AND createdAt <= ${times.timeEnd}`;
