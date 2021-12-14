@@ -45,6 +45,14 @@ Variables can be used to select between different values in the dashboard. To us
 | hide | boolean | Hide the variable in the UI. | No |
 | plugin | [Variable Plugin](#variable-plugin) | The plugin, which should be used to get the values for the variable. | Yes |
 
+!!! note
+    Dashboards are also supporting some special variables, which always can be used and must not be defined by a users. These variables are:
+
+    - `__timeStart`: The start time of the selected time range in seconds.
+    - `__timeEnd`: The end time of the selected time range in seconds.
+
+    These variables can then be used via `{{ .__timeStart }}` and `{{ .__timeEnd }}` in the dashboard.
+
 ### Variable Plugin
 
 | Field | Type | Description | Required |

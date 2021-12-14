@@ -1,6 +1,6 @@
 import { gridSpans } from '@patternfly/react-core';
 
-import { IDashboard, IPlaceholders, IPluginDefaults, IReference } from '@kobsio/plugin-core';
+import { IDashboard, IPlaceholders, IPluginDefaults, IPluginTimes, IReference } from '@kobsio/plugin-core';
 import { IDashboardsOptions, IVariableValues } from './interfaces';
 
 // toGridSpans is used to convert the provided col and row span value to the corresponding gridSpans value, so that it
@@ -46,6 +46,7 @@ interface IVariables {
 export const interpolate = (
   str: string,
   variables: IVariableValues[],
+  times: IPluginTimes,
   interpolator: string[] = ['{%', '%}'],
 ): string => {
   const vars: IVariables = {};
@@ -53,6 +54,9 @@ export const interpolate = (
   for (const variable of variables) {
     vars[variable.name] = variable.value;
   }
+
+  vars['__timeStart'] = `${times.timeStart}`;
+  vars['__timeEnd'] = `${times.timeEnd}`;
 
   return str
     .split(interpolator[0])

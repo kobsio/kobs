@@ -108,7 +108,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
               const response = await fetch(`/api/plugins/prometheus/variable/${tmpVariables[i].plugin.name}`, {
                 body: JSON.stringify({
                   label: tmpVariables[i].plugin.options.label,
-                  query: interpolate(tmpVariables[i].plugin.options.query, tmpVariables),
+                  query: interpolate(tmpVariables[i].plugin.options.query, tmpVariables, times),
                   timeEnd: times.timeEnd,
                   timeStart: times.timeStart,
                   type: tmpVariables[i].plugin.options.type,
@@ -152,7 +152,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // We do not use the dashboard.rows array directly to render the dashboard. Instead we are replacing all the variables
   // in the dashboard first with users selected values. For that we have to convert the array to a string first so that
   // we can replace the variables in the string and then we have to convert it back to an array,
-  const rows: IRow[] = data ? JSON.parse(interpolate(JSON.stringify(dashboard.rows), data)) : dashboard.rows;
+  const rows: IRow[] = JSON.parse(interpolate(JSON.stringify(dashboard.rows), data ? data : [], times));
 
   if (isError) {
     return (
