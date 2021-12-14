@@ -13,6 +13,7 @@ export interface IOptions {
 export interface IPanelOptions {
   type?: string;
   query?: string;
+  interval?: number;
 }
 
 // IAlert implements the structure of an Opsgenie alert, how it is returned from the Opsgenie API.

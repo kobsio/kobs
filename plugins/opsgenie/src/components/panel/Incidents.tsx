@@ -10,18 +10,28 @@ import { queryWithTime } from '../../utils/helpers';
 interface IIncidentsProps {
   name: string;
   query: string;
+  interval?: number;
   times: IPluginTimes;
   setDetails?: (details: React.ReactNode) => void;
 }
 
-const Incidents: React.FunctionComponent<IIncidentsProps> = ({ name, query, times, setDetails }: IIncidentsProps) => {
+const Incidents: React.FunctionComponent<IIncidentsProps> = ({
+  name,
+  query,
+  interval,
+  times,
+  setDetails,
+}: IIncidentsProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IIncident[], Error>(
-    ['opsgenie/incidents', name, query, times],
+    ['opsgenie/incidents', name, query, interval, times],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/opsgenie/incidents/${name}?query=${queryWithTime(query, times)}`, {
-          method: 'get',
-        });
+        const response = await fetch(
+          `/api/plugins/opsgenie/incidents/${name}?query=${queryWithTime(query, times, interval)}`,
+          {
+            method: 'get',
+          },
+        );
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {

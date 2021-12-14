@@ -10,18 +10,22 @@ import { queryWithTime } from '../../utils/helpers';
 interface IAlertsProps {
   name: string;
   query: string;
+  interval?: number;
   times: IPluginTimes;
   setDetails?: (details: React.ReactNode) => void;
 }
 
-const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, times, setDetails }: IAlertsProps) => {
+const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, interval, times, setDetails }: IAlertsProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IAlert[], Error>(
-    ['opsgenie/alerts', name, query, times],
+    ['opsgenie/alerts', name, query, interval, times],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/opsgenie/alerts/${name}?query=${queryWithTime(query, times)}`, {
-          method: 'get',
-        });
+        const response = await fetch(
+          `/api/plugins/opsgenie/alerts/${name}?query=${queryWithTime(query, times, interval)}`,
+          {
+            method: 'get',
+          },
+        );
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
