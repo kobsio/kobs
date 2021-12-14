@@ -35,7 +35,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
   ];
 
   return (
-    <Tbody>
+    <Tbody isExpanded={isExpanded}>
       <Tr>
         <Td
           noPadding={true}

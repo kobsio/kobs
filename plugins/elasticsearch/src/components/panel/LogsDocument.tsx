@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TableText, Td, Tr } from '@patternfly/react-table';
+import { TableText, Tbody, Td, Tr } from '@patternfly/react-table';
 
 import { formatTime, getProperty } from '../../utils/helpers';
 import { IDocument } from '../../utils/interfaces';
@@ -36,7 +36,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
   ];
 
   return (
-    <React.Fragment>
+    <Tbody isExpanded={isExpanded}>
       <Tr>
         <Td
           noPadding={true}
@@ -66,7 +66,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
         </Td>
         <Td />
       </Tr>
-    </React.Fragment>
+    </Tbody>
   );
 };
 
