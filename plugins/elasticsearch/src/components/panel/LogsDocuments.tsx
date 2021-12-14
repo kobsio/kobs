@@ -26,7 +26,7 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
   const [page, setPage] = useState<IPage>({ page: 1, perPage: 100 });
 
   return (
-    <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={false}>
+    <TableComposable aria-label="Logs" variant={TableVariant.compact} borders={true}>
       <Thead>
         <Tr>
           <Th />
@@ -39,21 +39,21 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
           <Th />
         </Tr>
       </Thead>
-      <Tbody>
-        {documents
-          ? documents
-              .slice((page.page - 1) * page.perPage, page.page * page.perPage)
-              .map((document, index) => (
-                <LogsDocument
-                  key={index}
-                  document={document}
-                  fields={fields}
-                  addFilter={addFilter}
-                  selectField={selectField}
-                />
-              ))
-          : null}
-      </Tbody>
+
+      {documents
+        ? documents
+            .slice((page.page - 1) * page.perPage, page.page * page.perPage)
+            .map((document, index) => (
+              <LogsDocument
+                key={document['_id'] + index}
+                document={document}
+                fields={fields}
+                addFilter={addFilter}
+                selectField={selectField}
+              />
+            ))
+        : null}
+
       {documents && (
         <Tbody>
           <Tr>
