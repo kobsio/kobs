@@ -10,7 +10,6 @@ import React, { useState } from 'react';
 import { IVirtualMachine } from './interfaces';
 
 interface IDetailsVirtualMachinesItemProps {
-  rowIndex: number;
   name: string;
   resourceGroup: string;
   virtualMachineScaleSet: string;
@@ -18,25 +17,20 @@ interface IDetailsVirtualMachinesItemProps {
 }
 
 const DetailsVirtualMachinesItem: React.FunctionComponent<IDetailsVirtualMachinesItemProps> = ({
-  rowIndex,
   name,
   resourceGroup,
   virtualMachineScaleSet,
   virtualMachine,
 }: IDetailsVirtualMachinesItemProps) => {
-  const [isExpanded, setIsExpaned] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   return (
-    <Tbody key={rowIndex} isExpanded={isExpanded}>
+    <Tbody isExpanded={isExpanded}>
       <Tr>
         <Td
           noPadding={true}
           style={{ padding: 0 }}
-          expand={{
-            isExpanded: isExpanded,
-            onToggle: (): void => setIsExpaned(!isExpanded),
-            rowIndex: rowIndex,
-          }}
+          expand={{ isExpanded: isExpanded, onToggle: (): void => setIsExpanded(!isExpanded), rowIndex: 0 }}
         />
         <Td dataLabel="Name">{virtualMachine.name || '-'}</Td>
         <Td dataLabel="Computer Name">{virtualMachine.properties?.osProfile?.computerName || '-'}</Td>

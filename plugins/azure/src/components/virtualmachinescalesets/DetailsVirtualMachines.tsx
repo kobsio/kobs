@@ -87,10 +87,9 @@ const DetailsVirtualMachines: React.FunctionComponent<IDetailsVirtualMachinesPro
             <Th>Latest Model</Th>
           </Tr>
         </Thead>
-        {data.map((virtualMachine, index) => (
+        {data.map((virtualMachine) => (
           <DetailsVirtualMachinesItem
             key={virtualMachine.id || ''}
-            rowIndex={index}
             name={name}
             resourceGroup={resourceGroup}
             virtualMachineScaleSet={virtualMachineScaleSet}

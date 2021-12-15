@@ -4,7 +4,7 @@ import {
   DescriptionListGroup,
   DescriptionListTerm,
 } from '@patternfly/react-core';
-import { ExpandableRowContent, Td, Tr } from '@patternfly/react-table';
+import { ExpandableRowContent, Tbody, Td, Tr } from '@patternfly/react-table';
 import React, { useState } from 'react';
 import { V1Container, V1ContainerState, V1ContainerStatus, V1EnvVarSource, V1Probe } from '@kubernetes/client-node';
 
@@ -111,11 +111,16 @@ const Container: React.FunctionComponent<IContainerProps> = ({
   containerStatus,
   containerMetric,
 }: IContainerProps) => {
-  const [isExpanded, setIsExpaned] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   return (
-    <React.Fragment>
-      <Tr onClick={(): void => setIsExpaned(!isExpanded)}>
+    <Tbody isExpanded={isExpanded}>
+      <Tr>
+        <Td
+          noPadding={true}
+          style={{ padding: 0 }}
+          expand={{ isExpanded: isExpanded, onToggle: (): void => setIsExpanded(!isExpanded), rowIndex: 0 }}
+        />
         <Td dataLabel="Name">{container.name}</Td>
         <Td dataLabel="Ready">{containerStatus && containerStatus.ready ? 'True' : 'False'}</Td>
         <Td dataLabel="Restarts">{containerStatus ? containerStatus.restartCount : 0}</Td>
@@ -154,7 +159,7 @@ const Container: React.FunctionComponent<IContainerProps> = ({
         </Td>
       </Tr>
       <Tr isExpanded={isExpanded}>
-        <Td colSpan={10}>
+        <Td colSpan={11}>
           <ExpandableRowContent>
             <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
               <DescriptionListGroup>
@@ -224,7 +229,7 @@ const Container: React.FunctionComponent<IContainerProps> = ({
           </ExpandableRowContent>
         </Td>
       </Tr>
-    </React.Fragment>
+    </Tbody>
   );
 };
 

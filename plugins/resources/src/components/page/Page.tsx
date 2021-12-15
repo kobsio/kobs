@@ -54,7 +54,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         <DrawerContent panelContent={details}>
           <DrawerContentBody>
             <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-              {options.clusters.length === 0 || options.namespaces.length === 0 || options.resources.length === 0 ? (
+              {options.clusters.length === 0 || options.resources.length === 0 ? (
                 <Alert variant={AlertVariant.info} title="Select clusters, resources and namespaces">
                   <p>Select a list of clusters, resources and namespaces from the toolbar.</p>
                 </Alert>

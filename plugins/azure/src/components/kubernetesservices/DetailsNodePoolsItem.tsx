@@ -13,7 +13,6 @@ import { Link } from 'react-router-dom';
 import { INodePool } from './interfaces';
 
 interface IDetailsNodePoolsItemProps {
-  rowIndex: number;
   name: string;
   resourceGroup: string;
   managedCluster: string;
@@ -22,26 +21,21 @@ interface IDetailsNodePoolsItemProps {
 }
 
 const DetailsNodePoolsItem: React.FunctionComponent<IDetailsNodePoolsItemProps> = ({
-  rowIndex,
   name,
   resourceGroup,
   managedCluster,
   nodeResourceGroup,
   nodePool,
 }: IDetailsNodePoolsItemProps) => {
-  const [isExpanded, setIsExpaned] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   return (
-    <Tbody key={rowIndex} isExpanded={isExpanded}>
+    <Tbody isExpanded={isExpanded}>
       <Tr>
         <Td
           noPadding={true}
           style={{ padding: 0 }}
-          expand={{
-            isExpanded: isExpanded,
-            onToggle: (): void => setIsExpaned(!isExpanded),
-            rowIndex: rowIndex,
-          }}
+          expand={{ isExpanded: isExpanded, onToggle: (): void => setIsExpanded(!isExpanded), rowIndex: 0 }}
         />
         <Td dataLabel="Name">{nodePool.name || '-'}</Td>
         <Td dataLabel="Provisioning State">{nodePool.properties?.provisioningState || '-'}</Td>
