@@ -3,7 +3,7 @@ import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 
-import { ClustersContext, IClusterContext, emptyState } from '@kobsio/plugin-core';
+import { ClustersContext, IClusterContext, IPluginTimes, emptyState } from '@kobsio/plugin-core';
 import Details from '../panel/details/Details';
 import { TApiType } from '../../utils/interfaces';
 
@@ -12,6 +12,7 @@ interface IPageListProps {
   cluster: string;
   type: TApiType;
   title: string;
+  times: IPluginTimes;
   showDetails?: (details: React.ReactNode) => void;
 }
 
@@ -20,6 +21,7 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
   cluster,
   type,
   title,
+  times,
   showDetails,
 }: IPageListProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
@@ -29,7 +31,7 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
       : undefined;
 
   const { isError, isLoading, error, data, refetch } = useQuery<IRow[], Error>(
-    ['flux/list', name, cluster, type],
+    ['flux/list', name, cluster, type, times],
     async () => {
       try {
         if (!resource) {

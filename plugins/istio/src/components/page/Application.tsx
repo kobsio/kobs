@@ -33,9 +33,9 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
   const changeOptions = (tmpOptions: IApplicationOptions): void => {
     history.push({
       pathname: location.pathname,
-      search: `?timeEnd=${tmpOptions.times.timeEnd}&timeStart=${tmpOptions.times.timeStart}&view=${
-        tmpOptions.view
-      }&filterUpstreamCluster=${encodeURIComponent(
+      search: `?time=${tmpOptions.times}&timeEnd=${tmpOptions.times.timeEnd}&timeStart=${
+        tmpOptions.times.timeStart
+      }&view=${tmpOptions.view}&filterUpstreamCluster=${encodeURIComponent(
         tmpOptions.filters.upstreamCluster,
       )}&filterMethod=${encodeURIComponent(tmpOptions.filters.method)}&filterPath=${encodeURIComponent(
         tmpOptions.filters.path,

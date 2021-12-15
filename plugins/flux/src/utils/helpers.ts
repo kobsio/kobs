@@ -1,8 +1,9 @@
 import { IOptions, TType } from './interfaces';
+import { getTimeParams } from '@kobsio/plugin-core';
 
-// getOptionsFromSearch returns the options for a given search location.
-export const getOptionsFromSearch = (search: string): IOptions => {
-  const params = new URLSearchParams(search);
+// getInitialOptions returns the initial options from the url.
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
   const type = params.get('type');
   const cluster = params.get('cluster');
 
@@ -13,6 +14,7 @@ export const getOptionsFromSearch = (search: string): IOptions => {
 
   return {
     cluster: cluster || '',
+    times: getTimeParams(params),
     type: parsedType,
   };
 };

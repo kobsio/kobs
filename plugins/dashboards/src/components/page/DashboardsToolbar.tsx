@@ -19,7 +19,7 @@ const DashboardsToolbar: React.FunctionComponent<IDashboardsToolbarProps> = ({
   setSearchTerm,
 }: IDashboardsToolbarProps) => {
   return (
-    <Toolbar id="elasticsearch-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
+    <Toolbar id="dashboards-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
       <ToolbarContent style={{ padding: '0px' }}>
         <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
           <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>

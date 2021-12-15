@@ -1,3 +1,23 @@
+import { IOptions } from './interfaces';
+import { getTimeParams } from '@kobsio/plugin-core';
+
+// getInitialOptions returns the initial options from the url.
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
+  const clusters = params.getAll('cluster');
+  const namespaces = params.getAll('namespace');
+  const resources = params.getAll('resource');
+  const selector = params.get('selector');
+
+  return {
+    clusters: clusters || [],
+    namespaces: namespaces || [],
+    resources: resources || [],
+    selector: selector ? selector : '',
+    times: getTimeParams(params),
+  };
+};
+
 // formatResourceValue converts the given value for CPU, memory or ephemeral storage to another unit.
 export const formatResourceValue = (type: string, value: string): string => {
   if (value === '' || value === undefined) {

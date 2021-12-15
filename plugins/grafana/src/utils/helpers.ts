@@ -1,8 +1,8 @@
 import { IOptions } from './interfaces';
 
-// getOptionsFromSearch is used to get the Jaeger options from a given search location.
-export const getOptionsFromSearch = (search: string): IOptions => {
-  const params = new URLSearchParams(search);
+// getInitialOptions is used to get the initial options from the url.
+export const getInitialOptions = (): IOptions => {
+  const params = new URLSearchParams(window.location.search);
   const query = params.get('query');
 
   return {

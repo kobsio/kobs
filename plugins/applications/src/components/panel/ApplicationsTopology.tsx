@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import { IEdge, INode } from '../../utils/interfaces';
 import ApplicationsTopologyGraph from './ApplicationsTopologyGraph';
+import { IPluginTimes } from '@kobsio/plugin-core';
 
 interface IDataState {
   edges: IEdge[];
@@ -14,6 +15,7 @@ interface IDataState {
 interface IApplicationsTopologyProps {
   clusters: string[];
   namespaces: string[];
+  times: IPluginTimes;
   showDetails?: (details: React.ReactNode) => void;
 }
 
@@ -23,12 +25,13 @@ interface IApplicationsTopologyProps {
 const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> = ({
   clusters,
   namespaces,
+  times,
   showDetails,
 }: IApplicationsTopologyProps) => {
   const history = useHistory();
 
   const { isError, isLoading, error, data, refetch } = useQuery<IDataState, Error>(
-    ['applications/applications', 'topology', clusters, namespaces],
+    ['applications/applications', 'topology', clusters, namespaces, times],
     async () => {
       try {
         const clusterParams = clusters.map((cluster) => `cluster=${cluster}`).join('&');

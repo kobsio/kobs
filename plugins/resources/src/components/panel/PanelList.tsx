@@ -1,16 +1,17 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Card } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
 
-import { ClustersContext, IClusterContext } from '@kobsio/plugin-core';
+import { ClustersContext, IClusterContext, IPluginTimes } from '@kobsio/plugin-core';
 import { IPanelOptions } from '../../utils/interfaces';
 import PanelListItem from './PanelListItem';
 
 interface IPanelListProps {
   resources: IPanelOptions[];
+  times: IPluginTimes;
   showDetails?: (details: React.ReactNode) => void;
 }
 
-const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, showDetails }: IPanelListProps) => {
+const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, times, showDetails }: IPanelListProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const [expanded, setExpanded] = useState<string[]>(['resources-accordion-0-0']);
 
@@ -51,6 +52,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, showDe
                               namespaces={resource.namespaces || []}
                               resource={clustersContext.resources[item]}
                               selector={resource.selector || ''}
+                              times={times}
                               showDetails={showDetails}
                             />
                           ) : null}

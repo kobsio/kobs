@@ -31,6 +31,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#229](https://github.com/kobsio/kobs/pull/229): [opsgenie] Allow users to overwrite the selected time range in a dashboard for an Opsgenie panel via the new `interval` property.
 - [#230](https://github.com/kobsio/kobs/pull/230): [dashboards] Add special variables `__timeStart` and `__timeEnd` for dashboards.
 - [#231](https://github.com/kobsio/kobs/pull/231): [klogs] Highlight expanded row and do not use index as key. The same changes were also applied for the Elasticsearch plugin.
+- [#232](https://github.com/kobsio/kobs/pull/232): [core] Change options handling for various plugins.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

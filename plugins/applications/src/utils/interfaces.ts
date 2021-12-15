@@ -1,6 +1,14 @@
 import cytoscape from 'cytoscape';
 
-import { IApplication, IApplicationReference } from '@kobsio/plugin-core';
+import { IApplication, IApplicationReference, IPluginTimes } from '@kobsio/plugin-core';
+
+// IOptions is the interface for all options for the applications page.
+export interface IOptions {
+  clusters: string[];
+  namespaces: string[];
+  view: TView;
+  times: IPluginTimes;
+}
 
 // TView are the two options we have to present a list of applications to the user. This can be a gallery view, where
 // it will be possible add a single plugin to the card or the topology view, which can be used to display the

@@ -13,13 +13,14 @@ import React, { useState } from 'react';
 
 import { IOptions } from '../../utils/interfaces';
 
-interface IPageToolbarProps extends IOptions {
+interface IPageToolbarProps {
   name: string;
+  options: IOptions;
   setOptions: (data: IOptions) => void;
 }
 
-const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ name, query, setOptions }: IPageToolbarProps) => {
-  const [data, setData] = useState<IOptions>({ query: query });
+const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ name, options, setOptions }: IPageToolbarProps) => {
+  const [data, setData] = useState<IOptions>(options);
 
   // changeQuery changes the value of a query.
   const changeQuery = (value: string): void => {
