@@ -1,5 +1,7 @@
 import { AlertVariant } from '@patternfly/react-core';
 
+import { IPluginTimes } from '@kobsio/plugin-core';
+
 export interface IPanelOptions {
   type?: string;
   cluster?: string;
@@ -11,6 +13,7 @@ export interface IPanelOptions {
 export interface IOptions {
   type: TType;
   cluster: string;
+  times: IPluginTimes;
 }
 
 export interface IArtifact {

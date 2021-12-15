@@ -8,32 +8,29 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { IOptions, TType } from '../../utils/interfaces';
+import { IOptions } from '../../utils/interfaces';
 import { IPluginPageProps } from '@kobsio/plugin-core';
 import PageList from './PageList';
 import PageToolbar from './PageToolbar';
-import { getOptionsFromSearch } from '../../utils/helpers';
+import { getInitialOptions } from '../../utils/helpers';
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const history = useHistory();
   const location = useLocation();
-  const [options, setOptions] = useState<IOptions>(getOptionsFromSearch(location.search));
+  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
-  const changeOptions = (type: TType, cluster: string): void => {
+  const changeOptions = (opts: IOptions): void => {
     history.push({
       pathname: location.pathname,
-      search: `?type=${type}&cluster=${cluster}`,
+      search: `?type=${opts.type}&cluster=${opts.cluster}`,
     });
-  };
 
-  // useEffect is used to change the resources state everytime the location.search parameter changes.
-  useEffect(() => {
-    setOptions(getOptionsFromSearch(location.search));
-  }, [location.search]);
+    setOptions(opts);
+  };
 
   return (
     <React.Fragment>
@@ -62,6 +59,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                         cluster={options.cluster}
                         type="gitrepositories.source.toolkit.fluxcd.io/v1beta1"
                         title="Git Repos"
+                        times={options.times}
                         showDetails={setDetails}
                       />
                       <p>&nbsp;</p>
@@ -70,6 +68,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                         cluster={options.cluster}
                         type="helmrepositories.source.toolkit.fluxcd.io/v1beta1"
                         title="Helm Repos"
+                        times={options.times}
                         showDetails={setDetails}
                       />
                       <p>&nbsp;</p>
@@ -78,6 +77,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                         cluster={options.cluster}
                         type="buckets.source.toolkit.fluxcd.io/v1beta1"
                         title="Buckets"
+                        times={options.times}
                         showDetails={setDetails}
                       />
                     </React.Fragment>
@@ -87,6 +87,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                       cluster={options.cluster}
                       type="kustomizations.kustomize.toolkit.fluxcd.io/v1beta1"
                       title="Kustomizations"
+                      times={options.times}
                       showDetails={setDetails}
                     />
                   ) : options.type === 'helmreleases' ? (
@@ -95,6 +96,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                       cluster={options.cluster}
                       type="helmreleases.helm.toolkit.fluxcd.io/v2beta1"
                       title="Helm Releases"
+                      times={options.times}
                       showDetails={setDetails}
                     />
                   ) : null}

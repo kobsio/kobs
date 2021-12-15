@@ -2,7 +2,7 @@ import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import React, { memo } from 'react';
 import { useQuery } from 'react-query';
 
-import { IResource, emptyState } from '@kobsio/plugin-core';
+import { IPluginTimes, IResource, emptyState } from '@kobsio/plugin-core';
 import Details from './details/Details';
 
 interface IPanelListItemProps {
@@ -10,6 +10,7 @@ interface IPanelListItemProps {
   namespaces: string[];
   resource: IResource;
   selector: string;
+  times: IPluginTimes;
   showDetails?: (details: React.ReactNode) => void;
 }
 
@@ -18,10 +19,20 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
   namespaces,
   resource,
   selector,
+  times,
   showDetails,
 }: IPanelListItemProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IRow[], Error>(
-    ['resources/panellistitem', clusters, namespaces, resource.scope, resource.resource, resource.path, selector],
+    [
+      'resources/panellistitem',
+      clusters,
+      namespaces,
+      resource.scope,
+      resource.resource,
+      resource.path,
+      selector,
+      times,
+    ],
     async () => {
       try {
         const clusterParams = clusters.map((cluster) => `cluster=${cluster}`).join('&');

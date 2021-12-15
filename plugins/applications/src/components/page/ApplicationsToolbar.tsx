@@ -1,43 +1,28 @@
-import {
-  Button,
-  ButtonVariant,
-  ToggleGroup,
-  ToggleGroupItem,
-  Toolbar,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-  ToolbarToggleGroup,
-} from '@patternfly/react-core';
-import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { memo, useContext, useState } from 'react';
+import { ToggleGroup, ToggleGroupItem, ToolbarItem } from '@patternfly/react-core';
 
-import { ClustersContext, IClusterContext } from '@kobsio/plugin-core';
+import { ClustersContext, IClusterContext, IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
+import { IOptions, TView } from '../../utils/interfaces';
 import ApplicationsToolbarItemClusters from './ApplicationsToolbarItemClusters';
 import ApplicationsToolbarItemNamespaces from './ApplicationsToolbarItemNamespaces';
-import { TView } from '../../utils/interfaces';
 
 interface IApplicationsToolbarProps {
-  clusters: string[];
-  namespaces: string[];
-  view: string;
-  changeData: (clusters: string[], namespaces: string[], view: string) => void;
+  options: IOptions;
+  setOptions: (data: IOptions) => void;
 }
 
 // ApplicationsToolbar is the toolbar, where the user can select a list of clusters and namespaces. When the user clicks
 // the search button the setScope function is called with the list of selected clusters and namespaces.
 const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = ({
-  clusters,
-  namespaces,
-  view,
-  changeData,
+  options,
+  setOptions,
 }: IApplicationsToolbarProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const [selectedClusters, setSelectedClusters] = useState<string[]>(
-    clusters.length > 0 ? clusters : [clustersContext.clusters[0]],
+    options.clusters.length > 0 ? options.clusters : [clustersContext.clusters[0]],
   );
-  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(namespaces);
-  const [selectedView, setSelectedView] = useState<TView>(view ? (view as TView) : 'gallery');
+  const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(options.namespaces);
+  const [selectedView, setSelectedView] = useState<TView>(options.view ? (options.view as TView) : 'gallery');
 
   // selectCluster adds/removes the given cluster to the list of selected clusters. When the cluster value is an empty
   // string the selected clusters list is cleared.
@@ -67,51 +52,42 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
     }
   };
 
+  // changeOptions changes the Prometheus option. It is used when the user clicks the search button or selects a new
+  // time range.
+  const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setOptions({ clusters: selectedClusters, namespaces: selectedNamespaces, times: times, view: selectedView });
+  };
+
   return (
-    <Toolbar id="applications-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
-      <ToolbarContent style={{ padding: '0px' }}>
-        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup>
-            <ToolbarItem>
-              <ApplicationsToolbarItemClusters
-                clusters={clustersContext.clusters}
-                selectedClusters={selectedClusters}
-                selectCluster={selectCluster}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <ApplicationsToolbarItemNamespaces
-                selectedClusters={selectedClusters}
-                selectedNamespaces={selectedNamespaces}
-                selectNamespace={selectNamespace}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <ToggleGroup aria-label="View">
-                <ToggleGroupItem
-                  text="Gallery"
-                  isSelected={selectedView === 'gallery'}
-                  onChange={(): void => setSelectedView('gallery')}
-                />
-                <ToggleGroupItem
-                  text="Topology"
-                  isSelected={selectedView === 'topology'}
-                  onChange={(): void => setSelectedView('topology')}
-                />
-              </ToggleGroup>
-            </ToolbarItem>
-            <ToolbarItem>
-              <Button
-                variant={ButtonVariant.primary}
-                icon={<SearchIcon />}
-                onClick={(): void => changeData(selectedClusters, selectedNamespaces, selectedView)}
-              >
-                Search
-              </Button>
-            </ToolbarItem>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
+    <Toolbar times={options.times} showOptions={false} showSearchButton={true} setOptions={changeOptions}>
+      <ToolbarItem style={{ width: '100%' }}>
+        <ApplicationsToolbarItemClusters
+          clusters={clustersContext.clusters}
+          selectedClusters={selectedClusters}
+          selectCluster={selectCluster}
+        />
+      </ToolbarItem>
+      <ToolbarItem style={{ width: '100%' }}>
+        <ApplicationsToolbarItemNamespaces
+          selectedClusters={selectedClusters}
+          selectedNamespaces={selectedNamespaces}
+          selectNamespace={selectNamespace}
+        />
+      </ToolbarItem>
+      <ToolbarItem>
+        <ToggleGroup aria-label="View">
+          <ToggleGroupItem
+            text="Gallery"
+            isSelected={selectedView === 'gallery'}
+            onChange={(): void => setSelectedView('gallery')}
+          />
+          <ToggleGroupItem
+            text="Topology"
+            isSelected={selectedView === 'topology'}
+            onChange={(): void => setSelectedView('topology')}
+          />
+        </ToggleGroup>
+      </ToolbarItem>
     </Toolbar>
   );
 };

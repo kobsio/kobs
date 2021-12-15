@@ -8,32 +8,13 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import ApplicationsToolbar from './ApplicationsToolbar';
+import { IOptions } from '../../utils/interfaces';
 import Panel from '../panel/Panel';
-import { TView } from '../../utils/interfaces';
-
-interface IDataState {
-  clusters: string[];
-  namespaces: string[];
-  view: TView;
-}
-
-// getDataFromSearch returns the clusters and namespaces for the state from a given search location.
-export const getDataFromSearch = (search: string): IDataState => {
-  const params = new URLSearchParams(search);
-  const clusters = params.getAll('cluster');
-  const namespaces = params.getAll('namespace');
-  const view = params.get('view');
-
-  return {
-    clusters: clusters,
-    namespaces: namespaces,
-    view: view ? (view as TView) : 'gallery',
-  };
-};
+import { getInitialOptions } from '../../utils/helpers';
 
 export interface IApplicationsProps {
   name: string;
@@ -51,25 +32,22 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 }: IApplicationsProps) => {
   const history = useHistory();
   const location = useLocation();
-  const [data, setData] = useState<IDataState>(getDataFromSearch(location.search));
+  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
   const [selectedApplication, setSelectedApplication] = useState<React.ReactNode>(undefined);
 
-  // changeData is used to set the provided list of clusters and namespaces as query parameters for the current URL, so
-  // that a user can share his search with other users.
-  const changeData = (clusters: string[], namespaces: string[], view: string): void => {
-    const c = clusters.map((cluster) => `&cluster=${cluster}`);
-    const n = namespaces.map((namespace) => `&namespace=${namespace}`);
+  // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
+  // options in the current url.
+  const changeOptions = (opts: IOptions): void => {
+    const c = opts.clusters.map((cluster) => `&cluster=${cluster}`);
+    const n = opts.namespaces.map((namespace) => `&namespace=${namespace}`);
 
     history.push({
       pathname: location.pathname,
-      search: `?view=${view}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
+      search: `?view=${opts.view}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
     });
-  };
 
-  // useEffect is used to change the data state everytime the location.search parameter changes.
-  useEffect(() => {
-    setData(getDataFromSearch(location.search));
-  }, [location.search]);
+    setOptions(opts);
+  };
 
   return (
     <React.Fragment>
@@ -78,22 +56,17 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
           {displayName}
         </Title>
         <p>{description}</p>
-        <ApplicationsToolbar
-          clusters={data.clusters}
-          namespaces={data.namespaces}
-          view={data.view}
-          changeData={changeData}
-        />
+        <ApplicationsToolbar options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={selectedApplication !== undefined}>
         <DrawerContent panelContent={selectedApplication}>
           <DrawerContentBody>
             <PageSection
-              style={data.view === 'topology' ? { height: '100%', minHeight: '100%' } : { minHeight: '100%' }}
+              style={options.view === 'topology' ? { height: '100%', minHeight: '100%' } : { minHeight: '100%' }}
               variant={PageSectionVariants.default}
             >
-              {data.clusters.length === 0 ? (
+              {options.clusters.length === 0 ? (
                 <Alert variant={AlertVariant.info} title="You have to select at least one cluster">
                   <p>Select a list of clusters and namespaces from the toolbar.</p>
                 </Alert>
@@ -103,11 +76,12 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
                   name={name}
                   title=""
                   options={{
-                    clusters: data.clusters,
-                    namespaces: data.namespaces,
+                    clusters: options.clusters,
+                    namespaces: options.namespaces,
                     team: undefined,
-                    view: data.view,
+                    view: options.view,
                   }}
+                  times={options.times}
                   showDetails={setSelectedApplication}
                 />
               )}

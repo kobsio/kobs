@@ -44,7 +44,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 
     history.push({
       pathname: location.pathname,
-      search: `?timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${
+      search: `?time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${
         namespaces.length > 0 ? namespaces.join('') : ''
       }`,
     });

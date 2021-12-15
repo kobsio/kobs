@@ -18,11 +18,12 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   title,
   description,
   options,
+  times,
   showDetails,
 }: IPanelProps) => {
   // We have to validate that the required options object was provided in the Application CR by a user. This is
   // important so that the React UI doesn't crash, when the user didn't use the plugin correctly.
-  if (!options) {
+  if (!options || !times) {
     return (
       <PluginOptionsMissing
         title={title}
@@ -42,6 +43,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <ApplicationsTopology
         clusters={options.clusters || [defaults.cluster]}
         namespaces={options.namespaces || [defaults.namespace]}
+        times={times}
         showDetails={showDetails}
       />
     );
@@ -75,6 +77,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       clusters={options.clusters || [defaults.cluster]}
       namespaces={options.namespaces || [defaults.namespace]}
       team={options.team}
+      times={times}
     />
   );
 

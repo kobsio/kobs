@@ -231,7 +231,7 @@ export const Toolbar: React.FunctionComponent<IToolbarProps> = ({
     <PatternflyToolbar id="toolbar" style={{ paddingBottom: showSearchButton ? '0px' : undefined, zIndex: 300 }}>
       <ToolbarContent style={{ padding: showSearchButton ? '0px' : undefined }}>
         <ToolbarToggleGroup style={{ width: '100%' }} toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarGroup style={{ width: '100%' }}>
+          <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
             {children}
             {showOptions && (
               <ToolbarItem alignment={{ default: 'alignRight' }}>

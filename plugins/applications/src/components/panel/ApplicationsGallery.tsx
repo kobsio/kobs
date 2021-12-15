@@ -10,6 +10,7 @@ interface IApplicationsGalleryProps {
   clusters: string[];
   namespaces: string[];
   team?: IApplicationReference;
+  times: IPluginTimes;
 }
 
 // ApplicationsGallery is the component to display all applications inside a gallery view.
@@ -17,16 +18,12 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
   clusters,
   namespaces,
   team,
+  times,
 }: IApplicationsGalleryProps) => {
-  const times: IPluginTimes = {
-    time: 'last15Minutes',
-    timeEnd: Math.floor(Date.now() / 1000),
-    timeStart: Math.floor(Date.now() / 1000) - 900,
-  };
   const history = useHistory();
 
   const { isError, isLoading, error, data, refetch } = useQuery<IApplication[], Error>(
-    ['applications/applications', 'gallery', clusters, namespaces, team],
+    ['applications/applications', 'gallery', clusters, namespaces, team, times],
     async () => {
       try {
         const clusterParams = clusters.map((cluster) => `cluster=${cluster}`).join('&');

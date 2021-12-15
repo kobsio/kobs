@@ -11,17 +11,19 @@ import {
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 
+import { IOptions } from '../../utils/interfaces';
+
 interface IPageToolbarProps {
-  query: string;
-  setQuery: (data: string) => void;
+  options: IOptions;
+  setOptions: (options: IOptions) => void;
 }
 
-const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, setQuery }: IPageToolbarProps) => {
-  const [data, setData] = useState<string>(query);
+const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ options, setOptions }: IPageToolbarProps) => {
+  const [data, setData] = useState<IOptions>(options);
 
   // changeQuery changes the value of a query.
   const changeQuery = (value: string): void => {
-    setData(value);
+    setData({ ...data, query: value });
   };
 
   // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we are calling the setOptions
@@ -30,7 +32,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, setQue
   const onEnter = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
     if (e?.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      setQuery(data);
+      setOptions(data);
     }
   };
 
@@ -45,13 +47,13 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ query, setQue
                 resizeOrientation="vertical"
                 rows={1}
                 type="text"
-                value={data}
+                value={data.query}
                 onChange={changeQuery}
                 onKeyDown={onEnter}
               />
             </ToolbarItem>
             <ToolbarItem>
-              <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setQuery(data)}>
+              <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setOptions(data)}>
                 Search
               </Button>
             </ToolbarItem>
