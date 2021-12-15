@@ -175,12 +175,8 @@ const DetailsContainerGroup: React.FunctionComponent<IDetailsContainerGroupProps
                 </Tr>
               </Thead>
               <Tbody>
-                {data.properties?.initContainers?.map((initContainer, index) => (
-                  <DetailsContainerGroupInitContainer
-                    key={initContainer.name}
-                    rowIndex={index}
-                    initContainer={initContainer}
-                  />
+                {data.properties?.initContainers?.map((initContainer) => (
+                  <DetailsContainerGroupInitContainer key={initContainer.name} initContainer={initContainer} />
                 ))}
               </Tbody>
             </TableComposable>
@@ -202,8 +198,8 @@ const DetailsContainerGroup: React.FunctionComponent<IDetailsContainerGroupProps
                   <Th>Previous State</Th>
                 </Tr>
               </Thead>
-              {data.properties?.containers?.map((container, index) => (
-                <DetailsContainerGroupContainer key={container.name} rowIndex={index} container={container} />
+              {data.properties?.containers?.map((container) => (
+                <DetailsContainerGroupContainer key={container.name} container={container} />
               ))}
             </TableComposable>
           </React.Fragment>

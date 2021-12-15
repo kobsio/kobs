@@ -1,5 +1,5 @@
+import { ExpandableRowContent, Tbody, Td, Tr } from '@patternfly/react-table';
 import React, { useState } from 'react';
-import { Tbody, Td, Tr } from '@patternfly/react-table';
 
 import { COLOR_DANGER, COLOR_INFO, COLOR_WARNING } from '../../../utils/helpers';
 import { IVulnerabilityDetails } from '../../../utils/interfaces';
@@ -38,7 +38,7 @@ const VulnerabilitiesRow: React.FunctionComponent<IVulnerabilitiesRowProps> = ({
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   return (
-    <Tbody>
+    <Tbody isExpanded={isExpanded}>
       <Tr>
         <Td
           noPadding={true}
@@ -52,8 +52,9 @@ const VulnerabilitiesRow: React.FunctionComponent<IVulnerabilitiesRowProps> = ({
         <Td>{vulnerability.fix_version}</Td>
       </Tr>
       <Tr isExpanded={isExpanded}>
-        <Td />
-        <Td colSpan={5}>{vulnerability.description}</Td>
+        <Td colSpan={6}>
+          <ExpandableRowContent>{vulnerability.description}</ExpandableRowContent>
+        </Td>
       </Tr>
     </Tbody>
   );

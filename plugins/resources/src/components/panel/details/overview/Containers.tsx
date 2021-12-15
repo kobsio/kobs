@@ -1,4 +1,4 @@
-import { TableComposable, TableVariant, Tbody, Th, Thead, Tr } from '@patternfly/react-table';
+import { TableComposable, TableVariant, Th, Thead, Tr } from '@patternfly/react-table';
 import { V1Container, V1ContainerStatus } from '@kubernetes/client-node';
 import React from 'react';
 import { Title } from '@patternfly/react-core';
@@ -52,9 +52,10 @@ const Containers: React.FunctionComponent<IPodProps> = ({
       <Title headingLevel="h4" size="lg">
         {title}
       </Title>
-      <TableComposable aria-label={title} variant={TableVariant.compact} borders={false}>
+      <TableComposable aria-label={title} variant={TableVariant.compact} borders={true}>
         <Thead>
           <Tr>
+            <Th />
             <Th>Name</Th>
             <Th>Ready</Th>
             <Th>Restarts</Th>
@@ -67,16 +68,15 @@ const Containers: React.FunctionComponent<IPodProps> = ({
             <Th>Memory Limits</Th>
           </Tr>
         </Thead>
-        <Tbody>
-          {containers.map((container) => (
-            <Container
-              key={container.name}
-              container={container}
-              containerStatus={getContainerStatus(container.name, containerStatuses)}
-              containerMetric={getContainerMetric(container.name, containerMetrics)}
-            />
-          ))}
-        </Tbody>
+
+        {containers.map((container) => (
+          <Container
+            key={container.name}
+            container={container}
+            containerStatus={getContainerStatus(container.name, containerStatuses)}
+            containerMetric={getContainerMetric(container.name, containerMetrics)}
+          />
+        ))}
       </TableComposable>
     </React.Fragment>
   );

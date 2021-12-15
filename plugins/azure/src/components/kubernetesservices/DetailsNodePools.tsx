@@ -94,10 +94,9 @@ const DetailsNodePools: React.FunctionComponent<IDetailsNodePoolsProps> = ({
             <Th />
           </Tr>
         </Thead>
-        {data.map((nodePool, index) => (
+        {data.map((nodePool) => (
           <DetailsNodePoolsItem
             key={nodePool.id || ''}
-            rowIndex={index}
             name={name}
             resourceGroup={resourceGroup}
             managedCluster={managedCluster}

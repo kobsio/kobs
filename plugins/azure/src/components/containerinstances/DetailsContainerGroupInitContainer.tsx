@@ -11,27 +11,21 @@ import DetailsContainerGroupEvent from './DetailsContainerGroupEvent';
 import { IInitContainer } from './interfaces';
 
 interface IDetailsContainerGroupInitContainerProps {
-  rowIndex: number;
   initContainer: IInitContainer;
 }
 
 const DetailsContainerGroupInitContainer: React.FunctionComponent<IDetailsContainerGroupInitContainerProps> = ({
-  rowIndex,
   initContainer,
 }: IDetailsContainerGroupInitContainerProps) => {
-  const [isExpanded, setIsExpaned] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   return (
-    <Tbody key={rowIndex} isExpanded={isExpanded}>
+    <Tbody isExpanded={isExpanded}>
       <Tr>
         <Td
           noPadding={true}
           style={{ padding: 0 }}
-          expand={{
-            isExpanded: isExpanded,
-            onToggle: (): void => setIsExpaned(!isExpanded),
-            rowIndex: rowIndex,
-          }}
+          expand={{ isExpanded: isExpanded, onToggle: (): void => setIsExpanded(!isExpanded), rowIndex: 0 }}
         />
         <Td dataLabel="Name">{initContainer.name}</Td>
         <Td dataLabel="Restarts">{initContainer.properties?.instanceView?.restartCount || '-'}</Td>

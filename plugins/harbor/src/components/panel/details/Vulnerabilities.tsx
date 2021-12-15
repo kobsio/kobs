@@ -70,7 +70,7 @@ const Vulnerabilities: React.FunctionComponent<IVulnerabilitiesProps> = ({
             <p>{error?.message}</p>
           </Alert>
         ) : data ? (
-          <TableComposable aria-label="Vulnerabilities" variant={TableVariant.compact} borders={false}>
+          <TableComposable aria-label="Vulnerabilities" variant={TableVariant.compact} borders={true}>
             <Thead>
               <Tr>
                 <Th />
