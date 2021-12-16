@@ -112,7 +112,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/dashboards/{name}", router.getDashboards)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/dashboards", router.getDashboards)
+	})
 
 	return router
 }

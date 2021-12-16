@@ -17,7 +17,7 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
 
   const { isError, isLoading, error, data } = useQuery<string[], Error>(['kiali/namespaces', name], async () => {
     try {
-      const response = await fetch(`/api/plugins/kiali/namespaces/${name}`, {
+      const response = await fetch(`/api/plugins/kiali/${name}/namespaces`, {
         method: 'get',
       });
       const json = await response.json();

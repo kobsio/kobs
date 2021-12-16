@@ -29,7 +29,7 @@ const DetailsMetricsPod: React.FunctionComponent<IDetailsMetricsPodProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/istio/metricspod/${name}?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&metric=${metric}&namespace=${namespace}&pod=${pod}`,
+          `/api/plugins/istio/${name}/metricspod?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&metric=${metric}&namespace=${namespace}&pod=${pod}`,
           {
             method: 'get',
           },

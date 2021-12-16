@@ -54,7 +54,7 @@ const DetailsMetricsMetric: React.FunctionComponent<IDetailsMetricsMetricProps> 
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/istio/metricsdetails/${name}?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&metric=${metric}&reporter=${reporter}&destinationWorkload=${destinationWorkload}&destinationWorkloadNamespace=${destinationWorkloadNamespace}&destinationVersion=${destinationVersion}&destinationService=${destinationService}&sourceWorkload=${sourceWorkload}&sourceWorkloadNamespace=${sourceWorkloadNamespace}&pod=${pod}`,
+          `/api/plugins/istio/${name}/metricsdetails?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&metric=${metric}&reporter=${reporter}&destinationWorkload=${destinationWorkload}&destinationWorkloadNamespace=${destinationWorkloadNamespace}&destinationVersion=${destinationVersion}&destinationService=${destinationService}&sourceWorkload=${sourceWorkload}&sourceWorkloadNamespace=${sourceWorkloadNamespace}&pod=${pod}`,
           {
             method: 'get',
           },

@@ -207,10 +207,12 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Post("/variable/{name}", router.getVariable)
-	router.Post("/metrics/{name}", router.getMetrics)
-	router.Post("/table/{name}", router.getTable)
-	router.Get("/labels/{name}", router.getLabels)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Post("/variable", router.getVariable)
+		r.Post("/metrics", router.getMetrics)
+		r.Post("/table", router.getTable)
+		r.Get("/labels", router.getLabels)
+	})
 
 	return router, instances
 }

@@ -23,7 +23,7 @@ const TableOfContentsWrapper: React.FunctionComponent<ITableOfContentsWrapperPro
     ['techdocs/index', name, service],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/techdocs/index/${name}?service=${service}`, {
+        const response = await fetch(`/api/plugins/techdocs/${name}/index?service=${service}`, {
           method: 'get',
         });
         const json = await response.json();

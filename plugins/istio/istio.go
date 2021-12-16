@@ -401,14 +401,16 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/namespaces/{name}", router.getNamespaces)
-	router.Get("/metrics/{name}", router.getMetrics)
-	router.Get("/metricsdetails/{name}", router.getMetricsDetails)
-	router.Get("/metricspod/{name}", router.getMetricsPod)
-	router.Get("/topology/{name}", router.getTopology)
-	router.Get("/tap/{name}", router.getTap)
-	router.Get("/top/{name}", router.getTop)
-	router.Get("/topdetails/{name}", router.getTopDetails)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/namespaces", router.getNamespaces)
+		r.Get("/metrics", router.getMetrics)
+		r.Get("/metricsdetails", router.getMetricsDetails)
+		r.Get("/metricspod", router.getMetricsPod)
+		r.Get("/topology", router.getTopology)
+		r.Get("/tap", router.getTap)
+		r.Get("/top", router.getTop)
+		r.Get("/topdetails", router.getTopDetails)
+	})
 
 	return router
 }

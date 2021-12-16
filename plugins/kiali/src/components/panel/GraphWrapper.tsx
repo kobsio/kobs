@@ -27,7 +27,7 @@ const GraphWrapper: React.FunctionComponent<IGraphWrapperProps> = ({
         const namespaceParams = namespaces.map((namespace) => `namespace=${namespace}`).join('&');
 
         const response = await fetch(
-          `/api/plugins/kiali/graph/${name}?duration=${
+          `/api/plugins/kiali/${name}/graph?duration=${
             times.timeEnd - times.timeStart
           }&graphType=versionedApp&injectServiceNodes=true&groupBy=app${[
             'deadNode',

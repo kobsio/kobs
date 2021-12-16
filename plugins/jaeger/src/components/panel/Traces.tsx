@@ -46,7 +46,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/jaeger/traces/${name}?limit=${selectedQuery.limit || '20'}&maxDuration=${
+          `/api/plugins/jaeger/${name}/traces?limit=${selectedQuery.limit || '20'}&maxDuration=${
             selectedQuery.maxDuration || ''
           }&minDuration=${selectedQuery.minDuration || ''}&operation=${selectedQuery.operation || ''}&service=${
             selectedQuery.service || ''

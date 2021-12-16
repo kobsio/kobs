@@ -105,7 +105,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
             const pluginDetails = pluginsContext.getPluginDetails(tmpVariables[i].plugin.name);
 
             if (pluginDetails?.type === 'prometheus') {
-              const response = await fetch(`/api/plugins/prometheus/variable/${tmpVariables[i].plugin.name}`, {
+              const response = await fetch(`/api/plugins/prometheus/${tmpVariables[i].plugin.name}/variable`, {
                 body: JSON.stringify({
                   label: tmpVariables[i].plugin.options.label,
                   query: interpolate(tmpVariables[i].plugin.options.query, tmpVariables, times),

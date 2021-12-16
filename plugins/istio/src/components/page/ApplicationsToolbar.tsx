@@ -18,7 +18,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ name, options
   const { isLoading, isError, error, data } = useQuery<string[], Error>(['istio/namespaces', name], async () => {
     try {
       const response = await fetch(
-        `/api/plugins/istio/namespaces/${name}?timeStart=${options.times.timeStart}&timeEnd=${options.times.timeEnd}`,
+        `/api/plugins/istio/${name}/namespaces?timeStart=${options.times.timeStart}&timeEnd=${options.times.timeEnd}`,
         {
           method: 'get',
         },

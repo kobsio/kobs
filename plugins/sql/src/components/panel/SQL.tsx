@@ -36,7 +36,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
         }
 
         const response = await fetch(
-          `/api/plugins/sql/query/${name}?query=${encodeURIComponent(selectedQuery.query)}`,
+          `/api/plugins/sql/${name}/query?query=${encodeURIComponent(selectedQuery.query)}`,
           {
             method: 'get',
           },

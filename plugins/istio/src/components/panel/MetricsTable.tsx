@@ -47,7 +47,7 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
         const namespaceParams = namespaces ? namespaces.map((namespace) => `&namespace=${namespace}`) : [];
 
         const response = await fetch(
-          `/api/plugins/istio/metrics/${name}?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&application=${
+          `/api/plugins/istio/${name}/metrics?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&application=${
             application ? application : ''
           }&label=${label}&groupBy=${groupBy}&reporter=${reporter}${
             namespaceParams.length > 0 ? namespaceParams.join('') : ''

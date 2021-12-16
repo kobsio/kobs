@@ -31,7 +31,7 @@ const Topology: React.FunctionComponent<ITopologyProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/istio/topology/${name}?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&application=${application}&namespace=${namespace}`,
+          `/api/plugins/istio/${name}/topology?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}&application=${application}&namespace=${namespace}`,
           {
             method: 'get',
           },

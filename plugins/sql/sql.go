@@ -95,7 +95,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/query/{name}", router.getQueryResults)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/query", router.getQueryResults)
+	})
 
 	return router
 }
