@@ -65,6 +65,7 @@ const Top: React.FunctionComponent<ITopProps> = ({
   filters,
   setDetails,
 }: ITopProps) => {
+  const [selectedRow, setSelectedRow] = useState<number>(-1);
   const [sort, setSort] = useState<ISort>({ direction: SortByDirection.desc, index: 0 });
 
   const { isError, isLoading, error, data, refetch } = useQuery<string[][], Error>(
@@ -108,7 +109,7 @@ const Top: React.FunctionComponent<ITopProps> = ({
     },
   );
 
-  const onTdClick = (row: string[]): void => {
+  const onTdClick = (rowIndex: number, row: string[]): void => {
     if (setDetails) {
       setDetails(
         <DetailsTop
@@ -117,9 +118,13 @@ const Top: React.FunctionComponent<ITopProps> = ({
           application={application}
           row={row}
           times={times}
-          close={(): void => setDetails(undefined)}
+          close={(): void => {
+            setDetails(undefined);
+            setSelectedRow(-1);
+          }}
         />,
       );
+      setSelectedRow(rowIndex);
     }
   };
 
@@ -155,7 +160,7 @@ const Top: React.FunctionComponent<ITopProps> = ({
   }
 
   return (
-    <TableComposable aria-label="Tap" variant={TableVariant.compact} borders={false}>
+    <TableComposable aria-label="Tap" variant={TableVariant.compact} borders={true}>
       <Thead>
         <Tr>
           <Th>Direction</Th>
@@ -186,35 +191,39 @@ const Top: React.FunctionComponent<ITopProps> = ({
       </Thead>
       <Tbody>
         {data.map((row, index) => (
-          <Tr key={index} isHoverable={setDetails ? true : false}>
-            <Td dataLabel="Direction" onClick={(): void => onTdClick(row)}>
+          <Tr key={index} isHoverable={setDetails ? true : false} isRowSelected={selectedRow === index}>
+            <Td dataLabel="Direction" onClick={(): void => onTdClick(index, row)}>
               {getDirection(row[0]) || '-'}
             </Td>
-            <Td dataLabel="Upstream Cluster" onClick={(): void => onTdClick(row)}>
+            <Td dataLabel="Upstream Cluster" onClick={(): void => onTdClick(index, row)}>
               {row[0] || '-'}
             </Td>
-            <Td dataLabel="Method" onClick={(): void => onTdClick(row)}>
+            <Td dataLabel="Method" onClick={(): void => onTdClick(index, row)}>
               {row[1] || '-'}
             </Td>
-            <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Path" onClick={(): void => onTdClick(row)}>
+            <Td
+              className="pf-u-text-wrap pf-u-text-break-word"
+              dataLabel="Path"
+              onClick={(): void => onTdClick(index, row)}
+            >
               {row[2] || '-'}
             </Td>
-            <Td className="pf-u-text-nowrap" dataLabel="Count" onClick={(): void => onTdClick(row)}>
+            <Td className="pf-u-text-nowrap" dataLabel="Count" onClick={(): void => onTdClick(index, row)}>
               {formatNumber(row[3])}
             </Td>
-            <Td className="pf-u-text-nowrap" dataLabel="Best" onClick={(): void => onTdClick(row)}>
+            <Td className="pf-u-text-nowrap" dataLabel="Best" onClick={(): void => onTdClick(index, row)}>
               {formatNumber(row[4], 'ms', 0)}
             </Td>
-            <Td className="pf-u-text-nowrap" dataLabel="Worst" onClick={(): void => onTdClick(row)}>
+            <Td className="pf-u-text-nowrap" dataLabel="Worst" onClick={(): void => onTdClick(index, row)}>
               {formatNumber(row[5], 'ms', 0)}
             </Td>
-            <Td className="pf-u-text-nowrap" dataLabel="Avg" onClick={(): void => onTdClick(row)}>
+            <Td className="pf-u-text-nowrap" dataLabel="Avg" onClick={(): void => onTdClick(index, row)}>
               {formatNumber(row[6], 'ms', 0)}
             </Td>
-            <Td className="pf-u-text-nowrap" dataLabel="Last" onClick={(): void => onTdClick(row)}>
+            <Td className="pf-u-text-nowrap" dataLabel="Last" onClick={(): void => onTdClick(index, row)}>
               {formatNumber(row[7], 'ms', 0)}
             </Td>
-            <Td className="pf-u-text-nowrap" dataLabel="SR" onClick={(): void => onTdClick(row)}>
+            <Td className="pf-u-text-nowrap" dataLabel="SR" onClick={(): void => onTdClick(index, row)}>
               {formatNumber(row[8], '%', 2)}
             </Td>
             <Td noPadding={true} style={{ padding: 0 }}>

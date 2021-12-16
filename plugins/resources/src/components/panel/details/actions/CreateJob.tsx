@@ -1,10 +1,9 @@
 import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
-import { IRow } from '@patternfly/react-table';
 import React from 'react';
 import { V1Job } from '@kubernetes/client-node';
 
+import { IResource, IResourceRow } from '@kobsio/plugin-core';
 import { IAlert } from '../../../../utils/interfaces';
-import { IResource } from '@kobsio/plugin-core';
 
 export const randomString = (length: number): string => {
   let result = '';
@@ -20,7 +19,7 @@ export const randomString = (length: number): string => {
 
 interface ICreateJobProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
   setAlert: (alert: IAlert) => void;
@@ -74,8 +73,8 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({
       };
 
       const response = await fetch(
-        `/api/plugins/resources/resources?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
+        `/api/plugins/resources/resources?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
         }&resource=jobs&path=/apis/batch/v1`,
         {
           body: JSON.stringify(job),
@@ -117,9 +116,8 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({
       ]}
     >
       <p>
-        Do you really want to trigger the CronJob <b>{resource.name.title}</b> (
-        {resource.namespace ? `${resource.namespace.title} ${resource.cluster.title}` : resource.cluster.title})
-        manually?
+        Do you really want to trigger the CronJob <b>{resource.name}</b> (
+        {resource.namespace ? `${resource.namespace} ${resource.cluster}` : resource.cluster}) manually?
       </p>
     </Modal>
   );

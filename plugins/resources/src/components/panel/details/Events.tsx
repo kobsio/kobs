@@ -1,9 +1,9 @@
 import { Card, Flex, FlexItem } from '@patternfly/react-core';
-import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import React, { useContext } from 'react';
+import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useQuery } from 'react-query';
 
-import { ClustersContext, IClusterContext, emptyState } from '@kobsio/plugin-core';
+import { ClustersContext, IClusterContext, IResourceRow, emptyState } from '@kobsio/plugin-core';
 
 interface IEventsProps {
   cluster: string;
@@ -16,7 +16,7 @@ interface IEventsProps {
 const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, name }: IEventsProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
 
-  const { isError, isLoading, error, data } = useQuery<IRow[], Error>(
+  const { isError, isLoading, error, data } = useQuery<IResourceRow[], Error>(
     ['resources/events', cluster, namespace, name],
     async () => {
       try {
@@ -47,21 +47,26 @@ const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, nam
     <Card>
       <Flex direction={{ default: 'column' }}>
         <FlexItem>
-          <Table
-            aria-label="events"
-            variant="compact"
-            borders={false}
-            isStickyHeader={false}
-            cells={clustersContext.resources?.events.columns}
-            rows={
-              data && data.length > 0
-                ? data
-                : emptyState(clustersContext.resources?.pods.columns.length || 3, isLoading, isError, error)
-            }
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
+          <TableComposable aria-label="events" variant={TableVariant.compact} borders={false}>
+            <Thead>
+              <Tr>
+                {clustersContext.resources?.events.columns.map((column) => (
+                  <Th key={column}>{column}</Th>
+                ))}
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data && data.length > 0
+                ? data.map((row, rowIndex) => (
+                    <Tr key={rowIndex}>
+                      {row.cells.map((cell, cellIndex) => (
+                        <Td key={cellIndex}>{cell}</Td>
+                      ))}
+                    </Tr>
+                  ))
+                : emptyState(clustersContext.resources?.events.columns.length || 3, isLoading, isError, error)}
+            </Tbody>
+          </TableComposable>
         </FlexItem>
       </Flex>
     </Card>

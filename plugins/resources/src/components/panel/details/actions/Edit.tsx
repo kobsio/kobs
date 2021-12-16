@@ -1,15 +1,14 @@
 import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 import { compare } from 'fast-json-patch';
 import yaml from 'js-yaml';
 
-import { Editor, IResource } from '@kobsio/plugin-core';
+import { Editor, IResource, IResourceRow } from '@kobsio/plugin-core';
 import { IAlert } from '../../../../utils/interfaces';
 
 interface IEditProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
   setAlert: (alert: IAlert) => void;
@@ -33,9 +32,9 @@ const Edit: React.FunctionComponent<IEditProps> = ({
       const diff = compare(resource.props, parsedValue as any);
 
       const response = await fetch(
-        `/api/plugins/resources/resources?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&resource=${request.resource}&path=${request.path}`,
+        `/api/plugins/resources/resources?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&resource=${request.resource}&path=${request.path}`,
         {
           body: JSON.stringify(diff),
           method: 'put',
@@ -45,7 +44,7 @@ const Edit: React.FunctionComponent<IEditProps> = ({
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `${resource.name.title} was saved`, variant: AlertVariant.success });
+        setAlert({ title: `${resource.name} was saved`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {
@@ -67,7 +66,7 @@ const Edit: React.FunctionComponent<IEditProps> = ({
   return (
     <Modal
       variant={ModalVariant.large}
-      title={`Edit ${resource.name.title}`}
+      title={`Edit ${resource.name}`}
       isOpen={show}
       onClose={(): void => setShow(false)}
       actions={[

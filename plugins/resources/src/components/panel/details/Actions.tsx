@@ -1,6 +1,5 @@
 import { Alert, AlertActionCloseButton, AlertGroup, Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 
 import CreateEphemeralContainer from './actions/CreateEphemeralContainer';
 import CreateJob from './actions/CreateJob';
@@ -9,6 +8,7 @@ import DownloadFile from './actions/DownloadFile';
 import Edit from './actions/Edit';
 import { IAlert } from '../../../utils/interfaces';
 import { IResource } from '@kobsio/plugin-core';
+import { IResourceRow } from '@kobsio/plugin-core';
 import Logs from './actions/Logs';
 import Restart from './actions/Restart';
 import Scale from './actions/Scale';
@@ -17,7 +17,7 @@ import UploadFile from './actions/UploadFile';
 
 interface IActionProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   refetch: () => void;
 }
 

@@ -11,11 +11,10 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 import { V1Pod } from '@kubernetes/client-node';
 
+import { IResourceRow, blobDownload } from '@kobsio/plugin-core';
 import { IAlert } from '../../../../utils/interfaces';
-import { blobDownload } from '@kobsio/plugin-core';
 
 // getContainers returns a list with all container names for the given Pod. It contains all specified init containers
 // and the "normal" containers.
@@ -44,7 +43,7 @@ const getContainers = (pod: V1Pod): string[] => {
 };
 
 interface IDownloadFileProps {
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
   setAlert: (alert: IAlert) => void;
@@ -67,15 +66,15 @@ const DownloadFile: React.FunctionComponent<IDownloadFileProps> = ({
 
     try {
       const response = await fetch(
-        `/api/plugins/resources/file?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&container=${container}&srcPath=${sourcePath}`,
+        `/api/plugins/resources/file?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&container=${container}&srcPath=${sourcePath}`,
         { method: 'get' },
       );
 
       if (response.status >= 200 && response.status < 300) {
         const data = await response.blob();
-        blobDownload(data, `${resource.name.title}__${container}.tar`);
+        blobDownload(data, `${resource.name}__${container}.tar`);
 
         setIsLoading(false);
         setShow(false);

@@ -28,12 +28,13 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#217](https://github.com/kobsio/kobs/pull/217): [azure] Use resource groups to get a list of container instances.
-- [#225](https://github.com/kobsio/kobs/pull/225): [core] :warning: _Breaking change:_ :warning: Change options handling accross all plugins and re-add `time` property.
+- [#225](https://github.com/kobsio/kobs/pull/225): [core] :warning: _Breaking change:_ :warning: Change options handling across all plugins and re-add `time` property.
 - [#229](https://github.com/kobsio/kobs/pull/229): [opsgenie] Allow users to overwrite the selected time range in a dashboard for an Opsgenie panel via the new `interval` property.
 - [#230](https://github.com/kobsio/kobs/pull/230): [dashboards] Add special variables `__timeStart` and `__timeEnd` for dashboards.
 - [#231](https://github.com/kobsio/kobs/pull/231): [klogs] Highlight expanded row and do not use index as key. The same changes were also applied for the Elasticsearch plugin.
 - [#232](https://github.com/kobsio/kobs/pull/232): [core] Change options handling for various plugins.
 - [#233](https://github.com/kobsio/kobs/pull/233): [resources] Highlight expanded row for containers in Pod details.
+- [#235](https://github.com/kobsio/kobs/pull/235): [resources] Use `TableComposable` instead of `Table` component and unify table style across plugins.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 
@@ -209,7 +210,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#52](https://github.com/kobsio/kobs/pull/52): Add option to enter a single trace id in the Jaeger plugin.
 - [#56](https://github.com/kobsio/kobs/pull/56): Add actions for Elasticsearch plugin to include/exclude and toggle values in the logs view.
 - [#58](https://github.com/kobsio/kobs/pull/58): Add plugin support for Teams. It is now possible to define plugins within a Team CR, which are then added to the teams page in the React UI.
-- [#59](https://github.com/kobsio/kobs/pull/59): Add support for Templates via the new Templates CRD. Templates allows a user to reuse plugin definitions accross Applications, Teams and Kubernetes resources.
+- [#59](https://github.com/kobsio/kobs/pull/59): Add support for Templates via the new Templates CRD. Templates allows a user to reuse plugin definitions across Applications, Teams and Kubernetes resources.
 - [#60](https://github.com/kobsio/kobs/pull/60): Add support for additional Pod annotations and labels in the Helm chart via the new `podAnnotations` and `podLabels` values.
 - [#63](https://github.com/kobsio/kobs/pull/63): Add Kiali plugin (in the current version the Kiali plugin only supports the graph feature from Kiali).
 - [#66](https://github.com/kobsio/kobs/pull/66): Add edge metrics for Kiali plugin.

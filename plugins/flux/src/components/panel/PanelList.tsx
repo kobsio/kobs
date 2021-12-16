@@ -1,8 +1,8 @@
-import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
-import React, { useContext } from 'react';
+import React, { memo, useContext, useState } from 'react';
+import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useQuery } from 'react-query';
 
-import { ClustersContext, IClusterContext, emptyState } from '@kobsio/plugin-core';
+import { ClustersContext, IClusterContext, IResourceRow, emptyState } from '@kobsio/plugin-core';
 import Details from '../panel/details/Details';
 import { TApiType } from '../../utils/interfaces';
 
@@ -30,8 +30,9 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
     clustersContext.resources && clustersContext.resources.hasOwnProperty(type)
       ? clustersContext.resources[type]
       : undefined;
+  const [selectedRow, setSelectedRow] = useState<number>(-1);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IRow[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IResourceRow[], Error>(
     ['flux/list', name, cluster, type, namespace, selector],
     async () => {
       try {
@@ -70,38 +71,66 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
     }, 3000);
   };
 
+  const handleRowClick = (rowIndex: number, row: IResourceRow): void => {
+    if (showDetails && resource) {
+      showDetails(
+        <Details
+          name={name}
+          type={type}
+          request={resource}
+          resource={row}
+          close={(): void => {
+            showDetails(undefined);
+            setSelectedRow(-1);
+          }}
+          refetch={refetchhWithDelay}
+        />,
+      );
+      setSelectedRow(rowIndex);
+    }
+  };
+
   return (
-    <Table
-      aria-label={title}
-      variant="compact"
-      borders={false}
-      cells={resource?.columns || ['']}
-      rows={
-        data && data.length > 0 && data[0].cells?.length === resource?.columns.length
-          ? data
-          : emptyState(resource?.columns.length || 3, isLoading, isError, error)
-      }
-    >
-      <TableHeader />
-      <TableBody
-        onRowClick={
-          showDetails && resource && data && data.length > 0 && data[0].cells?.length === resource.columns.length
-            ? (e, row, props, data): void =>
-                showDetails(
-                  <Details
-                    name={name}
-                    type={type}
-                    request={resource}
-                    resource={row}
-                    close={(): void => showDetails(undefined)}
-                    refetch={refetchhWithDelay}
-                  />,
-                )
-            : undefined
-        }
-      />
-    </Table>
+    <TableComposable aria-label={title} variant={TableVariant.compact} borders={false}>
+      <Thead>
+        <Tr>
+          {resource?.columns.map((column) => (
+            <Th key={column}>{column}</Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data && data.length > 0 && data[0].cells?.length === resource?.columns.length
+          ? data.map((row, rowIndex) => (
+              <Tr
+                key={rowIndex}
+                isHoverable={showDetails ? true : false}
+                isRowSelected={selectedRow === rowIndex}
+                onClick={(): void =>
+                  showDetails &&
+                  resource &&
+                  data &&
+                  data.length > 0 &&
+                  data[0].cells?.length === resource.columns.length
+                    ? handleRowClick(rowIndex, row)
+                    : undefined
+                }
+              >
+                {row.cells.map((cell, cellIndex) => (
+                  <Td key={cellIndex}>{cell}</Td>
+                ))}
+              </Tr>
+            ))
+          : emptyState(resource?.columns.length || 3, isLoading, isError, error)}
+      </Tbody>
+    </TableComposable>
   );
 };
 
-export default PanelList;
+export default memo(PanelList, (prevProps, nextProps) => {
+  if (JSON.stringify(prevProps) === JSON.stringify(nextProps)) {
+    return true;
+  }
+
+  return false;
+});

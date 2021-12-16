@@ -40,10 +40,8 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
         <Title
-          title={resource.name.title}
-          subtitle={
-            resource.namespace ? `${resource.namespace.title} (${resource.cluster.title})` : resource.cluster.title
-          }
+          title={resource.name}
+          subtitle={resource.namespace ? `${resource.namespace} (${resource.cluster})` : resource.cluster}
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
@@ -64,9 +62,9 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
         {type === 'kustomizations.kustomize.toolkit.fluxcd.io/v1beta1' ? (
           <KustomizationInfo
             name={name}
-            cluster={resource.cluster.title}
+            cluster={resource.cluster}
             source={resource.props?.spec?.sourceRef?.name}
-            namespace={resource.namespace.title}
+            namespace={resource.namespace}
             path={resource.props?.spec?.path}
             interval={resource.props?.spec?.interval}
             prune={resource.props?.spec?.prune}
@@ -86,11 +84,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
         resource.props.spec.chart &&
         resource.props.spec.chart.spec &&
         resource.props.spec.chart.spec.sourceRef ? (
-          <HelmSource
-            name={name}
-            cluster={resource.cluster.title}
-            source={resource.props?.spec?.chart?.spec?.sourceRef}
-          />
+          <HelmSource name={name} cluster={resource.cluster} source={resource.props?.spec?.chart?.spec?.sourceRef} />
         ) : null}
         {type === 'gitrepositories.source.toolkit.fluxcd.io/v1beta1' ? (
           <GitReference

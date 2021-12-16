@@ -7,14 +7,13 @@ import {
   DescriptionListTerm,
 } from '@patternfly/react-core';
 import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
-import { IRow } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-import { IPluginDefaults } from '@kobsio/plugin-core';
+import { IPluginDefaults, IResourceRow } from '@kobsio/plugin-core';
 
 // getTeams parses the kobs.io/teams annotation of a Kubernetes resources and returns all provided teams.
-const getTeams = (resource: IRow): IPluginDefaults[] | undefined => {
+const getTeams = (resource: IResourceRow): IPluginDefaults[] | undefined => {
   try {
     if (
       resource.props &&
@@ -30,7 +29,7 @@ const getTeams = (resource: IRow): IPluginDefaults[] | undefined => {
 };
 
 // getApplications parses the kobs.io/teams annotation of a Kubernetes resources and returns all provided teams.
-const getApplications = (resource: IRow): IPluginDefaults[] | undefined => {
+const getApplications = (resource: IResourceRow): IPluginDefaults[] | undefined => {
   try {
     if (
       resource.props &&
@@ -46,7 +45,7 @@ const getApplications = (resource: IRow): IPluginDefaults[] | undefined => {
 };
 
 interface ILinksProps {
-  resource: IRow;
+  resource: IResourceRow;
 }
 
 const Links: React.FunctionComponent<ILinksProps> = ({ resource }: ILinksProps) => {
@@ -64,8 +63,8 @@ const Links: React.FunctionComponent<ILinksProps> = ({ resource }: ILinksProps) 
                 {applications.map((application, index) => (
                   <Link
                     key={index}
-                    to={`/applications/${application.cluster || resource.cluster.title}/${
-                      application.namespace || resource.namespace.title
+                    to={`/applications/${application.cluster || resource.cluster}/${
+                      application.namespace || resource.namespace
                     }/${application.name}`}
                   >
                     <Button variant={ButtonVariant.link} isInline={true} icon={<TopologyIcon />}>
@@ -84,9 +83,9 @@ const Links: React.FunctionComponent<ILinksProps> = ({ resource }: ILinksProps) 
                 {teams.map((team, index) => (
                   <Link
                     key={index}
-                    to={`/teams/${team.cluster || resource.cluster.title}/${
-                      team.namespace || resource.namespace.title
-                    }/${team.name}`}
+                    to={`/teams/${team.cluster || resource.cluster}/${team.namespace || resource.namespace}/${
+                      team.name
+                    }`}
                   >
                     <Button variant={ButtonVariant.link} isInline={true} icon={<UsersIcon />}>
                       {team.name}
