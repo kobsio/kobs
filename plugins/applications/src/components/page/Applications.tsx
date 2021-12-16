@@ -8,7 +8,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import ApplicationsToolbar from './ApplicationsToolbar';
@@ -32,7 +32,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 }: IApplicationsProps) => {
   const history = useHistory();
   const location = useLocation();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [options, setOptions] = useState<IOptions>();
   const [selectedApplication, setSelectedApplication] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
@@ -45,9 +45,15 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
       pathname: location.pathname,
       search: `?view=${opts.view}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
     });
-
-    setOptions(opts);
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

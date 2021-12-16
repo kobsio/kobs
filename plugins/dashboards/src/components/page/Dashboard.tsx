@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { IDashboard, Title } from '@kobsio/plugin-core';
-import { getDefaultsFromSearch, getPlaceholdersFromSearch } from '../../utils/dashboard';
+import { getInitialDefaults, getPlaceholdersFromSearch } from '../../utils/dashboard';
 import DashboardWrapper from '../dashboards/DashboardWrapper';
 
 interface IDashboardParams {
@@ -27,7 +27,7 @@ const Dashboard: React.FunctionComponent = () => {
   const history = useHistory();
   const location = useLocation();
   const params = useParams<IDashboardParams>();
-  const defaults = getDefaultsFromSearch(location.search);
+  const defaults = getInitialDefaults(location.search);
   const placeholders = getPlaceholdersFromSearch(location.search);
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 

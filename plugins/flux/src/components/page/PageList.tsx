@@ -87,8 +87,6 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
     }
   };
 
-  console.log(selectedRow);
-
   return (
     <Card isCompact={true}>
       <CardTitle>{title}</CardTitle>

@@ -2,8 +2,8 @@ import { IOptions } from './interfaces';
 import { getTimeParams } from '@kobsio/plugin-core';
 
 // getInitialOptions returns the initial options from the url.
-export const getInitialOptions = (): IOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialOptions = (search: string, isInitial: boolean): IOptions => {
+  const params = new URLSearchParams(search);
   const clusters = params.getAll('cluster');
   const namespaces = params.getAll('namespace');
   const resources = params.getAll('resource');
@@ -14,7 +14,7 @@ export const getInitialOptions = (): IOptions => {
     namespaces: namespaces || [],
     resources: resources || [],
     selector: selector ? selector : '',
-    times: getTimeParams(params),
+    times: getTimeParams(params, isInitial),
   };
 };
 

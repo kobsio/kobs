@@ -2,14 +2,14 @@ import { IPluginTimes, formatTime, getTimeParams } from '@kobsio/plugin-core';
 import { IOptions } from './interfaces';
 
 // getInitialOptions is used to get the initial Opsgenie options from a the url.
-export const getInitialOptions = (): IOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialOptions = (search: string, isInitial: boolean): IOptions => {
+  const params = new URLSearchParams(search);
   const query = params.get('query');
   const type = params.get('type');
 
   return {
     query: query === null ? 'status: open' : query,
-    times: getTimeParams(params),
+    times: getTimeParams(params, isInitial),
     type: type ? type : 'alerts',
   };
 };

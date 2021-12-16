@@ -8,7 +8,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
@@ -20,7 +20,7 @@ import { getInitialOptions } from '../../utils/helpers';
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const history = useHistory();
   const location = useLocation();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [options, setOptions] = useState<IOptions>();
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const changeOptions = (opts: IOptions): void => {
@@ -28,9 +28,15 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       pathname: location.pathname,
       search: `?type=${opts.type}&cluster=${opts.cluster}`,
     });
-
-    setOptions(opts);
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

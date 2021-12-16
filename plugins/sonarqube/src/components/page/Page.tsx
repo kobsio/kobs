@@ -6,7 +6,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
@@ -23,7 +23,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
 }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [pageOptions, setPageOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [pageOptions, setPageOptions] = useState<IOptions>();
 
   // changePageOptions is used to change the options to get a list of projects from SonarQube. Instead of directly
   // modifying the options state we change the URL parameters.
@@ -32,9 +32,15 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
       pathname: location.pathname,
       search: `?query=${encodeURIComponent(opts.query)}`,
     });
-
-    setPageOptions(opts);
   };
+
+  useEffect(() => {
+    setPageOptions(getInitialOptions(location.search));
+  }, [location.search]);
+
+  if (!pageOptions) {
+    return null;
+  }
 
   return (
     <React.Fragment>

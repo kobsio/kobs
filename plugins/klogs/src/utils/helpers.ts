@@ -2,8 +2,8 @@ import { IAggregationOptions, IAggregationOptionsAggregation, IOptions } from '.
 import { getTimeParams } from '@kobsio/plugin-core';
 
 // getInitialOptions is used to get the initial klogs options from the url.
-export const getInitialOptions = (): IOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialOptions = (search: string, isInitial: boolean): IOptions => {
+  const params = new URLSearchParams(search);
   const fields = params.getAll('field');
   const order = params.get('order');
   const orderBy = params.get('orderBy');
@@ -14,13 +14,13 @@ export const getInitialOptions = (): IOptions => {
     order: order ? order : 'descending',
     orderBy: orderBy ? orderBy : '',
     query: query ? query : '',
-    times: getTimeParams(params),
+    times: getTimeParams(params, isInitial),
   };
 };
 
 // getInitialAggregationOptions is used to get the initial options for an aggregation from the url.
-export const getInitialAggregationOptions = (): IAggregationOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialAggregationOptions = (search: string, isInitial: boolean): IAggregationOptions => {
+  const params = new URLSearchParams(search);
 
   const chart = params.get('chart');
   const query = params.get('query');
@@ -36,14 +36,14 @@ export const getInitialAggregationOptions = (): IAggregationOptions => {
       chart: chart ? chart : 'pie',
       options: aggregationOptions,
       query: query ? query : '',
-      times: getTimeParams(params),
+      times: getTimeParams(params, isInitial),
     };
   } catch (err) {
     return {
       chart: chart ? chart : 'pie',
       options: aggregationOptionDefaults,
       query: query ? query : '',
-      times: getTimeParams(params),
+      times: getTimeParams(params, isInitial),
     };
   }
 };

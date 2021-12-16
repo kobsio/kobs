@@ -6,7 +6,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import GraphWrapper from '../panel/GraphWrapper';
@@ -18,7 +18,7 @@ import { getInitialOptions } from '../../utils/helpers';
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [options, setOptions] = useState<IOptions>();
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
@@ -32,9 +32,15 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         namespaces.length > 0 ? namespaces.join('') : ''
       }`,
     });
-
-    setOptions(opts);
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

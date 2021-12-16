@@ -4,19 +4,19 @@ import { IApplicationOptions, IApplicationsOptions, ITopDetailsMetrics } from '.
 import { getTimeParams } from '@kobsio/plugin-core';
 
 // getInitialApplicationsOptions is used to get the initial Istio options from the url.
-export const getInitialApplicationsOptions = (): IApplicationsOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialApplicationsOptions = (search: string, isInitial: boolean): IApplicationsOptions => {
+  const params = new URLSearchParams(search);
   const namespaces = params.getAll('namespace');
 
   return {
     namespaces: namespaces.length > 0 ? namespaces : [],
-    times: getTimeParams(params),
+    times: getTimeParams(params, isInitial),
   };
 };
 
 // getInitialApplicationOptions is used to get the initial Istio options from the url.
-export const getInitialApplicationOptions = (): IApplicationOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialApplicationOptions = (search: string, isInitial: boolean): IApplicationOptions => {
+  const params = new URLSearchParams(search);
   const view = params.get('view');
   const filterUpstreamCluster = params.get('filterUpstreamCluster');
   const filterMethod = params.get('filterMethod');
@@ -28,7 +28,7 @@ export const getInitialApplicationOptions = (): IApplicationOptions => {
       path: filterPath ? filterPath : '',
       upstreamCluster: filterUpstreamCluster ? filterUpstreamCluster : '',
     },
-    times: getTimeParams(params),
+    times: getTimeParams(params, isInitial),
     view: view ? view : 'metrics',
   };
 };
