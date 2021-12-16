@@ -1,13 +1,12 @@
 import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant, NumberInput } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 
+import { IResource, IResourceRow } from '@kobsio/plugin-core';
 import { IAlert } from '../../../../utils/interfaces';
-import { IResource } from '@kobsio/plugin-core';
 
 interface IScaleProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
   setAlert: (alert: IAlert) => void;
@@ -27,9 +26,9 @@ const Scale: React.FunctionComponent<IScaleProps> = ({
   const handleScale = async (): Promise<void> => {
     try {
       const response = await fetch(
-        `/api/plugins/resources/resources?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&resource=${request.resource}&path=${request.path}`,
+        `/api/plugins/resources/resources?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&resource=${request.resource}&path=${request.path}`,
         {
           body: JSON.stringify([{ op: 'replace', path: '/spec/replicas', value: replicas }]),
           method: 'put',
@@ -39,7 +38,7 @@ const Scale: React.FunctionComponent<IScaleProps> = ({
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `Scale replicas for ${resource.name.title} to ${replicas}`, variant: AlertVariant.success });
+        setAlert({ title: `Scale replicas for ${resource.name} to ${replicas}`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {
@@ -61,7 +60,7 @@ const Scale: React.FunctionComponent<IScaleProps> = ({
   return (
     <Modal
       variant={ModalVariant.small}
-      title={`Scale ${resource.name.title}`}
+      title={`Scale ${resource.name}`}
       isOpen={show}
       onClose={(): void => setShow(false)}
       actions={[
@@ -78,8 +77,8 @@ const Scale: React.FunctionComponent<IScaleProps> = ({
       ]}
     >
       <p>
-        Set new replica count for <b>{resource.name.title}</b> (
-        {resource.namespace ? `${resource.namespace.title} ${resource.cluster.title}` : resource.cluster.title}):
+        Set new replica count for <b>{resource.name}</b> (
+        {resource.namespace ? `${resource.namespace} ${resource.cluster}` : resource.cluster}):
       </p>
       <NumberInput
         value={replicas}

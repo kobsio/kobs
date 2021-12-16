@@ -12,10 +12,10 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 import { V1Pod } from '@kubernetes/client-node';
 
 import { IAlert } from '../../../../utils/interfaces';
+import { IResourceRow } from '@kobsio/plugin-core';
 
 interface ISourceFile {
   filename: string;
@@ -49,7 +49,7 @@ const getContainers = (pod: V1Pod): string[] => {
 };
 
 interface IUploadFileProps {
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
   setAlert: (alert: IAlert) => void;
@@ -80,9 +80,9 @@ const UploadFile: React.FunctionComponent<IUploadFileProps> = ({
       formData.append('file', sourceFile.value);
 
       const response = await fetch(
-        `/api/plugins/resources/file?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&container=${container}&destPath=${destinationPath}`,
+        `/api/plugins/resources/file?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&container=${container}&destPath=${destinationPath}`,
         {
           body: formData,
           method: 'post',

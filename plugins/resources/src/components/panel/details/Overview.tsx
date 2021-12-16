@@ -6,15 +6,14 @@ import {
   DescriptionListGroup,
   DescriptionListTerm,
 } from '@patternfly/react-core';
-import { IRow } from '@patternfly/react-table';
 import React from 'react';
 import { V1OwnerReference } from '@kubernetes/client-node';
 
+import { IResource, IResourceRow } from '@kobsio/plugin-core';
 import Conditions from './overview/Conditions';
 import CronJob from './overview/CronJob';
 import DaemonSet from './overview/DaemonSet';
 import Deployment from './overview/Deployment';
-import { IResource } from '@kobsio/plugin-core';
 import Job from './overview/Job';
 import Node from './overview/Node';
 import Pod from './overview/Pod';
@@ -23,7 +22,7 @@ import { timeDifference } from '@kobsio/plugin-core';
 
 interface IOverviewProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
 }
 
 // Overview is the overview tab for a resource. It shows the metadata of a resource in a clear way. We can also
@@ -39,41 +38,21 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ request, resource }
   // Overwrite the additions for several resources.
   if (request.resource === 'pods') {
     additions = (
-      <Pod
-        cluster={resource.cluster?.title}
-        namespace={resource.namespace?.title}
-        name={resource.name?.title}
-        pod={resource.props}
-      />
+      <Pod cluster={resource.cluster} namespace={resource.namespace} name={resource.name} pod={resource.props} />
     );
   } else if (request.resource === 'deployments') {
-    additions = (
-      <Deployment cluster={resource.cluster?.title} namespace={resource.namespace?.title} deployment={resource.props} />
-    );
+    additions = <Deployment cluster={resource.cluster} namespace={resource.namespace} deployment={resource.props} />;
   } else if (request.resource === 'daemonsets') {
-    additions = (
-      <DaemonSet cluster={resource.cluster?.title} namespace={resource.namespace?.title} daemonSet={resource.props} />
-    );
+    additions = <DaemonSet cluster={resource.cluster} namespace={resource.namespace} daemonSet={resource.props} />;
   } else if (request.resource === 'statefulsets') {
-    additions = (
-      <StatefulSet
-        cluster={resource.cluster?.title}
-        namespace={resource.namespace?.title}
-        statefulSet={resource.props}
-      />
-    );
+    additions = <StatefulSet cluster={resource.cluster} namespace={resource.namespace} statefulSet={resource.props} />;
   } else if (request.resource === 'cronjobs') {
     additions = <CronJob cronJob={resource.props} />;
   } else if (request.resource === 'jobs') {
-    additions = <Job cluster={resource.cluster?.title} namespace={resource.namespace?.title} job={resource.props} />;
+    additions = <Job cluster={resource.cluster} namespace={resource.namespace} job={resource.props} />;
   } else if (request.resource === 'nodes') {
     additions = (
-      <Node
-        cluster={resource.cluster?.title}
-        namespace={resource.namespace?.title}
-        name={resource.name?.title}
-        node={resource.props}
-      />
+      <Node cluster={resource.cluster} namespace={resource.namespace} name={resource.name} node={resource.props} />
     );
   }
 
@@ -81,22 +60,22 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ request, resource }
     <Card isCompact={true}>
       <CardBody>
         <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
-          {resource.name?.title && (
+          {resource.name && (
             <DescriptionListGroup>
               <DescriptionListTerm>Name</DescriptionListTerm>
-              <DescriptionListDescription>{resource.name?.title}</DescriptionListDescription>
+              <DescriptionListDescription>{resource.name}</DescriptionListDescription>
             </DescriptionListGroup>
           )}
-          {resource.namespace?.title && (
+          {resource.namespace && (
             <DescriptionListGroup>
               <DescriptionListTerm>Namespace</DescriptionListTerm>
-              <DescriptionListDescription>{resource.namespace?.title}</DescriptionListDescription>
+              <DescriptionListDescription>{resource.namespace}</DescriptionListDescription>
             </DescriptionListGroup>
           )}
-          {resource.cluster?.title && (
+          {resource.cluster && (
             <DescriptionListGroup>
               <DescriptionListTerm>Cluster</DescriptionListTerm>
-              <DescriptionListDescription>{resource.cluster?.title}</DescriptionListDescription>
+              <DescriptionListDescription>{resource.cluster}</DescriptionListDescription>
             </DescriptionListGroup>
           )}
           {resource.props?.metadata?.labels && (

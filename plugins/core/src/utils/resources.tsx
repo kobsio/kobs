@@ -37,7 +37,7 @@ import {
   V2beta1HorizontalPodAutoscalerList,
 } from '@kubernetes/client-node';
 import { SearchIcon, SquareIcon } from '@patternfly/react-icons';
-import { IRow } from '@patternfly/react-table';
+import { Td, Tr } from '@patternfly/react-table';
 import { JSONPath } from 'jsonpath-plus';
 import React from 'react';
 
@@ -76,7 +76,7 @@ export interface IResource {
   isCRD: boolean;
   path: string;
   resource: string;
-  rows: (items: IResourceItems[]) => IRow[];
+  rows: (items: IResourceItems[]) => IResourceRow[];
   scope: TScope;
   title: string;
 }
@@ -100,6 +100,15 @@ export interface ICRDColumn {
   type: string;
 }
 
+export interface IResourceRow {
+  cells: React.ReactNode[];
+  cluster: string;
+  name: string;
+  namespace: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props: any;
+}
+
 // resources is the list of Kubernetes standard resources. To generate the rows for a resource, we have to pass the
 // item from the API call to the rows function. The returned rows are mostly the same as they are also retunred by
 // kubectl.
@@ -111,8 +120,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/batch/v1beta1',
     resource: 'cronjobs',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const cronJobsList: V1beta1CronJobList = item.resources;
@@ -132,7 +141,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               cronJob.metadata?.name,
-              item.namespace || cronJob.metadata?.namespace,
+              item.namespace || cronJob.metadata?.namespace || '',
               item.cluster,
               schedule,
               suspend,
@@ -140,6 +149,9 @@ export const resources: IResources = {
               lastSchedule,
               age,
             ],
+            cluster: item.cluster,
+            name: cronJob.metadata?.name || '',
+            namespace: item.namespace || cronJob.metadata?.namespace || '',
             props: cronJob,
           });
         }
@@ -168,8 +180,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/apps/v1',
     resource: 'daemonsets',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const daemonSetList: V1DaemonSetList = item.resources;
@@ -204,7 +216,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               daemonSet.metadata?.name,
-              item.namespace || daemonSet.metadata?.namespace,
+              item.namespace || daemonSet.metadata?.namespace || '',
               item.cluster,
               desired,
               current,
@@ -217,6 +229,9 @@ export const resources: IResources = {
                 <SquareIcon color={status} />
               </span>,
             ],
+            cluster: item.cluster,
+            name: daemonSet.metadata?.name || '',
+            namespace: item.namespace || daemonSet.metadata?.namespace || '',
             props: daemonSet,
           });
         }
@@ -233,8 +248,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/apps/v1',
     resource: 'deployments',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const deploymentList: V1DeploymentList = item.resources;
@@ -261,7 +276,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               deployment.metadata?.name,
-              item.namespace || deployment.metadata?.namespace,
+              item.namespace || deployment.metadata?.namespace || '',
               item.cluster,
               `${ready}/${shouldReady}`,
               upToDate,
@@ -271,6 +286,9 @@ export const resources: IResources = {
                 <SquareIcon color={status} />
               </span>,
             ],
+            cluster: item.cluster,
+            name: deployment.metadata?.name || '',
+            namespace: item.namespace || deployment.metadata?.namespace || '',
             props: deployment,
           });
         }
@@ -288,8 +306,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/batch/v1',
     resource: 'jobs',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const jobList: V1JobList = item.resources;
@@ -316,7 +334,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               job.metadata?.name,
-              item.namespace || job.metadata?.namespace,
+              item.namespace || job.metadata?.namespace || '',
               item.cluster,
               `${completions}/${completionsShould}`,
               duration,
@@ -325,6 +343,9 @@ export const resources: IResources = {
                 <SquareIcon color={status} />
               </span>,
             ],
+            cluster: item.cluster,
+            name: job.metadata?.name || '',
+            namespace: item.namespace || job.metadata?.namespace || '',
             props: job,
           });
         }
@@ -341,8 +362,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'pods',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const podList: V1PodList = item.resources;
@@ -381,7 +402,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               pod.metadata?.name,
-              item.namespace || pod.metadata?.namespace,
+              item.namespace || pod.metadata?.namespace || '',
               item.cluster,
               `${isReady}/${shouldReady}`,
               reason ? reason : phase,
@@ -399,6 +420,9 @@ export const resources: IResources = {
                 />
               </span>,
             ],
+            cluster: item.cluster,
+            name: pod.metadata?.name || '',
+            namespace: item.namespace || pod.metadata?.namespace || '',
             props: pod,
           });
         }
@@ -415,8 +439,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/apps/v1',
     resource: 'replicasets',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const replicaSetList: V1ReplicaSetList = item.resources;
@@ -440,7 +464,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               replicaSet.metadata?.name,
-              item.namespace || replicaSet.metadata?.namespace,
+              item.namespace || replicaSet.metadata?.namespace || '',
               item.cluster,
               desired,
               current,
@@ -450,6 +474,9 @@ export const resources: IResources = {
                 <SquareIcon color={status} />
               </span>,
             ],
+            cluster: item.cluster,
+            name: replicaSet.metadata?.name || '',
+            namespace: item.namespace || replicaSet.metadata?.namespace || '',
             props: replicaSet,
           });
         }
@@ -466,8 +493,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/apps/v1',
     resource: 'statefulsets',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const statefulSetList: V1StatefulSetList = item.resources;
@@ -493,7 +520,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               statefulSet.metadata?.name,
-              item.namespace || statefulSet.metadata?.namespace,
+              item.namespace || statefulSet.metadata?.namespace || '',
               item.cluster,
               `${ready}/${shouldReady}`,
               upToDate,
@@ -502,6 +529,9 @@ export const resources: IResources = {
                 <SquareIcon color={status} />
               </span>,
             ],
+            cluster: item.cluster,
+            name: statefulSet.metadata?.name || '',
+            namespace: item.namespace || statefulSet.metadata?.namespace || '',
             props: statefulSet,
           });
         }
@@ -519,8 +549,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'endpoints',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const enpointList: V1EndpointsList = item.resources;
@@ -542,11 +572,14 @@ export const resources: IResources = {
           rows.push({
             cells: [
               endpoint.metadata?.name,
-              item.namespace || endpoint.metadata?.namespace,
+              item.namespace || endpoint.metadata?.namespace || '',
               item.cluster,
               ep.join(', '),
               age,
             ],
+            cluster: item.cluster,
+            name: endpoint.metadata?.name || '',
+            namespace: item.namespace || endpoint.metadata?.namespace || '',
             props: endpoint,
           });
         }
@@ -563,8 +596,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/autoscaling/v2beta1',
     resource: 'horizontalpodautoscalers',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const hpaList: V2beta1HorizontalPodAutoscalerList = item.resources;
@@ -587,7 +620,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               hpa.metadata?.name,
-              item.namespace || hpa.metadata?.namespace,
+              item.namespace || hpa.metadata?.namespace || '',
               item.cluster,
               reference,
               minPods,
@@ -595,6 +628,9 @@ export const resources: IResources = {
               replicas,
               age,
             ],
+            cluster: item.cluster,
+            name: hpa.metadata?.name || '',
+            namespace: item.namespace || hpa.metadata?.namespace || '',
             props: hpa,
           });
         }
@@ -611,8 +647,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/extensions/v1beta1',
     resource: 'ingresses',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const ingressList: V1IngressList = item.resources;
@@ -634,12 +670,15 @@ export const resources: IResources = {
           rows.push({
             cells: [
               ingress.metadata?.name,
-              item.namespace || ingress.metadata?.namespace,
+              item.namespace || ingress.metadata?.namespace || '',
               item.cluster,
               hosts ? hosts.join(', ') : '',
               address,
               age,
             ],
+            cluster: item.cluster,
+            name: ingress.metadata?.name || '',
+            namespace: item.namespace || ingress.metadata?.namespace || '',
             props: ingress,
           });
         }
@@ -656,8 +695,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/networking.k8s.io/v1',
     resource: 'networkpolicies',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const networkPolicyList: V1NetworkPolicyList = item.resources;
@@ -674,11 +713,14 @@ export const resources: IResources = {
           rows.push({
             cells: [
               networkPolicy.metadata?.name,
-              item.namespace || networkPolicy.metadata?.namespace,
+              item.namespace || networkPolicy.metadata?.namespace || '',
               item.cluster,
               podSelector,
               age,
             ],
+            cluster: item.cluster,
+            name: networkPolicy.metadata?.name || '',
+            namespace: item.namespace || networkPolicy.metadata?.namespace || '',
             props: networkPolicy,
           });
         }
@@ -695,8 +737,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'services',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const serviceList: V1ServiceList = item.resources;
@@ -726,7 +768,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               service.metadata?.name,
-              item.namespace || service.metadata?.namespace,
+              item.namespace || service.metadata?.namespace || '',
               item.cluster,
               type,
               clusterIP,
@@ -734,6 +776,9 @@ export const resources: IResources = {
               ports,
               age,
             ],
+            cluster: item.cluster,
+            name: service.metadata?.name || '',
+            namespace: item.namespace || service.metadata?.namespace || '',
             props: service,
           });
         }
@@ -751,8 +796,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'configmaps',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const configMapList: V1ConfigMapList = item.resources;
@@ -768,11 +813,14 @@ export const resources: IResources = {
           rows.push({
             cells: [
               configMap.metadata?.name,
-              item.namespace || configMap.metadata?.namespace,
+              item.namespace || configMap.metadata?.namespace || '',
               item.cluster,
               configMap.data ? Object.keys(configMap.data).length : 0,
               age,
             ],
+            cluster: item.cluster,
+            name: configMap.metadata?.name || '',
+            namespace: item.namespace || configMap.metadata?.namespace || '',
             props: configMap,
           });
         }
@@ -789,8 +837,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'persistentvolumeclaims',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const pvcList: V1PersistentVolumeClaimList = item.resources;
@@ -809,7 +857,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               pvc.metadata?.name,
-              item.namespace || pvc.metadata?.namespace,
+              item.namespace || pvc.metadata?.namespace || '',
               item.cluster,
               status,
               volume,
@@ -818,6 +866,9 @@ export const resources: IResources = {
               storageClass,
               age,
             ],
+            cluster: item.cluster,
+            name: pvc.metadata?.name || '',
+            namespace: item.namespace || pvc.metadata?.namespace || '',
             props: pvc,
           });
         }
@@ -845,8 +896,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'persistentvolumes',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const persistentVolumeList: V1PersistentVolumeList = item.resources;
@@ -893,6 +944,9 @@ export const resources: IResources = {
               reason,
               age,
             ],
+            cluster: item.cluster,
+            name: persistentVolume.metadata?.name || '',
+            namespace: '',
             props: persistentVolume,
           });
         }
@@ -909,8 +963,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/policy/v1beta1',
     resource: 'poddisruptionbudgets',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const pdbList: V1beta1PodDisruptionBudgetList = item.resources;
@@ -946,6 +1000,9 @@ export const resources: IResources = {
                 <SquareIcon color={status} />
               </span>,
             ],
+            cluster: item.cluster,
+            name: pdb.metadata?.name || '',
+            namespace: item.namespace || pdb.metadata?.namespace || '',
             props: pdb,
           });
         }
@@ -962,8 +1019,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'secrets',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const secretList: V1SecretList = item.resources;
@@ -976,7 +1033,17 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [secret.metadata?.name, item.namespace || secret.metadata?.namespace, item.cluster, type, data, age],
+            cells: [
+              secret.metadata?.name,
+              item.namespace || secret.metadata?.namespace || '',
+              item.cluster,
+              type,
+              data,
+              age,
+            ],
+            cluster: item.cluster,
+            name: secret.metadata?.name || '',
+            namespace: item.namespace || secret.metadata?.namespace || '',
             props: secret,
           });
         }
@@ -993,8 +1060,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'serviceaccounts',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const serviceAccountList: V1ServiceAccountList = item.resources;
@@ -1011,11 +1078,14 @@ export const resources: IResources = {
           rows.push({
             cells: [
               serviceAccount.metadata?.name,
-              item.namespace || serviceAccount.metadata?.namespace,
+              item.namespace || serviceAccount.metadata?.namespace || '',
               item.cluster,
               secrets,
               age,
             ],
+            cluster: item.cluster,
+            name: serviceAccount.metadata?.name || '',
+            namespace: item.namespace || serviceAccount.metadata?.namespace || '',
             props: serviceAccount,
           });
         }
@@ -1040,8 +1110,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/storage.k8s.io/v1',
     resource: 'storageclasses',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const storageClassList: V1StorageClassList = item.resources;
@@ -1068,6 +1138,9 @@ export const resources: IResources = {
               allowVolumeExpansion,
               age,
             ],
+            cluster: item.cluster,
+            name: storageClass.metadata?.name || '',
+            namespace: '',
             props: storageClass,
           });
         }
@@ -1085,8 +1158,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/rbac.authorization.k8s.io/v1',
     resource: 'clusterrolebindings',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const clusterRoleBindingsList: V1ClusterRoleBindingList = item.resources;
@@ -1101,6 +1174,9 @@ export const resources: IResources = {
 
           rows.push({
             cells: [clusterRoleBindings.metadata?.name, item.cluster, age],
+            cluster: item.cluster,
+            name: clusterRoleBindings.metadata?.name || '',
+            namespace: '',
             props: clusterRoleBindings,
           });
         }
@@ -1117,8 +1193,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/rbac.authorization.k8s.io/v1',
     resource: 'clusterroles',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const clusterRoleList: V1ClusterRoleList = item.resources;
@@ -1133,6 +1209,9 @@ export const resources: IResources = {
 
           rows.push({
             cells: [clusterRole.metadata?.name, item.cluster, age],
+            cluster: item.cluster,
+            name: clusterRole.metadata?.name || '',
+            namespace: '',
             props: clusterRole,
           });
         }
@@ -1149,8 +1228,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/rbac.authorization.k8s.io/v1',
     resource: 'rolebindings',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const roleBindingList: V1RoleBindingList = item.resources;
@@ -1164,7 +1243,15 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [roleBinding.metadata?.name, item.namespace || roleBinding.metadata?.namespace, item.cluster, age],
+            cells: [
+              roleBinding.metadata?.name,
+              item.namespace || roleBinding.metadata?.namespace || '',
+              item.cluster,
+              age,
+            ],
+            cluster: item.cluster,
+            name: roleBinding.metadata?.name || '',
+            namespace: item.namespace || roleBinding.metadata?.namespace || '',
             props: roleBinding,
           });
         }
@@ -1181,8 +1268,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/rbac.authorization.k8s.io/v1',
     resource: 'roles',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const roleList: V1RoleList = item.resources;
@@ -1193,7 +1280,10 @@ export const resources: IResources = {
               : '-';
 
           rows.push({
-            cells: [role.metadata?.name, item.namespace || role.metadata?.namespace, item.cluster, age],
+            cells: [role.metadata?.name, item.namespace || role.metadata?.namespace || '', item.cluster, age],
+            cluster: item.cluster,
+            name: role.metadata?.name || '',
+            namespace: item.namespace || role.metadata?.namespace || '',
             props: role,
           });
         }
@@ -1211,8 +1301,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'events',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const eventList: CoreV1EventList = item.resources;
@@ -1220,7 +1310,7 @@ export const resources: IResources = {
           rows.push({
             cells: [
               event.metadata?.name,
-              item.namespace || event.metadata.namespace,
+              item.namespace || event.metadata.namespace || '',
               item.cluster,
               event.lastTimestamp
                 ? timeDifference(new Date().getTime(), new Date(event.lastTimestamp.toString()).getTime())
@@ -1230,6 +1320,9 @@ export const resources: IResources = {
               `${event.involvedObject.kind}/${event.involvedObject.name}`,
               event.message,
             ],
+            cluster: item.cluster,
+            name: event.metadata?.name || '',
+            namespace: item.namespace || event.metadata?.namespace || '',
             props: event,
           });
         }
@@ -1246,8 +1339,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'namespaces',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const namespaceList: V1NamespaceList = item.resources;
@@ -1263,6 +1356,9 @@ export const resources: IResources = {
 
           rows.push({
             cells: [namespace.metadata?.name, item.cluster, status, age],
+            cluster: item.cluster,
+            name: namespace.metadata?.name || '',
+            namespace: '',
             props: namespace,
           });
         }
@@ -1279,8 +1375,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/api/v1',
     resource: 'nodes',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const nodeList: V1NodeList = item.resources;
@@ -1305,6 +1401,9 @@ export const resources: IResources = {
 
           rows.push({
             cells: [node.metadata?.name, item.cluster, status.join(', '), version, age],
+            cluster: item.cluster,
+            name: node.metadata?.name || '',
+            namespace: '',
             props: node,
           });
         }
@@ -1333,8 +1432,8 @@ export const resources: IResources = {
     isCRD: false,
     path: '/apis/policy/v1beta1',
     resource: 'podsecuritypolicies',
-    rows: (items: IResourceItems[]): IRow[] => {
-      const rows: IRow[] = [];
+    rows: (items: IResourceItems[]): IResourceRow[] => {
+      const rows: IResourceRow[] = [];
 
       for (const item of items) {
         const pspList: V1beta1PodSecurityPolicyList = item.resources;
@@ -1369,6 +1468,9 @@ export const resources: IResources = {
               volumes,
               age,
             ],
+            cluster: item.cluster,
+            name: psp.metadata?.name || '',
+            namespace: '',
             props: psp,
           });
         }
@@ -1397,8 +1499,8 @@ export const customResourceDefinition = (crds: ICRD[]): IResources => {
       isCRD: true,
       path: crd.path,
       resource: crd.resource,
-      rows: (items: IResourceItems[]): IRow[] => {
-        const rows: IRow[] = [];
+      rows: (items: IResourceItems[]): IResourceRow[] => {
+        const rows: IResourceRow[] = [];
 
         for (const item of items) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1423,6 +1525,9 @@ export const customResourceDefinition = (crds: ICRD[]): IResources => {
 
             rows.push({
               cells: [...defaultCells, ...crdCells],
+              cluster: item.cluster,
+              name: cr.metadata?.name,
+              namespace: item.namespace || cr.metadata?.namespace || '',
               props: cr,
             });
           }
@@ -1440,36 +1545,35 @@ export const customResourceDefinition = (crds: ICRD[]): IResources => {
 
 // emptyState is used to display an empty state in the table for a resource, when the API call returned an error or no
 // items.
-export const emptyState = (cols: number, isLoading: boolean, isError: boolean, error: Error | null): IRow[] => {
-  return [
-    {
-      cells: [
-        {
-          props: { colSpan: cols },
-          title: (
-            <Bullseye>
-              <EmptyState variant={EmptyStateVariant.small}>
-                {isLoading ? (
-                  <EmptyStateIcon variant="container" component={Spinner} />
-                ) : (
-                  <React.Fragment>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {isError ? 'An error occured' : 'No items found'}
-                    </Title>
-                    <EmptyStateBody>
-                      {isError
-                        ? error?.message
-                        : 'No items match the filter criteria. Select another cluster or namespace.'}
-                    </EmptyStateBody>
-                  </React.Fragment>
-                )}
-              </EmptyState>
-            </Bullseye>
-          ),
-        },
-      ],
-      heightAuto: true,
-    },
-  ];
+export const emptyState = (
+  cols: number,
+  isLoading: boolean,
+  isError: boolean,
+  error: Error | null,
+): React.ReactElement => {
+  return (
+    <Tr>
+      <Td colSpan={cols}>
+        <Bullseye>
+          <EmptyState variant={EmptyStateVariant.small}>
+            {isLoading ? (
+              <EmptyStateIcon variant="container" component={Spinner} />
+            ) : (
+              <React.Fragment>
+                <EmptyStateIcon icon={SearchIcon} />
+                <Title headingLevel="h2" size="lg">
+                  {isError ? 'An error occured' : 'No items found'}
+                </Title>
+                <EmptyStateBody>
+                  {isError
+                    ? error?.message
+                    : 'No items match the filter criteria. Select another cluster or namespace.'}
+                </EmptyStateBody>
+              </React.Fragment>
+            )}
+          </EmptyState>
+        </Bullseye>
+      </Td>
+    </Tr>
+  );
 };

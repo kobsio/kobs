@@ -1,13 +1,12 @@
 import { AlertVariant, Button, ButtonVariant, Checkbox, Modal, ModalVariant } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 
+import { IResource, IResourceRow } from '@kobsio/plugin-core';
 import { IAlert } from '../../../../utils/interfaces';
-import { IResource } from '@kobsio/plugin-core';
 
 interface IDeleteProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
   setAlert: (alert: IAlert) => void;
@@ -27,16 +26,16 @@ const Delete: React.FunctionComponent<IDeleteProps> = ({
   const handleDelete = async (): Promise<void> => {
     try {
       const response = await fetch(
-        `/api/plugins/resources/resources?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&resource=${request.resource}&path=${request.path}&force=${force}`,
+        `/api/plugins/resources/resources?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&resource=${request.resource}&path=${request.path}&force=${force}`,
         { method: 'delete' },
       );
       const json = await response.json();
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `${resource.name.title} was deleted`, variant: AlertVariant.success });
+        setAlert({ title: `${resource.name} was deleted`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {
@@ -54,7 +53,7 @@ const Delete: React.FunctionComponent<IDeleteProps> = ({
   return (
     <Modal
       variant={ModalVariant.small}
-      title={`Delete ${resource.name.title}`}
+      title={`Delete ${resource.name}`}
       isOpen={show}
       onClose={(): void => setShow(false)}
       actions={[
@@ -67,8 +66,8 @@ const Delete: React.FunctionComponent<IDeleteProps> = ({
       ]}
     >
       <p>
-        Do you really want to delete <b>{resource.name.title}</b> (
-        {resource.namespace ? `${resource.namespace.title} ${resource.cluster.title}` : resource.cluster.title})?
+        Do you really want to delete <b>{resource.name}</b> (
+        {resource.namespace ? `${resource.namespace} ${resource.cluster}` : resource.cluster})?
       </p>
       <p>&nbsp;</p>
       <Checkbox

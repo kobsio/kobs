@@ -12,7 +12,7 @@ const Conditions: React.FunctionComponent<IConditionsProps> = ({ conditions }: I
     <Card className="pf-u-mb-lg" isCompact={true}>
       <CardTitle>Conditions</CardTitle>
       <CardBody>
-        <TableComposable aria-label="Conditions" variant={TableVariant.compact} borders={true}>
+        <TableComposable aria-label="Conditions" variant={TableVariant.compact} borders={false}>
           <Thead>
             <Tr>
               <Th>Type</Th>

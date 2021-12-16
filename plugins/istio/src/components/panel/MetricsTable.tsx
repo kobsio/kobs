@@ -1,7 +1,7 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
+import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import React from 'react';
 
 import { IRowValues, IRows } from '@kobsio/plugin-prometheus';
 import DetailsMetrics from './details/DetailsMetrics';
@@ -38,6 +38,8 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
   setDetails,
   goTo,
 }: IMetricsTableProps) => {
+  const [selectedRow, setSelectedRow] = useState<number>(-1);
+
   const { isError, isLoading, error, data, refetch } = useQuery<IRows, Error>(
     ['istio/metrics', name, namespaces, application, label, groupBy, reporter, times],
     async () => {
@@ -71,6 +73,25 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
     },
   );
 
+  const handleRowClick = (rowIndex: number, rowValues: IRowValues): void => {
+    if (setDetails) {
+      setDetails(
+        <DetailsMetrics
+          name={name}
+          namespace={rowValues['destination_workload_namespace']}
+          application={rowValues['destination_app']}
+          row={rowValues}
+          times={times}
+          close={(): void => {
+            setDetails(undefined);
+            setSelectedRow(-1);
+          }}
+        />,
+      );
+      setSelectedRow(rowIndex);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="pf-u-text-align-center">
@@ -103,7 +124,7 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
   }
 
   return (
-    <TableComposable aria-label="Metrics" variant={TableVariant.compact} borders={false}>
+    <TableComposable aria-label="Metrics" variant={TableVariant.compact} borders={true}>
       <Thead>
         <Tr>
           <Th>Application</Th>
@@ -117,33 +138,24 @@ const MetricsTable: React.FunctionComponent<IMetricsTableProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {Object.keys(data).map((key) => (
+        {Object.keys(data).map((key, rowIndex) => (
           <Tr
             key={key}
             isHoverable={goTo || setDetails ? true : false}
+            isRowSelected={selectedRow === rowIndex}
             onClick={
               goTo
                 ? (): void => goTo(data[key])
                 : setDetails
-                ? (): void =>
-                    setDetails(
-                      <DetailsMetrics
-                        name={name}
-                        namespace={data[key]['destination_workload_namespace']}
-                        application={data[key]['destination_app']}
-                        row={data[key]}
-                        times={times}
-                        close={(): void => setDetails(undefined)}
-                      />,
-                    )
+                ? (): void => handleRowClick(rowIndex, data[key])
                 : undefined
             }
           >
             <Td dataLabel="Application">{data[key]['destination_app']}</Td>
             <Td dataLabel="Namespace">{data[key]['destination_workload_namespace']}</Td>
             {additionalColumns
-              ? additionalColumns.map((column, index) => (
-                  <Td key={index} dataLabel={column.title}>
+              ? additionalColumns.map((column, columnIndex) => (
+                  <Td key={columnIndex} dataLabel={column.title}>
                     {data[key][column.label]}
                   </Td>
                 ))
