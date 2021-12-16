@@ -44,7 +44,7 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
     );
   }
 
-  return (
+  if (isError) {
     <Select
       variant={SelectVariant.typeaheadMulti}
       typeAheadAriaLabel="Namespaces"
@@ -55,11 +55,29 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
       selections={namespaces}
       isOpen={show}
     >
-      {isError
-        ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
-        : data
-        ? data.map((namespace, index) => <SelectOption key={index} value={namespace} />)
-        : []}
+      {[<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]}
+    </Select>
+  }
+  
+  const dat = (data ?? [])
+  return (
+    <Select
+      variant={SelectVariant.typeaheadMulti}
+      typeAheadAriaLabel="Namespaces"
+      placeholderText="Namespaces"
+      onToggle={(): void => setShow(!show)}
+      onSelect={(e, value): void => selectNamespace(value as string)}
+      onClear={(): void => selectNamespace('')}
+      selections={namespaces}
+      isOpen={show}
+      onFilter={(_,v) => (
+        dat.filter(ns => !v || ns.includes(v)).
+        map((namespace, index) => (
+          <SelectOption key={index} value={namespace} />
+        ))
+      )}
+    >
+      {dat.map((namespace, index) => <SelectOption key={index} value={namespace} />)}
     </Select>
   );
 };
