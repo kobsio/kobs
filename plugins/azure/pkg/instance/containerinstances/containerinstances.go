@@ -15,12 +15,6 @@ type Client struct {
 	containersClient      *armcontainerinstance.ContainersClient
 }
 
-// ContainerGroupListResult the container group list response that contains the container group properties.
-type ContainerGroupListResult struct {
-	Value    []map[string]interface{} `json:"value,omitempty"`
-	NextLink string                   `json:"nextLink,omitempty"`
-}
-
 // ListContainerGroups list all container groups in a subscription.
 //
 // We can not use the containerGroupsClient for this request, because the result is missing some important fields like

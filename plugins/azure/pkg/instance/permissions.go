@@ -13,9 +13,9 @@ import (
 
 // Permissions is the structure of the custom permissions field for the Azure instance.
 type Permissions struct {
-	Resources      []string `json:"resources`
-	ResourceGroups []string `json:"resourceGroups`
-	Verbs          []string `json:"resourceGroups`
+	Resources      []string `json:"resources"`
+	ResourceGroups []string `json:"resourceGroups"`
+	Verbs          []string `json:"verbs"`
 }
 
 // CheckPermissions can be used to check if a user has the permissions to access a resource. The permissions of the user
