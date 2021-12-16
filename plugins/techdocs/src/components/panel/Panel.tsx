@@ -14,7 +14,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   title,
   description,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (options && options.type && options.type === 'list') {
     return (

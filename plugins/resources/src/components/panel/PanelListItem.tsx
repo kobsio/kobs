@@ -11,7 +11,7 @@ interface IPanelListItemProps {
   resource: IResource;
   selector: string;
   times: IPluginTimes;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
@@ -20,7 +20,7 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
   resource,
   selector,
   times,
-  showDetails,
+  setDetails,
 }: IPanelListItemProps) => {
   const [selectedRow, setSelectedRow] = useState<number>(-1);
 
@@ -73,13 +73,13 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
   };
 
   const handleRowClick = (rowIndex: number, row: IResourceRow): void => {
-    if (showDetails && resource) {
-      showDetails(
+    if (setDetails && resource) {
+      setDetails(
         <Details
           request={resource}
           resource={row}
           close={(): void => {
-            showDetails(undefined);
+            setDetails(undefined);
             setSelectedRow(-1);
           }}
           refetch={refetchhWithDelay}
@@ -103,10 +103,10 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
           ? data.map((row, rowIndex) => (
               <Tr
                 key={rowIndex}
-                isHoverable={showDetails ? true : false}
+                isHoverable={setDetails ? true : false}
                 isRowSelected={selectedRow === rowIndex}
                 onClick={(): void =>
-                  showDetails && data && data.length > 0 && data[0].cells?.length === resource.columns.length
+                  setDetails && data && data.length > 0 && data[0].cells?.length === resource.columns.length
                     ? handleRowClick(rowIndex, row)
                     : undefined
                 }

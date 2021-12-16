@@ -24,7 +24,7 @@ interface IDashboardProps {
   defaults: IPluginDefaults;
   dashboard: IDashboard;
   forceDefaultSpan: boolean;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 // The Dashboard component renders the rows and panels for a single dashboard, by including a plugin via the PluginPanel
@@ -37,7 +37,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   defaults,
   dashboard,
   forceDefaultSpan,
-  showDetails,
+  setDetails,
 }: IDashboardProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
@@ -218,7 +218,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                             description={panel.description}
                             name={panel.plugin.name}
                             options={panel.plugin.options}
-                            showDetails={showDetails}
+                            setDetails={setDetails}
                           />
                         </div>
                       ) : (

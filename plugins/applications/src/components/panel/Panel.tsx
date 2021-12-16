@@ -19,7 +19,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   options,
   times,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   // We have to validate that the required options object was provided in the Application CR by a user. This is
   // important so that the React UI doesn't crash, when the user didn't use the plugin correctly.
@@ -44,7 +44,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         clusters={options.clusters || [defaults.cluster]}
         namespaces={options.namespaces || [defaults.namespace]}
         times={times}
-        showDetails={showDetails}
+        setDetails={setDetails}
       />
     );
 

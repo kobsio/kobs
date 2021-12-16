@@ -12,7 +12,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   title,
   description,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (!options || !options.urls || !Array.isArray(options.urls) || options.urls.length === 0) {
     return (
@@ -27,7 +27,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 
   return (
     <PluginCard title={title} description={description} transparent={true}>
-      <Feed urls={options.urls} sortBy={options.sortBy || 'published'} setDetails={showDetails} />
+      <Feed urls={options.urls} sortBy={options.sortBy || 'published'} setDetails={setDetails} />
     </PluginCard>
   );
 };

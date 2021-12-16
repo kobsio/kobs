@@ -21,7 +21,7 @@ import { getInitialOptions } from '../../utils/dashboard';
 interface IDashboardsProps {
   defaults: IPluginDefaults;
   references: IReference[];
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
   forceDefaultSpan: boolean;
 }
 
@@ -31,7 +31,7 @@ interface IDashboardsProps {
 const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   defaults,
   references,
-  showDetails,
+  setDetails,
   forceDefaultSpan,
 }: IDashboardsProps) => {
   const location = useLocation();
@@ -53,10 +53,10 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   // a drawer it can happen that we already show some dashboards in the main view and so we can not rely on the query
   // parameters.
   useEffect(() => {
-    if (showDetails !== undefined) {
-      setOptions(getInitialOptions(location.search, references, showDetails !== undefined));
+    if (setDetails !== undefined) {
+      setOptions(getInitialOptions(location.search, references, setDetails !== undefined));
     }
-  }, [location.search, references, showDetails]);
+  }, [location.search, references, setDetails]);
 
   // Fetch all dashboards. The dashboards are available via the data variable. To fetch the dashboards we have to pass
   // the defaults and the references to the API. The defaults are required so that a user can omit the cluster and
@@ -132,7 +132,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
     <Tabs
       activeKey={options.dashboard}
       onSelect={(event, tabIndex): void =>
-        showDetails
+        setDetails
           ? changeOptions({ ...options, dashboard: tabIndex.toString() })
           : setOptions({ ...options, dashboard: tabIndex.toString() })
       }
@@ -148,7 +148,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
               defaults={defaults}
               dashboard={dashboard}
               forceDefaultSpan={forceDefaultSpan}
-              showDetails={showDetails}
+              setDetails={setDetails}
             />
           </PageSection>
         </Tab>

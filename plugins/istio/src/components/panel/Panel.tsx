@@ -20,7 +20,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   times,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   const history = useHistory();
 
@@ -91,7 +91,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           reporter="destination"
           additionalColumns={[{ label: 'pod', title: 'Pod' }]}
           times={times}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );
@@ -126,7 +126,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           reporter="destination"
           times={times}
           additionalColumns={[{ label: 'destination_version', title: 'Version' }]}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );
@@ -157,7 +157,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           namespace={options.namespaces[0]}
           application={options.application}
           times={times}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );
@@ -200,7 +200,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           times={times}
           liveUpdate={false}
           filters={filters}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );
@@ -243,7 +243,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           times={times}
           liveUpdate={false}
           filters={filters}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );

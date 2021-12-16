@@ -33,7 +33,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   times,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   // Panels for container services.
   if (
@@ -48,7 +48,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         <CIContainerGroups
           name={name}
           resourceGroups={options.containerinstances.resourceGroups}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );
@@ -143,7 +143,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         <KSKubernetesServices
           name={name}
           resourceGroups={options.kubernetesservices.resourceGroups}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );
@@ -225,7 +225,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         <VMSSVirtualMachineScaleSets
           name={name}
           resourceGroups={options.virtualmachinescalesets.resourceGroups}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );

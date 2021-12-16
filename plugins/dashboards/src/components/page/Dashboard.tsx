@@ -105,7 +105,7 @@ const Dashboard: React.FunctionComponent = () => {
           <DrawerContent panelContent={details}>
             <DrawerContentBody>
               <PageSection variant={PageSectionVariants.default} style={{ minHeight: '100%' }}>
-                <DashboardWrapper defaults={defaults} dashboard={data} showDetails={setDetails} />
+                <DashboardWrapper defaults={defaults} dashboard={data} setDetails={setDetails} />
               </PageSection>
             </DrawerContentBody>
           </DrawerContent>

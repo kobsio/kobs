@@ -24,7 +24,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({ name, displayName, desc
   const location = useLocation();
   const history = useHistory();
   const [options, setOptions] = useState<IOptions>();
-  const [selectedTrace, setSelectedTrace] = useState<React.ReactNode>(undefined);
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
   // options in the current url.
@@ -60,15 +60,15 @@ const Traces: React.FunctionComponent<ITracesProps> = ({ name, displayName, desc
         <TracesToolbar name={name} options={options} setOptions={changeOptions} />
       </PageSection>
 
-      <Drawer isExpanded={selectedTrace !== undefined}>
-        <DrawerContent panelContent={selectedTrace}>
+      <Drawer isExpanded={details !== undefined}>
+        <DrawerContent panelContent={details}>
           <DrawerContentBody>
             <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
               {options.service ? (
                 <TracesPanel
                   name={name}
                   title=""
-                  showDetails={setSelectedTrace}
+                  setDetails={setDetails}
                   queries={[
                     {
                       limit: options.limit,

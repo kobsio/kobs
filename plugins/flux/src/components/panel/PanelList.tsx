@@ -13,7 +13,7 @@ interface IPanelListProps {
   namespace: string;
   selector?: string;
   type: TApiType;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const PanelList: React.FunctionComponent<IPanelListProps> = ({
@@ -23,7 +23,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
   cluster,
   namespace,
   selector,
-  showDetails,
+  setDetails,
 }: IPanelListProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const resource =
@@ -72,15 +72,15 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
   };
 
   const handleRowClick = (rowIndex: number, row: IResourceRow): void => {
-    if (showDetails && resource) {
-      showDetails(
+    if (setDetails && resource) {
+      setDetails(
         <Details
           name={name}
           type={type}
           request={resource}
           resource={row}
           close={(): void => {
-            showDetails(undefined);
+            setDetails(undefined);
             setSelectedRow(-1);
           }}
           refetch={refetchhWithDelay}
@@ -104,14 +104,10 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
           ? data.map((row, rowIndex) => (
               <Tr
                 key={rowIndex}
-                isHoverable={showDetails ? true : false}
+                isHoverable={setDetails ? true : false}
                 isRowSelected={selectedRow === rowIndex}
                 onClick={(): void =>
-                  showDetails &&
-                  resource &&
-                  data &&
-                  data.length > 0 &&
-                  data[0].cells?.length === resource.columns.length
+                  setDetails && resource && data && data.length > 0 && data[0].cells?.length === resource.columns.length
                     ? handleRowClick(rowIndex, row)
                     : undefined
                 }

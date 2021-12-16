@@ -19,7 +19,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   options,
   times,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (!options || !Array.isArray(options) || !times) {
     return (
@@ -48,14 +48,14 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   if (title) {
     return (
       <PluginCard title={title} description={description} transparent={true} actions={<PanelActions options={opts} />}>
-        <PanelList resources={opts} times={times} showDetails={showDetails} />
+        <PanelList resources={opts} times={times} setDetails={setDetails} />
       </PluginCard>
     );
   }
 
   return (
     <Card>
-      <PanelList resources={opts} times={times} showDetails={showDetails} />
+      <PanelList resources={opts} times={times} setDetails={setDetails} />
     </Card>
   );
 };

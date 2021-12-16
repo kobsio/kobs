@@ -71,7 +71,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                   title=""
                   options={[options]}
                   times={options.times}
-                  showDetails={setDetails}
+                  setDetails={setDetails}
                 />
               )}
             </PageSection>

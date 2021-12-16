@@ -77,7 +77,7 @@ export interface IPluginPanelProps {
   pluginOptions?: IPluginDataOptions;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 // IPluginPreviewProps is the interface for the properties of the preview component of each plugin. It contains the

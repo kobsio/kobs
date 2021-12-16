@@ -66,7 +66,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                         type="gitrepositories.source.toolkit.fluxcd.io/v1beta1"
                         title="Git Repos"
                         times={options.times}
-                        showDetails={setDetails}
+                        setDetails={setDetails}
                       />
                       <p>&nbsp;</p>
                       <PageList
@@ -75,7 +75,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                         type="helmrepositories.source.toolkit.fluxcd.io/v1beta1"
                         title="Helm Repos"
                         times={options.times}
-                        showDetails={setDetails}
+                        setDetails={setDetails}
                       />
                       <p>&nbsp;</p>
                       <PageList
@@ -84,7 +84,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                         type="buckets.source.toolkit.fluxcd.io/v1beta1"
                         title="Buckets"
                         times={options.times}
-                        showDetails={setDetails}
+                        setDetails={setDetails}
                       />
                     </React.Fragment>
                   ) : options.type === 'kustomizations' ? (
@@ -94,7 +94,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                       type="kustomizations.kustomize.toolkit.fluxcd.io/v1beta1"
                       title="Kustomizations"
                       times={options.times}
-                      showDetails={setDetails}
+                      setDetails={setDetails}
                     />
                   ) : options.type === 'helmreleases' ? (
                     <PageList
@@ -103,7 +103,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                       type="helmreleases.helm.toolkit.fluxcd.io/v2beta1"
                       title="Helm Releases"
                       times={options.times}
-                      showDetails={setDetails}
+                      setDetails={setDetails}
                     />
                   ) : null}
                 </React.Fragment>

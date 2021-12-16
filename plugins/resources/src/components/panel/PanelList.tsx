@@ -8,10 +8,10 @@ import PanelListItem from './PanelListItem';
 interface IPanelListProps {
   resources: IPanelOptions[];
   times: IPluginTimes;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
-const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, times, showDetails }: IPanelListProps) => {
+const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, times, setDetails }: IPanelListProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const [expanded, setExpanded] = useState<string[]>(['resources-accordion-0-0']);
 
@@ -53,7 +53,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, times,
                               resource={clustersContext.resources[item]}
                               selector={resource.selector || ''}
                               times={times}
-                              showDetails={showDetails}
+                              setDetails={setDetails}
                             />
                           ) : null}
                         </AccordionContent>
