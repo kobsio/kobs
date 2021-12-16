@@ -16,7 +16,7 @@ const PageSQL: React.FunctionComponent<IPageSQLProps> = ({ name, query }: IPageS
 
   const { isError, isFetching, error, data, refetch } = useQuery<ISQLData, Error>(['sql/query', query], async () => {
     try {
-      const response = await fetch(`/api/plugins/sql/query/${name}?query=${encodeURIComponent(query)}`, {
+      const response = await fetch(`/api/plugins/sql/${name}/query?query=${encodeURIComponent(query)}`, {
         method: 'get',
       });
       const json = await response.json();

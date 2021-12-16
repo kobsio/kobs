@@ -236,9 +236,11 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/fields/{name}", router.getFields)
-	router.Get("/logs/{name}", router.getLogs)
-	router.Post("/aggregation/{name}", router.getAggregation)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/fields", router.getFields)
+		r.Get("/logs", router.getLogs)
+		r.Post("/aggregation", router.getAggregation)
+	})
 
 	return router, instances
 }

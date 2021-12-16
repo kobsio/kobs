@@ -347,17 +347,19 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/alerts/{name}", router.getAlerts)
-	router.Get("/alert/details/{name}", router.getAlertDetails)
-	router.Get("/alert/logs/{name}", router.getAlertLogs)
-	router.Get("/alert/notes/{name}", router.getAlertNotes)
-	router.Get("/alert/acknowledge/{name}", router.acknowledgeAlert)
-	router.Get("/alert/snooze/{name}", router.snoozeAlert)
-	router.Get("/alert/close/{name}", router.closeAlert)
-	router.Get("/incidents/{name}", router.getIncidents)
-	router.Get("/incident/logs/{name}", router.getIncidentLogs)
-	router.Get("/incident/notes/{name}", router.getIncidentNotes)
-	router.Get("/incident/timeline/{name}", router.getIncidentTimeline)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/alerts", router.getAlerts)
+		r.Get("/alert/details", router.getAlertDetails)
+		r.Get("/alert/logs", router.getAlertLogs)
+		r.Get("/alert/notes", router.getAlertNotes)
+		r.Get("/alert/acknowledge", router.acknowledgeAlert)
+		r.Get("/alert/snooze", router.snoozeAlert)
+		r.Get("/alert/close", router.closeAlert)
+		r.Get("/incidents", router.getIncidents)
+		r.Get("/incident/logs", router.getIncidentLogs)
+		r.Get("/incident/notes", router.getIncidentNotes)
+		r.Get("/incident/timeline", router.getIncidentTimeline)
+	})
 
 	return router
 }

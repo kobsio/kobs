@@ -151,9 +151,11 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/namespaces/{name}", router.getNamespaces)
-	router.Get("/graph/{name}", router.getGraph)
-	router.Get("/metrics/{name}", router.getMetrics)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/namespaces", router.getNamespaces)
+		r.Get("/graph", router.getGraph)
+		r.Get("/metrics", router.getMetrics)
+	})
 
 	return router
 }

@@ -31,5 +31,5 @@ export const imageTransformer = (uri: string, name: string, service: string, pat
   const normalizedPath = normalizePath(`${getPathWithoutFile(path)}/${uri}`);
   const host = process.env.NODE_ENV === 'development' ? `http://localhost:15220` : `https://${window.location.host}`;
 
-  return `${host}/api/plugins/techdocs/file/${name}?service=${service}&path=${normalizedPath}`;
+  return `${host}/api/plugins/techdocs/${name}/file?service=${service}&path=${normalizedPath}`;
 };

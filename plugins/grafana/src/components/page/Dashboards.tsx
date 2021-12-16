@@ -16,7 +16,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ name, query, pu
     ['grafana/dashboards', name, query],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/grafana/dashboards/${name}?query=${encodeURIComponent(query)}`, {
+        const response = await fetch(`/api/plugins/grafana/${name}/dashboards?query=${encodeURIComponent(query)}`, {
           method: 'get',
         });
         const json = await response.json();

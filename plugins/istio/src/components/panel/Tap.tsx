@@ -46,7 +46,7 @@ const Tap: React.FunctionComponent<ITapProps> = ({
           : times.timeStart;
 
         const response = await fetch(
-          `/api/plugins/istio/tap/${name}?timeStart=${timeStart}&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterUpstreamCluster=${encodeURIComponent(
+          `/api/plugins/istio/${name}/tap?timeStart=${timeStart}&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterUpstreamCluster=${encodeURIComponent(
             filters.upstreamCluster,
           )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(filters.path)}`,
           {

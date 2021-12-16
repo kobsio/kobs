@@ -24,7 +24,7 @@ const Vulnerabilities: React.FunctionComponent<IVulnerabilitiesProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/harbor/vulnerabilities/${name}?projectName=${projectName}&repositoryName=${repositoryName}&artifactReference=${artifactReference}`,
+          `/api/plugins/harbor/${name}/vulnerabilities?projectName=${projectName}&repositoryName=${repositoryName}&artifactReference=${artifactReference}`,
           {
             method: 'get',
           },

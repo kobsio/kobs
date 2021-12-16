@@ -78,7 +78,7 @@ const Top: React.FunctionComponent<ITopProps> = ({
         const [sortBy, sortDirection] = getSortParameters(sort);
 
         const response = await fetch(
-          `/api/plugins/istio/top/${name}?timeStart=${
+          `/api/plugins/istio/${name}/top?timeStart=${
             times.timeStart
           }&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterUpstreamCluster=${encodeURIComponent(
             filters.upstreamCluster,

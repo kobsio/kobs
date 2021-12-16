@@ -49,7 +49,7 @@ const PageLogs: React.FunctionComponent<IPageLogsProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/elasticsearch/logs/${name}?query=${query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/elasticsearch/${name}/logs?query=${query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },

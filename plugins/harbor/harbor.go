@@ -213,12 +213,14 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/projects/{name}", router.getProjects)
-	router.Get("/repositories/{name}", router.getRepositories)
-	router.Get("/artifacts/{name}", router.getArtifacts)
-	router.Get("/artifact/{name}", router.getArtifact)
-	router.Get("/vulnerabilities/{name}", router.getVulnerabilities)
-	router.Get("/buildhistory/{name}", router.getBuildHistory)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/projects", router.getProjects)
+		r.Get("/repositories", router.getRepositories)
+		r.Get("/artifacts", router.getArtifacts)
+		r.Get("/artifact", router.getArtifact)
+		r.Get("/vulnerabilities", router.getVulnerabilities)
+		r.Get("/buildhistory", router.getBuildHistory)
+	})
 
 	return router
 }

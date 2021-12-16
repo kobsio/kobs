@@ -35,7 +35,7 @@ const ServicePage: React.FunctionComponent<IServicePageProps> = ({ name }: IServ
     ['techdocs/index', name, params.service],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/techdocs/index/${name}?service=${params.service}`, {
+        const response = await fetch(`/api/plugins/techdocs/${name}/index?service=${params.service}`, {
           method: 'get',
         });
         const json = await response.json();

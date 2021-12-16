@@ -107,7 +107,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/logs/{name}", router.getLogs)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/logs", router.getLogs)
+	})
 
 	return router
 }

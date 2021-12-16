@@ -14,7 +14,7 @@ const TechDocsList: React.FunctionComponent<ITechDocsListProps> = ({ name }: ITe
     ['techdocs/indexes', name],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/techdocs/indexes/${name}`, {
+        const response = await fetch(`/api/plugins/techdocs/${name}/indexes`, {
           method: 'get',
         });
         const json = await response.json();

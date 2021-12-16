@@ -22,7 +22,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
       try {
         const uidParams = dashboardIDs.map((dashboardID) => `uid=${dashboardID}`).join('&');
 
-        const response = await fetch(`/api/plugins/grafana/dashboards/${name}?${uidParams}`, {
+        const response = await fetch(`/api/plugins/grafana/${name}/dashboards?${uidParams}`, {
           method: 'get',
         });
         const json = await response.json();

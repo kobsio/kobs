@@ -158,10 +158,12 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/indexes/{name}", router.getIndexes)
-	router.Get("/index/{name}", router.getIndex)
-	router.Get("/markdown/{name}", router.getMarkdown)
-	router.Get("/file/{name}", router.getFile)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/indexes", router.getIndexes)
+		r.Get("/index", router.getIndex)
+		r.Get("/markdown", router.getMarkdown)
+		r.Get("/file", router.getFile)
+	})
 
 	return router
 }

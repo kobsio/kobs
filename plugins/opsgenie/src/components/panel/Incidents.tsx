@@ -27,7 +27,7 @@ const Incidents: React.FunctionComponent<IIncidentsProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/opsgenie/incidents/${name}?query=${queryWithTime(query, times, interval)}`,
+          `/api/plugins/opsgenie/${name}/incidents?query=${queryWithTime(query, times, interval)}`,
           {
             method: 'get',
           },

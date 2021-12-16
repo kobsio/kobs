@@ -32,7 +32,7 @@ export const PageToolbarAutocomplete: React.FunctionComponent<IPageToolbarAutoco
         return undefined;
       }
 
-      const response = await fetch(`/api/plugins/prometheus/labels/${name}?searchTerm=${debouncedQuery}`, {
+      const response = await fetch(`/api/plugins/prometheus/${name}/labels?searchTerm=${debouncedQuery}`, {
         method: 'get',
       });
       const json = await response.json();

@@ -35,7 +35,7 @@ const ServicePageWrapper: React.FunctionComponent<IServicePageWrapperProps> = ({
     ['techdocs/markdown', name, index, path],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/techdocs/markdown/${name}?service=${index.key}&path=${path}`, {
+        const response = await fetch(`/api/plugins/techdocs/${name}/markdown?service=${index.key}&path=${path}`, {
           method: 'get',
         });
         const json = await response.json();

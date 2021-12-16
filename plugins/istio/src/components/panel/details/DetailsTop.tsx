@@ -39,7 +39,7 @@ const DetailsTop: React.FunctionComponent<IDetailsTopProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/istio/topdetails/${name}?timeStart=${times.timeStart}&timeEnd=${
+          `/api/plugins/istio/${name}/topdetails?timeStart=${times.timeStart}&timeEnd=${
             times.timeEnd
           }&application=${application}&namespace=${namespace}&upstreamCluster=${encodeURIComponent(
             row[0],

@@ -169,10 +169,12 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/services/{name}", router.getServices)
-	router.Get("/operations/{name}", router.getOperations)
-	router.Get("/traces/{name}", router.getTraces)
-	router.Get("/trace/{name}", router.getTrace)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/services", router.getServices)
+		r.Get("/operations", router.getOperations)
+		r.Get("/traces", router.getTraces)
+		r.Get("/trace", router.getTrace)
+	})
 
 	return router
 }

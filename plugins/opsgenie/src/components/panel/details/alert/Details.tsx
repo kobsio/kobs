@@ -25,7 +25,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ name, id }: IDetailsP
     ['opsgenie/alerts/details', name, id],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/opsgenie/alert/details/${name}?id=${id}`, {
+        const response = await fetch(`/api/plugins/opsgenie/${name}/alert/details?id=${id}`, {
           method: 'get',
         });
         const json = await response.json();

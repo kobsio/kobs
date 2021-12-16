@@ -27,7 +27,7 @@ const Projects: React.FunctionComponent<IProjectsProps> = ({ name }: IProjectsPr
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/harbor/projects/${name}?page=${page.page}&pageSize=${page.pageSize}`,
+          `/api/plugins/harbor/${name}/projects?page=${page.page}&pageSize=${page.pageSize}`,
           {
             method: 'get',
           },

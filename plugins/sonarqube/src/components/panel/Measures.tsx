@@ -20,7 +20,7 @@ const Measures: React.FunctionComponent<IMeasuresProps> = ({ name, project, metr
         const metricKeyParams = metricKeys ? metricKeys.map((key) => `metricKey=${key}`).join('&') : '';
 
         const response = await fetch(
-          `/api/plugins/sonarqube/projectmeasures/${name}?project=${project}&${metricKeyParams}`,
+          `/api/plugins/sonarqube/${name}/projectmeasures?project=${project}&${metricKeyParams}`,
           {
             method: 'get',
           },

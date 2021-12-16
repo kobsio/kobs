@@ -50,7 +50,7 @@ export const Table: React.FunctionComponent<ITableProps> = ({
           throw new Error('Queries are missing');
         }
 
-        const response = await fetch(`/api/plugins/prometheus/table/${name}`, {
+        const response = await fetch(`/api/plugins/prometheus/${name}/table`, {
           body: JSON.stringify({
             queries: options.queries,
             resolution: '',

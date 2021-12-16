@@ -29,7 +29,7 @@ const Snooze: React.FunctionComponent<ISnoozeProps> = ({ name, alert, hideDropdo
     hideDropdown();
 
     try {
-      const response = await fetch(`/api/plugins/opsgenie/alert/snooze/${name}?id=${alert.id}&snooze=${duration}`, {
+      const response = await fetch(`/api/plugins/opsgenie/${name}/alert/snooze?id=${alert.id}&snooze=${duration}`, {
         method: 'get',
       });
       const json = await response.json();

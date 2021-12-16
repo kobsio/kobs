@@ -42,7 +42,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/elasticsearch/logs/${name}?query=${selectedQuery.query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/elasticsearch/${name}/logs?query=${selectedQuery.query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },

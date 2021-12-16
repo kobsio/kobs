@@ -38,7 +38,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, title, description, q
         }
 
         const response = await fetch(
-          `/api/plugins/klogs/logs/${name}?query=${encodeURIComponent(selectedQuery.query)}&order=${
+          `/api/plugins/klogs/${name}/logs?query=${encodeURIComponent(selectedQuery.query)}&order=${
             selectedQuery.order || ''
           }&orderBy=${encodeURIComponent(selectedQuery.orderBy || '')}&timeStart=${times.timeStart}&timeEnd=${
             times.timeEnd

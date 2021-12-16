@@ -21,7 +21,7 @@ const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, interval, 
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/opsgenie/alerts/${name}?query=${queryWithTime(query, times, interval)}`,
+          `/api/plugins/opsgenie/${name}/alerts?query=${queryWithTime(query, times, interval)}`,
           {
             method: 'get',
           },
