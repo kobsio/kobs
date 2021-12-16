@@ -73,7 +73,7 @@ export const PluginPage: React.FunctionComponent = () => {
       name={pluginDetails.name}
       displayName={pluginDetails.displayName}
       description={pluginDetails.description}
-      options={pluginDetails.options}
+      pluginOptions={pluginDetails.options}
     />
   );
 };

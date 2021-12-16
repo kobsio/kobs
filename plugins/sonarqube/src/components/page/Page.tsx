@@ -19,15 +19,15 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
   name,
   displayName,
   description,
-  options,
+  pluginOptions,
 }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [pageOptions, setPageOptions] = useState<IOptions>();
+  const [options, setOptions] = useState<IOptions>();
 
-  // changePageOptions is used to change the options to get a list of projects from SonarQube. Instead of directly
+  // changeOptions is used to change the options to get a list of projects from SonarQube. Instead of directly
   // modifying the options state we change the URL parameters.
-  const changePageOptions = (opts: IOptions): void => {
+  const changeOptions = (opts: IOptions): void => {
     history.push({
       pathname: location.pathname,
       search: `?query=${encodeURIComponent(opts.query)}`,
@@ -35,10 +35,10 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
   };
 
   useEffect(() => {
-    setPageOptions(getInitialOptions(location.search));
+    setOptions(getInitialOptions(location.search));
   }, [location.search]);
 
-  if (!pageOptions) {
+  if (!options) {
     return null;
   }
 
@@ -49,14 +49,18 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
           {displayName}
         </Title>
         <p>{description}</p>
-        <PageToolbar name={name} options={pageOptions} setOptions={changePageOptions} />
+        <PageToolbar name={name} options={options} setOptions={changeOptions} />
       </PageSection>
 
       <Drawer isExpanded={false}>
         <DrawerContent panelContent={undefined}>
           <DrawerContentBody>
             <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-              <Projects name={name} query={pageOptions.query} url={options && options.url ? options.url : ''} />
+              <Projects
+                name={name}
+                query={options.query}
+                url={pluginOptions && pluginOptions.url ? pluginOptions.url : ''}
+              />
             </PageSection>
           </DrawerContentBody>
         </DrawerContent>

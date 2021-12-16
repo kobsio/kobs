@@ -62,7 +62,7 @@ export interface IPluginPageProps {
   name: string;
   displayName: string;
   description: string;
-  options?: IPluginDataOptions;
+  pluginOptions?: IPluginDataOptions;
 }
 
 // IPluginPanelProps is the interface for the properties of the panel component of each plugin. It contains the already
