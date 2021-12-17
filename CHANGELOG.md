@@ -36,6 +36,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#233](https://github.com/kobsio/kobs/pull/233): [resources] Highlight expanded row for containers in Pod details.
 - [#235](https://github.com/kobsio/kobs/pull/235): [resources] Use `TableComposable` instead of `Table` component and unify table style across plugins.
 - [#237](https://github.com/kobsio/kobs/pull/237): [core] Adjust API paths to use the same schema as the Azure plugin.
+- [#239](https://github.com/kobsio/kobs/pull/239): [azure] Cost Management drill-down on resourceGroups.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

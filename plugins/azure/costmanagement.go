@@ -20,6 +20,7 @@ func (router *Router) getActualCost(w http.ResponseWriter, r *http.Request) {
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid timeframe parameter")
 		return
 	}
+	scope := r.URL.Query().Get("scope")
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -27,7 +28,7 @@ func (router *Router) getActualCost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	costUsage, err := i.CostManagement.GetActualCost(r.Context(), timeframe)
+	costUsage, err := i.CostManagement.GetActualCost(r.Context(), timeframe, scope)
 	if err != nil {
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not query cost usage")
 		return
