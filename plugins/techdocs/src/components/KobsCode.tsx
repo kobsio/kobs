@@ -23,7 +23,7 @@ const KobsCode: React.FunctionComponent<IKobsCodeProps> = ({ panel, setDetails }
         description={panel.description}
         name={panel.plugin.name}
         options={panel.plugin.options}
-        showDetails={setDetails}
+        setDetails={setDetails}
       />
     </div>
   );

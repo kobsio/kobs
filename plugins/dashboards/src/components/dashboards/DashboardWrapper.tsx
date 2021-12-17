@@ -6,13 +6,13 @@ import Dashboard from './Dashboard';
 interface IDashboardWrapperProps {
   defaults: IPluginDefaults;
   dashboard: IDashboard;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const DashboardWrapper: React.FunctionComponent<IDashboardWrapperProps> = ({
   defaults,
   dashboard,
-  showDetails,
+  setDetails,
 }: IDashboardWrapperProps) => {
   const refWrapper = useRef<HTMLDivElement>(null);
   const tabsSize = useDimensions(refWrapper);
@@ -25,7 +25,7 @@ const DashboardWrapper: React.FunctionComponent<IDashboardWrapperProps> = ({
         defaults={defaults}
         dashboard={dashboard}
         forceDefaultSpan={tabsSize.width < 1200}
-        showDetails={showDetails}
+        setDetails={setDetails}
       />
     </div>
   );

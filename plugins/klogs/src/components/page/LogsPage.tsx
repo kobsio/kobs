@@ -10,7 +10,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IOptions } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
@@ -27,7 +27,7 @@ interface ILogsPageProps {
 const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, description }: ILogsPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [options, setOptions] = useState<IOptions>();
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
   // options in the current url.
@@ -40,29 +40,29 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
         opts.times.time
       }&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}${fields.length > 0 ? fields.join('') : ''}`,
     });
-
-    setOptions(opts);
   };
 
   // selectField is used to add a field as parameter, when it isn't present and to remove a fields from as parameter,
   // when it is already present via the changeOptions function.
   const selectField = (field: string): void => {
-    let tmpFields: string[] = [];
-    if (options.fields) {
-      tmpFields = [...options.fields];
-    }
+    if (options) {
+      let tmpFields: string[] = [];
+      if (options.fields) {
+        tmpFields = [...options.fields];
+      }
 
-    if (tmpFields.includes(field)) {
-      tmpFields = tmpFields.filter((f) => f !== field);
-    } else {
-      tmpFields.push(field);
-    }
+      if (tmpFields.includes(field)) {
+        tmpFields = tmpFields.filter((f) => f !== field);
+      } else {
+        tmpFields.push(field);
+      }
 
-    changeOptions({ ...options, fields: tmpFields });
+      changeOptions({ ...options, fields: tmpFields });
+    }
   };
 
   const changeFieldOrder = (oldIndex: number, newIndex: number): void => {
-    if (options.fields) {
+    if (options && options.fields) {
       const tmpFields = [...options.fields];
       const tmpField = tmpFields[oldIndex];
 
@@ -75,19 +75,33 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
 
   // addFilter adds the given filter as string to the query, so that it can be used to filter down an existing query.
   const addFilter = (filter: string): void => {
-    changeOptions({ ...options, query: `${options.query} ${filter}` });
+    if (options) {
+      changeOptions({ ...options, query: `${options.query} ${filter}` });
+    }
   };
 
   // changeTime changes the selected time range. This can be used to change the time outside of the toolbar, e.g. by
   // selecting a time range in the chart.
   const changeTime = (times: IPluginTimes): void => {
-    changeOptions({ ...options, times: times });
+    if (options) {
+      changeOptions({ ...options, times: times });
+    }
   };
 
   // changeOrder changes the order parameters for a query.
   const changeOrder = (order: string, orderBy: string): void => {
-    changeOptions({ ...options, order: order, orderBy: orderBy });
+    if (options) {
+      changeOptions({ ...options, order: order, orderBy: orderBy });
+    }
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

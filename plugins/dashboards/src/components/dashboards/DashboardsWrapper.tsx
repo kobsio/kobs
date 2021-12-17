@@ -6,7 +6,7 @@ import Dashboards from './Dashboards';
 interface IDashboardsWrapperProps {
   defaults: IPluginDefaults;
   references: IReference[];
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 // The DashboardsWrapper component is a wrapper for the Dashboards component. It is used to determine the dimensions for
@@ -17,7 +17,7 @@ interface IDashboardsWrapperProps {
 export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps> = ({
   defaults,
   references,
-  showDetails,
+  setDetails,
 }: IDashboardsWrapperProps) => {
   const refTabs = useRef<HTMLDivElement>(null);
   const tabsSize = useDimensions(refTabs);
@@ -27,7 +27,7 @@ export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps>
       <Dashboards
         defaults={defaults}
         references={references}
-        showDetails={showDetails}
+        setDetails={setDetails}
         forceDefaultSpan={tabsSize.width < 1200}
       />
     </div>

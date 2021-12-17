@@ -15,7 +15,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   times,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (!options || !options.namespaces || !Array.isArray(options.namespaces) || !times) {
     return (
@@ -35,7 +35,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       transparent={true}
       actions={<GraphActions name={name} namespaces={options.namespaces} times={times} />}
     >
-      <GraphWrapper name={name} namespaces={options.namespaces} times={times} setDetails={showDetails} />
+      <GraphWrapper name={name} namespaces={options.namespaces} times={times} setDetails={setDetails} />
     </PluginCard>
   );
 };

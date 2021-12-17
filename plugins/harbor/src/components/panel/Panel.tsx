@@ -18,7 +18,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   times,
   options,
   pluginOptions,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (options && options.type === 'projects') {
     return (
@@ -55,7 +55,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           projectName={options.artifacts.projectName}
           repositoryName={options.artifacts.repositoryName}
           query={options.artifacts.query || ''}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );

@@ -1,5 +1,5 @@
 import { Drawer, DrawerColorVariant, DrawerContent, PageSection, PageSectionVariants } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { IApplicationOptions, IFilters, IPluginOptions } from '../../utils/interfaces';
@@ -25,10 +25,7 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
   const location = useLocation();
   const history = useHistory();
   const [details, setDetails] = useState<React.ReactNode>(undefined);
-
-  const [options, setOptions] = useState<IApplicationOptions>(
-    useMemo<IApplicationOptions>(() => getInitialApplicationOptions(), []),
-  );
+  const [options, setOptions] = useState<IApplicationOptions>();
 
   const changeOptions = (tmpOptions: IApplicationOptions): void => {
     history.push({
@@ -41,22 +38,28 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ name, pluginO
         tmpOptions.filters.path,
       )}`,
     });
-
-    setOptions(tmpOptions);
   };
 
   const setFilters = (filters: IFilters): void => {
-    history.push({
-      pathname: location.pathname,
-      search: `?timeEnd=${options.times.timeEnd}&timeStart=${options.times.timeStart}&view=${
-        options.view
-      }&filterUpstreamCluster=${encodeURIComponent(filters.upstreamCluster)}&filterMethod=${encodeURIComponent(
-        filters.method,
-      )}&filterPath=${encodeURIComponent(filters.path)}`,
-    });
-
-    setOptions({ ...options, filters: filters });
+    if (options) {
+      history.push({
+        pathname: location.pathname,
+        search: `?timeEnd=${options.times.timeEnd}&timeStart=${options.times.timeStart}&view=${
+          options.view
+        }&filterUpstreamCluster=${encodeURIComponent(filters.upstreamCluster)}&filterMethod=${encodeURIComponent(
+          filters.method,
+        )}&filterPath=${encodeURIComponent(filters.path)}`,
+      });
+    }
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialApplicationOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

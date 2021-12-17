@@ -12,7 +12,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Aggregation from './Aggregation';
 import AggregationOptions from './AggregationOptions';
@@ -33,27 +33,34 @@ const AggregationPage: React.FunctionComponent<IAggregationPageProps> = ({
 }: IAggregationPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [tmpOptions, setTmpOptions] = useState<IAggregationOptions>(
-    useMemo<IAggregationOptions>(() => getInitialAggregationOptions(), []),
-  );
-  const [options, setOptions] = useState<IAggregationOptions>(
-    useMemo<IAggregationOptions>(() => getInitialAggregationOptions(), []),
-  );
+  const [options, setOptions] = useState<IAggregationOptions>();
+  const [tmpOptions, setTmpOptions] = useState<IAggregationOptions>();
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
   // options in the current url.
   const changeOptions = (): void => {
-    history.push({
-      pathname: location.pathname,
-      search: `?query=${encodeURIComponent(tmpOptions.query)}&time=${tmpOptions.times.time}&timeEnd=${
-        tmpOptions.times.timeEnd
-      }&timeStart=${tmpOptions.times.timeStart}&chart=${tmpOptions.chart}&aggregation=${encodeURIComponent(
-        JSON.stringify(tmpOptions.options),
-      )}`,
-    });
-
-    setOptions(tmpOptions);
+    if (tmpOptions) {
+      history.push({
+        pathname: location.pathname,
+        search: `?query=${encodeURIComponent(tmpOptions.query)}&time=${tmpOptions.times.time}&timeEnd=${
+          tmpOptions.times.timeEnd
+        }&timeStart=${tmpOptions.times.timeStart}&chart=${tmpOptions.chart}&aggregation=${encodeURIComponent(
+          JSON.stringify(tmpOptions.options),
+        )}`,
+      });
+    }
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialAggregationOptions(location.search, !prevOptions));
+    setTmpOptions((prevOptions) =>
+      !prevOptions ? getInitialAggregationOptions(location.search, !prevOptions) : prevOptions,
+    );
+  }, [location.search]);
+
+  if (!options || !tmpOptions) {
+    return null;
+  }
 
   return (
     <React.Fragment>

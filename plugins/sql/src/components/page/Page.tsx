@@ -6,7 +6,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
@@ -18,7 +18,7 @@ import { getInitialOptions } from '../../utils/helpers';
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [options, setOptions] = useState<IOptions>();
 
   // changeOptions is used to change the options for an SQL query. Instead of directly modifying the options state we
   // change the URL parameters.
@@ -27,9 +27,15 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
       pathname: location.pathname,
       search: `?query=${opts.query}`,
     });
-
-    setOptions(opts);
   };
+
+  useEffect(() => {
+    setOptions(getInitialOptions(location.search));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

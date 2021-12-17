@@ -12,13 +12,13 @@ import { getColorForService } from '../../utils/colors';
 interface ITracesListItemProps {
   name: string;
   trace: ITrace;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
   name,
   trace,
-  showDetails,
+  setDetails,
 }: ITracesListItemProps) => {
   const item = (
     <MenuItem
@@ -45,8 +45,8 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
         </span>
       }
       onClick={
-        showDetails
-          ? (): void => showDetails(<Trace name={name} trace={trace} close={(): void => showDetails(undefined)} />)
+        setDetails
+          ? (): void => setDetails(<Trace name={name} trace={trace} close={(): void => setDetails(undefined)} />)
           : undefined
       }
     >
@@ -64,7 +64,7 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
     </MenuItem>
   );
 
-  if (!showDetails) {
+  if (!setDetails) {
     return <LinkWrapper link={`/${name}/trace/${trace.traceID}`}>{item}</LinkWrapper>;
   }
 

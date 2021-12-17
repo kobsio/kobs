@@ -17,7 +17,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   title,
   description,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (
     !options ||
@@ -47,7 +47,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         cluster={options.cluster || defaults.cluster}
         namespace={options.namespace || ''}
         selector={options.selector}
-        showDetails={showDetails}
+        setDetails={setDetails}
       />
     </PluginCard>
   );

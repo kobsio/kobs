@@ -13,7 +13,7 @@ interface IPageListProps {
   type: TApiType;
   title: string;
   times: IPluginTimes;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const PageList: React.FunctionComponent<IPageListProps> = ({
@@ -22,7 +22,7 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
   type,
   title,
   times,
-  showDetails,
+  setDetails,
 }: IPageListProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const resource =
@@ -69,15 +69,15 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
   };
 
   const handleRowClick = (rowIndex: number, row: IResourceRow): void => {
-    if (showDetails && resource) {
-      showDetails(
+    if (setDetails && resource) {
+      setDetails(
         <Details
           name={name}
           type={type}
           request={resource}
           resource={row}
           close={(): void => {
-            showDetails(undefined);
+            setDetails(undefined);
             setSelectedRow(-1);
           }}
           refetch={refetchhWithDelay}
@@ -86,8 +86,6 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
       setSelectedRow(rowIndex);
     }
   };
-
-  console.log(selectedRow);
 
   return (
     <Card isCompact={true}>
@@ -106,10 +104,10 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
               ? data.map((row, rowIndex) => (
                   <Tr
                     key={rowIndex}
-                    isHoverable={showDetails ? true : false}
+                    isHoverable={setDetails ? true : false}
                     isRowSelected={selectedRow === rowIndex}
                     onClick={(): void =>
-                      showDetails &&
+                      setDetails &&
                       resource &&
                       data &&
                       data.length > 0 &&

@@ -16,7 +16,7 @@ interface IApplicationsTopologyProps {
   clusters: string[];
   namespaces: string[];
   times: IPluginTimes;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 // ApplicationsTopology is the component to display all applications inside a topology view. We need a list of clusters
@@ -26,7 +26,7 @@ const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> 
   clusters,
   namespaces,
   times,
-  showDetails,
+  setDetails,
 }: IApplicationsTopologyProps) => {
   const history = useHistory();
 
@@ -93,7 +93,7 @@ const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> 
 
   return (
     <div style={{ height: '100%', minHeight: '100%' }}>
-      <ApplicationsTopologyGraph edges={data.edges} nodes={data.nodes} showDetails={showDetails} />
+      <ApplicationsTopologyGraph edges={data.edges} nodes={data.nodes} setDetails={setDetails} />
     </div>
   );
 };

@@ -6,15 +6,15 @@ import { getTimeParams } from '@kobsio/plugin-core';
 // getInitialOptions is used to parse the given search location and return is as options for Prometheus. This is
 // needed, so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we
 // pass him to this page and pass the data via the URL parameters.
-export const getInitialOptions = (): IOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialOptions = (search: string, isInitial: boolean): IOptions => {
+  const params = new URLSearchParams(search);
   const queries = params.getAll('query');
   const resolution = params.get('resolution');
 
   return {
     queries: queries.length > 0 ? queries : [''],
     resolution: resolution ? resolution : '',
-    times: getTimeParams(params),
+    times: getTimeParams(params, isInitial),
   };
 };
 

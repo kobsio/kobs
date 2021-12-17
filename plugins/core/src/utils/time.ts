@@ -33,16 +33,24 @@ export const formatTime = (timestamp: number): string => {
 };
 
 // getTimeParams returns a times object for the parsed time parameters from a URL.
-export const getTimeParams = (params: URLSearchParams): IPluginTimes => {
+export const getTimeParams = (params: URLSearchParams, isInitial: boolean): IPluginTimes => {
   const time = params.get('time');
   const timeEnd = params.get('timeEnd');
   const timeStart = params.get('timeStart');
 
   if (time && TTimeOptions.includes(time) && time !== 'custom') {
+    if (isInitial) {
+      return {
+        time: time as TTime,
+        timeEnd: Math.floor(Date.now() / 1000),
+        timeStart: Math.floor(Date.now() / 1000) - timeOptions[time].seconds,
+      };
+    }
+
     return {
       time: time as TTime,
-      timeEnd: Math.floor(Date.now() / 1000),
-      timeStart: Math.floor(Date.now() / 1000) - timeOptions[time].seconds,
+      timeEnd: timeEnd ? parseInt(timeEnd) : Math.floor(Date.now() / 1000),
+      timeStart: timeStart ? parseInt(timeStart) : Math.floor(Date.now() / 1000) - timeOptions[time].seconds,
     };
   }
 

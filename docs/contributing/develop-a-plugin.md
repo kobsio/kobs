@@ -213,7 +213,7 @@ export interface IPluginPanelProps {
   description?: string;
   pluginOptions?: IPluginDataOptions;
   options?: any;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 ```
 

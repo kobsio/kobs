@@ -17,7 +17,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   title,
   description,
   options,
-  showDetails,
+  setDetails,
 }: IPluginPanelProps) => {
   const authContext = useContext<IAuthContext>(AuthContext);
 
@@ -56,7 +56,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
       description={description}
       pluginOptions={pluginDetails.options}
       options={options}
-      showDetails={showDetails}
+      setDetails={setDetails}
     />
   );
 };

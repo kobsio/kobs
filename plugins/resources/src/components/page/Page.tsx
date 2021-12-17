@@ -8,7 +8,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
@@ -20,7 +20,7 @@ import { getInitialOptions } from '../../utils/helpers';
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const history = useHistory();
   const location = useLocation();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [options, setOptions] = useState<IOptions>();
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
@@ -36,9 +36,15 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         namespaceParams.length > 0 ? namespaceParams.join('') : ''
       }${resourceParams.length > 0 ? resourceParams.join('') : ''}`,
     });
-
-    setOptions(opts);
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>
@@ -65,7 +71,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                   title=""
                   options={[options]}
                   times={options.times}
-                  showDetails={setDetails}
+                  setDetails={setDetails}
                 />
               )}
             </PageSection>
