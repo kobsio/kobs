@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponsivePieCanvas } from '@nivo/pie';
+import { ResponsivePie } from '@nivo/pie';
 
 import { IQueryResult } from './interfaces';
 import { convertQueryResult } from '../../utils/helpers';
@@ -10,7 +10,7 @@ interface ICostPieChartProps {
 
 export const CostPieChart: React.FunctionComponent<ICostPieChartProps> = ({ data }: ICostPieChartProps) => {
   return (
-    <ResponsivePieCanvas
+    <ResponsivePie
       data={convertQueryResult(data)}
       margin={{ bottom: 80, left: 80, right: 80, top: 40 }}
       valueFormat=" >-.2f"
@@ -27,17 +27,18 @@ export const CostPieChart: React.FunctionComponent<ICostPieChartProps> = ({ data
       arcLinkLabelsColor={{ from: 'color' }}
       arcLabelsSkipAngle={10}
       arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
+      motionConfig="gentle"
       legends={[
         {
           anchor: 'right',
           direction: 'column',
           itemDirection: 'left-to-right',
           itemHeight: 20,
-          itemWidth: 100,
+          itemWidth: 250,
           itemsSpacing: 5,
           justify: false,
           symbolSize: 20,
-          translateX: 0,
+          translateX: -200,
           translateY: 0,
         },
       ]}

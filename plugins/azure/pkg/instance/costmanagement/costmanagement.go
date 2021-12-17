@@ -18,9 +18,16 @@ type Client struct {
 }
 
 // GetActualCost query the actual costs for the configured subscription and given timeframe grouped by resourceGroup
-func (c *Client) GetActualCost(ctx context.Context, timeframe int) (costmanagement.QueryResult, error) {
-	scope := fmt.Sprintf("subscriptions/%s", c.subscriptionID)
-	res, err := c.queryClient.Usage(ctx, scope, buildQueryParams(timeframe))
+func (c *Client) GetActualCost(ctx context.Context, timeframe int, scope string) (costmanagement.QueryResult, error) {
+	var queryScope string
+	subscriptionScope := false
+	if "All" == scope {
+		queryScope = fmt.Sprintf("subscriptions/%s", c.subscriptionID)
+		subscriptionScope = true
+	} else {
+		queryScope = fmt.Sprintf("subscriptions/%s/resourceGroups/%s", c.subscriptionID, scope)
+	}
+	res, err := c.queryClient.Usage(ctx, queryScope, buildQueryParams(timeframe, subscriptionScope))
 	if err != nil {
 		return costmanagement.QueryResult{}, err
 	}
@@ -28,7 +35,7 @@ func (c *Client) GetActualCost(ctx context.Context, timeframe int) (costmanageme
 	return res, nil
 }
 
-func buildQueryParams(timeframe int) costmanagement.QueryDefinition {
+func buildQueryParams(timeframe int, subscriptionScope bool) costmanagement.QueryDefinition {
 	agg := make(map[string]*costmanagement.QueryAggregation)
 	tc := costmanagement.QueryAggregation{
 		Name:     to.StringPtr("Cost"),
@@ -36,11 +43,21 @@ func buildQueryParams(timeframe int) costmanagement.QueryDefinition {
 	}
 	agg["totalCost"] = &tc
 
-	grouping := []costmanagement.QueryGrouping{
-		{
-			Type: costmanagement.QueryColumnTypeDimension,
-			Name: to.StringPtr("resourceGroup"),
-		},
+	var grouping []costmanagement.QueryGrouping
+	if subscriptionScope {
+		grouping = []costmanagement.QueryGrouping{
+			{
+				Type: costmanagement.QueryColumnTypeDimension,
+				Name: to.StringPtr("resourceGroup"),
+			},
+		}
+	} else {
+		grouping = []costmanagement.QueryGrouping{
+			{
+				Type: costmanagement.QueryColumnTypeDimension,
+				Name: to.StringPtr("ServiceName"),
+			},
+		}
 	}
 
 	ds := costmanagement.QueryDataset{
