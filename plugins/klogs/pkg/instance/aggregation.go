@@ -6,7 +6,9 @@ import (
 	"math"
 	"strings"
 
-	"github.com/sirupsen/logrus"
+	"github.com/kobsio/kobs/pkg/log"
+
+	"go.uber.org/zap"
 )
 
 // Aggregation is the structure of the data, which is required to run an aggregation.
@@ -272,7 +274,7 @@ func buildAggregationQuery(chart string, options AggregationOptions, materialize
 // Then we can reuse the parseLogsQuery function from getting the logs, to build the WHERE statement. Finally we are
 // running the query and parsing all rows into a map with the column names as keys and the value of each row.
 func (i *Instance) GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]interface{}, []string, error) {
-	log.WithFields(logrus.Fields{"aggregation": fmt.Sprintf("%#v", aggregation)}).Tracef("aggregation data")
+	log.Debug(ctx, "Aggregation data.", zap.String("aggregation", fmt.Sprintf("%#v", aggregation)))
 
 	// Build the SELECT, GROUP BY, ORDER BY and LIMIT statement for the SQL query. When the function returns an error
 	// the user provided an invalid aggregation. If the function doesn't return a ORDER BY or LIMIT statement we can
@@ -305,7 +307,7 @@ func (i *Instance) GetAggregation(ctx context.Context, aggregation Aggregation) 
 	// Now we are building the final query and then we execute the query. We are saving all returned rows in the result
 	// map with the column name as key.
 	query := fmt.Sprintf("SELECT %s FROM %s.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) %s GROUP BY %s %s %s SETTINGS skip_unavailable_shards = 1", selectStatement, i.database, aggregation.Times.TimeStart, aggregation.Times.TimeEnd, conditions, groupByStatement, orderByStatement, limitByStatement)
-	log.WithFields(logrus.Fields{"query": query}).Tracef("aggregation query")
+	log.Debug(ctx, "Aggregation query.", zap.String("query", query))
 
 	rows, err := i.client.QueryContext(ctx, query)
 	if err != nil {

@@ -10,13 +10,10 @@ import (
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 
-	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 )
 
 var (
-	log = logrus.WithFields(logrus.Fields{"package": "authentication"})
-
 	flagEnabled     bool
 	flagUserHeader  string
 	flagInterval    time.Duration

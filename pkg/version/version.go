@@ -6,7 +6,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 // Build information. Populated at build-time.
@@ -51,11 +52,11 @@ func Print(program string) (string, error) {
 }
 
 // Info returns version, branch and revision information.
-func Info() logrus.Fields {
-	return logrus.Fields{"version": Version, "branch": Branch, "revision": Revision}
+func Info() []zapcore.Field {
+	return []zapcore.Field{zap.String("version", Version), zap.String("branch", Branch), zap.String("revision", Revision)}
 }
 
 // BuildContext returns goVersion, buildUser and buildDate information.
-func BuildContext() logrus.Fields {
-	return logrus.Fields{"go": GoVersion, "user": BuildUser, "date": BuildDate}
+func BuildContext() []zapcore.Field {
+	return []zapcore.Field{zap.String("go", GoVersion), zap.String("user", BuildUser), zap.String("date", BuildDate)}
 }

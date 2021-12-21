@@ -38,6 +38,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#237](https://github.com/kobsio/kobs/pull/237): [core] Adjust API paths to use the same schema as the Azure plugin.
 - [#239](https://github.com/kobsio/kobs/pull/239): [azure] Cost Management drill-down on resource groups.
 - [#238](https://github.com/kobsio/kobs/pull/238): [core] Refactor frontend code for plugins (change options handling, use `setDetails` instead of `showDetails` and rename plugins options in panels to `pluginOptions`).
+- [#240](https://github.com/kobsio/kobs/pull/240): [core] Switch from `github.com/sirupsen/logrus` to `go.uber.org/zap` for logging and enrich log lines via `context.Context`.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

@@ -8,12 +8,9 @@ import (
 	"net/http"
 
 	"github.com/kobsio/kobs/pkg/api/middleware/roundtripper"
+	"github.com/kobsio/kobs/pkg/log"
 
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "grafana"})
+	"go.uber.org/zap"
 )
 
 // Config is the structure of the configuration for a single Grafana instance.
@@ -38,7 +35,7 @@ type Instance struct {
 // doRequest is a helper function to run a request against a Grafana instance for the given path. It returns the body
 // or if the request failed the error message.
 func (i *Instance) doRequest(ctx context.Context, url string) ([]byte, error) {
-	log.WithFields(logrus.Fields{"url": i.address + url}).Tracef("request url")
+	log.Debug(ctx, "Request URL.", zap.String("url", i.address+url))
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s%s", i.address, url), nil)
 	if err != nil {

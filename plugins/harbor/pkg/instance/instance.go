@@ -10,12 +10,6 @@ import (
 	"strconv"
 
 	"github.com/kobsio/kobs/pkg/api/middleware/roundtripper"
-
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "harbor"})
 )
 
 // Config is the structure of the configuration for a single Harbor instance.

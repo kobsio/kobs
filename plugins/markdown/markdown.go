@@ -5,15 +5,10 @@ import (
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/sirupsen/logrus"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const Route = "/markdown"
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "markdown"})
-)
 
 // Config is the structure of the configuration for the markdown plugin.
 type Config struct{}

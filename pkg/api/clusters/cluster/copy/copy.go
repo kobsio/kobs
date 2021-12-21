@@ -7,13 +7,10 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/sirupsen/logrus"
+	"github.com/kobsio/kobs/pkg/log"
+
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "clusters"})
 )
 
 // FileFromPod let a user download a file from a container.
@@ -34,7 +31,7 @@ func FileFromPod(w http.ResponseWriter, config *rest.Config, reqURL *url.URL) er
 			Tty:    false,
 		})
 		if err != nil {
-			log.WithError(err).Errorf("could not copy file from pod")
+			log.Error(nil, "Could not copy file from pod.")
 		}
 	}()
 

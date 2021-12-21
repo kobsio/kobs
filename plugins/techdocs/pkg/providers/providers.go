@@ -4,15 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/techdocs/pkg/providers/local"
 	"github.com/kobsio/kobs/plugins/techdocs/pkg/providers/s3"
 	"github.com/kobsio/kobs/plugins/techdocs/pkg/shared"
 
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "techdocs"})
+	"go.uber.org/zap"
 )
 
 // Type is the type for the different providers.
@@ -48,7 +45,7 @@ func New(config Config) (Provider, error) {
 	case S3:
 		return s3.New(config.S3)
 	default:
-		log.WithFields(logrus.Fields{"provider": config.Type}).Warnf("Invalid provider.")
+		log.Error(nil, "Invalid provider.", zap.String("provider", string(config.Type)))
 		return nil, fmt.Errorf("invalid provider type")
 	}
 }

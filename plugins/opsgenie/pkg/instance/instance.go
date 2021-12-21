@@ -9,11 +9,6 @@ import (
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/incident"
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "opsgenie"})
 )
 
 // Config is the structure of the configuration for a single Opsgenie instance.
@@ -184,29 +179,23 @@ func (i *Instance) CloseAlert(ctx context.Context, id, user string) error {
 
 // New returns a new Elasticsearch instance for the given configuration.
 func New(config Config) (*Instance, error) {
-	alertClient, err := alert.NewClient(&client.Config{
+	opsgenieConfig := &client.Config{
 		ApiKey:         config.APIKey,
 		OpsGenieAPIURL: client.ApiUrl(config.APIUrl),
-		Logger:         log.Logger,
-	})
+	}
+	opsgenieConfig.ConfigureLogLevel("error")
+
+	alertClient, err := alert.NewClient(opsgenieConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	incidentClient, err := incident.NewClient(&client.Config{
-		ApiKey:         config.APIKey,
-		OpsGenieAPIURL: client.ApiUrl(config.APIUrl),
-		Logger:         log.Logger,
-	})
+	incidentClient, err := incident.NewClient(opsgenieConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	timelineClient, err := timeline.NewClient(&client.Config{
-		ApiKey:         config.APIKey,
-		OpsGenieAPIURL: client.ApiUrl(config.APIUrl),
-		Logger:         log.Logger,
-	})
+	timelineClient, err := timeline.NewClient(opsgenieConfig)
 	if err != nil {
 		return nil, err
 	}

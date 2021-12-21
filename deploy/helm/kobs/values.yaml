@@ -110,7 +110,7 @@ kobs:
       header: X-Auth-Request-Email
       interval: 1h0m0s
     clustersCacheDurationNamespaces: 5m
-    logFormat: plain
+    logFormat: console
     logLevel: info
 
   ## Set the content of the config.yaml file, which is used by kobs. The configuration file is used to specify the

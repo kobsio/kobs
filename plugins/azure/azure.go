@@ -3,19 +3,16 @@ package azure
 import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const (
 	Route = "/azure"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "azure"})
 )
 
 // Config is the structure of the configuration for the Azure plugin.
@@ -45,7 +42,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		inst, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Azure instance")
+			log.Fatal(nil, "Could not create Azure instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, inst)

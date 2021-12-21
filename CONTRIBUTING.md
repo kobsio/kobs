@@ -117,13 +117,7 @@ When you run the kobs binary, it will use the following ports:
 
 When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the kobs server. You can also adjust the log level to `trace` via the `--log.level` flag, for more useful output during development.
 
-When you add a new package and want to output some log lines make sure that you are not using `logrus` directly. Instead you should add a new `log` variable, which contains the package name:
-
-```go
-var (
-    log = logrus.WithFields(logrus.Fields{"package": "<PACKAGE-NAME>"})
-)
-```
+When you are adding a new package and want to output some log line your can use the `github.com/kobsio/kobs/pkg/log` package. The package is a wrapper around `go.uber.org/zap`, which we are using for logging and adds an option to add additional fields to a log line via a `context.Context`.
 
 The Go code is formatted using [`gofmt`](https://golang.org/cmd/gofmt/).
 

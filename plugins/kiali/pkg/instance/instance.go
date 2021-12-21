@@ -13,11 +13,6 @@ import (
 
 	"github.com/kiali/kiali/graph/config/cytoscape"
 	"github.com/kiali/kiali/models"
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "kiali"})
 )
 
 // Config is the structure of the configuration for a single Kiali instance.

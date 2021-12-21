@@ -12,8 +12,9 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/log"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Auth is the struct for handling authorization for resources.
@@ -98,15 +99,15 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 // runs the internal getPermissions function on the specified interval.
 func (a *Auth) GetPermissions() {
 	if !a.enabled {
-		log.Infof("authentication and authorization middleware is disabled")
+		log.Info(nil, "Authentication and authorization middleware is disabled.")
 		return
 	}
 
 	err := a.getPermissions()
 	if err != nil {
-		log.WithError(err).Errorf("failed to refresh users and permissions")
+		log.Error(nil, "Failed to refresh users and permissions.", zap.Error(err))
 	} else {
-		log.Infof("refreshed users and permissions")
+		log.Info(nil, "Refreshed users and permissions.")
 	}
 
 	ticker := time.NewTicker(a.refreshInterval)
@@ -117,9 +118,9 @@ func (a *Auth) GetPermissions() {
 		case <-ticker.C:
 			err := a.getPermissions()
 			if err != nil {
-				log.WithError(err).Errorf("failed to refresh users and permissions")
+				log.Error(nil, "Failed to refresh users and permissions.", zap.Error(err))
 			} else {
-				log.Infof("refreshed users and permissions")
+				log.Info(nil, "Refreshed users and permissions.")
 			}
 		}
 	}
@@ -137,14 +138,14 @@ func (a *Auth) getPermissions() error {
 	for _, cluster := range a.clusters.Clusters {
 		t, err := cluster.GetTeams(ctx, "")
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"cluster": cluster.GetName()}).Warnf("could not get teams")
+			log.Warn(nil, "Could not get teams.", zap.Error(err), zap.String("cluster", cluster.GetName()))
 		}
 
 		teams = append(teams, t...)
 
 		u, err := cluster.GetUsers(ctx, "")
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"cluster": cluster.GetName()}).Warnf("could not get users")
+			log.Warn(nil, "Could not get users.", zap.Error(err), zap.String("cluster", cluster.GetName()))
 		}
 
 		users = append(users, u...)
