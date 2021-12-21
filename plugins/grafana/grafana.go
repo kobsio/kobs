@@ -6,20 +6,17 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/grafana/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const (
 	Route = "/grafana"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "grafana"})
 )
 
 // Config is the structure of the configuration for the grafana plugin.
@@ -47,10 +44,11 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
 	uids := r.URL.Query()["uid"]
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "uids": uids}).Tracef("getDashboards")
+	log.Debug(r.Context(), "Get dashboards parameters.", zap.String(name, name), zap.String("query", query), zap.Strings("uids", uids))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -60,6 +58,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 		for _, uid := range uids {
 			dashboard, err := i.GetDashboard(r.Context(), uid)
 			if err != nil {
+				log.Error(r.Context(), "Could not get dashboard.", zap.Error(err))
 				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get dashboard")
 				return
 			}
@@ -73,6 +72,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 
 	dashboards, err := i.GetDashboards(r.Context(), query)
 	if err != nil {
+		log.Error(r.Context(), "Could not get dashboards.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get dashboards")
 		return
 	}
@@ -87,7 +87,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Grafana instance")
+			log.Fatal(nil, "Could not create Grafana instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

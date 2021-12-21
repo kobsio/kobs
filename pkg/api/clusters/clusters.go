@@ -7,12 +7,10 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/api/clusters/provider"
 
-	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 )
 
 var (
-	log                     = logrus.WithFields(logrus.Fields{"package": "clusters"})
 	cacheDurationNamespaces time.Duration
 	forbiddenResources      []string
 )

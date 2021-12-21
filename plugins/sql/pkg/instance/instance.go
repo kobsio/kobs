@@ -6,14 +6,12 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/kobsio/kobs/pkg/log"
+
 	_ "github.com/ClickHouse/clickhouse-go"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "sql"})
+	"go.uber.org/zap"
 )
 
 // Config is the structure of the configuration for a single SQL database instance.
@@ -90,7 +88,7 @@ func New(config Config) (*Instance, error) {
 
 	client, err := sql.Open(config.Driver, config.Connection)
 	if err != nil {
-		log.WithError(err).Errorf("could not initialize database connection")
+		log.Error(nil, "could not initialize database connection", zap.Error(err))
 		return nil, err
 	}
 

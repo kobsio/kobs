@@ -6,20 +6,17 @@ import (
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/rss/pkg/feed"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/mmcdole/gofeed"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const Route = "/rss"
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "rss"})
-)
 
 // Config is the structure of the configuration for the rss plugin.
 type Config struct{}
@@ -36,6 +33,8 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 	urls := r.URL.Query()["url"]
 	sortBy := r.URL.Query().Get("sortBy")
 
+	log.Debug(r.Context(), "Get feed parameters.", zap.Int("urlCount", len(urls)), zap.String("sortBy", sortBy))
+
 	var feeds []*gofeed.Feed
 	var wg sync.WaitGroup
 	wg.Add(len(urls))
@@ -45,7 +44,7 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 			fp := gofeed.NewParser()
 			feed, err := fp.ParseURL(url)
 			if err != nil {
-				log.WithError(err).Error("Error while getting feed")
+				log.Error(r.Context(), "Error while getting feed.", zap.Error(err))
 			}
 
 			if feed != nil {
@@ -60,8 +59,7 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 
 	items := feed.Transform(feeds, sortBy)
 
-	log.WithFields(logrus.Fields{"links": len(urls), "sortBy": sortBy, "items": len(items)}).Tracef("getFeed")
-
+	log.Debug(r.Context(), "Get feed result.", zap.Int("itemsCount", len(items)))
 	render.JSON(w, r, items)
 }
 

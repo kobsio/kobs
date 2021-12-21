@@ -2,14 +2,11 @@ package kubeconfig
 
 import (
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
+	"github.com/kobsio/kobs/pkg/log"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "clusters"})
 )
 
 // Config is the configuration for the Kubeconfig provider.
@@ -20,7 +17,7 @@ type Config struct {
 // GetClusters returns all clusters from a given Kubeconfig file. For that the user have to provide the path to the
 // Kubeconfig file.
 func GetClusters(config *Config) ([]*cluster.Cluster, error) {
-	log.WithFields(logrus.Fields{"path": config.Path}).Tracef("Load Kubeconfig file.")
+	log.Debug(nil, "Load Kubeconfig file.", zap.String("path", config.Path))
 
 	clientConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
 		&clientcmd.ClientConfigLoadingRules{ExplicitPath: config.Path},
@@ -37,12 +34,7 @@ func GetClusters(config *Config) ([]*cluster.Cluster, error) {
 	for name, context := range raw.Contexts {
 		if _, ok := raw.Clusters[context.Cluster]; ok {
 			if _, ok := raw.AuthInfos[context.AuthInfo]; ok {
-				log.WithFields(logrus.Fields{
-					"name":     name,
-					"context":  context,
-					"cluster":  context.Cluster,
-					"authinfo": context.AuthInfo,
-				}).Tracef("Context was found.")
+				log.Debug(nil, "Context was found.", zap.String("name", name), zap.String("cluster", context.Cluster), zap.String("authInfo", context.AuthInfo))
 
 				clientConfig := clientcmd.NewDefaultClientConfig(clientcmdapi.Config{
 					APIVersion:     "v1",
@@ -55,7 +47,7 @@ func GetClusters(config *Config) ([]*cluster.Cluster, error) {
 
 				restConfig, err := clientConfig.ClientConfig()
 				if err != nil {
-					log.WithError(err).Debugf("Could not create rest config.")
+					log.Error(nil, "Could not create rest config.", zap.Error(err))
 					return nil, err
 				}
 
@@ -66,10 +58,10 @@ func GetClusters(config *Config) ([]*cluster.Cluster, error) {
 
 				clusters = append(clusters, c)
 			} else {
-				log.WithFields(logrus.Fields{"name": name}).Warnf("Could not find auth info.")
+				log.Warn(nil, "Could not find auth info.", zap.String("name", name))
 			}
 		} else {
-			log.WithFields(logrus.Fields{"name": name}).Warnf("Could not find cluster.")
+			log.Warn(nil, "Could not find cluster.", zap.String("name", name))
 		}
 	}
 

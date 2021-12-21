@@ -9,14 +9,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/log"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"go.uber.org/zap"
 )
 
 var (
-	log       = logrus.WithFields(logrus.Fields{"package": "app"})
 	address   string
 	assetsDir string
 )
@@ -47,27 +48,27 @@ type Server struct {
 
 // Start starts serving the application server.
 func (s *Server) Start() {
-	log.Infof("Application server listen on %s.", s.server.Addr)
+	log.Info(nil, "Application server started.", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.WithError(err).Error("Application server died unexpected.")
+			log.Error(nil, "Application server died unexpected.", zap.Error(err))
 		} else {
-			log.Info("Application server was stopped.")
+			log.Info(nil, "Application server was stopped.")
 		}
 	}
 }
 
 // Stop terminates the application server gracefully.
 func (s *Server) Stop() {
-	log.Debugf("Start shutdown of the Application server.")
+	log.Debug(nil, "Start shutdown of the Application server.")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		log.WithError(err).Error("Graceful shutdown of the Application server failed.")
+		log.Error(nil, "Graceful shutdown of the Application server failed.", zap.Error(err))
 	}
 }
 

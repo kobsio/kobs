@@ -11,13 +11,8 @@ import (
 	"net/url"
 
 	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "clusters"})
 )
 
 const END_OF_TRANSMISSION = "\u0004"

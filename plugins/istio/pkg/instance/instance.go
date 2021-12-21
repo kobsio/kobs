@@ -7,12 +7,6 @@ import (
 
 	klogsInstance "github.com/kobsio/kobs/plugins/klogs/pkg/instance"
 	prometheusInstance "github.com/kobsio/kobs/plugins/prometheus/pkg/instance"
-
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "istio"})
 )
 
 // Config is the structure of the configuration for a single Opsgenie instance.

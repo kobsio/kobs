@@ -6,20 +6,17 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/sonarqube/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const (
 	Route = "/sonarqube"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "sonarqube"})
 )
 
 // Config is the structure of the configuration for the sonarqube plugin.
@@ -48,16 +45,18 @@ func (router *Router) getProjects(w http.ResponseWriter, r *http.Request) {
 	pageNumber := r.URL.Query().Get("pageNumber")
 	pageSize := r.URL.Query().Get("pageSize")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "pageNumber": pageNumber, "pageSize": pageSize}).Tracef("getProjects")
+	log.Debug(r.Context(), "Get projects parameters.", zap.String("name", name), zap.String("query", query), zap.String("pageNumber", pageNumber), zap.String("pageSize", pageSize))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	projects, err := i.GetProjects(r.Context(), query, pageNumber, pageSize)
 	if err != nil {
+		log.Error(r.Context(), "Could not get projects.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get projects")
 		return
 	}
@@ -70,16 +69,18 @@ func (router *Router) getProjectMeasures(w http.ResponseWriter, r *http.Request)
 	project := r.URL.Query().Get("project")
 	metricKeys := r.URL.Query()["metricKey"]
 
-	log.WithFields(logrus.Fields{"name": name, "project": project, "metricKeys": metricKeys}).Tracef("getProjectMeasures")
+	log.Debug(r.Context(), "Get project measures.", zap.String("name", name), zap.String("project", project), zap.Strings("metricKeys", metricKeys))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	projectMeasures, err := i.GetProjectMeasures(r.Context(), project, metricKeys)
 	if err != nil {
+		log.Error(r.Context(), "Could not get project measures.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get project measures")
 		return
 	}
@@ -94,7 +95,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create SonarQube instance")
+			log.Fatal(nil, "Could not create SonarQube instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

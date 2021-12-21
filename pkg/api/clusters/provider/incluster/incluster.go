@@ -2,13 +2,10 @@ package incluster
 
 import (
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
+	"github.com/kobsio/kobs/pkg/log"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"k8s.io/client-go/rest"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "clusters"})
 )
 
 // Config is the configuration for the InCluster provider.
@@ -19,11 +16,11 @@ type Config struct {
 // GetCluster returns the cluster, where kobs is running in via the incluster configuration. For the selection of the
 // cluster via a name, the user has to provide this name.
 func GetCluster(config *Config) ([]*cluster.Cluster, error) {
-	log.WithFields(logrus.Fields{"name": config.Name}).Tracef("Load incluster config.")
+	log.Debug(nil, "Load incluster config.", zap.String("name", config.Name))
 
 	restConfig, err := rest.InClusterConfig()
 	if err != nil {
-		log.WithError(err).Debugf("Could not create rest config.")
+		log.Error(nil, "Could not create rest config.", zap.Error(err))
 		return nil, err
 	}
 

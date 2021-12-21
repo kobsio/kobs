@@ -7,22 +7,19 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/istio/pkg/instance"
 	klogsInstance "github.com/kobsio/kobs/plugins/klogs/pkg/instance"
 	prometheusInstance "github.com/kobsio/kobs/plugins/prometheus/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const (
 	Route = "/istio"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "istio"})
 )
 
 // Config is the structure of the configuration for the Istio plugin.
@@ -50,33 +47,37 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name}).Tracef("getNamespaces")
+	log.Debug(r.Context(), "Get namespaces paraemters.", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	namespaces, err := i.GetNamespaces(r.Context(), parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get namespaces.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get namespaces")
 		return
 	}
 
-	log.WithFields(logrus.Fields{"namespaces": len(namespaces)}).Tracef("getNamespaces")
+	log.Debug(r.Context(), "Get namespaces result.", zap.Int("namespacesCount", len(namespaces)))
 	render.JSON(w, r, namespaces)
 }
 
@@ -90,33 +91,36 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	application := r.URL.Query().Get("application")
 	namespaces := r.URL.Query()["namespace"]
 
-	log.WithFields(logrus.Fields{"name": name}).Tracef("getMetrics")
+	log.Debug(r.Context(), "Get metrics parameters.", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd), zap.String("label", label), zap.String("groupBy", groupBy), zap.String("reporter", reporter), zap.String("application", application), zap.Strings("namespaces", namespaces))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	metrics, err := i.GetMetrics(r.Context(), namespaces, application, label, groupBy, reporter, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
-	log.Tracef("getMetrics")
 	render.JSON(w, r, metrics)
 }
 
@@ -134,33 +138,36 @@ func (router *Router) getMetricsDetails(w http.ResponseWriter, r *http.Request) 
 	sourceWorkloadNamespace := r.URL.Query().Get("sourceWorkloadNamespace")
 	pod := r.URL.Query().Get("pod")
 
-	log.WithFields(logrus.Fields{"name": name, "timeEnd": timeEnd, "timeStart": timeStart, "metric": metric, "reporter": reporter, "destinationWorkload": destinationWorkload, "destinationWorkloadNamespace": destinationWorkloadNamespace, "destinationVersion": destinationVersion, "destinationService": destinationService, "sourceWorkload": sourceWorkload, "sourceWorkloadNamespace": sourceWorkloadNamespace, "pod": pod}).Tracef("getMetricsDetails")
+	log.Debug(r.Context(), "Get metrics details paramters.", zap.String("name", name), zap.String("timeEnd", timeEnd), zap.String("timeStart", timeStart), zap.String("metric", metric), zap.String("reporter", reporter), zap.String("destinationWorkload", destinationWorkload), zap.String("destinationWorkloadNamespace", destinationWorkloadNamespace), zap.String("destinationVersion", destinationVersion), zap.String("destinationService", destinationService), zap.String("sourceWorkload", sourceWorkload), zap.String("sourceWorkloadNamespace", sourceWorkloadNamespace), zap.String("pod", pod))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	metrics, err := i.GetMetricsDetails(r.Context(), metric, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
-	log.Tracef("getMetricsDetails")
 	render.JSON(w, r, metrics)
 }
 
@@ -172,33 +179,36 @@ func (router *Router) getMetricsPod(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	pod := r.URL.Query().Get("pod")
 
-	log.WithFields(logrus.Fields{"name": name, "timeEnd": timeEnd, "timeStart": timeStart, "metric": metric, "namespace": namespace, "pod": pod}).Tracef("getMetricsPod")
+	log.Debug(r.Context(), "Get metrics pod parameters.", zap.String("name", name), zap.String("timeEnd", timeEnd), zap.String("timeStart", timeStart), zap.String("metric", metric), zap.String("namespace", namespace), zap.String("pod", pod))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	metrics, err := i.GetMetricsPod(r.Context(), metric, namespace, pod, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
-	log.Tracef("getMetricsPod")
 	render.JSON(w, r, metrics)
 }
 
@@ -209,28 +219,32 @@ func (router *Router) getTopology(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	application := r.URL.Query().Get("application")
 
-	log.WithFields(logrus.Fields{"name": name, "namespace": namespace, "application": application, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getTopology")
+	log.Debug(r.Context(), "Get topology parameters.", zap.String("name", name), zap.String("namespace", namespace), zap.String("application", application), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	edges, nodes, err := i.GetTopology(r.Context(), namespace, application, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
@@ -243,7 +257,7 @@ func (router *Router) getTopology(w http.ResponseWriter, r *http.Request) {
 		nodes,
 	}
 
-	log.WithFields(logrus.Fields{"edges": len(edges), "nodes": len(nodes)}).Tracef("getTopology")
+	log.Debug(r.Context(), "Get topology result.", zap.Int("edges", len(edges)), zap.Int("nodes", len(nodes)))
 	render.JSON(w, r, data)
 }
 
@@ -257,33 +271,37 @@ func (router *Router) getTap(w http.ResponseWriter, r *http.Request) {
 	filterMethod := r.URL.Query().Get("filterMethod")
 	filterPath := r.URL.Query().Get("filterPath")
 
-	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterUpstreamCluster": filterUpstreamCluster, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTap")
+	log.Debug(r.Context(), "Get tap paramters.", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd), zap.String("application", application), zap.String("namespace", namespace), zap.String("filterUpstreamCluster", filterUpstreamCluster), zap.String("filterMethod", filterMethod), zap.String("filterPath", filterPath))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	logs, err := i.Tap(r.Context(), namespace, application, filterUpstreamCluster, filterMethod, filterPath, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get logs.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
 	}
 
-	log.WithFields(logrus.Fields{"logs": len(logs)}).Tracef("getTap")
+	log.Debug(r.Context(), "Get tap results.", zap.Int("logsCount", len(logs)))
 	render.JSON(w, r, logs)
 }
 
@@ -299,33 +317,37 @@ func (router *Router) getTop(w http.ResponseWriter, r *http.Request) {
 	sortBy := r.URL.Query().Get("sortBy")
 	sortDirection := r.URL.Query().Get("sortDirection")
 
-	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "filterUpstreamCluster": filterUpstreamCluster, "filterMethod": filterMethod, "filterPath": filterPath}).Tracef("getTop")
+	log.Debug(r.Context(), "Get top paramters.", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd), zap.String("application", application), zap.String("namespace", namespace), zap.String("filterUpstreamCluster", filterUpstreamCluster), zap.String("filterMethod", filterMethod), zap.String("filterPath", filterPath))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	logs, err := i.Top(r.Context(), namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get logs.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
 	}
 
-	log.WithFields(logrus.Fields{"logs": len(logs)}).Tracef("getTop")
+	log.Debug(r.Context(), "Get top results.", zap.Int("logsCount", len(logs)))
 	render.JSON(w, r, logs)
 }
 
@@ -339,33 +361,36 @@ func (router *Router) getTopDetails(w http.ResponseWriter, r *http.Request) {
 	method := r.URL.Query().Get("method")
 	path := r.URL.Query().Get("path")
 
-	log.WithFields(logrus.Fields{"name": name, "timeStart": timeStart, "timeEnd": timeEnd, "application": application, "namespace": namespace, "upstreamCluster": upstreamCluster, "method": method, "path": path}).Tracef("getTopDetails")
+	log.Debug(r.Context(), "Get Top details parameters.", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd), zap.String("application", application), zap.String("namespace", namespace), zap.String("upstreamCluster", upstreamCluster), zap.String("method", method), zap.String("path", path))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	metrics, err := i.TopDetails(r.Context(), namespace, application, upstreamCluster, method, path, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get success rate")
 		return
 	}
 
-	log.Tracef("getTopDetails")
 	render.JSON(w, r, metrics)
 }
 
@@ -376,7 +401,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg, prometheusInstances, klogsInstances)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Istio instance")
+			log.Fatal(nil, "Could not create Istio instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

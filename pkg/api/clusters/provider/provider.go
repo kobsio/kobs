@@ -4,12 +4,9 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/api/clusters/provider/incluster"
 	"github.com/kobsio/kobs/pkg/api/clusters/provider/kubeconfig"
+	"github.com/kobsio/kobs/pkg/log"
 
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "clusters"})
+	"go.uber.org/zap"
 )
 
 // Type is the type of the cluster provider. At the moment it is only possible to load clusters via the
@@ -43,7 +40,7 @@ func GetClusters(config *Config) ([]*cluster.Cluster, error) {
 	case KUBECONFIG:
 		return kubeconfig.GetClusters(&config.Kubeconfig)
 	default:
-		log.WithFields(logrus.Fields{"provider": config.Provider}).Warnf("Invalid provider.")
+		log.Warn(nil, "Invalid provider.", zap.String("provider", string(config.Provider)))
 		return nil, nil
 	}
 }

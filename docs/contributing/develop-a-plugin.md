@@ -96,17 +96,14 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
         "github.com/kobsio/kobs/pkg/api/clusters"
         "github.com/kobsio/kobs/pkg/api/middleware/errresponse"
         "github.com/kobsio/kobs/pkg/api/plugins/plugin"
+        "github.com/kobsio/kobs/pkg/log"
 
         "github.com/go-chi/chi/v5"
         "github.com/go-chi/render"
-        "github.com/sirupsen/logrus"
+        "go.uber.org/zap"
     )
 
     const Route = "/helloworld"
-
-    var (
-        log = logrus.WithFields(logrus.Fields{"package": "helloworld"})
-    )
 
     type Config struct {
         Name           string `json:"name"`
@@ -124,6 +121,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
     // getName returns the name form the configuration.
     func (router *Router) getName(w http.ResponseWriter, r *http.Request) {
         if router.config.HelloWorldName == "" {
+            log.Error(r.Context(), "Name is missing")
             errresponse.Render(w, r, nil, http.StatusInternalServerError, "Name is missing")
             return
         }
@@ -134,7 +132,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
             router.config.HelloWorldName,
         }
 
-        log.WithFields(logrus.Fields{"name": data.Name}).Tracef("getName")
+        log.Debug(r.Context(), "Get name result.", zap.String("name", data.Name))
         render.JSON(w, r, data)
     }
 

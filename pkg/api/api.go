@@ -10,17 +10,17 @@ import (
 	"github.com/kobsio/kobs/pkg/api/middleware/auth"
 	"github.com/kobsio/kobs/pkg/api/middleware/httplog"
 	"github.com/kobsio/kobs/pkg/api/middleware/metrics"
+	"github.com/kobsio/kobs/pkg/log"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"go.uber.org/zap"
 )
 
 var (
-	log     = logrus.WithFields(logrus.Fields{"package": "api"})
 	address string
 )
 
@@ -42,27 +42,27 @@ type Server struct {
 
 // Start starts serving the api server.
 func (s *Server) Start() {
-	log.Infof("API server listen on %s.", s.server.Addr)
+	log.Info(nil, "API server started.", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.WithError(err).Error("API server died unexpected.")
+			log.Error(nil, "API server died unexpected.", zap.Error(err))
 		} else {
-			log.Info("API server was stopped.")
+			log.Info(nil, "API server was stopped.")
 		}
 	}
 }
 
 // Stop terminates the api server gracefully.
 func (s *Server) Stop() {
-	log.Debugf("Start shutdown of the API server.")
+	log.Debug(nil, "Start shutdown of the API server.")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		log.WithError(err).Error("Graceful shutdown of the API server failed.")
+		log.Error(nil, "Graceful shutdown of the API server failed.", zap.Error(err))
 	}
 }
 
@@ -93,7 +93,7 @@ func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopm
 		r.Use(middleware.URLFormat)
 		r.Use(metrics.Metrics)
 		r.Use(auth.Handler(loadedClusters))
-		r.Use(httplog.NewStructuredLogger(log.Logger))
+		r.Use(httplog.Logger)
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Get("/user", auth.UserHandler)
