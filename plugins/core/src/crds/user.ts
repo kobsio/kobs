@@ -4,11 +4,15 @@ export interface IUser {
   namespace: string;
   name: string;
   id: string;
+  profile: IUserProfile;
+  teams?: IUserTeamReference[];
+}
+
+export interface IUserProfile {
   fullName: string;
   email: string;
   position?: string;
   bio?: string;
-  teams?: IUserTeamReference[];
 }
 
 export interface IUserTeamReference {

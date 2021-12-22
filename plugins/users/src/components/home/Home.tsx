@@ -101,20 +101,12 @@ const Home: React.FunctionComponent<IPluginPageProps> = () => {
               : user.cluster.includes(debouncedSearchTerm) ||
                 user.namespace.includes(debouncedSearchTerm) ||
                 user.name.includes(debouncedSearchTerm) ||
-                user.fullName.includes(debouncedSearchTerm) ||
-                user.email.includes(debouncedSearchTerm) ||
-                user.position?.includes(debouncedSearchTerm),
+                user.profile.fullName.includes(debouncedSearchTerm) ||
+                user.profile.email.includes(debouncedSearchTerm),
           )
           .map((user, index) => (
             <GalleryItem key={index}>
-              <UsersItem
-                cluster={user.cluster}
-                namespace={user.namespace}
-                name={user.name}
-                fullName={user.fullName}
-                email={user.email}
-                position={user.position}
-              />
+              <UsersItem cluster={user.cluster} namespace={user.namespace} name={user.name} profile={user.profile} />
             </GalleryItem>
           ))}
       </Gallery>

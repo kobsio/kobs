@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
 	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
 )
 
@@ -17,16 +16,19 @@ const UserKey ctxKeyUser = 0
 // User is the structure of the user object saved in the request context. It contains the users id and permissions if
 // authentication is enabled.
 type User struct {
-	ID          string           `json:"id"`
-	HasProfile  bool             `json:"hasProfile"`
-	Profile     user.UserSpec    `json:"profile,omitempty"`
-	Permissions team.Permissions `json:"permissions"`
+	Cluster     string               `json:"cluster"`
+	Namespace   string               `json:"namespace"`
+	Name        string               `json:"name"`
+	ID          string               `json:"id"`
+	Profile     user.Profile         `json:"profile"`
+	Teams       []user.TeamReference `json:"teams"`
+	Permissions user.Permissions     `json:"permissions"`
 }
 
 // HasPluginAccess checks if the user has access to the given plugin.
 func (u *User) HasPluginAccess(plugin string) bool {
 	for _, p := range u.Permissions.Plugins {
-		if p == plugin || p == "*" {
+		if p.Name == plugin || p.Name == "*" {
 			return true
 		}
 	}
@@ -88,13 +90,9 @@ func (u *User) HasResourceAccess(cluster, namespace, name string) bool {
 // GetPluginPermissions returns the custom plugin permissions for a user. For that the name of the plugin must be
 // provided.
 func (u *User) GetPluginPermissions(name string) ([][]byte, error) {
-	if u.Permissions.Custom == nil {
-		return nil, fmt.Errorf("custom permissions are empty for the user")
-	}
-
 	var allCustomPermissions [][]byte
 
-	for _, plugin := range u.Permissions.Custom {
+	for _, plugin := range u.Permissions.Plugins {
 		if plugin.Name == name {
 			allCustomPermissions = append(allCustomPermissions, plugin.Permissions.Raw)
 		}

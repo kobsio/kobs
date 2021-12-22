@@ -12,10 +12,11 @@ In the following you can found the specification for the Team CRD.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
+| id | string | A unique id for the team. The id must be unique across all clusters and namespace. If authentication and authorization is enabled this should be the value passed in the configured teams header (`--api.auth.header.teams`). | Yes |
 | description | string | A description for the team. | No |
 | logo | string | The logo for the team. Must be a path to an image file. | No |
 | links | [[]Link](#link) | A list of links (e.g. a link to the teams Slack channel, Confluence page, etc.) | No |
-| permissions | [Permissions](#permissions) | Permissions for the members of this team, when authentication and authorization is enabled. | No |
+| permissions | [Permissions](users.md#permissions) | Permissions for the team when the authentication / authorization middleware is enabled. | Yes |
 | dashboards | [[]Dashboard](#dashboard) | No |
 
 ### Link
@@ -24,31 +25,6 @@ In the following you can found the specification for the Team CRD.
 | ----- | ---- | ----------- | -------- |
 | title | string | Title for the link. | Yes |
 | link | string | The actuall link. | Yes |
-
-### Permissions
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| plugins | []string | A list of plugins, which can be accessed by the members of the team. The special list entry `*` allows access to all plugins. | Yes |
-| resources | [[]PermissionResources](#permissionresources) | A list of resources, which can be accessed by the members of the team. | Yes |
-| custom | [[]PermissionsCustom](#permissionscustom) | A list of custom permissions. | Yes |
-
-### PermissionResources
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| clusters | []string | A list of clusters to allow access to. The special list entry `*` allows access to all clusters. | Yes |
-| namespaces | []string | A list of namespaces to allow access to. The special list entry `*` allows access to all namespaces. | Yes |
-| resources | []string | A list of resources to allow access to. The special list entry `*` allows access to all resources. | Yes |
-
-### PermissionsCustom
-
-Custom permissions can be used by plugin to have a fine grained permission model.
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| name | string | The name of the plugin instance as it is defined in the configuration. | Yes |
-| permissions | any | The permissions, which should be grant to a user. The format of this property is different for each plugin. You can find an example for each plugin on the corresponding plugin page in the documentation. | Yes |
 
 ### Dashboard
 
@@ -116,7 +92,7 @@ metadata:
 spec:
   permissions:
     plugins:
-      - "*"
+      - name: "*"
     resources:
       - clusters:
           - "*"

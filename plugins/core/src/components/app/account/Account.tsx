@@ -19,14 +19,22 @@ const Account: React.FunctionComponent = () => {
               style={{ height: '64px', width: '64px' }}
             />
             <div className="pf-c-title pf-m-xl">{authContext.user.profile.fullName}</div>
-            <div className="pf-u-font-size-md pf-u-color-400">{authContext.user.profile.position}</div>
+            {authContext.user.profile.position && (
+              <div className="pf-u-font-size-md pf-u-color-400">{authContext.user.profile.position}</div>
+            )}
           </div>
         </CardBody>
       </Card>
 
       <p>&nbsp;</p>
 
-      {authContext.user.profile.teams && <AccountTeams user={authContext.user.profile} />}
+      {authContext.user.teams && (
+        <AccountTeams
+          cluster={authContext.user.cluster}
+          namespace={authContext.user.namespace}
+          teams={authContext.user.teams}
+        />
+      )}
     </React.Fragment>
   );
 };

@@ -5,6 +5,7 @@ export interface ITeam {
   cluster: string;
   namespace: string;
   name: string;
+  id: string;
   description?: string;
   links?: ITeamLink[];
   logo?: string;

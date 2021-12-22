@@ -2,6 +2,12 @@
 
 kobs hasn't any built in authentication mechanism. We recommend to run kobs behind a service like [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/), which should handle the authentication of users.
 
+## Permissions
+
+If the authentication / authorization middleware for kobs is enabled via the `--api.auth.enabled` flag, we use the value from the `--api.auth.header.user` and `--api.auth.header.teams` header to authorize the user to access a plugin or Kubernetes resource. These headers should be set by a service like the OAuth2 Proxy like it is shown in the following examples.
+
+The values from the headers are then used to get a [User CR](../resources/users.md) or a [Team CR](../resources/teams.md). If the user is part of multiple teams or when the permissions are set via the User CR and the Team CR, we merge all the permissions, so that the user can access all plugins and resources which are allowed for the user / teams.
+
 ## Examples
 
 The following two examples show how you can setup kobs with an OAuth2 Proxy infront using the [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/) or [Istio](https://istio.io). Before you are looking into the examples, make sure you have setup your prefered [OAuth Provider](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider). We will use Google as our OAuth Provider in the following, which requires a Client ID and a Client Secret.
@@ -208,7 +214,7 @@ meshConfig:
         service: oauth2-proxy.kobs.svc.cluster.local
         port: "4180"
         includeHeadersInCheck: ["authorization", "cookie"]
-        headersToUpstreamOnAllow: ["authorization", "x-auth-request-email"]
+        headersToUpstreamOnAllow: ["authorization", "x-auth-request-email", "x-auth-request-groups"]
 ```
 
 The external authorizer is now ready to be used by the authorization policy.

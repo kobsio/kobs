@@ -88,9 +88,7 @@ const Users: React.FunctionComponent<IUsersProps> = ({ displayName, description 
                         cluster={user.cluster}
                         namespace={user.namespace}
                         name={user.name}
-                        fullName={user.fullName}
-                        email={user.email}
-                        position={user.position}
+                        profile={user.profile}
                       />
                     </GalleryItem>
                   ))}
