@@ -25,6 +25,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#227](https://github.com/kobsio/kobs/pull/227): [techdocs] Ignore comments in code blocks in table of contents.
 - [#234](https://github.com/kobsio/kobs/pull/234): [azure] Fix json tags in Azure permissions struct.
 - [#242](https://github.com/kobsio/kobs/pull/242): [flux] Fix sync action for Kustomizations / Helm Releases and reload resources when search button is clicked.
+- [#243](https://github.com/kobsio/kobs/pull/243): [resources] Fix reload of resources, when the user clicks on the search button.
 
 ### Changed
 

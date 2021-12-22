@@ -32,7 +32,9 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
 
     history.push({
       pathname: location.pathname,
-      search: `?selector=${opts.selector}${clusterParams.length > 0 ? clusterParams.join('') : ''}${
+      search: `?time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}&selector=${
+        opts.selector
+      }${clusterParams.length > 0 ? clusterParams.join('') : ''}${
         namespaceParams.length > 0 ? namespaceParams.join('') : ''
       }${resourceParams.length > 0 ? resourceParams.join('') : ''}`,
     });
