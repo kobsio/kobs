@@ -29,9 +29,9 @@ const Sync: React.FunctionComponent<ISyncProps> = ({
   const handleSync = async (): Promise<void> => {
     try {
       const response = await fetch(
-        `/api/plugins/flux/sync?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&resource=${request.resource}`,
+        `/api/plugins/flux/sync?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&resource=${request.resource}`,
         {
           method: 'get',
         },
@@ -40,7 +40,7 @@ const Sync: React.FunctionComponent<ISyncProps> = ({
 
       if (response.status >= 200 && response.status < 300) {
         setShow(false);
-        setAlert({ title: `${resource.name.title} is syncing`, variant: AlertVariant.success });
+        setAlert({ title: `${resource.name} is syncing`, variant: AlertVariant.success });
         refetch();
       } else {
         if (json.error) {
@@ -58,7 +58,7 @@ const Sync: React.FunctionComponent<ISyncProps> = ({
   return (
     <Modal
       variant={ModalVariant.small}
-      title={`Sync ${resource.name.title}`}
+      title={`Sync ${resource.name}`}
       isOpen={show}
       onClose={(): void => setShow(false)}
       actions={[
@@ -71,8 +71,8 @@ const Sync: React.FunctionComponent<ISyncProps> = ({
       ]}
     >
       <p>
-        Do you really want to sync <b>{resource.name.title}</b> (
-        {resource.namespace ? `${resource.namespace.title}/${resource.cluster.title}` : resource.cluster.title})?
+        Do you really want to sync <b>{resource.name}</b> (
+        {resource.namespace ? `${resource.namespace}/${resource.cluster}` : resource.cluster})?
       </p>
     </Modal>
   );
