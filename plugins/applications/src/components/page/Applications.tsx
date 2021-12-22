@@ -43,7 +43,9 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 
     history.push({
       pathname: location.pathname,
-      search: `?view=${opts.view}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
+      search: `?time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}&view=${
+        opts.view
+      }${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
     });
   };
 
