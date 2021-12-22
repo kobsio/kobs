@@ -71,14 +71,7 @@ const Users: React.FunctionComponent<IUsersProps> = ({ cluster, namespace, name 
     <Gallery hasGutter={true}>
       {data.map((user, index) => (
         <GalleryItem key={index}>
-          <UsersItem
-            cluster={user.cluster}
-            namespace={user.namespace}
-            name={user.name}
-            fullName={user.fullName}
-            email={user.email}
-            position={user.position}
-          />
+          <UsersItem cluster={user.cluster} namespace={user.namespace} name={user.name} profile={user.profile} />
         </GalleryItem>
       ))}
     </Gallery>

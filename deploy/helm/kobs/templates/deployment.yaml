@@ -33,10 +33,10 @@ spec:
           imagePullPolicy: {{ .Values.kobs.image.pullPolicy }}
           args:
             - --development={{ .Values.kobs.settings.development }}
-            - --api.auth.default-team={{ .Values.kobs.settings.auth.defaultTeam }}
             - --api.auth.enabled={{ .Values.kobs.settings.auth.enabled }}
-            - --api.auth.header={{ .Values.kobs.settings.auth.header }}
-            - --api.auth.interval={{ .Values.kobs.settings.auth.interval }}
+            - --api.auth.header.teams={{ .Values.kobs.settings.auth.headerTeams }}
+            - --api.auth.header.user={{ .Values.kobs.settings.auth.headerUser }}
+            - --api.auth.session.interval={{ .Values.kobs.settings.auth.sessiontInterval }}
             - --clusters.cache-duration.namespaces={{ .Values.kobs.settings.clustersCacheDurationNamespaces }}
             - --log.format={{ .Values.kobs.settings.logFormat }}
             - --log.level={{ .Values.kobs.settings.logLevel }}

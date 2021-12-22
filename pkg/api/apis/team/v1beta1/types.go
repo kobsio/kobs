@@ -1,10 +1,10 @@
 package v1beta1
 
 import (
-	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
+	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
 )
 
 // +genclient
@@ -32,10 +32,11 @@ type TeamSpec struct {
 	Cluster     string                `json:"cluster,omitempty"`
 	Namespace   string                `json:"namespace,omitempty"`
 	Name        string                `json:"name,omitempty"`
+	ID          string                `json:"id"`
 	Description string                `json:"description,omitempty"`
 	Links       []Link                `json:"links,omitempty"`
 	Logo        string                `json:"logo,omitempty"`
-	Permissions Permissions           `json:"permissions,omitempty"`
+	Permissions user.Permissions      `json:"permissions,omitempty"`
 	Dashboards  []dashboard.Reference `json:"dashboards,omitempty"`
 }
 
@@ -49,21 +50,4 @@ type Reference struct {
 	Namespace   string `json:"namespace,omitempty"`
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
-}
-
-type Permissions struct {
-	Plugins   []string               `json:"plugins"`
-	Resources []PermissionsResources `json:"resources"`
-	Custom    []PermissionsCustom    `json:"custom,omitempty"`
-}
-
-type PermissionsCustom struct {
-	Name        string               `json:"name"`
-	Permissions apiextensionsv1.JSON `json:"permissions"`
-}
-
-type PermissionsResources struct {
-	Clusters   []string `json:"clusters"`
-	Namespaces []string `json:"namespaces"`
-	Resources  []string `json:"resources"`
 }

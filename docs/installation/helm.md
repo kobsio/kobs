@@ -68,9 +68,9 @@ helm upgrade --install kobs kobs/kobs
 | `kobs.env` | Set additional environment variables for the kobs container. | `[]` |
 | `kobs.settings.development` | Run kobs in development mode. | `false` |
 | `kobs.settings.auth.enabled` | Enable the authentication and authorization middleware. | `false` |
-| `kobs.settings.auth.defaultTeam` | The name of the team, which should be used for a users permissions when a user hasn't any teams. The team is specified in the following format: `cluster,namespace,name`. | `""` |
-| `kobs.settings.auth.header` | The header, which contains the details about the authenticated user. | `X-Auth-Request-Email` |
-| `kobs.settings.auth.interval` | The interval to refresh the internal users list and there permissions. | `1h0m0s` |
+| `kobs.settings.auth.headerTeams` | The header, which contains the team ids. | `X-Auth-Request-Email` |
+| `kobs.settings.auth.headerUser` | The header, which contains the user id. | `X-Auth-Request-Groups` |
+| `kobs.settings.auth.sessiontInterval` | The interval for how long a session is valid. | `48h0m0s` |
 | `kobs.settings.clustersCacheDurationNamespaces` | The duration for how long the list of namespaces for each cluster should be cached. | `5m` |
 | `kobs.settings.logFormat` | Set the output format of the logs. Must be `console` or `json`. | `console` |
 | `kobs.settings.logLevel` | Set the log level. Must be `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |

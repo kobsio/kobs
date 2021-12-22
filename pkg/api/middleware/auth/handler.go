@@ -14,41 +14,47 @@ import (
 )
 
 var (
-	flagEnabled     bool
-	flagUserHeader  string
-	flagInterval    time.Duration
-	flagDefaultTeam string
+	flagEnabled         bool
+	flagHeaderUser      string
+	flagHeaderTeams     string
+	flagSessionToken    string
+	flagSessionInterval time.Duration
 )
 
 func init() {
-	defaultHeader := "X-Auth-Request-Email"
-	if os.Getenv("KOBS_API_AUTH_HEADER") != "" {
-		defaultHeader = os.Getenv("KOBS_API_AUTH_HEADER")
+	defaultHeaderUser := "X-Auth-Request-Email"
+	if os.Getenv("KOBS_API_AUTH_HEADER_USER") != "" {
+		defaultHeaderUser = os.Getenv("KOBS_API_AUTH_HEADER_USER")
 	}
 
-	defaultInterval := time.Duration(1 * time.Hour)
-	if os.Getenv("KOBS_API_AUTH_INTERVAL") != "" {
-		parsedDefaultInterval, err := time.ParseDuration(os.Getenv("KOBS_API_AUTH_INTERVAL"))
-		if err == nil && parsedDefaultInterval > 60*time.Second {
-			defaultInterval = parsedDefaultInterval
+	defaultHeaderTeams := "X-Auth-Request-Groups"
+	if os.Getenv("KOBS_API_AUTH_HEADER_TEAMS") != "" {
+		defaultHeaderTeams = os.Getenv("KOBS_API_AUTH_HEADER_TEAMS")
+	}
+
+	defaultSessionToken := ""
+	if os.Getenv("KOBS_API_AUTH_SESSION_TOKEN") != "" {
+		defaultSessionToken = os.Getenv("KOBS_API_AUTH_SESSION_TOKEN")
+	}
+
+	defaultSessionInterval := time.Duration(48 * time.Hour)
+	if os.Getenv("KOBS_API_AUTH_SESSION_INTERVAL") != "" {
+		parsedDefaultSessionInterval, err := time.ParseDuration(os.Getenv("KOBS_API_AUTH_SESSION_INTERVAL"))
+		if err == nil && parsedDefaultSessionInterval > 60*time.Second {
+			defaultSessionInterval = parsedDefaultSessionInterval
 		}
 	}
 
-	defaultTeam := ""
-	if os.Getenv("KOBS_API_AUTH_DEFAULT_TEAM") != "" {
-		defaultTeam = os.Getenv("KOBS_API_AUTH_DEFAULT_TEAM")
-	}
-
 	flag.BoolVar(&flagEnabled, "api.auth.enabled", false, "Enable the authentication and authorization middleware.")
-	flag.StringVar(&flagUserHeader, "api.auth.header", defaultHeader, "The header, which contains the details about the authenticated user.")
-	flag.StringVar(&flagDefaultTeam, "api.auth.default-team", defaultTeam, "The name of the team, which should be used for a users permissions when a user hasn't any teams. The team is specified in the following format: \"cluster,namespace,name\"")
-	flag.DurationVar(&flagInterval, "api.auth.interval", defaultInterval, "The interval to refresh the internal users list and there permissions.")
+	flag.StringVar(&flagHeaderUser, "api.auth.header.user", defaultHeaderUser, "The header, which contains the user id.")
+	flag.StringVar(&flagHeaderTeams, "api.auth.header.teams", defaultHeaderTeams, "The header, which contains the team ids.")
+	flag.StringVar(&flagSessionToken, "api.auth.session.token", defaultSessionToken, "The token to encrypt the session cookie.")
+	flag.DurationVar(&flagSessionInterval, "api.auth.session.interval", defaultSessionInterval, "The interval for how long a session is valid.")
 }
 
-// Handler creates a new Auth handler with passed options.
+// Handler creates a new Auth handler with the options defined via the above flags.
 func Handler(clusters *clusters.Clusters) func(next http.Handler) http.Handler {
-	a := New(flagEnabled, flagUserHeader, flagDefaultTeam, flagInterval, clusters)
-	go a.GetPermissions()
+	a := New(flagEnabled, flagHeaderUser, flagHeaderTeams, flagSessionToken, flagSessionInterval, clusters)
 	return a.Handler
 }
 

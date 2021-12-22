@@ -99,6 +99,15 @@ kobs:
   ## Specify additional environment variables for the kobs container.
   ##
   env: []
+    ## For example the following can be used to set the token to sign the JWT token when authentication for kobs is
+    ## enabled. In this example we are using the "KOBS_API_AUTH_SESSION_TOKEN" key from a secret named "kobs" (must be
+    ## created manually) to set the "KOBS_API_AUTH_SESSION_TOKEN" environment variable.
+    ##
+    # - name: KOBS_API_AUTH_SESSION_TOKEN
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: kobs
+    #       key: KOBS_API_AUTH_SESSION_TOKEN
 
   ## Specify some settings like log level, log format, etc. for kobs.
   ##
@@ -106,9 +115,9 @@ kobs:
     development: false
     auth:
       enabled: false
-      defaultTeam: ""
-      header: X-Auth-Request-Email
-      interval: 1h0m0s
+      headerTeams: X-Auth-Request-Groups
+      headerUser: X-Auth-Request-Email
+      sessiontInterval: 48h0m0s
     clustersCacheDurationNamespaces: 5m
     logFormat: console
     logLevel: info

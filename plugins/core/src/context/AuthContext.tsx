@@ -2,18 +2,27 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
-import { IUser } from '../crds/user';
+import { IUserProfile, IUserTeamReference } from '../crds/user';
 
 export interface IAuth {
+  cluster: string;
+  namespace: string;
+  name: string;
   id: string;
-  hasProfile: boolean;
-  profile: IUser;
+  profile: IUserProfile;
+  teams: IUserTeamReference[];
   permissions: IAuthPermissions;
 }
 
 export interface IAuthPermissions {
-  plugins: string[];
-  resources: IAuthPermissionsResources[];
+  plugins?: IAuthPermissionsPlugin[];
+  resources?: IAuthPermissionsResources[];
+}
+
+export interface IAuthPermissionsPlugin {
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  permissions: any;
 }
 
 export interface IAuthPermissionsResources {
@@ -34,20 +43,19 @@ export const AuthContext = React.createContext<IAuthContext>({
     return false;
   },
   user: {
-    hasProfile: false,
+    cluster: '',
     id: '',
+    name: '',
+    namespace: '',
     permissions: {
       plugins: [],
       resources: [],
     },
     profile: {
-      cluster: '',
       email: '',
       fullName: '',
-      id: '',
-      name: '',
-      namespace: '',
     },
+    teams: [],
   },
 });
 
@@ -86,9 +94,9 @@ export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderPr
   });
 
   const hasPluginAccess = (name: string): boolean => {
-    if (data) {
-      for (const plugin of data?.permissions.plugins) {
-        if (plugin === name || plugin === '*') {
+    if (data && data.permissions.plugins) {
+      for (const plugin of data.permissions.plugins) {
+        if (plugin.name === name || plugin.name === '*') {
           return true;
         }
       }

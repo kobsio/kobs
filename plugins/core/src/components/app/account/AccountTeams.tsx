@@ -4,36 +4,45 @@ import { useQuery } from 'react-query';
 
 import AccountTeamsItem from './AccountTeamsItem';
 import { ITeam } from '../../../crds/team';
-import { IUser } from '../../../crds/user';
+import { IUserTeamReference } from '../../../crds/user';
 
 export interface IAccountTeamsProps {
-  user: IUser;
+  cluster: string;
+  namespace: string;
+  teams: IUserTeamReference[];
 }
 
-const AccountTeams: React.FunctionComponent<IAccountTeamsProps> = ({ user }: IAccountTeamsProps) => {
-  const { isError, isLoading, data } = useQuery<ITeam[], Error>(['users/teams', user], async () => {
-    try {
-      const response = await fetch(`/api/plugins/users/teams?cluster=${user.cluster}&namespace=${user.namespace}`, {
-        body: JSON.stringify({
-          teams: user.teams,
-        }),
-        method: 'post',
-      });
-      const json = await response.json();
+const AccountTeams: React.FunctionComponent<IAccountTeamsProps> = ({
+  cluster,
+  namespace,
+  teams,
+}: IAccountTeamsProps) => {
+  const { isError, isLoading, data } = useQuery<ITeam[], Error>(
+    ['users/teams', cluster, namespace, teams],
+    async () => {
+      try {
+        const response = await fetch(`/api/plugins/users/teams?cluster=${cluster}&namespace=${namespace}`, {
+          body: JSON.stringify({
+            teams: teams,
+          }),
+          method: 'post',
+        });
+        const json = await response.json();
 
-      if (response.status >= 200 && response.status < 300) {
-        return json;
-      } else {
-        if (json.error) {
-          throw new Error(json.error);
+        if (response.status >= 200 && response.status < 300) {
+          return json;
         } else {
-          throw new Error('An unknown error occured');
+          if (json.error) {
+            throw new Error(json.error);
+          } else {
+            throw new Error('An unknown error occured');
+          }
         }
+      } catch (err) {
+        throw err;
       }
-    } catch (err) {
-      throw err;
-    }
-  });
+    },
+  );
 
   if (isLoading || isError || !data) {
     return null;

@@ -31,13 +31,7 @@ spec:
             type: object
           spec:
             properties:
-              bio:
-                type: string
               cluster:
-                type: string
-              email:
-                type: string
-              fullName:
                 type: string
               id:
                 type: string
@@ -45,8 +39,58 @@ spec:
                 type: string
               namespace:
                 type: string
-              position:
-                type: string
+              permissions:
+                properties:
+                  plugins:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        permissions:
+                          x-kubernetes-preserve-unknown-fields: true
+                      required:
+                      - name
+                      type: object
+                    type: array
+                  resources:
+                    items:
+                      properties:
+                        clusters:
+                          items:
+                            type: string
+                          type: array
+                        namespaces:
+                          items:
+                            type: string
+                          type: array
+                        resources:
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - clusters
+                      - namespaces
+                      - resources
+                      type: object
+                    type: array
+                required:
+                - plugins
+                - resources
+                type: object
+              profile:
+                properties:
+                  bio:
+                    type: string
+                  email:
+                    type: string
+                  fullName:
+                    type: string
+                  position:
+                    type: string
+                required:
+                - email
+                - fullName
+                type: object
               teams:
                 items:
                   properties:
@@ -61,9 +105,8 @@ spec:
                   type: object
                 type: array
             required:
-            - email
-            - fullName
             - id
+            - profile
             type: object
         type: object
     served: true

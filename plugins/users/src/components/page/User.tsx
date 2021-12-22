@@ -96,12 +96,12 @@ const User: React.FunctionComponent = () => {
           <CardBody>
             <div className="pf-u-text-align-center">
               <Avatar
-                src={getGravatarImageUrl(data.email, 64)}
-                alt={data.fullName}
+                src={getGravatarImageUrl(data.profile.email, 64)}
+                alt={data.profile.fullName}
                 style={{ height: '64px', width: '64px' }}
               />
-              <div className="pf-c-title pf-m-xl">{data.fullName}</div>
-              <div className="pf-u-font-size-md pf-u-color-400">{data.position}</div>
+              <div className="pf-c-title pf-m-xl">{data.profile.fullName}</div>
+              {data.profile.position && <div className="pf-u-font-size-md pf-u-color-400">{data.profile.position}</div>}
             </div>
           </CardBody>
         </Card>
@@ -109,12 +109,12 @@ const User: React.FunctionComponent = () => {
 
       {data.teams && <Teams user={data} />}
 
-      {data.bio && (
+      {data.profile?.bio && (
         <PageSection variant={PageSectionVariants.default}>
           <Card isCompact={true}>
             <CardBody>
               <TextContent>
-                <ReactMarkdown linkTarget="_blank">{data.bio}</ReactMarkdown>
+                <ReactMarkdown linkTarget="_blank">{data.profile.bio}</ReactMarkdown>
               </TextContent>
             </CardBody>
           </Card>
