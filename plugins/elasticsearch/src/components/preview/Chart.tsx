@@ -29,7 +29,7 @@ export const Chart: React.FunctionComponent<IChartProps> = ({ name, times, title
         }
 
         const response = await fetch(
-          `/api/plugins/elasticsearch/logs/${name}?query=${options.queries[0].query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/elasticsearch/${name}/logs?query=${options.queries[0].query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },

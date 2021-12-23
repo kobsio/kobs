@@ -24,7 +24,7 @@ const BuildHistory: React.FunctionComponent<IBuildHistoryProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/harbor/buildhistory/${name}?projectName=${projectName}&repositoryName=${repositoryName}&artifactReference=${artifactReference}`,
+          `/api/plugins/harbor/${name}/buildhistory?projectName=${projectName}&repositoryName=${repositoryName}&artifactReference=${artifactReference}`,
           {
             method: 'get',
           },

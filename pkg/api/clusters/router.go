@@ -6,10 +6,11 @@ import (
 
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/log"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Router implements the router for the clusters package. The router provides all standard methods to interact with the
@@ -24,8 +25,6 @@ type Router struct {
 // also sorting the clusters alphabetically, to improve the user experience in the frontend.
 // NOTE: Maybe we can also save the cluster names slice, since the name of a cluster couldn't change during runtime.
 func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
-	log.Tracef("getClusters")
-
 	var clusterNames []string
 
 	for _, cluster := range router.clusters.Clusters {
@@ -36,7 +35,7 @@ func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 		return clusterNames[i] < clusterNames[j]
 	})
 
-	log.WithFields(logrus.Fields{"clusters": clusterNames}).Tracef("getClusters")
+	log.Debug(r.Context(), "Get clusters result.", zap.Strings("clusters", clusterNames))
 	render.JSON(w, r, clusterNames)
 }
 
@@ -46,19 +45,21 @@ func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 // namespaces alphabetically.
 func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	clusterNames := r.URL.Query()["cluster"]
-	log.WithFields(logrus.Fields{"clusters": clusterNames}).Tracef("getNamespaces")
+	log.Debug(r.Context(), "Get namespaces parameters.", zap.Strings("clusters", clusterNames))
 
 	var namespaces []string
 
 	for _, clusterName := range clusterNames {
 		cluster := router.clusters.GetCluster(clusterName)
 		if cluster == nil {
+			log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 			return
 		}
 
 		clusterNamespaces, err := cluster.GetNamespaces(r.Context(), cacheDurationNamespaces)
 		if err != nil {
+			log.Error(r.Context(), "Could not get namespaces.")
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get namespaces")
 			return
 		}
@@ -82,7 +83,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 		return uniqueNamespaces[i] < uniqueNamespaces[j]
 	})
 
-	log.WithFields(logrus.Fields{"namespaces": len(uniqueNamespaces)}).Tracef("getNamespaces")
+	log.Debug(r.Context(), "Get namespaces result.", zap.Int("namespacesCount", len(uniqueNamespaces)), zap.Strings("namespaces", uniqueNamespaces))
 	render.JSON(w, r, uniqueNamespaces)
 }
 
@@ -90,7 +91,8 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 // Instead of only returning the CRDs for a list of specified clusters, we return all CRDs, so that we only have to call
 // this function once from the React app. The CRDs form all loaded clusters are merged and then deduplicated.
 func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
-	log.Tracef("getCRDs")
+	log.Debug(r.Context(), "Get CRDs.")
+
 	var crds []cluster.CRD
 
 	for _, cluster := range router.clusters.Clusters {
@@ -106,7 +108,7 @@ func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.WithFields(logrus.Fields{"count": len(uniqueCRDs)}).Tracef("getCRDs")
+	log.Debug(r.Context(), "Get CRDs result", zap.Int("crdsCount", len(uniqueCRDs)))
 	render.JSON(w, r, uniqueCRDs)
 }
 

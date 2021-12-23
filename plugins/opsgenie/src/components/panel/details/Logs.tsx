@@ -25,7 +25,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ name, id, type }: ILogsProp
     ['opsgenie/alerts/logs', name, id, type],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/opsgenie/${type}/logs/${name}?id=${id}`, {
+        const response = await fetch(`/api/plugins/opsgenie/${name}/${type}/logs?id=${id}`, {
           method: 'get',
         });
         const json = await response.json();

@@ -106,7 +106,7 @@ const NodeMetrics: React.FunctionComponent<INodeMetricsProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/kiali/metrics/${name}?url=${encodeURIComponent(
+          `/api/plugins/kiali/${name}/metrics?url=${encodeURIComponent(
             `/kiali/api/namespaces/${nodeNamespace}/${nodeType}/${nodeName}/metrics?queryTime=${
               times.timeEnd
             }&duration=${times.timeEnd - times.timeStart}${getSteps(

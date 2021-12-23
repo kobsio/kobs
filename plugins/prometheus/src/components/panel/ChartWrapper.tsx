@@ -43,7 +43,7 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
           throw new Error('Queries are missing');
         }
 
-        const response = await fetch(`/api/plugins/prometheus/metrics/${name}`, {
+        const response = await fetch(`/api/plugins/prometheus/${name}/metrics`, {
           body: JSON.stringify({
             queries: options.queries,
             resolution: '',

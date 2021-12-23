@@ -6,14 +6,15 @@ import (
 	"os"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/log"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"go.uber.org/zap"
 )
 
 var (
-	log     = logrus.WithFields(logrus.Fields{"package": "metrics"})
 	address string
 )
 
@@ -35,22 +36,23 @@ type Server struct {
 
 // Start starts serving the metrics server.
 func (s *Server) Start() {
-	log.Infof("Metrics server listen on %s.", s.Addr)
+	log.Info(nil, "Metrics server started.", zap.String("address", s.Addr))
 
 	if err := s.ListenAndServe(); err != http.ErrServerClosed {
-		log.WithError(err).Fatalf("Metrics server died unexpected.")
+		log.Error(nil, "Metrics server died unexpected.", zap.Error(err))
 	}
 }
 
 // Stop terminates the metrics server gracefully.
 func (s *Server) Stop() {
-	log.Debugf("Start shutdown of the metrics server.")
+	log.Debug(nil, "Start shutdown of the metrics server.")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := s.Shutdown(ctx); err != nil {
-		log.WithError(err).Errorf("Gracefull shutdown of the metrics server failed.")
+	err := s.Shutdown(ctx)
+	if err != nil {
+		log.Error(nil, "Graceful shutdown of the metrics server failed.", zap.Error(err))
 	}
 }
 

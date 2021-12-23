@@ -26,7 +26,7 @@ interface ITracesProps {
   showChart: boolean;
   queries: IQuery[];
   times: IPluginTimes;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const Traces: React.FunctionComponent<ITracesProps> = ({
@@ -34,7 +34,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
   title,
   description,
   times,
-  showDetails,
+  setDetails,
   showChart,
   queries,
 }: ITracesProps) => {
@@ -46,7 +46,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/jaeger/traces/${name}?limit=${selectedQuery.limit || '20'}&maxDuration=${
+          `/api/plugins/jaeger/${name}/traces?limit=${selectedQuery.limit || '20'}&maxDuration=${
             selectedQuery.maxDuration || ''
           }&minDuration=${selectedQuery.minDuration || ''}&operation=${selectedQuery.operation || ''}&service=${
             selectedQuery.service || ''
@@ -154,14 +154,14 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
           <React.Fragment>
             {showChart ? (
               <React.Fragment>
-                <TracesChart name={name} traces={data} showDetails={showDetails} />
+                <TracesChart name={name} traces={data} setDetails={setDetails} />
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
               </React.Fragment>
             ) : null}
 
-            <TracesList name={name} traces={data} showDetails={showDetails} />
+            <TracesList name={name} traces={data} setDetails={setDetails} />
           </React.Fragment>
         ) : null}
       </div>

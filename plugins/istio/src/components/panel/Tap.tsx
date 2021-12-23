@@ -1,7 +1,7 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
+import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import React from 'react';
 
 import { IFilters, ILogLine } from '../../utils/interfaces';
 import DetailsTap from './details/DetailsTap';
@@ -32,6 +32,8 @@ const Tap: React.FunctionComponent<ITapProps> = ({
   filters,
   setDetails,
 }: ITapProps) => {
+  const [selectedRow, setSelectedRow] = useState<number>(-1);
+
   const { isError, isLoading, error, data, refetch } = useQuery<ILogLine[], Error>(
     ['istio/tap', name, namespace, application, times, liveUpdate, filters],
     async () => {
@@ -44,7 +46,7 @@ const Tap: React.FunctionComponent<ITapProps> = ({
           : times.timeStart;
 
         const response = await fetch(
-          `/api/plugins/istio/tap/${name}?timeStart=${timeStart}&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterUpstreamCluster=${encodeURIComponent(
+          `/api/plugins/istio/${name}/tap?timeStart=${timeStart}&timeEnd=${timeEnd}&application=${application}&namespace=${namespace}&filterUpstreamCluster=${encodeURIComponent(
             filters.upstreamCluster,
           )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(filters.path)}`,
           {
@@ -70,6 +72,21 @@ const Tap: React.FunctionComponent<ITapProps> = ({
       refetchInterval: liveUpdate ? 5000 : false,
     },
   );
+
+  const handleRowClick = (rowIndex: number, line: ILogLine): void => {
+    if (setDetails) {
+      setDetails(
+        <DetailsTap
+          line={line}
+          close={(): void => {
+            setDetails(undefined);
+            setSelectedRow(-1);
+          }}
+        />,
+      );
+      setSelectedRow(rowIndex);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -103,7 +120,7 @@ const Tap: React.FunctionComponent<ITapProps> = ({
   }
 
   return (
-    <TableComposable aria-label="Tap" variant={TableVariant.compact} borders={false}>
+    <TableComposable aria-label="Tap" variant={TableVariant.compact} borders={true}>
       <Thead>
         <Tr>
           <Th>Direction</Th>
@@ -120,11 +137,8 @@ const Tap: React.FunctionComponent<ITapProps> = ({
           <Tr
             key={index}
             isHoverable={setDetails ? true : false}
-            onClick={
-              setDetails
-                ? (): void => setDetails(<DetailsTap line={line} close={(): void => setDetails(undefined)} />)
-                : undefined
-            }
+            isRowSelected={selectedRow === index}
+            onClick={setDetails ? (): void => handleRowClick(index, line) : undefined}
           >
             <Td dataLabel="Direction">
               {line.hasOwnProperty('content.upstream_cluster') ? getDirection(line['content.upstream_cluster']) : '-'}

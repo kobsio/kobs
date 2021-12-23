@@ -4,21 +4,23 @@ import (
 	"net/http"
 
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/log"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerservice/armcontainerservice"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 func (router *Router) getManagedClusters(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	resourceGroups := r.URL.Query()["resourceGroup"]
 
-	log.WithFields(logrus.Fields{"name": name, "resourceGroups": resourceGroups}).Tracef("getManagedClusters")
+	log.Debug(r.Context(), "Get managed clusters parameters.", zap.String("name", name), zap.Strings("resourceGroups", resourceGroups))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -30,6 +32,7 @@ func (router *Router) getManagedClusters(w http.ResponseWriter, r *http.Request)
 		if err == nil {
 			clusters, err := i.KubernetesServices.ListManagedClusters(r.Context(), resourceGroup)
 			if err != nil {
+				log.Error(r.Context(), "Could not list managed clusters.", zap.Error(err))
 				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list managed clusters")
 				return
 			}
@@ -46,23 +49,26 @@ func (router *Router) getManagedCluster(w http.ResponseWriter, r *http.Request) 
 	resourceGroup := r.URL.Query().Get("resourceGroup")
 	managedCluster := r.URL.Query().Get("managedCluster")
 
-	log.WithFields(logrus.Fields{"name": name, "resourceGroup": resourceGroup, "managedCluster": managedCluster}).Tracef("getManagedCluster")
+	log.Debug(r.Context(), "Get managed cluster parameters.", zap.String("name", name), zap.String("resourceGroup", resourceGroup), zap.String("managedCluster", managedCluster))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	err := i.CheckPermissions(r, "kubernetesservices", resourceGroup)
 	if err != nil {
-		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the managed clusters")
+		log.Warn(r.Context(), "User is not allowed to get the managed cluster.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the managed cluster")
 		return
 	}
 
 	ks, err := i.KubernetesServices.GetManagedCluster(r.Context(), resourceGroup, managedCluster)
 	if err != nil {
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get managed clusters")
+		log.Error(r.Context(), "Could not get managed cluster.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get managed cluster")
 		return
 	}
 
@@ -74,22 +80,25 @@ func (router *Router) getNodePools(w http.ResponseWriter, r *http.Request) {
 	resourceGroup := r.URL.Query().Get("resourceGroup")
 	managedCluster := r.URL.Query().Get("managedCluster")
 
-	log.WithFields(logrus.Fields{"name": name, "resourceGroup": resourceGroup, "managedCluster": managedCluster}).Tracef("getNodePools")
+	log.Debug(r.Context(), "Get node pools parameters.", zap.String("name", name), zap.String("resourceGroup", resourceGroup), zap.String("managedCluster", managedCluster))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	err := i.CheckPermissions(r, "kubernetesservices", resourceGroup)
 	if err != nil {
+		log.Warn(r.Context(), "User is not allowed to get the node pools.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the node pools of the managed cluster")
 		return
 	}
 
 	nodePools, err := i.KubernetesServices.ListNodePools(r.Context(), resourceGroup, managedCluster)
 	if err != nil {
+		log.Warn(r.Context(), "Could not get node pools.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get node pools")
 		return
 	}

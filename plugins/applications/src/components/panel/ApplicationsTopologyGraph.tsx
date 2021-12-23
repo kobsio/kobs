@@ -92,14 +92,14 @@ const nodeLabel = (node: INodeData): string => {
 interface IApplicationsTopologyGraphProps {
   edges: IEdge[];
   nodes: INode[];
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 // ApplicationsTopologyGraph is the component, which renders the topology graph.
 const ApplicationsTopologyGraph: React.FunctionComponent<IApplicationsTopologyGraphProps> = ({
   edges,
   nodes,
-  showDetails,
+  setDetails,
 }: IApplicationsTopologyGraphProps) => {
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
@@ -115,11 +115,11 @@ const ApplicationsTopologyGraph: React.FunctionComponent<IApplicationsTopologyGr
       const node = event.target;
       const data: INodeData = node.data();
 
-      if (data.type === 'application' && showDetails) {
-        showDetails(<Details application={data} close={(): void => showDetails(undefined)} />);
+      if (data.type === 'application' && setDetails) {
+        setDetails(<Details application={data} close={(): void => setDetails(undefined)} />);
       }
     },
-    [showDetails],
+    [setDetails],
   );
 
   const cyCallback = useCallback(

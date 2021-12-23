@@ -32,7 +32,7 @@ const Projects: React.FunctionComponent<IProjectsProps> = ({ name, query, url }:
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/sonarqube/projects/${name}?query=${encodeURIComponent(query)}&pageNumber=${
+          `/api/plugins/sonarqube/${name}/projects?query=${encodeURIComponent(query)}&pageNumber=${
             page.page
           }&pageSize=${page.perPage}`,
           {

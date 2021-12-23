@@ -8,20 +8,17 @@ import (
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/opsgenie/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const (
 	Route = "/opsgenie"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "opsgenie"})
 )
 
 // Config is the structure of the configuration for the opsgenie plugin.
@@ -48,16 +45,18 @@ func (router *Router) getAlerts(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query}).Tracef("getAlerts")
+	log.Debug(r.Context(), "Get alerts parameters.", zap.String("name", name), zap.String("query", query))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	alerts, err := i.GetAlerts(r.Context(), query)
 	if err != nil {
+		log.Error(r.Context(), "Could not get alerts.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alerts")
 		return
 	}
@@ -69,16 +68,18 @@ func (router *Router) getAlertDetails(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("getAlertDetails")
+	log.Debug(r.Context(), "Get alert details parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	details, err := i.GetAlertDetails(r.Context(), id)
 	if err != nil {
+		log.Error(r.Context(), "Could not get alert details.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alert details")
 		return
 	}
@@ -90,16 +91,18 @@ func (router *Router) getAlertLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("getAlertLogs")
+	log.Debug(r.Context(), "Get alert logs parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	logs, err := i.GetAlertLogs(r.Context(), id)
 	if err != nil {
+		log.Error(r.Context(), "Could not get alert logs.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alert logs")
 		return
 	}
@@ -111,16 +114,18 @@ func (router *Router) getAlertNotes(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("getAlertNotes")
+	log.Debug(r.Context(), "Get alert notes parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	notes, err := i.GetAlertNotes(r.Context(), id)
 	if err != nil {
+		log.Error(r.Context(), "Could not get alert notes.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alert notes")
 		return
 	}
@@ -132,16 +137,18 @@ func (router *Router) getIncidents(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query}).Tracef("getIncidents")
+	log.Debug(r.Context(), "Get incidents parameters.", zap.String("name", name), zap.String("query", query))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	incidents, err := i.GetIncidents(r.Context(), query)
 	if err != nil {
+		log.Error(r.Context(), "Could not get incidents.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incidents")
 		return
 	}
@@ -153,16 +160,18 @@ func (router *Router) getIncidentLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("getIncidentLogs")
+	log.Debug(r.Context(), "Get incident logs parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	logs, err := i.GetIncidentLogs(r.Context(), id)
 	if err != nil {
+		log.Error(r.Context(), "Could not get incident logs.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incident logs")
 		return
 	}
@@ -174,16 +183,18 @@ func (router *Router) getIncidentNotes(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("getIncidentNotes")
+	log.Debug(r.Context(), "Get incident notes parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	notes, err := i.GetIncidentNotes(r.Context(), id)
 	if err != nil {
+		log.Error(r.Context(), "Could not get incident notes.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incident notes")
 		return
 	}
@@ -195,16 +206,18 @@ func (router *Router) getIncidentTimeline(w http.ResponseWriter, r *http.Request
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("getIncidentTimeline")
+	log.Debug(r.Context(), "Get incident timeline parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	timeline, err := i.GetIncidentTimeline(r.Context(), id)
 	if err != nil {
+		log.Error(r.Context(), "Could not get incident timeline.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incident timeline")
 		return
 	}
@@ -215,6 +228,7 @@ func (router *Router) getIncidentTimeline(w http.ResponseWriter, r *http.Request
 func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to acknowledge the alert.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to acknowledge the alert")
 		return
 	}
@@ -222,21 +236,24 @@ func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("acknowledgeAlert")
+	log.Debug(r.Context(), "Acknowlege alert parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	if !i.Actions.Acknowledge {
+		log.Warn(r.Context(), "It is not allowed to acknowledge alerts.")
 		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to acknowledge alerts")
 		return
 	}
 
 	err = i.AcknowledgeAlert(r.Context(), id, user.ID)
 	if err != nil {
+		log.Error(r.Context(), "Could not acknowledge alert.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not acknowledge alert")
 		return
 	}
@@ -247,6 +264,7 @@ func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to snooze the alert.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to snooze the alert")
 		return
 	}
@@ -255,21 +273,24 @@ func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	snooze := r.URL.Query().Get("snooze")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("snoozeAlert")
+	log.Debug(r.Context(), "Snooze alert parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	if !i.Actions.Snooze {
+		log.Warn(r.Context(), "It is not allowed to snooze alerts.")
 		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to snooze alerts")
 		return
 	}
 
 	snoozeParsed, err := time.ParseDuration(snooze)
 	if err != nil {
+		log.Error(r.Context(), "Could not snooze alert.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not parse snooze parameter")
 		return
 	}
@@ -286,6 +307,7 @@ func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to close the alert.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to close the alert")
 		return
 	}
@@ -293,21 +315,24 @@ func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.WithFields(logrus.Fields{"name": name, "id": id}).Tracef("closeAlert")
+	log.Debug(r.Context(), "Close alert parameters.", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	if !i.Actions.Close {
+		log.Warn(r.Context(), "It is not allowed to close alerts.")
 		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to close alerts")
 		return
 	}
 
 	err = i.CloseAlert(r.Context(), id, user.ID)
 	if err != nil {
+		log.Error(r.Context(), "Could not close alert.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not close alert")
 		return
 	}
@@ -322,7 +347,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Opsgenie instance")
+			log.Fatal(nil, "Could not create Opsgenie instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)
@@ -347,17 +372,19 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/alerts/{name}", router.getAlerts)
-	router.Get("/alert/details/{name}", router.getAlertDetails)
-	router.Get("/alert/logs/{name}", router.getAlertLogs)
-	router.Get("/alert/notes/{name}", router.getAlertNotes)
-	router.Get("/alert/acknowledge/{name}", router.acknowledgeAlert)
-	router.Get("/alert/snooze/{name}", router.snoozeAlert)
-	router.Get("/alert/close/{name}", router.closeAlert)
-	router.Get("/incidents/{name}", router.getIncidents)
-	router.Get("/incident/logs/{name}", router.getIncidentLogs)
-	router.Get("/incident/notes/{name}", router.getIncidentNotes)
-	router.Get("/incident/timeline/{name}", router.getIncidentTimeline)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/alerts", router.getAlerts)
+		r.Get("/alert/details", router.getAlertDetails)
+		r.Get("/alert/logs", router.getAlertLogs)
+		r.Get("/alert/notes", router.getAlertNotes)
+		r.Get("/alert/acknowledge", router.acknowledgeAlert)
+		r.Get("/alert/snooze", router.snoozeAlert)
+		r.Get("/alert/close", router.closeAlert)
+		r.Get("/incidents", router.getIncidents)
+		r.Get("/incident/logs", router.getIncidentLogs)
+		r.Get("/incident/notes", router.getIncidentNotes)
+		r.Get("/incident/timeline", router.getIncidentTimeline)
+	})
 
 	return router
 }

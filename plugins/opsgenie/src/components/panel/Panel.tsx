@@ -17,7 +17,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   times,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (!options || !times) {
     return (
@@ -43,7 +43,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           query={options.query || ''}
           interval={options.interval}
           times={times}
-          setDetails={showDetails}
+          setDetails={setDetails}
         />
       </PluginCard>
     );
@@ -61,7 +61,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         query={options.query || ''}
         interval={options.interval}
         times={times}
-        setDetails={showDetails}
+        setDetails={setDetails}
       />
     </PluginCard>
   );

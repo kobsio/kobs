@@ -5,12 +5,6 @@ import (
 
 	"github.com/kobsio/kobs/plugins/techdocs/pkg/providers"
 	"github.com/kobsio/kobs/plugins/techdocs/pkg/shared"
-
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "techdocs"})
 )
 
 // Config is the structure of the configuration for a single TechDocs instance.

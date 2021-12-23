@@ -6,19 +6,16 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/sql/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const Route = "/sql"
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "sql"})
-)
 
 // Config is the structure of the configuration for the sql plugin.
 type Config []instance.Config
@@ -44,16 +41,18 @@ func (router *Router) getQueryResults(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query}).Tracef("getSQL")
+	log.Debug(r.Context(), "Get SQL parameters.", zap.String("name", name), zap.String("query", query))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	rows, columns, err := i.GetQueryResults(r.Context(), query)
 	if err != nil {
+		log.Error(r.Context(), "Could not get result for SQL query.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get result for SQL query")
 		return
 	}
@@ -76,7 +75,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create sql instance")
+			log.Fatal(nil, "Could not create sql instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)
@@ -95,7 +94,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/query/{name}", router.getQueryResults)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/query", router.getQueryResults)
+	})
 
 	return router
 }

@@ -11,14 +11,17 @@ The following command-line arguments and environment variables are available.
 | `--api.address` | `KOBS_API_ADDRESS` | The address, where the API server is listen on. | `:15220` |
 | `--api.auth.default-team` | `KOBS_API_AUTH_DEFAULT_TEAM` | The name of the team, which should be used for a users permissions when a user hasn't any teams. The team is specified in the following format: `cluster,namespace,name` | |
 | `--api.auth.enabled` | | Enable the authentication and authorization middleware. | `false` |
-| `--api.auth.header` | `KOBS_API_AUTH_HEADER` | The header, which contains the details about the authenticated user. More information can be found in the [Authentication](authentication.md) section. | `X-Auth-Request-Email` |
-| `--api.auth.interval` | `KOBS_API_AUTH_INTERVAL` | The interval to refresh the internal users list and there permissions. | `1h0m0s` |
+| `--api.auth.header.teams string` | `KOBS_API_AUTH_HEADER_TEAMS` | The header, which contains the team ids. | `X-Auth-Request-Groups` |
+| `--api.auth.header.user string` | `KOBS_API_AUTH_HEADER_USER` | The header, which contains the user id. | `X-Auth-Request-Email` |
+| `--api.auth.session.interval duration` | `KOBS_API_AUTH_SESSION_INTERVAL` | The interval for how long a session is valid. | `48h0m0s` |
+| `--api.auth.session.token string` | `KOBS_API_AUTH_SESSION_TOKEN` | The token to encrypt the session cookie. | |
 | `--app.address` | `KOBS_APP_ADDRESS` | The address, where the Application server is listen on. | `:15219` |
 | `--app.assets` | `KOBS_APP_ASSETS` | The location of the assets directory. | `app/build` |
 | `--clusters.cache-duration.namespaces` | `KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES` | The duration, for how long requests to get the list of namespaces should be cached. | `5m` |
 | `--config` | `KOBS_CONFIG` | Name of the configuration file.  | `config.yaml` |
+| `--development` | | Use development version | `false` |
 | `--log.format` | `KOBS_LOG_FORMAT` | Set the output format of the logs. Must be `plain` or `json`.  | `plain` |
-| `--log.level` | `KOBS_LOG_LEVEL` | Set the log level. Must be `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`.  | `info` |
+| `--log.level` | `KOBS_LOG_LEVEL` | Set the log level. Must be `debug`, `info`, `warn`, `error`, `fatal` or `panic`.  | `info` |
 | `--metrics.address` | `KOBS_METRICS_ADDRESS` | The address, where the Prometheus metrics are served. | `:15221` |
 | `--version` | | Print version information.  | `false` |
 

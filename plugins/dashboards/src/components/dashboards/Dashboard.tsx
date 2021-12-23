@@ -24,7 +24,7 @@ interface IDashboardProps {
   defaults: IPluginDefaults;
   dashboard: IDashboard;
   forceDefaultSpan: boolean;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 // The Dashboard component renders the rows and panels for a single dashboard, by including a plugin via the PluginPanel
@@ -37,7 +37,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   defaults,
   dashboard,
   forceDefaultSpan,
-  showDetails,
+  setDetails,
 }: IDashboardProps) => {
   const clustersContext = useContext<IClusterContext>(ClustersContext);
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
@@ -105,7 +105,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
             const pluginDetails = pluginsContext.getPluginDetails(tmpVariables[i].plugin.name);
 
             if (pluginDetails?.type === 'prometheus') {
-              const response = await fetch(`/api/plugins/prometheus/variable/${tmpVariables[i].plugin.name}`, {
+              const response = await fetch(`/api/plugins/prometheus/${tmpVariables[i].plugin.name}/variable`, {
                 body: JSON.stringify({
                   label: tmpVariables[i].plugin.options.label,
                   query: interpolate(tmpVariables[i].plugin.options.query, tmpVariables, times),
@@ -218,7 +218,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                             description={panel.description}
                             name={panel.plugin.name}
                             options={panel.plugin.options}
-                            showDetails={showDetails}
+                            setDetails={setDetails}
                           />
                         </div>
                       ) : (

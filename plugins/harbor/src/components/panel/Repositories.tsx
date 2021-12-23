@@ -33,7 +33,7 @@ const Repositories: React.FunctionComponent<IRepositoriesProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/harbor/repositories/${name}?projectName=${projectName}&query=${query}&page=${page.page}&pageSize=${page.pageSize}`,
+          `/api/plugins/harbor/${name}/repositories?projectName=${projectName}&query=${query}&page=${page.page}&pageSize=${page.pageSize}`,
           {
             method: 'get',
           },

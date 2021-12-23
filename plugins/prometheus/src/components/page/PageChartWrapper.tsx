@@ -26,7 +26,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
     ['prometheus/metrics', name, queries, resolution, times],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/prometheus/metrics/${name}`, {
+        const response = await fetch(`/api/plugins/prometheus/${name}/metrics`, {
           body: JSON.stringify({
             queries: queries.map((query) => {
               return { label: '', query: query };

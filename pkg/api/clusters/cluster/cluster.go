@@ -22,9 +22,10 @@ import (
 	userClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/user/clientset/versioned"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster/copy"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster/terminal"
+	"github.com/kobsio/kobs/pkg/log"
+	"go.uber.org/zap"
 
 	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -37,7 +38,6 @@ import (
 )
 
 var (
-	log       = logrus.WithFields(logrus.Fields{"package": "clusters"})
 	slugifyRe = regexp.MustCompile("[^a-z0-9]+")
 )
 
@@ -105,11 +105,10 @@ func (c *Cluster) GetClient(schema *apiruntime.Scheme) (client.Client, error) {
 // "caching" the namespaces. This means that if a new namespace is created in a cluster, this namespaces is only shown
 // after the configured cache duration.
 func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error) {
-	log.WithFields(logrus.Fields{"last fetch": c.cache.namespacesLastFetch}).Tracef("Last namespace fetch.")
+	log.Debug(ctx, "Last namespace fetch.", zap.Time("lastFetch", c.cache.namespacesLastFetch))
 
 	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * cacheDuration)) {
-		log.WithFields(logrus.Fields{"cluster": c.name}).Debugf("Return namespaces from cache.")
-
+		log.Debug(ctx, "Return namespaces from cache.", zap.String("cluster", c.name))
 		return c.cache.namespaces, nil
 	}
 
@@ -124,7 +123,7 @@ func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration
 		namespaces = append(namespaces, namespace.ObjectMeta.Name)
 	}
 
-	log.WithFields(logrus.Fields{"cluster": c.name}).Debugf("Return namespaces from Kubernetes API.")
+	log.Debug(ctx, "Return namespaces from Kubernetes API.", zap.String("cluster", c.name))
 	c.cache.namespaces = namespaces
 	c.cache.namespacesLastFetch = time.Now()
 
@@ -139,7 +138,7 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resou
 		if namespace != "" {
 			res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
 			if err != nil {
-				log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "name": name, "path": path, "resource": resource}).Errorf("GetResources")
+				log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 				return nil, err
 			}
 
@@ -148,7 +147,7 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resou
 
 		res, err := c.clientset.RESTClient().Get().AbsPath(path).Resource(resource).Name(name).DoRaw(ctx)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "name": name, "path": path, "resource": resource}).Errorf("GetResources")
+			log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 			return nil, err
 		}
 
@@ -157,7 +156,7 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resou
 
 	res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Param(paramName, param).DoRaw(ctx)
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("GetResources")
+		log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return nil, err
 	}
 
@@ -169,7 +168,7 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resou
 func (c *Cluster) DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	_, err := c.clientset.RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("DeleteResource")
+		log.Error(ctx, "Could not delete resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
 	}
 
@@ -181,7 +180,7 @@ func (c *Cluster) DeleteResource(ctx context.Context, namespace, name, path, res
 func (c *Cluster) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	_, err := c.clientset.RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("PatchResource")
+		log.Error(ctx, "Could not patch resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
 	}
 
@@ -194,7 +193,7 @@ func (c *Cluster) CreateResource(ctx context.Context, namespace, name, path, res
 	if name != "" && subResource != "" {
 		_, err := c.clientset.RESTClient().Put().AbsPath(path).Namespace(namespace).Name(name).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "name": name, "path": path, "resource": resource, "subResource": subResource}).Errorf("CreateResource")
+			log.Error(ctx, "Could not create resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
 			return err
 		}
 
@@ -203,7 +202,7 @@ func (c *Cluster) CreateResource(ctx context.Context, namespace, name, path, res
 
 	_, err := c.clientset.RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"cluster": c.name, "namespace": namespace, "path": path, "resource": resource}).Errorf("CreateResource")
+		log.Error(ctx, "Could not create resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
 	}
 
@@ -509,12 +508,12 @@ func (c *Cluster) loadCRDs() {
 	offset := 30
 
 	for {
-		log.WithFields(logrus.Fields{"name": c.name}).Tracef("loadCRDs")
 		ctx := context.Background()
+		log.Debug(ctx, "Load CRDs.")
 
 		res, err := c.clientset.RESTClient().Get().AbsPath("apis/apiextensions.k8s.io/v1/customresourcedefinitions").DoRaw(ctx)
 		if err != nil {
-			log.WithFields(logrus.Fields{"name": c.name}).WithError(err).Errorf("Could not get Custom Resource Definitions")
+			log.Error(ctx, "Could not get Custom Resource Definitions.", zap.Error(err), zap.String("name", c.name))
 			time.Sleep(time.Duration(offset) * time.Second)
 			offset = offset * 2
 			continue
@@ -524,7 +523,7 @@ func (c *Cluster) loadCRDs() {
 
 		err = json.Unmarshal(res, &crdList)
 		if err != nil {
-			log.WithFields(logrus.Fields{"name": c.name}).WithError(err).Errorf("Could not get unmarshal Custom Resource Definitions List")
+			log.Error(ctx, "Could not get unmarshal Custom Resource Definitions List.", zap.Error(err), zap.String("name", c.name))
 			time.Sleep(time.Duration(offset) * time.Second)
 			offset = offset * 2
 			continue
@@ -560,7 +559,7 @@ func (c *Cluster) loadCRDs() {
 			}
 		}
 
-		log.WithFields(logrus.Fields{"name": c.name, "count": len(c.crds)}).Debugf("CRDs were loaded.")
+		log.Debug(ctx, "CRDs were loaded.", zap.String("name", c.name), zap.Int("crdsCount", len(c.crds)))
 		break
 	}
 }
@@ -571,31 +570,31 @@ func (c *Cluster) loadCRDs() {
 func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 	clientset, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
-		log.WithError(err).Debugf("Could not create Kubernetes clientset.")
+		log.Error(nil, "Could not create Kubernetes clientset.", zap.Error(err))
 		return nil, err
 	}
 
 	applicationClientset, err := applicationClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.WithError(err).Debugf("Could not create application clientset.")
+		log.Error(nil, "Could not create application clientset.", zap.Error(err))
 		return nil, err
 	}
 
 	teamClientset, err := teamClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.WithError(err).Debugf("Could not create team clientset.")
+		log.Error(nil, "Could not create team clientset.", zap.Error(err))
 		return nil, err
 	}
 
 	dashboardClientset, err := dashboardClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.WithError(err).Debugf("Could not create dashboard clientset.")
+		log.Error(nil, "Could not create dashboard clientset.", zap.Error(err))
 		return nil, err
 	}
 
 	userClientset, err := userClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.WithError(err).Debugf("Could not create user clientset.")
+		log.Error(nil, "Could not create user clientset.", zap.Error(err))
 		return nil, err
 	}
 

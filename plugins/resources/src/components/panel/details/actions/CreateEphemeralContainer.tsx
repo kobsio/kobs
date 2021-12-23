@@ -10,16 +10,15 @@ import {
   ModalVariant,
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 import { V1EphemeralContainer } from '@kubernetes/client-node';
 import yaml from 'js-yaml';
 
-import { Editor, IPluginsContext, IResource, PluginsContext } from '@kobsio/plugin-core';
+import { Editor, IPluginsContext, IResource, IResourceRow, PluginsContext } from '@kobsio/plugin-core';
 import { IAlert } from '../../../../utils/interfaces';
 
 interface ICreateEphemeralContainerProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
   setAlert: (alert: IAlert) => void;
@@ -52,15 +51,15 @@ const CreateEphemeralContainer: React.FunctionComponent<ICreateEphemeralContaine
         ephemeralContainers: [parsedEphemeralContainer],
         kind: 'EphemeralContainers',
         metadata: {
-          name: resource.name.title,
-          namespace: resource.namespace.title,
+          name: resource.name,
+          namespace: resource.namespace,
         },
       };
 
       const response = await fetch(
-        `/api/plugins/resources/resources?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&resource=pods&path=/api/v1&subResource=ephemeralcontainers`,
+        `/api/plugins/resources/resources?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&resource=pods&path=/api/v1&subResource=ephemeralcontainers`,
         {
           body: JSON.stringify(manifest),
           method: 'post',

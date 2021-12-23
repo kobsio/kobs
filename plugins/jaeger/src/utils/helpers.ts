@@ -3,8 +3,8 @@ import { IPluginTimes, formatTime, getTimeParams } from '@kobsio/plugin-core';
 import TreeNode from './TreeNode';
 
 // getInitialOptions is used to get the initial Jaeger options from the url.
-export const getInitialOptions = (): IOptions => {
-  const params = new URLSearchParams(window.location.search);
+export const getInitialOptions = (search: string, isInitial: boolean): IOptions => {
+  const params = new URLSearchParams(search);
   const limit = params.get('limit');
   const maxDuration = params.get('maxDuration');
   const minDuration = params.get('minDuration');
@@ -19,7 +19,7 @@ export const getInitialOptions = (): IOptions => {
     operation: operation ? operation : '',
     service: service ? service : '',
     tags: tags ? tags : '',
-    times: getTimeParams(params),
+    times: getTimeParams(params, isInitial),
   };
 };
 

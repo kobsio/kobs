@@ -11,7 +11,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IApplicationsOptions, IPluginOptions } from '../../utils/interfaces';
@@ -35,9 +35,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 }: IApplicationsProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IApplicationsOptions>(
-    useMemo<IApplicationsOptions>(() => getInitialApplicationsOptions(), []),
-  );
+  const [options, setOptions] = useState<IApplicationsOptions>();
 
   const changeOptions = (opts: IApplicationsOptions): void => {
     const namespaces = opts.namespaces ? opts.namespaces.map((namespace) => `&namespace=${namespace}`) : [];
@@ -48,9 +46,15 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
         namespaces.length > 0 ? namespaces.join('') : ''
       }`,
     });
-
-    setOptions(opts);
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialApplicationsOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

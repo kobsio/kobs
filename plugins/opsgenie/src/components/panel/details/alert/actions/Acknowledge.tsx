@@ -20,7 +20,7 @@ const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
     hideDropdown();
 
     try {
-      const response = await fetch(`/api/plugins/opsgenie/alert/acknowledge/${name}?id=${alert.id}`, {
+      const response = await fetch(`/api/plugins/opsgenie/${name}/alert/acknowledge?id=${alert.id}`, {
         method: 'get',
       });
       const json = await response.json();

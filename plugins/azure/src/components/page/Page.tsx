@@ -79,7 +79,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         <ContainerInstancesPage name={name} displayName={displayName} resourceGroups={data} />
       </Route>
       <Route exact={true} path={`/${name}/costmanagement`}>
-        <CostManagementPage name={name} displayName={displayName} />
+        <CostManagementPage name={name} displayName={displayName} resourceGroups={data} />
       </Route>
       <Route exact={true} path={`/${name}/kubernetesservices`}>
         <KubernetesServicesPage name={name} displayName={displayName} resourceGroups={data} />

@@ -24,7 +24,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ name, id }: IDetailsP
     ['opsgenie/incident/timeline', name, id],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/opsgenie/incident/timeline/${name}?id=${id}`, {
+        const response = await fetch(`/api/plugins/opsgenie/${name}/incident/timeline?id=${id}`, {
           method: 'get',
         });
         const json = await response.json();

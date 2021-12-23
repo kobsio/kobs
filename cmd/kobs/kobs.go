@@ -11,15 +11,16 @@ import (
 	"github.com/kobsio/kobs/pkg/api"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/app"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/version"
 
-	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
-	log           = logrus.WithFields(logrus.Fields{"package": "main"})
 	configFile    string
 	isDevelopment bool
 	logFormat     string
@@ -36,7 +37,7 @@ func init() {
 		defaultConfigFile = os.Getenv("KOBS_CONFIG")
 	}
 
-	defaultLogFormat := "plain"
+	defaultLogFormat := "console"
 	if os.Getenv("KOBS_LOG_FORMAT") != "" {
 		defaultLogFormat = os.Getenv("KOBS_LOG_FORMAT")
 	}
@@ -48,43 +49,49 @@ func init() {
 
 	flag.StringVar(&configFile, "config", defaultConfigFile, "Name of the configuration file.")
 	flag.BoolVar(&isDevelopment, "development", false, "Use development version.")
-	flag.StringVar(&logFormat, "log.format", defaultLogFormat, "Set the output format of the logs. Must be \"plain\" or \"json\".")
-	flag.StringVar(&logLevel, "log.level", defaultLogLevel, "Set the log level. Must be \"trace\", \"debug\", \"info\", \"warn\", \"error\", \"fatal\" or \"panic\".")
+	flag.StringVar(&logFormat, "log.format", defaultLogFormat, "Set the output format of the logs. Must be \"console\" or \"json\".")
+	flag.StringVar(&logLevel, "log.level", defaultLogLevel, "Set the log level. Must be \"debug\", \"info\", \"warn\", \"error\", \"fatal\" or \"panic\".")
 	flag.BoolVar(&showVersion, "version", false, "Print version information.")
 }
 
 func main() {
 	flag.Parse()
 
-	// Configure our logging library. The logs can be written in plain format (the plain format is compatible with
-	// logfmt) or in json format. The default is plain, because it is better to read during development. In a production
-	// environment you should consider to use json, so that the logs can be parsed by a logging system like
+	// Configure our logging library. The logs can be written in console format (the console format is compatible with
+	// logfmt) or in json format. The default is console, because it is better to read during development. In a
+	// production environment you should consider to use json, so that the logs can be parsed by a logging system like
 	// Elasticsearch.
-	// Next to the log format it is also possible to configure the log leven. The accepted values are "trace", "debug",
-	// "info", "warn", "error", "fatal" and "panic". The default log level is "info". When the log level is set to
-	// "trace" or "debug" we will also print the caller in the logs.
-	if logFormat == "json" {
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-	} else {
-		logrus.SetFormatter(&logrus.TextFormatter{
-			FullTimestamp: true,
-		})
+	// Next to the log format it is also possible to configure the log leven. The accepted values are "debug", "info",
+	// "warn", "error", "fatal" and "panic". The default log level is "info".
+	zapEncoderCfg := zap.NewProductionEncoderConfig()
+	zapEncoderCfg.TimeKey = "timestamp"
+	zapEncoderCfg.EncodeTime = zapcore.ISO8601TimeEncoder
+
+	zapConfig := zap.Config{
+		Level:            log.ParseLevel(logLevel),
+		Development:      isDevelopment,
+		Encoding:         logFormat,
+		EncoderConfig:    zapEncoderCfg,
+		OutputPaths:      []string{"stderr"},
+		ErrorOutputPaths: []string{"stderr"},
+		Sampling: &zap.SamplingConfig{
+			Initial:    100,
+			Thereafter: 100,
+		},
 	}
 
-	lvl, err := logrus.ParseLevel(logLevel)
+	logger, err := zapConfig.Build()
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"log.level": logLevel}).Fatal("Could not set log level")
+		panic(err)
 	}
-	logrus.SetLevel(lvl)
+	defer logger.Sync()
 
-	if lvl == logrus.TraceLevel || lvl == logrus.DebugLevel {
-		logrus.SetReportCaller(true)
-	}
+	zap.ReplaceGlobals(logger)
 
 	// Load the configuration for kobs from the provided configuration file.
 	cfg, err := config.Load(configFile)
 	if err != nil {
-		log.WithError(err).WithFields(logrus.Fields{"config": configFile}).Fatalf("Could not load configuration file")
+		log.Fatal(nil, "Could not load configuration file", zap.Error(err), zap.String("config", configFile))
 	}
 
 	// When the version value is set to "true" (--version) we will print the version information for kobs. After we
@@ -94,15 +101,15 @@ func main() {
 	if showVersion {
 		v, err := version.Print("kobs")
 		if err != nil {
-			log.WithError(err).Fatalf("Failed to print version information")
+			log.Fatal(nil, "Failed to print version information", zap.Error(err))
 		}
 
 		fmt.Fprintln(os.Stdout, v)
 		return
 	}
 
-	log.WithFields(version.Info()).Infof("Version information")
-	log.WithFields(version.BuildContext()).Infof("Build context")
+	log.Info(nil, "Version information", version.Info()...)
+	log.Info(nil, "Build context", version.BuildContext()...)
 
 	// Load all cluster for the given clusters configuration and create the chi router for all plugins. We do not hanle
 	// this within the API package, so that users can build their own version of kobs using the kobsio/kobs-app
@@ -111,7 +118,7 @@ func main() {
 	// plugin api routes via the kobs api.
 	loadedClusters, err := clusters.Load(cfg.Clusters)
 	if err != nil {
-		log.WithError(err).Fatalf("Could not load clusters")
+		log.Fatal(nil, "Could not load clusters", zap.Error(err))
 	}
 
 	pluginsRouter := plugins.Register(loadedClusters, cfg.Plugins)
@@ -122,13 +129,13 @@ func main() {
 	// metrics server is used to serve the kobs metrics.
 	apiServer, err := api.New(loadedClusters, pluginsRouter, isDevelopment)
 	if err != nil {
-		log.WithError(err).Fatalf("Could not create API server")
+		log.Fatal(nil, "Could not create API server", zap.Error(err))
 	}
 	go apiServer.Start()
 
 	appServer, err := app.New(isDevelopment)
 	if err != nil {
-		log.WithError(err).Fatalf("Could not create Application server")
+		log.Fatal(nil, "Could not create Application server", zap.Error(err))
 	}
 	go appServer.Start()
 
@@ -141,13 +148,13 @@ func main() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	log.Debugf("Start listining for SIGINT and SIGTERM signal")
+	log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
 	<-done
-	log.Debugf("Start shutdown process")
+	log.Debug(nil, "Start shutdown process")
 
 	metricsServer.Stop()
 	appServer.Stop()
 	apiServer.Stop()
 
-	log.Infof("Shutdown kobs...")
+	log.Info(nil, "Shutdown kobs...")
 }

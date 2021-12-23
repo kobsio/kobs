@@ -10,24 +10,29 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
   name,
   displayName,
   description,
-  options,
+  pluginOptions,
 }: IPluginPageProps) => {
-  if (!options || !options.hasOwnProperty('prometheus')) {
+  if (!pluginOptions || !pluginOptions.hasOwnProperty('prometheus')) {
     return null;
   }
 
-  const pluginOptions: IPluginOptions = {
-    klogs: options['klogs'],
-    prometheus: options['prometheus'],
+  const tmpPluginOptions: IPluginOptions = {
+    klogs: pluginOptions['klogs'],
+    prometheus: pluginOptions['prometheus'],
   };
 
   return (
     <Switch>
       <Route exact={true} path={`/${name}`}>
-        <Applications name={name} displayName={displayName} description={description} pluginOptions={pluginOptions} />
+        <Applications
+          name={name}
+          displayName={displayName}
+          description={description}
+          pluginOptions={tmpPluginOptions}
+        />
       </Route>
       <Route exact={true} path={`/${name}/:namespace/:application`}>
-        <Application name={name} pluginOptions={pluginOptions} />
+        <Application name={name} pluginOptions={tmpPluginOptions} />
       </Route>
     </Switch>
   );

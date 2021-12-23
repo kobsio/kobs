@@ -1,8 +1,8 @@
-import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
+import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useQuery } from 'react-query';
 
-import { IPluginTimes, IResource, emptyState } from '@kobsio/plugin-core';
+import { IPluginTimes, IResource, IResourceRow, emptyState } from '@kobsio/plugin-core';
 import Details from './details/Details';
 
 interface IPanelListItemProps {
@@ -11,7 +11,7 @@ interface IPanelListItemProps {
   resource: IResource;
   selector: string;
   times: IPluginTimes;
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
@@ -20,9 +20,11 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
   resource,
   selector,
   times,
-  showDetails,
+  setDetails,
 }: IPanelListItemProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<IRow[], Error>(
+  const [selectedRow, setSelectedRow] = useState<number>(-1);
+
+  const { isError, isLoading, error, data, refetch } = useQuery<IResourceRow[], Error>(
     [
       'resources/panellistitem',
       clusters,
@@ -70,35 +72,53 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
     }, 3000);
   };
 
+  const handleRowClick = (rowIndex: number, row: IResourceRow): void => {
+    if (setDetails && resource) {
+      setDetails(
+        <Details
+          request={resource}
+          resource={row}
+          close={(): void => {
+            setDetails(undefined);
+            setSelectedRow(-1);
+          }}
+          refetch={refetchhWithDelay}
+        />,
+      );
+      setSelectedRow(rowIndex);
+    }
+  };
+
   return (
-    <Table
-      aria-label={resource.title}
-      variant="compact"
-      borders={false}
-      cells={resource.columns}
-      rows={
-        data && data.length > 0 && data[0].cells?.length === resource.columns.length
-          ? data
-          : emptyState(resource.columns.length, isLoading, isError, error)
-      }
-    >
-      <TableHeader />
-      <TableBody
-        onRowClick={
-          showDetails && data && data.length > 0 && data[0].cells?.length === resource.columns.length
-            ? (e, row, props, data): void =>
-                showDetails(
-                  <Details
-                    request={resource}
-                    resource={row}
-                    close={(): void => showDetails(undefined)}
-                    refetch={refetchhWithDelay}
-                  />,
-                )
-            : undefined
-        }
-      />
-    </Table>
+    <TableComposable aria-label={resource.title} variant={TableVariant.compact} borders={true}>
+      <Thead>
+        <Tr>
+          {resource.columns.map((column) => (
+            <Th key={column}>{column}</Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data && data.length > 0 && data[0].cells?.length === resource.columns.length
+          ? data.map((row, rowIndex) => (
+              <Tr
+                key={rowIndex}
+                isHoverable={setDetails ? true : false}
+                isRowSelected={selectedRow === rowIndex}
+                onClick={(): void =>
+                  setDetails && data && data.length > 0 && data[0].cells?.length === resource.columns.length
+                    ? handleRowClick(rowIndex, row)
+                    : undefined
+                }
+              >
+                {row.cells.map((cell, cellIndex) => (
+                  <Td key={cellIndex}>{cell}</Td>
+                ))}
+              </Tr>
+            ))
+          : emptyState(resource.columns.length, isLoading, isError, error)}
+      </Tbody>
+    </TableComposable>
   );
 };
 

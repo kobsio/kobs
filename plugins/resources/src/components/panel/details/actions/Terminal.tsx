@@ -9,13 +9,13 @@ import {
   ModalVariant,
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 import { V1Pod } from '@kubernetes/client-node';
 import { Terminal as xTerm } from 'xterm';
 
 import {
   IPluginsContext,
   IResource,
+  IResourceRow,
   ITerminalContext,
   PluginsContext,
   TERMINAL_OPTIONS,
@@ -50,7 +50,7 @@ const getContainers = (pod: V1Pod): string[] => {
 
 interface ITerminalProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   show: boolean;
   setShow: (value: boolean) => void;
 }
@@ -78,9 +78,9 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ request, resource, 
       const host = configuredWebSocketAddress || `wss://${window.location.host}`;
 
       const ws = new WebSocket(
-        `${host}/api/plugins/resources/terminal?cluster=${resource.cluster.title}${
-          resource.namespace ? `&namespace=${resource.namespace.title}` : ''
-        }&name=${resource.name.title}&container=${container}&shell=${shell}`,
+        `${host}/api/plugins/resources/terminal?cluster=${resource.cluster}${
+          resource.namespace ? `&namespace=${resource.namespace}` : ''
+        }&name=${resource.name}&container=${container}&shell=${shell}`,
       );
 
       term.reset();
@@ -114,7 +114,7 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ request, resource, 
       };
 
       terminalsContext.addTerminal({
-        name: `${resource.name.title}: ${container} (${shell})`,
+        name: `${resource.name}: ${container} (${shell})`,
         terminal: term,
         webSocket: ws,
       });
@@ -122,7 +122,7 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ request, resource, 
       if (err.message) {
         term.write(`${err.message}\n\r`);
         terminalsContext.addTerminal({
-          name: `${resource.name.title}: ${container} (${shell})`,
+          name: `${resource.name}: ${container} (${shell})`,
           terminal: term,
         });
       }

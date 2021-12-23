@@ -7,7 +7,7 @@ import (
 )
 
 func TestGenerateFieldName(t *testing.T) {
-	for _, tc := range []struct {
+	for _, tt := range []struct {
 		field      string
 		mustNumber bool
 		expect     string
@@ -18,15 +18,15 @@ func TestGenerateFieldName(t *testing.T) {
 		{field: "content.duration", mustNumber: true, expect: "fields_number.value[indexOf(fields_number.key, 'content.duration')]"},
 		{field: "content.duration", mustNumber: false, expect: "fields_number.value[indexOf(fields_number.key, 'content.duration')]"},
 	} {
-		t.Run(tc.field, func(t *testing.T) {
-			actual := generateFieldName(tc.field, nil, Fields{String: nil, Number: []string{"content.duration"}}, false)
-			require.Equal(t, tc.expect, actual)
+		t.Run(tt.field, func(t *testing.T) {
+			actual := generateFieldName(tt.field, nil, Fields{String: nil, Number: []string{"content.duration"}}, tt.mustNumber)
+			require.Equal(t, tt.expect, actual)
 		})
 	}
 }
 
 func TestGetOrderBy(t *testing.T) {
-	for _, tc := range []struct {
+	for _, tt := range []struct {
 		order  string
 		expect string
 	}{
@@ -34,9 +34,9 @@ func TestGetOrderBy(t *testing.T) {
 		{order: "ascending", expect: "ASC"},
 		{order: "foo bar", expect: "ASC"},
 	} {
-		t.Run(tc.order, func(t *testing.T) {
-			actual := getOrderBy(tc.order)
-			require.Equal(t, tc.expect, actual)
+		t.Run(tt.order, func(t *testing.T) {
+			actual := getOrderBy(tt.order)
+			require.Equal(t, tt.expect, actual)
 		})
 	}
 }

@@ -8,18 +8,23 @@ import { IQueryResult } from './interfaces';
 interface IActualCostsProps {
   name: string;
   timeframe: number;
+  scope: string;
 }
 
-const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timeframe }: IActualCostsProps) => {
+const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timeframe, scope }: IActualCostsProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IQueryResult, Error>(
-    ['azure/costmanagement/actualcost', name, timeframe],
+    ['azure/costmanagement/actualcost', name, timeframe, scope],
     async () => {
       try {
         const timeframeParam = `timeframe=${timeframe}`;
+        const scopeParam = `scope=${scope}`;
 
-        const response = await fetch(`/api/plugins/azure/${name}/costmanagement/actualcost?${timeframeParam}`, {
-          method: 'get',
-        });
+        const response = await fetch(
+          `/api/plugins/azure/${name}/costmanagement/actualcost?${timeframeParam}&${scopeParam}`,
+          {
+            method: 'get',
+          },
+        );
 
         const json = await response.json();
 

@@ -21,14 +21,14 @@ interface IDatum extends ScatterPlotDatum {
 interface ITracesChartProps {
   name: string;
   traces: ITrace[];
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 function isIDatum(object: ScatterPlotDatum): object is IDatum {
   return (object as IDatum).trace !== undefined;
 }
 
-const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces, showDetails }: ITracesChartProps) => {
+const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces, setDetails }: ITracesChartProps) => {
   const { series, min, max, first, last } = useMemo<{
     series: ScatterPlotRawSerie<ScatterPlotDatum>[];
     min: number;
@@ -99,8 +99,8 @@ const TracesChart: React.FunctionComponent<ITracesChartProps> = ({ name, traces,
             margin={{ bottom: 25, left: 0, right: 0, top: 0 }}
             nodeSize={{ key: 'data.spans', sizes: [15, 75], values: [min, max] }}
             onClick={(node: ScatterPlotNodeData<ScatterPlotDatum>): void => {
-              if (showDetails && isIDatum(node.data)) {
-                showDetails(<Trace name={name} trace={node.data.trace} close={(): void => showDetails(undefined)} />);
+              if (setDetails && isIDatum(node.data)) {
+                setDetails(<Trace name={name} trace={node.data.trace} close={(): void => setDetails(undefined)} />);
               }
             }}
             renderNode={(ctx: CanvasRenderingContext2D, props: ScatterPlotNodeData<ScatterPlotDatum>): void => {

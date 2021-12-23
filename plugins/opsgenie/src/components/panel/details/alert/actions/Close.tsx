@@ -15,7 +15,7 @@ const Close: React.FunctionComponent<ICloseProps> = ({ name, alert, hideDropdown
     hideDropdown();
 
     try {
-      const response = await fetch(`/api/plugins/opsgenie/alert/close/${name}?id=${alert.id}`, {
+      const response = await fetch(`/api/plugins/opsgenie/${name}/alert/close?id=${alert.id}`, {
         method: 'get',
       });
       const json = await response.json();

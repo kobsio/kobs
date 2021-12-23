@@ -39,7 +39,7 @@ const Artifacts: React.FunctionComponent<IArtifactsProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/harbor/artifacts/${name}?projectName=${projectName}&repositoryName=${repositoryName}&query=${query}&page=${page.page}&pageSize=${page.pageSize}`,
+          `/api/plugins/harbor/${name}/artifacts?projectName=${projectName}&repositoryName=${repositoryName}&query=${query}&page=${page.page}&pageSize=${page.pageSize}`,
           {
             method: 'get',
           },

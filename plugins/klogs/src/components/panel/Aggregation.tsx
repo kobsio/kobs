@@ -24,7 +24,7 @@ const Aggregation: React.FunctionComponent<IAggregationProps> = ({
     ['klogs/aggregation', name, options],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/klogs/aggregation/${name}`, {
+        const response = await fetch(`/api/plugins/klogs/${name}/aggregation`, {
           body: JSON.stringify(options),
           method: 'post',
         });

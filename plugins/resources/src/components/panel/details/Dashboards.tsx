@@ -1,15 +1,14 @@
 import { Alert, AlertVariant } from '@patternfly/react-core';
-import { IRow } from '@patternfly/react-table';
 import { JSONPath } from 'jsonpath-plus';
 import React from 'react';
 
+import { IReference, IResourceRow } from '@kobsio/plugin-core';
 import { DashboardsWrapper } from '@kobsio/plugin-dashboards';
-import { IReference } from '@kobsio/plugin-core';
 
 // getDashboards parses the kobs.io/dashboards annotation of a Kubernetes resources and returns all provided dashboards.
 // Before we are returning the dashboards we are checking all the provided placeholder and if one of the placeholders
 // uses an JSONPath we are replacing it with the correct value.
-const getDashboards = (resource: IRow): IReference[] | undefined => {
+const getDashboards = (resource: IResourceRow): IReference[] | undefined => {
   try {
     if (
       resource.props &&
@@ -50,7 +49,7 @@ const getDashboards = (resource: IRow): IReference[] | undefined => {
 };
 
 interface IDashboardsProps {
-  resource: IRow;
+  resource: IResourceRow;
 }
 
 const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ resource }: IDashboardsProps) => {
@@ -69,9 +68,9 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ resource }: IDa
   return (
     <DashboardsWrapper
       defaults={{
-        cluster: resource.cluster.title,
-        name: resource.name.title,
-        namespace: resource.namespace.title,
+        cluster: resource.cluster,
+        name: resource.name,
+        namespace: resource.namespace,
       }}
       references={dashboards}
     />

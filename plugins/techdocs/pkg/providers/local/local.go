@@ -5,13 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/techdocs/pkg/shared"
 
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "techdocs", "provider": "local"})
+	"go.uber.org/zap"
 )
 
 // Config is the structure of the configuration for the local file system provider.
@@ -38,11 +35,11 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 			indexPath := fmt.Sprintf("%s/%s/index.yaml", p.config.RootDirectory, file.Name())
 			content, err := ioutil.ReadFile(indexPath)
 			if err != nil {
-				log.WithError(err).WithFields(logrus.Fields{"file": indexPath}).Errorf("could not read file")
+				log.Error(ctx, "Could not read file.", zap.Error(err), zap.String("file", indexPath))
 			} else {
 				index, err := shared.ParseIndex(content)
 				if err != nil {
-					log.WithError(err).WithFields(logrus.Fields{"file": indexPath}).Errorf("could not parse index file")
+					log.Error(ctx, "Could not parse index file.", zap.Error(err), zap.String("file", indexPath))
 				} else {
 					indexes = append(indexes, index)
 				}

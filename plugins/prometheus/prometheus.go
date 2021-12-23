@@ -7,19 +7,16 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/prometheus/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const Route = "/prometheus"
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "prometheus"})
-)
 
 // Config is the structure of the configuration for the prometheus plugin.
 type Config []instance.Config
@@ -67,10 +64,11 @@ func (router *Router) getInstance(name string) *instance.Instance {
 func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.WithFields(logrus.Fields{"name": name}).Tracef("getVariables")
+	log.Debug(r.Context(), "Get variables parameters.", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -79,17 +77,19 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
+		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	values, err := i.GetVariable(r.Context(), data.Label, data.Query, data.Type, data.TimeStart, data.TimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get variable.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get variable")
 		return
 	}
 
-	log.WithFields(logrus.Fields{"values": len(values)}).Tracef("getVariables")
+	log.Debug(r.Context(), "Get variables result.", zap.Int("valuesCount", len(values)))
 	render.JSON(w, r, values)
 }
 
@@ -99,10 +99,11 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.WithFields(logrus.Fields{"name": name}).Tracef("getMetrics")
+	log.Debug(r.Context(), "Get metrics parameters.", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -111,17 +112,19 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
+		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	metrics, err := i.GetMetrics(r.Context(), data.Queries, data.Resolution, data.TimeStart, data.TimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
-	log.WithFields(logrus.Fields{"metrics": len(metrics.Metrics)}).Tracef("getMetrics")
+	log.Debug(r.Context(), "Get metrics result.", zap.Int("metricsCount", len(metrics.Metrics)))
 	render.JSON(w, r, metrics)
 }
 
@@ -131,10 +134,11 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getTable(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.WithFields(logrus.Fields{"name": name}).Tracef("getTable")
+	log.Debug(r.Context(), "Get table parameters.", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -143,17 +147,19 @@ func (router *Router) getTable(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
+		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	rows, err := i.GetTableData(r.Context(), data.Queries, data.TimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
-	log.WithFields(logrus.Fields{"rows": len(rows)}).Tracef("getTable")
+	log.Debug(r.Context(), "Get table results.", zap.Int("rowsCount", len(rows)))
 	render.JSON(w, r, rows)
 }
 
@@ -163,21 +169,23 @@ func (router *Router) getLabels(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	searchTerm := r.URL.Query().Get("searchTerm")
 
-	log.WithFields(logrus.Fields{"name": name, "searchTerm": searchTerm}).Tracef("getLabels")
+	log.Debug(r.Context(), "Get labels parameters.", zap.String("name", name), zap.String("searchTerm", searchTerm))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	labelValues, err := i.GetLabelValues(r.Context(), searchTerm)
 	if err != nil {
+		log.Error(r.Context(), "Could not get label values.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get label values")
 		return
 	}
 
-	log.WithFields(logrus.Fields{"labelValues": len(labelValues)}).Tracef("getLabels")
+	log.Debug(r.Context(), "Get labels result.", zap.Int("labelValuesCount", len(labelValues)))
 	render.JSON(w, r, labelValues)
 }
 
@@ -188,7 +196,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Prometheus instance")
+			log.Fatal(nil, "Could not create Prometheus instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)
@@ -207,10 +215,12 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Post("/variable/{name}", router.getVariable)
-	router.Post("/metrics/{name}", router.getMetrics)
-	router.Post("/table/{name}", router.getTable)
-	router.Get("/labels/{name}", router.getLabels)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Post("/variable", router.getVariable)
+		r.Post("/metrics", router.getMetrics)
+		r.Post("/table", router.getTable)
+		r.Get("/labels", router.getLabels)
+	})
 
 	return router, instances
 }

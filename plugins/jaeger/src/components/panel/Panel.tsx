@@ -14,7 +14,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   times,
   options,
-  showDetails,
+  setDetails,
 }: IPanelProps) => {
   if (!options || !options.queries || !Array.isArray(options.queries) || options.queries.length === 0 || !times) {
     return (
@@ -32,7 +32,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       name={name}
       title={title}
       description={description}
-      showDetails={showDetails}
+      setDetails={setDetails}
       showChart={options.showChart || false}
       queries={options.queries}
       times={times}

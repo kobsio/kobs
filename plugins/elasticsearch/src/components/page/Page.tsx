@@ -6,7 +6,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { IPluginPageProps, IPluginTimes } from '@kobsio/plugin-core';
@@ -18,7 +18,7 @@ import { getInitialOptions } from '../../utils/helpers';
 const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, description }: IPluginPageProps) => {
   const location = useLocation();
   const history = useHistory();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
+  const [options, setOptions] = useState<IOptions>();
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
   // options in the current url.
@@ -31,34 +31,46 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
         opts.times.timeStart
       }${fields.length > 0 ? fields.join('') : ''}`,
     });
-
-    setOptions(opts);
   };
 
   // selectField is used to add a field as parameter, when it isn't present and to remove a fields from as parameter,
   // when it is already present via the changeOptions function.
   const selectField = (field: string): void => {
-    let tmpFields: string[] = [];
-    if (options.fields) {
-      tmpFields = [...options.fields];
-    }
+    if (options) {
+      let tmpFields: string[] = [];
+      if (options.fields) {
+        tmpFields = [...options.fields];
+      }
 
-    if (tmpFields.includes(field)) {
-      tmpFields = tmpFields.filter((f) => f !== field);
-    } else {
-      tmpFields.push(field);
-    }
+      if (tmpFields.includes(field)) {
+        tmpFields = tmpFields.filter((f) => f !== field);
+      } else {
+        tmpFields.push(field);
+      }
 
-    changeOptions({ ...options, fields: tmpFields });
+      changeOptions({ ...options, fields: tmpFields });
+    }
   };
 
   const addFilter = (filter: string): void => {
-    changeOptions({ ...options, query: `${options.query} ${filter}` });
+    if (options) {
+      changeOptions({ ...options, query: `${options.query} ${filter}` });
+    }
   };
 
   const changeTime = (times: IPluginTimes): void => {
-    changeOptions({ ...options, times: times });
+    if (options) {
+      changeOptions({ ...options, times: times });
+    }
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>

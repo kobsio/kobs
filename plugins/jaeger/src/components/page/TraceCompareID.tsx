@@ -27,7 +27,7 @@ const TraceCompareID: React.FunctionComponent<ITraceCompareIDProps> = ({ name, t
     ['jaeger/trace', name, traceID],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/jaeger/trace/${name}?traceID=${traceID}`, {
+        const response = await fetch(`/api/plugins/jaeger/${name}/trace?traceID=${traceID}`, {
           method: 'get',
         });
         const json = await response.json();

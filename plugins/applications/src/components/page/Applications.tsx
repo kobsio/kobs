@@ -8,7 +8,7 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import ApplicationsToolbar from './ApplicationsToolbar';
@@ -32,8 +32,8 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 }: IApplicationsProps) => {
   const history = useHistory();
   const location = useLocation();
-  const [options, setOptions] = useState<IOptions>(useMemo<IOptions>(() => getInitialOptions(), []));
-  const [selectedApplication, setSelectedApplication] = useState<React.ReactNode>(undefined);
+  const [options, setOptions] = useState<IOptions>();
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
   // options in the current url.
@@ -43,11 +43,19 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
 
     history.push({
       pathname: location.pathname,
-      search: `?view=${opts.view}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
+      search: `?time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}&view=${
+        opts.view
+      }${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
     });
-
-    setOptions(opts);
   };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>
@@ -59,8 +67,8 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
         <ApplicationsToolbar options={options} setOptions={changeOptions} />
       </PageSection>
 
-      <Drawer isExpanded={selectedApplication !== undefined}>
-        <DrawerContent panelContent={selectedApplication}>
+      <Drawer isExpanded={details !== undefined}>
+        <DrawerContent panelContent={details}>
           <DrawerContentBody>
             <PageSection
               style={options.view === 'topology' ? { height: '100%', minHeight: '100%' } : { minHeight: '100%' }}
@@ -82,7 +90,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
                     view: options.view,
                   }}
                   times={options.times}
-                  showDetails={setSelectedApplication}
+                  setDetails={setDetails}
                 />
               )}
             </PageSection>

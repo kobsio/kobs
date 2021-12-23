@@ -4,15 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/techdocs/pkg/shared"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "techdocs", "provider": "s3"})
+	"go.uber.org/zap"
 )
 
 // Config is the structure of the configuration for the s3 provider.
@@ -36,13 +33,13 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 
 	for object := range p.client.ListObjects(ctx, p.config.Bucket, minio.ListObjectsOptions{Recursive: false}) {
 		if object.Err != nil {
-			log.WithError(object.Err).Errorf("could not read file")
+			log.Error(ctx, "Could not read file.", zap.Error(object.Err))
 		} else {
 			if object.Key[len(object.Key)-1:] == "/" {
 				indexPath := fmt.Sprintf("%sindex.yaml", object.Key)
 				obj, err := p.client.GetObject(ctx, p.config.Bucket, indexPath, minio.GetObjectOptions{})
 				if err != nil {
-					log.WithError(err).WithFields(logrus.Fields{"file": indexPath}).Errorf("could not read file")
+					log.Error(ctx, "Could not read file.", zap.Error(err), zap.String("file", indexPath))
 				} else {
 					defer obj.Close()
 					fileInfo, _ := obj.Stat()
@@ -53,7 +50,7 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 
 						index, err := shared.ParseIndex(buffer)
 						if err != nil {
-							log.WithError(err).WithFields(logrus.Fields{"file": indexPath}).Errorf("could not parse index file")
+							log.Error(ctx, "Could not parse index file.", zap.Error(err), zap.String("file", indexPath))
 						} else {
 							indexes = append(indexes, index)
 						}

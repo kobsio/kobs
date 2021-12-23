@@ -23,7 +23,7 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
     ['jaeger/operations', name, service],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/jaeger/operations/${name}?service=${service}`, {
+        const response = await fetch(`/api/plugins/jaeger/${name}/operations?service=${service}`, {
           method: 'get',
         });
         const json = await response.json();

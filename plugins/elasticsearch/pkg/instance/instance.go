@@ -9,12 +9,9 @@ import (
 	"strings"
 
 	"github.com/kobsio/kobs/pkg/api/middleware/roundtripper"
+	"github.com/kobsio/kobs/pkg/log"
 
-	"github.com/sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "elasticsearch"})
+	"go.uber.org/zap"
 )
 
 // Config is the structure of the configuration for a single Elasticsearch instance.
@@ -45,7 +42,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 	url = fmt.Sprintf("%s/_search", i.address)
 	body = []byte(fmt.Sprintf(`{"size":1000,"sort":[{"@timestamp":{"order":"desc"}}],"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%d","lte":"%d"}}},{"query_string":{"query":"%s"}}]}},"aggs":{"logcount":{"auto_date_histogram":{"field":"@timestamp","buckets":30}}}}`, timeStart*1000, timeEnd*1000, strings.ReplaceAll(query, "\"", "\\\"")))
 
-	log.WithFields(logrus.Fields{"query": string(body)}).Debugf("Run Elasticsearch query")
+	log.Debug(ctx, "Run Elasticsearch query.", zap.ByteString("query", body))
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
 	if err != nil {
@@ -80,7 +77,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 			Buckets:   res.Aggregations.LogCount.Buckets,
 		}
 
-		log.WithFields(logrus.Fields{"took": data.Took, "hits": data.Hits, "documents": len(data.Documents), "buckets": len(data.Buckets)}).Debugf("Elasticsearch query results")
+		log.Debug(ctx, "Elasticsearch query results.", zap.Int64("took", data.Took), zap.Int64("hits", data.Hits), zap.Int("documentsCount", len(data.Documents)), zap.Int("bucketsCount", len(data.Buckets)))
 
 		return data, nil
 	}
@@ -92,7 +89,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 		return nil, err
 	}
 
-	log.WithFields(logrus.Fields{"type": res.Error.Type, "reason": res.Error.Reason}).Error("The query returned an error.")
+	log.Error(ctx, "The Elasticsearch query returned an error,", zap.String("type", res.Error.Type), zap.String("reason", res.Error.Reason))
 
 	return nil, fmt.Errorf("%s: %s", res.Error.Type, res.Error.Reason)
 }

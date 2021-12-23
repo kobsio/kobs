@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kobsio/kobs/pkg/api/middleware/httplog"
-
 	"github.com/go-chi/render"
 )
 
@@ -25,8 +23,6 @@ func Render(w http.ResponseWriter, r *http.Request, err error, status int, msg s
 	errResponse := &ErrResponse{
 		Error: msg,
 	}
-
-	httplog.LogEntrySetField(r, "error", msg)
 
 	render.Status(r, status)
 	render.JSON(w, r, errResponse)

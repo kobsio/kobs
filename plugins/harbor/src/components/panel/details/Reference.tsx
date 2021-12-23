@@ -25,7 +25,7 @@ const Reference: React.FunctionComponent<IReferenceProps> = ({
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/harbor/artifact/${name}?projectName=${projectName}&repositoryName=${repositoryName}&artifactReference=${artifactReference}`,
+          `/api/plugins/harbor/${name}/artifact?projectName=${projectName}&repositoryName=${repositoryName}&artifactReference=${artifactReference}`,
           {
             method: 'get',
           },

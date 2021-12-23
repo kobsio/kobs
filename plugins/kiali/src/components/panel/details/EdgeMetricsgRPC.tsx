@@ -52,7 +52,7 @@ const EdgeMetricsgRPC: React.FunctionComponent<IEdgeMetricsgRPCProps> = ({
         }
 
         const response = await fetch(
-          `/api/plugins/kiali/metrics/${name}?url=${encodeURIComponent(
+          `/api/plugins/kiali/${name}/metrics?url=${encodeURIComponent(
             `/kiali/api/namespaces/${targetNode.data?.namespace}/${nodeType}/${nodeName}/metrics?queryTime=${
               times.timeEnd
             }&duration=${times.timeEnd - times.timeStart}${getSteps(

@@ -7,16 +7,16 @@ import TracesListItem from './TracesListItem';
 interface ITracesListProps {
   name: string;
   traces: ITrace[];
-  showDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
-const TracesList: React.FunctionComponent<ITracesListProps> = ({ name, traces, showDetails }: ITracesListProps) => {
+const TracesList: React.FunctionComponent<ITracesListProps> = ({ name, traces, setDetails }: ITracesListProps) => {
   return (
     <Menu>
       <MenuContent>
         <MenuList>
           {traces.map((trace, index) => (
-            <TracesListItem key={trace.traceID} name={name} trace={trace} showDetails={showDetails} />
+            <TracesListItem key={trace.traceID} name={name} trace={trace} setDetails={setDetails} />
           ))}
         </MenuList>
       </MenuContent>

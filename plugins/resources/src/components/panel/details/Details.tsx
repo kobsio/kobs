@@ -10,10 +10,9 @@ import {
   Tabs,
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { IRow } from '@patternfly/react-table';
 import yaml from 'js-yaml';
 
-import { Editor, IResource, Title } from '@kobsio/plugin-core';
+import { Editor, IResource, IResourceRow, Title } from '@kobsio/plugin-core';
 import Actions from './Actions';
 import Dashboards from './Dashboards';
 import Events from './Events';
@@ -23,7 +22,7 @@ import Pods from './Pods';
 
 // getSelector is used to get the label selector for various resources as string. The returned string can be used in
 // a Kubernetes API request to get the all pods, which are matching the label selector.
-const getSelector = (request: IResource, resource: IRow): string => {
+const getSelector = (request: IResource, resource: IResourceRow): string => {
   if (
     request.resource === 'deployments' ||
     request.resource === 'daemonsets' ||
@@ -42,7 +41,7 @@ const getSelector = (request: IResource, resource: IRow): string => {
 
 interface IDetailsProps {
   request: IResource;
-  resource: IRow;
+  resource: IResourceRow;
   close: () => void;
   refetch: () => void;
 }
@@ -56,10 +55,8 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
         <Title
-          title={resource.name.title}
-          subtitle={
-            resource.namespace ? `${resource.namespace.title} (${resource.cluster.title})` : resource.cluster.title
-          }
+          title={resource.name}
+          subtitle={resource.namespace ? `${resource.namespace} (${resource.cluster})` : resource.cluster}
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
@@ -95,9 +92,9 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
           <Tab eventKey="events" title={<TabTitleText>Events</TabTitleText>}>
             <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
               <Events
-                cluster={resource.cluster.title}
-                namespace={resource.namespace ? resource.namespace.title : ''}
-                name={resource.name.title}
+                cluster={resource.cluster}
+                namespace={resource.namespace ? resource.namespace : ''}
+                name={resource.name}
               />
             </div>
           </Tab>
@@ -106,8 +103,8 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ request, resource, cl
             <Tab eventKey="pods" title={<TabTitleText>Pods</TabTitleText>}>
               <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
                 <Pods
-                  cluster={resource.cluster.title}
-                  namespace={resource.namespace ? resource.namespace.title : ''}
+                  cluster={resource.cluster}
+                  namespace={resource.namespace ? resource.namespace : ''}
                   paramName={podSelector ? 'labelSelector' : 'fieldSelector'}
                   param={podSelector ? podSelector : `spec.nodeName=${resource.props.metadata.name}`}
                 />

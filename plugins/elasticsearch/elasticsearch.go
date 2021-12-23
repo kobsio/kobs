@@ -7,19 +7,16 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/elasticsearch/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const Route = "/elasticsearch"
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "elasticsearch"})
-)
 
 // Config is the structure of the configuration for the elasticsearch plugin.
 type Config []instance.Config
@@ -52,28 +49,32 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.WithFields(logrus.Fields{"name": name, "query": query, "timeStart": timeStart, "timeEnd": timeEnd}).Tracef("getLogs")
+	log.Debug(r.Context(), "Get logs parameters.", zap.String("name", name), zap.String("query", query), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
 
 	i := router.getInstance(name)
 	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	data, err := i.GetLogs(r.Context(), query, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		log.Error(r.Context(), "Could not get logs.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get logs")
 		return
 	}
@@ -88,7 +89,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.WithError(err).WithFields(logrus.Fields{"name": cfg.Name}).Fatalf("Could not create Elasticsearch instance")
+			log.Fatal(nil, "Could not create Elasticsearch instance.", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)
@@ -107,7 +108,9 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		instances,
 	}
 
-	router.Get("/logs/{name}", router.getLogs)
+	router.Route("/{name}", func(r chi.Router) {
+		r.Get("/logs", router.getLogs)
+	})
 
 	return router
 }

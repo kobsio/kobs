@@ -60,7 +60,7 @@ const HomePage: React.FunctionComponent = () => {
     <PageSection variant={PageSectionVariants.default}>
       <Grid hasGutter={true}>
         <GridItem sm={12} md={12} lg={3} xl={2} xl2={2}>
-          {authContext.user.hasProfile && (
+          {authContext.user.profile.email && (
             <React.Fragment>
               <Card
                 style={{ cursor: 'pointer' }}
@@ -102,7 +102,7 @@ const HomePage: React.FunctionComponent = () => {
               name={pluginDetails.name}
               displayName={pluginDetails.displayName}
               description={pluginDetails.description}
-              options={pluginDetails.options}
+              pluginOptions={pluginDetails.options}
             />
           ) : activePage === 'account' ? (
             <Account />

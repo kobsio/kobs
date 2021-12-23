@@ -7,18 +7,15 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/log"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Route is the route under which the plugin should be registered in our router for the rest api.
 const Route = "/teams"
-
-var (
-	log = logrus.WithFields(logrus.Fields{"package": "teams"})
-)
 
 // Config is the structure of the configuration for the teams plugin.
 type Config struct{}
@@ -33,13 +30,14 @@ type Router struct {
 // getTeams returns a list of teams for all clusters and namespaces. We always return all teams for all clusters and
 // namespaces. For this we are looping though the loaded clusters and callend the GetTeams function for each one.
 func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
-	log.Tracef("getTeams")
+	log.Debug(r.Context(), "Get team.")
 
 	var teams []team.TeamSpec
 
 	for _, cluster := range router.clusters.Clusters {
 		team, err := cluster.GetTeams(r.Context(), "")
 		if err != nil {
+			log.Error(r.Context(), "Could not get teams.", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get teams")
 			return
 		}
@@ -47,7 +45,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 		teams = append(teams, team...)
 	}
 
-	log.WithFields(logrus.Fields{"count": len(teams)}).Tracef("getTeams")
+	log.Debug(r.Context(), "Get teams result.", zap.Int("teamsCount", len(teams)))
 	render.JSON(w, r, teams)
 }
 
@@ -59,10 +57,11 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 
-	log.WithFields(logrus.Fields{"cluster": clusterName, "namespace": namespace, "name": name}).Tracef("getTeam")
+	log.Debug(r.Context(), "Get team parameters.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
 
 	cluster := router.clusters.GetCluster(clusterName)
 	if cluster == nil {
+		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}

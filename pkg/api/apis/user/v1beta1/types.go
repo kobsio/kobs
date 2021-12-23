@@ -1,6 +1,7 @@
 package v1beta1
 
 import (
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -26,19 +27,40 @@ type UserList struct {
 }
 
 type UserSpec struct {
-	Cluster   string          `json:"cluster,omitempty"`
-	Namespace string          `json:"namespace,omitempty"`
-	Name      string          `json:"name,omitempty"`
-	ID        string          `json:"id"`
-	FullName  string          `json:"fullName"`
-	Email     string          `json:"email"`
-	Position  string          `json:"position,omitempty"`
-	Bio       string          `json:"bio,omitempty"`
-	Teams     []TeamReference `json:"teams,omitempty"`
+	Cluster     string          `json:"cluster,omitempty"`
+	Namespace   string          `json:"namespace,omitempty"`
+	Name        string          `json:"name,omitempty"`
+	ID          string          `json:"id"`
+	Profile     Profile         `json:"profile"`
+	Teams       []TeamReference `json:"teams,omitempty"`
+	Permissions Permissions     `json:"permissions,omitempty"`
+}
+
+type Profile struct {
+	FullName string `json:"fullName"`
+	Email    string `json:"email"`
+	Position string `json:"position,omitempty"`
+	Bio      string `json:"bio,omitempty"`
 }
 
 type TeamReference struct {
 	Cluster   string `json:"cluster,omitempty"`
 	Namespace string `json:"namespace,omitempty"`
 	Name      string `json:"name"`
+}
+
+type Permissions struct {
+	Plugins   []Plugin    `json:"plugins"`
+	Resources []Resources `json:"resources"`
+}
+
+type Plugin struct {
+	Name        string               `json:"name"`
+	Permissions apiextensionsv1.JSON `json:"permissions,omitempty"`
+}
+
+type Resources struct {
+	Clusters   []string `json:"clusters"`
+	Namespaces []string `json:"namespaces"`
+	Resources  []string `json:"resources"`
 }

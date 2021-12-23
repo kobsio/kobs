@@ -10,7 +10,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
   name,
   displayName,
   description,
-  options,
+  pluginOptions,
 }: IPluginPageProps) => {
   return (
     <Switch>
@@ -21,7 +21,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({
         <RepositoriesPage name={name} />
       </Route>
       <Route exact={true} path={`/${name}/artifacts/:projectName/:repositoryName`}>
-        <ArtifactsPage name={name} address={options && options.address ? options.address : ''} />
+        <ArtifactsPage name={name} address={pluginOptions && pluginOptions.address ? pluginOptions.address : ''} />
       </Route>
     </Switch>
   );

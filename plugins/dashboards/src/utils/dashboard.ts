@@ -85,11 +85,7 @@ export const interpolate = (
 // getOptionsFromSearch is used to parse the given search location and return is as options for Prometheus. This is
 // needed, so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we
 // pass him to this page and pass the data via the URL parameters.
-export const getOptionsFromSearch = (
-  search: string,
-  references: IReference[],
-  useDrawer: boolean,
-): IDashboardsOptions => {
+export const getInitialOptions = (search: string, references: IReference[], useDrawer: boolean): IDashboardsOptions => {
   const params = new URLSearchParams(search);
   const dashboard = params.get('dashboard');
 
@@ -151,8 +147,8 @@ export const getPlaceholdersFromSearch = (search: string): IPlaceholders | undef
   return placeholders;
 };
 
-// getDefaultsFromSearch returns the plugins defaults from a given search string.
-export const getDefaultsFromSearch = (search: string): IPluginDefaults => {
+// getInitialDefaults returns the plugins defaults from a given search string.
+export const getInitialDefaults = (search: string): IPluginDefaults => {
   const params = new URLSearchParams(search);
   const cluster = params.get('defaultCluster');
   const namespace = params.get('defaultNamespace');
