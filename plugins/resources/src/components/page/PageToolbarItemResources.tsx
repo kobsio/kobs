@@ -27,24 +27,31 @@ const ToolbarItemResources: React.FunctionComponent<IToolbarItemResourcesProps> 
       onClear={(): void => selectResource('')}
       selections={selectedResources}
       isOpen={showOptions}
-      onFilter={(_, v) => (
-        Object.keys(resources).filter(c => !v || c.includes(v)).
-        map(renderOptions(resources))
-      )}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        Object.keys(resources)
+          .filter((key) => !value || key.includes(value))
+          .map((key) => (
+            <SelectOption
+              key={key}
+              value={key}
+              description={resources[key].isCRD ? `${resources[key].resource}.${resources[key].path}` : undefined}
+            >
+              {resources[key].title}
+            </SelectOption>
+          ))
+      }
     >
-      {Object.keys(resources).map(renderOptions(resources))}
+      {Object.keys(resources).map((key) => (
+        <SelectOption
+          key={key}
+          value={key}
+          description={resources[key].isCRD ? `${resources[key].resource}.${resources[key].path}` : undefined}
+        >
+          {resources[key].title}
+        </SelectOption>
+      ))}
     </Select>
   );
 };
-
-const renderOptions = (resources: IResources) => (key: string) => (
-  <SelectOption
-    key={key}
-    value={key}
-    description={resources[key].isCRD ? `${resources[key].resource}.${resources[key].path}` : undefined}
-  >
-    {resources[key].title}
-  </SelectOption>
-)
 
 export default ToolbarItemResources;

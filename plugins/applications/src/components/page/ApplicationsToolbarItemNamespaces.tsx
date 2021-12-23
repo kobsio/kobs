@@ -43,15 +43,14 @@ const ToolbarItemNamespaces: React.FunctionComponent<IToolbarItemNamespacesProps
       onClear={(): void => selectNamespace('')}
       selections={selectedNamespaces}
       isOpen={showOptions}
-      onFilter={(_, v) => (
-        namespaces.filter(ns => !v || ns.includes(v)).
-        map((namespace: string, index: number) => (
-          <SelectOption key={index} value={namespace} />
-        ))
-      )}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        namespaces
+          .filter((ns) => !value || ns.includes(value))
+          .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
+      }
     >
-      {namespaces.map((namespace, index) => (
-        <SelectOption key={index} value={namespace} />
+      {namespaces.map((namespace) => (
+        <SelectOption key={namespace} value={namespace} />
       ))}
     </Select>
   );

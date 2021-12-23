@@ -44,22 +44,6 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
     );
   }
 
-  if (isError) {
-    <Select
-      variant={SelectVariant.typeaheadMulti}
-      typeAheadAriaLabel="Namespaces"
-      placeholderText="Namespaces"
-      onToggle={(): void => setShow(!show)}
-      onSelect={(e, value): void => selectNamespace(value as string)}
-      onClear={(): void => selectNamespace('')}
-      selections={namespaces}
-      isOpen={show}
-    >
-      {[<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]}
-    </Select>
-  }
-  
-  const dat = (data ?? [])
   return (
     <Select
       variant={SelectVariant.typeaheadMulti}
@@ -70,14 +54,19 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
       onClear={(): void => selectNamespace('')}
       selections={namespaces}
       isOpen={show}
-      onFilter={(_,v) => (
-        dat.filter(ns => !v || ns.includes(v)).
-        map((namespace, index) => (
-          <SelectOption key={index} value={namespace} />
-        ))
-      )}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        data
+          ? data
+              .filter((ns) => !value || ns.includes(value))
+              .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
+          : []
+      }
     >
-      {dat.map((namespace, index) => <SelectOption key={index} value={namespace} />)}
+      {isError
+        ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
+        : data
+        ? data.map((namespace) => <SelectOption key={namespace} value={namespace} />)
+        : []}
     </Select>
   );
 };
