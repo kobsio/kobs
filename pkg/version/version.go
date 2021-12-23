@@ -30,7 +30,7 @@ var versionInfoTmpl = `
 
 // Print returns version information.
 func Print(program string) (string, error) {
-	m := map[string]string{
+	data := map[string]string{
 		"program":   program,
 		"version":   Version,
 		"revision":  Revision,
@@ -39,15 +39,11 @@ func Print(program string) (string, error) {
 		"buildDate": BuildDate,
 		"goVersion": GoVersion,
 	}
-	t, err := template.New("version").Parse(versionInfoTmpl)
-	if err != nil {
-		return "", err
-	}
 
 	var buf bytes.Buffer
-	if err := t.ExecuteTemplate(&buf, "version", m); err != nil {
-		return "", err
-	}
+	tmpl := template.Must(template.New("version").Parse(versionInfoTmpl))
+	tmpl.ExecuteTemplate(&buf, "version", data)
+
 	return strings.TrimSpace(buf.String()), nil
 }
 

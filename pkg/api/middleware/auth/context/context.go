@@ -89,7 +89,7 @@ func (u *User) HasResourceAccess(cluster, namespace, name string) bool {
 
 // GetPluginPermissions returns the custom plugin permissions for a user. For that the name of the plugin must be
 // provided.
-func (u *User) GetPluginPermissions(name string) ([][]byte, error) {
+func (u *User) GetPluginPermissions(name string) [][]byte {
 	var allCustomPermissions [][]byte
 
 	for _, plugin := range u.Permissions.Plugins {
@@ -98,7 +98,7 @@ func (u *User) GetPluginPermissions(name string) ([][]byte, error) {
 		}
 	}
 
-	return allCustomPermissions, nil
+	return allCustomPermissions
 }
 
 // GetUser returns a user from the given context if one is present. Returns the empty string if a user can not be found.

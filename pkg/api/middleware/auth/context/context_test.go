@@ -106,6 +106,15 @@ func TestHasResourceAccess(t *testing.T) {
 	}
 }
 
+func TestGetPluginPermissions(t *testing.T) {
+	user := User{ID: "user1", Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "plugin1"}}}}
+	res1 := user.GetPluginPermissions("plugin1")
+	require.Equal(t, 1, len(res1))
+
+	res2 := user.GetPluginPermissions("plugin2")
+	require.Equal(t, 0, len(res2))
+}
+
 func TestGetUser(t *testing.T) {
 	for _, tc := range []struct {
 		test    string

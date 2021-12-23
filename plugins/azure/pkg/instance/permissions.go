@@ -30,10 +30,7 @@ func (i *Instance) CheckPermissions(r *http.Request, resource, resourceGroup str
 		return err
 	}
 
-	permissions, err := user.GetPluginPermissions(chi.URLParam(r, "name"))
-	if err != nil {
-		return err
-	}
+	permissions := user.GetPluginPermissions(chi.URLParam(r, "name"))
 
 	for _, permission := range permissions {
 		var p []Permissions
