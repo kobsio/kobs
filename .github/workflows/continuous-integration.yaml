@@ -1,0 +1,94 @@
+name: Continuous Integration
+
+on:
+  push:
+    paths-ignore:
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/PULL_REQUEST_TEMPLATE.md'
+      - '.vscode/**'
+      - 'deploy/**'
+      - 'docs/**'
+      - '.dockerignore'
+      - '.editorconfig'
+      - '.gitattributes'
+      - '.gitignore'
+      - 'CHANGELOG.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'mkdocs.yml'
+      - 'README.md'
+
+jobs:
+  go:
+    name: Go
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download Dependencies
+        run: |
+          go mod download
+
+      - name: Test
+        run: |
+          go test -cover ./cmd/... ./pkg/... ./plugins/...
+
+      - name: Build
+        run: |
+          make build
+
+  node:
+    name: Node.js
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: |
+          yarn install
+
+      - name: Lint
+        run: |
+          yarn lint
+
+      - name: Build
+        run: |
+          yarn build
