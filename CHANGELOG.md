@@ -26,6 +26,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#234](https://github.com/kobsio/kobs/pull/234): [azure] Fix json tags in Azure permissions struct.
 - [#242](https://github.com/kobsio/kobs/pull/242): [flux] Fix sync action for Kustomizations / Helm Releases and reload resources when search button is clicked.
 - [#243](https://github.com/kobsio/kobs/pull/243): [resources] Fix reload of resources, when the user clicks on the search button.
+- [#245](https://github.com/kobsio/kobs/pull/245): [klogs] Fix that the returned documents could be out of the selected time range.
 
 ### Changed
 
