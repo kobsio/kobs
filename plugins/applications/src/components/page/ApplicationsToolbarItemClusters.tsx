@@ -25,9 +25,14 @@ const ToolbarItemClusters: React.FunctionComponent<IToolbarItemClustersProps> = 
       onClear={(): void => selectCluster('')}
       selections={selectedClusters}
       isOpen={showOptions}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        clusters
+          .filter((c) => !value || c.includes(value))
+          .map((cluster: string) => <SelectOption key={cluster} value={cluster} />)
+      }
     >
-      {clusters.map((cluster, index) => (
-        <SelectOption key={index} value={cluster} />
+      {clusters.map((cluster) => (
+        <SelectOption key={cluster} value={cluster} />
       ))}
     </Select>
   );

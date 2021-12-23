@@ -54,11 +54,18 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
       onClear={(): void => selectNamespace('')}
       selections={namespaces}
       isOpen={show}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        data
+          ? data
+              .filter((ns) => !value || ns.includes(value))
+              .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
+          : []
+      }
     >
       {isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
         : data
-        ? data.map((namespace, index) => <SelectOption key={index} value={namespace} />)
+        ? data.map((namespace) => <SelectOption key={namespace} value={namespace} />)
         : []}
     </Select>
   );
