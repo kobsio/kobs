@@ -184,7 +184,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 
 	// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is used
 	// to render the distribution chart, which shows how many documents/rows are available within a bucket.
-	sqlQueryBuckets := fmt.Sprintf(`SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data , count(*) AS count_data FROM %s.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) %s GROUP BY interval_data ORDER BY interval_data WITH FILL FROM toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) TO toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) STEP %d SETTINGS skip_unavailable_shards = 1`, interval, i.database, timeStart, timeEnd, conditions, timeStart, interval, timeEnd, interval, interval)
+	sqlQueryBuckets := fmt.Sprintf(`SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data, count(*) AS count_data FROM %s.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) %s GROUP BY interval_data ORDER BY interval_data WITH FILL FROM toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) TO toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) STEP %d SETTINGS skip_unavailable_shards = 1`, interval, i.database, timeStart, timeEnd, conditions, timeStart, interval, timeEnd, interval, interval)
 	log.Debug(ctx, "SQL query buckets.", zap.String("query", sqlQueryBuckets))
 	rowsBuckets, err := i.client.QueryContext(ctx, sqlQueryBuckets)
 	if err != nil {
@@ -223,10 +223,12 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	if parsedOrder == "timestamp DESC" {
 		for i := len(buckets) - 1; i >= 0; i-- {
 			if count < limit && buckets[i].Count > 0 {
+				bucketTimeStart, bucketTimeEnd := getBucketTimes(interval, buckets[i].Interval, timeStart, timeEnd)
+
 				if timeConditions == "" {
-					timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", buckets[i].Interval, buckets[i].Interval+interval)
+					timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", bucketTimeStart, bucketTimeEnd)
 				} else {
-					timeConditions = fmt.Sprintf("%s OR (timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", timeConditions, buckets[i].Interval, buckets[i].Interval+interval)
+					timeConditions = fmt.Sprintf("%s OR (timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", timeConditions, bucketTimeStart, bucketTimeEnd)
 				}
 			}
 
@@ -235,10 +237,12 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	} else if parsedOrder == "timestamp ASC" {
 		for i := 0; i < len(buckets); i++ {
 			if count < limit && buckets[i].Count > 0 {
+				bucketTimeStart, bucketTimeEnd := getBucketTimes(interval, buckets[i].Interval, timeStart, timeEnd)
+
 				if timeConditions == "" {
-					timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", buckets[i].Interval, buckets[i].Interval+interval)
+					timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", bucketTimeStart, bucketTimeEnd)
 				} else {
-					timeConditions = fmt.Sprintf("%s OR (timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", timeConditions, buckets[i].Interval, buckets[i].Interval+interval)
+					timeConditions = fmt.Sprintf("%s OR (timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", timeConditions, bucketTimeStart, bucketTimeEnd)
 				}
 			}
 
@@ -247,10 +251,12 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	} else {
 		for i := 0; i < len(buckets); i++ {
 			if buckets[i].Count > 0 {
+				bucketTimeStart, bucketTimeEnd := getBucketTimes(interval, buckets[i].Interval, timeStart, timeEnd)
+
 				if timeConditions == "" {
-					timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", buckets[i].Interval, buckets[i].Interval+interval)
+					timeConditions = fmt.Sprintf("(timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", bucketTimeStart, bucketTimeEnd)
 				} else {
-					timeConditions = fmt.Sprintf("%s OR (timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", timeConditions, buckets[i].Interval, buckets[i].Interval+interval)
+					timeConditions = fmt.Sprintf("%s OR (timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d))", timeConditions, bucketTimeStart, bucketTimeEnd)
 				}
 			}
 

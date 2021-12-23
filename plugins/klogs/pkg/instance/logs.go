@@ -211,3 +211,17 @@ func parseOrder(order, orderBy string, materializedColumns []string) string {
 
 	return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')] %s, fields_number.value[indexOf(fields_number.key, '%s')] %s", orderBy, order, orderBy, order)
 }
+
+// getBucketTimes determines the start and end time of an bucket. This is necessary, because the first and last bucket
+// time can be outside of the user defined time range.
+func getBucketTimes(interval, bucketTime, timeStart, timeEnd int64) (int64, int64) {
+	if bucketTime < timeStart {
+		return timeStart, timeStart + interval - (timeStart - bucketTime)
+	}
+
+	if bucketTime+interval > timeEnd {
+		return bucketTime, bucketTime + timeEnd - bucketTime
+	}
+
+	return bucketTime, bucketTime + interval
+}
