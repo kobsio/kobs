@@ -162,11 +162,16 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 		instances = append(instances, instance)
 
+		var options map[string]interface{}
+		options = make(map[string]interface{})
+		options["publicAddress"] = cfg.PublicAddress
+
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,
 			DisplayName: cfg.DisplayName,
 			Description: cfg.Description,
 			Type:        "jaeger",
+			Options:     options,
 		})
 	}
 

@@ -19,6 +19,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#224](https://github.com/kobsio/kobs/pull/224): [harbor] Add support for multi-arch images.
 - [#226](https://github.com/kobsio/kobs/pull/226): [klogs] Add option to sort fields.
 - [#228](https://github.com/kobsio/kobs/pull/228): [azure] :warning: _Breaking change:_ :warning: Add support for virtual machine scale sets and change required values to display metrics from Azure.
+- [#246](https://github.com/kobsio/kobs/pull/246): [jaeger] Add new configuration field `publicAddress`. When this options is set we add a link to the Jaeger UI.
 
 ### Fixed
 

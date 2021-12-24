@@ -11,13 +11,14 @@ import (
 
 // Config is the structure of the configuration for a single Jaeger instance.
 type Config struct {
-	Name        string `json:"name"`
-	DisplayName string `json:"displayName"`
-	Description string `json:"description"`
-	Address     string `json:"address"`
-	Username    string `json:"username"`
-	Password    string `json:"password"`
-	Token       string `json:"token"`
+	Name          string `json:"name"`
+	DisplayName   string `json:"displayName"`
+	Description   string `json:"description"`
+	Address       string `json:"address"`
+	Username      string `json:"username"`
+	Password      string `json:"password"`
+	Token         string `json:"token"`
+	PublicAddress string `json:"publicAddress"`
 }
 
 // ResponseError is the structure for a failed Jaeger API request.

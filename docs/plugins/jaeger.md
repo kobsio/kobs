@@ -30,6 +30,7 @@ plugins:
 | username | string | Username to access a Jaeger instance via basic authentication. | No |
 | password | string | Password to access a Jaeger instance via basic authentication. | No |
 | token | string | Token to access a Jaeger instance via token based authentication. | No |
+| publicAddress | string | The public accessible address of the Jaeger instance. | No |
 
 ## Options
 

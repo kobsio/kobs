@@ -1,6 +1,6 @@
 import { AccordionContent, AccordionItem, AccordionToggle } from '@patternfly/react-core';
-import React, { useState } from 'react';
 import { ExclamationIcon } from '@patternfly/react-icons';
+import React from 'react';
 
 import { IProcess, ISpan } from '../../../utils/interfaces';
 import SpanLogs from './SpanLogs';
@@ -15,11 +15,19 @@ export interface ISpanProps {
   duration: number;
   startTime: number;
   processes: Record<string, IProcess>;
+  expanded: boolean;
+  setExpanded: (spanID: string) => void;
 }
 
-const Span: React.FunctionComponent<ISpanProps> = ({ name, span, duration, startTime, processes }: ISpanProps) => {
-  const [expanded, setExpanded] = useState<boolean>(false);
-
+const Span: React.FunctionComponent<ISpanProps> = ({
+  name,
+  span,
+  duration,
+  startTime,
+  processes,
+  expanded,
+  setExpanded,
+}: ISpanProps) => {
   const offset = ((span.startTime - startTime) / 1000 / (duration / 1000)) * 100;
   const fill = (span.duration / 1000 / (duration / 1000)) * 100;
 
@@ -72,7 +80,7 @@ const Span: React.FunctionComponent<ISpanProps> = ({ name, span, duration, start
         id={`span-${span.spanID}`}
         className="kobsio-jaeger-accordion-toggle"
         style={{ paddingLeft: `${(span.depth + 1) * PADDING}px` }}
-        onClick={(): void => setExpanded(!expanded)}
+        onClick={(): void => setExpanded(span.spanID)}
         isExpanded={expanded}
       >
         <span>

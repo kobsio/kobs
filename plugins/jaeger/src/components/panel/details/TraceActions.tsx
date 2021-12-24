@@ -10,9 +10,10 @@ import {
   ModalVariant,
   TextInput,
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { IPluginsContext, PluginsContext } from '@kobsio/plugin-core';
 import { ITrace } from '../../../utils/interfaces';
 
 interface ITraceActionsProps {
@@ -21,9 +22,12 @@ interface ITraceActionsProps {
 }
 
 const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ name, trace }: ITraceActionsProps) => {
+  const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [compareTrace, setCompareTrace] = useState<string>('');
+
+  const pluginDetails = pluginsContext.getPluginDetails(name);
 
   const compare = (): void => {
     setShowDropdown(false);
@@ -37,6 +41,40 @@ const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ name, trace
     setShowDropdown(false);
   };
 
+  const dropdownItems = [
+    <DropdownItem key={0} component={<Link to={`/${name}/trace/${trace.traceID}`}>Details</Link>} />,
+    <DropdownItem key={1} onClick={compare}>
+      Compare
+    </DropdownItem>,
+    <DropdownItem key={2} onClick={copy}>
+      Copy
+    </DropdownItem>,
+    <DropdownItem
+      key={3}
+      component={
+        <a
+          href={URL.createObjectURL(new Blob([JSON.stringify({ data: [trace] }, null, 2)]))}
+          download={`${trace.traceID}.json`}
+        >
+          JSON
+        </a>
+      }
+    />,
+  ];
+
+  if (pluginDetails?.options?.publicAddress) {
+    dropdownItems.push(
+      <DropdownItem
+        key={4}
+        component={
+          <a href={`${pluginDetails?.options?.publicAddress}/trace/${trace.traceID}`} target="_blank" rel="noreferrer">
+            Open in Jaeger
+          </a>
+        }
+      />,
+    );
+  }
+
   return (
     <React.Fragment>
       <Dropdown
@@ -45,26 +83,7 @@ const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ name, trace
         isOpen={showDropdown}
         isPlain={true}
         position="right"
-        dropdownItems={[
-          <DropdownItem key={0} component={<Link to={`/${name}/trace/${trace.traceID}`}>Details</Link>} />,
-          <DropdownItem key={1} onClick={compare}>
-            Compare
-          </DropdownItem>,
-          <DropdownItem key={2} onClick={copy}>
-            Copy
-          </DropdownItem>,
-          <DropdownItem
-            key={3}
-            component={
-              <a
-                href={URL.createObjectURL(new Blob([JSON.stringify({ data: [trace] }, null, 2)]))}
-                download={`${trace.traceID}.json`}
-              >
-                JSON
-              </a>
-            }
-          />,
-        ]}
+        dropdownItems={dropdownItems}
       />
 
       <Modal
