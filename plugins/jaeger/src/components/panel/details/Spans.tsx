@@ -14,6 +14,19 @@ export interface ISpansProps {
 const Spans: React.FunctionComponent<ISpansProps> = ({ name, trace }: ISpansProps) => {
   const refContainer = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0);
+  const [expanded, setExpanded] = useState<string[]>([]);
+
+  const changeExpanded = (spanID: string): void => {
+    let tmpExpanded: string[] = [...expanded];
+
+    if (tmpExpanded.includes(spanID)) {
+      tmpExpanded = tmpExpanded.filter((s) => s !== spanID);
+    } else {
+      tmpExpanded.push(spanID);
+    }
+
+    setExpanded(tmpExpanded);
+  };
 
   useEffect(() => {
     if (refContainer.current?.offsetHeight) {
@@ -64,11 +77,14 @@ const Spans: React.FunctionComponent<ISpansProps> = ({ name, trace }: ISpansProp
               data={trace.spans}
               itemContent={(index, span): React.ReactNode => (
                 <Span
+                  key={span.spanID}
                   name={name}
                   span={span}
                   duration={trace.duration}
                   startTime={trace.startTime}
                   processes={trace.processes}
+                  expanded={expanded.includes(span.spanID)}
+                  setExpanded={changeExpanded}
                 />
               )}
             />
