@@ -90,9 +90,9 @@ The following options can be used for a panel with the Azure plugin:
 
 ### Permissions
 
-You can define fine grained permissions to access your Azure resources via kobs. The permissions are defined via the `permissions.cusomt` field of a [Team](../resources/teams.md). Each user which is member of this team, will then get the defined permissions.
+You can define fine grained permissions to access your Azure resources via kobs. The permissions are defined via the `permissions.plugins[].permissions` field of a [User](../resources/users.md) or [Team](../resources/teams.md). The team membership of an user is defined via the values of the `X-Auth-Request-Groups` header.
 
-In the following example each member of `team1` will get access to all Azure resource, while members of `team2` can only access container instances in the `development` resource group:
+In the following example each member of `team1@kobs.io` will get access to all Azure resource, while members of `team2@kobs.io` can only access container instances in the `development` resource group:
 
 ??? note "team1"
 
@@ -103,17 +103,10 @@ In the following example each member of `team1` will get access to all Azure res
     metadata:
       name: team1
     spec:
+      id: team1@kobs.io
       permissions:
         plugins:
-          - "*"
-        resources:
-          - clusters:
-              - "*"
-            namespaces:
-              - "*"
-            resources:
-              - "*"
-        custom:
+          - name: "*"
           - name: azure
             permissions:
               - resources:
@@ -122,6 +115,14 @@ In the following example each member of `team1` will get access to all Azure res
                   - "*"
                 verbs:
                   - "*"
+        resources:
+          - clusters:
+              - "*"
+            namespaces:
+              - "*"
+            resources:
+              - "*"
+        custom:
     ```
 
 ??? note "team2"
@@ -133,17 +134,10 @@ In the following example each member of `team1` will get access to all Azure res
     metadata:
       name: team2
     spec:
+      id: team1@kobs.io
       permissions:
         plugins:
-          - "*"
-        resources:
-          - clusters:
-              - "*"
-            namespaces:
-              - "*"
-            resources:
-              - "*"
-        custom:
+          - name: "*"
           - name: azure
             permissions:
               - resources:
@@ -152,6 +146,13 @@ In the following example each member of `team1` will get access to all Azure res
                   - "development"
                 verbs:
                   - "*"
+        resources:
+          - clusters:
+              - "*"
+            namespaces:
+              - "*"
+            resources:
+              - "*"
     ```
 
 The `*` value is a special value, which allows access to all resources, resource groups and action. The following values can also be used for resources and verbs:
