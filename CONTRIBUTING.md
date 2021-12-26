@@ -121,6 +121,12 @@ When you are adding a new package and want to output some log line your can use 
 
 The Go code is formatted using [`gofmt`](https://golang.org/cmd/gofmt/).
 
+For testing we are using [testify](https://github.com/stretchr/testify) and to generate the mocks we are using [mockery](https://github.com/vektra/mockery). The mocks should be placed in a seperate file within the same package and the file should include a `_mock.go`  prefix. for example if you want to generate the mocks for the `Instance` interface in the Grafana plugin, the following command can be used:
+
+```sh
+mockery --name Instance --dir plugins/grafana/pkg/instance --inpackage --filename instance_mock.go
+```
+
 #### Plugins
 
 We are using [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) to manage the plugins. All first party plugins for kobs are available in the `plugins` directory. They are build when you run `yarn start` or `yarn build`. If you just want to build the plugins you can run `yarn plugin`.
