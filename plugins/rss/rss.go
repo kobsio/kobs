@@ -3,8 +3,8 @@ package rss
 import (
 	"net/http"
 	"sync"
+	"time"
 
-	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/rss/pkg/feed"
@@ -21,14 +21,17 @@ const Route = "/rss"
 // Config is the structure of the configuration for the rss plugin.
 type Config struct{}
 
-// Router implements the router for the resources plugin, which can be registered in the router for our rest api.
+// Router implements the router for the rss plugin, which can be registered in the router for our rest api. It contains
+// the api routes for the rss plugin and it's configuration.
 type Router struct {
 	*chi.Mux
-	clusters *clusters.Clusters
-	config   Config
+	config Config
+	client *http.Client
 }
 
-// getFeed returns a feed with the retrieved items from the given links.
+// getFeed returns a feed with the retrieved items from the given links. A user can specify multiple urls of rss feeds
+// and an optional sortBy parameter. We try to get the items form all the specified fields in parallel and then
+// converting them to our custom feed item structure.
 func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 	urls := r.URL.Query()["url"]
 	sortBy := r.URL.Query().Get("sortBy")
@@ -42,6 +45,8 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 	for _, url := range urls {
 		go func(url string) {
 			fp := gofeed.NewParser()
+			fp.Client = router.client
+
 			feed, err := fp.ParseURL(url)
 			if err != nil {
 				log.Error(r.Context(), "Error while getting feed.", zap.Error(err))
@@ -63,8 +68,9 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, items)
 }
 
-// Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+// Register returns a new router which can be used in the router for the kobs rest api. The configuration for the rss
+// plugin is always the same and can not be changed by the user.
+func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	plugins.Append(plugin.Plugin{
 		Name:        "rss",
 		DisplayName: "RSS",
@@ -74,8 +80,10 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
 		config,
+		&http.Client{
+			Timeout: 30 * time.Second,
+		},
 	}
 
 	router.Get("/feed", router.getFeed)

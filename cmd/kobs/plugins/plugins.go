@@ -100,8 +100,8 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	techdocsRouter := techdocs.Register(clusters, router.plugins, config.TechDocs)
 	azureRouter := azure.Register(clusters, router.plugins, config.Azure)
 	sqlRouter := sql.Register(clusters, router.plugins, config.SQL)
-	markdownRouter := markdown.Register(clusters, router.plugins, config.Markdown)
-	rssRouter := rss.Register(clusters, router.plugins, config.RSS)
+	markdownRouter := markdown.Register(router.plugins, config.Markdown)
+	rssRouter := rss.Register(router.plugins, config.RSS)
 
 	// Register all plugins
 	router.Mount(resources.Route, resourcesRouter)
