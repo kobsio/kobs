@@ -22,6 +22,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#246](https://github.com/kobsio/kobs/pull/246): [jaeger] Add new configuration field `publicAddress`. When this options is set we add a link to the Jaeger UI.
 - [#256](https://github.com/kobsio/kobs/pull/256): [grafana] Add tests for Grafana plugin.
 - [#257](https://github.com/kobsio/kobs/pull/257): Add [codecov.io](https://about.codecov.io) for code coverage.
+- [#258](https://github.com/kobsio/kobs/pull/258): [rss] Add test for RSS plugin.
 
 ### Fixed
 
