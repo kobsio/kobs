@@ -3,7 +3,6 @@ package grafana
 import (
 	"net/http"
 
-	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/log"
@@ -22,16 +21,17 @@ const (
 // Config is the structure of the configuration for the grafana plugin.
 type Config []instance.Config
 
-// Router implements the router for the resources plugin, which can be registered in the router for our rest api.
+// Router implements the router for the Grafana plugin, which can be registered in the router for our rest api. Next to
+// the http routes it also contains a list of all registered instances for the Grafana plugin.
 type Router struct {
 	*chi.Mux
-	clusters  *clusters.Clusters
-	instances []*instance.Instance
+	Instances []instance.Instance
 }
 
-func (router *Router) getInstance(name string) *instance.Instance {
-	for _, i := range router.instances {
-		if i.Name == name {
+// getInstance returns an instance by it's name.
+func (router *Router) getInstance(name string) instance.Instance {
+	for _, i := range router.Instances {
+		if i.GetName() == name {
 			return i
 		}
 	}
@@ -39,6 +39,9 @@ func (router *Router) getInstance(name string) *instance.Instance {
 	return nil
 }
 
+// getDashboards returns a list of dashboards. If the request contains a list of "uids", this endpoint returns a list of
+// dashboards for the provided uids. If the request doesn't contain a list of uids and an optional "query" parameter,
+// this endpoint is used to search all dashboards, which are matching the provided query term.
 func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
@@ -63,7 +66,9 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			dashboards = append(dashboards, *dashboard)
+			if dashboard != nil {
+				dashboards = append(dashboards, *dashboard)
+			}
 		}
 
 		render.JSON(w, r, dashboards)
@@ -80,16 +85,14 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, dashboards)
 }
 
-// Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
-	var instances []*instance.Instance
+// Register returns a new router for the Grafana plugin, which can be used in the router for the kobs rest api. For each
+// instance we are adding the "internalAddress" and the "publicAddress" to the options, so that they can be used in the
+// frontend.
+func Register(plugins *plugin.Plugins, config Config) chi.Router {
+	var instances []instance.Instance
 
 	for _, cfg := range config {
-		instance, err := instance.New(cfg)
-		if err != nil {
-			log.Fatal(nil, "Could not create Grafana instance.", zap.Error(err), zap.String("name", cfg.Name))
-		}
-
+		instance := instance.New(cfg)
 		instances = append(instances, instance)
 
 		var options map[string]interface{}
@@ -108,7 +111,6 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
 		instances,
 	}
 

@@ -92,7 +92,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	jaegerRouter := jaeger.Register(clusters, router.plugins, config.Jaeger)
 	kialiRouter := kiali.Register(clusters, router.plugins, config.Kiali)
 	istioRouter := istio.Register(clusters, router.plugins, config.Istio, prometheusInstances, klogsInstances)
-	grafanaRouter := grafana.Register(clusters, router.plugins, config.Grafana)
+	grafanaRouter := grafana.Register(router.plugins, config.Grafana)
 	harborRouter := harbor.Register(clusters, router.plugins, config.Harbor)
 	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
 	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
