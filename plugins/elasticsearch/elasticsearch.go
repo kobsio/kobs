@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/log"
@@ -21,16 +20,17 @@ const Route = "/elasticsearch"
 // Config is the structure of the configuration for the elasticsearch plugin.
 type Config []instance.Config
 
-// Router implements the router for the resources plugin, which can be registered in the router for our rest api.
+// Router implements the router for the Elasticsearch plugin, which can be registered in the router for our rest api.
+// Next to the routes for the Elasticsearch plugin it also contains a list of all configured Elasticsearch instances.
 type Router struct {
 	*chi.Mux
-	clusters  *clusters.Clusters
-	instances []*instance.Instance
+	instances []instance.Instance
 }
 
-func (router *Router) getInstance(name string) *instance.Instance {
+// getInstance returns an instance by it's name.
+func (router *Router) getInstance(name string) instance.Instance {
 	for _, i := range router.instances {
-		if i.Name == name {
+		if i.GetName() == name {
 			return i
 		}
 	}
@@ -61,14 +61,14 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
 		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse start time")
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
 		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse end time")
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
@@ -83,15 +83,11 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
-	var instances []*instance.Instance
+func Register(plugins *plugin.Plugins, config Config) chi.Router {
+	var instances []instance.Instance
 
 	for _, cfg := range config {
-		instance, err := instance.New(cfg)
-		if err != nil {
-			log.Fatal(nil, "Could not create Elasticsearch instance.", zap.Error(err), zap.String("name", cfg.Name))
-		}
-
+		instance := instance.New(cfg)
 		instances = append(instances, instance)
 
 		plugins.Append(plugin.Plugin{
@@ -104,7 +100,6 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
 		instances,
 	}
 
