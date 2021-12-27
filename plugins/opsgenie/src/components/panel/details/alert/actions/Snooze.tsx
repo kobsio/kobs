@@ -17,11 +17,18 @@ import { IAlert, IMessage } from '../../../../../utils/interfaces';
 interface ISnoozeProps {
   name: string;
   alert: IAlert;
+  refetch: () => void;
   hideDropdown: () => void;
   setMessage: (message: IMessage) => void;
 }
 
-const Snooze: React.FunctionComponent<ISnoozeProps> = ({ name, alert, hideDropdown, setMessage }: ISnoozeProps) => {
+const Snooze: React.FunctionComponent<ISnoozeProps> = ({
+  name,
+  alert,
+  refetch,
+  hideDropdown,
+  setMessage,
+}: ISnoozeProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [duration, setDuration] = useState<string>('1h');
 
@@ -36,6 +43,7 @@ const Snooze: React.FunctionComponent<ISnoozeProps> = ({ name, alert, hideDropdo
 
       if (response.status >= 200 && response.status < 300) {
         setShowModal(false);
+        refetch();
         setMessage({
           title: `Alert ${alert.message} was snoozed for ${duration}`,
           variant: AlertVariant.success,

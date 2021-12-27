@@ -22,10 +22,11 @@ import { formatTimeWrapper } from '../../../../utils/helpers';
 export interface IAlertProps {
   name: string;
   alert: IAlert;
+  refetch: () => void;
   close: () => void;
 }
 
-const Alert: React.FunctionComponent<IAlertProps> = ({ name, alert, close }: IAlertProps) => {
+const Alert: React.FunctionComponent<IAlertProps> = ({ name, alert, refetch, close }: IAlertProps) => {
   const [activeTab, setActiveTab] = useState<string>('details');
 
   return (
@@ -37,7 +38,7 @@ const Alert: React.FunctionComponent<IAlertProps> = ({ name, alert, close }: IAl
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
-          <Actions name={name} alert={alert} />
+          <Actions name={name} alert={alert} refetch={refetch} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>

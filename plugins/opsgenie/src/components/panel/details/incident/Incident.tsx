@@ -22,10 +22,11 @@ import { formatTimeWrapper } from '../../../../utils/helpers';
 export interface IIncidentProps {
   name: string;
   incident: IIncident;
+  refetch: () => void;
   close: () => void;
 }
 
-const Incident: React.FunctionComponent<IIncidentProps> = ({ name, incident, close }: IIncidentProps) => {
+const Incident: React.FunctionComponent<IIncidentProps> = ({ name, incident, refetch, close }: IIncidentProps) => {
   const [activeTab, setActiveTab] = useState<string>('timeline');
 
   return (
@@ -37,7 +38,7 @@ const Incident: React.FunctionComponent<IIncidentProps> = ({ name, incident, clo
           size="lg"
         />
         <DrawerActions style={{ padding: 0 }}>
-          <Actions name={name} incident={incident} />
+          <Actions name={name} incident={incident} refetch={refetch} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>

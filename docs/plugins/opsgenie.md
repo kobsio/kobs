@@ -19,10 +19,7 @@ plugins:
       apiUrl: api.eu.opsgenie.com
       apiKey: ${OPSGENIE_API_KEY}
       url: https://<your-organisation>.app.eu.opsgenie.com
-      actions:
-        acknowledge: true
-        snooze: true
-        close: true
+      permissionsEnabled: false
 ```
 
 | Field | Type | Description | Required |
@@ -33,9 +30,7 @@ plugins:
 | apiKey | string | API Key for the Opsgenie API. More information can be found at [API key management](https://support.atlassian.com/opsgenie/docs/api-key-management/). | Yes |
 | apiUrl | string | API URL for the Opsgenie API. Must be `api.opsgenie.com` or `api.eu.opsgenie.com`. | Yes |
 | url | string | The address for the Opsgenie account of your organisation. | No |
-| actions.acknowledge | boolean | Allow users to acknowledge Opsgenie alerts via kobs. | No |
-| actions.snooze | boolean | Allow users to snooze Opsgenie alerts via kobs. | No |
-| actions.close | boolean | Allow users to close Opsgenie alerts via kobs. | No |
+| permissionsEnabled | boolean | Enable / disable the permission handling for the Opsgenie plugin. More information regarding the permission handling can be found in the [permissions](#permissions) section of the documentation. | No |
 
 ## Options
 
@@ -77,3 +72,28 @@ spec:
     kobs automatically adds the `createdAt >= <selected-start-time> AND createdAt <= <selected-end-time>` to all Opsgenie queries, so that only results for the selected time range are shown.
 
     This behaviour can be overwritten with the `interval` property. If the `interval` property is provided, we add `createdAt >= <now - interval> AND createdAt <= <now>`.
+
+## Usage
+
+### Permissions
+
+When the auth middleware for kobs is enabled, it is possible to set the permissions for a user in the Opsgenie plugin. This way you can control if a user is allowed to use several actions for alerts / incidents, like closing alerts or resolving incidents.
+
+For the Opsgenie plugin the following permissions can be set:  `acknowledgeAlert`, `snoozeAlert`, `closeAlert`, `resolveIncident` and `closeIncident`. The specical value `*` can be used to allow all actions for a user / team.
+
+For example all members of the following team can acknowledge, snooze and close alerts, but they are not allowed to resolve or close incidents.
+
+```yaml
+---
+apiVersion: kobs.io/v1beta1
+kind: Team
+spec:
+  id: team1@kobs.io
+  permissions:
+    plugins:
+      - name: "opsgenie"
+        permissions:
+          - acknowledgeAlert
+          - snoozeAlert
+          - closeAlert
+```

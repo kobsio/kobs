@@ -9,16 +9,25 @@ import { formatTimeWrapper } from '../../utils/helpers';
 interface IAlertsItemProps {
   name: string;
   alert: IAlert;
+  refetch: () => void;
   setDetails?: (details: React.ReactNode) => void;
 }
 
-const AlertsItem: React.FunctionComponent<IAlertsItemProps> = ({ name, alert, setDetails }: IAlertsItemProps) => {
+const AlertsItem: React.FunctionComponent<IAlertsItemProps> = ({
+  name,
+  alert,
+  refetch,
+  setDetails,
+}: IAlertsItemProps) => {
   return (
     <MenuItem
       description={<Infos alert={alert} />}
       onClick={
         setDetails
-          ? (): void => setDetails(<Alert name={name} alert={alert} close={(): void => setDetails(undefined)} />)
+          ? (): void =>
+              setDetails(
+                <Alert name={name} alert={alert} refetch={refetch} close={(): void => setDetails(undefined)} />,
+              )
           : undefined
       }
     >
