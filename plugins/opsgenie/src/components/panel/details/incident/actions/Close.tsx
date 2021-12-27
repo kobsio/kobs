@@ -1,28 +1,28 @@
 import { AlertVariant, DropdownItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IAlert, IMessage } from '../../../../../utils/interfaces';
+import { IIncident, IMessage } from '../../../../../utils/interfaces';
 
-interface IAcknowledgeProps {
+interface ICloseProps {
   name: string;
-  alert: IAlert;
+  incident: IIncident;
   refetch: () => void;
   hideDropdown: () => void;
   setMessage: (message: IMessage) => void;
 }
 
-const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
+const Close: React.FunctionComponent<ICloseProps> = ({
   name,
-  alert,
+  incident,
   refetch,
   hideDropdown,
   setMessage,
-}: IAcknowledgeProps) => {
-  const acknowledge = async (): Promise<void> => {
+}: ICloseProps) => {
+  const close = async (): Promise<void> => {
     hideDropdown();
 
     try {
-      const response = await fetch(`/api/plugins/opsgenie/${name}/alert/acknowledge?id=${alert.id}`, {
+      const response = await fetch(`/api/plugins/opsgenie/${name}/incident/close?id=${incident.id}`, {
         method: 'get',
       });
       const json = await response.json();
@@ -30,7 +30,7 @@ const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
       if (response.status >= 200 && response.status < 300) {
         refetch();
         setMessage({
-          title: `Alert ${alert.message} was acknowledge`,
+          title: `Incident ${incident.message} was closed`,
           variant: AlertVariant.success,
         });
       } else {
@@ -45,7 +45,7 @@ const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
     }
   };
 
-  return <DropdownItem onClick={acknowledge}>Acknowledge</DropdownItem>;
+  return <DropdownItem onClick={close}>Close</DropdownItem>;
 };
 
-export default Acknowledge;
+export default Close;

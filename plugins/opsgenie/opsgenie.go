@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/kobsio/kobs/pkg/api/clusters"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -27,13 +26,12 @@ type Config []instance.Config
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	clusters  *clusters.Clusters
-	instances []*instance.Instance
+	instances []instance.Instance
 }
 
-func (router *Router) getInstance(name string) *instance.Instance {
+func (router *Router) getInstance(name string) instance.Instance {
 	for _, i := range router.instances {
-		if i.Name == name {
+		if i.GetName() == name {
 			return i
 		}
 	}
@@ -226,13 +224,6 @@ func (router *Router) getIncidentTimeline(w http.ResponseWriter, r *http.Request
 }
 
 func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
-	user, err := authContext.GetUser(r.Context())
-	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to acknowledge the alert.", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to acknowledge the alert")
-		return
-	}
-
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
@@ -245,9 +236,16 @@ func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !i.Actions.Acknowledge {
-		log.Warn(r.Context(), "It is not allowed to acknowledge alerts.")
-		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to acknowledge alerts")
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to acknowledge the alert.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to acknowledge the alert")
+		return
+	}
+
+	if err := i.CheckPermissions(name, user, "acknowledgeAlert"); err != nil {
+		log.Warn(r.Context(), "User is not allowed to acknowledge alerts.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to acknowledge alerts")
 		return
 	}
 
@@ -262,13 +260,6 @@ func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 }
 
 func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
-	user, err := authContext.GetUser(r.Context())
-	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to snooze the alert.", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to snooze the alert")
-		return
-	}
-
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 	snooze := r.URL.Query().Get("snooze")
@@ -282,9 +273,16 @@ func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !i.Actions.Snooze {
-		log.Warn(r.Context(), "It is not allowed to snooze alerts.")
-		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to snooze alerts")
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to snooze the alert.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to snooze the alert")
+		return
+	}
+
+	if err := i.CheckPermissions(name, user, "snoozeAlert"); err != nil {
+		log.Warn(r.Context(), "User is not allowed to snooze alerts.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to snooze alerts")
 		return
 	}
 
@@ -305,13 +303,6 @@ func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 }
 
 func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
-	user, err := authContext.GetUser(r.Context())
-	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to close the alert.", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to close the alert")
-		return
-	}
-
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
@@ -324,9 +315,16 @@ func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !i.Actions.Close {
-		log.Warn(r.Context(), "It is not allowed to close alerts.")
-		errresponse.Render(w, r, nil, http.StatusForbidden, "It is not allowed to close alerts")
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to close the alert.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to close the alert")
+		return
+	}
+
+	if err := i.CheckPermissions(name, user, "closeAlert"); err != nil {
+		log.Warn(r.Context(), "User is not allowed to close alerts.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to close alerts")
 		return
 	}
 
@@ -340,9 +338,81 @@ func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, nil)
 }
 
+func (router *Router) resolveIncident(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	id := r.URL.Query().Get("id")
+
+	log.Debug(r.Context(), "Resolve incident parameters.", zap.String("name", name), zap.String("id", id))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to resolve the incident.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to resolve the incident")
+		return
+	}
+
+	if err := i.CheckPermissions(name, user, "resolveIncident"); err != nil {
+		log.Warn(r.Context(), "User is not allowed to resolve incidents.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to resolve incidents")
+		return
+	}
+
+	err = i.ResolveIncident(r.Context(), id, user.ID)
+	if err != nil {
+		log.Error(r.Context(), "Could not resolve incidents.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not resolve incident")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
+func (router *Router) closeIncident(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	id := r.URL.Query().Get("id")
+
+	log.Debug(r.Context(), "Close incident parameters.", zap.String("name", name), zap.String("id", id))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to close the incident.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to close the incident")
+		return
+	}
+
+	if err := i.CheckPermissions(name, user, "closeIncident"); err != nil {
+		log.Warn(r.Context(), "User is not allowed to close incidents.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to close incidents")
+		return
+	}
+
+	err = i.CloseIncident(r.Context(), id, user.ID)
+	if err != nil {
+		log.Error(r.Context(), "Could not close incident.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not close incident")
+		return
+	}
+
+	render.JSON(w, r, nil)
+}
+
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
-	var instances []*instance.Instance
+func Register(plugins *plugin.Plugins, config Config) chi.Router {
+	var instances []instance.Instance
 
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
@@ -355,7 +425,6 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		var options map[string]interface{}
 		options = make(map[string]interface{})
 		options["url"] = cfg.URL
-		options["actions"] = cfg.Actions
 
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,
@@ -368,7 +437,6 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
 		instances,
 	}
 
@@ -384,6 +452,8 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 		r.Get("/incident/logs", router.getIncidentLogs)
 		r.Get("/incident/notes", router.getIncidentNotes)
 		r.Get("/incident/timeline", router.getIncidentTimeline)
+		r.Get("/incident/resolve", router.resolveIncident)
+		r.Get("/incident/close", router.closeIncident)
 	})
 
 	return router

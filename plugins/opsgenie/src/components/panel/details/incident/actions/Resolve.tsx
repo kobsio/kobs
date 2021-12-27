@@ -1,11 +1,11 @@
 import { AlertVariant, DropdownItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IAlert, IMessage } from '../../../../../utils/interfaces';
+import { IIncident, IMessage } from '../../../../../utils/interfaces';
 
 interface IAcknowledgeProps {
   name: string;
-  alert: IAlert;
+  incident: IIncident;
   refetch: () => void;
   hideDropdown: () => void;
   setMessage: (message: IMessage) => void;
@@ -13,7 +13,7 @@ interface IAcknowledgeProps {
 
 const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
   name,
-  alert,
+  incident,
   refetch,
   hideDropdown,
   setMessage,
@@ -22,7 +22,7 @@ const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
     hideDropdown();
 
     try {
-      const response = await fetch(`/api/plugins/opsgenie/${name}/alert/acknowledge?id=${alert.id}`, {
+      const response = await fetch(`/api/plugins/opsgenie/${name}/incident/resolve?id=${incident.id}`, {
         method: 'get',
       });
       const json = await response.json();
@@ -30,7 +30,7 @@ const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
       if (response.status >= 200 && response.status < 300) {
         refetch();
         setMessage({
-          title: `Alert ${alert.message} was acknowledge`,
+          title: `Incident ${incident.message} was acknowledge`,
           variant: AlertVariant.success,
         });
       } else {

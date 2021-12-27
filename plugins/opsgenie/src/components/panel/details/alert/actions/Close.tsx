@@ -6,11 +6,18 @@ import { IAlert, IMessage } from '../../../../../utils/interfaces';
 interface ICloseProps {
   name: string;
   alert: IAlert;
+  refetch: () => void;
   hideDropdown: () => void;
   setMessage: (message: IMessage) => void;
 }
 
-const Close: React.FunctionComponent<ICloseProps> = ({ name, alert, hideDropdown, setMessage }: ICloseProps) => {
+const Close: React.FunctionComponent<ICloseProps> = ({
+  name,
+  alert,
+  refetch,
+  hideDropdown,
+  setMessage,
+}: ICloseProps) => {
   const close = async (): Promise<void> => {
     hideDropdown();
 
@@ -21,6 +28,7 @@ const Close: React.FunctionComponent<ICloseProps> = ({ name, alert, hideDropdown
       const json = await response.json();
 
       if (response.status >= 200 && response.status < 300) {
+        refetch();
         setMessage({
           title: `Alert ${alert.message} was closed`,
           variant: AlertVariant.success,

@@ -43,6 +43,13 @@ const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, interval, 
     },
   );
 
+  // refetchhWithDelay is used to call the refetch function to get the alerts, but with a delay of 3 seconds.
+  const refetchhWithDelay = (): void => {
+    setTimeout(() => {
+      refetch();
+    }, 3000);
+  };
+
   if (isLoading) {
     return (
       <div className="pf-u-text-align-center">
@@ -78,7 +85,7 @@ const Alerts: React.FunctionComponent<IAlertsProps> = ({ name, query, interval, 
       <MenuContent>
         <MenuList>
           {data.map((alert, index) => (
-            <AlertsItem key={alert.id} name={name} alert={alert} setDetails={setDetails} />
+            <AlertsItem key={alert.id} name={name} alert={alert} refetch={refetchhWithDelay} setDetails={setDetails} />
           ))}
         </MenuList>
       </MenuContent>

@@ -2,44 +2,66 @@ package instance
 
 import (
 	"context"
+	"fmt"
 	"time"
 
-	"github.com/kobsio/kobs/plugins/opsgenie/pkg/instance/timeline"
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
+	extendedIncident "github.com/kobsio/kobs/plugins/opsgenie/pkg/instance/incident"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/incident"
 )
 
-// Config is the structure of the configuration for a single Opsgenie instance.
+// Config is the structure of the configuration for a single Opsgenie instance. The user can set some general
+// information like the name and descriptions of the Opsgenie instance. The user must also set the api key and api url
+// to authenticate against the Opsgenie api. The url field can be used to set the public url of the Opsgenie instance,
+// so that users can go from the kobs ui to the Opsgenie ui.
 type Config struct {
-	Name        string  `json:"name"`
-	DisplayName string  `json:"displayName"`
-	Description string  `json:"description"`
-	APIKey      string  `json:"apiKey"`
-	APIUrl      string  `json:"apiUrl"`
-	URL         string  `json:"url"`
-	Actions     Actions `json:"actions"`
+	Name               string `json:"name"`
+	DisplayName        string `json:"displayName"`
+	Description        string `json:"description"`
+	APIKey             string `json:"apiKey"`
+	APIUrl             string `json:"apiUrl"`
+	URL                string `json:"url"`
+	PermissionsEnabled bool   `json:"permissionsEnabled"`
 }
 
-// Actions is the structure to enable/disable various actions for Opsgenie in the configuration.
-type Actions struct {
-	Acknowledge bool `json:"acknowledge"`
-	Snooze      bool `json:"snooze"`
-	Close       bool `json:"close"`
+// Instance is the interface, which must be implemented by an Opsgenie instance. It contains all the functions to
+// interact with the Opsgenie API.
+type Instance interface {
+	GetName() string
+	GetAlerts(ctx context.Context, query string) ([]alert.Alert, error)
+	GetAlertDetails(ctx context.Context, id string) (*alert.GetAlertResult, error)
+	GetAlertLogs(ctx context.Context, id string) ([]alert.AlertLog, error)
+	GetAlertNotes(ctx context.Context, id string) ([]alert.AlertNote, error)
+	GetIncidents(ctx context.Context, query string) ([]incident.Incident, error)
+	GetIncidentLogs(ctx context.Context, id string) ([]incident.LogResult, error)
+	GetIncidentNotes(ctx context.Context, id string) ([]incident.NoteResult, error)
+	GetIncidentTimeline(ctx context.Context, id string) ([]extendedIncident.Entry, error)
+	AcknowledgeAlert(ctx context.Context, id, user string) error
+	SnoozeAlert(ctx context.Context, id, user string, duration time.Duration) error
+	CloseAlert(ctx context.Context, id, user string) error
+	ResolveIncident(ctx context.Context, id, user string) error
+	CloseIncident(ctx context.Context, id, user string) error
+	CheckPermissions(pluginName string, user *authContext.User, action string) error
 }
 
-// Instance represents a single Jaeger instance, which can be added via the configuration file.
-type Instance struct {
-	Name           string
-	Actions        Actions
-	alertClient    *alert.Client
-	incidentClient *incident.Client
-	timelineClient *timeline.Client
+type instance struct {
+	name                   string
+	permissionsEnabled     bool
+	alertClient            *alert.Client
+	incidentClient         *incident.Client
+	extendedIncidentClient *extendedIncident.Client
+}
+
+// GetName returns the name of the current Opsgenie instance.
+func (i *instance) GetName() string {
+	return i.name
 }
 
 // GetAlerts returns a list of Opsgenie alerts for the given query.
-func (i *Instance) GetAlerts(ctx context.Context, query string) ([]alert.Alert, error) {
+func (i *instance) GetAlerts(ctx context.Context, query string) ([]alert.Alert, error) {
 	res, err := i.alertClient.List(ctx, &alert.ListAlertRequest{
 		Limit: 100,
 		Query: query,
@@ -54,7 +76,7 @@ func (i *Instance) GetAlerts(ctx context.Context, query string) ([]alert.Alert, 
 }
 
 // GetAlertDetails returns the details for single alert.
-func (i *Instance) GetAlertDetails(ctx context.Context, id string) (*alert.GetAlertResult, error) {
+func (i *instance) GetAlertDetails(ctx context.Context, id string) (*alert.GetAlertResult, error) {
 	res, err := i.alertClient.Get(ctx, &alert.GetAlertRequest{
 		IdentifierType:  alert.ALERTID,
 		IdentifierValue: id,
@@ -67,7 +89,7 @@ func (i *Instance) GetAlertDetails(ctx context.Context, id string) (*alert.GetAl
 }
 
 // GetAlertLogs returns the logs for single alert.
-func (i *Instance) GetAlertLogs(ctx context.Context, id string) ([]alert.AlertLog, error) {
+func (i *instance) GetAlertLogs(ctx context.Context, id string) ([]alert.AlertLog, error) {
 	res, err := i.alertClient.ListAlertLogs(ctx, &alert.ListAlertLogsRequest{
 		IdentifierType:  alert.ALERTID,
 		IdentifierValue: id,
@@ -80,7 +102,7 @@ func (i *Instance) GetAlertLogs(ctx context.Context, id string) ([]alert.AlertLo
 }
 
 // GetAlertNotes returns the notes for single alert.
-func (i *Instance) GetAlertNotes(ctx context.Context, id string) ([]alert.AlertNote, error) {
+func (i *instance) GetAlertNotes(ctx context.Context, id string) ([]alert.AlertNote, error) {
 	res, err := i.alertClient.ListAlertNotes(ctx, &alert.ListAlertNotesRequest{
 		IdentifierType:  alert.ALERTID,
 		IdentifierValue: id,
@@ -93,7 +115,7 @@ func (i *Instance) GetAlertNotes(ctx context.Context, id string) ([]alert.AlertN
 }
 
 // GetIncidents returns a list of Opsgenie incidents for the given query.
-func (i *Instance) GetIncidents(ctx context.Context, query string) ([]incident.Incident, error) {
+func (i *instance) GetIncidents(ctx context.Context, query string) ([]incident.Incident, error) {
 	res, err := i.incidentClient.List(ctx, &incident.ListRequest{
 		Limit: 100,
 		Query: query,
@@ -108,7 +130,7 @@ func (i *Instance) GetIncidents(ctx context.Context, query string) ([]incident.I
 }
 
 // GetIncidentLogs returns the logs for single incident.
-func (i *Instance) GetIncidentLogs(ctx context.Context, id string) ([]incident.LogResult, error) {
+func (i *instance) GetIncidentLogs(ctx context.Context, id string) ([]incident.LogResult, error) {
 	res, err := i.incidentClient.ListLogs(ctx, &incident.ListLogsRequest{
 		Identifier: incident.Id,
 		Id:         id,
@@ -121,7 +143,7 @@ func (i *Instance) GetIncidentLogs(ctx context.Context, id string) ([]incident.L
 }
 
 // GetIncidentNotes returns the notes for single incident.
-func (i *Instance) GetIncidentNotes(ctx context.Context, id string) ([]incident.NoteResult, error) {
+func (i *instance) GetIncidentNotes(ctx context.Context, id string) ([]incident.NoteResult, error) {
 	res, err := i.incidentClient.ListNotes(ctx, &incident.ListNotesRequest{
 		Identifier: incident.Id,
 		Id:         id,
@@ -134,8 +156,8 @@ func (i *Instance) GetIncidentNotes(ctx context.Context, id string) ([]incident.
 }
 
 // GetIncidentTimeline returns the timeline for single incident.
-func (i *Instance) GetIncidentTimeline(ctx context.Context, id string) ([]timeline.Entry, error) {
-	res, err := i.timelineClient.GetTimeline(ctx, id)
+func (i *instance) GetIncidentTimeline(ctx context.Context, id string) ([]extendedIncident.Entry, error) {
+	res, err := i.extendedIncidentClient.GetTimeline(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +166,7 @@ func (i *Instance) GetIncidentTimeline(ctx context.Context, id string) ([]timeli
 }
 
 // AcknowledgeAlert acknowledges an alert.
-func (i *Instance) AcknowledgeAlert(ctx context.Context, id, user string) error {
+func (i *instance) AcknowledgeAlert(ctx context.Context, id, user string) error {
 	_, err := i.alertClient.Acknowledge(ctx, &alert.AcknowledgeAlertRequest{
 		IdentifierType:  alert.ALERTID,
 		IdentifierValue: id,
@@ -155,7 +177,7 @@ func (i *Instance) AcknowledgeAlert(ctx context.Context, id, user string) error 
 }
 
 // SnoozeAlert snoozes an alert.
-func (i *Instance) SnoozeAlert(ctx context.Context, id, user string, duration time.Duration) error {
+func (i *instance) SnoozeAlert(ctx context.Context, id, user string, duration time.Duration) error {
 	_, err := i.alertClient.Snooze(ctx, &alert.SnoozeAlertRequest{
 		IdentifierType:  alert.ALERTID,
 		IdentifierValue: id,
@@ -167,7 +189,7 @@ func (i *Instance) SnoozeAlert(ctx context.Context, id, user string, duration ti
 }
 
 // CloseAlert closes an alert.
-func (i *Instance) CloseAlert(ctx context.Context, id, user string) error {
+func (i *instance) CloseAlert(ctx context.Context, id, user string) error {
 	_, err := i.alertClient.Close(ctx, &alert.CloseAlertRequest{
 		IdentifierType:  alert.ALERTID,
 		IdentifierValue: id,
@@ -177,8 +199,24 @@ func (i *Instance) CloseAlert(ctx context.Context, id, user string) error {
 	return err
 }
 
+// ResolveIncident resolves an incident.
+func (i *instance) ResolveIncident(ctx context.Context, id, user string) error {
+	return i.extendedIncidentClient.Resolve(ctx, id, fmt.Sprintf("Incident was resolved by %s.", user))
+}
+
+// CloseIncident closes an incident.
+func (i *instance) CloseIncident(ctx context.Context, id, user string) error {
+	_, err := i.incidentClient.Close(ctx, &incident.CloseRequest{
+		Id:         id,
+		Identifier: incident.Id,
+		Note:       fmt.Sprintf("Incident was closed by %s.", user),
+	})
+
+	return err
+}
+
 // New returns a new Elasticsearch instance for the given configuration.
-func New(config Config) (*Instance, error) {
+func New(config Config) (Instance, error) {
 	opsgenieConfig := &client.Config{
 		ApiKey:         config.APIKey,
 		OpsGenieAPIURL: client.ApiUrl(config.APIUrl),
@@ -195,16 +233,16 @@ func New(config Config) (*Instance, error) {
 		return nil, err
 	}
 
-	timelineClient, err := timeline.NewClient(opsgenieConfig)
+	extendedIncidentClient, err := extendedIncident.NewClient(opsgenieConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Instance{
-		Name:           config.Name,
-		Actions:        config.Actions,
-		alertClient:    alertClient,
-		incidentClient: incidentClient,
-		timelineClient: timelineClient,
+	return &instance{
+		name:                   config.Name,
+		permissionsEnabled:     config.PermissionsEnabled,
+		alertClient:            alertClient,
+		incidentClient:         incidentClient,
+		extendedIncidentClient: extendedIncidentClient,
 	}, nil
 }

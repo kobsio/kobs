@@ -49,6 +49,13 @@ const Incidents: React.FunctionComponent<IIncidentsProps> = ({
     },
   );
 
+  // refetchhWithDelay is used to call the refetch function to get the incidents, but with a delay of 3 seconds.
+  const refetchhWithDelay = (): void => {
+    setTimeout(() => {
+      refetch();
+    }, 3000);
+  };
+
   if (isLoading) {
     return (
       <div className="pf-u-text-align-center">
@@ -84,7 +91,13 @@ const Incidents: React.FunctionComponent<IIncidentsProps> = ({
       <MenuContent>
         <MenuList>
           {data.map((incident, index) => (
-            <IncidentsItem key={incident.id} name={name} incident={incident} setDetails={setDetails} />
+            <IncidentsItem
+              key={incident.id}
+              name={name}
+              incident={incident}
+              refetch={refetchhWithDelay}
+              setDetails={setDetails}
+            />
           ))}
         </MenuList>
       </MenuContent>

@@ -95,7 +95,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	grafanaRouter := grafana.Register(router.plugins, config.Grafana)
 	harborRouter := harbor.Register(clusters, router.plugins, config.Harbor)
 	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
-	opsgenieRouter := opsgenie.Register(clusters, router.plugins, config.Opsgenie)
+	opsgenieRouter := opsgenie.Register(router.plugins, config.Opsgenie)
 	sonarqubeRouter := sonarqube.Register(clusters, router.plugins, config.Sonarqube)
 	techdocsRouter := techdocs.Register(clusters, router.plugins, config.TechDocs)
 	azureRouter := azure.Register(clusters, router.plugins, config.Azure)

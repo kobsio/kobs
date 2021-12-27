@@ -9,12 +9,14 @@ import { formatTimeWrapper } from '../../utils/helpers';
 interface IIncidentsItemProps {
   name: string;
   incident: IIncident;
+  refetch: () => void;
   setDetails?: (details: React.ReactNode) => void;
 }
 
 const IncidentsItem: React.FunctionComponent<IIncidentsItemProps> = ({
   name,
   incident,
+  refetch,
   setDetails,
 }: IIncidentsItemProps) => {
   return (
@@ -23,7 +25,14 @@ const IncidentsItem: React.FunctionComponent<IIncidentsItemProps> = ({
       onClick={
         setDetails
           ? (): void =>
-              setDetails(<Incident name={name} incident={incident} close={(): void => setDetails(undefined)} />)
+              setDetails(
+                <Incident
+                  name={name}
+                  incident={incident}
+                  refetch={refetch}
+                  close={(): void => setDetails(undefined)}
+                />,
+              )
           : undefined
       }
     >
