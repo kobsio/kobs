@@ -257,15 +257,15 @@ func TestNew(t *testing.T) {
 		config Config
 	}{
 		{
-			name:   "invalid instance name",
+			name:   "instance without auth",
 			config: Config{Name: "grafana"},
 		},
 		{
-			name:   "get dashboards failed",
+			name:   "instance with basic auth",
 			config: Config{Name: "grafana", Username: "admin", Password: "admin"},
 		},
 		{
-			name:   "get dashboards succeeded",
+			name:   "instance with token auth",
 			config: Config{Name: "grafana", Token: "token"},
 		},
 	} {

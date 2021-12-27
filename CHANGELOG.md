@@ -23,6 +23,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#256](https://github.com/kobsio/kobs/pull/256): [grafana] Add tests for Grafana plugin.
 - [#257](https://github.com/kobsio/kobs/pull/257): Add [codecov.io](https://about.codecov.io) for code coverage.
 - [#258](https://github.com/kobsio/kobs/pull/258): [rss] Add test for RSS plugin.
+- [#261](https://github.com/kobsio/kobs/pull/261): [elasticsearch] Add test for Elasticsearch plugin.
 
 ### Fixed
 
@@ -49,6 +50,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#240](https://github.com/kobsio/kobs/pull/240): [core] Switch from `github.com/sirupsen/logrus` to `go.uber.org/zap` for logging and enrich log lines via `context.Context`.
 - [#241](https://github.com/kobsio/kobs/pull/241): [core] :warning: _Breaking change:_ :warning: Rework authentication / authorization middleware and adjust the Custom Resource Definition for Users and Teams.
 - [#236](https://github.com/kobsio/kobs/pull/236): [core] Improve filtering in select components for various plugins.
+- [#260](https://github.com/kobsio/kobs/pull/260): [opsgenie] Adjust permission handling and add actions for incidents.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

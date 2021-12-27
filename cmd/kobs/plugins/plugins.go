@@ -87,7 +87,7 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	usersRouter := users.Register(clusters, router.plugins, config.Users)
 	dashboardsRouter := dashboards.Register(clusters, router.plugins, config.Dashboards)
 	prometheusRouter, prometheusInstances := prometheus.Register(clusters, router.plugins, config.Prometheus)
-	elasticsearchRouter := elasticsearch.Register(clusters, router.plugins, config.Elasticsearch)
+	elasticsearchRouter := elasticsearch.Register(router.plugins, config.Elasticsearch)
 	klogsRouter, klogsInstances := klogs.Register(clusters, router.plugins, config.Klogs)
 	jaegerRouter := jaeger.Register(clusters, router.plugins, config.Jaeger)
 	kialiRouter := kiali.Register(clusters, router.plugins, config.Kiali)

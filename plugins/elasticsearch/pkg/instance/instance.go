@@ -25,16 +25,26 @@ type Config struct {
 	Token       string `json:"token"`
 }
 
-// Instance represents a single Elasticsearch instance, which can be added via the configuration file.
-type Instance struct {
-	Name    string
+// Instance is the interface which must be implemented by each configured Elasticsearch instance.
+type Instance interface {
+	GetName() string
+	GetLogs(ctx context.Context, query string, timeStart, timeEnd int64) (*Data, error)
+}
+
+type instance struct {
+	name    string
 	address string
 	client  *http.Client
 }
 
+// Getname returns the name of the Elasticsearch instance, as it was configured by the user.
+func (i *instance) GetName() string {
+	return i.name
+}
+
 // GetLogs returns the raw log documents and the buckets for the distribution of the logs accross the selected time
 // range. We have to pass a query, start and end time to the function.
-func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd int64) (*Data, error) {
+func (i *instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd int64) (*Data, error) {
 	var err error
 	var body []byte
 	var url string
@@ -44,7 +54,7 @@ func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 
 	log.Debug(ctx, "Run Elasticsearch query.", zap.ByteString("query", body))
 
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +104,10 @@ func (i *Instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 	return nil, fmt.Errorf("%s: %s", res.Error.Type, res.Error.Reason)
 }
 
-// New returns a new Elasticsearch instance for the given configuration.
-func New(config Config) (*Instance, error) {
+// New returns a new Elasticsearch instance for the given configuration. If the configuration contains a username and
+// password we will add a basic auth header to each request against the Elasticsearch api. If the config contains a
+// token we are adding an authentication header with the token.
+func New(config Config) Instance {
 	roundTripper := roundtripper.DefaultRoundTripper
 
 	if config.Username != "" && config.Password != "" {
@@ -113,11 +125,11 @@ func New(config Config) (*Instance, error) {
 		}
 	}
 
-	return &Instance{
-		Name:    config.Name,
+	return &instance{
+		name:    config.Name,
 		address: config.Address,
 		client: &http.Client{
 			Transport: roundTripper,
 		},
-	}, nil
+	}
 }
