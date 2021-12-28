@@ -1,4 +1,4 @@
-import { IReference as IDashboardReference } from './dashboard';
+import { IDashboardReference } from './dashboard';
 
 // The ITeam interface implements the Team CRD.
 export interface ITeam {

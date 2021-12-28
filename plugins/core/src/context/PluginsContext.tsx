@@ -2,6 +2,8 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
+import { IDashboardVariableValues } from '../crds/dashboard';
+
 // TTime is the type with all possible values for the time property. A value of "custom" identifies that a user
 // specified a custom start and end time via the text input fields. The other values are used for the quick select
 // options.
@@ -97,6 +99,11 @@ export interface IPluginComponent {
   page?: React.FunctionComponent<IPluginPageProps>;
   panel: React.FunctionComponent<IPluginPanelProps>;
   preview?: React.FunctionComponent<IPluginPreviewProps>;
+  variables?: (
+    variable: IDashboardVariableValues,
+    variables: IDashboardVariableValues[],
+    times: IPluginTimes,
+  ) => Promise<IDashboardVariableValues>;
 }
 
 // IPlugins is the interface for a list of plugins. The key of this interface is the plugin type and must correspond

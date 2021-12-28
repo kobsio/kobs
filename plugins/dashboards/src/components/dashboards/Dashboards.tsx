@@ -13,14 +13,14 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { IDashboard, IPluginDefaults, IReference } from '@kobsio/plugin-core';
+import { IDashboard, IDashboardReference, IPluginDefaults } from '@kobsio/plugin-core';
 import Dashboard from './Dashboard';
 import { IDashboardsOptions } from '../../utils/interfaces';
 import { getInitialOptions } from '../../utils/dashboard';
 
 interface IDashboardsProps {
   defaults: IPluginDefaults;
-  references: IReference[];
+  references: IDashboardReference[];
   setDetails?: (details: React.ReactNode) => void;
   forceDefaultSpan: boolean;
 }

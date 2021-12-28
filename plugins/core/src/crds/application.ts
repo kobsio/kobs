@@ -1,4 +1,4 @@
-import { IReference as IDashboardReference, IPlugin } from './dashboard';
+import { IDashboardPlugin, IDashboardReference } from './dashboard';
 
 // IApplication implements the Application CR, which can be created by a user to describe an application. While we have
 // to omit the cluster, namespace and name field in the Go implementation of the CR, we can assume that these fields are
@@ -12,13 +12,13 @@ export interface IApplication {
   links?: IApplicationLink[];
   teams?: IApplicationReference[];
   dependencies?: IApplicationReference[];
-  preview?: IPreview;
+  preview?: IApplicationPreview;
   dashboards?: IDashboardReference[];
 }
 
-export interface IPreview {
+export interface IApplicationPreview {
   title: string;
-  plugin: IPlugin;
+  plugin: IDashboardPlugin;
 }
 
 export interface IApplicationLink {

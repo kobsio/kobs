@@ -5,6 +5,7 @@ import icon from './assets/icon.png';
 import Page from './components/page/Page';
 import Panel from './components/panel/Panel';
 import Preview from './components/preview/Preview';
+import { variables } from './utils/variables';
 
 const prometheusPlugin: IPluginComponents = {
   prometheus: {
@@ -12,6 +13,7 @@ const prometheusPlugin: IPluginComponents = {
     page: Page,
     panel: Panel,
     preview: Preview,
+    variables: variables,
   },
 };
 

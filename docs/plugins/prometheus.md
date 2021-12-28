@@ -71,6 +71,17 @@ The y axis can be customized for line and area charts. It is possible to use the
 | unit | string | An optional unit for the column values. | No |
 | mappings | map<string, string> | Specify value mappings for the column. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 
+## Variables
+
+If the Prometheus plugin is used to set variables in a dashboard, the following options can be used.
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The query type to get the values for the variable. At the moment this must be `labelValues` | Yes |
+| label | string | The Prometheus label which should be used to get the values for the variable. | Yes |
+| query | string | The PromQL query. | Yes |
+| allowAll | boolean | If this is set to `true` an additional option for the variable will be added, which contains all other values. | No |
+
 ## Example
 
 The following dashboard, shows the CPU and Memory usage of a selected Pod. When this dashboard is used in via a team or application, it is possible to set the namespace and a regular expression to pre select all the Pods. These values are then used to get the names of all Pods and a user can then select the name of a Pod via the `var_pod` variable.

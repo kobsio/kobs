@@ -51,6 +51,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#241](https://github.com/kobsio/kobs/pull/241): [core] :warning: _Breaking change:_ :warning: Rework authentication / authorization middleware and adjust the Custom Resource Definition for Users and Teams.
 - [#236](https://github.com/kobsio/kobs/pull/236): [core] Improve filtering in select components for various plugins.
 - [#260](https://github.com/kobsio/kobs/pull/260): [opsgenie] Adjust permission handling and add actions for incidents.
+- [#262](https://github.com/kobsio/kobs/pull/262): [core] Rework variables handling in dashboards.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

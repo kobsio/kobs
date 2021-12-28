@@ -1,11 +1,11 @@
 import { Menu, MenuContent, MenuList } from '@patternfly/react-core';
 import React, { memo } from 'react';
 
-import { IPluginPanelProps, IReference, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
+import { IDashboardReference, IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
 import PanelItem from './PanelItem';
 
 interface IPanelProps extends IPluginPanelProps {
-  options?: IReference[];
+  options?: IDashboardReference[];
 }
 
 // Panel implements the panel component for the dashboards plugin.

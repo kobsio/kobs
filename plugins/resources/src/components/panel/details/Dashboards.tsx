@@ -2,13 +2,13 @@ import { Alert, AlertVariant } from '@patternfly/react-core';
 import { JSONPath } from 'jsonpath-plus';
 import React from 'react';
 
-import { IReference, IResourceRow } from '@kobsio/plugin-core';
+import { IDashboardReference, IResourceRow } from '@kobsio/plugin-core';
 import { DashboardsWrapper } from '@kobsio/plugin-dashboards';
 
 // getDashboards parses the kobs.io/dashboards annotation of a Kubernetes resources and returns all provided dashboards.
 // Before we are returning the dashboards we are checking all the provided placeholder and if one of the placeholders
 // uses an JSONPath we are replacing it with the correct value.
-const getDashboards = (resource: IResourceRow): IReference[] | undefined => {
+const getDashboards = (resource: IResourceRow): IDashboardReference[] | undefined => {
   try {
     if (
       resource.props &&
@@ -16,7 +16,7 @@ const getDashboards = (resource: IResourceRow): IReference[] | undefined => {
       resource.props.metadata.annotations &&
       resource.props.metadata.annotations['kobs.io/dashboards']
     ) {
-      const dashboards: IReference[] = JSON.parse(
+      const dashboards: IDashboardReference[] = JSON.parse(
         resource.props.metadata.annotations['kobs.io/dashboards'],
         resource.props,
       );

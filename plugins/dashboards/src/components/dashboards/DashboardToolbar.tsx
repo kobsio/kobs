@@ -1,13 +1,12 @@
 import { Card, ToolbarItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
+import { IDashboardVariableValues, IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
 import DashboardToolbarVariable from './DashboardToolbarVariable';
-import { IVariableValues } from '../../utils/interfaces';
 
 interface IDashboardToolbarProps {
-  variables: IVariableValues[];
-  setVariables: (variables: IVariableValues[]) => void;
+  variables: IDashboardVariableValues[];
+  setVariables: (variables: IDashboardVariableValues[]) => void;
   times: IPluginTimes;
   setTimes: (times: IPluginTimes) => void;
 }
