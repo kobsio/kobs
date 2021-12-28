@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Select, SelectGroup, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 
-import { IVariableValues } from '../../utils/interfaces';
+import { IDashboardVariableValues } from '@kobsio/plugin-core';
 
 interface IDashboardToolbarVariableProps {
-  variable: IVariableValues;
+  variable: IDashboardVariableValues;
   selectValue: (value: string) => void;
 }
 

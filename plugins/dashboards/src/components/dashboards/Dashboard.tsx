@@ -7,16 +7,17 @@ import {
   ClustersContext,
   IClusterContext,
   IDashboard,
+  IDashboardRow,
+  IDashboardVariableValues,
   IPluginDefaults,
   IPluginTimes,
   IPluginsContext,
-  IRow,
   PluginPanel,
   PluginsContext,
+  interpolate,
 } from '@kobsio/plugin-core';
-import { interpolate, rowHeight, toGridSpans } from '../../utils/dashboard';
+import { rowHeight, toGridSpans } from '../../utils/dashboard';
 import DashboardToolbar from './DashboardToolbar';
-import { IVariableValues } from '../../utils/interfaces';
 
 interface IDashboardProps {
   activeKey: string;
@@ -51,9 +52,9 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   });
 
   // variables is the state for the dashboard variables. The initial state is undefined or when the user provided some
-  // variables we convert them to the IVariableValues interface which contains the currently selected value and all
-  // possible values.
-  const [variables, setVariables] = useState<IVariableValues[] | undefined>(
+  // variables we convert them to the IDashboardVariableValues interface which contains the currently selected value and
+  // all possible values.
+  const [variables, setVariables] = useState<IDashboardVariableValues[] | undefined>(
     dashboard.variables?.map((variable) => {
       return {
         ...variable,
@@ -71,7 +72,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // Prometheus plugin. For the Prometheus plugin the user must specify the name of the Prometheus instance via the name
   // parameter in the options. When the user changes the variables, we keep the old variable values, so that we not have
   // to rerender all the panels in the dashboard.
-  const { isError, error, data, refetch } = useQuery<IVariableValues[] | null, Error>(
+  const { isError, error, data, refetch } = useQuery<IDashboardVariableValues[] | null, Error>(
     ['dashboard/variables', dashboard, variables, times, activeKey],
     async () => {
       if (activeKey !== eventKey) {
@@ -103,40 +104,13 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
             }
           } else {
             const pluginDetails = pluginsContext.getPluginDetails(tmpVariables[i].plugin.name);
+            const variablesFunc =
+              pluginDetails && pluginsContext.components.hasOwnProperty(pluginDetails.type)
+                ? pluginsContext.components[pluginDetails.type].variables
+                : undefined;
 
-            if (pluginDetails?.type === 'prometheus') {
-              const response = await fetch(`/api/plugins/prometheus/${tmpVariables[i].plugin.name}/variable`, {
-                body: JSON.stringify({
-                  label: tmpVariables[i].plugin.options.label,
-                  query: interpolate(tmpVariables[i].plugin.options.query, tmpVariables, times),
-                  timeEnd: times.timeEnd,
-                  timeStart: times.timeStart,
-                  type: tmpVariables[i].plugin.options.type,
-                }),
-                method: 'post',
-              });
-              const json = await response.json();
-
-              if (response.status >= 200 && response.status < 300) {
-                if (json && Array.isArray(json) && json.length > 0) {
-                  if (json && json.length > 1 && tmpVariables[i].plugin.options.allowAll) {
-                    json.unshift(json.join('|'));
-                  }
-
-                  tmpVariables[i].values = json ? json : [''];
-                  tmpVariables[i].value =
-                    json && json.includes(tmpVariables[i].value) ? tmpVariables[i].value : json ? json[0] : '';
-                } else {
-                  tmpVariables[i].values = [''];
-                  tmpVariables[i].value = '';
-                }
-              } else {
-                if (json.error) {
-                  throw new Error(json.error);
-                } else {
-                  throw new Error('An unknown error occured');
-                }
-              }
+            if (variablesFunc) {
+              tmpVariables[i] = await variablesFunc(tmpVariables[i], tmpVariables, times);
             }
           }
         }
@@ -152,7 +126,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // We do not use the dashboard.rows array directly to render the dashboard. Instead we are replacing all the variables
   // in the dashboard first with users selected values. For that we have to convert the array to a string first so that
   // we can replace the variables in the string and then we have to convert it back to an array,
-  const rows: IRow[] = JSON.parse(interpolate(JSON.stringify(dashboard.rows), data ? data : [], times));
+  const rows: IDashboardRow[] = JSON.parse(interpolate(JSON.stringify(dashboard.rows), data ? data : [], times));
 
   if (isError) {
     return (
@@ -161,7 +135,9 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
         title="Variables were not fetched"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IVariableValues[] | null, Error>> => refetch()}>
+            <AlertActionLink
+              onClick={(): Promise<QueryObserverResult<IDashboardVariableValues[] | null, Error>> => refetch()}
+            >
               Retry
             </AlertActionLink>
           </React.Fragment>

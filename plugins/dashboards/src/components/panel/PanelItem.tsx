@@ -1,11 +1,11 @@
 import { MenuItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginDefaults, IReference, LinkWrapper } from '@kobsio/plugin-core';
+import { IDashboardReference, IPluginDefaults, LinkWrapper } from '@kobsio/plugin-core';
 
 interface IPanelItemProps {
   defaults: IPluginDefaults;
-  reference: IReference;
+  reference: IDashboardReference;
 }
 
 const PanelItem: React.FunctionComponent<IPanelItemProps> = ({ defaults, reference }: IPanelItemProps) => {

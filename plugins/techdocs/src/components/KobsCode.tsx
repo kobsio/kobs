@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { IPanel, IPluginTimes, PluginPanel } from '@kobsio/plugin-core';
+import { IDashboardPanel, IPluginTimes, PluginPanel } from '@kobsio/plugin-core';
 
 interface IKobsCodeProps {
-  panel: IPanel;
+  panel: IDashboardPanel;
   setDetails?: (details: React.ReactNode) => void;
 }
 

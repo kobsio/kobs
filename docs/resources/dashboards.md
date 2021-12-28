@@ -101,14 +101,9 @@ If the `core` plugin is used to get the values for a variable the options from t
                 - myvalue3
     ```
 
-If a Prometheus instance is used to get the variable values, the options from the following table can be used.
+It is also possible to use other plugins, to get a list of variable values. These plugins are:
 
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| type | string | The query type to get the values for the variable. At the moment this must be `labelValues` | Yes |
-| label | string | The Prometheus label which should be used to get the values for the variable. | Yes |
-| query | string | The PromQL query. | Yes |
-| allowAll | boolean | If this is set to `true` an additional option for the variable will be added, which contains all other values. | No |
+- [Prometheus](../plugins/prometheus.md#variables)
 
 ### Row
 

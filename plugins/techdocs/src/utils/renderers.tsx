@@ -4,7 +4,7 @@ import React from 'react';
 import yaml from 'js-yaml';
 
 import { flatten, getPathWithoutFile } from './helpers';
-import { IPanel } from '@kobsio/plugin-core';
+import { IDashboardPanel } from '@kobsio/plugin-core';
 import KobsCode from '../components/KobsCode';
 import { normalizePath } from './path';
 
@@ -55,7 +55,7 @@ export const renderCode = (
   const match = /language-(\w+)/.exec(props.className || '');
 
   if (match && match.length === 2 && match[1] === 'kobs') {
-    const panel = yaml.load(props.children) as IPanel;
+    const panel = yaml.load(props.children) as IDashboardPanel;
     return <KobsCode panel={panel} setDetails={setDetails} />;
   }
 

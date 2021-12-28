@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
 
-import { IPluginDefaults, IReference, useDimensions } from '@kobsio/plugin-core';
+import { IDashboardReference, IPluginDefaults, useDimensions } from '@kobsio/plugin-core';
 import Dashboards from './Dashboards';
 
 interface IDashboardsWrapperProps {
   defaults: IPluginDefaults;
-  references: IReference[];
+  references: IDashboardReference[];
   setDetails?: (details: React.ReactNode) => void;
 }
 

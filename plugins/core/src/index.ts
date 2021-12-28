@@ -31,6 +31,7 @@ export * from './utils/chart';
 export * from './utils/colors';
 export * from './utils/fileDownload';
 export * from './utils/gravatar';
+export * from './utils/interpolate';
 export * from './utils/manifests';
 export * from './utils/resources';
 export * from './utils/time';

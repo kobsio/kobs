@@ -7,61 +7,69 @@ export interface IDashboard {
   name: string;
   title: string;
   description?: string;
-  placeholders?: IPlaceholder[];
-  variables?: IVariable[];
-  rows: IRow[];
+  placeholders?: IDashboardPlaceholder[];
+  variables?: IDashboardVariable[];
+  rows: IDashboardRow[];
 }
 
-export interface IPlaceholder {
+export interface IDashboardPlaceholder {
   name: string;
   description?: string;
 }
 
-export interface IVariable {
+export interface IDashboardVariable {
   name: string;
   label?: string;
   hide?: boolean;
-  plugin: IPlugin;
+  plugin: IDashboardPlugin;
 }
 
-export interface IRow {
+export interface IDashboardRow {
   title?: string;
   description?: string;
   size?: number;
-  panels: IPanel[];
+  panels: IDashboardPanel[];
 }
 
-export interface IPanel {
+export interface IDashboardPanel {
   title: string;
   description?: string;
   colSpan?: number;
   rowSpan?: number;
-  plugin: IPlugin;
+  plugin: IDashboardPlugin;
 }
 
-export interface IPlugin {
+export interface IDashboardPlugin {
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
 }
 
-// IReference is the interface for a dashboard reference in the Team or Application CR. If the cluster or namespace is
-// not specified in the reference we assume the dashboard is in the same namespace as the team or application.
-export interface IReference {
+// IDashboardReference is the interface for a dashboard reference in the Team or Application CR. If the cluster or
+// namespace is not specified in the reference we assume the dashboard is in the same namespace as the team or
+// application.
+export interface IDashboardReference {
   cluster?: string;
   namespace?: string;
   name?: string;
   title: string;
   description?: string;
   placeholders?: IPlaceholders;
-  inline?: IReferenceInline;
+  inline?: IDashboardReferenceInline;
 }
 
 export interface IPlaceholders {
   [key: string]: string;
 }
 
-export interface IReferenceInline {
-  variables?: IVariable[];
-  rows: IRow[];
+export interface IDashboardReferenceInline {
+  variables?: IDashboardVariable[];
+  rows: IDashboardRow[];
+}
+
+// IDashboardVariableValues is an extension of the IDashboardVariable interface. It contains the additional fields for the
+// selected variable value and all possible variable values.
+export interface IDashboardVariableValues extends IDashboardVariable {
+  value: string;
+  values: string[];
 }
