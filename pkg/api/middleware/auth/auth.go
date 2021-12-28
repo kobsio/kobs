@@ -24,7 +24,7 @@ type Auth struct {
 	headerTeams     string
 	sessionToken    string
 	sessionInterval time.Duration
-	clusters        *clusters.Clusters
+	clustersClient  clusters.Client
 }
 
 func containsTeam(teamID string, teamIDs []string) bool {
@@ -43,7 +43,7 @@ func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (au
 	var users []user.UserSpec
 	var teams []team.TeamSpec
 
-	for _, c := range a.clusters.Clusters {
+	for _, c := range a.clustersClient.GetClusters() {
 		tmpUsers, err := c.GetUsers(ctx, "")
 		if err != nil {
 			return authContextUser, err
@@ -207,13 +207,13 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 }
 
 // New returns a new authentication and authorization object.
-func New(enabled bool, headerUser, headerTeams, sessionToken string, sessionInterval time.Duration, clusters *clusters.Clusters) *Auth {
+func New(enabled bool, headerUser, headerTeams, sessionToken string, sessionInterval time.Duration, clustersClient clusters.Client) *Auth {
 	return &Auth{
 		enabled:         enabled,
 		headerUser:      headerUser,
 		headerTeams:     headerTeams,
 		sessionToken:    sessionToken,
 		sessionInterval: sessionInterval,
-		clusters:        clusters,
+		clustersClient:  clustersClient,
 	}
 }

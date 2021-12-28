@@ -116,18 +116,18 @@ func main() {
 	// repository.
 	// The loaded clusters and the router for the plugins is then passed to the api package, so we can access all the
 	// plugin api routes via the kobs api.
-	loadedClusters, err := clusters.Load(cfg.Clusters)
+	clustersClient, err := clusters.NewClient(cfg.Clusters)
 	if err != nil {
 		log.Fatal(nil, "Could not load clusters", zap.Error(err))
 	}
 
-	pluginsRouter := plugins.Register(loadedClusters, cfg.Plugins)
+	pluginsRouter := plugins.Register(clustersClient, cfg.Plugins)
 
 	// Initialize each component and start it in it's own goroutine, so that the main goroutine is only used as listener
 	// for terminal signals, to initialize the graceful shutdown of the components.
 	// The appServer is the kobs application server, which serves the React frontend and the health endpoint. The
 	// metrics server is used to serve the kobs metrics.
-	apiServer, err := api.New(loadedClusters, pluginsRouter, isDevelopment)
+	apiServer, err := api.New(clustersClient, pluginsRouter, isDevelopment)
 	if err != nil {
 		log.Fatal(nil, "Could not create API server", zap.Error(err))
 	}

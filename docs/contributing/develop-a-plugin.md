@@ -47,12 +47,12 @@ Each plugin must export `chi.Router` router interface, so that the router can be
 ```go
 type Router struct {
     *chi.Mux
-    clusters *clusters.Clusters
+    clustersClient clusters.Client
     config   Config
 }
 ```
 
-With the `Router` struct you can then create your APIs as follows, where you have access to the `clusters`, `config`, etc.
+With the `Router` struct you can then create your APIs as follows, where you have access to the `clustersClient`, `config`, etc.
 
 ```go
 func (router *Router) getName(w http.ResponseWriter, r *http.Request) {}
@@ -63,7 +63,7 @@ Finally your plugin should export a `Register` function, which returns the `chi.
 You have to add an entry to the `plugins` slice for each instance of your plugin, so that the React UI is aware of the plugin. Then you can create your `router` object, which will then be mounted under the before specified `Route`.
 
 ```go
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
     plugins.Append(plugin.Plugin{
         Name:        config.Name,
         DisplayName: config.DisplayName,
@@ -73,7 +73,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
     router := Router{
         chi.NewRouter(),
-        clusters,
+        clustersClient,
         config,
     }
 
@@ -114,7 +114,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
     type Router struct {
         *chi.Mux
-        clusters *clusters.Clusters
+        clustersClient clusters.Client
         config   Config
     }
 
@@ -137,7 +137,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
     }
 
     // Register returns a new router which can be used in the router for the kobs rest api.
-    func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+    func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
         plugins.Append(plugin.Plugin{
             Name:        config.Name,
             DisplayName: config.DisplayName,
@@ -147,7 +147,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
         router := Router{
             chi.NewRouter(),
-            clusters,
+            clustersClient,
             config,
         }
 
@@ -172,6 +172,7 @@ export interface IPluginComponent {
   page?: React.FunctionComponent<IPluginPageProps>;
   panel: React.FunctionComponent<IPluginPanelProps>;
   preview?: React.FunctionComponent<IPluginPreviewProps>;
+  variables?: (variable: IDashboardVariableValues, variables: IDashboardVariableValues[], times: IPluginTimes) => Promise<IDashboardVariableValues>;
 }
 ```
 

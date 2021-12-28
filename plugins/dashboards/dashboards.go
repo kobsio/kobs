@@ -25,8 +25,8 @@ type Config struct{}
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	clusters *clusters.Clusters
-	config   Config
+	clustersClient clusters.Client
+	config         Config
 }
 
 // getDashboardsRequest is the structure of the request body for a getDashboards call. It contains some defaults and a
@@ -52,7 +52,7 @@ func (router *Router) getAllDashboards(w http.ResponseWriter, r *http.Request) {
 
 	var dashboards []dashboard.DashboardSpec
 
-	for _, cluster := range router.clusters.Clusters {
+	for _, cluster := range router.clustersClient.GetClusters() {
 		dashboard, err := cluster.GetDashboards(r.Context(), "")
 		if err != nil {
 			log.Error(r.Context(), "Could not get dashboards.", zap.Error(err))
@@ -107,7 +107,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 				Rows:        reference.Inline.Rows,
 			})
 		} else {
-			cluster := router.clusters.GetCluster(reference.Cluster)
+			cluster := router.clustersClient.GetCluster(reference.Cluster)
 			if cluster == nil {
 				log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", reference.Cluster))
 				errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -153,7 +153,7 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get dashboard request data.", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name), zap.Any("placeholders", data.Placeholders))
 
-	cluster := router.clusters.GetCluster(data.Cluster)
+	cluster := router.clustersClient.GetCluster(data.Cluster)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", data.Cluster))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -186,7 +186,7 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
 	plugins.Append(plugin.Plugin{
 		Name:        "dashboards",
 		DisplayName: "Dashboards",
@@ -196,7 +196,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
+		clustersClient,
 		config,
 	}
 

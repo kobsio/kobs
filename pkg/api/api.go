@@ -72,7 +72,7 @@ func (s *Server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopment bool) (*Server, error) {
+func New(clustersClient clusters.Client, pluginsRouter chi.Router, isDevelopment bool) (*Server, error) {
 	router := chi.NewRouter()
 
 	if isDevelopment {
@@ -92,12 +92,12 @@ func New(loadedClusters *clusters.Clusters, pluginsRouter chi.Router, isDevelopm
 		r.Use(middleware.Recoverer)
 		r.Use(middleware.URLFormat)
 		r.Use(metrics.Metrics)
-		r.Use(auth.Handler(loadedClusters))
+		r.Use(auth.Handler(clustersClient))
 		r.Use(httplog.Logger)
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Get("/user", auth.UserHandler)
-		r.Mount("/clusters", clusters.NewRouter(loadedClusters))
+		r.Mount("/clusters", clusters.NewRouter(clustersClient))
 		r.Mount("/plugins", pluginsRouter)
 	})
 

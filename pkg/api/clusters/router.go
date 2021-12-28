@@ -17,7 +17,7 @@ import (
 // Kubernetes API of a cluster.
 type Router struct {
 	*chi.Mux
-	clusters *Clusters
+	clustersClient Client
 }
 
 // GetClusters returns all loaded Kubernetes clusters.
@@ -27,7 +27,7 @@ type Router struct {
 func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 	var clusterNames []string
 
-	for _, cluster := range router.clusters.Clusters {
+	for _, cluster := range router.clustersClient.GetClusters() {
 		clusterNames = append(clusterNames, cluster.GetName())
 	}
 
@@ -50,7 +50,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	var namespaces []string
 
 	for _, clusterName := range clusterNames {
-		cluster := router.clusters.GetCluster(clusterName)
+		cluster := router.clustersClient.GetCluster(clusterName)
 		if cluster == nil {
 			log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -95,7 +95,7 @@ func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
 
 	var crds []cluster.CRD
 
-	for _, cluster := range router.clusters.Clusters {
+	for _, cluster := range router.clustersClient.GetClusters() {
 		crds = append(crds, cluster.GetCRDs()...)
 	}
 
@@ -113,10 +113,10 @@ func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewRouter return a new router with all the cluster routes.
-func NewRouter(clusters *Clusters) chi.Router {
+func NewRouter(clustersClient Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		clusters,
+		clustersClient,
 	}
 
 	router.Get("/", router.getClusters)

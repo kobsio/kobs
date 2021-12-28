@@ -30,10 +30,10 @@ type Config struct {
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	clusters *clusters.Clusters
-	config   Config
-	topology topology.Cache
-	teams    teams.Cache
+	clustersClient clusters.Client
+	config         Config
+	topology       topology.Cache
+	teams          teams.Cache
 }
 
 // getApplications returns a list of applications. This api endpoint supports multiple options to get applications. So
@@ -67,7 +67,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if router.teams.Teams == nil {
-				ts := teams.Get(r.Context(), router.clusters)
+				ts := teams.Get(r.Context(), router.clustersClient)
 				if ts != nil {
 					router.teams.LastFetch = time.Now()
 					router.teams.Teams = ts
@@ -84,7 +84,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			}
 
 			go func() {
-				ts := teams.Get(r.Context(), router.clusters)
+				ts := teams.Get(r.Context(), router.clustersClient)
 				if ts != nil {
 					log.Debug(r.Context(), "Get applications result.", zap.String("team", "get teams in background"), zap.Int("teamsCount", len(ts)))
 					router.teams.LastFetch = time.Now()
@@ -104,7 +104,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		var applications []application.ApplicationSpec
 
 		for _, clusterName := range clusterNames {
-			cluster := router.clusters.GetCluster(clusterName)
+			cluster := router.clustersClient.GetCluster(clusterName)
 			if cluster == nil {
 				log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 				errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -155,7 +155,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if router.topology.Topology == nil || router.topology.Topology.Nodes == nil {
-			topo := topology.Get(r.Context(), router.clusters)
+			topo := topology.Get(r.Context(), router.clustersClient)
 			if topo != nil && topo.Nodes != nil {
 				router.topology.LastFetch = time.Now()
 				router.topology.Topology = topo
@@ -172,7 +172,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		}
 
 		go func() {
-			topo := topology.Get(context.Background(), router.clusters)
+			topo := topology.Get(context.Background(), router.clustersClient)
 			if topo != nil && topo.Nodes != nil {
 				log.Debug(r.Context(), "Get applications result.", zap.String("topology", "get topology in background"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 				router.topology.LastFetch = time.Now()
@@ -199,7 +199,7 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get application parameters.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -217,7 +217,7 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
 	plugins.Append(plugin.Plugin{
 		Name:        "applications",
 		DisplayName: "Applications",
@@ -244,7 +244,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
+		clustersClient,
 		config,
 		topology,
 		teams,

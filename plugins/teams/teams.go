@@ -23,8 +23,8 @@ type Config struct{}
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	clusters *clusters.Clusters
-	config   Config
+	clustersClient clusters.Client
+	config         Config
 }
 
 // getTeams returns a list of teams for all clusters and namespaces. We always return all teams for all clusters and
@@ -34,7 +34,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 
 	var teams []team.TeamSpec
 
-	for _, cluster := range router.clusters.Clusters {
+	for _, cluster := range router.clustersClient.GetClusters() {
 		team, err := cluster.GetTeams(r.Context(), "")
 		if err != nil {
 			log.Error(r.Context(), "Could not get teams.", zap.Error(err))
@@ -59,7 +59,7 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get team parameters.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -76,7 +76,7 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
 	plugins.Append(plugin.Plugin{
 		Name:        "teams",
 		DisplayName: "Teams",
@@ -87,7 +87,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
+		clustersClient,
 		config,
 	}
 

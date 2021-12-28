@@ -23,8 +23,8 @@ type Config struct{}
 // Router implements the router for the flux plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	clusters *clusters.Clusters
-	config   Config
+	clustersClient clusters.Client
+	config         Config
 }
 
 func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +35,7 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Sync resource.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource))
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -72,7 +72,7 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
 	plugins.Append(plugin.Plugin{
 		Name:        "flux",
 		DisplayName: "Flux",
@@ -82,7 +82,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
+		clustersClient,
 		config,
 	}
 
