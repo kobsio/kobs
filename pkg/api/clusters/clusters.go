@@ -34,15 +34,26 @@ type Config struct {
 	Providers []provider.Config `json:"providers"`
 }
 
-// TODO
-// Clusters contains all fields and methods to interact with the configured Kubernetes clusters. It must implement the
-// Clusters service from the protocol buffers definition.
-type Clusters struct {
-	Clusters []*cluster.Cluster
+// Client is the interface with all the methods to interact with all loaded Kubernetes clusters.
+type Client interface {
+	GetClusters() []cluster.Client
+	GetCluster(name string) cluster.Client
 }
 
-func (c *Clusters) GetCluster(name string) *cluster.Cluster {
-	for _, cl := range c.Clusters {
+// client implements the Client interface and is used to interact with multiple Kubernetes clusters. For that it
+// contains a list of all cluster clients.
+type client struct {
+	clusters []cluster.Client
+}
+
+// GetClusters returns all loaded Kubernetes clusters.
+func (c *client) GetClusters() []cluster.Client {
+	return c.clusters
+}
+
+// GetCluster returns a cluster by it's name.
+func (c *client) GetCluster(name string) cluster.Client {
+	for _, cl := range c.clusters {
 		if cl.GetName() == name {
 			return cl
 		}
@@ -51,26 +62,26 @@ func (c *Clusters) GetCluster(name string) *cluster.Cluster {
 	return nil
 }
 
-// Load loads all clusters for the given configuration.
+// NewClient loads all clusters for the given configuration.
 // The clusters can be retrieved from different providers. Currently we are supporting incluster configuration and
 // kubeconfig files. In the future it is planning to directly support GKE, EKS, AKS, etc.
-func Load(config Config) (*Clusters, error) {
-	var clusters []*cluster.Cluster
+func NewClient(config Config) (Client, error) {
+	var tmpClusters []cluster.Client
 
 	for _, p := range config.Providers {
-		providerClusters, err := provider.GetClusters(&p)
+		providerClusters, err := provider.New(&p).GetClusters()
 		if err != nil {
 			return nil, err
 		}
 
 		if providerClusters != nil {
-			clusters = append(clusters, providerClusters...)
+			tmpClusters = append(tmpClusters, providerClusters...)
 		}
 	}
 
-	cs := &Clusters{
-		Clusters: clusters,
+	client := &client{
+		clusters: tmpClusters,
 	}
 
-	return cs, nil
+	return client, nil
 }

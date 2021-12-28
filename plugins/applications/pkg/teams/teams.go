@@ -25,14 +25,14 @@ type Team struct {
 }
 
 // Get returns a list of teams. For that we are looping through all clusters and getting all the Team CRs from each of
-// the clusters. After that we are transforming each Team CR into our internal Teams structure, by just keeping the
+// the cluster. After that we are transforming each Team CR into our internal Teams structure, by just keeping the
 // cluster, namespace and name of each team. In the following we have to loop again to each cluster, to retrieve all the
 // applications. The we are are going through each team and application to check if the application contains a reference
 // for the team. If this is the case we are adding the application to the team.
-func Get(ctx context.Context, clusters *clusters.Clusters) []Team {
+func Get(ctx context.Context, clustersClient clusters.Client) []Team {
 	var cachedTeams []Team
 
-	for _, c := range clusters.Clusters {
+	for _, c := range clustersClient.GetClusters() {
 		teams, err := c.GetTeams(ctx, "")
 		if err != nil {
 			continue
@@ -47,7 +47,7 @@ func Get(ctx context.Context, clusters *clusters.Clusters) []Team {
 		}
 	}
 
-	for _, c := range clusters.Clusters {
+	for _, c := range clustersClient.GetClusters() {
 		applications, err := c.GetApplications(ctx, "")
 		if err != nil {
 			continue

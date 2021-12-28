@@ -53,8 +53,8 @@ func init() {
 }
 
 // Handler creates a new Auth handler with the options defined via the above flags.
-func Handler(clusters *clusters.Clusters) func(next http.Handler) http.Handler {
-	a := New(flagEnabled, flagHeaderUser, flagHeaderTeams, flagSessionToken, flagSessionInterval, clusters)
+func Handler(clustersClient clusters.Client) func(next http.Handler) http.Handler {
+	a := New(flagEnabled, flagHeaderUser, flagHeaderTeams, flagSessionToken, flagSessionInterval, clustersClient)
 	return a.Handler
 }
 

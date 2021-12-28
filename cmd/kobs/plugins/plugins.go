@@ -72,7 +72,7 @@ func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register is used to register all api routes for plugins.
-func Register(clusters *clusters.Clusters, config Config) chi.Router {
+func Register(clustersClient clusters.Client, config Config) chi.Router {
 	router := Router{
 		chi.NewRouter(),
 		&plugin.Plugins{},
@@ -81,25 +81,25 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
 	router.Get("/", router.getPlugins)
 
 	// Initialize all plugins
-	resourcesRouter := resources.Register(clusters, router.plugins, config.Resources)
-	applicationsRouter := applications.Register(clusters, router.plugins, config.Applications)
-	teamsRouter := teams.Register(clusters, router.plugins, config.Teams)
-	usersRouter := users.Register(clusters, router.plugins, config.Users)
-	dashboardsRouter := dashboards.Register(clusters, router.plugins, config.Dashboards)
-	prometheusRouter, prometheusInstances := prometheus.Register(clusters, router.plugins, config.Prometheus)
+	resourcesRouter := resources.Register(clustersClient, router.plugins, config.Resources)
+	applicationsRouter := applications.Register(clustersClient, router.plugins, config.Applications)
+	teamsRouter := teams.Register(clustersClient, router.plugins, config.Teams)
+	usersRouter := users.Register(clustersClient, router.plugins, config.Users)
+	dashboardsRouter := dashboards.Register(clustersClient, router.plugins, config.Dashboards)
+	prometheusRouter, prometheusInstances := prometheus.Register(router.plugins, config.Prometheus)
 	elasticsearchRouter := elasticsearch.Register(router.plugins, config.Elasticsearch)
-	klogsRouter, klogsInstances := klogs.Register(clusters, router.plugins, config.Klogs)
-	jaegerRouter := jaeger.Register(clusters, router.plugins, config.Jaeger)
-	kialiRouter := kiali.Register(clusters, router.plugins, config.Kiali)
-	istioRouter := istio.Register(clusters, router.plugins, config.Istio, prometheusInstances, klogsInstances)
+	klogsRouter, klogsInstances := klogs.Register(router.plugins, config.Klogs)
+	jaegerRouter := jaeger.Register(router.plugins, config.Jaeger)
+	kialiRouter := kiali.Register(router.plugins, config.Kiali)
+	istioRouter := istio.Register(router.plugins, config.Istio, prometheusInstances, klogsInstances)
 	grafanaRouter := grafana.Register(router.plugins, config.Grafana)
-	harborRouter := harbor.Register(clusters, router.plugins, config.Harbor)
-	fluxRouter := flux.Register(clusters, router.plugins, config.Flux)
+	harborRouter := harbor.Register(router.plugins, config.Harbor)
+	fluxRouter := flux.Register(clustersClient, router.plugins, config.Flux)
 	opsgenieRouter := opsgenie.Register(router.plugins, config.Opsgenie)
-	sonarqubeRouter := sonarqube.Register(clusters, router.plugins, config.Sonarqube)
-	techdocsRouter := techdocs.Register(clusters, router.plugins, config.TechDocs)
-	azureRouter := azure.Register(clusters, router.plugins, config.Azure)
-	sqlRouter := sql.Register(clusters, router.plugins, config.SQL)
+	sonarqubeRouter := sonarqube.Register(router.plugins, config.Sonarqube)
+	techdocsRouter := techdocs.Register(router.plugins, config.TechDocs)
+	azureRouter := azure.Register(router.plugins, config.Azure)
+	sqlRouter := sql.Register(router.plugins, config.SQL)
 	markdownRouter := markdown.Register(router.plugins, config.Markdown)
 	rssRouter := rss.Register(router.plugins, config.RSS)
 

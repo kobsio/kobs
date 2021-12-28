@@ -34,15 +34,42 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
-	"sigs.k8s.io/controller-runtime/pkg/client"
+	controllerRuntimeClient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
 	slugifyRe = regexp.MustCompile("[^a-z0-9]+")
 )
 
-// Cluster is a Kubernetes cluster. It contains all required fields to interact with the cluster and it's services.
-type Cluster struct {
+// Client is the interface to interact with an Kubernetes cluster.
+type Client interface {
+	GetName() string
+	GetCRDs() []CRD
+	GetClient(schema *apiruntime.Scheme) (controllerRuntimeClient.Client, error)
+	GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error)
+	GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error)
+	DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
+	PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
+	CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error
+	GetLogs(ctx context.Context, namespace, name, container, regex string, since, tail int64, previous bool) (string, error)
+	StreamLogs(ctx context.Context, conn *websocket.Conn, namespace, name, container string, since, tail int64, follow bool) error
+	GetTerminal(conn *websocket.Conn, namespace, name, container, shell string) error
+	CopyFileFromPod(w http.ResponseWriter, namespace, name, container, srcPath string) error
+	CopyFileToPod(namespace, name, container string, srcFile multipart.File, destPath string) error
+	GetApplications(ctx context.Context, namespace string) ([]application.ApplicationSpec, error)
+	GetApplication(ctx context.Context, namespace, name string) (*application.ApplicationSpec, error)
+	GetTeams(ctx context.Context, namespace string) ([]team.TeamSpec, error)
+	GetTeam(ctx context.Context, namespace, name string) (*team.TeamSpec, error)
+	GetDashboards(ctx context.Context, namespace string) ([]dashboard.DashboardSpec, error)
+	GetDashboard(ctx context.Context, namespace, name string) (*dashboard.DashboardSpec, error)
+	GetUsers(ctx context.Context, namespace string) ([]user.UserSpec, error)
+	GetUser(ctx context.Context, namespace, name string) (*user.UserSpec, error)
+	loadCRDs()
+}
+
+// client implements the Client interface. It contains all required fields and methods to interact with an Kubernetes
+// cluster.
+type client struct {
 	cache                Cache
 	config               *rest.Config
 	clientset            *kubernetes.Clientset
@@ -85,18 +112,18 @@ type Cache struct {
 }
 
 // GetName returns the name of the cluster.
-func (c *Cluster) GetName() string {
+func (c *client) GetName() string {
 	return c.name
 }
 
 // GetCRDs returns all CRDs of the cluster.
-func (c *Cluster) GetCRDs() []CRD {
+func (c *client) GetCRDs() []CRD {
 	return c.crds
 }
 
 // GetClient returns a new client to perform CRUD operations on Kubernetes objects.
-func (c *Cluster) GetClient(schema *apiruntime.Scheme) (client.Client, error) {
-	return client.New(c.config, client.Options{
+func (c *client) GetClient(schema *apiruntime.Scheme) (controllerRuntimeClient.Client, error) {
+	return controllerRuntimeClient.New(c.config, controllerRuntimeClient.Options{
 		Scheme: schema,
 	})
 }
@@ -104,7 +131,7 @@ func (c *Cluster) GetClient(schema *apiruntime.Scheme) (client.Client, error) {
 // GetNamespaces returns all namespaces for the cluster. To reduce the latency and the number of API calls, we are
 // "caching" the namespaces. This means that if a new namespace is created in a cluster, this namespaces is only shown
 // after the configured cache duration.
-func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error) {
+func (c *client) GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error) {
 	log.Debug(ctx, "Last namespace fetch.", zap.Time("lastFetch", c.cache.namespacesLastFetch))
 
 	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * cacheDuration)) {
@@ -133,7 +160,7 @@ func (c *Cluster) GetNamespaces(ctx context.Context, cacheDuration time.Duration
 // GetResources returns a list for the given resource in the given namespace. The resource is identified by the
 // Kubernetes API path and the resource. The name is optional and can be used to get a single resource, instead of a
 // list of resources.
-func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error) {
+func (c *client) GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error) {
 	if name != "" {
 		if namespace != "" {
 			res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
@@ -165,7 +192,7 @@ func (c *Cluster) GetResources(ctx context.Context, namespace, name, path, resou
 
 // DeleteResource can be used to delete the given resource. The resource is identified by the Kubernetes API path and
 // the name of the resource.
-func (c *Cluster) DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
+func (c *client) DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	_, err := c.clientset.RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not delete resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
@@ -177,7 +204,7 @@ func (c *Cluster) DeleteResource(ctx context.Context, namespace, name, path, res
 
 // PatchResource can be used to edit the given resource. The resource is identified by the Kubernetes API path and the
 // name of the resource.
-func (c *Cluster) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
+func (c *client) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	_, err := c.clientset.RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not patch resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
@@ -189,7 +216,7 @@ func (c *Cluster) PatchResource(ctx context.Context, namespace, name, path, reso
 
 // CreateResource can be used to create the given resource. The resource is identified by the Kubernetes API path and the
 // name of the resource.
-func (c *Cluster) CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
+func (c *client) CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
 	if name != "" && subResource != "" {
 		_, err := c.clientset.RESTClient().Put().AbsPath(path).Namespace(namespace).Name(name).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 		if err != nil {
@@ -212,7 +239,7 @@ func (c *Cluster) CreateResource(ctx context.Context, namespace, name, path, res
 // GetLogs returns the logs for a Container. The Container is identified by the namespace and pod name and the container
 // name. Is is also possible to set the time since when the logs should be received and with the previous flag the logs
 // for the last container can be received.
-func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container, regex string, since, tail int64, previous bool) (string, error) {
+func (c *client) GetLogs(ctx context.Context, namespace, name, container, regex string, since, tail int64, previous bool) (string, error) {
 	options := &corev1.PodLogOptions{
 		Container:    container,
 		SinceSeconds: &since,
@@ -254,7 +281,7 @@ func (c *Cluster) GetLogs(ctx context.Context, namespace, name, container, regex
 
 // StreamLogs can be used to stream the logs of the selected Container. For that we are using the passed in WebSocket
 // connection an write each line returned by the Kubernetes API to this connection.
-func (c *Cluster) StreamLogs(ctx context.Context, conn *websocket.Conn, namespace, name, container string, since, tail int64, follow bool) error {
+func (c *client) StreamLogs(ctx context.Context, conn *websocket.Conn, namespace, name, container string, since, tail int64, follow bool) error {
 	options := &corev1.PodLogOptions{
 		Container:    container,
 		SinceSeconds: &since,
@@ -302,7 +329,7 @@ func (c *Cluster) StreamLogs(ctx context.Context, conn *websocket.Conn, namespac
 }
 
 // GetTerminal starts a new terminal session via the given WebSocket connection.
-func (c *Cluster) GetTerminal(conn *websocket.Conn, namespace, name, container, shell string) error {
+func (c *client) GetTerminal(conn *websocket.Conn, namespace, name, container, shell string) error {
 	reqURL, err := url.Parse(fmt.Sprintf("%s/api/v1/namespaces/%s/pods/%s/exec?container=%s&command=%s&stdin=true&stdout=true&stderr=true&tty=true", c.config.Host, namespace, name, container, shell))
 	if err != nil {
 		return err
@@ -322,7 +349,7 @@ func (c *Cluster) GetTerminal(conn *websocket.Conn, namespace, name, container, 
 }
 
 // CopyFileFromPod creates the request URL for downloading a file from the specified container.
-func (c *Cluster) CopyFileFromPod(w http.ResponseWriter, namespace, name, container, srcPath string) error {
+func (c *client) CopyFileFromPod(w http.ResponseWriter, namespace, name, container, srcPath string) error {
 	command := fmt.Sprintf("&command=tar&command=cf&command=-&command=%s", srcPath)
 	reqURL, err := url.Parse(fmt.Sprintf("%s/api/v1/namespaces/%s/pods/%s/exec?container=%s&stdin=true&stdout=true&stderr=true&tty=false%s", c.config.Host, namespace, name, container, command))
 	if err != nil {
@@ -333,7 +360,7 @@ func (c *Cluster) CopyFileFromPod(w http.ResponseWriter, namespace, name, contai
 }
 
 // CopyFileToPod creates the request URL for uploading a file to the specified container.
-func (c *Cluster) CopyFileToPod(namespace, name, container string, srcFile multipart.File, destPath string) error {
+func (c *client) CopyFileToPod(namespace, name, container string, srcFile multipart.File, destPath string) error {
 	command := fmt.Sprintf("&command=cp&command=/dev/stdin&command=%s", destPath)
 	reqURL, err := url.Parse(fmt.Sprintf("%s/api/v1/namespaces/%s/pods/%s/exec?container=%s&stdin=true&stdout=true&stderr=true&tty=false%s", c.config.Host, namespace, name, container, command))
 	if err != nil {
@@ -345,7 +372,7 @@ func (c *Cluster) CopyFileToPod(namespace, name, container string, srcFile multi
 
 // GetApplications returns a list of applications gor the given namespace. It also adds the cluster, namespace and
 // application name to the Application CR, so that this information must not be specified by the user in the CR.
-func (c *Cluster) GetApplications(ctx context.Context, namespace string) ([]application.ApplicationSpec, error) {
+func (c *client) GetApplications(ctx context.Context, namespace string) ([]application.ApplicationSpec, error) {
 	applicationsList, err := c.applicationClientset.KobsV1beta1().Applications(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -368,7 +395,7 @@ func (c *Cluster) GetApplications(ctx context.Context, namespace string) ([]appl
 // GetApplication returns a application for the given namespace and name. After the application is retrieved we replace,
 // the cluster, namespace and name in the spec of the Application CR. This is needed, so that the user doesn't have to,
 // provide these fields.
-func (c *Cluster) GetApplication(ctx context.Context, namespace, name string) (*application.ApplicationSpec, error) {
+func (c *client) GetApplication(ctx context.Context, namespace, name string) (*application.ApplicationSpec, error) {
 	applicationCR, err := c.applicationClientset.KobsV1beta1().Applications(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
@@ -384,7 +411,7 @@ func (c *Cluster) GetApplication(ctx context.Context, namespace, name string) (*
 
 // GetTeams returns a list of teams gor the given namespace. It also adds the cluster, namespace and team name to the
 // Team CR, so that this information must not be specified by the user in the CR.
-func (c *Cluster) GetTeams(ctx context.Context, namespace string) ([]team.TeamSpec, error) {
+func (c *client) GetTeams(ctx context.Context, namespace string) ([]team.TeamSpec, error) {
 	teamsList, err := c.teamClientset.KobsV1beta1().Teams(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -407,7 +434,7 @@ func (c *Cluster) GetTeams(ctx context.Context, namespace string) ([]team.TeamSp
 // GetTeam returns a team for the given namespace and name. After the team is retrieved we replace, the cluster,
 // namespace and name in the spec of the Team CR. This is needed, so that the user doesn't have to, provide these
 // fields.
-func (c *Cluster) GetTeam(ctx context.Context, namespace, name string) (*team.TeamSpec, error) {
+func (c *client) GetTeam(ctx context.Context, namespace, name string) (*team.TeamSpec, error) {
 	teamCR, err := c.teamClientset.KobsV1beta1().Teams(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
@@ -423,7 +450,7 @@ func (c *Cluster) GetTeam(ctx context.Context, namespace, name string) (*team.Te
 
 // GetDashboards returns a list of dashboards gor the given namespace. It also adds the cluster, namespace and dashboard
 // name to the Dashboard CR, so that this information must not be specified by the user in the CR.
-func (c *Cluster) GetDashboards(ctx context.Context, namespace string) ([]dashboard.DashboardSpec, error) {
+func (c *client) GetDashboards(ctx context.Context, namespace string) ([]dashboard.DashboardSpec, error) {
 	dashboardsList, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -447,7 +474,7 @@ func (c *Cluster) GetDashboards(ctx context.Context, namespace string) ([]dashbo
 // GetDashboard returns a dashboard for the given namespace and name. After the dashboard is retrieved we replace,
 // the cluster, namespace and name in the spec of the Dashboard CR. This is needed, so that the user doesn't have to,
 // provide these fields.
-func (c *Cluster) GetDashboard(ctx context.Context, namespace, name string) (*dashboard.DashboardSpec, error) {
+func (c *client) GetDashboard(ctx context.Context, namespace, name string) (*dashboard.DashboardSpec, error) {
 	dashboardCR, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
@@ -464,7 +491,7 @@ func (c *Cluster) GetDashboard(ctx context.Context, namespace, name string) (*da
 
 // GetUsers returns a list of users for the given namespace. It also adds the cluster, namespace and user name to the
 // User CR, so that this information must not be specified by the user in the CR.
-func (c *Cluster) GetUsers(ctx context.Context, namespace string) ([]user.UserSpec, error) {
+func (c *client) GetUsers(ctx context.Context, namespace string) ([]user.UserSpec, error) {
 	usersList, err := c.userClientset.KobsV1beta1().Users(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -487,7 +514,7 @@ func (c *Cluster) GetUsers(ctx context.Context, namespace string) ([]user.UserSp
 // GetUser returns a user for the given namespace and name. After the user is retrieved we replace, the cluster,
 // namespace and name in the spec of the User CR. This is needed, so that the user doesn't have to, provide these
 // fields.
-func (c *Cluster) GetUser(ctx context.Context, namespace, name string) (*user.UserSpec, error) {
+func (c *client) GetUser(ctx context.Context, namespace, name string) (*user.UserSpec, error) {
 	userCR, err := c.userClientset.KobsV1beta1().Users(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
@@ -504,7 +531,7 @@ func (c *Cluster) GetUser(ctx context.Context, namespace, name string) (*user.Us
 // loadCRDs retrieves all CRDs from the Kubernetes API of this cluster. Then the CRDs are transformed into our internal
 // CRD format and saved within the cluster. Since this function is only called once after a cluster was loaded, we call
 // it in a endless loop until it succeeds.
-func (c *Cluster) loadCRDs() {
+func (c *client) loadCRDs() {
 	offset := 30
 
 	for {
@@ -564,10 +591,10 @@ func (c *Cluster) loadCRDs() {
 	}
 }
 
-// NewCluster returns a new cluster. Each cluster must have a unique name and a client to make requests against the
-// Kubernetes API server of this cluster. When a cluster was successfully created we call the loadCRDs function to get
-// all CRDs for this cluster.
-func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
+// NewClient returns a new client to interact with a Kubernetes cluster. Each cluster must have a unique name and the
+// actual Kubernetes clients to make requests against the Kubernetes API server. When a client was successfully created
+// we call the loadCRDs function to get all CRDs in the Kubernetes cluster.
+func NewClient(name string, restConfig *rest.Config) (Client, error) {
 	clientset, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
 		log.Error(nil, "Could not create Kubernetes clientset.", zap.Error(err))
@@ -600,7 +627,7 @@ func NewCluster(name string, restConfig *rest.Config) (*Cluster, error) {
 
 	name = strings.Trim(slugifyRe.ReplaceAllString(strings.ToLower(name), "-"), "-")
 
-	c := &Cluster{
+	c := &client{
 		config:               restConfig,
 		clientset:            clientset,
 		applicationClientset: applicationClientset,

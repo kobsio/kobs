@@ -54,8 +54,8 @@ type WebSocket struct {
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	clusters *clusters.Clusters
-	config   Config
+	clustersClient clusters.Client
+	config         Config
 }
 
 // isForbidden checks if the requested resource was specified in the forbidden resources list. This can be used to use
@@ -95,7 +95,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	// Loop through all the given cluster names and get for each provided name the cluster interface. After that we
 	// check if the resource was provided via the forbidden resources list.
 	for _, clusterName := range clusterNames {
-		cluster := router.clusters.GetCluster(clusterName)
+		cluster := router.clustersClient.GetCluster(clusterName)
 		if cluster == nil {
 			log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -201,7 +201,7 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -260,7 +260,7 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -315,7 +315,7 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -360,7 +360,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get logs parameters.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("container", container), zap.String("regex", regex), zap.String("since", since), zap.String("previous", previous), zap.String("follow", follow))
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -543,7 +543,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		msg, _ := json.Marshal(terminal.Message{
@@ -579,7 +579,7 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get file parameters", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("container", container), zap.String("srcPath", srcPath))
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -612,7 +612,7 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 	}
 	defer f.Close()
 
-	cluster := router.clusters.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -632,7 +632,7 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
 	var options map[string]interface{}
 	options = make(map[string]interface{})
 	options["webSocketAddress"] = config.WebSocket.Address
@@ -648,7 +648,7 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
+		clustersClient,
 		config,
 	}
 

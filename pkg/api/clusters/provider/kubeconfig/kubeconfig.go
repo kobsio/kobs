@@ -9,27 +9,46 @@ import (
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
+// getRawConfigFunc is the function to get the raw cluster configuration from the kuebconfig under the given path. This
+// function is then called via the "getRawConfig" variable, so that we can overwrite it in our tests.
+func getRawConfigFunc(path string) (clientcmdapi.Config, error) {
+	clientConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		&clientcmd.ClientConfigLoadingRules{ExplicitPath: path},
+		&clientcmd.ConfigOverrides{},
+	)
+
+	return clientConfig.RawConfig()
+}
+
+// Set the getRawConfig and getNewCluster functions, so that we can overwrite them in our tests.
+var getRawConfig = getRawConfigFunc
+var getNewCluster = cluster.NewClient
+
 // Config is the configuration for the Kubeconfig provider.
 type Config struct {
 	Path string `json:"path"`
 }
 
+// Client is the interface, which must be implemented by the kubeconfig client.
+type Client interface {
+	GetClusters() ([]cluster.Client, error)
+}
+
+type client struct {
+	config *Config
+}
+
 // GetClusters returns all clusters from a given Kubeconfig file. For that the user have to provide the path to the
 // Kubeconfig file.
-func GetClusters(config *Config) ([]*cluster.Cluster, error) {
-	log.Debug(nil, "Load Kubeconfig file.", zap.String("path", config.Path))
+func (c *client) GetClusters() ([]cluster.Client, error) {
+	log.Debug(nil, "Load Kubeconfig file.", zap.String("path", c.config.Path))
 
-	clientConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
-		&clientcmd.ClientConfigLoadingRules{ExplicitPath: config.Path},
-		&clientcmd.ConfigOverrides{},
-	)
-
-	raw, err := clientConfig.RawConfig()
+	raw, err := getRawConfig(c.config.Path)
 	if err != nil {
 		return nil, err
 	}
 
-	var clusters []*cluster.Cluster
+	var clusters []cluster.Client
 
 	for name, context := range raw.Contexts {
 		if _, ok := raw.Clusters[context.Cluster]; ok {
@@ -51,7 +70,7 @@ func GetClusters(config *Config) ([]*cluster.Cluster, error) {
 					return nil, err
 				}
 
-				c, err := cluster.NewCluster(name, restConfig)
+				c, err := getNewCluster(name, restConfig)
 				if err != nil {
 					return nil, err
 				}
@@ -66,4 +85,11 @@ func GetClusters(config *Config) ([]*cluster.Cluster, error) {
 	}
 
 	return clusters, nil
+}
+
+// New returns a new kubeconfig client, with the given configuration.
+func New(config *Config) Client {
+	return &client{
+		config: config,
+	}
 }

@@ -73,7 +73,7 @@ func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register is used to register all api routes for plugins.
-func Register(clusters *clusters.Clusters, config Config) chi.Router {
+func Register(clustersClient clusters.Client, config Config) chi.Router {
         router := Router{
                 chi.NewRouter(),
                 &plugin.Plugins{},
@@ -82,8 +82,8 @@ func Register(clusters *clusters.Clusters, config Config) chi.Router {
         router.Get("/", router.getPlugins)
 
         // Register all plugins
-        router.Mount(resources.Route, resources.Register(clusters, router.plugins, config.Resources))
-        router.Mount(helloworld.Route, helloworld.Register(clusters, router.plugins, config.HelloWorld))
+        router.Mount(resources.Route, resources.Register(clustersClient, router.plugins, config.Resources))
+        router.Mount(helloworld.Route, helloworld.Register(clustersClient, router.plugins, config.HelloWorld))
 +        router.Mount(mynewplugin.Route, mynewplugin.Register(clusters, router.plugins, config.MyNewPlugin))
 
         return router

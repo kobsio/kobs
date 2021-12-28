@@ -30,17 +30,33 @@ type Config struct {
 	Kubeconfig kubeconfig.Config `json:"kubeconfig"`
 }
 
+// Provider is the interface, which must be implemented by our cluster provider.
+type Provider interface {
+	GetClusters() ([]cluster.Client, error)
+}
+
+type provider struct {
+	config *Config
+}
+
 // GetClusters returns all clusters for the given provider. When the provider field doesn't match our custom Type, we
 // only log a warning instead of throwing an error. This allows kobs to start also, when one provided provider is
 // invalid.
-func GetClusters(config *Config) ([]*cluster.Cluster, error) {
-	switch config.Provider {
+func (p *provider) GetClusters() ([]cluster.Client, error) {
+	switch p.config.Provider {
 	case INCLUSTER:
-		return incluster.GetCluster(&config.InCluster)
+		return incluster.New(&p.config.InCluster).GetCluster()
 	case KUBECONFIG:
-		return kubeconfig.GetClusters(&config.Kubeconfig)
+		return kubeconfig.New(&p.config.Kubeconfig).GetClusters()
 	default:
-		log.Warn(nil, "Invalid provider.", zap.String("provider", string(config.Provider)))
+		log.Warn(nil, "Invalid provider.", zap.String("provider", string(p.config.Provider)))
 		return nil, nil
+	}
+}
+
+// New returns a new provider, which can be used to load all Kubernetes clusters with the given configuration.
+func New(config *Config) Provider {
+	return &provider{
+		config: config,
 	}
 }

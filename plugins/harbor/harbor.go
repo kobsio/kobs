@@ -3,7 +3,6 @@ package harbor
 import (
 	"net/http"
 
-	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/log"
@@ -25,7 +24,6 @@ type Config []instance.Config
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	clusters  *clusters.Clusters
 	instances []*instance.Instance
 }
 
@@ -192,7 +190,7 @@ func (router *Router) getBuildHistory(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	var instances []*instance.Instance
 
 	for _, cfg := range config {
@@ -218,7 +216,6 @@ func Register(clusters *clusters.Clusters, plugins *plugin.Plugins, config Confi
 
 	router := Router{
 		chi.NewRouter(),
-		clusters,
 		instances,
 	}
 

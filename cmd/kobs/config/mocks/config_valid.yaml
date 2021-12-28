@@ -1,0 +1,14 @@
+clusters:
+  providers:
+    - provider: kubeconfig
+      kubeconfig:
+        path: ${HOME}/.kube/config
+
+plugins:
+  resources:
+    forbidden:
+      - secrets
+
+  applications:
+    topologyCacheDuration: 1m
+    teamsCacheDuration: 1m

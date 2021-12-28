@@ -62,11 +62,11 @@ type EdgeData struct {
 // through all clusters and get all applications for all clusters. Then we are going through all the applications and
 // and add them as node in the topology grahp. The defined dependencies for all applications are added as edges in the
 // topology.
-func Get(ctx context.Context, clusters *clusters.Clusters) *Topology {
+func Get(ctx context.Context, clustersClient clusters.Client) *Topology {
 	var edges []Edge
 	var nodes []Node
 
-	for _, c := range clusters.Clusters {
+	for _, c := range clustersClient.GetClusters() {
 		applications, err := c.GetApplications(ctx, "")
 		if err != nil {
 			continue

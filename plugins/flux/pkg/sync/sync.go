@@ -34,8 +34,8 @@ func doReconcileAnnotations(annotations map[string]string) {
 
 // Kustomization can be used to sync a Flux Kustomization. For that the cluster, namespace and name for the resource
 // must be provided.
-func Kustomization(ctx context.Context, cluster *cluster.Cluster, namespace, name string) error {
-	client, err := cluster.GetClient(createScheme())
+func Kustomization(ctx context.Context, clustersClient cluster.Client, namespace, name string) error {
+	client, err := clustersClient.GetClient(createScheme())
 	if err != nil {
 		return fmt.Errorf("could not get client: %w", err)
 	}
@@ -61,8 +61,8 @@ func Kustomization(ctx context.Context, cluster *cluster.Cluster, namespace, nam
 
 // HelmRelease can be used to sync a Flux HelmRelease. For that the cluster, namespace and name for the resource must be
 // provided.
-func HelmRelease(ctx context.Context, cluster *cluster.Cluster, namespace, name string) error {
-	client, err := cluster.GetClient(createScheme())
+func HelmRelease(ctx context.Context, clustersClient cluster.Client, namespace, name string) error {
+	client, err := clustersClient.GetClient(createScheme())
 	if err != nil {
 		return fmt.Errorf("could not get client: %w", err)
 	}
