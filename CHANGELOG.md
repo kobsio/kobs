@@ -24,6 +24,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#257](https://github.com/kobsio/kobs/pull/257): Add [codecov.io](https://about.codecov.io) for code coverage.
 - [#258](https://github.com/kobsio/kobs/pull/258): [rss] Add test for RSS plugin.
 - [#261](https://github.com/kobsio/kobs/pull/261): [elasticsearch] Add test for Elasticsearch plugin.
+- [#264](https://github.com/kobsio/kobs/pull/264): [core] Add tests for core packages.
 
 ### Fixed
 

@@ -68,15 +68,20 @@ type Client interface {
 }
 
 // client implements the Client interface. It contains all required fields and methods to interact with an Kubernetes
-// cluster.
+// cluster. The interfaces for the clientsets are implemented by the following types:
+//   - kubernetes.Interface                    --> *kubernetes.Clientset
+//   - applicationClientsetVersioned.Interface --> *applicationClientsetVersioned.Clientset
+//   - teamClientsetVersioned.Interface        --> *teamClientsetVersioned.Clientset
+//   - dashboardClientsetVersioned.Interface   --> *dashboardClientsetVersioned.Clientset
+//   - userClientsetVersioned.Interface        --> *userClientsetVersioned.Clientset
 type client struct {
 	cache                Cache
 	config               *rest.Config
-	clientset            *kubernetes.Clientset
-	applicationClientset *applicationClientsetVersioned.Clientset
-	teamClientset        *teamClientsetVersioned.Clientset
-	dashboardClientset   *dashboardClientsetVersioned.Clientset
-	userClientset        *userClientsetVersioned.Clientset
+	clientset            kubernetes.Interface
+	applicationClientset applicationClientsetVersioned.Interface
+	teamClientset        teamClientsetVersioned.Interface
+	dashboardClientset   dashboardClientsetVersioned.Interface
+	userClientset        userClientsetVersioned.Interface
 	name                 string
 	crds                 []CRD
 }
@@ -163,7 +168,7 @@ func (c *client) GetNamespaces(ctx context.Context, cacheDuration time.Duration)
 func (c *client) GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error) {
 	if name != "" {
 		if namespace != "" {
-			res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
+			res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
 			if err != nil {
 				log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 				return nil, err
@@ -172,7 +177,7 @@ func (c *client) GetResources(ctx context.Context, namespace, name, path, resour
 			return res, nil
 		}
 
-		res, err := c.clientset.RESTClient().Get().AbsPath(path).Resource(resource).Name(name).DoRaw(ctx)
+		res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath(path).Resource(resource).Name(name).DoRaw(ctx)
 		if err != nil {
 			log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 			return nil, err
@@ -181,7 +186,7 @@ func (c *client) GetResources(ctx context.Context, namespace, name, path, resour
 		return res, nil
 	}
 
-	res, err := c.clientset.RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Param(paramName, param).DoRaw(ctx)
+	res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Param(paramName, param).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return nil, err
@@ -193,7 +198,7 @@ func (c *client) GetResources(ctx context.Context, namespace, name, path, resour
 // DeleteResource can be used to delete the given resource. The resource is identified by the Kubernetes API path and
 // the name of the resource.
 func (c *client) DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
-	_, err := c.clientset.RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
+	_, err := c.clientset.CoreV1().RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not delete resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
@@ -205,7 +210,7 @@ func (c *client) DeleteResource(ctx context.Context, namespace, name, path, reso
 // PatchResource can be used to edit the given resource. The resource is identified by the Kubernetes API path and the
 // name of the resource.
 func (c *client) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
-	_, err := c.clientset.RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
+	_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not patch resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
@@ -218,7 +223,7 @@ func (c *client) PatchResource(ctx context.Context, namespace, name, path, resou
 // name of the resource.
 func (c *client) CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
 	if name != "" && subResource != "" {
-		_, err := c.clientset.RESTClient().Put().AbsPath(path).Namespace(namespace).Name(name).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
+		_, err := c.clientset.CoreV1().RESTClient().Put().AbsPath(path).Namespace(namespace).Name(name).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 		if err != nil {
 			log.Error(ctx, "Could not create resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
 			return err
@@ -227,7 +232,7 @@ func (c *client) CreateResource(ctx context.Context, namespace, name, path, reso
 		return nil
 	}
 
-	_, err := c.clientset.RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
+	_, err := c.clientset.CoreV1().RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not create resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
@@ -538,7 +543,7 @@ func (c *client) loadCRDs() {
 		ctx := context.Background()
 		log.Debug(ctx, "Load CRDs.")
 
-		res, err := c.clientset.RESTClient().Get().AbsPath("apis/apiextensions.k8s.io/v1/customresourcedefinitions").DoRaw(ctx)
+		res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath("apis/apiextensions.k8s.io/v1/customresourcedefinitions").DoRaw(ctx)
 		if err != nil {
 			log.Error(ctx, "Could not get Custom Resource Definitions.", zap.Error(err), zap.String("name", c.name))
 			time.Sleep(time.Duration(offset) * time.Second)

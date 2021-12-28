@@ -6,14 +6,8 @@ import (
 
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 
-	goJWT "github.com/golang-jwt/jwt/v4"
 	"github.com/stretchr/testify/require"
 )
-
-func testGenerateTokenWithInvalidClaims(sessionToken string) (string, error) {
-	token := goJWT.NewWithClaims(goJWT.SigningMethodHS256, goJWT.MapClaims{"foo": "bar"})
-	return token.SignedString([]byte(sessionToken))
-}
 
 func TestValidateToken(t *testing.T) {
 	token1, _ := CreateToken(authContext.User{ID: "userID"}, "sessionToken", time.Duration(48*time.Hour))
@@ -31,4 +25,7 @@ func TestCreateToken(t *testing.T) {
 	user, err := ValidateToken(token, "sessionToken")
 	require.NoError(t, err)
 	require.Equal(t, authContext.User{ID: "userID"}, *user)
+
+	_, err = CreateToken(authContext.User{ID: "userID"}, "sessionToken", time.Duration(-48*time.Hour))
+	require.Error(t, err)
 }
