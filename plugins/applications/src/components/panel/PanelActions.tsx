@@ -6,17 +6,20 @@ interface IPanelActionsProps {
   view: string;
   clusters: string[];
   namespaces: string[];
+  tags: string[];
 }
 
 export const PanelActions: React.FunctionComponent<IPanelActionsProps> = ({
   view,
   clusters,
   namespaces,
+  tags,
 }: IPanelActionsProps) => {
   const [show, setShow] = useState<boolean>(false);
 
   const clusterParams = clusters.map((cluster) => `&cluster=${cluster}`).join('');
   const namespaceParams = namespaces.map((namespace) => `&namespace=${namespace}`).join('');
+  const tagParams = tags.map((tag) => `&tag=${tag}`).join('');
 
   return (
     <CardActions>
@@ -28,7 +31,9 @@ export const PanelActions: React.FunctionComponent<IPanelActionsProps> = ({
         dropdownItems={[
           <DropdownItem
             key={0}
-            component={<Link to={`/applications?view=${view}${clusterParams}${namespaceParams}`}>Explore</Link>}
+            component={
+              <Link to={`/applications?view=${view}${clusterParams}${namespaceParams}${tagParams}`}>Explore</Link>
+            }
           />,
         ]}
       />

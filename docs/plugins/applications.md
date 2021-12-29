@@ -17,6 +17,7 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | topologyCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the topology graph should be cached. The default value is `1h`. | No |
 | teamsCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the teams for an application should be cached. The default value is `1h`. | No |
+| tagsCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the tags for all applications should be cached. The default value is `1h`. | No |
 
 ## Options
 
@@ -25,6 +26,7 @@ plugins:
 | view | string | The view, which should be used to show the applications. This must be `gallery` or `topology`. The default will be `gallery`. | No |
 | clusters | []string | A list of clusters. If this value isn't provided, it will be the cluster from the team or application where the dashboard is used. | No |
 | namespaces | []string | A list of namespaces. If this value isn't provided, it will be the namespace from the team or application where the dashboard is used. | No |
+| tags | []string | An optional list of tags. | No |
 | team | [Team](#team) | Get the applications for a team instead of clusters and namespaces. | No |
 
 ### Team

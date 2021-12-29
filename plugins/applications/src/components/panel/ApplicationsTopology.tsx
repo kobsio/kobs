@@ -15,6 +15,7 @@ interface IDataState {
 interface IApplicationsTopologyProps {
   clusters: string[];
   namespaces: string[];
+  tags: string[];
   times: IPluginTimes;
   setDetails?: (details: React.ReactNode) => void;
 }
@@ -25,20 +26,22 @@ interface IApplicationsTopologyProps {
 const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> = ({
   clusters,
   namespaces,
+  tags,
   times,
   setDetails,
 }: IApplicationsTopologyProps) => {
   const history = useHistory();
 
   const { isError, isLoading, error, data, refetch } = useQuery<IDataState, Error>(
-    ['applications/applications', 'topology', clusters, namespaces, times],
+    ['applications/applications', 'topology', clusters, namespaces, tags, times],
     async () => {
       try {
         const clusterParams = clusters.map((cluster) => `cluster=${cluster}`).join('&');
         const namespaceParams = namespaces.map((namespace) => `namespace=${namespace}`).join('&');
+        const tagParams = tags.map((tag) => `tag=${tag}`).join('&');
 
         const response = await fetch(
-          `/api/plugins/applications/applications?view=topology&${clusterParams}&${namespaceParams}`,
+          `/api/plugins/applications/applications?view=topology&${clusterParams}&${namespaceParams}&${tagParams}`,
           {
             method: 'get',
           },

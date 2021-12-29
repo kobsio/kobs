@@ -10,6 +10,7 @@ import (
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/log"
+	"github.com/kobsio/kobs/plugins/applications/pkg/tags"
 	"github.com/kobsio/kobs/plugins/applications/pkg/teams"
 	"github.com/kobsio/kobs/plugins/applications/pkg/topology"
 
@@ -25,6 +26,7 @@ const Route = "/applications"
 type Config struct {
 	TopologyCacheDuration string `json:"topologyCacheDuration"`
 	TeamsCacheDuration    string `json:"teamsCacheDuration"`
+	TagsCacheDuration     string `json:"tagsCacheDuration"`
 }
 
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
@@ -34,6 +36,7 @@ type Router struct {
 	config         Config
 	topology       topology.Cache
 	teams          teams.Cache
+	tags           tags.Cache
 }
 
 // getApplications returns a list of applications. This api endpoint supports multiple options to get applications. So
@@ -44,12 +47,13 @@ type Router struct {
 func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	clusterNames := r.URL.Query()["cluster"]
 	namespaces := r.URL.Query()["namespace"]
+	tagsList := r.URL.Query()["tag"]
 	view := r.URL.Query().Get("view")
 	teamCluster := r.URL.Query().Get("teamCluster")
 	teamNamespace := r.URL.Query().Get("teamNamespace")
 	teamName := r.URL.Query().Get("teamName")
 
-	log.Debug(r.Context(), "Get applications parameters.", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces), zap.String("teamCluster", teamCluster), zap.String("teamNamespace", teamNamespace), zap.String("teamName", teamName), zap.String("view", view))
+	log.Debug(r.Context(), "Get applications parameters.", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces), zap.Strings("tags", tagsList), zap.String("teamCluster", teamCluster), zap.String("teamNamespace", teamNamespace), zap.String("teamName", teamName), zap.String("view", view))
 
 	if view == "gallery" {
 		// If the view parameter has the value "gallery" and the team parameters are defined we return all applications
@@ -134,7 +138,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// TODO: Check if the user provided a list of tags and filter the applications for this tag.
+		applications = tags.FilterApplications(applications, tagsList)
 
 		log.Debug(r.Context(), "Get applications results.", zap.Int("applicationsCount", len(applications)))
 		render.JSON(w, r, applications)
@@ -216,6 +220,43 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, application)
 }
 
+// getTags returns a list of tags from all applications in all clusters. For that we have to create a slice of tags
+// across all clusters, namespaces and applications. After we created the slice of tag, we run our unique function to
+// return each tag only once. Finally we are saving the unique slice of tags in our cache.
+func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+
+	log.Debug(r.Context(), "Get tags.", zap.String("name", name))
+
+	if router.tags.LastFetch.After(time.Now().Add(-1 * router.tags.CacheDuration)) {
+		log.Debug(r.Context(), "Get tags from cache result.", zap.Int("tagsCount", len(router.tags.Tags)))
+		render.JSON(w, r, router.tags.Tags)
+		return
+	}
+
+	var allTags []string
+
+	for _, cluster := range router.clustersClient.GetClusters() {
+		applications, err := cluster.GetApplications(r.Context(), "")
+		if err != nil {
+			log.Error(r.Context(), "Could not get tags.", zap.Error(err))
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get tags")
+			return
+		}
+
+		for _, application := range applications {
+			allTags = append(allTags, application.Tags...)
+		}
+	}
+
+	uniqueTags := tags.Unique(allTags)
+	router.topology.LastFetch = time.Now()
+	router.tags.Tags = uniqueTags
+
+	log.Debug(r.Context(), "Get tags result.", zap.Int("tagsCount", len(uniqueTags)))
+	render.JSON(w, r, uniqueTags)
+}
+
 // Register returns a new router which can be used in the router for the kobs rest api.
 func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
 	plugins.Append(plugin.Plugin{
@@ -242,16 +283,26 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		teams.CacheDuration = teamsCacheDuration
 	}
 
+	var tags tags.Cache
+	tagsCacheDuration, err := time.ParseDuration(config.TagsCacheDuration)
+	if err != nil || tagsCacheDuration.Seconds() < 60 {
+		tags.CacheDuration = time.Duration(1 * time.Hour)
+	} else {
+		tags.CacheDuration = tagsCacheDuration
+	}
+
 	router := Router{
 		chi.NewRouter(),
 		clustersClient,
 		config,
 		topology,
 		teams,
+		tags,
 	}
 
 	router.Get("/applications", router.getApplications)
 	router.Get("/application", router.getApplication)
+	router.Get("/tags", router.getTags)
 
 	return router
 }

@@ -6,6 +6,7 @@ import { IApplication, IApplicationReference, IPluginTimes } from '@kobsio/plugi
 export interface IOptions {
   clusters: string[];
   namespaces: string[];
+  tags: string[];
   view: TView;
   times: IPluginTimes;
 }
@@ -21,6 +22,7 @@ export interface IPanelOptions {
   view?: TView;
   clusters?: string[];
   namespaces?: string[];
+  tags?: string[];
   team?: IApplicationReference;
 }
 

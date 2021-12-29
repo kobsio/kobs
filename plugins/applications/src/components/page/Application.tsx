@@ -2,6 +2,7 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
+  Badge,
   Button,
   ButtonVariant,
   Drawer,
@@ -101,8 +102,17 @@ const Application: React.FunctionComponent = () => {
         <Title title={data.name} subtitle={`${data.namespace} (${data.cluster})`} size="xl" />
         <div>
           <p>{data.description}</p>
-          {(data.teams && data.teams.length > 0) || (data.links && data.links.length > 0) ? (
+          {(data.tags && data.tags.length > 0) ||
+          (data.teams && data.teams.length > 0) ||
+          (data.links && data.links.length > 0) ? (
             <List variant={ListVariant.inline}>
+              {data.tags &&
+                data.tags.map((tag) => (
+                  <ListItem key={tag}>
+                    <Badge className="pf-u-mr-sm">{tag.toLowerCase()}</Badge>
+                  </ListItem>
+                ))}
+
               {data.teams &&
                 data.teams.map((team, index) => (
                   <ListItem key={index}>
