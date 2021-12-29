@@ -22,7 +22,9 @@ const Route = "/users"
 // Config is the structure of the configuration for the users plugin.
 type Config struct{}
 
-// Router implements the router for the resources plugin, which can be registered in the router for our rest api.
+// Router implements the router for the users plugin, which can be registered in the router for our rest api. The router
+// contains all the api endpoints for the plugin, the clusters client to retrieve the users from the Kubernetes api
+// server and the user defined configuration.
 type Router struct {
 	*chi.Mux
 	clustersClient clusters.Client
@@ -128,7 +130,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 
 		n := defaultNamespace
 		if team.Namespace != "" {
-			c = team.Namespace
+			n = team.Namespace
 		}
 
 		cluster := router.clustersClient.GetCluster(c)
