@@ -116,14 +116,14 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 				user, err := a.getUser(r.Context(), userID, teamIDs)
 				if err != nil {
 					log.Warn(r.Context(), "Could not get user.", zap.Error(err), zap.String("user", userID), zap.Strings("teams", teamIDs))
-					errresponse.Render(w, r, nil, http.StatusUnauthorized, "Unauthorized")
+					errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 					return
 				}
 
 				token, err := jwt.CreateToken(user, a.sessionToken, a.sessionInterval)
 				if err != nil {
 					log.Warn(r.Context(), "Could not create jwt token.", zap.Error(err))
-					errresponse.Render(w, r, nil, http.StatusUnauthorized, "Unauthorized")
+					errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 					return
 				}
 
@@ -145,14 +145,14 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 					newUser, err := a.getUser(r.Context(), userID, teamIDs)
 					if err != nil {
 						log.Warn(r.Context(), "Could not get user.", zap.Error(err), zap.String("user", userID), zap.Strings("teams", teamIDs))
-						errresponse.Render(w, r, nil, http.StatusUnauthorized, "Unauthorized")
+						errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 						return
 					}
 
 					token, err := jwt.CreateToken(newUser, a.sessionToken, a.sessionInterval)
 					if err != nil {
 						log.Warn(r.Context(), "Could not create jwt token.", zap.Error(err))
-						errresponse.Render(w, r, nil, http.StatusUnauthorized, "Unauthorized")
+						errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 						return
 					}
 

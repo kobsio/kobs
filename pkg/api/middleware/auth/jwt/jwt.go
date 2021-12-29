@@ -38,6 +38,10 @@ func ValidateToken(tokenString, sessionToken string) (*authContext.User, error) 
 
 // CreateToken creates a new signed jwt token with the user information saved in the claims.
 func CreateToken(user authContext.User, sessionToken string, sessionInterval time.Duration) (string, error) {
+	if sessionInterval < 0 {
+		return "", fmt.Errorf("invalid session interval")
+	}
+
 	claims := CustomClaims{
 		user,
 		goJWT.RegisteredClaims{
