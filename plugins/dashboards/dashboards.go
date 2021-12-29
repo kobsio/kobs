@@ -22,7 +22,9 @@ const Route = "/dashboards"
 // Config is the structure of the configuration for the dashboards plugin.
 type Config struct{}
 
-// Router implements the router for the resources plugin, which can be registered in the router for our rest api.
+// Router implements the router for the dashboards plugin, which can be registered in the router for our rest api. Next
+// to the api routes it contains a clusters client to load the dashboards via the Kubernetes api server and the user
+// defined configuration.
 type Router struct {
 	*chi.Mux
 	clustersClient clusters.Client
@@ -56,6 +58,7 @@ func (router *Router) getAllDashboards(w http.ResponseWriter, r *http.Request) {
 		dashboard, err := cluster.GetDashboards(r.Context(), "")
 		if err != nil {
 			log.Error(r.Context(), "Could not get dashboards.", zap.Error(err))
+			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboards")
 			return
 		}
 
