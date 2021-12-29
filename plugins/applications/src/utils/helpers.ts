@@ -6,11 +6,13 @@ export const getInitialOptions = (search: string, isInitial: boolean): IOptions 
   const params = new URLSearchParams(search);
   const clusters = params.getAll('cluster');
   const namespaces = params.getAll('namespace');
+  const tags = params.getAll('tag');
   const view = params.get('view');
 
   return {
     clusters: clusters,
     namespaces: namespaces,
+    tags: tags,
     times: getTimeParams(params, isInitial),
     view: view ? (view as TView) : 'gallery',
   };

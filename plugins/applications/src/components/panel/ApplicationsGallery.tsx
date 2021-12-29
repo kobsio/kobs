@@ -9,6 +9,7 @@ import ApplicationsGalleryItem from './ApplicationsGalleryItem';
 interface IApplicationsGalleryProps {
   clusters: string[];
   namespaces: string[];
+  tags: string[];
   team?: IApplicationReference;
   times: IPluginTimes;
 }
@@ -17,17 +18,19 @@ interface IApplicationsGalleryProps {
 const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = ({
   clusters,
   namespaces,
+  tags,
   team,
   times,
 }: IApplicationsGalleryProps) => {
   const history = useHistory();
 
   const { isError, isLoading, error, data, refetch } = useQuery<IApplication[], Error>(
-    ['applications/applications', 'gallery', clusters, namespaces, team, times],
+    ['applications/applications', 'gallery', clusters, namespaces, tags, team, times],
     async () => {
       try {
         const clusterParams = clusters.map((cluster) => `cluster=${cluster}`).join('&');
         const namespaceParams = namespaces.map((namespace) => `namespace=${namespace}`).join('&');
+        const tagParams = tags.map((tag) => `tag=${tag}`).join('&');
         const teamParams =
           team && team.cluster && team.namespace && team.name
             ? `&teamCluster=${team.cluster}&teamNamespace=${team.namespace}&teamName=${team.name}`
@@ -35,7 +38,7 @@ const ApplicationsGallery: React.FunctionComponent<IApplicationsGalleryProps> = 
 
         const response = await fetch(
           `/api/plugins/applications/applications?view=gallery&${
-            teamParams ? teamParams : `${clusterParams}&${namespaceParams}`
+            teamParams ? teamParams : `${clusterParams}&${namespaceParams}&${tagParams}`
           }`,
           {
             method: 'get',

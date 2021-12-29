@@ -69,7 +69,8 @@ func Get(ctx context.Context, clustersClient clusters.Client) []Team {
 	return cachedTeams
 }
 
-// GetApplications returns the applications for the requested team.
+// GetApplications returns the applications for the requested team. The function takes a list of team and the cluster,
+// namespace and name of a team as arguments.
 func GetApplications(teams []Team, cluster, namespace, name string) []application.ApplicationSpec {
 	for _, t := range teams {
 		if t.Cluster == cluster && t.Namespace == namespace && t.Name == name {
@@ -80,7 +81,8 @@ func GetApplications(teams []Team, cluster, namespace, name string) []applicatio
 	return nil
 }
 
-// doesApplicationContainsTeam checks if the given team name exists in a slice of teams.
+// doesApplicationContainsTeam checks if the given team name exists in a slice of teams. The function takes an
+// application and the cluster, namespace and name of the team as arguments.
 func doesApplicationContainsTeam(application application.ApplicationSpec, cluster, namespace, name string) bool {
 	for _, t := range application.Teams {
 		if t.Cluster == "" {

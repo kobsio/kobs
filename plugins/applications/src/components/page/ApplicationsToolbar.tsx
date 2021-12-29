@@ -5,6 +5,7 @@ import { ClustersContext, IClusterContext, IOptionsAdditionalFields, IPluginTime
 import { IOptions, TView } from '../../utils/interfaces';
 import ApplicationsToolbarItemClusters from './ApplicationsToolbarItemClusters';
 import ApplicationsToolbarItemNamespaces from './ApplicationsToolbarItemNamespaces';
+import ApplicationsToolbarItemTags from './ApplicationsToolbarItemTags';
 
 interface IApplicationsToolbarProps {
   options: IOptions;
@@ -22,6 +23,7 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
     options.clusters.length > 0 ? options.clusters : [clustersContext.clusters[0]],
   );
   const [selectedNamespaces, setSelectedNamespaces] = useState<string[]>(options.namespaces);
+  const [selectedTags, setSelectedTags] = useState<string[]>(options.tags);
   const [selectedView, setSelectedView] = useState<TView>(options.view ? (options.view as TView) : 'gallery');
 
   // selectCluster adds/removes the given cluster to the list of selected clusters. When the cluster value is an empty
@@ -52,10 +54,30 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
     }
   };
 
+  // selectTag adds/removes the given tag to/from the list of selected tags. When the tag value is an empty string the
+  // selected tags list is cleared.
+  const selectTag = (tag: string): void => {
+    if (tag === '') {
+      setSelectedTags([]);
+    } else {
+      if (selectedTags.includes(tag)) {
+        setSelectedTags(selectedTags.filter((item) => item !== tag));
+      } else {
+        setSelectedTags([...selectedTags, tag]);
+      }
+    }
+  };
+
   // changeOptions changes the Prometheus option. It is used when the user clicks the search button or selects a new
   // time range.
   const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
-    setOptions({ clusters: selectedClusters, namespaces: selectedNamespaces, times: times, view: selectedView });
+    setOptions({
+      clusters: selectedClusters,
+      namespaces: selectedNamespaces,
+      tags: selectedTags,
+      times: times,
+      view: selectedView,
+    });
   };
 
   return (
@@ -73,6 +95,9 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
           selectedNamespaces={selectedNamespaces}
           selectNamespace={selectNamespace}
         />
+      </ToolbarItem>
+      <ToolbarItem style={{ width: '100%' }}>
+        <ApplicationsToolbarItemTags selectedTags={selectedTags} selectTag={selectTag} />
       </ToolbarItem>
       <ToolbarItem>
         <ToggleGroup aria-label="View">

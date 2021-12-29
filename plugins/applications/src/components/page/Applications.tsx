@@ -40,12 +40,13 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
   const changeOptions = (opts: IOptions): void => {
     const c = opts.clusters.map((cluster) => `&cluster=${cluster}`);
     const n = opts.namespaces.map((namespace) => `&namespace=${namespace}`);
+    const t = opts.tags.map((tag) => `&tag=${tag}`);
 
     history.push({
       pathname: location.pathname,
       search: `?time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}&view=${
         opts.view
-      }${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}`,
+      }${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}${t.length > 0 ? t.join('') : ''}`,
     });
   };
 
@@ -86,6 +87,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
                   options={{
                     clusters: options.clusters,
                     namespaces: options.namespaces,
+                    tags: options.tags,
                     team: undefined,
                     view: options.view,
                   }}

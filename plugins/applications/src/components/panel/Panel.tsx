@@ -43,6 +43,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <ApplicationsTopology
         clusters={options.clusters || [defaults.cluster]}
         namespaces={options.namespaces || [defaults.namespace]}
+        tags={options.tags || []}
         times={times}
         setDetails={setDetails}
       />
@@ -59,6 +60,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
               view="topology"
               clusters={options.clusters || [defaults.cluster]}
               namespaces={options.namespaces || [defaults.namespace]}
+              tags={options.tags || []}
             />
           }
         >
@@ -76,6 +78,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     <ApplicationsGallery
       clusters={options.clusters || [defaults.cluster]}
       namespaces={options.namespaces || [defaults.namespace]}
+      tags={options.tags || []}
       team={options.team}
       times={times}
     />
@@ -93,6 +96,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
               view="gallery"
               clusters={options.clusters || [defaults.cluster]}
               namespaces={options.namespaces || [defaults.namespace]}
+              tags={options.tags || []}
             />
           )
         }
