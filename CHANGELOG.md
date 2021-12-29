@@ -25,6 +25,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#258](https://github.com/kobsio/kobs/pull/258): [rss] Add test for RSS plugin.
 - [#261](https://github.com/kobsio/kobs/pull/261): [elasticsearch] Add test for Elasticsearch plugin.
 - [#264](https://github.com/kobsio/kobs/pull/264): [core] Add tests for core packages.
+- [#266](https://github.com/kobsio/kobs/pull/266): [dashboards] Add tests for dashboards plugin.
 
 ### Fixed
 
