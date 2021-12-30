@@ -31,7 +31,11 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
   return (
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
-        <Title title={application.name} subtitle={`${application.namespace} (${application.cluster})`} size="lg" />
+        <Title
+          title={application.name}
+          subtitle={application.topology?.external ? 'external' : `${application.namespace} (${application.cluster})`}
+          size="lg"
+        />
         <DrawerActions style={{ padding: 0 }}>
           <DetailsLink application={application} />
           <DrawerCloseButton onClose={close} />

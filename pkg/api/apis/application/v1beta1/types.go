@@ -47,6 +47,7 @@ type Link struct {
 
 type Topology struct {
 	Type         string       `json:"type,omitempty"`
+	External     bool         `json:"external,omitempty"`
 	Dependencies []Dependency `json:"dependencies,omitempty"`
 }
 

@@ -99,7 +99,11 @@ const Application: React.FunctionComponent = () => {
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Title title={data.name} subtitle={`${data.namespace} (${data.cluster})`} size="xl" />
+        <Title
+          title={data.name}
+          subtitle={data.topology?.external ? 'external' : `${data.namespace} (${data.cluster})`}
+          size="xl"
+        />
         <div>
           <p>{data.description}</p>
           {(data.tags && data.tags.length > 0) ||

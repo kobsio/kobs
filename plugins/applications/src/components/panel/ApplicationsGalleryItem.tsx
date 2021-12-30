@@ -22,7 +22,7 @@ const ApplicationsGalleryItem: React.FunctionComponent<IApplicationsGalleryItemP
           {application.name}
           <br />
           <span className="pf-u-font-size-sm pf-u-color-400">
-            {application.namespace} ({application.cluster})
+            {application.topology?.external ? 'external' : `${application.namespace} (${application.cluster})`}
           </span>
         </CardTitle>
         <CardBody style={{ height: '150px', maxHeight: '150px', minHeight: '150px' }}>

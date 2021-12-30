@@ -284,6 +284,8 @@ spec:
                       - name
                       type: object
                     type: array
+                  external:
+                    type: boolean
                   type:
                     type: string
                 type: object

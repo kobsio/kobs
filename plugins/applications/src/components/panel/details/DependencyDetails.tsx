@@ -34,14 +34,14 @@ const DependencyDetails: React.FunctionComponent<IDependencyDetailsProps> = ({
           <span className="pf-u-pl-sm pf-c-title pf-m-lg">
             <span className="pf-u-pl-sm">{source?.data.name} </span>
             <span className="pf-u-font-size-sm pf-u-color-400">
-              ({source?.data.namespace} / {source?.data.cluster})
+              {source?.data.topology?.external ? '(external)' : `(${source?.data.namespace} / ${source?.data.cluster})`}
             </span>
           </span>
           <span className="pf-u-pl-lg pf-u-font-size-sm pf-u-color-400">To:</span>
           <span className="pf-u-pl-sm pf-c-title pf-m-lg">
             <span className="pf-u-pl-sm">{target?.data.name} </span>
             <span className="pf-u-font-size-sm pf-u-color-400">
-              ({target?.data.namespace} / {target?.data.cluster})
+              {target?.data.topology?.external ? '(external)' : `(${target?.data.namespace} / ${target?.data.cluster})`}
             </span>
           </span>
         </span>

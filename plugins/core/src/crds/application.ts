@@ -28,6 +28,7 @@ export interface IApplicationLink {
 
 export interface IApplicationTopology {
   type?: string;
+  external?: boolean;
   dependencies?: IApplicationDependency[];
 }
 
