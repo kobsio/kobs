@@ -84,12 +84,17 @@ func Get(ctx context.Context, clustersClient clusters.Client) *Topology {
 		}
 
 		for _, application := range applications {
+			parent := application.Cluster + "-" + application.Namespace
+			if application.Topology.External {
+				parent = ""
+			}
+
 			nodes = append(nodes, Node{
 				Data: NodeData{
 					application.Cluster + "-" + application.Namespace + "-" + application.Name,
 					application.Topology.Type,
 					application.Name,
-					application.Cluster + "-" + application.Namespace,
+					parent,
 					application,
 				},
 			})

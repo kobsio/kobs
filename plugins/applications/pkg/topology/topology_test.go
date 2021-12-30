@@ -25,7 +25,7 @@ var expectedGetTopology = Topology{
 		{Data: NodeData{ID: "cluster1-namespace1-application2", Type: "application", Label: "application2", Parent: "cluster1-namespace1", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: application.Topology{Type: "application", Dependencies: []application.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}}}},
 		{Data: NodeData{ID: "cluster1-namespace2-application3", Type: "application", Label: "application3", Parent: "cluster1-namespace2", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: application.Topology{Type: "application", Dependencies: []application.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}}}},
 		{Data: NodeData{ID: "cluster2-namespace3-application4", Type: "application", Label: "application4", Parent: "cluster2-namespace3", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application4", Topology: application.Topology{Type: "application"}}}},
-		{Data: NodeData{ID: "cluster2-namespace3-application5", Type: "application", Label: "application5", Parent: "cluster2-namespace3", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application5", Topology: application.Topology{Type: "application"}}}},
+		{Data: NodeData{ID: "cluster2-namespace3-application5", Type: "application", Label: "application5", Parent: "", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application5", Topology: application.Topology{Type: "application", External: true}}}},
 	},
 }
 
@@ -41,7 +41,7 @@ var expectedGenerateTopology = Topology{
 		{Data: NodeData{ID: "cluster1-namespace1-application2", Type: "application", Label: "application2", Parent: "cluster1-namespace1", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: application.Topology{Type: "application", Dependencies: []application.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}}}},
 		{Data: NodeData{ID: "cluster1-namespace2-application3", Type: "application", Label: "application3", Parent: "cluster1-namespace2", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: application.Topology{Type: "application", Dependencies: []application.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}}}},
 		{Data: NodeData{ID: "cluster2-namespace3-application4", Type: "application", Label: "application4", Parent: "cluster2-namespace3", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application4", Topology: application.Topology{Type: "application"}}}},
-		{Data: NodeData{ID: "cluster2-namespace3-application5", Type: "application", Label: "application5", Parent: "cluster2-namespace3", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application5", Topology: application.Topology{Type: "application"}}}},
+		{Data: NodeData{ID: "cluster2-namespace3-application5", Type: "application", Label: "application5", Parent: "", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application5", Topology: application.Topology{Type: "application", External: true}}}},
 		{Data: NodeData{ID: "cluster1", Type: "cluster", Label: "cluster1", Parent: "", ApplicationSpec: application.ApplicationSpec{Cluster: "", Namespace: "", Name: ""}}},
 		{Data: NodeData{ID: "cluster2", Type: "cluster", Label: "cluster2", Parent: "", ApplicationSpec: application.ApplicationSpec{Cluster: "", Namespace: "", Name: ""}}},
 		{Data: NodeData{ID: "cluster1-namespace1", Type: "namespace", Label: "namespace1", Parent: "cluster1", ApplicationSpec: application.ApplicationSpec{Cluster: "", Namespace: "", Name: ""}}},
@@ -76,7 +76,7 @@ func TestGet(t *testing.T) {
 			{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: application.Topology{Type: "application", Dependencies: []application.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}},
 			{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: application.Topology{Type: "application", Dependencies: []application.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}},
 			{Cluster: "cluster2", Namespace: "namespace3", Name: "application4", Topology: application.Topology{Type: "application"}},
-			{Cluster: "cluster2", Namespace: "namespace3", Name: "application5", Topology: application.Topology{Type: "application"}},
+			{Cluster: "cluster2", Namespace: "namespace3", Name: "application5", Topology: application.Topology{Type: "application", External: true}},
 		}, nil).Once()
 		actualTopology := Get(context.Background(), mockClustersClient)
 		require.Equal(t, &expectedGetTopology, actualTopology)

@@ -48,7 +48,8 @@ Teams can be used to define the ownership for an application. It is also possibl
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The type of the application in the topology graph. This must be a node type as specified in the `topology` key in the [configuration](../plugins/applications#configuration). The default value is `application`.  | No |
+| type | string | The type of the application in the topology graph. This must be a node type as specified in the `topology` key in the [configuration](../plugins/applications#configuration). The default value is `application`. | No |
+| external | boolean | When this `true` the application will be marked as external. This means that we do not show the cluster and namespace of the Application CR in the UI and that the node for the application is rendered outside the cluster in the topology graph. | No |
 | dependencies | [[]Dependency](#dependency) | Add other applications as dependencies for this application. This can be used to render a topology graph for your applications. | No |
 
 ### Dependency
