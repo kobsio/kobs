@@ -20,7 +20,9 @@ const Route = "/teams"
 // Config is the structure of the configuration for the teams plugin.
 type Config struct{}
 
-// Router implements the router for the resources plugin, which can be registered in the router for our rest api.
+// Router implements the router for the teams plugin, which can be registered in the router for our rest api. The router
+// contains all api endpoints for the plugin, the cluster client to get the teams from the Kubernetes api server and the
+// user defined configuration.
 type Router struct {
 	*chi.Mux
 	clustersClient clusters.Client
