@@ -391,6 +391,10 @@ func (c *client) GetApplications(ctx context.Context, namespace string) ([]appli
 		application.Namespace = applicationItem.Namespace
 		application.Name = applicationItem.Name
 
+		if application.Topology.Type == "" {
+			application.Topology.Type = "application"
+		}
+
 		applications = append(applications, application)
 	}
 
@@ -410,6 +414,10 @@ func (c *client) GetApplication(ctx context.Context, namespace, name string) (*a
 	application.Cluster = c.name
 	application.Namespace = namespace
 	application.Name = name
+
+	if application.Topology.Type == "" {
+		application.Topology.Type = "application"
+	}
 
 	return &application, nil
 }

@@ -20,11 +20,12 @@ spec:
       namespace: kobs
     - name: team-call-of-duty
       namespace: kobs
-  dependencies:
-    - name: details
-      description: Get book information.
-    - name: reviews
-      description: Get book reviews.
+  topology:
+    dependencies:
+      - name: details
+        description: Get book information.
+      - name: reviews
+        description: Get book reviews.
   preview:
     title: Incoming Success Rate
     plugin:

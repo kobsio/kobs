@@ -8,6 +8,15 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 )
 
+// Config is the structure of the topology graph configuration. It contains a type which can then be used in the
+// "topology.type" property in an application. It also contains a user color and shape which defines how the application
+// is rendered in the topology graph.
+type Config struct {
+	Type  string `json:"type"`
+	Shape string `json:"shape"`
+	Color string `json:"color"`
+}
+
 // Cache is the structure which can be used to cache the generated topology graph in the applications plugin.
 type Cache struct {
 	LastFetch     time.Time
@@ -76,7 +85,7 @@ func Get(ctx context.Context, clustersClient clusters.Client) *Topology {
 			nodes = append(nodes, Node{
 				Data: NodeData{
 					application.Cluster + "-" + application.Namespace + "-" + application.Name,
-					"application",
+					application.Topology.Type,
 					application.Name,
 					application.Cluster + "-" + application.Namespace,
 					application,
@@ -86,7 +95,7 @@ func Get(ctx context.Context, clustersClient clusters.Client) *Topology {
 			// The cluster and namespace field in the reference for a dependency is optional. So that we have to set the
 			// cluster and namespace to the cluster and namespace of the current application, when it isn't defined in
 			// the dependency reference.
-			for _, dependency := range application.Dependencies {
+			for _, dependency := range application.Topology.Dependencies {
 				dependencyCluster := dependency.Cluster
 				if dependencyCluster == "" {
 					dependencyCluster = application.Cluster
@@ -139,7 +148,7 @@ func Get(ctx context.Context, clustersClient clusters.Client) *Topology {
 // are adding the source and target nodes. We are also creating an additional slice for the cluster and namespace nodes,
 // which are then merged with the nodes slice. This is necessary, because we do not save the clusters and namespaces as
 // nodes in the cached topology.
-func Generate(topology *Topology, clusters, namespaces []string) *Topology {
+func Generate(topology *Topology, clusters, namespaces, tags []string) *Topology {
 	var edges []Edge
 	var nodes []Node
 	var clusterNodes []Node
@@ -166,6 +175,7 @@ func Generate(topology *Topology, clusters, namespaces []string) *Topology {
 	for _, edge := range edges {
 		for _, node := range topology.Nodes {
 			if node.Data.ID == edge.Data.Source || node.Data.ID == edge.Data.Target {
+				node.Data.Type = getNodeTyp(node, namespaces, tags)
 				nodes = appendNodeIfMissing(nodes, node)
 
 				clusterNode := Node{
@@ -231,4 +241,54 @@ func appendNodeIfMissing(nodes []Node, node Node) []Node {
 	}
 
 	return append(nodes, node)
+}
+
+// getNodeTyp returns the correct node type for a node in the topology graph. This is required, because we only filter
+// the topology graph by the selected namespaces and not tags. To apply a different style for node which are outside of
+// the selected namespaces or for nodes which are not containing a tag. To change the style we add the "-not-selected"
+// suffix. The following rules are applied:
+//   - No namespaces and tags were selected -- NORMAL
+//   - The node contains a selected tag --> NORMAL
+//   - The node is within a selected namespaces and the user didn't selected any tags --> NORMAL
+//   - Node is in the list of selected namespaces but not in the list of selected tags --> WITH SUFFIX
+//   - Node is not in the list of selected namespaces and tags --> SUFFIX
+func getNodeTyp(node Node, namespaces, tags []string) string {
+	if namespaces == nil && tags == nil {
+		return node.Data.Type
+	}
+
+	isInNamespace := isItemInItems(node.Data.Namespace, namespaces)
+	containsTag := isItemsInItems(node.Data.Tags, tags)
+
+	if containsTag {
+		return node.Data.Type
+	}
+
+	if tags == nil && isInNamespace {
+		return node.Data.Type
+	}
+
+	return node.Data.Type + "-not-selected"
+}
+
+// isItemsInItems return true, when one item from a list of actual items is in a list of expected items.
+func isItemsInItems(itemsActual, itemExpected []string) bool {
+	for _, tag := range itemsActual {
+		if isItemInItems(tag, itemExpected) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// isItemInItems returns true when the item is in a list of items.
+func isItemInItems(item string, items []string) bool {
+	for _, i := range items {
+		if i == item {
+			return true
+		}
+	}
+
+	return false
 }

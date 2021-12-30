@@ -53,9 +53,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   // a drawer it can happen that we already show some dashboards in the main view and so we can not rely on the query
   // parameters.
   useEffect(() => {
-    if (setDetails !== undefined) {
-      setOptions(getInitialOptions(location.search, references, setDetails !== undefined));
-    }
+    setOptions(getInitialOptions(location.search, references, setDetails !== undefined));
   }, [location.search, references, setDetails]);
 
   // Fetch all dashboards. The dashboards are available via the data variable. To fetch the dashboards we have to pass

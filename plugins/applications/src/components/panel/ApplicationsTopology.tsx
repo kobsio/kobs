@@ -1,6 +1,7 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { memo } from 'react';
+import cytoscape from 'cytoscape';
 import { useHistory } from 'react-router-dom';
 
 import { IEdge, INode } from '../../utils/interfaces';
@@ -17,6 +18,7 @@ interface IApplicationsTopologyProps {
   namespaces: string[];
   tags: string[];
   times: IPluginTimes;
+  customStyleSheet: cytoscape.Stylesheet[];
   setDetails?: (details: React.ReactNode) => void;
 }
 
@@ -28,6 +30,7 @@ const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> 
   namespaces,
   tags,
   times,
+  customStyleSheet,
   setDetails,
 }: IApplicationsTopologyProps) => {
   const history = useHistory();
@@ -96,7 +99,12 @@ const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> 
 
   return (
     <div style={{ height: '100%', minHeight: '100%' }}>
-      <ApplicationsTopologyGraph edges={data.edges} nodes={data.nodes} setDetails={setDetails} />
+      <ApplicationsTopologyGraph
+        edges={data.edges}
+        nodes={data.nodes}
+        customStyleSheet={customStyleSheet}
+        setDetails={setDetails}
+      />
     </div>
   );
 };

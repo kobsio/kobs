@@ -13,16 +13,17 @@ spec:
       link: https://github.com/kobsio/kobs
     - title: Application CR
       link: https://github.com/kobsio/kobs/blob/main/deploy/demo/kobs/kobs-application.yaml
-  dependencies:
-    - name: elasticsearch
-      namespace: elastic-system
-      description: Elasticsearch is used to get logs for the services.
-    - name: jaeger
-      namespace: istio-system
-      description: Jaeger is used to get traces for the services.
-    - name: prometheus
-      namespace: istio-system
-      description: Elasticsearch is used to get metrics for the services.
+  topology:
+    dependencies:
+      - name: elasticsearch
+        namespace: elastic-system
+        description: Elasticsearch is used to get logs for the services.
+      - name: jaeger
+        namespace: istio-system
+        description: Jaeger is used to get traces for the services.
+      - name: prometheus
+        namespace: istio-system
+        description: Elasticsearch is used to get metrics for the services.
   preview:
     title: All Logs
     plugin:

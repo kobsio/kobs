@@ -31,9 +31,9 @@ export const rowHeight = (rowSize: number | undefined, rowSpan: number | undefin
   return `${rowSize * 150}px`;
 };
 
-// getOptionsFromSearch is used to parse the given search location and return is as options for Prometheus. This is
-// needed, so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we
-// pass him to this page and pass the data via the URL parameters.
+// getInitialOptions is used to parse the given search location and return is as options for Prometheus. This is needed,
+// so that a user can explore his Prometheus data from a chart. When the user selects the explore action, we pass him to
+// this page and pass the data via the URL parameters.
 export const getInitialOptions = (
   search: string,
   references: IDashboardReference[],

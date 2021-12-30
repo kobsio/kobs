@@ -11,7 +11,7 @@ export interface IApplication {
   tags?: string[];
   links?: IApplicationLink[];
   teams?: IApplicationReference[];
-  dependencies?: IApplicationReference[];
+  topology?: IApplicationTopology;
   preview?: IApplicationPreview;
   dashboards?: IDashboardReference[];
 }
@@ -24,6 +24,11 @@ export interface IApplicationPreview {
 export interface IApplicationLink {
   title: string;
   link: string;
+}
+
+export interface IApplicationTopology {
+  type?: string;
+  dependencies?: IApplicationReference[];
 }
 
 // The IApplicationReference is the interface, which is used to create a reference to a team or an application. While

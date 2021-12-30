@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import cytoscape from 'cytoscape';
 
 import { IPluginPanelProps, PluginCard, PluginOptionsMissing } from '@kobsio/plugin-core';
 import ApplicationsGallery from './ApplicationsGallery';
@@ -19,6 +20,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   description,
   options,
   times,
+  pluginOptions,
   setDetails,
 }: IPanelProps) => {
   // We have to validate that the required options object was provided in the Application CR by a user. This is
@@ -39,12 +41,35 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   // When a title is set we are sure that the component is used in a dashboard so we will wrap the topology component in
   // the PluginCard component.
   if (options.view === 'topology') {
+    const customStyleSheet: cytoscape.Stylesheet[] = [];
+
+    if (pluginOptions && pluginOptions.topology && Array.isArray(pluginOptions.topology)) {
+      for (const topologyItem of pluginOptions.topology) {
+        customStyleSheet.push({
+          selector: `node[type='${topologyItem.type}']`,
+          style: {
+            'background-color': topologyItem.color || '#0066cc',
+            shape: topologyItem.shape || 'roundrectangle',
+          },
+        });
+        customStyleSheet.push({
+          selector: `node[type='${topologyItem.type}-not-selected']`,
+          style: {
+            'background-color': topologyItem.color || '#0066cc',
+            'background-opacity': 0.25,
+            shape: topologyItem.shape || 'roundrectangle',
+          },
+        });
+      }
+    }
+
     const topology = (
       <ApplicationsTopology
         clusters={options.clusters || [defaults.cluster]}
         namespaces={options.namespaces || [defaults.namespace]}
         tags={options.tags || []}
         times={times}
+        customStyleSheet={customStyleSheet}
         setDetails={setDetails}
       />
     );
