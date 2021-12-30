@@ -28,21 +28,26 @@ type ApplicationList struct {
 }
 
 type ApplicationSpec struct {
-	Cluster      string                `json:"cluster,omitempty"`
-	Namespace    string                `json:"namespace,omitempty"`
-	Name         string                `json:"name,omitempty"`
-	Description  string                `json:"description,omitempty"`
-	Tags         []string              `json:"tags,omitempty"`
-	Links        []Link                `json:"links,omitempty"`
-	Teams        []Reference           `json:"teams,omitempty"`
-	Dependencies []Reference           `json:"dependencies,omitempty"`
-	Preview      *Preview              `json:"preview,omitempty"`
-	Dashboards   []dashboard.Reference `json:"dashboards,omitempty"`
+	Cluster     string                `json:"cluster,omitempty"`
+	Namespace   string                `json:"namespace,omitempty"`
+	Name        string                `json:"name,omitempty"`
+	Description string                `json:"description,omitempty"`
+	Tags        []string              `json:"tags,omitempty"`
+	Links       []Link                `json:"links,omitempty"`
+	Teams       []Reference           `json:"teams,omitempty"`
+	Topology    Topology              `json:"topology,omitempty"`
+	Preview     *Preview              `json:"preview,omitempty"`
+	Dashboards  []dashboard.Reference `json:"dashboards,omitempty"`
 }
 
 type Link struct {
 	Title string `json:"title"`
 	Link  string `json:"link"`
+}
+
+type Topology struct {
+	Type         string      `json:"type,omitempty"`
+	Dependencies []Reference `json:"dependencies,omitempty"`
 }
 
 type Reference struct {

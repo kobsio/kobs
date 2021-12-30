@@ -10,8 +10,10 @@ plugins:
       - secrets
 
   applications:
-    topologyCacheDuration: 1m
-    teamsCacheDuration: 1m
+    cache:
+      topologyDuration: 1m
+      teamsDuration: 1m
+      tagsDuration: 1m
 
   prometheus:
     - name: prometheus

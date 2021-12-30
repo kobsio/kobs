@@ -12,13 +12,14 @@ spec:
       link: https://github.com/elastic/elasticsearch
     - title: Application CR
       link: https://github.com/kobsio/kobs/blob/main/deploy/demo/elastic-system/elasticsearch-application.yaml
-  dependencies:
-    - name: elastic-operator
-      namespace: elastic-system
-      description: The Elasticsearch Cluster is managed by the Elastic Operator
-    - name: filebeat
-      namespace: elastic-system
-      description: Filebeat is responsible for sending the Logs of all Containers to Elasticsearch
+  topology:
+    dependencies:
+      - name: elastic-operator
+        namespace: elastic-system
+        description: The Elasticsearch Cluster is managed by the Elastic Operator
+      - name: filebeat
+        namespace: elastic-system
+        description: Filebeat is responsible for sending the Logs of all Containers to Elasticsearch
   preview:
     title: All Logs
     plugin:

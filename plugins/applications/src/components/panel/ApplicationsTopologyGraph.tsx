@@ -21,9 +21,9 @@ const layout = {
   rankDir: 'LR',
 };
 
-// styleSheet changes the style of the nodes and edges in the topology graph.
+// defaultStyleSheet changes the style of the nodes and edges in the topology graph.
 // See: https://js.cytoscape.org/#style
-const styleSheet: cytoscape.Stylesheet[] = [
+const defaultStyleSheet: cytoscape.Stylesheet[] = [
   {
     selector: 'node',
     style: {
@@ -44,6 +44,7 @@ const styleSheet: cytoscape.Stylesheet[] = [
     selector: "node[type='cluster']",
     style: {
       'background-color': '#f0f0f0',
+      'border-style': 'dashed',
     },
   },
   {
@@ -55,7 +56,16 @@ const styleSheet: cytoscape.Stylesheet[] = [
   {
     selector: "node[type='application']",
     style: {
-      'background-color': '#ffffff',
+      'background-color': '#0066cc',
+      shape: 'roundrectangle',
+    },
+  },
+  {
+    selector: "node[type='application-not-selected']",
+    style: {
+      'background-color': '#0066cc',
+      'background-opacity': 0.25,
+      shape: 'roundrectangle',
     },
   },
   {
@@ -92,6 +102,7 @@ const nodeLabel = (node: INodeData): string => {
 interface IApplicationsTopologyGraphProps {
   edges: IEdge[];
   nodes: INode[];
+  customStyleSheet: cytoscape.Stylesheet[];
   setDetails?: (details: React.ReactNode) => void;
 }
 
@@ -99,6 +110,7 @@ interface IApplicationsTopologyGraphProps {
 const ApplicationsTopologyGraph: React.FunctionComponent<IApplicationsTopologyGraphProps> = ({
   edges,
   nodes,
+  customStyleSheet,
   setDetails,
 }: IApplicationsTopologyGraphProps) => {
   const [width, setWidth] = useState<number>(0);
@@ -172,7 +184,7 @@ const ApplicationsTopologyGraph: React.FunctionComponent<IApplicationsTopologyGr
           autounselectify={false}
           boxSelectionEnabled={true}
           layout={layout}
-          stylesheet={styleSheet}
+          stylesheet={[...defaultStyleSheet, ...customStyleSheet]}
           cy={cyCallback}
         />
       ) : null}

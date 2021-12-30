@@ -40,20 +40,20 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
 
       <DrawerPanelBody>
         <div>
-          {application.tags && (
-            <p>
-              {application.tags.map((tag) => (
-                <Badge key={tag} className="pf-u-mr-sm">
-                  {tag.toLowerCase()}
-                </Badge>
-              ))}
-            </p>
-          )}
           {application.description && <p>{application.description}</p>}
-          {(application.teams && application.teams.length > 0) ||
-          (application.dependencies && application.dependencies.length > 0) ||
+
+          {(application.tags && application.tags.length > 0) ||
+          (application.teams && application.teams.length > 0) ||
+          (application.topology?.dependencies && application.topology.dependencies.length > 0) ||
           (application.links && application.links.length > 0) ? (
             <List variant={ListVariant.inline}>
+              {application.tags &&
+                application.tags.map((tag) => (
+                  <ListItem key={tag}>
+                    <Badge className="pf-u-mr-sm">{tag.toLowerCase()}</Badge>
+                  </ListItem>
+                ))}
+
               {application.teams && application.teams.length > 0
                 ? application.teams.map((team, index) => (
                     <ListItem key={index}>
@@ -71,8 +71,8 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
                   ))
                 : null}
 
-              {application.dependencies && application.dependencies.length > 0
-                ? application.dependencies.map((dependency, index) => (
+              {application.topology?.dependencies && application.topology.dependencies.length > 0
+                ? application.topology.dependencies.map((dependency, index) => (
                     <ListItem key={index}>
                       <Link
                         key={index}

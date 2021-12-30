@@ -24,9 +24,15 @@ const Route = "/applications"
 
 // Config is the structure of the configuration for the applications plugin.
 type Config struct {
-	TopologyCacheDuration string `json:"topologyCacheDuration"`
-	TeamsCacheDuration    string `json:"teamsCacheDuration"`
-	TagsCacheDuration     string `json:"tagsCacheDuration"`
+	Cache    CacheConfig       `json:"cache"`
+	Topology []topology.Config `json:"topology"`
+}
+
+// CacheConfig is the structure of the cache configuration for the topology graph, teams and tags.
+type CacheConfig struct {
+	TopologyDuration string `json:"topologyDuration"`
+	TeamsDuration    string `json:"teamsDuration"`
+	TagsDuration     string `json:"tagsDuration"`
 }
 
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
@@ -152,7 +158,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	// graph and generating a new one in the background.
 	if view == "topology" {
 		if router.topology.LastFetch.After(time.Now().Add(-1 * router.topology.CacheDuration)) {
-			topo := topology.Generate(router.topology.Topology, clusterNames, namespaces)
+			topo := topology.Generate(router.topology.Topology, clusterNames, namespaces, tagsList)
 			log.Debug(r.Context(), "Get applications result.", zap.String("topology", "return cached topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 			render.JSON(w, r, topo)
 			return
@@ -164,7 +170,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 				router.topology.LastFetch = time.Now()
 				router.topology.Topology = topo
 
-				topo = topology.Generate(topo, clusterNames, namespaces)
+				topo = topology.Generate(topo, clusterNames, namespaces, tagsList)
 				log.Debug(r.Context(), "Get applications result.", zap.String("topology", "get and return topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 				render.JSON(w, r, topo)
 				return
@@ -184,7 +190,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			}
 		}()
 
-		topo := topology.Generate(router.topology.Topology, clusterNames, namespaces)
+		topo := topology.Generate(router.topology.Topology, clusterNames, namespaces, tagsList)
 		log.Debug(r.Context(), "Get applications result.", zap.String("topology", "return topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 		render.JSON(w, r, topo)
 		return
@@ -259,16 +265,21 @@ func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 
 // Register returns a new router which can be used in the router for the kobs rest api.
 func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
+	var options map[string]interface{}
+	options = make(map[string]interface{})
+	options["topology"] = config.Topology
+
 	plugins.Append(plugin.Plugin{
 		Name:        "applications",
 		DisplayName: "Applications",
 		Description: "Monitor your Kubernetes workloads.",
 		Home:        true,
 		Type:        "applications",
+		Options:     options,
 	})
 
 	var topology topology.Cache
-	topologyCacheDuration, err := time.ParseDuration(config.TopologyCacheDuration)
+	topologyCacheDuration, err := time.ParseDuration(config.Cache.TopologyDuration)
 	if err != nil || topologyCacheDuration.Seconds() < 60 {
 		topology.CacheDuration = time.Duration(1 * time.Hour)
 	} else {
@@ -276,7 +287,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 	}
 
 	var teams teams.Cache
-	teamsCacheDuration, err := time.ParseDuration(config.TeamsCacheDuration)
+	teamsCacheDuration, err := time.ParseDuration(config.Cache.TeamsDuration)
 	if err != nil || teamsCacheDuration.Seconds() < 60 {
 		teams.CacheDuration = time.Duration(1 * time.Hour)
 	} else {
@@ -284,7 +295,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 	}
 
 	var tags tags.Cache
-	tagsCacheDuration, err := time.ParseDuration(config.TagsCacheDuration)
+	tagsCacheDuration, err := time.ParseDuration(config.Cache.TagsDuration)
 	if err != nil || tagsCacheDuration.Seconds() < 60 {
 		tags.CacheDuration = time.Duration(1 * time.Hour)
 	} else {

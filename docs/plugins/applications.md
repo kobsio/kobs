@@ -4,20 +4,42 @@ The applications plugin allows you to show a list of application on a dashboard.
 
 ## Configuration
 
-The following configuration can be used to configure the cache duration for applications.
+The following configuration can be used to configure the cache duration for applications and to customize the topology graph.
 
 ```yaml
 plugins:
   applications:
-    topologyCacheDuration: 5m
-    teamsCacheDuration: 5m
+    cache:
+      topologyDuration: 5m
+      teamsDuration: 5m
+      tagsDuration: 5m
+    topology:
+      - type: custom
+        shape: round-diamond
+        color: "#c9190b"
+
 ```
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| topologyCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the topology graph should be cached. The default value is `1h`. | No |
-| teamsCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the teams for an application should be cached. The default value is `1h`. | No |
-| tagsCacheDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the tags for all applications should be cached. The default value is `1h`. | No |
+| cache | [Cache](#cache) | Customize the caching behaviour for applications. | No |
+| topology | [[]Topology](#topology) | Add custom node types for the topology graph, which can then selected in the Applications CRs via the `topology.type` option. | No |
+
+### Cache
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| topologyDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the topology graph should be cached. The default value is `1h`. | No |
+| teamsDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the teams for an application should be cached. The default value is `1h`. | No |
+| tagsDuration | [duration](https://pkg.go.dev/time#ParseDuration) | The duration for how long the tags for all applications should be cached. The default value is `1h`. | No |
+
+### Topology
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The name of the node type. The node type can be selected via the `topology.type` field in the Application CRs. | No |
+| color | string | A color for the node in the topology chart. Every CSS color code is allowed, but we recommend to use an color from [Patternfly](https://www.patternfly.org/v4/guidelines/colors), so the topology graph matches the overall style of kobs. The default value is `#0066cc`. | No |
+| shape | string | The shape of the node in the topology chart. Allowed values are `rectangle`, `roundrectangle`, `ellipse`, `triangle`, `pentagon`, `hexagon`, `heptagon`, `octagon`, `star`, `barrel`, `diamond`, `vee`, `rhomboid`, `polygon`, `tag`, `round-rectangle`, `round-triangle`, `round-diamond`, `round-pentagon`, `round-hexagon`, `round-heptagon`, `round-octagon`, `round-tag`, `cut-rectangle`, `bottom-round-rectangle` and `concave-hexagon`. The default value is `roundrectangle`.  | No |
 
 ## Options
 

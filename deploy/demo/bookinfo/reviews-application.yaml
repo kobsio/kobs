@@ -16,9 +16,10 @@ spec:
   teams:
     - name: team-resident-evil
       namespace: kobs
-  dependencies:
-    - name: ratings
-      description: Get book ranking information.
+  topology:
+    dependencies:
+      - name: ratings
+        description: Get book ranking information.
   preview:
     title: Incoming Success Rate
     plugin:

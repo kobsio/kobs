@@ -22,7 +22,7 @@ In the following you can found the specification for the Application CRD. On the
 | tags | []string | A list of tags to describe the application. | No |
 | links | [[]Link](#link) | A list of links (e.g. a link to the GitHub repository for this application). | No |
 | teams | [[]Team](#team) | A list of teams to define the ownership for the application. | No |
-| dependencies | [[]Dependency](#dependency) | Add other applications as dependencies for this application. This can be used to render a topology graph for your applications. | No |
+| topology | [Topology](#topology) | Set the topology settings for your application like the type in the topology graph and dependencies to other applications. | No |
 | preview | [Preview](#preview) | Show the most important metrics for your application in the gallery view. | No |
 | dashboards | [[]Dashboard](#dashboard) | A list of dashboards, which should be shown for this application. | No |
 
@@ -43,6 +43,13 @@ Teams can be used to define the ownership for an application. It is also possibl
 | namespace | string | Namespace of the team. If this field is omitted kobs will look in the same namespace as the application was created in. | No |
 | name | string | Name of the team. | Yes |
 | description | string | The description can be used to explain, why this team is the owner of the application. | No |
+
+### Topology
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The type of the application in the topology graph. This must be a node type as specified in the `topology` key in the [configuration](../plugins/applications#configuration). The default value is `application`.  | No |
+| dependencies | [[]Dependency](#dependency) | Add other applications as dependencies for this application. This can be used to render a topology graph for your applications. | No |
 
 ### Dependency
 
@@ -110,9 +117,10 @@ spec:
   teams:
     - name: squad-resident-evil
       namespace: kobs
-  dependencies:
-    - name: ratings
-      description: Get book ranking information.
+  topology:
+    dependencies:
+      - name: ratings
+        description: Get book ranking information.
   preview:
     title: Incoming Success Rate
     plugin:

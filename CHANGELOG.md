@@ -58,6 +58,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#262](https://github.com/kobsio/kobs/pull/262): [core] Rework variables handling in dashboards.
 - [#263](https://github.com/kobsio/kobs/pull/263): [core] :warning: _Breaking change:_ :warning: Refactor `cluster` and `clusters` package.
 - [#265](https://github.com/kobsio/kobs/pull/265): [applications] Improve tags support by allow users to filter applications by tags and showing tags on application page.
+- [#269](https://github.com/kobsio/kobs/pull/269): [applications] :warning: _Breaking change:_ :warning: Improve topology graph, by allowing custom styles for applications.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

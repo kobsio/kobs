@@ -13,6 +13,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { IOptions } from '../../utils/interfaces';
+import { IPluginDataOptions } from '@kobsio/plugin-core';
 import Panel from '../panel/Panel';
 import { getInitialOptions } from '../../utils/helpers';
 
@@ -20,6 +21,7 @@ export interface IApplicationsProps {
   name: string;
   displayName: string;
   description: string;
+  pluginOptions?: IPluginDataOptions;
 }
 
 // Applications is the page which lets the user query all the created applications by cluster and namespace. The user
@@ -29,6 +31,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
   name,
   displayName,
   description,
+  pluginOptions,
 }: IApplicationsProps) => {
   const history = useHistory();
   const location = useLocation();
@@ -92,6 +95,7 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
                     view: options.view,
                   }}
                   times={options.times}
+                  pluginOptions={pluginOptions}
                   setDetails={setDetails}
                 />
               )}
