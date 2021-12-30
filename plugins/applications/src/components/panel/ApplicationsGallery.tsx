@@ -3,14 +3,14 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { memo } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IApplication, IApplicationReference, IPluginTimes } from '@kobsio/plugin-core';
+import { IApplication, IApplicationTeamReference, IPluginTimes } from '@kobsio/plugin-core';
 import ApplicationsGalleryItem from './ApplicationsGalleryItem';
 
 interface IApplicationsGalleryProps {
   clusters: string[];
   namespaces: string[];
   tags: string[];
-  team?: IApplicationReference;
+  team?: IApplicationTeamReference;
   times: IPluginTimes;
 }
 

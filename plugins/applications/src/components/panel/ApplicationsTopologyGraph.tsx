@@ -6,7 +6,7 @@ import nodeHtmlLabel from 'cytoscape-node-html-label';
 import dagre from 'cytoscape-dagre';
 
 import { IEdge, INode, INodeData } from '../../utils/interfaces';
-
+import DependencyDetails from './details/DependencyDetails';
 import Details from './details/Details';
 
 cytoscape.use(dagre);
@@ -124,14 +124,27 @@ const ApplicationsTopologyGraph: React.FunctionComponent<IApplicationsTopologyGr
   // application details.
   const onTap = useCallback(
     (event: cytoscape.EventObject): void => {
-      const node = event.target;
-      const data: INodeData = node.data();
+      const ele = event.target;
+      const data = ele.data();
 
-      if (data.type === 'application' && setDetails) {
+      if (data.source && data.target && setDetails) {
+        const source = nodes.filter((node) => node.data.id === data.source);
+        const target = nodes.filter((node) => node.data.id === data.target);
+
+        setDetails(
+          <DependencyDetails
+            source={source.length === 1 ? source[0] : undefined}
+            target={target.length === 1 ? target[0] : undefined}
+            description={data.description}
+            dashboards={data.dashboards}
+            close={(): void => setDetails(undefined)}
+          />,
+        );
+      } else if (data.type && data.type !== 'cluster' && data.type !== 'namespace' && setDetails) {
         setDetails(<Details application={data} close={(): void => setDetails(undefined)} />);
       }
     },
-    [setDetails],
+    [setDetails, nodes],
   );
 
   const cyCallback = useCallback(

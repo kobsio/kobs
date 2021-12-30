@@ -5,6 +5,7 @@ import (
 	"time"
 
 	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 )
 
@@ -55,16 +56,17 @@ type Edge struct {
 // target is a reference to the id of a node. Each edge also contains the cluster, namespace and name of the source and
 // target and an optional description, which can be used to describe the relationship between the source and target.
 type EdgeData struct {
-	ID              string `json:"id"`
-	Source          string `json:"source"`
-	SourceCluster   string `json:"-"`
-	SourceNamespace string `json:"-"`
-	SourceName      string `json:"-"`
-	Target          string `json:"target"`
-	TargetCluster   string `json:"-"`
-	TargetNamespace string `json:"-"`
-	TargetName      string `json:"-"`
-	Description     string `json:"description"`
+	ID              string                `json:"id"`
+	Source          string                `json:"source"`
+	SourceCluster   string                `json:"-"`
+	SourceNamespace string                `json:"-"`
+	SourceName      string                `json:"-"`
+	Target          string                `json:"target"`
+	TargetCluster   string                `json:"-"`
+	TargetNamespace string                `json:"-"`
+	TargetName      string                `json:"-"`
+	Description     string                `json:"description"`
+	Dashboards      []dashboard.Reference `json:"dashboards"`
 }
 
 // Get returnes the topology graph for all the configured clusters. To generate the topology chart we have to loop
@@ -120,6 +122,7 @@ func Get(ctx context.Context, clustersClient clusters.Client) *Topology {
 						TargetNamespace: dependencyNamespace,
 						TargetName:      dependencyName,
 						Description:     dependency.Description,
+						Dashboards:      dependency.Dashboards,
 					},
 				})
 			}

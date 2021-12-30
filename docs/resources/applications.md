@@ -61,6 +61,7 @@ Dependencies can be used to render a topology graph for all your applications. F
 | namespace | string | Namespace of the application, which should be added as dependency. If this field is omitted kobs will look in the same namespace as the application was created in. | No |
 | name | string | Name of the application, which should be added as dependency. | Yes |
 | description | string | The description can be used to explain, why this application is a dependency of the current application. | No |
+| dashboards | [[]Dashboard](#dashboard) | A list of dashboards, which can be used to show the metrics for the dependency. The dashboards are shown in the topology graph, when the edge to the dependency is selected. | No |
 
 ![Topology](assets/applications-topology.png)
 

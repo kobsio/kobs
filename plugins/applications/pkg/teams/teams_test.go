@@ -35,11 +35,11 @@ func TestGet(t *testing.T) {
 			{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"},
 		}, nil).Once()
 		mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{
-			{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.Reference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}},
+			{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}},
 		}, nil).Once()
 
 		teams := Get(context.Background(), mockClustersClient)
-		require.Equal(t, []Team{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1", Applications: []application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.Reference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}}}, teams)
+		require.Equal(t, []Team{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1", Applications: []application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}}}, teams)
 	})
 }
 
@@ -60,8 +60,8 @@ func TestGetApplications(t *testing.T) {
 }
 
 func TestDoesApplicationContainsTeam(t *testing.T) {
-	require.Equal(t, true, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.Reference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
-	require.Equal(t, true, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.Reference{{Cluster: "", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
-	require.Equal(t, true, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.Reference{{Cluster: "", Namespace: "", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
-	require.Equal(t, false, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.Reference{{Cluster: "", Namespace: "", Name: "team1"}}}, "cluster1", "namespace1", "team2"))
+	require.Equal(t, true, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
+	require.Equal(t, true, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
+	require.Equal(t, true, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "", Namespace: "", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
+	require.Equal(t, false, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "", Namespace: "", Name: "team1"}}}, "cluster1", "namespace1", "team2"))
 }
