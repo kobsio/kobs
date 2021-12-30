@@ -1,6 +1,6 @@
 import cytoscape from 'cytoscape';
 
-import { IApplication, IApplicationReference, IPluginTimes } from '@kobsio/plugin-core';
+import { IApplication, IApplicationTeamReference, IDashboardReference, IPluginTimes } from '@kobsio/plugin-core';
 
 // IOptions is the interface for all options for the applications page.
 export interface IOptions {
@@ -23,7 +23,7 @@ export interface IPanelOptions {
   clusters?: string[];
   namespaces?: string[];
   tags?: string[];
-  team?: IApplicationReference;
+  team?: IApplicationTeamReference;
 }
 
 // INode is a single node for the topology graph. It implements the ElementDefinition interface from cytoscape.
@@ -48,4 +48,5 @@ export interface IEdgeData {
   source: string;
   target: string;
   description: string;
+  dashboards?: IDashboardReference[];
 }

@@ -10,7 +10,7 @@ export interface IApplication {
   description?: string;
   tags?: string[];
   links?: IApplicationLink[];
-  teams?: IApplicationReference[];
+  teams?: IApplicationTeamReference[];
   topology?: IApplicationTopology;
   preview?: IApplicationPreview;
   dashboards?: IDashboardReference[];
@@ -28,13 +28,20 @@ export interface IApplicationLink {
 
 export interface IApplicationTopology {
   type?: string;
-  dependencies?: IApplicationReference[];
+  dependencies?: IApplicationDependency[];
 }
 
-// The IApplicationReference is the interface, which is used to create a reference to a team or an application. While
-// the team can be used to describe the ownership of the application, the application references are used to identify
-// dependencies between applications.
-export interface IApplicationReference {
+export interface IApplicationDependency {
+  cluster?: string;
+  namespace?: string;
+  name: string;
+  description?: string;
+  dashboards?: IDashboardReference[];
+}
+
+// The IApplicationTeamReference is the interface, which is used to create a reference to a team. This can be used to
+// describe the ownership for applications.
+export interface IApplicationTeamReference {
   cluster?: string;
   namespace?: string;
   name: string;

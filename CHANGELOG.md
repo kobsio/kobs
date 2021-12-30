@@ -28,6 +28,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#266](https://github.com/kobsio/kobs/pull/266): [dashboards] Add tests for dashboards plugin.
 - [#267](https://github.com/kobsio/kobs/pull/267): [users] Add tests for users plugin.
 - [#268](https://github.com/kobsio/kobs/pull/268): [teams] Add tests for teams plugin.
+- [#270](https://github.com/kobsio/kobs/pull/270): [applications] Allow the usage of dashboards in application dependencies.
 
 ### Fixed
 

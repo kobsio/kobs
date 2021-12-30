@@ -34,7 +34,7 @@ type ApplicationSpec struct {
 	Description string                `json:"description,omitempty"`
 	Tags        []string              `json:"tags,omitempty"`
 	Links       []Link                `json:"links,omitempty"`
-	Teams       []Reference           `json:"teams,omitempty"`
+	Teams       []TeamReference       `json:"teams,omitempty"`
 	Topology    Topology              `json:"topology,omitempty"`
 	Preview     *Preview              `json:"preview,omitempty"`
 	Dashboards  []dashboard.Reference `json:"dashboards,omitempty"`
@@ -46,11 +46,19 @@ type Link struct {
 }
 
 type Topology struct {
-	Type         string      `json:"type,omitempty"`
-	Dependencies []Reference `json:"dependencies,omitempty"`
+	Type         string       `json:"type,omitempty"`
+	Dependencies []Dependency `json:"dependencies,omitempty"`
 }
 
-type Reference struct {
+type Dependency struct {
+	Cluster     string                `json:"cluster,omitempty"`
+	Namespace   string                `json:"namespace,omitempty"`
+	Name        string                `json:"name"`
+	Description string                `json:"description,omitempty"`
+	Dashboards  []dashboard.Reference `json:"dashboards,omitempty"`
+}
+
+type TeamReference struct {
 	Cluster     string `json:"cluster,omitempty"`
 	Namespace   string `json:"namespace,omitempty"`
 	Name        string `json:"name"`
