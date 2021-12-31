@@ -30,6 +30,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#268](https://github.com/kobsio/kobs/pull/268): [teams] Add tests for teams plugin.
 - [#270](https://github.com/kobsio/kobs/pull/270): [applications] Allow the usage of dashboards in application dependencies.
 - [#271](https://github.com/kobsio/kobs/pull/271): [applications] Add support for external applications.
+- [#272](https://github.com/kobsio/kobs/pull/272): [helm] Add Helm plugin, to manage Helm releases via kobs.
 
 ### Fixed
 

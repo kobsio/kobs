@@ -18,6 +18,7 @@ import (
 	"github.com/kobsio/kobs/plugins/flux"
 	"github.com/kobsio/kobs/plugins/grafana"
 	"github.com/kobsio/kobs/plugins/harbor"
+	"github.com/kobsio/kobs/plugins/helm"
 	"github.com/kobsio/kobs/plugins/istio"
 	"github.com/kobsio/kobs/plugins/jaeger"
 	"github.com/kobsio/kobs/plugins/kiali"
@@ -43,6 +44,7 @@ type Config struct {
 	Flux          flux.Config          `json:"flux"`
 	Grafana       grafana.Config       `json:"grafana"`
 	Harbor        harbor.Config        `json:"harbor"`
+	Helm          helm.Config          `json:"helm"`
 	Istio         istio.Config         `json:"istio"`
 	Jaeger        jaeger.Config        `json:"jaeger"`
 	Kiali         kiali.Config         `json:"kiali"`
@@ -86,6 +88,7 @@ func Register(clustersClient clusters.Client, config Config) chi.Router {
 	teamsRouter := teams.Register(clustersClient, router.plugins, config.Teams)
 	usersRouter := users.Register(clustersClient, router.plugins, config.Users)
 	dashboardsRouter := dashboards.Register(clustersClient, router.plugins, config.Dashboards)
+	helmRouter := helm.Register(clustersClient, router.plugins, config.Helm)
 	prometheusRouter, prometheusInstances := prometheus.Register(router.plugins, config.Prometheus)
 	elasticsearchRouter := elasticsearch.Register(router.plugins, config.Elasticsearch)
 	klogsRouter, klogsInstances := klogs.Register(router.plugins, config.Klogs)
@@ -109,6 +112,7 @@ func Register(clustersClient clusters.Client, config Config) chi.Router {
 	router.Mount(teams.Route, teamsRouter)
 	router.Mount(users.Route, usersRouter)
 	router.Mount(dashboards.Route, dashboardsRouter)
+	router.Mount(helm.Route, helmRouter)
 	router.Mount(prometheus.Route, prometheusRouter)
 	router.Mount(elasticsearch.Route, elasticsearchRouter)
 	router.Mount(klogs.Route, klogsRouter)

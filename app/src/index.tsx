@@ -13,6 +13,7 @@ import elasticsearchPlugin from '@kobsio/plugin-elasticsearch';
 import fluxPlugin from '@kobsio/plugin-flux';
 import grafanaPlugin from '@kobsio/plugin-grafana';
 import harborPlugin from '@kobsio/plugin-harbor';
+import helmPlugin from '@kobsio/plugin-helm';
 import istioPlugin from '@kobsio/plugin-istio';
 import jaegerPlugin from '@kobsio/plugin-jaeger';
 import kialiPlugin from '@kobsio/plugin-kiali';
@@ -38,6 +39,7 @@ ReactDOM.render(
       ...fluxPlugin,
       ...grafanaPlugin,
       ...harborPlugin,
+      ...helmPlugin,
       ...istioPlugin,
       ...jaegerPlugin,
       ...kialiPlugin,
