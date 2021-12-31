@@ -9,6 +9,8 @@ import (
 
 	dashboardv1beta1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
 
+	genericclioptions "k8s.io/cli-runtime/pkg/genericclioptions"
+
 	http "net/http"
 
 	mock "github.com/stretchr/testify/mock"
@@ -276,6 +278,22 @@ func (_m *MockClient) GetNamespaces(ctx context.Context, cacheDuration time.Dura
 	}
 
 	return r0, r1
+}
+
+// GetRESTClientGetter provides a mock function with given fields:
+func (_m *MockClient) GetRESTClientGetter() genericclioptions.RESTClientGetter {
+	ret := _m.Called()
+
+	var r0 genericclioptions.RESTClientGetter
+	if rf, ok := ret.Get(0).(func() genericclioptions.RESTClientGetter); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(genericclioptions.RESTClientGetter)
+		}
+	}
+
+	return r0
 }
 
 // GetResources provides a mock function with given fields: ctx, namespace, name, path, resource, paramName, param

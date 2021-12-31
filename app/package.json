@@ -12,6 +12,7 @@
     "@kobsio/plugin-flux": "*",
     "@kobsio/plugin-grafana": "*",
     "@kobsio/plugin-harbor": "*",
+    "@kobsio/plugin-helm": "*",
     "@kobsio/plugin-istio": "*",
     "@kobsio/plugin-jaeger": "*",
     "@kobsio/plugin-kiali": "*",
