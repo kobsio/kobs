@@ -94,6 +94,8 @@ extra:
       link: https://github.com/kobsio/kobs
     - icon: fontawesome/brands/docker
       link: https://hub.docker.com/r/kobsio/kobs
+  version:
+    provider: mike
 
 extra_css:
   - assets/stylesheets/extra.css
