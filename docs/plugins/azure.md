@@ -130,6 +130,8 @@ In the following example each member of `team1@kobs.io` will get access to all A
               - "*"
             resources:
               - "*"
+            verbs:
+              - "*"
         custom:
     ```
 
@@ -160,6 +162,8 @@ In the following example each member of `team1@kobs.io` will get access to all A
             namespaces:
               - "*"
             resources:
+              - "*"
+            verbs:
               - "*"
     ```
 

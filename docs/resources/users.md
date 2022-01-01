@@ -53,6 +53,14 @@ In the following you can found the specification for the User CRD.
 | clusters | []string | A list of clusters to allow access to. The special list entry `*` allows access to all clusters. | Yes |
 | namespaces | []string | A list of namespaces to allow access to. The special list entry `*` allows access to all namespaces. | Yes |
 | resources | []string | A list of resources to allow access to. The special list entry `*` allows access to all resources. | Yes |
+| verbs | []string | A list of verbs to allow access to. The following verbs are possible: `get`, `patch`, `post`, `delete` and `*`. The special list entry `*` allows access for all verbs. | Yes |
+
+!!! note
+    The following strings can be used in the resources list: `cronjobs`, `daemonsets`, `deployments`, `jobs`, `pods`, `replicasets`, `statefulsets`, `endpoints`, `horizontalpodautoscalers`, `ingresses`, `networkpolicies`, `services`, `configmaps`, `persistentvolumeclaims`, `persistentvolumes`, `poddisruptionbudgets`, `secrets`, `serviceaccounts`, `storageclasses`, `clusterrolebindings`, `clusterroles`, `rolebindings`, `roles`, `events`, `nodes`, `podsecuritypolicies`.
+
+    The special terms `pods/logs` and `pods/exec` can be used to allow users to get the logs or a terminal for a Pod. To download / upload a file from / to a Pod a user needs the `pods/exec` resource with the `get` / `post` verb.
+
+    A Custom Resource can be specified in the following form `<name>.<group>/<version>` (e.g. `vaultsecrets.ricoberger.de/v1alpha1`).
 
 ## Example
 

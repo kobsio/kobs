@@ -100,4 +100,6 @@ spec:
           - "*"
         resources:
           - "*"
+        verbs:
+          - "*"
 ```
