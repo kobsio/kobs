@@ -7,9 +7,6 @@ RUN yarn install --frozen-lockfile --network-timeout 3600000
 RUN yarn build
 
 FROM golang:1.17.3-alpine3.14 as api
-ARG TARGETPLATFORM
-ARG BUILDPLATFORM
-RUN echo "Building on $BUILDPLATFORM, for $TARGETPLATFORM" > /log
 RUN apk update && apk add git make
 WORKDIR /kobs
 COPY go.mod go.sum ./
