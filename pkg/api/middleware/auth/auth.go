@@ -177,7 +177,7 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 				ID: userID,
 				Permissions: user.Permissions{
 					Plugins:   []user.Plugin{{Name: "*"}},
-					Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}}},
+					Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
 				},
 			})
 		}

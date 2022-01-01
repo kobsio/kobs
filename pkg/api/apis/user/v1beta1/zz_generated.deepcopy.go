@@ -106,6 +106,11 @@ func (in *Resources) DeepCopyInto(out *Resources) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
+	if in.Verbs != nil {
+		in, out := &in.Verbs, &out.Verbs
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	return
 }
 

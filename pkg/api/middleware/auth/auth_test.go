@@ -103,7 +103,7 @@ func TestAuthHandler(t *testing.T) {
 			name:                 "auth disabled",
 			auth:                 Auth{enabled: false},
 			expectedStatusCode:   http.StatusOK,
-			expectedBody:         "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":[{\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"]}]}}\n",
+			expectedBody:         "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":[{\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}}\n",
 			prepareRequest:       func(r *http.Request) {},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {},
 		},

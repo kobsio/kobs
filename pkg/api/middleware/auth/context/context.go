@@ -67,7 +67,7 @@ func (u *User) HasNamespaceAccess(cluster, namespace string) bool {
 }
 
 // HasResourceAccess checks if the user has access to the given resource in the given cluster and namespace.
-func (u *User) HasResourceAccess(cluster, namespace, name string) bool {
+func (u *User) HasResourceAccess(cluster, namespace, name, verb string) bool {
 	for _, resource := range u.Permissions.Resources {
 		for _, c := range resource.Clusters {
 			if c == cluster || c == "*" {
@@ -75,7 +75,11 @@ func (u *User) HasResourceAccess(cluster, namespace, name string) bool {
 					if n == namespace || n == "*" {
 						for _, r := range resource.Resources {
 							if r == name || r == "*" {
-								return true
+								for _, v := range resource.Verbs {
+									if v == verb || v == "*" {
+										return true
+									}
+								}
 							}
 						}
 					}

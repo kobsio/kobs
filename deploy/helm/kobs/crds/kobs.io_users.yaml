@@ -67,10 +67,15 @@ spec:
                           items:
                             type: string
                           type: array
+                        verbs:
+                          items:
+                            type: string
+                          type: array
                       required:
                       - clusters
                       - namespaces
                       - resources
+                      - verbs
                       type: object
                     type: array
                 required:

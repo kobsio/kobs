@@ -81,26 +81,30 @@ func TestHasResourceAccess(t *testing.T) {
 		user              User
 		expectedHasAccess bool
 	}{
-		{user: User{ID: "user1", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: true},
-		{user: User{ID: "user2", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: true},
-		{user: User{ID: "user3", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: false},
-		{user: User{ID: "user2", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user1", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user2", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user3", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user2", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
 
-		{user: User{ID: "user4", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: true},
-		{user: User{ID: "user5", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: true},
-		{user: User{ID: "user6", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: false},
-		{user: User{ID: "user6", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user4", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user5", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user6", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user6", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
 
-		{user: User{ID: "user7", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: false},
-		{user: User{ID: "user8", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: false},
-		{user: User{ID: "user9", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user7", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user8", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user9", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
 
-		{user: User{ID: "user10", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: true},
-		{user: User{ID: "user11", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: true},
-		{user: User{ID: "user12", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user10", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user11", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user12", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+
+		{user: User{ID: "user13", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"*"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user14", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user15", Permissions: user.Permissions{Resources: []user.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"patch"}}}}}, expectedHasAccess: false},
 	} {
 		t.Run(tt.user.ID, func(t *testing.T) {
-			actualHasAccess := tt.user.HasResourceAccess("cluster1", "namespace1", "resource1")
+			actualHasAccess := tt.user.HasResourceAccess("cluster1", "namespace1", "resource1", "get")
 			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
 		})
 	}

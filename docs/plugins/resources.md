@@ -33,7 +33,7 @@ plugins:
 | selector | string | An optional selector for the selection of resources | No |
 
 !!! note
-    The following strings can be used as kinds: *cronjobs*, *daemonsets*, *deployments*, *jobs*, *pods*, *replicasets*, *statefulsets*, *endpoints*, *horizontalpodautoscalers*, *ingresses*, *networkpolicies*, *services*, *configmaps*, *persistentvolumeclaims*, *persistentvolumes*, *poddisruptionbudgets*, *secrets*, *serviceaccounts*, *storageclasses*, *clusterrolebindings*, *clusterroles*, *rolebindings*, *roles*, *events*, *nodes*, *podsecuritypolicies*.
+    The following strings can be used in the resources list: `cronjobs`, `daemonsets`, `deployments`, `jobs`, `pods`, `replicasets`, `statefulsets`, `endpoints`, `horizontalpodautoscalers`, `ingresses`, `networkpolicies`, `services`, `configmaps`, `persistentvolumeclaims`, `persistentvolumes`, `poddisruptionbudgets`, `secrets`, `serviceaccounts`, `storageclasses`, `clusterrolebindings`, `clusterroles`, `rolebindings`, `roles`, `events`, `nodes`, `podsecuritypolicies`.
 
     A Custom Resource can be specified in the following form `<name>.<group>/<version>` (e.g. `vaultsecrets.ricoberger.de/v1alpha1`).
 

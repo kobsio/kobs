@@ -63,4 +63,5 @@ type Resources struct {
 	Clusters   []string `json:"clusters"`
 	Namespaces []string `json:"namespaces"`
 	Resources  []string `json:"resources"`
+	Verbs      []string `json:"verbs"`
 }
