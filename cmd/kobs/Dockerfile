@@ -15,7 +15,7 @@ WORKDIR /kobs
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN make build
+RUN export CGO_ENABLED=0 && make build
 
 FROM alpine:3.14.2
 RUN apk update && apk add --no-cache ca-certificates
