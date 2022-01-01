@@ -14,17 +14,11 @@ import (
 
 func (router *Router) getActualCosts(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
-	timeframe := r.URL.Query().Get("timeframe")
 	scope := r.URL.Query().Get("scope")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.Debug(r.Context(), "Get actual costs parameters.", zap.String("name", name), zap.String("timeframe", timeframe), zap.String("scope", scope))
-
-	timeframeParsed, err := strconv.Atoi(timeframe)
-	if err != nil {
-		log.Error(r.Context(), "Invalid timeframe parameter.", zap.Error(err))
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid timeframe parameter")
-		return
-	}
+	log.Debug(r.Context(), "Get actual costs parameters.", zap.String("name", name), zap.String("scope", scope), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -33,7 +27,21 @@ func (router *Router) getActualCosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	costUsage, err := i.CostManagementClient().GetActualCost(r.Context(), timeframeParsed, scope)
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	costUsage, err := i.CostManagementClient().GetActualCost(r.Context(), scope, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		log.Error(r.Context(), "Could not query cost usage.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not query cost usage")

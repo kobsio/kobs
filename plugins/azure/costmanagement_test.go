@@ -24,10 +24,10 @@ func TestGetActualCosts(t *testing.T) {
 		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
 	}{
 		{
-			name:               "invalid timeframe parameter",
-			url:                "/azure/costmanagement/actualcosts",
+			name:               "invalid instance name",
+			url:                "/invalidname/costmanagement/actualcosts",
 			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Invalid timeframe parameter\"}\n",
+			expectedBody:       "{\"error\":\"Could not find instance name\"}\n",
 			prepare: func(mockClient *costmanagement.MockClient, mockInstance *instance.MockInstance) {
 				mockInstance.On("GetName").Return("azure")
 			},
@@ -36,10 +36,22 @@ func TestGetActualCosts(t *testing.T) {
 			},
 		},
 		{
-			name:               "invalid instance name",
-			url:                "/invalidname/costmanagement/actualcosts?timeframe=3600",
+			name:               "invalid start time",
+			url:                "/azure/costmanagement/actualcosts",
 			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not find instance name\"}\n",
+			expectedBody:       "{\"error\":\"Could not parse start time: strconv.ParseInt: parsing \\\"\\\": invalid syntax\"}\n",
+			prepare: func(mockClient *costmanagement.MockClient, mockInstance *instance.MockInstance) {
+				mockInstance.On("GetName").Return("azure")
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				router.getActualCosts(w, req)
+			},
+		},
+		{
+			name:               "invalid end time",
+			url:                "/azure/costmanagement/actualcosts?timeStart=1",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not parse end time: strconv.ParseInt: parsing \\\"\\\": invalid syntax\"}\n",
 			prepare: func(mockClient *costmanagement.MockClient, mockInstance *instance.MockInstance) {
 				mockInstance.On("GetName").Return("azure")
 			},
@@ -51,11 +63,11 @@ func TestGetActualCosts(t *testing.T) {
 		//   panic: interface conversion: *costmanagement.MockClient is not costmanagement.Client: missing method GetActualCost
 		// {
 		// 	name:               "could not get actual costs",
-		// 	url:                "/azure/costmanagement/actualcosts?timeframe=3600",
+		// 	url:                "/azure/costmanagement/actualcosts?timeStart=1&timeEnd=1",
 		// 	expectedStatusCode: http.StatusBadRequest,
 		// 	expectedBody:       "{\"error\":\"Could not find instance name\"}\n",
 		// 	prepare: func(mockClient *costmanagement.MockClient, mockInstance *instance.MockInstance) {
-		// 		mockClient.On("GetActualCost", mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get costs"))
+		// 		mockClient.On("GetActualCost", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get costs"))
 
 		// 		mockInstance.On("GetName").Return("azure")
 		// 		mockInstance.On("CostManagementClient").Return(mockClient)

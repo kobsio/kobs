@@ -1,39 +1,36 @@
-import { Toolbar, ToolbarContent, ToolbarItem, ToolbarToggleGroup } from '@patternfly/react-core';
-import { FilterIcon } from '@patternfly/react-icons';
-import React from 'react';
+import React, { useState } from 'react';
+import { ToolbarItem } from '@patternfly/react-core';
 
+import { IOptionsAdditionalFields, IPluginTimes, Toolbar } from '@kobsio/plugin-core';
 import CostManagementToolbarItemScope from './CostManagementToolbarItemScope';
-import CostManagementToolbarItemTimeframe from './CostManagementToolbarItemTimeframe';
+import { IOptions } from './interfaces';
 
 export interface ICostManagementToolbarProps {
-  timeframe: number;
-  setTimeframe: (timeframe: number) => void;
-  scope: string;
-  setScope: (scope: string) => void;
   resourceGroups: string[];
+  options: IOptions;
+  setOptions: (data: IOptions) => void;
 }
 
 const CostManagementToolbar: React.FunctionComponent<ICostManagementToolbarProps> = ({
-  timeframe,
-  setTimeframe,
-  scope,
-  setScope,
   resourceGroups,
+  options,
+  setOptions,
 }: ICostManagementToolbarProps) => {
+  const [scope, setScope] = useState<string>(options.scope);
+
+  const changeOptions = (times: IPluginTimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setOptions({
+      scope: scope,
+      times: times,
+    });
+  };
+
   return (
-    <Toolbar id="cost-management-toolbar" style={{ paddingBottom: '0px', zIndex: 300 }}>
-      <ToolbarContent style={{ padding: '0px' }}>
-        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="lg">
-          <ToolbarItem variant="label">Scope</ToolbarItem>
-          <ToolbarItem>
-            <CostManagementToolbarItemScope scope={scope} setScope={setScope} resourceGroups={resourceGroups} />
-          </ToolbarItem>
-          <ToolbarItem variant="label">Timeframe</ToolbarItem>
-          <ToolbarItem>
-            <CostManagementToolbarItemTimeframe timeframe={timeframe} setTimeframe={setTimeframe} />
-          </ToolbarItem>
-        </ToolbarToggleGroup>
-      </ToolbarContent>
+    <Toolbar times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions}>
+      <ToolbarItem variant="label">Scope</ToolbarItem>
+      <ToolbarItem style={{ width: '100%' }}>
+        <CostManagementToolbarItemScope scope={scope} setScope={setScope} resourceGroups={resourceGroups} />
+      </ToolbarItem>
     </Toolbar>
   );
 };

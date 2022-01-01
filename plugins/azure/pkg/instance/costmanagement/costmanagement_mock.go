@@ -14,20 +14,20 @@ type MockClient struct {
 	mock.Mock
 }
 
-// GetActualCost provides a mock function with given fields: ctx, timeframe, scope
-func (_m *MockClient) GetActualCost(ctx context.Context, timeframe int, scope string) (costmanagement.QueryResult, error) {
-	ret := _m.Called(ctx, timeframe, scope)
+// GetActualCost provides a mock function with given fields: ctx, scope, timeStart, timeEnd
+func (_m *MockClient) GetActualCost(ctx context.Context, scope string, timeStart int64, timeEnd int64) (costmanagement.QueryResult, error) {
+	ret := _m.Called(ctx, scope, timeStart, timeEnd)
 
 	var r0 costmanagement.QueryResult
-	if rf, ok := ret.Get(0).(func(context.Context, int, string) costmanagement.QueryResult); ok {
-		r0 = rf(ctx, timeframe, scope)
+	if rf, ok := ret.Get(0).(func(context.Context, string, int64, int64) costmanagement.QueryResult); ok {
+		r0 = rf(ctx, scope, timeStart, timeEnd)
 	} else {
 		r0 = ret.Get(0).(costmanagement.QueryResult)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, int, string) error); ok {
-		r1 = rf(ctx, timeframe, scope)
+	if rf, ok := ret.Get(1).(func(context.Context, string, int64, int64) error); ok {
+		r1 = rf(ctx, scope, timeStart, timeEnd)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -1,9 +1,12 @@
-import { PageSection, PageSectionVariants } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import { Card, CardBody, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import ActualCosts from './ActualCosts';
 import CostManagementToolbar from './CostManagementToolbar';
+import { IOptions } from './interfaces';
 import { Title } from '@kobsio/plugin-core';
+import { getInitialOptions } from './helpers';
 import { services } from '../../utils/services';
 
 const service = 'costmanagement';
@@ -19,25 +22,41 @@ const CostManagementPage: React.FunctionComponent<ICostManagementPageProps> = ({
   displayName,
   resourceGroups,
 }: ICostManagementPageProps) => {
-  const [timeframe, setTimeframe] = useState<number>(7);
-  const [scope, setScope] = useState<string>('All');
+  const history = useHistory();
+  const location = useLocation();
+  const [options, setOptions] = useState<IOptions>();
+
+  const changeOptions = (opts: IOptions): void => {
+    history.push({
+      pathname: location.pathname,
+      search: `?scope=${opts.scope}&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}`,
+    });
+  };
+
+  useEffect(() => {
+    setOptions((prevOptions) => getInitialOptions(location.search, !prevOptions));
+  }, [location.search]);
+
+  if (!options) {
+    return null;
+  }
 
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <Title title={services[service].name} subtitle={displayName} size="xl" />
         <p>{services[service].description}</p>
-        <CostManagementToolbar
-          timeframe={timeframe}
-          setTimeframe={setTimeframe}
-          scope={scope}
-          setScope={setScope}
-          resourceGroups={resourceGroups}
-        />
+        <CostManagementToolbar resourceGroups={resourceGroups} options={options} setOptions={changeOptions} />
       </PageSection>
 
       <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
-        <ActualCosts name={name} timeframe={timeframe} scope={scope} />
+        <Card isCompact={true}>
+          <CardBody>
+            <div style={{ height: '500px' }}>
+              <ActualCosts name={name} scope={options.scope} times={options.times} />
+            </div>
+          </CardBody>
+        </Card>
       </PageSection>
     </React.Fragment>
   );

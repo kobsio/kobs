@@ -46,8 +46,9 @@ The following options can be used for a panel with the Azure plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The service type which should be used for the panel Currently `containerinstances`, `kubernetesservices` and `virtualmachinescalesets` are supported values. | Yes |
+| type | string | The service type which should be used for the panel Currently `containerinstances`, `costmanagement`, `kubernetesservices` and `virtualmachinescalesets` are supported values. | Yes |
 | containerinstances | [Container Instances](#container-instances) | The configuration for the panel if the type is `containerinstances`. | No |
+| costmanagement | [Cost Management](#cost-management) | The configuration for the panel if the type is `costmanagement`. | No |
 | kubernetesservices | [Kubernetes Services](#kubernetes-services) | The configuration for the panel if the type is `kubernetesservices`. | No |
 | virtualmachinescalesets | [Virtual Machine Scale Sets](#virtual-machine-scale-sets) | The configuration for the panel if the type is `virtualmachinescalesets`. | No |
 
@@ -62,6 +63,13 @@ The following options can be used for a panel with the Azure plugin:
 | containers | string[] | A list of container names. This is only required if the type is `logs`. | No |
 | metricNames | string | The name of the metric for which the data should be displayed. Supported values are `CPUUsage`, `MemoryUsage`, `NetworkBytesReceivedPerSecond` and `NetworkBytesTransmittedPerSecond`. This is only required if the type is `metrics`. | No |
 | aggregationType | string | The aggregation type for the metric. Supported values are `Average`, `Minimum`, `Maximum`, `Total` and `Count`. This is only required if the type is `metrics`. | No |
+
+### Cost Management
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The type of the panel for which the Cost Management data should be displayed. Currently only `actualcosts` is supported. | Yes |
+| scope | string | The scope for the costs data. This could be the name of a resource group or `All`. The default value is `All`. | No |
 
 ### Kubernetes Services
 

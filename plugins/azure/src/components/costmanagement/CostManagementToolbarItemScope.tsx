@@ -16,7 +16,7 @@ const CostManagementToolbarItemScope: React.FunctionComponent<ICostManagementToo
   const [showSelect, setShowSelect] = useState<boolean>(false);
   const options = resourceGroups;
   if (options.indexOf('All') === -1) {
-    options.push('All');
+    options.unshift('All');
   }
 
   return (
