@@ -3,6 +3,7 @@ package azure
 import (
 	"net/http"
 
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/log"
 
@@ -25,12 +26,19 @@ func (router *Router) getVirtualMachineScaleSets(w http.ResponseWriter, r *http.
 		return
 	}
 
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to list virtual machine scale sets.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to list virtual machine scale sets")
+		return
+	}
+
 	var virtualMachineScaleSets []*armcompute.VirtualMachineScaleSet
 
 	for _, resourceGroup := range resourceGroups {
-		err := i.CheckPermissions(r, "virtualmachinescalesets", resourceGroup)
+		err := i.CheckPermissions(name, user, "virtualmachinescalesets", resourceGroup, r.Method)
 		if err == nil {
-			vsss, err := i.VirtualMachineScaleSets.ListVirtualMachineScaleSets(r.Context(), resourceGroup)
+			vsss, err := i.VirtualMachineScaleSetsClient().ListVirtualMachineScaleSets(r.Context(), resourceGroup)
 			if err != nil {
 				log.Error(r.Context(), "Could not list virtual machine scale sets.", zap.Error(err))
 				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list virtual machine scale sets")
@@ -58,14 +66,21 @@ func (router *Router) getVirtualMachineScaleSetDetails(w http.ResponseWriter, r 
 		return
 	}
 
-	err := i.CheckPermissions(r, "virtualmachinescalesets", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to get virtual machine scale set.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get virtual machine scale set")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "virtualmachinescalesets", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the virtual machine scale set.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the virtual machine scale set")
 		return
 	}
 
-	vmss, err := i.VirtualMachineScaleSets.GetVirtualMachineScaleSet(r.Context(), resourceGroup, virtualMachineScaleSet)
+	vmss, err := i.VirtualMachineScaleSetsClient().GetVirtualMachineScaleSet(r.Context(), resourceGroup, virtualMachineScaleSet)
 	if err != nil {
 		log.Error(r.Context(), "Could not get virtual machine scale set", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get virtual machine scale set")
@@ -89,14 +104,21 @@ func (router *Router) getVirtualMachines(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err := i.CheckPermissions(r, "virtualmachinescalesets", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to list virtual machines.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to list virtual machines")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "virtualmachinescalesets", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the virtual machines.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to list the virtual machines")
 		return
 	}
 
-	vms, err := i.VirtualMachineScaleSets.ListVirtualMachines(r.Context(), resourceGroup, virtualMachineScaleSet)
+	vms, err := i.VirtualMachineScaleSetsClient().ListVirtualMachines(r.Context(), resourceGroup, virtualMachineScaleSet)
 	if err != nil {
 		log.Error(r.Context(), "Could not get virtual machines.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get virtual machines")

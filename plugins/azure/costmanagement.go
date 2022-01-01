@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (router *Router) getActualCost(w http.ResponseWriter, r *http.Request) {
+func (router *Router) getActualCosts(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	timeframe := r.URL.Query().Get("timeframe")
 	scope := r.URL.Query().Get("scope")
@@ -33,7 +33,7 @@ func (router *Router) getActualCost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	costUsage, err := i.CostManagement.GetActualCost(r.Context(), timeframeParsed, scope)
+	costUsage, err := i.CostManagementClient().GetActualCost(r.Context(), timeframeParsed, scope)
 	if err != nil {
 		log.Error(r.Context(), "Could not query cost usage.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not query cost usage")

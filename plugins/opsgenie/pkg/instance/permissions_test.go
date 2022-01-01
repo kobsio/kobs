@@ -5,9 +5,9 @@ import (
 
 	"github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
-	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 
 	"github.com/stretchr/testify/require"
+	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )
 
 func TestCheckPermissions(t *testing.T) {

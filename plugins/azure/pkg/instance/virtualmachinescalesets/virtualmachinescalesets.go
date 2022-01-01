@@ -8,15 +8,21 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute"
 )
 
-// Client is the client to interact with the virtual machine scale set API.
-type Client struct {
+// Client is the interface for a client to interact with the Azure virtual machien scale sets api.
+type Client interface {
+	ListVirtualMachineScaleSets(ctx context.Context, resourceGroup string) ([]*armcompute.VirtualMachineScaleSet, error)
+	GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsGetResponse, error)
+	ListVirtualMachines(ctx context.Context, resourceGroup, virtualMachineScaleSet string) ([]*armcompute.VirtualMachineScaleSetVM, error)
+}
+
+type client struct {
 	subscriptionID string
 	vmssClient     *armcompute.VirtualMachineScaleSetsClient
 	vmssVMsClient  *armcompute.VirtualMachineScaleSetVMsClient
 }
 
 // ListVirtualMachineScaleSets returns all virtual machine scale sets for the given resource group.
-func (c *Client) ListVirtualMachineScaleSets(ctx context.Context, resourceGroup string) ([]*armcompute.VirtualMachineScaleSet, error) {
+func (c *client) ListVirtualMachineScaleSets(ctx context.Context, resourceGroup string) ([]*armcompute.VirtualMachineScaleSet, error) {
 	var vmsss []*armcompute.VirtualMachineScaleSet
 
 	pager := c.vmssClient.List(resourceGroup, &armcompute.VirtualMachineScaleSetsListOptions{})
@@ -33,13 +39,13 @@ func (c *Client) ListVirtualMachineScaleSets(ctx context.Context, resourceGroup 
 
 // GetVirtualMachineScaleSet returns a virtual machine scale set for the given resource group and virtual machine scale
 // set name.
-func (c *Client) GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsGetResponse, error) {
+func (c *client) GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsGetResponse, error) {
 	return c.vmssClient.Get(ctx, resourceGroup, virtualMachineScaleSet, &armcompute.VirtualMachineScaleSetsGetOptions{})
 }
 
 // ListVirtualMachines returns all virtual machine scale sets for the given resource group and virtual machine scale
 // set.
-func (c *Client) ListVirtualMachines(ctx context.Context, resourceGroup, virtualMachineScaleSet string) ([]*armcompute.VirtualMachineScaleSetVM, error) {
+func (c *client) ListVirtualMachines(ctx context.Context, resourceGroup, virtualMachineScaleSet string) ([]*armcompute.VirtualMachineScaleSetVM, error) {
 	var vmsss []*armcompute.VirtualMachineScaleSetVM
 
 	pager := c.vmssVMsClient.List(resourceGroup, virtualMachineScaleSet, &armcompute.VirtualMachineScaleSetVMsListOptions{})
@@ -55,11 +61,11 @@ func (c *Client) ListVirtualMachines(ctx context.Context, resourceGroup, virtual
 }
 
 // New returns a new client to interact with the kubernetes services API.
-func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) *Client {
+func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) Client {
 	vmssClient := armcompute.NewVirtualMachineScaleSetsClient(subscriptionID, credentials, &arm.ClientOptions{})
 	vmssVMsClient := armcompute.NewVirtualMachineScaleSetVMsClient(subscriptionID, credentials, &arm.ClientOptions{})
 
-	return &Client{
+	return &client{
 		subscriptionID: subscriptionID,
 		vmssClient:     vmssClient,
 		vmssVMsClient:  vmssVMsClient,

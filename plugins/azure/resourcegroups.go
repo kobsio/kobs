@@ -23,7 +23,7 @@ func (router *Router) getResourceGroups(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	resourceGroups, err := i.ResourceGroups.ListResourceGroups(r.Context())
+	resourceGroups, err := i.ResourceGroupsClient().ListResourceGroups(r.Context())
 	if err != nil {
 		log.Error(r.Context(), "Could not list resource groups.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list resource groups")

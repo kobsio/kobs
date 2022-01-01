@@ -1,6 +1,7 @@
 package instance
 
 import (
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/containerinstances"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/costmanagement"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/kubernetesservices"
@@ -29,20 +30,59 @@ type Credentials struct {
 	ClientSecret   string `json:"clientSecret"`
 }
 
-// Instance represents a single Azure instance, which can be added via the configuration file.
-type Instance struct {
-	Name                    string
-	PermissionsEnabled      bool
-	ResourceGroups          *resourcegroups.Client
-	KubernetesServices      *kubernetesservices.Client
-	ContainerInstances      *containerinstances.Client
-	CostManagement          *costmanagement.Client
-	VirtualMachineScaleSets *virtualmachinescalesets.Client
-	Monitor                 *monitor.Client
+// Instance is the interface which must be implemented by an Azure instance.
+type Instance interface {
+	GetName() string
+	ResourceGroupsClient() resourcegroups.Client
+	KubernetesServicesClient() kubernetesservices.Client
+	ContainerInstancesClient() containerinstances.Client
+	CostManagementClient() costmanagement.Client
+	VirtualMachineScaleSetsClient() virtualmachinescalesets.Client
+	MonitorClient() monitor.Client
+	CheckPermissions(pluginName string, user *authContext.User, resource, resourceGroup, verb string) error
+}
+
+type instance struct {
+	Name                          string
+	permissionsEnabled            bool
+	resourceGroupsClient          resourcegroups.Client
+	kubernetesServicesClient      kubernetesservices.Client
+	containerInstancesClient      containerinstances.Client
+	costManagementClient          costmanagement.Client
+	virtualMachineScaleSetsClient virtualmachinescalesets.Client
+	monitorClient                 monitor.Client
+}
+
+func (i *instance) GetName() string {
+	return i.Name
+}
+
+func (i *instance) ResourceGroupsClient() resourcegroups.Client {
+	return i.resourceGroupsClient
+}
+
+func (i *instance) KubernetesServicesClient() kubernetesservices.Client {
+	return i.kubernetesServicesClient
+}
+
+func (i *instance) ContainerInstancesClient() containerinstances.Client {
+	return i.containerInstancesClient
+}
+
+func (i *instance) CostManagementClient() costmanagement.Client {
+	return i.costManagementClient
+}
+
+func (i *instance) VirtualMachineScaleSetsClient() virtualmachinescalesets.Client {
+	return i.virtualMachineScaleSetsClient
+}
+
+func (i *instance) MonitorClient() monitor.Client {
+	return i.monitorClient
 }
 
 // New returns a new Elasticsearch instance for the given configuration.
-func New(config Config) (*Instance, error) {
+func New(config Config) (Instance, error) {
 	credentials, err := azidentity.NewClientSecretCredential(config.Credentials.TenantID, config.Credentials.ClientID, config.Credentials.ClientSecret, nil)
 	if err != nil {
 		return nil, err
@@ -61,14 +101,14 @@ func New(config Config) (*Instance, error) {
 	virtualmachinescalesets := virtualmachinescalesets.New(config.Credentials.SubscriptionID, credentials)
 	monitor := monitor.New(config.Credentials.SubscriptionID, credentials)
 
-	return &Instance{
-		Name:                    config.Name,
-		PermissionsEnabled:      config.PermissionsEnabled,
-		ResourceGroups:          resourceGroups,
-		KubernetesServices:      kubernetesServices,
-		ContainerInstances:      containerInstances,
-		CostManagement:          costManagement,
-		VirtualMachineScaleSets: virtualmachinescalesets,
-		Monitor:                 monitor,
+	return &instance{
+		Name:                          config.Name,
+		permissionsEnabled:            config.PermissionsEnabled,
+		resourceGroupsClient:          resourceGroups,
+		kubernetesServicesClient:      kubernetesServices,
+		containerInstancesClient:      containerInstances,
+		costManagementClient:          costManagement,
+		virtualMachineScaleSetsClient: virtualmachinescalesets,
+		monitorClient:                 monitor,
 	}, nil
 }

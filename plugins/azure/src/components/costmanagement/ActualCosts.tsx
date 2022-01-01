@@ -20,7 +20,7 @@ const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timefra
         const scopeParam = `scope=${scope}`;
 
         const response = await fetch(
-          `/api/plugins/azure/${name}/costmanagement/actualcost?${timeframeParam}&${scopeParam}`,
+          `/api/plugins/azure/${name}/costmanagement/actualcosts?${timeframeParam}&${scopeParam}`,
           {
             method: 'get',
           },

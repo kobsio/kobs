@@ -11,28 +11,29 @@ import (
 	"github.com/Azure/go-autorest/autorest/date"
 )
 
-// Client is the client to interact with the container instance API.
-type Client struct {
+// Client is the interface for a client to interact with the Azure cost management api.
+type Client interface {
+	GetActualCost(ctx context.Context, timeframe int, scope string) (costmanagement.QueryResult, error)
+}
+
+type client struct {
 	subscriptionID string
 	queryClient    *costmanagement.QueryClient
 }
 
 // GetActualCost query the actual costs for the configured subscription and given timeframe grouped by resourceGroup
-func (c *Client) GetActualCost(ctx context.Context, timeframe int, scope string) (costmanagement.QueryResult, error) {
+func (c *client) GetActualCost(ctx context.Context, timeframe int, scope string) (costmanagement.QueryResult, error) {
 	var queryScope string
-	subscriptionScope := false
+	var subscriptionScope bool
+
 	if "All" == scope {
 		queryScope = fmt.Sprintf("subscriptions/%s", c.subscriptionID)
 		subscriptionScope = true
 	} else {
 		queryScope = fmt.Sprintf("subscriptions/%s/resourceGroups/%s", c.subscriptionID, scope)
 	}
-	res, err := c.queryClient.Usage(ctx, queryScope, buildQueryParams(timeframe, subscriptionScope))
-	if err != nil {
-		return costmanagement.QueryResult{}, err
-	}
 
-	return res, nil
+	return c.queryClient.Usage(ctx, queryScope, buildQueryParams(timeframe, subscriptionScope))
 }
 
 func buildQueryParams(timeframe int, subscriptionScope bool) costmanagement.QueryDefinition {
@@ -84,12 +85,12 @@ func buildQueryParams(timeframe int, subscriptionScope bool) costmanagement.Quer
 }
 
 // New returns a new client to interact with the cost management API.
-func New(subscriptionID string, authorizer autorest.Authorizer) *Client {
-	client := costmanagement.NewQueryClient(subscriptionID)
-	client.Authorizer = authorizer
+func New(subscriptionID string, authorizer autorest.Authorizer) Client {
+	queryClient := costmanagement.NewQueryClient(subscriptionID)
+	queryClient.Authorizer = authorizer
 
-	return &Client{
+	return &client{
 		subscriptionID: subscriptionID,
-		queryClient:    &client,
+		queryClient:    &queryClient,
 	}
 }

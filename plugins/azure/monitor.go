@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/log"
 
@@ -30,7 +31,14 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := i.CheckPermissions(r, "monitor", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to get metrics.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get metrics")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "monitor", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to view metrics")
@@ -51,7 +59,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	metrics, err := i.Monitor.GetMetrics(r.Context(), resourceGroup, provider, metricNames, aggregationType, parsedTimeStart, parsedTimeEnd)
+	metrics, err := i.MonitorClient().GetMetrics(r.Context(), resourceGroup, provider, metricNames, aggregationType, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get metrics")
