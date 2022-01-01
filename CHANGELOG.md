@@ -32,6 +32,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#271](https://github.com/kobsio/kobs/pull/271): [applications] Add support for external applications.
 - [#272](https://github.com/kobsio/kobs/pull/272): [helm] Add Helm plugin, to manage Helm releases via kobs.
 - [#273](https://github.com/kobsio/kobs/pull/273): [azure] Add tests for Azure plugin.
+- [#277](https://github.com/kobsio/kobs/pull/277): Support multiple versions for the documentation.
 
 ### Fixed
 
