@@ -12,6 +12,7 @@ on:
       - '.github/**'
       - '.vscode/**'
       - 'deploy/**'
+      - 'cmd/kobs/Dockerfile'
       - 'docs/**'
       - '.dockerignore'
       - '.editorconfig'
@@ -29,6 +30,7 @@ on:
     paths-ignore:
       - '.github/**'
       - '.vscode/**'
+      - 'cmd/kobs/Dockerfile'
       - 'deploy/**'
       - 'docs/**'
       - '.dockerignore'
