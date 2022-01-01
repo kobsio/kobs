@@ -10,6 +10,10 @@ export interface IPanelOptions {
     metricNames?: string;
     aggregationType?: string;
   };
+  costmanagement?: {
+    type?: string;
+    scope?: string;
+  };
   kubernetesservices?: {
     type?: string;
     resourceGroups?: string[];

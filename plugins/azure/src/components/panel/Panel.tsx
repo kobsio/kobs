@@ -9,6 +9,8 @@ import CIDetailsContainerGroup from '../containerinstances/DetailsContainerGroup
 import CIDetailsContainerGroupActions from '../containerinstances/DetailsContainerGroupActions';
 import CIDetailsLogs from '../containerinstances/DetailsLogs';
 
+import CMActualCosts from '../costmanagement/ActualCosts';
+
 import KSDetailsKubernetesService from '../kubernetesservices/DetailsKubernetesService';
 import KSDetailsNodePoolsWrapper from '../kubernetesservices/DetailsNodePoolsWrapper';
 import KSKubernetesServices from '../kubernetesservices/KubernetesServices';
@@ -126,6 +128,20 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           aggregationType={options.containerinstances.aggregationType}
           times={times}
         />
+      </PluginCard>
+    );
+  }
+
+  if (
+    options?.type &&
+    options?.type === 'costmanagement' &&
+    options.costmanagement &&
+    options.costmanagement.type === 'actualcosts' &&
+    times
+  ) {
+    return (
+      <PluginCard title={title} description={description}>
+        <CMActualCosts name={name} scope={options.costmanagement.scope || 'All'} times={times} />
       </PluginCard>
     );
   }

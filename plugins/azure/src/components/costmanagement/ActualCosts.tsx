@@ -3,24 +3,22 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
 import { CostPieChart } from './CostPieChart';
+import { IPluginTimes } from '@kobsio/plugin-core';
 import { IQueryResult } from './interfaces';
 
 interface IActualCostsProps {
   name: string;
-  timeframe: number;
   scope: string;
+  times: IPluginTimes;
 }
 
-const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timeframe, scope }: IActualCostsProps) => {
+const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, scope, times }: IActualCostsProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IQueryResult, Error>(
-    ['azure/costmanagement/actualcost', name, timeframe, scope],
+    ['azure/costmanagement/actualcost', name, scope, times],
     async () => {
       try {
-        const timeframeParam = `timeframe=${timeframe}`;
-        const scopeParam = `scope=${scope}`;
-
         const response = await fetch(
-          `/api/plugins/azure/${name}/costmanagement/actualcosts?${timeframeParam}&${scopeParam}`,
+          `/api/plugins/azure/${name}/costmanagement/actualcosts?scope=${scope}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             method: 'get',
           },
@@ -55,6 +53,7 @@ const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timefra
     return (
       <Alert
         variant={AlertVariant.danger}
+        isInline={true}
         title="Could not get costs"
         actionLinks={
           <React.Fragment>
@@ -69,13 +68,28 @@ const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ name, timefra
     );
   }
 
-  if (!data) {
-    return null;
+  if (!data || !data.properties || data.properties.rows.length === 0) {
+    return (
+      <Alert
+        variant={AlertVariant.warning}
+        isInline={true}
+        title="No cost data found"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IQueryResult, Error>> => refetch()}>
+              Retry
+            </AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>For the selected scope or time range was no cost data found.</p>
+      </Alert>
+    );
   }
 
   return (
-    <div style={{ height: '500px' }}>
-      <CostPieChart data={data} />
+    <div style={{ height: '100%' }}>
+      <CostPieChart data={data} />;
     </div>
   );
 };

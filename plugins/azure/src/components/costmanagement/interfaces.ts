@@ -1,3 +1,12 @@
+import { IPluginTimes } from '@kobsio/plugin-core';
+
+// IOptions is the interface for all options for the applications page.
+export interface IOptions {
+  scope: string;
+  times: IPluginTimes;
+}
+
+// IQueryResult is the interface for the data returned by the Azure api for the actual costs.
 export interface IQueryResult {
   properties: IQueryProperties;
 }
