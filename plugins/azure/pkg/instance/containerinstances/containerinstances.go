@@ -8,8 +8,15 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerinstance/armcontainerinstance"
 )
 
-// Client is the client to interact with the container instance API.
-type Client struct {
+// Client is the interface for a client to interact with the Azure container instances.
+type Client interface {
+	ListContainerGroups(ctx context.Context, resourceGroup string) ([]*armcontainerinstance.ContainerGroup, error)
+	GetContainerGroup(ctx context.Context, resourceGroup, containerGroup string) (armcontainerinstance.ContainerGroupsGetResponse, error)
+	GetContainerLogs(ctx context.Context, resourceGroup, containerGroup, container string, tail *int32, timestamps *bool) (*string, error)
+	RestartContainerGroup(ctx context.Context, resourceGroup, containerGroup string) error
+}
+
+type client struct {
 	subscriptionID        string
 	containerGroupsClient *armcontainerinstance.ContainerGroupsClient
 	containersClient      *armcontainerinstance.ContainersClient
@@ -19,7 +26,7 @@ type Client struct {
 //
 // We can not use the containerGroupsClient for this request, because the result is missing some important fields like
 // the ids of the returned resources.
-func (c *Client) ListContainerGroups(ctx context.Context, resourceGroup string) ([]*armcontainerinstance.ContainerGroup, error) {
+func (c *client) ListContainerGroups(ctx context.Context, resourceGroup string) ([]*armcontainerinstance.ContainerGroup, error) {
 	var containerGroups []*armcontainerinstance.ContainerGroup
 
 	pager := c.containerGroupsClient.ListByResourceGroup(resourceGroup, &armcontainerinstance.ContainerGroupsListByResourceGroupOptions{})
@@ -35,12 +42,12 @@ func (c *Client) ListContainerGroups(ctx context.Context, resourceGroup string) 
 }
 
 // GetContainerGroup returns a single container group.
-func (c *Client) GetContainerGroup(ctx context.Context, resourceGroup, containerGroup string) (armcontainerinstance.ContainerGroupsGetResponse, error) {
+func (c *client) GetContainerGroup(ctx context.Context, resourceGroup, containerGroup string) (armcontainerinstance.ContainerGroupsGetResponse, error) {
 	return c.containerGroupsClient.Get(ctx, resourceGroup, containerGroup, &armcontainerinstance.ContainerGroupsGetOptions{})
 }
 
 // GetContainerLogs returns the logs for a container.
-func (c *Client) GetContainerLogs(ctx context.Context, resourceGroup, containerGroup, container string, tail *int32, timestamps *bool) (*string, error) {
+func (c *client) GetContainerLogs(ctx context.Context, resourceGroup, containerGroup, container string, tail *int32, timestamps *bool) (*string, error) {
 	res, err := c.containersClient.ListLogs(ctx, resourceGroup, containerGroup, container, &armcontainerinstance.ContainersListLogsOptions{
 		Tail:       tail,
 		Timestamps: timestamps,
@@ -53,7 +60,7 @@ func (c *Client) GetContainerLogs(ctx context.Context, resourceGroup, containerG
 }
 
 // RestartContainerGroup restarts a container group.
-func (c *Client) RestartContainerGroup(ctx context.Context, resourceGroup, containerGroup string) error {
+func (c *client) RestartContainerGroup(ctx context.Context, resourceGroup, containerGroup string) error {
 	_, err := c.containerGroupsClient.BeginRestart(ctx, resourceGroup, containerGroup, &armcontainerinstance.ContainerGroupsBeginRestartOptions{})
 	if err != nil {
 		return err
@@ -63,11 +70,11 @@ func (c *Client) RestartContainerGroup(ctx context.Context, resourceGroup, conta
 }
 
 // New returns a new client to interact with the container instances API.
-func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) *Client {
+func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) Client {
 	containerGroupsClient := armcontainerinstance.NewContainerGroupsClient(subscriptionID, credentials, &arm.ClientOptions{})
 	containersClient := armcontainerinstance.NewContainersClient(subscriptionID, credentials, &arm.ClientOptions{})
 
-	return &Client{
+	return &client{
 		subscriptionID:        subscriptionID,
 		containerGroupsClient: containerGroupsClient,
 		containersClient:      containersClient,

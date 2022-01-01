@@ -17,15 +17,15 @@ const (
 // Config is the structure of the configuration for the Azure plugin.
 type Config []instance.Config
 
-// Router implements the router for the resources plugin, which can be registered in the router for our rest api.
+// Router implements the router for the Azure plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	instances []*instance.Instance
+	instances []instance.Instance
 }
 
-func (router *Router) getInstance(name string) *instance.Instance {
+func (router *Router) getInstance(name string) instance.Instance {
 	for _, i := range router.instances {
-		if i.Name == name {
+		if i.GetName() == name {
 			return i
 		}
 	}
@@ -35,7 +35,7 @@ func (router *Router) getInstance(name string) *instance.Instance {
 
 // Register returns a new router which can be used in the router for the kobs rest api.
 func Register(plugins *plugin.Plugins, config Config) chi.Router {
-	var instances []*instance.Instance
+	var instances []instance.Instance
 
 	for _, cfg := range config {
 		inst, err := instance.New(cfg)
@@ -69,7 +69,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 		})
 
 		r.Route("/costmanagement", func(costManagementRouter chi.Router) {
-			costManagementRouter.Get("/actualcost", router.getActualCost)
+			costManagementRouter.Get("/actualcosts", router.getActualCosts)
 		})
 
 		r.Route("/kubernetesservices", func(kubernetesServicesRouter chi.Router) {

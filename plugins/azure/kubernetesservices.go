@@ -3,6 +3,7 @@ package azure
 import (
 	"net/http"
 
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/log"
 
@@ -25,12 +26,19 @@ func (router *Router) getManagedClusters(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to list managed clusters.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to list managed clusters")
+		return
+	}
+
 	var managedClusters []*armcontainerservice.ManagedCluster
 
 	for _, resourceGroup := range resourceGroups {
-		err := i.CheckPermissions(r, "kubernetesservices", resourceGroup)
+		err := i.CheckPermissions(name, user, "kubernetesservices", resourceGroup, r.Method)
 		if err == nil {
-			clusters, err := i.KubernetesServices.ListManagedClusters(r.Context(), resourceGroup)
+			clusters, err := i.KubernetesServicesClient().ListManagedClusters(r.Context(), resourceGroup)
 			if err != nil {
 				log.Error(r.Context(), "Could not list managed clusters.", zap.Error(err))
 				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list managed clusters")
@@ -58,14 +66,21 @@ func (router *Router) getManagedCluster(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err := i.CheckPermissions(r, "kubernetesservices", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to get managed cluster.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get managed cluster")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "kubernetesservices", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the managed cluster.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the managed cluster")
 		return
 	}
 
-	ks, err := i.KubernetesServices.GetManagedCluster(r.Context(), resourceGroup, managedCluster)
+	ks, err := i.KubernetesServicesClient().GetManagedCluster(r.Context(), resourceGroup, managedCluster)
 	if err != nil {
 		log.Error(r.Context(), "Could not get managed cluster.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get managed cluster")
@@ -89,14 +104,21 @@ func (router *Router) getNodePools(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := i.CheckPermissions(r, "kubernetesservices", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to get node pools.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get node pools")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "kubernetesservices", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the node pools.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the node pools of the managed cluster")
 		return
 	}
 
-	nodePools, err := i.KubernetesServices.ListNodePools(r.Context(), resourceGroup, managedCluster)
+	nodePools, err := i.KubernetesServicesClient().ListNodePools(r.Context(), resourceGroup, managedCluster)
 	if err != nil {
 		log.Warn(r.Context(), "Could not get node pools.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get node pools")

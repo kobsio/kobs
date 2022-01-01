@@ -3,6 +3,7 @@ package azure
 import (
 	"net/http"
 
+	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/log"
 
@@ -25,12 +26,19 @@ func (router *Router) getContainerGroups(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to get container groups.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get container groups")
+		return
+	}
+
 	var containerGroups []*armcontainerinstance.ContainerGroup
 
 	for _, resourceGroup := range resourceGroups {
-		err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+		err := i.CheckPermissions(name, user, "containerinstances", resourceGroup, r.Method)
 		if err == nil {
-			cgs, err := i.ContainerInstances.ListContainerGroups(r.Context(), resourceGroup)
+			cgs, err := i.ContainerInstancesClient().ListContainerGroups(r.Context(), resourceGroup)
 			if err != nil {
 				log.Error(r.Context(), "Could not list container groups.", zap.Error(err))
 				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not list container groups")
@@ -58,14 +66,21 @@ func (router *Router) getContainerGroup(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to get container group.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get container group")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "containerinstances", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the container instance.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the container instance")
 		return
 	}
 
-	cg, err := i.ContainerInstances.GetContainerGroup(r.Context(), resourceGroup, containerGroup)
+	cg, err := i.ContainerInstancesClient().GetContainerGroup(r.Context(), resourceGroup, containerGroup)
 	if err != nil {
 		log.Error(r.Context(), "Could not get container instances.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get container instances")
@@ -89,14 +104,21 @@ func (router *Router) restartContainerGroup(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to restart container group.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to restart container group")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "containerinstances", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the container instance.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to restart the container instance")
 		return
 	}
 
-	err = i.ContainerInstances.RestartContainerGroup(r.Context(), resourceGroup, containerGroup)
+	err = i.ContainerInstancesClient().RestartContainerGroup(r.Context(), resourceGroup, containerGroup)
 	if err != nil {
 		log.Error(r.Context(), "Could not restart container group.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get restart container group")
@@ -121,7 +143,14 @@ func (router *Router) getContainerLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := i.CheckPermissions(r, "containerinstances", resourceGroup)
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "User is not authorized to get container logs.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get container logs")
+		return
+	}
+
+	err = i.CheckPermissions(name, user, "containerinstances", resourceGroup, r.Method)
 	if err != nil {
 		log.Warn(r.Context(), "User is not allowed to get the container instance.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the logs of the container instance")
@@ -131,7 +160,7 @@ func (router *Router) getContainerLogs(w http.ResponseWriter, r *http.Request) {
 	tail := int32(10000)
 	timestamps := false
 
-	logs, err := i.ContainerInstances.GetContainerLogs(r.Context(), resourceGroup, containerGroup, container, &tail, &timestamps)
+	logs, err := i.ContainerInstancesClient().GetContainerLogs(r.Context(), resourceGroup, containerGroup, container, &tail, &timestamps)
 	if err != nil {
 		log.Error(r.Context(), "Could not get container logs.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get container logs")

@@ -3,12 +3,9 @@ package instance
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
-
-	"github.com/go-chi/chi/v5"
 )
 
 // Permissions is the structure of the custom permissions field for the Azure instance.
@@ -20,17 +17,12 @@ type Permissions struct {
 
 // CheckPermissions can be used to check if a user has the permissions to access a resource. The permissions of the user
 // are determined from the passed in request context.
-func (i *Instance) CheckPermissions(r *http.Request, resource, resourceGroup string) error {
-	if !i.PermissionsEnabled {
+func (i *instance) CheckPermissions(pluginName string, user *authContext.User, resource, resourceGroup, verb string) error {
+	if !i.permissionsEnabled {
 		return nil
 	}
 
-	user, err := authContext.GetUser(r.Context())
-	if err != nil {
-		return err
-	}
-
-	permissions := user.GetPluginPermissions(chi.URLParam(r, "name"))
+	permissions := user.GetPluginPermissions(pluginName)
 
 	for _, permission := range permissions {
 		var p []Permissions
@@ -39,7 +31,7 @@ func (i *Instance) CheckPermissions(r *http.Request, resource, resourceGroup str
 			return fmt.Errorf("invalid permission format: %w", err)
 		}
 
-		if hasAccess(resource, resourceGroup, strings.ToLower(r.Method), p) {
+		if hasAccess(resource, resourceGroup, strings.ToLower(verb), p) {
 			return nil
 		}
 	}

@@ -8,13 +8,17 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
 )
 
-// Client is the client to interact with the container instance API.
-type Client struct {
+// Client is the interface for a client to interact with the Azure resource groups api.
+type Client interface {
+	ListResourceGroups(ctx context.Context) ([]*armresources.ResourceGroup, error)
+}
+
+type client struct {
 	resourceGroupsClient *armresources.ResourceGroupsClient
 }
 
 // ListResourceGroups lists all resource groups for the configured subscription.
-func (c *Client) ListResourceGroups(ctx context.Context) ([]*armresources.ResourceGroup, error) {
+func (c *client) ListResourceGroups(ctx context.Context) ([]*armresources.ResourceGroup, error) {
 	pager := c.resourceGroupsClient.List(&armresources.ResourceGroupsListOptions{Top: nil})
 
 	var resourceGroups []*armresources.ResourceGroup
@@ -29,10 +33,10 @@ func (c *Client) ListResourceGroups(ctx context.Context) ([]*armresources.Resour
 }
 
 // New returns a new client to interact with the container instances API.
-func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) *Client {
+func New(subscriptionID string, credentials *azidentity.ClientSecretCredential) Client {
 	resourceGroupsClient := armresources.NewResourceGroupsClient(subscriptionID, credentials, &arm.ClientOptions{})
 
-	return &Client{
+	return &client{
 		resourceGroupsClient: resourceGroupsClient,
 	}
 }
