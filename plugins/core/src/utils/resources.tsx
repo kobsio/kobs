@@ -903,7 +903,9 @@ export const resources: IResources = {
         const persistentVolumeList: V1PersistentVolumeList = item.resources;
         for (const persistentVolume of persistentVolumeList.items) {
           const capacity =
-            persistentVolume.spec && persistentVolume.spec.capacity ? persistentVolume.spec.capacity : '';
+            persistentVolume.spec && persistentVolume.spec.capacity && persistentVolume.spec.capacity.storage
+              ? persistentVolume.spec.capacity.storage
+              : '';
           const accessMode =
             persistentVolume.spec && persistentVolume.spec.accessModes
               ? persistentVolume.spec.accessModes.join(', ')
