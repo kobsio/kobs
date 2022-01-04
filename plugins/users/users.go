@@ -106,11 +106,6 @@ func (router *Router) getUser(w http.ResponseWriter, r *http.Request) {
 
 // getTeams returns all teams, where a users is a member of.
 func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
-	defaultClusterName := r.URL.Query().Get("cluster")
-	defaultNamespace := r.URL.Query().Get("namespace")
-
-	log.Debug(r.Context(), "Get User parameters.", zap.String("defaultCluster", defaultClusterName), zap.String("defaultNamespace", defaultNamespace))
-
 	var data getTeamsData
 
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -123,26 +118,16 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 	var teams []*team.TeamSpec
 
 	for _, team := range data.Teams {
-		c := defaultClusterName
-		if team.Cluster != "" {
-			c = team.Cluster
-		}
-
-		n := defaultNamespace
-		if team.Namespace != "" {
-			n = team.Namespace
-		}
-
-		cluster := router.clustersClient.GetCluster(c)
+		cluster := router.clustersClient.GetCluster(team.Cluster)
 		if cluster == nil {
-			log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", c))
+			log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", team.Cluster))
 			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 			return
 		}
 
-		t, err := cluster.GetTeam(r.Context(), n, team.Name)
+		t, err := cluster.GetTeam(r.Context(), team.Namespace, team.Name)
 		if err != nil {
-			log.Error(r.Context(), "Could not get team.", zap.String("team", team.Name))
+			log.Error(r.Context(), "Could not get team.", zap.String("cluster", team.Cluster), zap.String("namespace", team.Namespace), zap.String("team", team.Name))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get team")
 			return
 		}

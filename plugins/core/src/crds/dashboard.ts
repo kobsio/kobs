@@ -49,9 +49,9 @@ export interface IDashboardPlugin {
 // namespace is not specified in the reference we assume the dashboard is in the same namespace as the team or
 // application.
 export interface IDashboardReference {
-  cluster?: string;
-  namespace?: string;
-  name?: string;
+  cluster: string;
+  namespace: string;
+  name: string;
   title: string;
   description?: string;
   placeholders?: IPlaceholders;

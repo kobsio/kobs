@@ -84,7 +84,6 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({
                 </Alert>
               ) : (
                 <Panel
-                  defaults={{ cluster: '', name: '', namespace: '' }}
                   name={name}
                   title=""
                   options={{

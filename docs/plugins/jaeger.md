@@ -73,9 +73,9 @@ spec:
             options:
               showChart: true
               queries:
-                - name: "{{ .service }} requests"
-                  service: "{{ .service }}"
-                - name: "{{ .service }} slow requests"
-                  service: "{{ .service }}"
+                - name: "{% .service %} requests"
+                  service: "{% .service %}"
+                - name: "{% .service %} slow requests"
+                  service: "{% .service %}"
                   minDuration: 1000ms
 ```

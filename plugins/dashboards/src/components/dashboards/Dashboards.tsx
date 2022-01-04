@@ -13,13 +13,14 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { IDashboard, IDashboardReference, IPluginDefaults } from '@kobsio/plugin-core';
+import { IDashboard, IDashboardReference } from '@kobsio/plugin-core';
 import Dashboard from './Dashboard';
 import { IDashboardsOptions } from '../../utils/interfaces';
 import { getInitialOptions } from '../../utils/dashboard';
 
 interface IDashboardsProps {
-  defaults: IPluginDefaults;
+  cluster: string;
+  namespace: string;
   references: IDashboardReference[];
   setDetails?: (details: React.ReactNode) => void;
   forceDefaultSpan: boolean;
@@ -29,7 +30,8 @@ interface IDashboardsProps {
 // The useDrawer property is used to decide if the dashboard should be used inside a drawer or not. For example if an
 // application is already displayed in a drawer we shouldn't use another drawer for the dashboards.
 const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
-  defaults,
+  cluster,
+  namespace,
   references,
   setDetails,
   forceDefaultSpan,
@@ -60,12 +62,13 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   // the defaults and the references to the API. The defaults are required so that a user can omit the cluster and
   // namespace in the references.
   const { isError, isLoading, error, data, refetch } = useQuery<IDashboard[], Error>(
-    ['dashboards/dashboards', defaults, references],
+    ['dashboards/dashboards', references, cluster, namespace],
     async () => {
       try {
         const response = await fetch(`/api/plugins/dashboards/dashboards`, {
           body: JSON.stringify({
-            defaults: defaults,
+            cluster: cluster,
+            namespace: namespace,
             references: references,
           }),
           method: 'post',
@@ -143,7 +146,6 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
             <Dashboard
               activeKey={options.dashboard}
               eventKey={dashboard.title}
-              defaults={defaults}
               dashboard={dashboard}
               forceDefaultSpan={forceDefaultSpan}
               setDetails={setDetails}

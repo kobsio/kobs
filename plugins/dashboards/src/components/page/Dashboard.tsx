@@ -14,8 +14,8 @@ import React, { useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { IDashboard, Title } from '@kobsio/plugin-core';
-import { getInitialDefaults, getPlaceholdersFromSearch } from '../../utils/dashboard';
 import DashboardWrapper from '../dashboards/DashboardWrapper';
+import { getPlaceholdersFromSearch } from '../../utils/dashboard';
 
 interface IDashboardParams {
   cluster: string;
@@ -27,7 +27,6 @@ const Dashboard: React.FunctionComponent = () => {
   const history = useHistory();
   const location = useLocation();
   const params = useParams<IDashboardParams>();
-  const defaults = getInitialDefaults(location.search);
   const placeholders = getPlaceholdersFromSearch(location.search);
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
@@ -71,7 +70,7 @@ const Dashboard: React.FunctionComponent = () => {
       <Alert
         style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
         variant={AlertVariant.danger}
-        title="Could not get application"
+        title="Could not get dashboard"
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
@@ -105,7 +104,7 @@ const Dashboard: React.FunctionComponent = () => {
           <DrawerContent panelContent={details}>
             <DrawerContentBody>
               <PageSection variant={PageSectionVariants.default} style={{ minHeight: '100%' }}>
-                <DashboardWrapper defaults={defaults} dashboard={data} setDetails={setDetails} />
+                <DashboardWrapper dashboard={data} setDetails={setDetails} />
               </PageSection>
             </DrawerContentBody>
           </DrawerContent>

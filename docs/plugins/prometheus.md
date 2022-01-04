@@ -107,7 +107,7 @@ spec:
         options:
           type: labelValues
           label: pod
-          query: container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{{ .pod }}", container!="POD", container!=""}
+          query: container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .pod %}", container!="POD", container!=""}
           allowAll: false
   rows:
     - size: 1
@@ -120,7 +120,7 @@ spec:
               type: sparkline
               unit: Cores
               queries:
-                - query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m]))
+                - query: sum(rate(container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m]))
         - title: Memory Usage
           colSpan: 4
           plugin:
@@ -129,7 +129,7 @@ spec:
               type: sparkline
               unit: MiB
               queries:
-                - query: sum(container_memory_working_set_bytes{namespace="{{ .namespace }}", pod=~"{% .var_pod %}", container!="POD", container!=""}) / 1024 / 1024
+                - query: sum(container_memory_working_set_bytes{namespace="{% .namespace %}", pod=~"{% .var_pod %}", container!="POD", container!=""}) / 1024 / 1024
         - title: Restarts
           colSpan: 4
           plugin:
@@ -137,7 +137,7 @@ spec:
             options:
               type: sparkline
               queries:
-                - query: kube_pod_container_status_restarts_total{namespace="{{ .namespace }}", pod=~"{% .var_pod %}"}
+                - query: kube_pod_container_status_restarts_total{namespace="{% .namespace %}", pod=~"{% .var_pod %}"}
     - size: 3
       panels:
         - title: CPU Usage
@@ -150,11 +150,11 @@ spec:
               legend: table
               queries:
                 - label: "Usage: {% .container %}"
-                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m])) by (container)
+                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m])) by (container)
                 - label: "Request: {% .container %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{{ .namespace }}", resource="cpu", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container)
+                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="cpu", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container)
                 - label: "Limits: {% .container %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{{ .namespace }}", resource="cpu", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container)
+                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="cpu", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container)
         - title: Memory Usage
           colSpan: 6
           plugin:
@@ -165,11 +165,11 @@ spec:
               legend: table
               queries:
                 - label: "Usage: {% .container %}"
-                  query: sum(container_memory_working_set_bytes{namespace="{{ .namespace }}", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
+                  query: sum(container_memory_working_set_bytes{namespace="{% .namespace %}", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
                 - label: "Request: {% .container %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{{ .namespace }}", resource="memory", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
+                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="memory", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
                 - label: "Limits: {% .container %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{{ .namespace }}", resource="memory", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
+                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="memory", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
     - title: Network
       size: 3
       panels:
@@ -182,9 +182,9 @@ spec:
               unit: bytes/s
               queries:
                 - label: Received
-                  query: sum(irate(container_network_receive_bytes_total{namespace="{{ .namespace }}", pod="{% .var_pod %}"}[2m])) by (pod)
+                  query: sum(irate(container_network_receive_bytes_total{namespace="{% .namespace %}", pod="{% .var_pod %}"}[2m])) by (pod)
                 - label: Transmitted
-                  query: -sum(irate(container_network_transmit_bytes_total{namespace="{{ .namespace }}", pod="{% .var_pod %}"}[2m])) by (pod)
+                  query: -sum(irate(container_network_transmit_bytes_total{namespace="{% .namespace %}", pod="{% .var_pod %}"}[2m])) by (pod)
         - title: Rate of Packets
           colSpan: 6
           plugin:
@@ -194,9 +194,9 @@ spec:
               unit: bytes/s
               queries:
                 - label: Received
-                  query: sum(irate(container_network_receive_packets_total{namespace=~"{{ .namespace }}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+                  query: sum(irate(container_network_receive_packets_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
                 - label: Transmitted
-                  query: -sum(irate(container_network_transmit_packets_total{namespace=~"{{ .namespace }}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+                  query: -sum(irate(container_network_transmit_packets_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
         - title: Rate of Packets Dropped
           colSpan: 6
           plugin:
@@ -206,9 +206,9 @@ spec:
               unit: bytes/s
               queries:
                 - label: Received
-                  query: sum(irate(container_network_receive_packets_dropped_total{namespace=~"{{ .namespace }}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+                  query: sum(irate(container_network_receive_packets_dropped_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
                 - label: Transmitted
-                  query: -sum(irate(container_network_transmit_packets_dropped_total{namespace=~"{{ .namespace }}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+                  query: -sum(irate(container_network_transmit_packets_dropped_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
     - title: "Resource Usage for all Pods"
       panels:
         - title: Table
@@ -218,17 +218,17 @@ spec:
               type: table
               queries:
                 - label: "{% .pod %}"
-                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .namespace }}", image!="", pod=~"{{ .pod }}", container!="POD", container!=""}[2m])) by (pod)
+                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .pod %}", container!="POD", container!=""}[2m])) by (pod)
                 - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{{ .namespace }}", resource="cpu", pod=~"{{ .pod }}", container!="POD", container!=""}) by (pod)
+                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="cpu", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod)
                 - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{{ .namespace }}", resource="cpu", pod=~"{{ .pod }}", container!="POD", container!=""}) by (pod)
+                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="cpu", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod)
                 - label: "{% .pod %}"
-                  query: sum(container_memory_working_set_bytes{namespace="{{ .namespace }}", pod=~"{{ .pod }}", container!="POD", container!=""}) by (pod) / 1024 / 1024
+                  query: sum(container_memory_working_set_bytes{namespace="{% .namespace %}", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod) / 1024 / 1024
                 - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{{ .namespace }}", resource="memory", pod=~"{{ .pod }}", container!="POD", container!=""}) by (pod) / 1024 / 1024
+                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="memory", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod) / 1024 / 1024
                 - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{{ .namespace }}", resource="memory", pod=~"{{ .pod }}", container!="POD", container!=""}) by (pod) / 1024 / 1024
+                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="memory", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod) / 1024 / 1024
               columns:
                 - name: pod
                   title: Pod

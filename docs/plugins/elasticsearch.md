@@ -70,7 +70,7 @@ spec:
               showChart: true
               queries:
                 - name: Istio Logs
-                  query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.labels.app: {{ .app }} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
+                  query: "kubernetes.namespace: {% .namespace %} AND kubernetes.labels.app: {% .app %} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
                   fields:
                     - "kubernetes.pod.name"
                     - "content.authority"

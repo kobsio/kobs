@@ -11,7 +11,6 @@ import { PluginCard } from './PluginCard';
 // namespace and name of the Team/Application where the dashboard is currently shown, so that a user can omit the
 // clusters and namespaces property in the CR.
 export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
-  defaults,
   times,
   name,
   title,
@@ -49,7 +48,6 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
 
   return (
     <Component
-      defaults={defaults}
       times={times}
       name={pluginDetails.name}
       title={title}

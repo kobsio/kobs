@@ -107,7 +107,7 @@ const User: React.FunctionComponent = () => {
         </Card>
       </PageSection>
 
-      {data.teams && <Teams user={data} />}
+      {data.teams && data.teams.length > 0 && <Teams teams={data.teams} />}
 
       {data.profile?.bio && (
         <PageSection variant={PageSectionVariants.default}>

@@ -113,7 +113,12 @@ const Team: React.FunctionComponent = () => {
         <DrawerContent panelContent={details}>
           <DrawerContentBody>
             {data.dashboards ? (
-              <DashboardsWrapper defaults={data} references={data.dashboards} setDetails={setDetails} />
+              <DashboardsWrapper
+                cluster={data.cluster}
+                namespace={data.namespace}
+                references={data.dashboards}
+                setDetails={setDetails}
+              />
             ) : (
               <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}></PageSection>
             )}

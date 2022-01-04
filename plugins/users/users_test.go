@@ -145,17 +145,10 @@ func TestGetTeams(t *testing.T) {
 		},
 		{
 			name:               "get team error",
-			url:                "/teams?cluster=cluster1&namespace=namespace1",
-			body:               []byte("{\"teams\":[{\"name\":\"team2\"}]}"),
+			url:                "/teams",
+			body:               []byte("{\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team2\"}]}"),
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Could not get team: could not get team\"}\n",
-		},
-		{
-			name:               "get teams via defaults",
-			url:                "/teams?cluster=cluster1&namespace=namespace1",
-			body:               []byte("{\"teams\":[{\"name\":\"team1\"}]}"),
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"id\":\"\",\"permissions\":{\"plugins\":null,\"resources\":null}}]\n",
 		},
 		{
 			name:               "get teams",

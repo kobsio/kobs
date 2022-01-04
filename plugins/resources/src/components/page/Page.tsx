@@ -67,14 +67,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
                   <p>Select a list of clusters, resources and namespaces from the toolbar.</p>
                 </Alert>
               ) : (
-                <Panel
-                  defaults={{ cluster: '', name: '', namespace: '' }}
-                  name={name}
-                  title=""
-                  options={[options]}
-                  times={options.times}
-                  setDetails={setDetails}
-                />
+                <Panel name={name} title="" options={[options]} times={options.times} setDetails={setDetails} />
               )}
             </PageSection>
           </DrawerContentBody>

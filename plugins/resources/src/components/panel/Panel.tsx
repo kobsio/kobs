@@ -14,7 +14,6 @@ interface IPanelProps extends IPluginPanelProps {
 // IPanelOptions interface. Since the options are not validated on the API side, we have to validate the data, before
 // we render the plugin.
 export const Panel: React.FunctionComponent<IPanelProps> = ({
-  defaults,
   title,
   description,
   options,
@@ -36,8 +35,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   // using the cluster/namespace of the parent team/application where the panel is used.
   const opts: IPanelOptions[] = options.map((option) => {
     return {
-      clusters: option.clusters || [defaults.cluster],
-      namespaces: option.namespaces || [defaults.namespace],
+      clusters: option.clusters,
+      namespaces: option.namespaces,
       resources: option.resources,
       selector: option.selector,
     };

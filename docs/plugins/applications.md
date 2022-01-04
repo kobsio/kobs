@@ -45,9 +45,9 @@ plugins:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| view | string | The view, which should be used to show the applications. This must be `gallery` or `topology`. The default will be `gallery`. | No |
-| clusters | []string | A list of clusters. If this value isn't provided, it will be the cluster from the team or application where the dashboard is used. | No |
-| namespaces | []string | A list of namespaces. If this value isn't provided, it will be the namespace from the team or application where the dashboard is used. | No |
+| view | string | The view, which should be used to show the applications. This must be `gallery` or `topology`. | Yes |
+| clusters | []string | A list of clusters. | Yes |
+| namespaces | []string | A list of namespaces. | Yes |
 | tags | []string | An optional list of tags. | No |
 | team | [Team](#team) | Get the applications for a team instead of clusters and namespaces. | No |
 
@@ -57,13 +57,13 @@ It is also possible to show all applications for a team. If a team is provided t
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| cluster | string | The cluster of the team. | No |
-| namespace | string | The namespace of the team. | No |
+| cluster | string | The cluster of the team. | Yes |
+| namespace | string | The namespace of the team. | Yes |
 | name | string | The name of the team. | Yes |
 
 ## Examples
 
-The following dashboard contains two panels for application, one shows the applications in the gallery view and the other one in the topology view.
+The following dashboard contains two panels for an application, one shows the applications in the gallery view and the other one in the topology view.
 
 ```yaml
 ---
@@ -93,7 +93,7 @@ spec:
               clusters:
                 - "{% .cluster %}"
               namespaces:
-                - "{{ .namespace }}"
+                - "{% .namespace %}"
         - title: Applications Topology
           colSpan: 6
           plugin:
@@ -103,7 +103,7 @@ spec:
               clusters:
                 - "{% .cluster %}"
               namespaces:
-                - "{{ .namespace }}"
+                - "{% .namespace %}"
 ```
 
 The following example shows all applications for `team-diablo`.
@@ -121,6 +121,7 @@ spec:
             options:
               view: gallery
               team:
+                cluster: "{% .__cluster %}"
                 namespace: kobs
                 name: team-diablo
 ```

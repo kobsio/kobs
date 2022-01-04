@@ -6,26 +6,16 @@ metadata:
   namespace: kobs
 spec:
   description: Resources for an Application
-  placeholders:
-    - name: namespace
-      description: Namespace for the Application
-  variables:
-    - name: cluster
-      label: Cluster
-      plugin:
-        name: core
-        options:
-          type: clusters
   rows:
     - panels:
-        - title: Resources in the {{ .namespace }} ({% .cluster %})
+        - title: Resources in the {% .__namespace %} ({% .__cluster %})
           plugin:
             name: resources
             options:
               - clusters:
-                  - "{% .cluster %}"
+                  - "{% .__cluster %}"
                 namespaces:
-                  - "{{ .namespace }}"
+                  - "{% .__namespace %}"
                 resources:
                   - pods
                   - deployments
@@ -40,9 +30,9 @@ spec:
             options:
               view: gallery
               clusters:
-                - "{% .cluster %}"
+                - "{% .__cluster %}"
               namespaces:
-                - "{{ .namespace }}"
+                - "{% .__namespace %}"
         - title: Applications Topology
           colSpan: 6
           plugin:
@@ -50,6 +40,6 @@ spec:
             options:
               view: topology
               clusters:
-                - "{% .cluster %}"
+                - "{% .__cluster %}"
               namespaces:
-                - "{{ .namespace }}"
+                - "{% .__namespace %}"

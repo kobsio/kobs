@@ -28,8 +28,6 @@ spec:
     - name: resources
       namespace: kobs
       title: Resources in the bookinfo namespace
-      placeholders:
-        namespace: bookinfo
     - name: resource-usage
       namespace: kobs
       title: Resource Usage

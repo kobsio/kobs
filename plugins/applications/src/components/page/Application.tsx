@@ -120,12 +120,7 @@ const Application: React.FunctionComponent = () => {
               {data.teams &&
                 data.teams.map((team, index) => (
                   <ListItem key={index}>
-                    <Link
-                      key={index}
-                      to={`/teams/${team.cluster ? team.cluster : data.cluster}/${
-                        team.namespace ? team.namespace : data.namespace
-                      }/${team.name}`}
-                    >
+                    <Link key={index} to={`/teams/${team.cluster}/${team.namespace}/${team.name}`}>
                       <Button variant={ButtonVariant.link} isInline={true} icon={<UsersIcon />}>
                         {team.name}
                       </Button>
@@ -148,7 +143,12 @@ const Application: React.FunctionComponent = () => {
         <DrawerContent panelContent={details}>
           <DrawerContentBody>
             {data.dashboards ? (
-              <DashboardsWrapper defaults={data} references={data.dashboards} setDetails={setDetails} />
+              <DashboardsWrapper
+                cluster={data.cluster}
+                namespace={data.namespace}
+                references={data.dashboards}
+                setDetails={setDetails}
+              />
             ) : (
               <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}></PageSection>
             )}

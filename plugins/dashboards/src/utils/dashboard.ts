@@ -1,6 +1,6 @@
 import { gridSpans } from '@patternfly/react-core';
 
-import { IDashboard, IDashboardReference, IPlaceholders, IPluginDefaults } from '@kobsio/plugin-core';
+import { IDashboard, IDashboardReference, IPlaceholders } from '@kobsio/plugin-core';
 import { IDashboardsOptions } from './interfaces';
 
 // toGridSpans is used to convert the provided col and row span value to the corresponding gridSpans value, so that it
@@ -94,22 +94,5 @@ export const getPlaceholdersFromSearch = (search: string): IPlaceholders | undef
       return params;
     }, {});
 
-  delete placeholders['defaultCluster'];
-  delete placeholders['defaultNamespace'];
-
   return placeholders;
-};
-
-// getInitialDefaults returns the plugins defaults from a given search string.
-export const getInitialDefaults = (search: string): IPluginDefaults => {
-  const params = new URLSearchParams(search);
-  const cluster = params.get('defaultCluster');
-  const namespace = params.get('defaultNamespace');
-  const name = params.get('defaultName');
-
-  return {
-    cluster: cluster || '',
-    name: name || '',
-    namespace: namespace || '',
-  };
 };

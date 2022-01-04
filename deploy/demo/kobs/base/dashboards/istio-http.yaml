@@ -28,7 +28,7 @@ spec:
         options:
           type: labelValues
           label: destination_workload
-          query: istio_requests_total{reporter="{% .var_reporter %}", app=~"{{ .app }}", destination_workload_namespace=~"{{ .namespace }}"}
+          query: istio_requests_total{reporter="{% .var_reporter %}", app=~"{% .app %}", destination_workload_namespace=~"{% .namespace %}"}
     - name: var_source_workload_namespace
       label: Source Workload Namespace
       plugin:
@@ -36,7 +36,7 @@ spec:
         options:
           type: labelValues
           label: source_workload_namespace
-          query: istio_requests_total{reporter="{% .var_reporter %}", destination_workload="{% .var_workload %}", destination_workload_namespace=~"{{ .namespace }}"}
+          query: istio_requests_total{reporter="{% .var_reporter %}", destination_workload="{% .var_workload %}", destination_workload_namespace=~"{% .namespace %}"}
           allowAll: true
     - name: var_source_workload
       label: Source Workload
@@ -45,7 +45,7 @@ spec:
         options:
           type: labelValues
           label: source_workload
-          query: istio_requests_total{reporter="{% .var_reporter %}", destination_workload="{% .var_workload %}", destination_workload_namespace=~"{{ .namespace }}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}
+          query: istio_requests_total{reporter="{% .var_reporter %}", destination_workload="{% .var_workload %}", destination_workload_namespace=~"{% .namespace %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}
           allowAll: true
   rows:
     - size: 1
@@ -58,7 +58,7 @@ spec:
               unit: req/s
               type: sparkline
               queries:
-                - query: round(sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[5m])), 0.001)
+                - query: round(sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{% .namespace %}",destination_workload=~"{% .var_workload %}"}[5m])), 0.001)
         - title: Incoming Success Rate
           colSpan: 6
           plugin:
@@ -67,7 +67,7 @@ spec:
               unit: "%"
               type: sparkline
               queries:
-                - query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[5m])) * 100
+                - query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{% .namespace %}",destination_workload=~"{% .var_workload %}",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}",destination_workload_namespace=~"{% .namespace %}",destination_workload=~"{% .var_workload %}"}[5m])) * 100
     - size: 2
       panels:
         - title: Request Duration
@@ -79,11 +79,11 @@ spec:
               type: line
               queries:
                 - label: P50
-                  query: histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[1m])) by (le))
+                  query: histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{% .var_reporter %}",destination_workload_namespace=~"{% .namespace %}",destination_workload=~"{% .var_workload %}"}[1m])) by (le))
                 - label: P90
-                  query: histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[1m])) by (le))
+                  query: histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{% .var_reporter %}",destination_workload_namespace=~"{% .namespace %}",destination_workload=~"{% .var_workload %}"}[1m])) by (le))
                 - label: P99
-                  query: histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{% .var_reporter %}",destination_workload_namespace=~"{{ .namespace }}",destination_workload=~"{% .var_workload %}"}[1m])) by (le))
+                  query: histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="{% .var_reporter %}",destination_workload_namespace=~"{% .namespace %}",destination_workload=~"{% .var_workload %}"}[1m])) by (le))
     - title: Inbound Workloads
       size: 3
       panels:
@@ -97,9 +97,9 @@ spec:
               legend: table
               queries:
                 - label: "{% .source_workload %}.{% .source_workload_namespace %} : {% .response_code %} (🔐 mTLS)"
-                  query: round(sum(irate(istio_requests_total{connection_security_policy="mutual_tls", destination_workload_namespace=~"{{ .namespace }}", destination_workload=~"{% .var_workload %}", reporter="{% .var_reporter %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
+                  query: round(sum(irate(istio_requests_total{connection_security_policy="mutual_tls", destination_workload_namespace=~"{% .namespace %}", destination_workload=~"{% .var_workload %}", reporter="{% .var_reporter %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
                 - label: "{% .source_workload %}.{% .source_workload_namespace %} : {% .response_code %}"
-                  query: round(sum(irate(istio_requests_total{connection_security_policy!="mutual_tls", destination_workload_namespace=~"{{ .namespace }}", destination_workload=~"{% .var_workload %}", reporter="{% .var_reporter %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
+                  query: round(sum(irate(istio_requests_total{connection_security_policy!="mutual_tls", destination_workload_namespace=~"{% .namespace %}", destination_workload=~"{% .var_workload %}", reporter="{% .var_reporter %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
         - title:  Incoming Success Rate (non-5xx responses) By Source
           colSpan: 6
           plugin:
@@ -110,6 +110,6 @@ spec:
               legend: table
               queries:
                 - label: "{% .source_workload %}.{% .source_workload_namespace %} (🔐 mTLS)"
-                  query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy="mutual_tls", destination_workload_namespace=~"{{ .namespace }}", destination_workload=~"{% .var_workload %}",response_code!~"5.*", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy="mutual_tls", destination_workload_namespace=~"{{ .namespace }}", destination_workload=~"{% .var_workload %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) * 100
+                  query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy="mutual_tls", destination_workload_namespace=~"{% .namespace %}", destination_workload=~"{% .var_workload %}",response_code!~"5.*", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy="mutual_tls", destination_workload_namespace=~"{% .namespace %}", destination_workload=~"{% .var_workload %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) * 100
                 - label: "{% .source_workload %}.{% .source_workload_namespace %}"
-                  query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy!="mutual_tls", destination_workload_namespace=~"{{ .namespace }}", destination_workload=~"{% .var_workload %}",response_code!~"5.*", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy!="mutual_tls", destination_workload_namespace=~"{{ .namespace }}", destination_workload=~"{% .var_workload %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) * 100
+                  query: sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy!="mutual_tls", destination_workload_namespace=~"{% .namespace %}", destination_workload=~"{% .var_workload %}",response_code!~"5.*", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="{% .var_reporter %}", connection_security_policy!="mutual_tls", destination_workload_namespace=~"{% .namespace %}", destination_workload=~"{% .var_workload %}", source_workload=~"{% .var_source_workload %}", source_workload_namespace=~"{% .var_source_workload_namespace %}"}[5m])) by (source_workload, source_workload_namespace) * 100

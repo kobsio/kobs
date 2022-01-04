@@ -55,16 +55,7 @@ const DependencyDetails: React.FunctionComponent<IDependencyDetailsProps> = ({
 
         <p>&nbsp;</p>
 
-        {dashboards ? (
-          <DashboardsWrapper
-            defaults={{
-              cluster: source?.data.cluster || '',
-              name: source?.data.name || '',
-              namespace: source?.data.namespace || '',
-            }}
-            references={dashboards}
-          />
-        ) : null}
+        {dashboards ? <DashboardsWrapper cluster="" namespace="" references={dashboards} /> : null}
 
         <p>&nbsp;</p>
       </DrawerPanelBody>

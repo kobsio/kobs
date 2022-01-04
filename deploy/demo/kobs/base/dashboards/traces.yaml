@@ -19,5 +19,5 @@ spec:
             options:
               showChart: true
               queries:
-                - name: "{{ .service }}"
-                  service: "{{ .service }}"
+                - name: "{% .service %}"
+                  service: "{% .service %}"
