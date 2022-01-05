@@ -1144,14 +1144,14 @@
 <tr>
 <td>cluster</td>
 <td>string</td>
-<td>Cluster of the dashboard. If this field is omitted kobs will look in the same cluster as the application was created in.</td>
-<td>No</td>
+<td>Cluster of the dashboard</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>namespace</td>
 <td>string</td>
-<td>Namespace of the dashboard. If this field is omitted kobs will look in the same namespace as the application was created in.</td>
-<td>No</td>
+<td>Namespace of the dashboard.</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>name</td>
@@ -1190,17 +1190,21 @@
 <span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboards</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
-<span class="w">                  </span><span class="l l-Scalar l-Scalar-Plain">namespace</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">                  </span><span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Resources in the bookinfo namespace</span><span class="w"></span>
-<span class="w">                  </span><span class="l l-Scalar l-Scalar-Plain">placeholders</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resource-usage</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Resource Usage</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">pod</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.*&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
+<span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="w">                </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Resources in the bookinfo namespace</span><span class="w"></span>
+<span class="w">                </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resource-usage</span><span class="w"></span>
+<span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="w">                </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Resource Usage</span><span class="w"></span>
+<span class="w">                </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">pod</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.*&quot;</span><span class="w"></span>
 </code></pre></div>
 
               

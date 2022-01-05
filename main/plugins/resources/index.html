@@ -1203,14 +1203,14 @@
 <tr>
 <td>clusters</td>
 <td>[]string</td>
-<td>A list of clusters. If this value isn't provided, it will be the cluster from the team or application where the dashboard is used.</td>
-<td>No</td>
+<td>A list of clusters.</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>namespaces</td>
 <td>[]string</td>
-<td>A list of namespaces. If this value isn't provided, it will be the namespace from the team or application where the dashboard is used.</td>
-<td>No</td>
+<td>A list of namespaces.</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>resources</td>
@@ -1243,7 +1243,9 @@
 <span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
 <span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
 <span class="w">                </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
 <span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>

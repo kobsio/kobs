@@ -1186,14 +1186,14 @@
 <tr>
 <td>clusters</td>
 <td>[]string</td>
-<td>A list of cluster for which the Helm releases should be shown. If this is empty the cluster from the team / application is used.</td>
-<td>No</td>
+<td>A list of cluster for which the Helm releases should be shown.</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>namespaces</td>
 <td>[]string</td>
-<td>A list of namespaces for which the Helm releases should be shown. If this is empty the namespace from the team / application is used.</td>
-<td>No</td>
+<td>A list of namespaces for which the Helm releases should be shown.</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>name</td>
@@ -1216,6 +1216,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">releases</span><span class="w"></span>
+<span class="w">              </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 <span class="w">              </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert-manager</span><span class="w"></span>
@@ -1228,6 +1230,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">releasehistory</span><span class="w"></span>
+<span class="w">              </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 <span class="w">              </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
 <span class="w">              </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
@@ -1237,6 +1241,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">releasehistory</span><span class="w"></span>
+<span class="w">              </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 <span class="w">              </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert-manager</span><span class="w"></span>
 <span class="w">              </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert-manager</span><span class="w"></span>
@@ -1246,6 +1252,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">releasehistory</span><span class="w"></span>
+<span class="w">              </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 <span class="w">              </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">monitoring</span><span class="w"></span>
 <span class="w">              </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus-operator</span><span class="w"></span>

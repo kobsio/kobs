@@ -1137,14 +1137,14 @@
 <tr>
 <td>cluster</td>
 <td>string</td>
-<td>The cluster for which the resources should be displayed. If this is empty the cluster from the Application or Team, where the dashboard is used will be used.</td>
-<td>No</td>
+<td>The cluster for which the resources should be displayed.</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>namespace</td>
 <td>string</td>
-<td>The namespace for which the resources should be displayed. If this is empty the resources will from all namespaces will be displayed.</td>
-<td>No</td>
+<td>The namespace for which the resources should be displayed.</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>selector</td>
@@ -1154,7 +1154,7 @@
 </tr>
 </tbody>
 </table>
-<p>For example the following dashboard shows all Kustomizations, Helm Releases, Git Repositories and Helm Repositories:</p>
+<p>For example the following dashboard shows all Kustomizations, Helm Releases, Git Repositories and Helm Repositories from the cluster and namespace, where the dashboard is used as reference:</p>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
 <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1beta1</span><span class="w"></span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span><span class="w"></span>
@@ -1167,6 +1167,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flux</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kustomizations.kustomize.toolkit.fluxcd.io/v1beta1</span><span class="w"></span>
+<span class="w">              </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
 <span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Helm Releases</span><span class="w"></span>
@@ -1174,6 +1176,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flux</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helmreleases.helm.toolkit.fluxcd.io/v2beta1</span><span class="w"></span>
+<span class="w">              </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
 <span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Git Repositories</span><span class="w"></span>
@@ -1181,6 +1185,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flux</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gitrepositories.source.toolkit.fluxcd.io/v1beta1</span><span class="w"></span>
+<span class="w">              </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
 <span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Helm Repositories</span><span class="w"></span>
@@ -1188,6 +1194,8 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flux</span><span class="w"></span>
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helmrepositories.source.toolkit.fluxcd.io/v1beta1</span><span class="w"></span>
+<span class="w">              </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
 </code></pre></div>
 
               
