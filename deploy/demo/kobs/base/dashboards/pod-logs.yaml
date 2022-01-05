@@ -22,7 +22,7 @@ spec:
               showChart: true
               queries:
                 - name: Pod Logs
-                  query: "kubernetes.namespace: {{ .namespace }} AND kubernetes.pod.name: {{ .name }}"
+                  query: "kubernetes.namespace: {% .namespace %} AND kubernetes.pod.name: {% .name %}"
                   fields:
                     - "kubernetes.container.name"
                     - "message"

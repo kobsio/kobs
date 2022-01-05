@@ -17,7 +17,6 @@ const KobsCode: React.FunctionComponent<IKobsCodeProps> = ({ panel, setDetails }
   return (
     <div style={{ height: '300px', overflow: 'scroll' }}>
       <PluginPanel
-        defaults={{ cluster: '', name: '', namespace: '' }}
         times={times}
         title={panel.title}
         description={panel.description}

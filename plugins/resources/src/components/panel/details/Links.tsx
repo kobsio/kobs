@@ -10,10 +10,10 @@ import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-import { IPluginDefaults, IResourceRow } from '@kobsio/plugin-core';
+import { IResourceRow } from '@kobsio/plugin-core';
 
 // getTeams parses the kobs.io/teams annotation of a Kubernetes resources and returns all provided teams.
-const getTeams = (resource: IResourceRow): IPluginDefaults[] | undefined => {
+const getTeams = (resource: IResourceRow): { cluster: string; namespace: string; name: string }[] | undefined => {
   try {
     if (
       resource.props &&
@@ -29,7 +29,9 @@ const getTeams = (resource: IResourceRow): IPluginDefaults[] | undefined => {
 };
 
 // getApplications parses the kobs.io/teams annotation of a Kubernetes resources and returns all provided teams.
-const getApplications = (resource: IResourceRow): IPluginDefaults[] | undefined => {
+const getApplications = (
+  resource: IResourceRow,
+): { cluster: string; namespace: string; name: string }[] | undefined => {
   try {
     if (
       resource.props &&

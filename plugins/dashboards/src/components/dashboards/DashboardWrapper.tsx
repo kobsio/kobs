@@ -1,16 +1,14 @@
 import React, { useRef } from 'react';
 
-import { IDashboard, IPluginDefaults, useDimensions } from '@kobsio/plugin-core';
+import { IDashboard, useDimensions } from '@kobsio/plugin-core';
 import Dashboard from './Dashboard';
 
 interface IDashboardWrapperProps {
-  defaults: IPluginDefaults;
   dashboard: IDashboard;
   setDetails?: (details: React.ReactNode) => void;
 }
 
 const DashboardWrapper: React.FunctionComponent<IDashboardWrapperProps> = ({
-  defaults,
   dashboard,
   setDetails,
 }: IDashboardWrapperProps) => {
@@ -22,7 +20,6 @@ const DashboardWrapper: React.FunctionComponent<IDashboardWrapperProps> = ({
       <Dashboard
         activeKey=""
         eventKey=""
-        defaults={defaults}
         dashboard={dashboard}
         forceDefaultSpan={tabsSize.width < 1200}
         setDetails={setDetails}

@@ -48,7 +48,7 @@ spec:
                 ![Bookinfo Application without Istio](https://istio.io/latest/docs/examples/bookinfo/noistio.svg)
 
                 This application is polyglot, i.e., the microservices are written in different languages.
-                It’s worth noting that these services have no dependencies on Istio, but make an interesting
+                It's worth noting that these services have no dependencies on Istio, but make an interesting
                 service mesh example, particularly because of the multitude of services, languages and versions
                 for the `reviews` service.
 ```

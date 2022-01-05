@@ -6,8 +6,8 @@ The users plugin can be used to show a list of users which are members of the sp
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| clusters | string | The cluster name of the team. | No |
-| namespaces | string | The namespace of the team | No |
+| cluster | string | The cluster name of the team. | Yes |
+| namespace | string | The namespace of the team | Yes |
 | name | string | The name of the team. | Yes |
 
 ## Example
@@ -30,5 +30,7 @@ spec:
                 plugin:
                   name: users
                   options:
+                    cluster: "{% .__cluster %}"
+                    namespace: kobs
                     name: team-diablo
 ```

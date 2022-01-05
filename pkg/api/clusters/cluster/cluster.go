@@ -403,15 +403,7 @@ func (c *client) GetApplications(ctx context.Context, namespace string) ([]appli
 	var applications []application.ApplicationSpec
 
 	for _, applicationItem := range applicationsList.Items {
-		application := applicationItem.Spec
-		application.Cluster = c.name
-		application.Namespace = applicationItem.Namespace
-		application.Name = applicationItem.Name
-
-		if application.Topology.Type == "" {
-			application.Topology.Type = "application"
-		}
-
+		application := setApplicationDefaults(applicationItem.Spec, c.name, applicationItem.Namespace, applicationItem.Name)
 		applications = append(applications, application)
 	}
 
@@ -422,20 +414,12 @@ func (c *client) GetApplications(ctx context.Context, namespace string) ([]appli
 // the cluster, namespace and name in the spec of the Application CR. This is needed, so that the user doesn't have to,
 // provide these fields.
 func (c *client) GetApplication(ctx context.Context, namespace, name string) (*application.ApplicationSpec, error) {
-	applicationCR, err := c.applicationClientset.KobsV1beta1().Applications(namespace).Get(ctx, name, metav1.GetOptions{})
+	teamItem, err := c.applicationClientset.KobsV1beta1().Applications(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	application := applicationCR.Spec
-	application.Cluster = c.name
-	application.Namespace = namespace
-	application.Name = name
-
-	if application.Topology.Type == "" {
-		application.Topology.Type = "application"
-	}
-
+	application := setApplicationDefaults(teamItem.Spec, c.name, namespace, name)
 	return &application, nil
 }
 
@@ -450,11 +434,7 @@ func (c *client) GetTeams(ctx context.Context, namespace string) ([]team.TeamSpe
 	var teams []team.TeamSpec
 
 	for _, teamItem := range teamsList.Items {
-		team := teamItem.Spec
-		team.Cluster = c.name
-		team.Namespace = teamItem.Namespace
-		team.Name = teamItem.Name
-
+		team := setTeamDefaults(teamItem.Spec, c.name, teamItem.Namespace, teamItem.Name)
 		teams = append(teams, team)
 	}
 
@@ -465,16 +445,12 @@ func (c *client) GetTeams(ctx context.Context, namespace string) ([]team.TeamSpe
 // namespace and name in the spec of the Team CR. This is needed, so that the user doesn't have to, provide these
 // fields.
 func (c *client) GetTeam(ctx context.Context, namespace, name string) (*team.TeamSpec, error) {
-	teamCR, err := c.teamClientset.KobsV1beta1().Teams(namespace).Get(ctx, name, metav1.GetOptions{})
+	teamItem, err := c.teamClientset.KobsV1beta1().Teams(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	team := teamCR.Spec
-	team.Cluster = c.name
-	team.Namespace = namespace
-	team.Name = name
-
+	team := setTeamDefaults(teamItem.Spec, c.name, namespace, name)
 	return &team, nil
 }
 
@@ -489,12 +465,7 @@ func (c *client) GetDashboards(ctx context.Context, namespace string) ([]dashboa
 	var dashboards []dashboard.DashboardSpec
 
 	for _, dashboardItem := range dashboardsList.Items {
-		dashboard := dashboardItem.Spec
-		dashboard.Cluster = c.name
-		dashboard.Namespace = dashboardItem.Namespace
-		dashboard.Name = dashboardItem.Name
-		dashboard.Title = dashboardItem.Name
-
+		dashboard := setDashboardDefaults(dashboardItem.Spec, c.name, dashboardItem.Namespace, dashboardItem.Name)
 		dashboards = append(dashboards, dashboard)
 	}
 
@@ -505,17 +476,12 @@ func (c *client) GetDashboards(ctx context.Context, namespace string) ([]dashboa
 // the cluster, namespace and name in the spec of the Dashboard CR. This is needed, so that the user doesn't have to,
 // provide these fields.
 func (c *client) GetDashboard(ctx context.Context, namespace, name string) (*dashboard.DashboardSpec, error) {
-	dashboardCR, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).Get(ctx, name, metav1.GetOptions{})
+	dashboardItem, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	dashboard := dashboardCR.Spec
-	dashboard.Cluster = c.name
-	dashboard.Namespace = namespace
-	dashboard.Name = name
-	dashboard.Title = name
-
+	dashboard := setDashboardDefaults(dashboardItem.Spec, c.name, namespace, name)
 	return &dashboard, nil
 }
 
@@ -530,11 +496,7 @@ func (c *client) GetUsers(ctx context.Context, namespace string) ([]user.UserSpe
 	var users []user.UserSpec
 
 	for _, userItem := range usersList.Items {
-		user := userItem.Spec
-		user.Cluster = c.name
-		user.Namespace = userItem.Namespace
-		user.Name = userItem.Name
-
+		user := setUserDefaults(userItem.Spec, c.name, userItem.Namespace, userItem.Name)
 		users = append(users, user)
 	}
 
@@ -545,16 +507,12 @@ func (c *client) GetUsers(ctx context.Context, namespace string) ([]user.UserSpe
 // namespace and name in the spec of the User CR. This is needed, so that the user doesn't have to, provide these
 // fields.
 func (c *client) GetUser(ctx context.Context, namespace, name string) (*user.UserSpec, error) {
-	userCR, err := c.userClientset.KobsV1beta1().Users(namespace).Get(ctx, name, metav1.GetOptions{})
+	userItem, err := c.userClientset.KobsV1beta1().Users(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	user := userCR.Spec
-	user.Cluster = c.name
-	user.Namespace = namespace
-	user.Name = name
-
+	user := setUserDefaults(userItem.Spec, c.name, namespace, name)
 	return &user, nil
 }
 

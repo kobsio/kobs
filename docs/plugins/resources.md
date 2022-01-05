@@ -27,8 +27,8 @@ plugins:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| clusters | []string | A list of clusters. If this value isn't provided, it will be the cluster from the team or application where the dashboard is used. | No |
-| namespaces | []string | A list of namespaces. If this value isn't provided, it will be the namespace from the team or application where the dashboard is used. | No |
+| clusters | []string | A list of clusters. | Yes |
+| namespaces | []string | A list of namespaces. | Yes |
 | resources | []string | A list of resources. | Yes |
 | selector | string | An optional selector for the selection of resources | No |
 
@@ -52,7 +52,9 @@ spec:
           plugin:
             name: resources
             options:
-              - namespaces:
+              - clusters:
+                  - "{% .__cluster %}"
+                namespaces:
                   - bookinfo
                 resources:
                   - pods

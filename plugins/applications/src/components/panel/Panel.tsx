@@ -15,7 +15,6 @@ interface IPanelProps extends IPluginPanelProps {
 // page. The clusters and namespaces are used from the corresponding key in the options object. If a user doesn't
 // provided a cluster/namespace we will use the one from the defaults object.
 export const Panel: React.FunctionComponent<IPanelProps> = ({
-  defaults,
   title,
   description,
   options,
@@ -23,24 +22,11 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   pluginOptions,
   setDetails,
 }: IPanelProps) => {
-  // We have to validate that the required options object was provided in the Application CR by a user. This is
-  // important so that the React UI doesn't crash, when the user didn't use the plugin correctly.
-  if (!options || !times) {
-    return (
-      <PluginOptionsMissing
-        title={title}
-        message="Options for Application panel are missing"
-        details=""
-        documentation="https://kobs.io/plugins/applications"
-      />
-    );
-  }
-
   // We have to check if the user selected the topology view and mount the corresponding component, because the data
   // handling is different for the gallery and topology view.
   // When a title is set we are sure that the component is used in a dashboard so we will wrap the topology component in
   // the PluginCard component.
-  if (options.view === 'topology') {
+  if (options && options.view === 'topology' && options.clusters && options.namespaces !== undefined && times) {
     const customStyleSheet: cytoscape.Stylesheet[] = [];
 
     if (pluginOptions && pluginOptions.topology && Array.isArray(pluginOptions.topology)) {
@@ -65,8 +51,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 
     const topology = (
       <ApplicationsTopology
-        clusters={options.clusters || [defaults.cluster]}
-        namespaces={options.namespaces || [defaults.namespace]}
+        clusters={options.clusters}
+        namespaces={options.namespaces}
         tags={options.tags || []}
         times={times}
         customStyleSheet={customStyleSheet}
@@ -83,8 +69,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           actions={
             <PanelActions
               view="topology"
-              clusters={options.clusters || [defaults.cluster]}
-              namespaces={options.namespaces || [defaults.namespace]}
+              clusters={options.clusters}
+              namespaces={options.namespaces}
               tags={options.tags || []}
             />
           }
@@ -97,41 +83,108 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     return topology;
   }
 
-  // If the user doesn't selected a view, we assume he wants to have the gallery view. As for the topology we also have
-  // to check if the component is used in a dashboard or in the applications page.
-  const gallery = (
-    <ApplicationsGallery
-      clusters={options.clusters || [defaults.cluster]}
-      namespaces={options.namespaces || [defaults.namespace]}
-      tags={options.tags || []}
-      team={options.team}
-      times={times}
-    />
-  );
-
-  if (title) {
-    return (
-      <PluginCard
-        title={title}
-        description={description}
-        transparent={true}
-        actions={
-          options.team ? undefined : (
-            <PanelActions
-              view="gallery"
-              clusters={options.clusters || [defaults.cluster]}
-              namespaces={options.namespaces || [defaults.namespace]}
-              tags={options.tags || []}
-            />
-          )
-        }
-      >
-        {gallery}
-      </PluginCard>
+  // When the user selected the gallery view, we check if he provided a team. If this is the case we can pass an empty
+  // array for clusters and namespaces to the gallery component and add the team proverty.
+  if (options && options.view === 'gallery' && options.team && times) {
+    const gallery = (
+      <ApplicationsGallery clusters={[]} namespaces={[]} tags={options.tags || []} team={options.team} times={times} />
     );
+
+    if (title) {
+      return (
+        <PluginCard title={title} description={description} transparent={true}>
+          {gallery}
+        </PluginCard>
+      );
+    }
+
+    return gallery;
   }
 
-  return gallery;
+  // If the user doesn't provied the team option we have to check if he specify a list of clusters and namespaces. If
+  // this is the case we show the galler component with the applications from the selected clusters and namespaces.
+  if (options && options.view === 'gallery' && options.clusters && options.namespaces && times) {
+    const gallery = (
+      <ApplicationsGallery
+        clusters={options.clusters}
+        namespaces={options.namespaces}
+        tags={options.tags || []}
+        team={undefined}
+        times={times}
+      />
+    );
+
+    if (title) {
+      return (
+        <PluginCard
+          title={title}
+          description={description}
+          transparent={true}
+          actions={
+            <PanelActions
+              view="gallery"
+              clusters={options.clusters}
+              namespaces={options.namespaces}
+              tags={options.tags || []}
+            />
+          }
+        >
+          {gallery}
+        </PluginCard>
+      );
+    }
+
+    return gallery;
+  }
+
+  // If the user doesn't selected a view, we assume he wants to have the gallery view. As for the topology we also have
+  // to check if the component is used in a dashboard or in the applications page.
+  if (options && options.view === 'gallery' && options.clusters && options.namespaces !== undefined && times) {
+    const gallery = (
+      <ApplicationsGallery
+        clusters={options.clusters}
+        namespaces={options.namespaces}
+        tags={options.tags || []}
+        team={options.team}
+        times={times}
+      />
+    );
+
+    if (title) {
+      return (
+        <PluginCard
+          title={title}
+          description={description}
+          transparent={true}
+          actions={
+            options.team ? undefined : (
+              <PanelActions
+                view="gallery"
+                clusters={options.clusters}
+                namespaces={options.namespaces}
+                tags={options.tags || []}
+              />
+            )
+          }
+        >
+          {gallery}
+        </PluginCard>
+      );
+    }
+
+    return gallery;
+  }
+
+  // We have to validate that the required options object was provided in the Application CR by a user. This is
+  // important so that the React UI doesn't crash, when the user didn't use the plugin correctly.
+  return (
+    <PluginOptionsMissing
+      title={title}
+      message="Options for Application panel are missing"
+      details=""
+      documentation="https://kobs.io/plugins/applications"
+    />
+  );
 };
 
 export default memo(Panel, (prevProps, nextProps) => {

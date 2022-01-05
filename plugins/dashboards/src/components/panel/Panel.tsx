@@ -9,7 +9,7 @@ interface IPanelProps extends IPluginPanelProps {
 }
 
 // Panel implements the panel component for the dashboards plugin.
-export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, description, options }: IPanelProps) => {
+export const Panel: React.FunctionComponent<IPanelProps> = ({ title, description, options }: IPanelProps) => {
   if (!options || !Array.isArray(options)) {
     return (
       <PluginOptionsMissing
@@ -27,7 +27,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ defaults, title, d
         <MenuContent>
           <MenuList>
             {options.map((reference, index) => (
-              <PanelItem key={index} defaults={defaults} reference={reference} />
+              <PanelItem key={index} reference={reference} />
             ))}
           </MenuList>
         </MenuContent>

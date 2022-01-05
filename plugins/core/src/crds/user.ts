@@ -16,7 +16,7 @@ export interface IUserProfile {
 }
 
 export interface IUserTeamReference {
-  cluster?: string;
-  namespace?: string;
+  cluster: string;
+  namespace: string;
   name: string;
 }

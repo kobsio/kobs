@@ -9,7 +9,7 @@ export const useDimensions = (targetRef: React.RefObject<HTMLDivElement>, defaul
   const getDimensions = (): IDimensions => {
     return {
       height: targetRef.current ? targetRef.current.offsetHeight : defaults ? defaults.height : 0,
-      width: targetRef.current ? targetRef.current.offsetWidth : defaults ? defaults.height : 0,
+      width: targetRef.current ? targetRef.current.offsetWidth : defaults ? defaults.width : 0,
     };
   };
 

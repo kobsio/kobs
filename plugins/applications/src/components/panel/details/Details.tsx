@@ -61,12 +61,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
               {application.teams && application.teams.length > 0
                 ? application.teams.map((team, index) => (
                     <ListItem key={index}>
-                      <Link
-                        key={index}
-                        to={`/teams/${team.cluster ? team.cluster : application.cluster}/${
-                          team.namespace ? team.namespace : application.namespace
-                        }/${team.name}`}
-                      >
+                      <Link key={index} to={`/teams/${team.cluster}/${team.namespace}/${team.name}`}>
                         <Button variant={ButtonVariant.link} isInline={true} icon={<UsersIcon />}>
                           {team.name}
                         </Button>
@@ -80,9 +75,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
                     <ListItem key={index}>
                       <Link
                         key={index}
-                        to={`/applications/${dependency.cluster ? dependency.cluster : application.cluster}/${
-                          dependency.namespace ? dependency.namespace : application.namespace
-                        }/${dependency.name}`}
+                        to={`/applications/${dependency.cluster}/${dependency.namespace}/${dependency.name}`}
                       >
                         <Button variant={ButtonVariant.link} isInline={true} icon={<TopologyIcon />}>
                           {dependency.name}
@@ -106,7 +99,11 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ application, close }:
         <p>&nbsp;</p>
 
         {application.dashboards ? (
-          <DashboardsWrapper defaults={application} references={application.dashboards} />
+          <DashboardsWrapper
+            cluster={application.cluster}
+            namespace={application.namespace}
+            references={application.dashboards}
+          />
         ) : null}
 
         <p>&nbsp;</p>

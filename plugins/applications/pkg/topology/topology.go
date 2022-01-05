@@ -103,29 +103,17 @@ func Get(ctx context.Context, clustersClient clusters.Client) *Topology {
 			// cluster and namespace to the cluster and namespace of the current application, when it isn't defined in
 			// the dependency reference.
 			for _, dependency := range application.Topology.Dependencies {
-				dependencyCluster := dependency.Cluster
-				if dependencyCluster == "" {
-					dependencyCluster = application.Cluster
-				}
-
-				dependencyNamespace := dependency.Namespace
-				if dependencyNamespace == "" {
-					dependencyNamespace = application.Namespace
-				}
-
-				dependencyName := dependency.Name
-
 				edges = append(edges, Edge{
 					Data: EdgeData{
-						ID:              application.Cluster + "-" + application.Namespace + "-" + application.Name + "-" + dependencyCluster + "-" + dependencyNamespace + "-" + dependencyName,
+						ID:              application.Cluster + "-" + application.Namespace + "-" + application.Name + "-" + dependency.Cluster + "-" + dependency.Namespace + "-" + dependency.Name,
 						Source:          application.Cluster + "-" + application.Namespace + "-" + application.Name,
 						SourceCluster:   application.Cluster,
 						SourceNamespace: application.Namespace,
 						SourceName:      application.Name,
-						Target:          dependencyCluster + "-" + dependencyNamespace + "-" + dependencyName,
-						TargetCluster:   dependencyCluster,
-						TargetNamespace: dependencyNamespace,
-						TargetName:      dependencyName,
+						Target:          dependency.Cluster + "-" + dependency.Namespace + "-" + dependency.Name,
+						TargetCluster:   dependency.Cluster,
+						TargetNamespace: dependency.Namespace,
+						TargetName:      dependency.Name,
 						Description:     dependency.Description,
 						Dashboards:      dependency.Dashboards,
 					},

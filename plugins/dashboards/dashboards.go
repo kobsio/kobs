@@ -9,7 +9,7 @@ import (
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/log"
-	"github.com/kobsio/kobs/plugins/dashboards/pkg/placeholders"
+	"github.com/kobsio/kobs/plugins/dashboards/pkg/variables"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -35,7 +35,8 @@ type Router struct {
 // list of references. The defaults are the cluster/namespace/name of the Team/Application where the dashboard is used
 // and the references are a list of references from the same Team/Application.
 type getDashboardsRequest struct {
-	Defaults   dashboard.Reference   `json:"defaults"`
+	Cluster    string                `json:"cluster"`
+	Namespace  string                `json:"namespace"`
 	References []dashboard.Reference `json:"references"`
 }
 
@@ -86,19 +87,11 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 
 	var dashboards []*dashboard.DashboardSpec
 
-	// Loop through all the provided references and set the cluster and namespace from the defaults, when it is not
-	// provided. Then we are using the GetDashboard function for a cluster to get the dashboard by namespace and name.
-	// Finally we are replacing the placeholders in a dashboard with the provided values and we are adding the title
-	// from the reference as dashboard title and we are adding the dashboard to a list of dashboards.
+	// Loop through all the provided references and use the GetDashboard function for a cluster to get the dashboard by
+	// namespace and name. After that we are replacing the placeholders in a dashboard with the provided values and we
+	// are adding the title from the reference as dashboard title and we are adding the dashboard to a list of
+	// dashboards.
 	for _, reference := range data.References {
-		if reference.Cluster == "" {
-			reference.Cluster = data.Defaults.Cluster
-		}
-
-		if reference.Namespace == "" {
-			reference.Namespace = data.Defaults.Namespace
-		}
-
 		if reference.Inline != nil {
 			dashboards = append(dashboards, &dashboard.DashboardSpec{
 				Cluster:     "-",
@@ -106,7 +99,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 				Name:        "-",
 				Title:       reference.Title,
 				Description: reference.Description,
-				Variables:   reference.Inline.Variables,
+				Variables:   variables.GetVariables(reference.Inline.Variables, data.Cluster, data.Namespace, nil),
 				Rows:        reference.Inline.Rows,
 			})
 		} else {
@@ -124,15 +117,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			if reference.Placeholders != nil {
-				dashboard, err = placeholders.Replace(reference.Placeholders, *dashboard)
-				if err != nil {
-					log.Error(r.Context(), "Could not replace placeholders.", zap.Error(err))
-					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
-					return
-				}
-			}
-
+			dashboard.Variables = variables.GetVariables(dashboard.Variables, data.Cluster, data.Namespace, reference.Placeholders)
 			dashboard.Title = reference.Title
 			dashboards = append(dashboards, dashboard)
 		}
@@ -145,6 +130,8 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 // getDashboard can be used to get a single dashboard. Each dashboard is identified by the cluster, namespace and name
 // which is set via the request body. To get the dashboard we have to get the cluster and then using the GetDashboard
 // function to return the dashboard.
+// Unlike as we do it in the "getDashboards" function, we are not passing the cluster / namespace from the application
+// or team in the request body. Instead the placeholders list should contain an entry "__cluster" and "__namespace".
 func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 	var data getDashboardRequest
 
@@ -170,21 +157,10 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if data.Placeholders == nil {
-		log.Debug(r.Context(), "Return dashboard without replacing placeholders.", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name))
-		render.JSON(w, r, dashboard)
-		return
-	}
+	dashboard.Variables = variables.GetVariables(dashboard.Variables, "", "", data.Placeholders)
 
-	dashboardReplacedPlaceholders, err := placeholders.Replace(data.Placeholders, *dashboard)
-	if err != nil {
-		log.Error(r.Context(), "Could not replace placeholders.", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not replace placeholders")
-		return
-	}
-
-	log.Debug(r.Context(), "Return dashboard with replaced placeholders.", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name))
-	render.JSON(w, r, dashboardReplacedPlaceholders)
+	log.Debug(r.Context(), "Return dashboard.", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name))
+	render.JSON(w, r, dashboard)
 	return
 }
 

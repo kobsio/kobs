@@ -65,16 +65,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ resource }: IDa
     );
   }
 
-  return (
-    <DashboardsWrapper
-      defaults={{
-        cluster: resource.cluster,
-        name: resource.name,
-        namespace: resource.namespace,
-      }}
-      references={dashboards}
-    />
-  );
+  return <DashboardsWrapper cluster={resource.cluster} namespace={resource.namespace} references={dashboards} />;
 };
 
 export default Dashboards;

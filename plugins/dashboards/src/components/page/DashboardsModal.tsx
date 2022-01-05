@@ -53,7 +53,7 @@ const DashboardsModal: React.FunctionComponent<IDashboardsModalProps> = ({
       history.push(
         `/dashboards/${dashboard.cluster}/${dashboard.namespace}/${
           dashboard.name
-        }?defaultCluster=${cluster}&defaultNamespace=${namespace}${
+        }?testcluster=${cluster}&testnamespace=${namespace}${
           placeholderParams && placeholderParams.length > 0 ? placeholderParams.join('') : ''
         }`,
       );
@@ -80,7 +80,11 @@ const DashboardsModal: React.FunctionComponent<IDashboardsModalProps> = ({
       ]}
     >
       <Form isHorizontal={true}>
-        <b>Defaults</b>
+        <p>
+          In the following you can set the cluster and namespace for the dashboard. These values are used by the
+          <code>__cluster</code> and <code>__namespace</code> variables, which are normally set by the Application /
+          Team where the cluster is used.
+        </p>
 
         <FormGroup label="Cluster" fieldId="dashboard-form-cluster">
           <FormSelect
@@ -110,7 +114,10 @@ const DashboardsModal: React.FunctionComponent<IDashboardsModalProps> = ({
         {placeholders ? (
           <React.Fragment>
             <Divider />
-            <b>Placeholders</b>
+            <p>
+              In the following you can set the values for the placeholders in this dashboards, as you would set it in
+              the Application / Team.
+            </p>
 
             {Object.keys(placeholders).map((key) => (
               <FormGroup key={key} label={key} fieldId={`dashboard-form-placeholder-${key}`}>

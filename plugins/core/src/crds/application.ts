@@ -33,8 +33,8 @@ export interface IApplicationTopology {
 }
 
 export interface IApplicationDependency {
-  cluster?: string;
-  namespace?: string;
+  cluster: string;
+  namespace: string;
   name: string;
   description?: string;
   dashboards?: IDashboardReference[];
@@ -43,8 +43,8 @@ export interface IApplicationDependency {
 // The IApplicationTeamReference is the interface, which is used to create a reference to a team. This can be used to
 // describe the ownership for applications.
 export interface IApplicationTeamReference {
-  cluster?: string;
-  namespace?: string;
+  cluster: string;
+  namespace: string;
   name: string;
   description?: string;
 }

@@ -13,7 +13,6 @@ interface IPanelProps extends IPluginPanelProps {
 // we render the plugin.
 export const Panel: React.FunctionComponent<IPanelProps> = ({
   name,
-  defaults,
   title,
   description,
   options,
@@ -21,6 +20,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 }: IPanelProps) => {
   if (
     !options ||
+    !options.cluster ||
+    options.namespace === undefined ||
     !options.type ||
     (options.type !== 'gitrepositories.source.toolkit.fluxcd.io/v1beta1' &&
       options.type !== 'helmrepositories.source.toolkit.fluxcd.io/v1beta1' &&
@@ -44,8 +45,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         name={name}
         title={title}
         type={options.type}
-        cluster={options.cluster || defaults.cluster}
-        namespace={options.namespace || ''}
+        cluster={options.cluster}
+        namespace={options.namespace}
         selector={options.selector}
         setDetails={setDetails}
       />

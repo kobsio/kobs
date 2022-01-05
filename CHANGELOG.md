@@ -68,6 +68,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#269](https://github.com/kobsio/kobs/pull/269): [applications] :warning: _Breaking change:_ :warning: Improve topology graph, by allowing custom styles for applications.
 - [#275](https://github.com/kobsio/kobs/pull/275): [azure] Improve cost management integration by adjusting the chart style and allowing the usage in dashboard panels.
 - [#276](https://github.com/kobsio/kobs/pull/276): [resources] :warning: _Breaking change:_ :warning: Add new `verbs` property for resource permissions, to allow administrators more control about what users can do.
+- [#279](https://github.com/kobsio/kobs/pull/279): [dashboards] :warning: _Breaking change:_ :warning: Refactor defaults, placeholders and variables handling.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

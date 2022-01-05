@@ -9,7 +9,6 @@ import {
   IDashboard,
   IDashboardRow,
   IDashboardVariableValues,
-  IPluginDefaults,
   IPluginTimes,
   IPluginsContext,
   PluginPanel,
@@ -22,7 +21,6 @@ import DashboardToolbar from './DashboardToolbar';
 interface IDashboardProps {
   activeKey: string;
   eventKey: string;
-  defaults: IPluginDefaults;
   dashboard: IDashboard;
   forceDefaultSpan: boolean;
   setDetails?: (details: React.ReactNode) => void;
@@ -35,7 +33,6 @@ interface IDashboardProps {
 const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   activeKey,
   eventKey,
-  defaults,
   dashboard,
   forceDefaultSpan,
   setDetails,
@@ -188,7 +185,6 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                           }
                         >
                           <PluginPanel
-                            defaults={defaults}
                             times={times}
                             title={panel.title}
                             description={panel.description}
@@ -221,7 +217,6 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
 export default memo(Dashboard, (prevProps, nextProps) => {
   if (
     prevProps.activeKey === nextProps.activeKey &&
-    JSON.stringify(prevProps.defaults) === JSON.stringify(nextProps.defaults) &&
     JSON.stringify(prevProps.dashboard) === JSON.stringify(nextProps.dashboard) &&
     prevProps.forceDefaultSpan === nextProps.forceDefaultSpan
   ) {

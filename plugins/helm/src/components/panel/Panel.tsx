@@ -11,20 +11,19 @@ interface IPanelProps extends IPluginPanelProps {
 
 export const Panel: React.FunctionComponent<IPanelProps> = ({
   name,
-  defaults,
   title,
   description,
   options,
   times,
   setDetails,
 }: IPanelProps) => {
-  if (options && options.type === 'releases' && times) {
+  if (options && options.clusters && options.namespaces && options.type === 'releases' && times) {
     return (
       <PluginCard title={title} description={description}>
         <Releases
           name={name}
-          clusters={options.clusters ? options.clusters : [defaults.cluster]}
-          namespaces={options.namespaces ? options.namespaces : [defaults.namespace]}
+          clusters={options.clusters}
+          namespaces={options.namespaces}
           times={times}
           setDetails={setDetails}
         />
@@ -32,13 +31,22 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     );
   }
 
-  if (options && options.type === 'releasehistory' && options.name && times) {
+  if (
+    options &&
+    options.clusters &&
+    options.namespaces &&
+    options.name &&
+    options.clusters.length === 1 &&
+    options.namespaces.length === 1 &&
+    options.type === 'releasehistory' &&
+    times
+  ) {
     return (
       <PluginCard title={title} description={description}>
         <History
           name={name}
-          cluster={options.clusters && options.clusters.length === 1 ? options.clusters[0] : defaults.cluster}
-          namespace={options.namespaces && options.namespaces.length === 1 ? options.namespaces[0] : defaults.namespace}
+          cluster={options.clusters[0]}
+          namespace={options.namespaces[0]}
           release={options.name}
           setDetails={setDetails}
         />

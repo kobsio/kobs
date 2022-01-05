@@ -1,10 +1,11 @@
 import React, { useRef } from 'react';
 
-import { IDashboardReference, IPluginDefaults, useDimensions } from '@kobsio/plugin-core';
+import { IDashboardReference, useDimensions } from '@kobsio/plugin-core';
 import Dashboards from './Dashboards';
 
 interface IDashboardsWrapperProps {
-  defaults: IPluginDefaults;
+  cluster: string;
+  namespace: string;
   references: IDashboardReference[];
   setDetails?: (details: React.ReactNode) => void;
 }
@@ -15,7 +16,8 @@ interface IDashboardsWrapperProps {
 // rendered in a drawer (e.g. application details) the windows width would be incorrect.
 // The DashboardsWrapper component should always used in other component. Never use the Dashboards component directly!
 export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps> = ({
-  defaults,
+  cluster,
+  namespace,
   references,
   setDetails,
 }: IDashboardsWrapperProps) => {
@@ -25,7 +27,8 @@ export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps>
   return (
     <div className="kobsio-dashboards-tabs-fill" ref={refTabs}>
       <Dashboards
-        defaults={defaults}
+        cluster={cluster}
+        namespace={namespace}
         references={references}
         setDetails={setDetails}
         forceDefaultSpan={tabsSize.width < 1200}

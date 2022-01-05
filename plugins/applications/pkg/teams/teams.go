@@ -85,14 +85,6 @@ func GetApplications(teams []Team, cluster, namespace, name string) []applicatio
 // application and the cluster, namespace and name of the team as arguments.
 func doesApplicationContainsTeam(application application.ApplicationSpec, cluster, namespace, name string) bool {
 	for _, t := range application.Teams {
-		if t.Cluster == "" {
-			t.Cluster = application.Cluster
-		}
-
-		if t.Namespace == "" {
-			t.Namespace = application.Namespace
-		}
-
 		if t.Cluster == cluster && t.Namespace == namespace && t.Name == name {
 			return true
 		}

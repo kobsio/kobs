@@ -8,8 +8,8 @@ interface IPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
 }
 
-export const Panel: React.FunctionComponent<IPanelProps> = ({ title, description, defaults, options }: IPanelProps) => {
-  if (!options || !options.name) {
+export const Panel: React.FunctionComponent<IPanelProps> = ({ title, description, options }: IPanelProps) => {
+  if (!options || !options.cluster || !options.namespace || !options.name) {
     return (
       <PluginOptionsMissing
         title={title}
@@ -22,11 +22,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ title, description
 
   return (
     <PluginCard title={title} description={description} transparent={true}>
-      <Users
-        cluster={options.cluster ? options.cluster : defaults.cluster}
-        namespace={options.namespace ? options.namespace : defaults.namespace}
-        name={options.name}
-      />
+      <Users cluster={options.cluster} namespace={options.namespace} name={options.name} />
     </PluginCard>
   );
 };
