@@ -3,11 +3,11 @@ package instance
 import (
 	"testing"
 
-	"github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 
 	"github.com/stretchr/testify/require"
-	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )
 
 func TestCheckPermissions(t *testing.T) {
@@ -26,19 +26,19 @@ func TestCheckPermissions(t *testing.T) {
 		{
 			name:          "invalid permission format",
 			instance:      &instance{permissionsEnabled: true},
-			user:          &authContext.User{Permissions: v1beta1.Permissions{Plugins: []v1beta1.Plugin{{Name: "opsgenie"}}}},
+			user:          &authContext.User{Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "opsgenie"}}}},
 			expectedError: true,
 		},
 		{
 			name:          "access forbidden",
 			instance:      &instance{permissionsEnabled: true},
-			user:          &authContext.User{Permissions: v1beta1.Permissions{Plugins: []v1beta1.Plugin{{Name: "opsgenie", Permissions: v1.JSON{Raw: []byte(`["acknowledgeAlert", "snoozeAlert"]`)}}}}},
+			user:          &authContext.User{Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "opsgenie", Permissions: apiextensionsv1.JSON{Raw: []byte(`["acknowledgeAlert", "snoozeAlert"]`)}}}}},
 			expectedError: true,
 		},
 		{
 			name:          "access allowed",
 			instance:      &instance{permissionsEnabled: true},
-			user:          &authContext.User{Permissions: v1beta1.Permissions{Plugins: []v1beta1.Plugin{{Name: "opsgenie", Permissions: v1.JSON{Raw: []byte(`["closeAlert"]`)}}}}},
+			user:          &authContext.User{Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "opsgenie", Permissions: apiextensionsv1.JSON{Raw: []byte(`["closeAlert"]`)}}}}},
 			expectedError: false,
 		},
 	} {

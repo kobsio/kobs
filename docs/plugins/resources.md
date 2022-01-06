@@ -43,7 +43,7 @@ The following dashboard will display all Deployments and Pods from the `bookinfo
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:

@@ -73,7 +73,7 @@ The following Application contains three dashboards to get the metrics, top and 
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Application
 metadata:
   name: productpage

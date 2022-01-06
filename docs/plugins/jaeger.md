@@ -57,7 +57,7 @@ For example the following dashboard shows all requests and all slow requests fro
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   placeholders:

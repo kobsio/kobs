@@ -19,7 +19,7 @@ For example the following dashboard shows all Kustomizations, Helm Releases, Git
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:

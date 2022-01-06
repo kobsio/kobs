@@ -1,13 +1,13 @@
 package cluster
 
 import (
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
-	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 )
 
-func setApplicationDefaults(application application.ApplicationSpec, cluster, namespace, name string) application.ApplicationSpec {
+func setApplicationDefaults(application applicationv1.ApplicationSpec, cluster, namespace, name string) applicationv1.ApplicationSpec {
 	application.Cluster = cluster
 	application.Namespace = namespace
 	application.Name = name
@@ -55,7 +55,7 @@ func setApplicationDefaults(application application.ApplicationSpec, cluster, na
 	return application
 }
 
-func setTeamDefaults(team team.TeamSpec, cluster, namespace, name string) team.TeamSpec {
+func setTeamDefaults(team teamv1.TeamSpec, cluster, namespace, name string) teamv1.TeamSpec {
 	team.Cluster = cluster
 	team.Namespace = namespace
 	team.Name = name
@@ -72,7 +72,7 @@ func setTeamDefaults(team team.TeamSpec, cluster, namespace, name string) team.T
 	return team
 }
 
-func setDashboardDefaults(dashboard dashboard.DashboardSpec, cluster, namespace, name string) dashboard.DashboardSpec {
+func setDashboardDefaults(dashboard dashboardv1.DashboardSpec, cluster, namespace, name string) dashboardv1.DashboardSpec {
 	dashboard.Cluster = cluster
 	dashboard.Namespace = namespace
 	dashboard.Name = name
@@ -81,7 +81,7 @@ func setDashboardDefaults(dashboard dashboard.DashboardSpec, cluster, namespace,
 	return dashboard
 }
 
-func setUserDefaults(user user.UserSpec, cluster, namespace, name string) user.UserSpec {
+func setUserDefaults(user userv1.UserSpec, cluster, namespace, name string) userv1.UserSpec {
 	user.Cluster = cluster
 	user.Namespace = namespace
 	user.Name = name

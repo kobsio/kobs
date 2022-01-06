@@ -1,5 +1,5 @@
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Team
 metadata:
   name: team-call-of-duty

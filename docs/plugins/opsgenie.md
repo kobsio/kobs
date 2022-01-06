@@ -46,7 +46,7 @@ For example the following dashboard shows all open alerts and incidents.
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:
@@ -85,7 +85,7 @@ For example all members of the following team can acknowledge, snooze and close 
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Team
 spec:
   id: team1@kobs.io

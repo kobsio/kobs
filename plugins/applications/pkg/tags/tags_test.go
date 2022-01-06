@@ -3,7 +3,7 @@ package tags
 import (
 	"testing"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
 
 	"github.com/stretchr/testify/require"
 )
@@ -13,7 +13,7 @@ func TestUnique(t *testing.T) {
 }
 
 func TestFilterApplications(t *testing.T) {
-	applicationsList := []application.ApplicationSpec{
+	applicationsList := []applicationv1.ApplicationSpec{
 		{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Tags: []string{"tag1", "tag2", "tag3"}},
 		{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Tags: []string{"tag1", "tag4", "tag5"}},
 		{Cluster: "cluster1", Namespace: "namespace1", Name: "application3", Tags: []string{"tag2"}},
@@ -28,7 +28,7 @@ func TestFilterApplications(t *testing.T) {
 
 	t.Run("filter applications", func(t *testing.T) {
 		actualApplications := FilterApplications(applicationsList, []string{"tag1", "tag5"})
-		require.Equal(t, []application.ApplicationSpec{applicationsList[0], applicationsList[1], applicationsList[4]}, actualApplications)
+		require.Equal(t, []applicationv1.ApplicationSpec{applicationsList[0], applicationsList[1], applicationsList[4]}, actualApplications)
 	})
 }
 

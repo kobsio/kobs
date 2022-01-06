@@ -51,7 +51,7 @@ The following options can be used for a panel with the Elasticsearch plugin:
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   placeholders:

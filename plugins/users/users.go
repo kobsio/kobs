@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -32,10 +32,10 @@ type Router struct {
 }
 
 type getTeamsData struct {
-	Teams []user.TeamReference `json:"teams"`
+	Teams []userv1.TeamReference `json:"teams"`
 }
 
-func isMember(teams []user.TeamReference, defaultCluster, defaultNamespace, cluster, namespace, name string) bool {
+func isMember(teams []userv1.TeamReference, defaultCluster, defaultNamespace, cluster, namespace, name string) bool {
 	for _, team := range teams {
 		c := defaultCluster
 		if team.Cluster != "" {
@@ -60,7 +60,7 @@ func isMember(teams []user.TeamReference, defaultCluster, defaultNamespace, clus
 func (router *Router) getUsers(w http.ResponseWriter, r *http.Request) {
 	log.Debug(r.Context(), "Get users.")
 
-	var users []user.UserSpec
+	var users []userv1.UserSpec
 
 	for _, cluster := range router.clustersClient.GetClusters() {
 		user, err := cluster.GetUsers(r.Context(), "")
@@ -115,7 +115,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var teams []*team.TeamSpec
+	var teams []*teamv1.TeamSpec
 
 	for _, team := range data.Teams {
 		cluster := router.clustersClient.GetCluster(team.Cluster)
@@ -146,8 +146,8 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get team parameters.", zap.String("cluster", teamCluster), zap.String("namespace", teamNamespace), zap.String("name", teamName))
 
-	var users []user.UserSpec
-	var filteredUsers []user.UserSpec
+	var users []userv1.UserSpec
+	var filteredUsers []userv1.UserSpec
 
 	for _, cluster := range router.clustersClient.GetClusters() {
 		user, err := cluster.GetUsers(r.Context(), "")

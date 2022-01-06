@@ -10,12 +10,12 @@ import (
 	helmv2 "github.com/fluxcd/helm-controller/api/v2beta1"
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1beta1"
 	"github.com/fluxcd/pkg/apis/meta"
-	apiruntime "k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 )
 
-func createScheme() *apiruntime.Scheme {
-	scheme := apiruntime.NewScheme()
+func createScheme() *runtime.Scheme {
+	scheme := runtime.NewScheme()
 	_ = kustomizev1.AddToScheme(scheme)
 	_ = helmv2.AddToScheme(scheme)
 

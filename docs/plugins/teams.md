@@ -6,7 +6,7 @@ The teams plugin can be used to show a list of all teams on a dashboard. This pl
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:

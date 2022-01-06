@@ -90,7 +90,7 @@ The dashboard only uses the Prometheus plugin to show the CPU Usage, Memory Usag
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   description: Resources Usage of Pods

@@ -66,7 +66,7 @@ In the following you can found the specification for the User CRD.
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: User
 metadata:
   name: ricoberger

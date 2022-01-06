@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
-	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 )
 
@@ -44,7 +44,7 @@ type NodeData struct {
 	Type   string `json:"type"`
 	Label  string `json:"label"`
 	Parent string `json:"parent"`
-	application.ApplicationSpec
+	applicationv1.ApplicationSpec
 }
 
 // Edge is the structure for a edge in the topology graph.
@@ -56,17 +56,17 @@ type Edge struct {
 // target is a reference to the id of a node. Each edge also contains the cluster, namespace and name of the source and
 // target and an optional description, which can be used to describe the relationship between the source and target.
 type EdgeData struct {
-	ID              string                `json:"id"`
-	Source          string                `json:"source"`
-	SourceCluster   string                `json:"-"`
-	SourceNamespace string                `json:"-"`
-	SourceName      string                `json:"-"`
-	Target          string                `json:"target"`
-	TargetCluster   string                `json:"-"`
-	TargetNamespace string                `json:"-"`
-	TargetName      string                `json:"-"`
-	Description     string                `json:"description"`
-	Dashboards      []dashboard.Reference `json:"dashboards"`
+	ID              string                  `json:"id"`
+	Source          string                  `json:"source"`
+	SourceCluster   string                  `json:"-"`
+	SourceNamespace string                  `json:"-"`
+	SourceName      string                  `json:"-"`
+	Target          string                  `json:"target"`
+	TargetCluster   string                  `json:"-"`
+	TargetNamespace string                  `json:"-"`
+	TargetName      string                  `json:"-"`
+	Description     string                  `json:"description"`
+	Dashboards      []dashboardv1.Reference `json:"dashboards"`
 }
 
 // Get returnes the topology graph for all the configured clusters. To generate the topology chart we have to loop

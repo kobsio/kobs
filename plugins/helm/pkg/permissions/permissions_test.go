@@ -3,7 +3,7 @@ package permissions
 import (
 	"testing"
 
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 
 	"github.com/stretchr/testify/require"
@@ -16,17 +16,17 @@ func TestCheckPermissions(t *testing.T) {
 	})
 
 	t.Run("invalid permission format", func(t *testing.T) {
-		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`"clusters": "*"`)}}}}}
+		user := &authContext.User{Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`"clusters": "*"`)}}}}}
 		require.Error(t, CheckPermissions(true, user, "", "", ""))
 	})
 
 	t.Run("access forbidden", func(t *testing.T) {
-		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"clusters": ["*"], "namespaces": ["namespace2"], "names": ["*"]}]`)}}}}}
+		user := &authContext.User{Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"clusters": ["*"], "namespaces": ["namespace2"], "names": ["*"]}]`)}}}}}
 		require.Error(t, CheckPermissions(true, user, "cluster1", "namespace1", "name1"))
 	})
 
 	t.Run("access allowed", func(t *testing.T) {
-		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"clusters": ["*"], "namespaces": ["*"], "names": ["*"]}]`)}}}}}
+		user := &authContext.User{Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"clusters": ["*"], "namespaces": ["*"], "names": ["*"]}]`)}}}}}
 		require.NoError(t, CheckPermissions(true, user, "cluster1", "namespace1", "name1"))
 	})
 }

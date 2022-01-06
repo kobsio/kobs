@@ -61,7 +61,7 @@ The following dashboards shows all projects, all repositories from the `public` 
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 metadata:
   name: harbor

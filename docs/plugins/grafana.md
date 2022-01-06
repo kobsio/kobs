@@ -52,7 +52,7 @@ The following dashboards shows some panels from a Grafana plugin and a list of d
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 metadata:
   name: istio-overview

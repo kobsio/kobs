@@ -67,7 +67,7 @@ The following dashboard contains two panels for an application, one shows the ap
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   description: Resources for an Application
@@ -110,7 +110,7 @@ The following example shows all applications for `team-diablo`.
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:

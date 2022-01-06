@@ -43,7 +43,7 @@ The following dashboard shows a single panel with the measures for the SonarQube
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 metadata:
   name: sonarqube

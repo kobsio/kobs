@@ -22,13 +22,13 @@ generate: generate-crds
 .PHONY: generate-crds
 generate-crds:
 	for crd in $(CRDS); do \
-		${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/api/clients/$$crd github.com/kobsio/kobs/pkg/api/apis $$crd:v1beta1 --output-base ./tmp; \
-		rm -rf ./pkg/api/apis/$$crd/v1beta1/zz_generated.deepcopy.go; \
+		${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/api/clients/$$crd github.com/kobsio/kobs/pkg/api/apis $$crd:v1 --output-base ./tmp; \
+		rm -rf ./pkg/api/apis/$$crd/v1/zz_generated.deepcopy.go; \
 		rm -rf ./pkg/api/clients/$$crd/clientset; \
 		rm -rf ./pkg/api/clients/$$crd/informers; \
 		rm -rf ./pkg/api/clients/$$crd/listers; \
 		mkdir -p ./pkg/api/clients/$$crd; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/api/apis/$$crd/v1beta1/zz_generated.deepcopy.go ./pkg/api/apis/$$crd/v1beta1; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/api/apis/$$crd/v1/zz_generated.deepcopy.go ./pkg/api/apis/$$crd/v1; \
 		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/clientset ./pkg/api/clients/$$crd/clientset; \
 		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/informers ./pkg/api/clients/$$crd/informers; \
 		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/listers ./pkg/api/clients/$$crd/listers; \

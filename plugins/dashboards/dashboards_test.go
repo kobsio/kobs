@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -37,7 +37,7 @@ func TestGetAllDashboards(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"dashboard1\",\"rows\":null},{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"dashboard2\",\"rows\":null}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetDashboards", mock.Anything, "").Return([]dashboard.DashboardSpec{
+				mockClusterClient.On("GetDashboards", mock.Anything, "").Return([]dashboardv1.DashboardSpec{
 					{Cluster: "cluster1", Namespace: "namespace1", Name: "dashboard1"},
 					{Cluster: "cluster1", Namespace: "namespace1", Name: "dashboard2"},
 				}, nil)
@@ -102,7 +102,7 @@ func TestGetDashboards(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockClusterClient := &cluster.MockClient{}
 			mockClusterClient.AssertExpectations(t)
-			mockClusterClient.On("GetDashboard", mock.Anything, "kobs", "resource-usage").Return(&dashboard.DashboardSpec{}, nil)
+			mockClusterClient.On("GetDashboard", mock.Anything, "kobs", "resource-usage").Return(&dashboardv1.DashboardSpec{}, nil)
 			mockClusterClient.On("GetDashboard", mock.Anything, "kobs", "resource-usage-wrong").Return(nil, fmt.Errorf("could not get dashboard"))
 
 			mockClustersClient := &clusters.MockClient{}
@@ -170,7 +170,7 @@ func TestGetDashboard(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockClusterClient := &cluster.MockClient{}
 			mockClusterClient.AssertExpectations(t)
-			mockClusterClient.On("GetDashboard", mock.Anything, "namespace1", "dashboard1").Return(&dashboard.DashboardSpec{}, nil)
+			mockClusterClient.On("GetDashboard", mock.Anything, "namespace1", "dashboard1").Return(&dashboardv1.DashboardSpec{}, nil)
 			mockClusterClient.On("GetDashboard", mock.Anything, "namespace1", "dashboard2").Return(nil, fmt.Errorf("could not get dashboard"))
 
 			mockClustersClient := &clusters.MockClient{}

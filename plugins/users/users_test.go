@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -19,8 +19,8 @@ import (
 )
 
 func TestIsMember(t *testing.T) {
-	require.Equal(t, true, isMember([]user.TeamReference{{Cluster: "cluster2", Namespace: "namespace2", Name: "team1"}}, "cluster1", "namespace1", "cluster2", "namespace2", "team1"))
-	require.Equal(t, false, isMember([]user.TeamReference{{Cluster: "cluster2", Namespace: "namespace2", Name: "team1"}}, "cluster1", "namespace1", "cluster2", "namespace2", "team2"))
+	require.Equal(t, true, isMember([]userv1.TeamReference{{Cluster: "cluster2", Namespace: "namespace2", Name: "team1"}}, "cluster1", "namespace1", "cluster2", "namespace2", "team1"))
+	require.Equal(t, false, isMember([]userv1.TeamReference{{Cluster: "cluster2", Namespace: "namespace2", Name: "team1"}}, "cluster1", "namespace1", "cluster2", "namespace2", "team2"))
 }
 
 func TestGetUsers(t *testing.T) {
@@ -43,7 +43,7 @@ func TestGetUsers(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"id\":\"id1\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"permissions\":{\"plugins\":null,\"resources\":null}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", ID: "id1"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", ID: "id1"}}, nil)
 			},
 		},
 	} {
@@ -100,7 +100,7 @@ func TestGetUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockClusterClient := &cluster.MockClient{}
 			mockClusterClient.AssertExpectations(t)
-			mockClusterClient.On("GetUser", mock.Anything, "namespace1", "user1").Return(&user.UserSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", ID: "id1"}, nil)
+			mockClusterClient.On("GetUser", mock.Anything, "namespace1", "user1").Return(&userv1.UserSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", ID: "id1"}, nil)
 			mockClusterClient.On("GetUser", mock.Anything, "namespace1", "user2").Return(nil, fmt.Errorf("could not get user"))
 
 			mockClustersClient := &clusters.MockClient{}
@@ -161,7 +161,7 @@ func TestGetTeams(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockClusterClient := &cluster.MockClient{}
 			mockClusterClient.AssertExpectations(t)
-			mockClusterClient.On("GetTeam", mock.Anything, "namespace1", "team1").Return(&team.TeamSpec{}, nil)
+			mockClusterClient.On("GetTeam", mock.Anything, "namespace1", "team1").Return(&teamv1.TeamSpec{}, nil)
 			mockClusterClient.On("GetTeam", mock.Anything, "namespace1", "team2").Return(nil, fmt.Errorf("could not get team"))
 
 			mockClustersClient := &clusters.MockClient{}
@@ -206,7 +206,7 @@ func TestGetTeam(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"id\":\"\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":[{\"cluster\":\"cluster2\",\"namespace\":\"namespace2\",\"name\":\"team1\"}],\"permissions\":{\"plugins\":null,\"resources\":null}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", Teams: []user.TeamReference{{Cluster: "cluster2", Namespace: "namespace2", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", Teams: []userv1.TeamReference{{Cluster: "cluster2", Namespace: "namespace2", Name: "team1"}}}}, nil)
 			},
 		},
 	} {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 )
 
 // Key to use when setting the user.
@@ -16,13 +16,13 @@ const UserKey ctxKeyUser = 0
 // User is the structure of the user object saved in the request context. It contains the users id and permissions if
 // authentication is enabled.
 type User struct {
-	Cluster     string               `json:"cluster"`
-	Namespace   string               `json:"namespace"`
-	Name        string               `json:"name"`
-	ID          string               `json:"id"`
-	Profile     user.Profile         `json:"profile"`
-	Teams       []user.TeamReference `json:"teams"`
-	Permissions user.Permissions     `json:"permissions"`
+	Cluster     string                 `json:"cluster"`
+	Namespace   string                 `json:"namespace"`
+	Name        string                 `json:"name"`
+	ID          string                 `json:"id"`
+	Profile     userv1.Profile         `json:"profile"`
+	Teams       []userv1.TeamReference `json:"teams"`
+	Permissions userv1.Permissions     `json:"permissions"`
 }
 
 // HasPluginAccess checks if the user has access to the given plugin.

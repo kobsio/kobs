@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	v1application "github.com/kobsio/kobs/pkg/api/apis/application/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 )
 
@@ -21,7 +21,7 @@ type Team struct {
 	Cluster      string `json:"cluster"`
 	Namespace    string `json:"namespace"`
 	Name         string `json:"name"`
-	Applications []application.ApplicationSpec
+	Applications []v1application.ApplicationSpec
 }
 
 // Get returns a list of teams. For that we are looping through all clusters and getting all the Team CRs from each of
@@ -54,7 +54,7 @@ func Get(ctx context.Context, clustersClient clusters.Client) []Team {
 		}
 
 		for i := 0; i < len(cachedTeams); i++ {
-			var teamApplications []application.ApplicationSpec
+			var teamApplications []v1application.ApplicationSpec
 
 			for _, application := range applications {
 				if doesApplicationContainsTeam(application, cachedTeams[i].Cluster, cachedTeams[i].Namespace, cachedTeams[i].Name) {
@@ -71,7 +71,7 @@ func Get(ctx context.Context, clustersClient clusters.Client) []Team {
 
 // GetApplications returns the applications for the requested team. The function takes a list of team and the cluster,
 // namespace and name of a team as arguments.
-func GetApplications(teams []Team, cluster, namespace, name string) []application.ApplicationSpec {
+func GetApplications(teams []Team, cluster, namespace, name string) []v1application.ApplicationSpec {
 	for _, t := range teams {
 		if t.Cluster == cluster && t.Namespace == namespace && t.Name == name {
 			return t.Applications
@@ -83,7 +83,7 @@ func GetApplications(teams []Team, cluster, namespace, name string) []applicatio
 
 // doesApplicationContainsTeam checks if the given team name exists in a slice of teams. The function takes an
 // application and the cluster, namespace and name of the team as arguments.
-func doesApplicationContainsTeam(application application.ApplicationSpec, cluster, namespace, name string) bool {
+func doesApplicationContainsTeam(application v1application.ApplicationSpec, cluster, namespace, name string) bool {
 	for _, t := range application.Teams {
 		if t.Cluster == cluster && t.Namespace == namespace && t.Name == name {
 			return true
