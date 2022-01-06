@@ -8,6 +8,6 @@ export const getInitialOptions = (search: string, isInitial: boolean): IOptions 
 
   return {
     scope: scope ? scope : 'All',
-    times: getTimeParams(params, isInitial),
+    times: getTimeParams(params, isInitial, 'last30Days'),
   };
 };
