@@ -53,7 +53,7 @@ The following Team CR will add a new team called `team-diablo`. The team page wi
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Team
 metadata:
   name: team-diablo
@@ -84,7 +84,7 @@ The following Team CR allows all members of `team-diablo` access to all plugins 
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Team
 metadata:
   name: team-diablo

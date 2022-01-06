@@ -3,7 +3,7 @@ package teams
 import (
 	"net/http"
 
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -34,7 +34,7 @@ type Router struct {
 func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 	log.Debug(r.Context(), "Get team.")
 
-	var teams []team.TeamSpec
+	var teams []teamv1.TeamSpec
 
 	for _, cluster := range router.clustersClient.GetClusters() {
 		team, err := cluster.GetTeams(r.Context(), "")

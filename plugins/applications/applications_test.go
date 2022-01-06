@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -48,8 +48,8 @@ func TestGetApplications(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "null\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}, nil)
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
 			},
 		},
 		{
@@ -58,8 +58,8 @@ func TestGetApplications(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team1\"}],\"topology\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}, nil)
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
 			},
 		},
 		{
@@ -69,18 +69,18 @@ func TestGetApplications(t *testing.T) {
 			expectedBody:       "{\"error\":\"Could not get applications\"}\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
 				mockClusterClient.On("GetTeams", mock.Anything, "").Return(nil, nil)
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
 			},
 		},
 		{
 			name:               "gallery return teams from cache and refresh cache",
-			teamsCache:         teams.Cache{Teams: []teams.Team{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1", Applications: []application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}}}},
+			teamsCache:         teams.Cache{Teams: []teams.Team{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1", Applications: []applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}}}},
 			url:                "/applications?view=gallery&teamCluster=cluster1&teamNamespace=namespace1&teamName=team1",
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team1\"}],\"topology\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}, nil)
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
 			},
 		},
 		// gallery
@@ -108,7 +108,7 @@ func TestGetApplications(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team1\"}],\"topology\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
 			},
 		},
 		{
@@ -126,7 +126,7 @@ func TestGetApplications(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team1\"}],\"topology\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "namespace1").Return([]application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "namespace1").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
 			},
 		},
 		// topology
@@ -146,10 +146,10 @@ func TestGetApplications(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{\"edges\":[{\"data\":{\"id\":\"cluster1-namespace2-application3-cluster2-namespace3-application4\",\"source\":\"cluster1-namespace2-application3\",\"target\":\"cluster2-namespace3-application4\",\"description\":\"\",\"dashboards\":null}},{\"data\":{\"id\":\"cluster1-namespace2-application3-cluster2-namespace3-application5\",\"source\":\"cluster1-namespace2-application3\",\"target\":\"cluster2-namespace3-application5\",\"description\":\"\",\"dashboards\":null}}],\"nodes\":[{\"data\":{\"id\":\"cluster1-namespace2-application3\",\"type\":\"\",\"label\":\"application3\",\"parent\":\"cluster1-namespace2\",\"cluster\":\"cluster1\",\"namespace\":\"namespace2\",\"name\":\"application3\",\"topology\":{\"dependencies\":[{\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application4\"},{\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application5\"}]}}},{\"data\":{\"id\":\"cluster2-namespace3-application4\",\"type\":\"-not-selected\",\"label\":\"application4\",\"parent\":\"cluster2-namespace3\",\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application4\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2-namespace3-application5\",\"type\":\"-not-selected\",\"label\":\"application5\",\"parent\":\"cluster2-namespace3\",\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application5\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1\",\"type\":\"cluster\",\"label\":\"cluster1\",\"parent\":\"\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2\",\"type\":\"cluster\",\"label\":\"cluster2\",\"parent\":\"\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1-namespace2\",\"type\":\"namespace\",\"label\":\"namespace2\",\"parent\":\"cluster1\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2-namespace3\",\"type\":\"namespace\",\"label\":\"namespace3\",\"parent\":\"cluster2\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1-namespace2\",\"type\":\"namespace\",\"label\":\"namespace2\",\"parent\":\"cluster1\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2-namespace3\",\"type\":\"namespace\",\"label\":\"namespace3\",\"parent\":\"cluster2\",\"topology\":{}}}]}\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{
-					{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "", Namespace: "", Name: "application2"}}}},
-					{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}},
-					{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}},
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{
+					{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "", Namespace: "", Name: "application2"}}}},
+					{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}},
+					{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}},
 					{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"},
 					{Cluster: "cluster2", Namespace: "namespace3", Name: "application5"},
 				}, nil)
@@ -175,21 +175,21 @@ func TestGetApplications(t *testing.T) {
 					{Data: topology.EdgeData{ID: "cluster1-namespace2-application3-cluster2-namespace3-application5", Source: "cluster1-namespace2-application3", SourceCluster: "cluster1", SourceNamespace: "namespace2", SourceName: "application3", Target: "cluster2-namespace3-application5", TargetCluster: "cluster2", TargetNamespace: "namespace3", TargetName: "application5"}},
 				},
 				Nodes: []topology.Node{
-					{Data: topology.NodeData{ID: "cluster1-namespace1-application1", Type: "application", Label: "application1", Parent: "cluster1-namespace1", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "", Namespace: "", Name: "application2"}}}}}},
-					{Data: topology.NodeData{ID: "cluster1-namespace1-application2", Type: "application", Label: "application2", Parent: "cluster1-namespace1", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}}}},
-					{Data: topology.NodeData{ID: "cluster1-namespace2-application3", Type: "application", Label: "application3", Parent: "cluster1-namespace2", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}}}},
-					{Data: topology.NodeData{ID: "cluster2-namespace3-application4", Type: "application", Label: "application4", Parent: "cluster2-namespace3", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}}},
-					{Data: topology.NodeData{ID: "cluster2-namespace3-application5", Type: "application", Label: "application5", Parent: "cluster2-namespace3", ApplicationSpec: application.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}},
+					{Data: topology.NodeData{ID: "cluster1-namespace1-application1", Type: "application", Label: "application1", Parent: "cluster1-namespace1", ApplicationSpec: applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "", Namespace: "", Name: "application2"}}}}}},
+					{Data: topology.NodeData{ID: "cluster1-namespace1-application2", Type: "application", Label: "application2", Parent: "cluster1-namespace1", ApplicationSpec: applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}}}},
+					{Data: topology.NodeData{ID: "cluster1-namespace2-application3", Type: "application", Label: "application3", Parent: "cluster1-namespace2", ApplicationSpec: applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}}}},
+					{Data: topology.NodeData{ID: "cluster2-namespace3-application4", Type: "application", Label: "application4", Parent: "cluster2-namespace3", ApplicationSpec: applicationv1.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}}},
+					{Data: topology.NodeData{ID: "cluster2-namespace3-application5", Type: "application", Label: "application5", Parent: "cluster2-namespace3", ApplicationSpec: applicationv1.ApplicationSpec{Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}},
 				},
 			}},
 			url:                "/applications?view=topology&cluster=cluster1&namespace=namespace2",
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{\"edges\":[{\"data\":{\"id\":\"cluster1-namespace1-application2-cluster1-namespace2-application3\",\"source\":\"cluster1-namespace1-application2\",\"target\":\"cluster1-namespace2-application3\",\"description\":\"\",\"dashboards\":null}},{\"data\":{\"id\":\"cluster1-namespace2-application3-cluster2-namespace3-application4\",\"source\":\"cluster1-namespace2-application3\",\"target\":\"cluster2-namespace3-application4\",\"description\":\"\",\"dashboards\":null}},{\"data\":{\"id\":\"cluster1-namespace2-application3-cluster2-namespace3-application5\",\"source\":\"cluster1-namespace2-application3\",\"target\":\"cluster2-namespace3-application5\",\"description\":\"\",\"dashboards\":null}}],\"nodes\":[{\"data\":{\"id\":\"cluster1-namespace1-application2\",\"type\":\"application-not-selected\",\"label\":\"application2\",\"parent\":\"cluster1-namespace1\",\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application2\",\"topology\":{\"dependencies\":[{\"namespace\":\"namespace2\",\"name\":\"application3\"}]}}},{\"data\":{\"id\":\"cluster1-namespace2-application3\",\"type\":\"application\",\"label\":\"application3\",\"parent\":\"cluster1-namespace2\",\"cluster\":\"cluster1\",\"namespace\":\"namespace2\",\"name\":\"application3\",\"topology\":{\"dependencies\":[{\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application4\"},{\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application5\"}]}}},{\"data\":{\"id\":\"cluster2-namespace3-application4\",\"type\":\"application-not-selected\",\"label\":\"application4\",\"parent\":\"cluster2-namespace3\",\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application4\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2-namespace3-application5\",\"type\":\"application-not-selected\",\"label\":\"application5\",\"parent\":\"cluster2-namespace3\",\"cluster\":\"cluster2\",\"namespace\":\"namespace3\",\"name\":\"application5\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1\",\"type\":\"cluster\",\"label\":\"cluster1\",\"parent\":\"\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2\",\"type\":\"cluster\",\"label\":\"cluster2\",\"parent\":\"\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1-namespace1\",\"type\":\"namespace\",\"label\":\"namespace1\",\"parent\":\"cluster1\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1-namespace2\",\"type\":\"namespace\",\"label\":\"namespace2\",\"parent\":\"cluster1\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1-namespace2\",\"type\":\"namespace\",\"label\":\"namespace2\",\"parent\":\"cluster1\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2-namespace3\",\"type\":\"namespace\",\"label\":\"namespace3\",\"parent\":\"cluster2\",\"topology\":{}}},{\"data\":{\"id\":\"cluster1-namespace2\",\"type\":\"namespace\",\"label\":\"namespace2\",\"parent\":\"cluster1\",\"topology\":{}}},{\"data\":{\"id\":\"cluster2-namespace3\",\"type\":\"namespace\",\"label\":\"namespace3\",\"parent\":\"cluster2\",\"topology\":{}}}]}\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{
-					{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "", Namespace: "", Name: "application2"}}}},
-					{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}},
-					{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: application.Topology{Dependencies: []application.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}},
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{
+					{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "", Namespace: "", Name: "application2"}}}},
+					{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "", Namespace: "namespace2", Name: "application3"}}}},
+					{Cluster: "cluster1", Namespace: "namespace2", Name: "application3", Topology: applicationv1.Topology{Dependencies: []applicationv1.Dependency{{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"}, {Cluster: "cluster2", Namespace: "namespace3", Name: "application5"}}}},
 					{Cluster: "cluster2", Namespace: "namespace3", Name: "application4"},
 					{Cluster: "cluster2", Namespace: "namespace3", Name: "application5"},
 				}, nil)
@@ -251,7 +251,7 @@ func TestGetApplication(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockClusterClient := &cluster.MockClient{}
 			mockClusterClient.AssertExpectations(t)
-			mockClusterClient.On("GetApplication", mock.Anything, "namespace1", "application1").Return(&application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1"}, nil)
+			mockClusterClient.On("GetApplication", mock.Anything, "namespace1", "application1").Return(&applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1"}, nil)
 			mockClusterClient.On("GetApplication", mock.Anything, "", "").Return(nil, fmt.Errorf("could not get application"))
 
 			mockClustersClient := &clusters.MockClient{}
@@ -307,7 +307,7 @@ func TestGetTags(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[\"tag1\",\"tag2\",\"tag3\",\"tag4\",\"tag5\"]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{
 					{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Tags: []string{"tag1", "tag2", "tag3"}},
 					{Cluster: "cluster1", Namespace: "namespace1", Name: "application2", Tags: []string{"tag1", "tag4", "tag5"}},
 					{Cluster: "cluster1", Namespace: "namespace1", Name: "application3", Tags: []string{"tag2"}},

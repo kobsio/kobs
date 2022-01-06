@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
 )
 
 // Cache is the structure which can be used for caching a list of loaded teams.
@@ -35,12 +35,12 @@ func Unique(tags []string) []string {
 
 // FilterApplications filters a list of applications and only returns applications, which are containing a tag from the
 // given list of tags. If the tags slice is empty we return all applications.
-func FilterApplications(applications []application.ApplicationSpec, tags []string) []application.ApplicationSpec {
+func FilterApplications(applications []applicationv1.ApplicationSpec, tags []string) []applicationv1.ApplicationSpec {
 	if tags == nil {
 		return applications
 	}
 
-	var filteredApplications []application.ApplicationSpec
+	var filteredApplications []applicationv1.ApplicationSpec
 
 	for _, application := range applications {
 		for _, tag := range tags {

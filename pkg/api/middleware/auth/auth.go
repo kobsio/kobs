@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/auth/jwt"
@@ -40,8 +40,8 @@ func containsTeam(teamID string, teamIDs []string) bool {
 func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (authContext.User, error) {
 	authContextUser := authContext.User{ID: userID}
 
-	var users []user.UserSpec
-	var teams []team.TeamSpec
+	var users []userv1.UserSpec
+	var teams []teamv1.TeamSpec
 
 	for _, c := range a.clustersClient.GetClusters() {
 		tmpUsers, err := c.GetUsers(ctx, "")
@@ -175,9 +175,9 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 
 			ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{
 				ID: userID,
-				Permissions: user.Permissions{
-					Plugins:   []user.Plugin{{Name: "*"}},
-					Resources: []user.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
+				Permissions: userv1.Permissions{
+					Plugins:   []userv1.Plugin{{Name: "*"}},
+					Resources: []userv1.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
 				},
 			})
 		}

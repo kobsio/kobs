@@ -16,7 +16,7 @@ spec:
     singular: team
   scope: Namespaced
   versions:
-  - name: v1beta1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: Team is the Team CRD.

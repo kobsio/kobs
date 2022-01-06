@@ -3,7 +3,7 @@ package variables
 import (
 	"testing"
 
-	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 
 	"github.com/stretchr/testify/require"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -11,12 +11,12 @@ import (
 
 func TestGetVariables(t *testing.T) {
 	t.Run("variables are nil", func(t *testing.T) {
-		require.Equal(t, []dashboard.Variable{
+		require.Equal(t, []dashboardv1.Variable{
 			{
 				Name:  "__cluster",
 				Label: "__cluster",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["cluster1"]}`)},
 				},
@@ -25,7 +25,7 @@ func TestGetVariables(t *testing.T) {
 				Name:  "__namespace",
 				Label: "__namespace",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["namespace1"]}`)},
 				},
@@ -34,7 +34,7 @@ func TestGetVariables(t *testing.T) {
 				Name:  "placeholder1",
 				Label: "placeholder1",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["value1"]}`)},
 				},
@@ -43,12 +43,12 @@ func TestGetVariables(t *testing.T) {
 	})
 
 	t.Run("placeholders are nil", func(t *testing.T) {
-		require.Equal(t, []dashboard.Variable{
+		require.Equal(t, []dashboardv1.Variable{
 			{
 				Name:  "__cluster",
 				Label: "__cluster",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["cluster1"]}`)},
 				},
@@ -57,7 +57,7 @@ func TestGetVariables(t *testing.T) {
 				Name:  "__namespace",
 				Label: "__namespace",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["namespace1"]}`)},
 				},
@@ -66,17 +66,17 @@ func TestGetVariables(t *testing.T) {
 				Name:  "variable1",
 				Label: "Variable 1",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["value1"]}`)},
 				},
 			},
-		}, GetVariables([]dashboard.Variable{
+		}, GetVariables([]dashboardv1.Variable{
 			{
 				Name:  "variable1",
 				Label: "Variable 1",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["value1"]}`)},
 				},
@@ -85,12 +85,12 @@ func TestGetVariables(t *testing.T) {
 	})
 
 	t.Run("cluster and namespace are empty", func(t *testing.T) {
-		require.Equal(t, []dashboard.Variable{
+		require.Equal(t, []dashboardv1.Variable{
 			{
 				Name:  "placeholder1",
 				Label: "placeholder1",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["value1"]}`)},
 				},
@@ -99,17 +99,17 @@ func TestGetVariables(t *testing.T) {
 				Name:  "variable1",
 				Label: "Variable 1",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["value1"]}`)},
 				},
 			},
-		}, GetVariables([]dashboard.Variable{
+		}, GetVariables([]dashboardv1.Variable{
 			{
 				Name:  "variable1",
 				Label: "Variable 1",
 				Hide:  true,
-				Plugin: dashboard.Plugin{
+				Plugin: dashboardv1.Plugin{
 					Name:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type": "static", "items": ["value1"]}`)},
 				},

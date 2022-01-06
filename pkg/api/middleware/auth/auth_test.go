@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
@@ -56,10 +56,10 @@ func TestGetUser(t *testing.T) {
 		{
 			name:          "get user",
 			expectedError: nil,
-			expectedUser:  authContext.User{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io", Profile: user.Profile{FullName: "", Email: "", Position: "", Bio: ""}, Teams: nil, Permissions: user.Permissions{Plugins: nil, Resources: nil}},
+			expectedUser:  authContext.User{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io", Profile: userv1.Profile{FullName: "", Email: "", Position: "", Bio: ""}, Teams: nil, Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 	} {
@@ -138,8 +138,8 @@ func TestAuthHandler(t *testing.T) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -151,8 +151,8 @@ func TestAuthHandler(t *testing.T) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 
@@ -182,8 +182,8 @@ func TestAuthHandler(t *testing.T) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -197,8 +197,8 @@ func TestAuthHandler(t *testing.T) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -212,8 +212,8 @@ func TestAuthHandler(t *testing.T) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -226,8 +226,8 @@ func TestAuthHandler(t *testing.T) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -240,8 +240,8 @@ func TestAuthHandler(t *testing.T) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]user.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io", Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "*"}}}}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "*"}}}}}, nil)
+				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 	} {

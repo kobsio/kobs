@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned"
-	kobsv1beta1 "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned/typed/dashboard/v1beta1"
-	fakekobsv1beta1 "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned/typed/dashboard/v1beta1/fake"
+	kobsv1 "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned/typed/dashboard/v1"
+	fakekobsv1 "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned/typed/dashboard/v1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -76,7 +76,7 @@ func (c *Clientset) Tracker() testing.ObjectTracker {
 
 var _ clientset.Interface = &Clientset{}
 
-// KobsV1beta1 retrieves the KobsV1beta1Client
-func (c *Clientset) KobsV1beta1() kobsv1beta1.KobsV1beta1Interface {
-	return &fakekobsv1beta1.FakeKobsV1beta1{Fake: &c.Fake}
+// KobsV1 retrieves the KobsV1Client
+func (c *Clientset) KobsV1() kobsv1.KobsV1Interface {
+	return &fakekobsv1.FakeKobsV1{Fake: &c.Fake}
 }

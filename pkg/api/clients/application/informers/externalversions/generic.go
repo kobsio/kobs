@@ -21,7 +21,7 @@ package externalversions
 import (
 	"fmt"
 
-	v1beta1 "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	v1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -52,9 +52,9 @@ func (f *genericInformer) Lister() cache.GenericLister {
 // TODO extend this to unknown resources with a client pool
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
-	// Group=kobs.io, Version=v1beta1
-	case v1beta1.SchemeGroupVersion.WithResource("applications"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Kobs().V1beta1().Applications().Informer()}, nil
+	// Group=kobs.io, Version=v1
+	case v1.SchemeGroupVersion.WithResource("applications"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Kobs().V1().Applications().Informer()}, nil
 
 	}
 

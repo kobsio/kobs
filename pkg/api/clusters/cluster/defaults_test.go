@@ -3,10 +3,10 @@ package cluster
 import (
 	"testing"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
-	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 
 	"github.com/stretchr/testify/require"
 )
@@ -14,55 +14,55 @@ import (
 func TestSetApplicationDefaults(t *testing.T) {
 	require.Equal(
 		t,
-		application.ApplicationSpec{
+		applicationv1.ApplicationSpec{
 			Cluster:   "cluster1",
 			Namespace: "namespace1",
 			Name:      "application1",
-			Teams: []application.TeamReference{
+			Teams: []applicationv1.TeamReference{
 				{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"},
 				{Cluster: "cluster2", Namespace: "namespace1", Name: "team2"},
 				{Cluster: "cluster2", Namespace: "namespace2", Name: "team3"},
 			},
-			Topology: application.Topology{
+			Topology: applicationv1.Topology{
 				Type: "application",
-				Dependencies: []application.Dependency{
+				Dependencies: []applicationv1.Dependency{
 					{Cluster: "cluster1", Namespace: "namespace1", Name: "application2"},
 					{Cluster: "cluster2", Namespace: "namespace1", Name: "application3"},
-					{Cluster: "cluster2", Namespace: "namespace2", Name: "application4", Dashboards: []dashboard.Reference{
+					{Cluster: "cluster2", Namespace: "namespace2", Name: "application4", Dashboards: []dashboardv1.Reference{
 						{Cluster: "cluster1", Namespace: "namespace1", Name: "dashboard1"},
 						{Cluster: "cluster2", Namespace: "namespace1", Name: "dashboard2"},
 						{Cluster: "cluster2", Namespace: "namespace2", Name: "dashboard3"},
 					}},
 				},
 			},
-			Dashboards: []dashboard.Reference{
+			Dashboards: []dashboardv1.Reference{
 				{Cluster: "cluster1", Namespace: "namespace1", Name: "dashboard1"},
 				{Cluster: "cluster2", Namespace: "namespace1", Name: "dashboard2"},
 				{Cluster: "cluster2", Namespace: "namespace2", Name: "dashboard3"},
 			},
 		},
 		setApplicationDefaults(
-			application.ApplicationSpec{
+			applicationv1.ApplicationSpec{
 				Cluster:   "",
 				Namespace: "",
 				Name:      "",
-				Teams: []application.TeamReference{
+				Teams: []applicationv1.TeamReference{
 					{Cluster: "", Namespace: "", Name: "team1"},
 					{Cluster: "cluster2", Namespace: "", Name: "team2"},
 					{Cluster: "cluster2", Namespace: "namespace2", Name: "team3"},
 				},
-				Topology: application.Topology{
-					Dependencies: []application.Dependency{
+				Topology: applicationv1.Topology{
+					Dependencies: []applicationv1.Dependency{
 						{Cluster: "", Namespace: "", Name: "application2"},
 						{Cluster: "cluster2", Namespace: "", Name: "application3"},
-						{Cluster: "cluster2", Namespace: "namespace2", Name: "application4", Dashboards: []dashboard.Reference{
+						{Cluster: "cluster2", Namespace: "namespace2", Name: "application4", Dashboards: []dashboardv1.Reference{
 							{Cluster: "", Namespace: "", Name: "dashboard1"},
 							{Cluster: "cluster2", Namespace: "", Name: "dashboard2"},
 							{Cluster: "cluster2", Namespace: "namespace2", Name: "dashboard3"},
 						}},
 					},
 				},
-				Dashboards: []dashboard.Reference{
+				Dashboards: []dashboardv1.Reference{
 					{Cluster: "", Namespace: "", Name: "dashboard1"},
 					{Cluster: "cluster2", Namespace: "", Name: "dashboard2"},
 					{Cluster: "cluster2", Namespace: "namespace2", Name: "dashboard3"},
@@ -78,22 +78,22 @@ func TestSetApplicationDefaults(t *testing.T) {
 func TestSetTeamDefaults(t *testing.T) {
 	require.Equal(
 		t,
-		team.TeamSpec{
+		teamv1.TeamSpec{
 			Cluster:   "cluster1",
 			Namespace: "namespace1",
 			Name:      "team1",
-			Dashboards: []dashboard.Reference{
+			Dashboards: []dashboardv1.Reference{
 				{Cluster: "cluster1", Namespace: "namespace1", Name: "dashboard1"},
 				{Cluster: "cluster2", Namespace: "namespace1", Name: "dashboard2"},
 				{Cluster: "cluster2", Namespace: "namespace2", Name: "dashboard3"},
 			},
 		},
 		setTeamDefaults(
-			team.TeamSpec{
+			teamv1.TeamSpec{
 				Cluster:   "",
 				Namespace: "",
 				Name:      "",
-				Dashboards: []dashboard.Reference{
+				Dashboards: []dashboardv1.Reference{
 					{Cluster: "", Namespace: "", Name: "dashboard1"},
 					{Cluster: "cluster2", Namespace: "", Name: "dashboard2"},
 					{Cluster: "cluster2", Namespace: "namespace2", Name: "dashboard3"},
@@ -109,14 +109,14 @@ func TestSetTeamDefaults(t *testing.T) {
 func TestSetDashboardDefaults(t *testing.T) {
 	require.Equal(
 		t,
-		dashboard.DashboardSpec{
+		dashboardv1.DashboardSpec{
 			Cluster:   "cluster1",
 			Namespace: "namespace1",
 			Name:      "dashboard1",
 			Title:     "dashboard1",
 		},
 		setDashboardDefaults(
-			dashboard.DashboardSpec{
+			dashboardv1.DashboardSpec{
 				Cluster:   "",
 				Namespace: "",
 				Name:      "",
@@ -131,22 +131,22 @@ func TestSetDashboardDefaults(t *testing.T) {
 func TestSetUserDefaults(t *testing.T) {
 	require.Equal(
 		t,
-		user.UserSpec{
+		userv1.UserSpec{
 			Cluster:   "cluster1",
 			Namespace: "namespace1",
 			Name:      "user1",
-			Teams: []user.TeamReference{
+			Teams: []userv1.TeamReference{
 				{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"},
 				{Cluster: "cluster2", Namespace: "namespace1", Name: "team2"},
 				{Cluster: "cluster2", Namespace: "namespace2", Name: "team3"},
 			},
 		},
 		setUserDefaults(
-			user.UserSpec{
+			userv1.UserSpec{
 				Cluster:   "",
 				Namespace: "",
 				Name:      "",
-				Teams: []user.TeamReference{
+				Teams: []userv1.TeamReference{
 					{Cluster: "", Namespace: "", Name: "team1"},
 					{Cluster: "cluster2", Namespace: "", Name: "team2"},
 					{Cluster: "cluster2", Namespace: "namespace2", Name: "team3"},

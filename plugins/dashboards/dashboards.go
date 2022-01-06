@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -35,9 +35,9 @@ type Router struct {
 // list of references. The defaults are the cluster/namespace/name of the Team/Application where the dashboard is used
 // and the references are a list of references from the same Team/Application.
 type getDashboardsRequest struct {
-	Cluster    string                `json:"cluster"`
-	Namespace  string                `json:"namespace"`
-	References []dashboard.Reference `json:"references"`
+	Cluster    string                  `json:"cluster"`
+	Namespace  string                  `json:"namespace"`
+	References []dashboardv1.Reference `json:"references"`
 }
 
 type getDashboardRequest struct {
@@ -53,7 +53,7 @@ type getDashboardRequest struct {
 func (router *Router) getAllDashboards(w http.ResponseWriter, r *http.Request) {
 	log.Debug(r.Context(), "Get all dashboards.")
 
-	var dashboards []dashboard.DashboardSpec
+	var dashboards []dashboardv1.DashboardSpec
 
 	for _, cluster := range router.clustersClient.GetClusters() {
 		dashboard, err := cluster.GetDashboards(r.Context(), "")
@@ -85,7 +85,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var dashboards []*dashboard.DashboardSpec
+	var dashboards []*dashboardv1.DashboardSpec
 
 	// Loop through all the provided references and use the GetDashboard function for a cluster to get the dashboard by
 	// namespace and name. After that we are replacing the placeholders in a dashboard with the provided values and we
@@ -93,7 +93,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 	// dashboards.
 	for _, reference := range data.References {
 		if reference.Inline != nil {
-			dashboards = append(dashboards, &dashboard.DashboardSpec{
+			dashboards = append(dashboards, &dashboardv1.DashboardSpec{
 				Cluster:     "-",
 				Namespace:   "-",
 				Name:        "-",

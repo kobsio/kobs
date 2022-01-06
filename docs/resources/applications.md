@@ -102,7 +102,7 @@ The following Application CR is used in the [demo](../installation/demo.md) to d
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Application
 metadata:
   name: reviews

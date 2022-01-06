@@ -19,7 +19,7 @@ The options for the dashboards plugin is a list of objects with the following pr
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:

@@ -51,7 +51,7 @@ The following options can be used for a panel with the klogs plugin:
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:
@@ -91,7 +91,7 @@ The following dashboard, shows an example of how to use aggregations within a da
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 metadata:
   name: logs

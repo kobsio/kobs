@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
-	dashboard "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	applicationClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/application/clientset/versioned"
 	dashboardClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/dashboard/clientset/versioned"
 	teamClientsetVersioned "github.com/kobsio/kobs/pkg/api/clients/team/clientset/versioned"
@@ -29,7 +29,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	apiruntime "k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -45,7 +45,7 @@ var (
 type Client interface {
 	GetName() string
 	GetCRDs() []CRD
-	GetClient(schema *apiruntime.Scheme) (controllerRuntimeClient.Client, error)
+	GetClient(schema *runtime.Scheme) (controllerRuntimeClient.Client, error)
 	GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error)
 	GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error)
 	DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
@@ -56,14 +56,14 @@ type Client interface {
 	GetTerminal(conn *websocket.Conn, namespace, name, container, shell string) error
 	CopyFileFromPod(w http.ResponseWriter, namespace, name, container, srcPath string) error
 	CopyFileToPod(namespace, name, container string, srcFile multipart.File, destPath string) error
-	GetApplications(ctx context.Context, namespace string) ([]application.ApplicationSpec, error)
-	GetApplication(ctx context.Context, namespace, name string) (*application.ApplicationSpec, error)
-	GetTeams(ctx context.Context, namespace string) ([]team.TeamSpec, error)
-	GetTeam(ctx context.Context, namespace, name string) (*team.TeamSpec, error)
-	GetDashboards(ctx context.Context, namespace string) ([]dashboard.DashboardSpec, error)
-	GetDashboard(ctx context.Context, namespace, name string) (*dashboard.DashboardSpec, error)
-	GetUsers(ctx context.Context, namespace string) ([]user.UserSpec, error)
-	GetUser(ctx context.Context, namespace, name string) (*user.UserSpec, error)
+	GetApplications(ctx context.Context, namespace string) ([]applicationv1.ApplicationSpec, error)
+	GetApplication(ctx context.Context, namespace, name string) (*applicationv1.ApplicationSpec, error)
+	GetTeams(ctx context.Context, namespace string) ([]teamv1.TeamSpec, error)
+	GetTeam(ctx context.Context, namespace, name string) (*teamv1.TeamSpec, error)
+	GetDashboards(ctx context.Context, namespace string) ([]dashboardv1.DashboardSpec, error)
+	GetDashboard(ctx context.Context, namespace, name string) (*dashboardv1.DashboardSpec, error)
+	GetUsers(ctx context.Context, namespace string) ([]userv1.UserSpec, error)
+	GetUser(ctx context.Context, namespace, name string) (*userv1.UserSpec, error)
 	loadCRDs()
 }
 
@@ -127,7 +127,7 @@ func (c *client) GetCRDs() []CRD {
 }
 
 // GetClient returns a new client to perform CRUD operations on Kubernetes objects.
-func (c *client) GetClient(schema *apiruntime.Scheme) (controllerRuntimeClient.Client, error) {
+func (c *client) GetClient(schema *runtime.Scheme) (controllerRuntimeClient.Client, error) {
 	return controllerRuntimeClient.New(c.config, controllerRuntimeClient.Options{
 		Scheme: schema,
 	})
@@ -377,13 +377,13 @@ func (c *client) CopyFileToPod(namespace, name, container string, srcFile multip
 
 // GetApplications returns a list of applications gor the given namespace. It also adds the cluster, namespace and
 // application name to the Application CR, so that this information must not be specified by the user in the CR.
-func (c *client) GetApplications(ctx context.Context, namespace string) ([]application.ApplicationSpec, error) {
-	applicationsList, err := c.applicationClientset.KobsV1beta1().Applications(namespace).List(ctx, metav1.ListOptions{})
+func (c *client) GetApplications(ctx context.Context, namespace string) ([]applicationv1.ApplicationSpec, error) {
+	applicationsList, err := c.applicationClientset.KobsV1().Applications(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	var applications []application.ApplicationSpec
+	var applications []applicationv1.ApplicationSpec
 
 	for _, applicationItem := range applicationsList.Items {
 		application := setApplicationDefaults(applicationItem.Spec, c.name, applicationItem.Namespace, applicationItem.Name)
@@ -396,8 +396,8 @@ func (c *client) GetApplications(ctx context.Context, namespace string) ([]appli
 // GetApplication returns a application for the given namespace and name. After the application is retrieved we replace,
 // the cluster, namespace and name in the spec of the Application CR. This is needed, so that the user doesn't have to,
 // provide these fields.
-func (c *client) GetApplication(ctx context.Context, namespace, name string) (*application.ApplicationSpec, error) {
-	teamItem, err := c.applicationClientset.KobsV1beta1().Applications(namespace).Get(ctx, name, metav1.GetOptions{})
+func (c *client) GetApplication(ctx context.Context, namespace, name string) (*applicationv1.ApplicationSpec, error) {
+	teamItem, err := c.applicationClientset.KobsV1().Applications(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -408,13 +408,13 @@ func (c *client) GetApplication(ctx context.Context, namespace, name string) (*a
 
 // GetTeams returns a list of teams gor the given namespace. It also adds the cluster, namespace and team name to the
 // Team CR, so that this information must not be specified by the user in the CR.
-func (c *client) GetTeams(ctx context.Context, namespace string) ([]team.TeamSpec, error) {
-	teamsList, err := c.teamClientset.KobsV1beta1().Teams(namespace).List(ctx, metav1.ListOptions{})
+func (c *client) GetTeams(ctx context.Context, namespace string) ([]teamv1.TeamSpec, error) {
+	teamsList, err := c.teamClientset.KobsV1().Teams(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	var teams []team.TeamSpec
+	var teams []teamv1.TeamSpec
 
 	for _, teamItem := range teamsList.Items {
 		team := setTeamDefaults(teamItem.Spec, c.name, teamItem.Namespace, teamItem.Name)
@@ -427,8 +427,8 @@ func (c *client) GetTeams(ctx context.Context, namespace string) ([]team.TeamSpe
 // GetTeam returns a team for the given namespace and name. After the team is retrieved we replace, the cluster,
 // namespace and name in the spec of the Team CR. This is needed, so that the user doesn't have to, provide these
 // fields.
-func (c *client) GetTeam(ctx context.Context, namespace, name string) (*team.TeamSpec, error) {
-	teamItem, err := c.teamClientset.KobsV1beta1().Teams(namespace).Get(ctx, name, metav1.GetOptions{})
+func (c *client) GetTeam(ctx context.Context, namespace, name string) (*teamv1.TeamSpec, error) {
+	teamItem, err := c.teamClientset.KobsV1().Teams(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -439,13 +439,13 @@ func (c *client) GetTeam(ctx context.Context, namespace, name string) (*team.Tea
 
 // GetDashboards returns a list of dashboards gor the given namespace. It also adds the cluster, namespace and dashboard
 // name to the Dashboard CR, so that this information must not be specified by the user in the CR.
-func (c *client) GetDashboards(ctx context.Context, namespace string) ([]dashboard.DashboardSpec, error) {
-	dashboardsList, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).List(ctx, metav1.ListOptions{})
+func (c *client) GetDashboards(ctx context.Context, namespace string) ([]dashboardv1.DashboardSpec, error) {
+	dashboardsList, err := c.dashboardClientset.KobsV1().Dashboards(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	var dashboards []dashboard.DashboardSpec
+	var dashboards []dashboardv1.DashboardSpec
 
 	for _, dashboardItem := range dashboardsList.Items {
 		dashboard := setDashboardDefaults(dashboardItem.Spec, c.name, dashboardItem.Namespace, dashboardItem.Name)
@@ -458,8 +458,8 @@ func (c *client) GetDashboards(ctx context.Context, namespace string) ([]dashboa
 // GetDashboard returns a dashboard for the given namespace and name. After the dashboard is retrieved we replace,
 // the cluster, namespace and name in the spec of the Dashboard CR. This is needed, so that the user doesn't have to,
 // provide these fields.
-func (c *client) GetDashboard(ctx context.Context, namespace, name string) (*dashboard.DashboardSpec, error) {
-	dashboardItem, err := c.dashboardClientset.KobsV1beta1().Dashboards(namespace).Get(ctx, name, metav1.GetOptions{})
+func (c *client) GetDashboard(ctx context.Context, namespace, name string) (*dashboardv1.DashboardSpec, error) {
+	dashboardItem, err := c.dashboardClientset.KobsV1().Dashboards(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -470,13 +470,13 @@ func (c *client) GetDashboard(ctx context.Context, namespace, name string) (*das
 
 // GetUsers returns a list of users for the given namespace. It also adds the cluster, namespace and user name to the
 // User CR, so that this information must not be specified by the user in the CR.
-func (c *client) GetUsers(ctx context.Context, namespace string) ([]user.UserSpec, error) {
-	usersList, err := c.userClientset.KobsV1beta1().Users(namespace).List(ctx, metav1.ListOptions{})
+func (c *client) GetUsers(ctx context.Context, namespace string) ([]userv1.UserSpec, error) {
+	usersList, err := c.userClientset.KobsV1().Users(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	var users []user.UserSpec
+	var users []userv1.UserSpec
 
 	for _, userItem := range usersList.Items {
 		user := setUserDefaults(userItem.Spec, c.name, userItem.Namespace, userItem.Name)
@@ -489,8 +489,8 @@ func (c *client) GetUsers(ctx context.Context, namespace string) ([]user.UserSpe
 // GetUser returns a user for the given namespace and name. After the user is retrieved we replace, the cluster,
 // namespace and name in the spec of the User CR. This is needed, so that the user doesn't have to, provide these
 // fields.
-func (c *client) GetUser(ctx context.Context, namespace, name string) (*user.UserSpec, error) {
-	userItem, err := c.userClientset.KobsV1beta1().Users(namespace).Get(ctx, name, metav1.GetOptions{})
+func (c *client) GetUser(ctx context.Context, namespace, name string) (*userv1.UserSpec, error) {
+	userItem, err := c.userClientset.KobsV1().Users(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}

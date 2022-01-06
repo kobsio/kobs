@@ -7,9 +7,7 @@ import (
 
 	controllerRuntimeClient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	dashboardv1beta1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1beta1"
-
-	genericclioptions "k8s.io/cli-runtime/pkg/genericclioptions"
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 
 	http "net/http"
 
@@ -19,13 +17,13 @@ import (
 
 	runtime "k8s.io/apimachinery/pkg/runtime"
 
-	teamv1beta1 "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
 
 	time "time"
 
-	userv1beta1 "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 
-	v1beta1 "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
 
 	websocket "github.com/gorilla/websocket"
 )
@@ -92,15 +90,15 @@ func (_m *MockClient) DeleteResource(ctx context.Context, namespace string, name
 }
 
 // GetApplication provides a mock function with given fields: ctx, namespace, name
-func (_m *MockClient) GetApplication(ctx context.Context, namespace string, name string) (*v1beta1.ApplicationSpec, error) {
+func (_m *MockClient) GetApplication(ctx context.Context, namespace string, name string) (*applicationv1.ApplicationSpec, error) {
 	ret := _m.Called(ctx, namespace, name)
 
-	var r0 *v1beta1.ApplicationSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *v1beta1.ApplicationSpec); ok {
+	var r0 *applicationv1.ApplicationSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *applicationv1.ApplicationSpec); ok {
 		r0 = rf(ctx, namespace, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*v1beta1.ApplicationSpec)
+			r0 = ret.Get(0).(*applicationv1.ApplicationSpec)
 		}
 	}
 
@@ -115,15 +113,15 @@ func (_m *MockClient) GetApplication(ctx context.Context, namespace string, name
 }
 
 // GetApplications provides a mock function with given fields: ctx, namespace
-func (_m *MockClient) GetApplications(ctx context.Context, namespace string) ([]v1beta1.ApplicationSpec, error) {
+func (_m *MockClient) GetApplications(ctx context.Context, namespace string) ([]applicationv1.ApplicationSpec, error) {
 	ret := _m.Called(ctx, namespace)
 
-	var r0 []v1beta1.ApplicationSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string) []v1beta1.ApplicationSpec); ok {
+	var r0 []applicationv1.ApplicationSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string) []applicationv1.ApplicationSpec); ok {
 		r0 = rf(ctx, namespace)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]v1beta1.ApplicationSpec)
+			r0 = ret.Get(0).([]applicationv1.ApplicationSpec)
 		}
 	}
 
@@ -177,15 +175,15 @@ func (_m *MockClient) GetClient(schema *runtime.Scheme) (controllerRuntimeClient
 }
 
 // GetDashboard provides a mock function with given fields: ctx, namespace, name
-func (_m *MockClient) GetDashboard(ctx context.Context, namespace string, name string) (*dashboardv1beta1.DashboardSpec, error) {
+func (_m *MockClient) GetDashboard(ctx context.Context, namespace string, name string) (*dashboardv1.DashboardSpec, error) {
 	ret := _m.Called(ctx, namespace, name)
 
-	var r0 *dashboardv1beta1.DashboardSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *dashboardv1beta1.DashboardSpec); ok {
+	var r0 *dashboardv1.DashboardSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *dashboardv1.DashboardSpec); ok {
 		r0 = rf(ctx, namespace, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*dashboardv1beta1.DashboardSpec)
+			r0 = ret.Get(0).(*dashboardv1.DashboardSpec)
 		}
 	}
 
@@ -200,15 +198,15 @@ func (_m *MockClient) GetDashboard(ctx context.Context, namespace string, name s
 }
 
 // GetDashboards provides a mock function with given fields: ctx, namespace
-func (_m *MockClient) GetDashboards(ctx context.Context, namespace string) ([]dashboardv1beta1.DashboardSpec, error) {
+func (_m *MockClient) GetDashboards(ctx context.Context, namespace string) ([]dashboardv1.DashboardSpec, error) {
 	ret := _m.Called(ctx, namespace)
 
-	var r0 []dashboardv1beta1.DashboardSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string) []dashboardv1beta1.DashboardSpec); ok {
+	var r0 []dashboardv1.DashboardSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string) []dashboardv1.DashboardSpec); ok {
 		r0 = rf(ctx, namespace)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]dashboardv1beta1.DashboardSpec)
+			r0 = ret.Get(0).([]dashboardv1.DashboardSpec)
 		}
 	}
 
@@ -280,22 +278,6 @@ func (_m *MockClient) GetNamespaces(ctx context.Context, cacheDuration time.Dura
 	return r0, r1
 }
 
-// GetRESTClientGetter provides a mock function with given fields:
-func (_m *MockClient) GetRESTClientGetter() genericclioptions.RESTClientGetter {
-	ret := _m.Called()
-
-	var r0 genericclioptions.RESTClientGetter
-	if rf, ok := ret.Get(0).(func() genericclioptions.RESTClientGetter); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(genericclioptions.RESTClientGetter)
-		}
-	}
-
-	return r0
-}
-
 // GetResources provides a mock function with given fields: ctx, namespace, name, path, resource, paramName, param
 func (_m *MockClient) GetResources(ctx context.Context, namespace string, name string, path string, resource string, paramName string, param string) ([]byte, error) {
 	ret := _m.Called(ctx, namespace, name, path, resource, paramName, param)
@@ -320,15 +302,15 @@ func (_m *MockClient) GetResources(ctx context.Context, namespace string, name s
 }
 
 // GetTeam provides a mock function with given fields: ctx, namespace, name
-func (_m *MockClient) GetTeam(ctx context.Context, namespace string, name string) (*teamv1beta1.TeamSpec, error) {
+func (_m *MockClient) GetTeam(ctx context.Context, namespace string, name string) (*teamv1.TeamSpec, error) {
 	ret := _m.Called(ctx, namespace, name)
 
-	var r0 *teamv1beta1.TeamSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *teamv1beta1.TeamSpec); ok {
+	var r0 *teamv1.TeamSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *teamv1.TeamSpec); ok {
 		r0 = rf(ctx, namespace, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*teamv1beta1.TeamSpec)
+			r0 = ret.Get(0).(*teamv1.TeamSpec)
 		}
 	}
 
@@ -343,15 +325,15 @@ func (_m *MockClient) GetTeam(ctx context.Context, namespace string, name string
 }
 
 // GetTeams provides a mock function with given fields: ctx, namespace
-func (_m *MockClient) GetTeams(ctx context.Context, namespace string) ([]teamv1beta1.TeamSpec, error) {
+func (_m *MockClient) GetTeams(ctx context.Context, namespace string) ([]teamv1.TeamSpec, error) {
 	ret := _m.Called(ctx, namespace)
 
-	var r0 []teamv1beta1.TeamSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string) []teamv1beta1.TeamSpec); ok {
+	var r0 []teamv1.TeamSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string) []teamv1.TeamSpec); ok {
 		r0 = rf(ctx, namespace)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]teamv1beta1.TeamSpec)
+			r0 = ret.Get(0).([]teamv1.TeamSpec)
 		}
 	}
 
@@ -380,15 +362,15 @@ func (_m *MockClient) GetTerminal(conn *websocket.Conn, namespace string, name s
 }
 
 // GetUser provides a mock function with given fields: ctx, namespace, name
-func (_m *MockClient) GetUser(ctx context.Context, namespace string, name string) (*userv1beta1.UserSpec, error) {
+func (_m *MockClient) GetUser(ctx context.Context, namespace string, name string) (*userv1.UserSpec, error) {
 	ret := _m.Called(ctx, namespace, name)
 
-	var r0 *userv1beta1.UserSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *userv1beta1.UserSpec); ok {
+	var r0 *userv1.UserSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *userv1.UserSpec); ok {
 		r0 = rf(ctx, namespace, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*userv1beta1.UserSpec)
+			r0 = ret.Get(0).(*userv1.UserSpec)
 		}
 	}
 
@@ -403,15 +385,15 @@ func (_m *MockClient) GetUser(ctx context.Context, namespace string, name string
 }
 
 // GetUsers provides a mock function with given fields: ctx, namespace
-func (_m *MockClient) GetUsers(ctx context.Context, namespace string) ([]userv1beta1.UserSpec, error) {
+func (_m *MockClient) GetUsers(ctx context.Context, namespace string) ([]userv1.UserSpec, error) {
 	ret := _m.Called(ctx, namespace)
 
-	var r0 []userv1beta1.UserSpec
-	if rf, ok := ret.Get(0).(func(context.Context, string) []userv1beta1.UserSpec); ok {
+	var r0 []userv1.UserSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string) []userv1.UserSpec); ok {
 		r0 = rf(ctx, namespace)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]userv1beta1.UserSpec)
+			r0 = ret.Get(0).([]userv1.UserSpec)
 		}
 	}
 

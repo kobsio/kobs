@@ -16,7 +16,7 @@ spec:
     singular: application
   scope: Namespaced
   versions:
-  - name: v1beta1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: Application is the Application CRD.

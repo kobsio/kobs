@@ -14,7 +14,7 @@ The users plugin can be used to show a list of users which are members of the sp
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Team
 metadata:
   name: team-diablo

@@ -29,7 +29,7 @@ In the following example each member of `team1@kobs.io` will get access to all H
 
     ```yaml
     ---
-    apiVersion: kobs.io/v1beta1
+    apiVersion: kobs.io/v1
     kind: Team
     metadata:
       name: team1
@@ -52,7 +52,7 @@ In the following example each member of `team1@kobs.io` will get access to all H
 
     ```yaml
     ---
-    apiVersion: kobs.io/v1beta1
+    apiVersion: kobs.io/v1
     kind: Team
     metadata:
       name: team2
@@ -83,7 +83,7 @@ The following dashboards shows all Helm releases from the `kobs` and `monitoring
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 spec:
   rows:

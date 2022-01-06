@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	user "github.com/kobsio/kobs/pkg/api/apis/user/v1beta1"
+	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
@@ -119,7 +119,7 @@ func TestGetReleases(t *testing.T) {
 				mockHelmClient.On("List", mock.Anything, mock.Anything).Return([]*client.Release{{Name: "kobs", Namespace: "kobs", Version: 2, Cluster: "cluster1"}, {Name: "prometheus", Namespace: "monitoring", Version: 1, Cluster: "cluster1"}}, nil)
 			},
 			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"clusters": ["*"], "namespaces": ["kobs"], "names": ["*"]}]`)}}}}}))
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "helm", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"clusters": ["*"], "namespaces": ["kobs"], "names": ["*"]}]`)}}}}}))
 				router.getReleases(w, req)
 			},
 		},

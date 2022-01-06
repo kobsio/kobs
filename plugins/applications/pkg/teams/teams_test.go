@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
-	team "github.com/kobsio/kobs/pkg/api/apis/team/v1beta1"
+	applicationv1 "github.com/kobsio/kobs/pkg/api/apis/application/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/api/apis/team/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 
@@ -31,20 +31,20 @@ func TestGet(t *testing.T) {
 	})
 
 	t.Run("return teams", func(t *testing.T) {
-		mockClusterClient.On("GetTeams", mock.Anything, "").Return([]team.TeamSpec{
+		mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{
 			{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"},
 		}, nil).Once()
-		mockClusterClient.On("GetApplications", mock.Anything, "").Return([]application.ApplicationSpec{
-			{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}},
+		mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{
+			{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}},
 		}, nil).Once()
 
 		teams := Get(context.Background(), mockClustersClient)
-		require.Equal(t, []Team{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1", Applications: []application.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}}}, teams)
+		require.Equal(t, []Team{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1", Applications: []applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}}}, teams)
 	})
 }
 
 func TestGetApplications(t *testing.T) {
-	applicationsList := []application.ApplicationSpec{
+	applicationsList := []applicationv1.ApplicationSpec{
 		{Cluster: "cluster1", Namespace: "namespace1", Name: "application1"},
 		{Cluster: "cluster1", Namespace: "namespace1", Name: "application2"},
 		{Cluster: "cluster1", Namespace: "namespace1", Name: "application3"},
@@ -56,10 +56,10 @@ func TestGetApplications(t *testing.T) {
 	}
 
 	require.Equal(t, applicationsList, GetApplications(teamsList, "cluster1", "namespace1", "team1"))
-	require.Equal(t, []application.ApplicationSpec(nil), GetApplications(teamsList, "cluster1", "namespace1", "team3"))
+	require.Equal(t, []applicationv1.ApplicationSpec(nil), GetApplications(teamsList, "cluster1", "namespace1", "team3"))
 }
 
 func TestDoesApplicationContainsTeam(t *testing.T) {
-	require.Equal(t, true, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
-	require.Equal(t, false, doesApplicationContainsTeam(application.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []application.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team2"))
+	require.Equal(t, true, doesApplicationContainsTeam(applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team1"))
+	require.Equal(t, false, doesApplicationContainsTeam(applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}, "cluster1", "namespace1", "team2"))
 }

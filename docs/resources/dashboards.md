@@ -73,7 +73,7 @@ If the `core` plugin is used to get the values for a variable the options from t
 
     ```yaml
     ---
-    apiVersion: kobs.io/v1beta1
+    apiVersion: kobs.io/v1
     kind: Dashboard
     spec:
       variables:
@@ -136,7 +136,7 @@ The dashboard only uses the Prometheus plugin to show the CPU Usage, Memory Usag
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 metadata:
   name: resource-usage

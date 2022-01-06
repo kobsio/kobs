@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	application "github.com/kobsio/kobs/pkg/api/apis/application/v1beta1"
+	v1application "github.com/kobsio/kobs/pkg/api/apis/application/v1"
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
@@ -111,7 +111,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		// When no team is definied for the gallery view, we are returning all applications for the requested clusters
 		// and namespaces. For this we just have to loop through the clusters and namespaces and add all the
 		// applications to one list.
-		var applications []application.ApplicationSpec
+		var applications []v1application.ApplicationSpec
 
 		for _, clusterName := range clusterNames {
 			cluster := router.clustersClient.GetCluster(clusterName)

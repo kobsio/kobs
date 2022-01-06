@@ -106,7 +106,7 @@ In the following example each member of `team1@kobs.io` will get access to all A
 
     ```yaml
     ---
-    apiVersion: kobs.io/v1beta1
+    apiVersion: kobs.io/v1
     kind: Team
     metadata:
       name: team1
@@ -138,7 +138,7 @@ In the following example each member of `team1@kobs.io` will get access to all A
 
     ```yaml
     ---
-    apiVersion: kobs.io/v1beta1
+    apiVersion: kobs.io/v1
     kind: Team
     metadata:
       name: team2
@@ -193,7 +193,7 @@ The following dashboards displays a list of container instances and the details 
 
 ```yaml
 ---
-apiVersion: kobs.io/v1beta1
+apiVersion: kobs.io/v1
 kind: Dashboard
 metadata:
   name: azure-container-instance
