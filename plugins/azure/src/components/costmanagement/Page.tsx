@@ -49,7 +49,7 @@ const CostManagementPage: React.FunctionComponent<ICostManagementPageProps> = ({
         <CostManagementToolbar resourceGroups={resourceGroups} options={options} setOptions={changeOptions} />
       </PageSection>
 
-      <PageSection style={{ minHeight: '100%' }} variant={PageSectionVariants.default}>
+      <PageSection variant={PageSectionVariants.default}>
         <Card isCompact={true}>
           <CardBody>
             <div style={{ height: '500px' }}>

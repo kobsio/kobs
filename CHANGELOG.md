@@ -34,6 +34,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#273](https://github.com/kobsio/kobs/pull/273): [azure] Add tests for Azure plugin.
 - [#277](https://github.com/kobsio/kobs/pull/277): Support multiple versions for the documentation.
 - [#282](https://github.com/kobsio/kobs/pull/282): [helm] Add permission handling based on clusters, namespaces and the names of Helm releases.
+- [#283](https://github.com/kobsio/kobs/pull/283): [core] Add optional `defaultTime` argument to `getTimeParams` function to overwrite the default time range.
 
 ### Fixed
 

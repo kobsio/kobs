@@ -21,7 +21,7 @@ import {
 import { FilterIcon, RedoIcon, SearchIcon } from '@patternfly/react-icons';
 import React, { useEffect, useState } from 'react';
 
-import { IPluginTimes, TTime } from '../../context/PluginsContext';
+import { IPluginTimes, TTime, timeOptions } from '../../context/PluginsContext';
 import { formatTime } from '../../utils/time';
 
 export type TOptionsAdditionalFields = 'text' | 'select';
@@ -38,58 +38,6 @@ export interface IOptionsAdditionalFields {
   values?: string[];
   type?: TOptionsAdditionalFields;
 }
-
-// TTimeOptions is an array with all available type for TTime. It is used to verify that the value of a string is an
-// valid option for the TTime type.
-export const TTimeOptions = [
-  'custom',
-  'last12Hours',
-  'last15Minutes',
-  'last1Day',
-  'last1Hour',
-  'last1Year',
-  'last2Days',
-  'last30Days',
-  'last30Minutes',
-  'last3Hours',
-  'last5Minutes',
-  'last6Hours',
-  'last6Months',
-  'last7Days',
-  'last90Days',
-];
-
-// ITime is the interface for a time in the times map. It contains a label which should be displayed in the Options
-// component and the seconds between the start and the end time.
-interface ITime {
-  label: string;
-  seconds: number;
-}
-
-// ITimes is the interface for the map of all available time options. The key in this interface must be a value from the
-// TTime type.
-interface ITimes {
-  [key: string]: ITime;
-}
-
-// timeOptions implements the ITimes interface with all the available time options we have. These options are then
-// displayed as list to allow a user to quickly select a time range.
-export const timeOptions: ITimes = {
-  last12Hours: { label: 'Last 12 Hours', seconds: 43200 },
-  last15Minutes: { label: 'Last 15 Minutes', seconds: 900 },
-  last1Day: { label: 'Last 1 Day', seconds: 86400 },
-  last1Hour: { label: 'Last 1 Hour', seconds: 3600 },
-  last1Year: { label: 'Last 1 Year', seconds: 31536000 },
-  last2Days: { label: 'Last 2 Days', seconds: 172800 },
-  last30Days: { label: 'Last 30 Days', seconds: 2592000 },
-  last30Minutes: { label: 'Last 30 Minutes', seconds: 1800 },
-  last3Hours: { label: 'Last 3 Hours', seconds: 10800 },
-  last5Minutes: { label: 'Last 5 Minutes', seconds: 300 },
-  last6Hours: { label: 'Last 6 Hours', seconds: 21600 },
-  last6Months: { label: 'Last 6 Months', seconds: 15552000 },
-  last7Days: { label: 'Last 7 Days', seconds: 604800 },
-  last90Days: { label: 'Last 90 Days', seconds: 7776000 },
-};
 
 // IToolbarProps is the interface for the properties of the Toolbar component. The user can pass in some additional
 // fields and must pass the time, timeEnd and time Start value. The required setOptions function is used to change the
