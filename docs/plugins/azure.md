@@ -132,7 +132,6 @@ In the following example each member of `team1@kobs.io` will get access to all A
               - "*"
             verbs:
               - "*"
-        custom:
     ```
 
 ??? note "team2"
