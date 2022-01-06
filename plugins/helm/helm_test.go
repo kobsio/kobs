@@ -1,6 +1,7 @@
 package helm
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -8,8 +9,10 @@ import (
 	"github.com/kobsio/kobs/pkg/api/clusters"
 	"github.com/kobsio/kobs/pkg/api/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/api/plugins/plugin"
+	"github.com/kobsio/kobs/plugins/helm/pkg/client"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,12 +22,50 @@ func TestGetReleases(t *testing.T) {
 		url                string
 		expectedStatusCode int
 		expectedBody       string
+		prepare            func(mockHelmClient *client.MockClient)
 	}{
 		{
 			name:               "invalid cluster name",
 			url:                "/releases?cluster=cluster2",
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Invalid cluster name\"}\n",
+			prepare:            func(mockHelmClient *client.MockClient) {},
+		},
+		{
+			name:               "namespaces nil: could not list helm releases",
+			url:                "/releases?cluster=cluster1",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not list Helm releases: could not list helm releases\"}\n",
+			prepare: func(mockHelmClient *client.MockClient) {
+				mockHelmClient.On("List", mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not list helm releases"))
+			},
+		},
+		{
+			name:               "namespaces: could not list helm releases",
+			url:                "/releases?cluster=cluster1&namespace=namespace1",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not list Helm releases: could not list helm releases\"}\n",
+			prepare: func(mockHelmClient *client.MockClient) {
+				mockHelmClient.On("List", mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not list helm releases"))
+			},
+		},
+		{
+			name:               "namespaces nil: return releases",
+			url:                "/releases?cluster=cluster1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"name\":\"kobs\",\"version\":2,\"namespace\":\"kobs\"}]\n",
+			prepare: func(mockHelmClient *client.MockClient) {
+				mockHelmClient.On("List", mock.Anything, mock.Anything).Return([]*client.Release{{Name: "kobs", Namespace: "kobs", Version: 2, Cluster: "cluster1"}}, nil)
+			},
+		},
+		{
+			name:               "namespaces: return releases",
+			url:                "/releases?cluster=cluster1&namespace=namespace1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"name\":\"kobs\",\"version\":2,\"namespace\":\"kobs\"}]\n",
+			prepare: func(mockHelmClient *client.MockClient) {
+				mockHelmClient.On("List", mock.Anything, mock.Anything).Return([]*client.Release{{Name: "kobs", Namespace: "kobs", Version: 2, Cluster: "cluster1"}}, nil)
+			},
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
@@ -35,6 +76,16 @@ func TestGetReleases(t *testing.T) {
 			mockClustersClient.AssertExpectations(t)
 			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
 			mockClustersClient.On("GetCluster", "cluster2").Return(nil)
+
+			mockHelmClient := &client.MockClient{}
+			mockHelmClient.AssertExpectations(t)
+			tt.prepare(mockHelmClient)
+
+			testNewHelmClient := func(clusterClient cluster.Client) client.Client {
+				return mockHelmClient
+			}
+
+			newHelmClient = testNewHelmClient
 
 			router := Router{chi.NewRouter(), mockClustersClient, Config{}}
 			router.Get("/releases", router.getReleases)
@@ -69,6 +120,18 @@ func TestGetRelease(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Invalid cluster name\"}\n",
 		},
+		{
+			name:               "could not get release",
+			url:                "/release?cluster=cluster1&namespace=namespace2&version=1",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not get Helm release: could not get helm release\"}\n",
+		},
+		{
+			name:               "return release",
+			url:                "/release?cluster=cluster1&namespace=namespace1&version=1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "{\"cluster\":\"cluster1\",\"name\":\"kobs\",\"version\":1,\"namespace\":\"kobs\"}\n",
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			mockClusterClient := &cluster.MockClient{}
@@ -78,6 +141,17 @@ func TestGetRelease(t *testing.T) {
 			mockClustersClient.AssertExpectations(t)
 			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
 			mockClustersClient.On("GetCluster", "cluster2").Return(nil)
+
+			mockHelmClient := &client.MockClient{}
+			mockHelmClient.AssertExpectations(t)
+			mockHelmClient.On("Get", mock.Anything, "namespace1", mock.Anything, mock.Anything).Return(&client.Release{Name: "kobs", Namespace: "kobs", Version: 1, Cluster: "cluster1"}, nil)
+			mockHelmClient.On("Get", mock.Anything, "namespace2", mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get helm release"))
+
+			testNewHelmClient := func(clusterClient cluster.Client) client.Client {
+				return mockHelmClient
+			}
+
+			newHelmClient = testNewHelmClient
 
 			router := Router{chi.NewRouter(), mockClustersClient, Config{}}
 			router.Get("/release", router.getRelease)
@@ -106,6 +180,18 @@ func TestGetReleaseHistory(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Invalid cluster name\"}\n",
 		},
+		{
+			name:               "could not get release",
+			url:                "/release?cluster=cluster1&namespace=namespace2",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not get Helm release: could not get helm release history\"}\n",
+		},
+		{
+			name:               "return release",
+			url:                "/release?cluster=cluster1&namespace=namespace1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"name\":\"kobs\",\"version\":1,\"namespace\":\"kobs\"},{\"cluster\":\"cluster1\",\"name\":\"kobs\",\"version\":2,\"namespace\":\"kobs\"}]\n",
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			mockClusterClient := &cluster.MockClient{}
@@ -115,6 +201,17 @@ func TestGetReleaseHistory(t *testing.T) {
 			mockClustersClient.AssertExpectations(t)
 			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
 			mockClustersClient.On("GetCluster", "cluster2").Return(nil)
+
+			mockHelmClient := &client.MockClient{}
+			mockHelmClient.AssertExpectations(t)
+			mockHelmClient.On("History", mock.Anything, "namespace1", mock.Anything).Return([]*client.Release{{Name: "kobs", Namespace: "kobs", Version: 1, Cluster: "cluster1"}, {Name: "kobs", Namespace: "kobs", Version: 2, Cluster: "cluster1"}}, nil)
+			mockHelmClient.On("History", mock.Anything, "namespace2", mock.Anything).Return(nil, fmt.Errorf("could not get helm release history"))
+
+			testNewHelmClient := func(clusterClient cluster.Client) client.Client {
+				return mockHelmClient
+			}
+
+			newHelmClient = testNewHelmClient
 
 			router := Router{chi.NewRouter(), mockClustersClient, Config{}}
 			router.Get("/release/history", router.getReleaseHistory)

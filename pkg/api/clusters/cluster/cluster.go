@@ -31,7 +31,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	apiruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
@@ -47,7 +46,6 @@ type Client interface {
 	GetName() string
 	GetCRDs() []CRD
 	GetClient(schema *apiruntime.Scheme) (controllerRuntimeClient.Client, error)
-	GetRESTClientGetter() genericclioptions.RESTClientGetter
 	GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error)
 	GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error)
 	DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
@@ -133,21 +131,6 @@ func (c *client) GetClient(schema *apiruntime.Scheme) (controllerRuntimeClient.C
 	return controllerRuntimeClient.New(c.config, controllerRuntimeClient.Options{
 		Scheme: schema,
 	})
-}
-
-func (c *client) GetRESTClientGetter() genericclioptions.RESTClientGetter {
-	kubeConfig := genericclioptions.NewConfigFlags(false)
-
-	kubeConfig.CertFile = &c.config.CertFile
-	kubeConfig.KeyFile = &c.config.KeyFile
-	kubeConfig.BearerToken = &c.config.BearerToken
-	kubeConfig.Username = &c.config.Username
-	kubeConfig.Password = &c.config.Password
-	kubeConfig.APIServer = &c.config.Host
-	kubeConfig.Insecure = &c.config.Insecure
-	// kubeConfig.Namespace = &namespace
-
-	return kubeConfig
 }
 
 // GetNamespaces returns all namespaces for the cluster. To reduce the latency and the number of API calls, we are

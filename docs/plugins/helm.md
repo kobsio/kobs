@@ -6,14 +6,6 @@ The Helm plugin can be used to manage Helm releases within kobs.
 
 ![Details](assets/helm-details.png)
 
-## Configuration
-
-The configuration for the Helm plugin can be used to set the driver for Helm.
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| driver | string | Set the Helm driver. | No |
-
 ## Options
 
 The following options can be used for a panel with the Helm plugin:

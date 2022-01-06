@@ -94,6 +94,7 @@ const History: React.FunctionComponent<IHistoryProps> = ({
     return (
       <Alert
         variant={AlertVariant.danger}
+        isInline={true}
         title="Could not get history for Helm release"
         actionLinks={
           <React.Fragment>

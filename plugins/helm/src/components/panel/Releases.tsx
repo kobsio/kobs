@@ -95,6 +95,7 @@ const Releases: React.FunctionComponent<IReleasesProps> = ({
     return (
       <Alert
         variant={AlertVariant.danger}
+        isInline={true}
         title="Could not get Helm releases"
         actionLinks={
           <React.Fragment>

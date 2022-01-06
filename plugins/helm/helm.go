@@ -19,9 +19,7 @@ import (
 const Route = "/helm"
 
 // Config is the structure of the configuration for the Helm plugin.
-type Config struct {
-	Driver string `json:"driver"`
-}
+type Config struct{}
 
 // Router implements the router for the Helm plugin, which can be registered in the router for our rest api. It contains
 // the apie endpoints for the plugin, a clusters client to get the installed Helm releases and the user defined
@@ -32,6 +30,8 @@ type Router struct {
 	config         Config
 }
 
+var newHelmClient = client.New
+
 // getReleases returns a list of all Helm releases for the specified cluster and namespaces. If the namespaces query
 // parameter is empty we list the Helm releases for all namespaces.
 func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +40,7 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get Helm releases.", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces))
 
-	var helmReleases []client.Release
+	var helmReleases []*client.Release
 
 	for _, clusterName := range clusterNames {
 		cluster := router.clustersClient.GetCluster(clusterName)
@@ -51,7 +51,7 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if namespaces == nil {
-			tmpReleases, err := client.New(cluster, "", router.config.Driver).List()
+			tmpReleases, err := newHelmClient(cluster).List(r.Context(), "")
 			if err != nil {
 				log.Error(r.Context(), "Could not list Helm releases.", zap.Error(err), zap.String("cluster", clusterName))
 				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not list Helm releases")
@@ -61,7 +61,7 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 			helmReleases = append(helmReleases, tmpReleases...)
 		} else {
 			for _, namespace := range namespaces {
-				tmpReleases, err := client.New(cluster, namespace, router.config.Driver).List()
+				tmpReleases, err := newHelmClient(cluster).List(r.Context(), namespace)
 				if err != nil {
 					log.Error(r.Context(), "Could not list Helm releases.", zap.Error(err), zap.String("cluster", clusterName))
 					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not list Helm releases")
@@ -100,7 +100,7 @@ func (router *Router) getRelease(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	release, err := client.New(cluster, namespace, router.config.Driver).Get(name, parsedVersion)
+	release, err := newHelmClient(cluster).Get(r.Context(), namespace, name, parsedVersion)
 	if err != nil {
 		log.Error(r.Context(), "Could not get Helm release.", zap.Error(err), zap.String("cluster", clusterName))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get Helm release")
@@ -125,7 +125,7 @@ func (router *Router) getReleaseHistory(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	releases, err := client.New(cluster, namespace, router.config.Driver).History(name)
+	releases, err := newHelmClient(cluster).History(r.Context(), namespace, name)
 	if err != nil {
 		log.Error(r.Context(), "Could not get Helm release.", zap.Error(err), zap.String("cluster", clusterName))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get Helm release")
