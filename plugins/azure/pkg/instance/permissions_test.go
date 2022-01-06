@@ -7,7 +7,7 @@ import (
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 
 	"github.com/stretchr/testify/require"
-	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )
 
 func TestCheckPermissions(t *testing.T) {
@@ -18,19 +18,19 @@ func TestCheckPermissions(t *testing.T) {
 
 	t.Run("invalid permission format", func(t *testing.T) {
 		instance := instance{permissionsEnabled: true}
-		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "azure", Permissions: v1.JSON{Raw: []byte(`"resources": "*"`)}}}}}
+		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "azure", Permissions: apiextensionsv1.JSON{Raw: []byte(`"resources": "*"`)}}}}}
 		require.Error(t, instance.CheckPermissions("azure", user, "", "", ""))
 	})
 
 	t.Run("access forbidden", func(t *testing.T) {
 		instance := instance{permissionsEnabled: true}
-		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "azure", Permissions: v1.JSON{Raw: []byte(`[{"resources": ["*"], "resourceGroups": ["helloworld"], "verbs": ["*"]}]`)}}}}}
+		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "azure", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"resources": ["*"], "resourceGroups": ["helloworld"], "verbs": ["*"]}]`)}}}}}
 		require.Error(t, instance.CheckPermissions("azure", user, "kubernetesservices", "foobar", "get"))
 	})
 
-	t.Run("invalid permission format", func(t *testing.T) {
+	t.Run("access allowed", func(t *testing.T) {
 		instance := instance{permissionsEnabled: true}
-		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "azure", Permissions: v1.JSON{Raw: []byte(`[{"resources": ["*"], "resourceGroups": ["*"], "verbs": ["*"]}]`)}}}}}
+		user := &authContext.User{Permissions: user.Permissions{Plugins: []user.Plugin{{Name: "azure", Permissions: apiextensionsv1.JSON{Raw: []byte(`[{"resources": ["*"], "resourceGroups": ["*"], "verbs": ["*"]}]`)}}}}}
 		require.NoError(t, instance.CheckPermissions("azure", user, "kubernetesservices", "foobar", "get"))
 	})
 }
