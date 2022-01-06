@@ -1,5 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
+import yaml from 'js-yaml';
 
 import { Editor } from '@kobsio/plugin-core';
 import { IRelease } from '../../../utils/interfaces';
@@ -21,6 +22,24 @@ const DetailsTemplates: React.FunctionComponent<IDetailsTemplatesProps> = ({ rel
 
   return (
     <Accordion asDefinitionList={false}>
+      <AccordionItem>
+        <AccordionToggle
+          onClick={(): void => toggle('values.yaml')}
+          isExpanded={expanded.includes('values.yaml')}
+          id={'values.yaml'}
+        >
+          values.yaml
+        </AccordionToggle>
+        <AccordionContent
+          id={'values.yaml'}
+          style={{ maxWidth: '100%', overflowX: 'scroll' }}
+          isHidden={!expanded.includes('values.yaml')}
+          isFixed={false}
+        >
+          <Editor value={yaml.dump(release.chart?.values)} mode="yaml" readOnly={true} />
+        </AccordionContent>
+      </AccordionItem>
+
       {release.chart?.templates.map((template) => (
         <AccordionItem key={template?.name}>
           <AccordionToggle
@@ -36,7 +55,7 @@ const DetailsTemplates: React.FunctionComponent<IDetailsTemplatesProps> = ({ rel
             isHidden={!expanded.includes(template?.name || '')}
             isFixed={false}
           >
-            <Editor value={atob(template?.data || '')} mode="" readOnly={true} />
+            <Editor value={atob(template?.data || '')} mode="yaml" readOnly={true} />
           </AccordionContent>
         </AccordionItem>
       ))}
