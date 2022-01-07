@@ -810,6 +810,19 @@
     Configuration
   </a>
   
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forbidden" class="md-nav__link">
+    Forbidden
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1108,6 +1121,19 @@
     Configuration
   </a>
   
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forbidden" class="md-nav__link">
+    Forbidden
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1144,11 +1170,18 @@
 <h1 id="resources">Resources</h1>
 <p>The resources plugin allows you to show a list of Kubernetes resources on a dashboard.</p>
 <h2 id="configuration">Configuration</h2>
-<p>The following configuration can be used to  forbid several resources. This means that the provided resources can not be retrieved via the kobs API.</p>
+<p>The following configuration can be used to forbid several resources. This means that the provided resources can not be retrieved via the kobs API.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">forbidden</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secrets</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;secrets&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">verbs</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="nt">webSocket</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ws://localhost:15220</span><span class="w"></span>
 <span class="w">      </span><span class="nt">allowAllOrigins</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
@@ -1165,8 +1198,8 @@
 <tbody>
 <tr>
 <td>forbidden</td>
-<td>[]string</td>
-<td>A list of resources, which can not be retrieved via the kobs API.</td>
+<td><a href="#forbidden">[]Forbidden</a></td>
+<td>A list of resources, which can not be retrieved or modified via the kobs API.</td>
 <td>No</td>
 </tr>
 <tr>
@@ -1185,6 +1218,43 @@
 <td>ephemeralContainers</td>
 <td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#ephemeralcontainer-v1-core">[]EphemeralContainer</a></td>
 <td>A list of templates for Ephemeral Containers, which can be used to <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-running-pod/#ephemeral-container">debug running pods</a>.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="forbidden">Forbidden</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clusters</td>
+<td>[]string</td>
+<td>A list of clusters.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>namespaces</td>
+<td>[]string</td>
+<td>A list of namespaces.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>resources</td>
+<td>[]string</td>
+<td>A list of resources.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>verbs</td>
+<td>[]string</td>
+<td>A list of verbs.</td>
 <td>No</td>
 </tr>
 </tbody>

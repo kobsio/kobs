@@ -1408,7 +1408,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The following strings can be used in the resources list: <code>cronjobs</code>, <code>daemonsets</code>, <code>deployments</code>, <code>jobs</code>, <code>pods</code>, <code>replicasets</code>, <code>statefulsets</code>, <code>endpoints</code>, <code>horizontalpodautoscalers</code>, <code>ingresses</code>, <code>networkpolicies</code>, <code>services</code>, <code>configmaps</code>, <code>persistentvolumeclaims</code>, <code>persistentvolumes</code>, <code>poddisruptionbudgets</code>, <code>secrets</code>, <code>serviceaccounts</code>, <code>storageclasses</code>, <code>clusterrolebindings</code>, <code>clusterroles</code>, <code>rolebindings</code>, <code>roles</code>, <code>events</code>, <code>nodes</code>, <code>podsecuritypolicies</code>.</p>
-<p>The special terms <code>pods/logs</code> and <code>pods/exec</code> can be used to allow users to get the logs or a terminal for a Pod. To download / upload a file from / to a Pod a user needs the <code>pods/exec</code> resource with the <code>get</code> / <code>post</code> verb.</p>
+<p>The special terms <code>pods/log</code> and <code>pods/exec</code> can be used to allow users to get the logs or a terminal for a Pod. To download / upload a file from / to a Pod a user also needs the <code>pods/exec</code> resource. The <code>pods/log</code> and <code>pods/exec</code> permission can only be set together with the <code>*</code> value for the <code>verbs</code> parameter.</p>
 <p>A Custom Resource can be specified in the following form <code>&lt;name&gt;.&lt;group&gt;/&lt;version&gt;</code> (e.g. <code>vaultsecrets.ricoberger.de/v1alpha1</code>).</p>
 </div>
 <h2 id="example">Example</h2>
