@@ -694,6 +694,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#options" class="md-nav__link">
     Options
   </a>
@@ -1117,6 +1124,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#options" class="md-nav__link">
     Options
   </a>
@@ -1171,6 +1185,30 @@
 <p>The Helm plugin can be used to manage Helm releases within kobs.</p>
 <p><img alt="Dashboard" src="../assets/helm-dashboard.png" /></p>
 <p><img alt="Details" src="../assets/helm-details.png" /></p>
+<h2 id="configuration">Configuration</h2>
+<p>The following configuration can be used for the Helm plugin.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">helm</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permissionsEnabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>permissionsEnabled</td>
+<td>boolean</td>
+<td>Enable the permission handling. An example of the permission format can be found in the <a href="#usage">usage</a> section of this page.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="options">Options</h2>
 <p>The following options can be used for a panel with the Helm plugin:</p>
 <table>
