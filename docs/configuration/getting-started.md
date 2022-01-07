@@ -15,6 +15,7 @@ The following command-line arguments and environment variables are available.
 | `--api.auth.header.user string` | `KOBS_API_AUTH_HEADER_USER` | The header, which contains the user id. | `X-Auth-Request-Email` |
 | `--api.auth.session.interval duration` | `KOBS_API_AUTH_SESSION_INTERVAL` | The interval for how long a session is valid. | `48h0m0s` |
 | `--api.auth.session.token string` | `KOBS_API_AUTH_SESSION_TOKEN` | The token to encrypt the session cookie. | |
+| `--api.debug` | | Enable `/api/debug` endpoints for the API server. | `false` |
 | `--app.address` | `KOBS_APP_ADDRESS` | The address, where the Application server is listen on. | `:15219` |
 | `--app.assets` | `KOBS_APP_ASSETS` | The location of the assets directory. | `app/build` |
 | `--clusters.cache-duration.namespaces` | `KOBS_CLUSTERS_CACHE_DURATION_NAMESPACES` | The duration, for how long requests to get the list of namespaces should be cached. | `5m` |

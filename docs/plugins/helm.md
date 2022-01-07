@@ -6,6 +6,20 @@ The Helm plugin can be used to manage Helm releases within kobs.
 
 ![Details](assets/helm-details.png)
 
+## Configuration
+
+The following configuration can be used for the Helm plugin.
+
+```yaml
+plugins:
+  helm:
+    permissionsEnabled: true
+```
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| permissionsEnabled | boolean | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
+
 ## Options
 
 The following options can be used for a panel with the Helm plugin:

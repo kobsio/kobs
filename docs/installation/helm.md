@@ -67,6 +67,7 @@ helm upgrade --install kobs kobs/kobs
 | `kobs.volumeMounts` | Specify additional volumeMounts for the kobs container. | `[]` |
 | `kobs.env` | Set additional environment variables for the kobs container. | `[]` |
 | `kobs.settings.development` | Run kobs in development mode. | `false` |
+| `kobs.settings.debug` | Enable the `/api/debug` endpoints for the API server. | `false` |
 | `kobs.settings.auth.enabled` | Enable the authentication and authorization middleware. | `false` |
 | `kobs.settings.auth.headerTeams` | The header, which contains the team ids. | `X-Auth-Request-Email` |
 | `kobs.settings.auth.headerUser` | The header, which contains the user id. | `X-Auth-Request-Groups` |

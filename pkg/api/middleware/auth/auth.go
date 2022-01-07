@@ -128,8 +128,10 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 				}
 
 				http.SetCookie(w, &http.Cookie{
-					Name:  "kobs-auth",
-					Value: token,
+					Name:     "kobs-auth",
+					Value:    token,
+					Secure:   true,
+					HttpOnly: true,
 				})
 				ctx = context.WithValue(ctx, authContext.UserKey, user)
 			} else {
@@ -157,8 +159,10 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 					}
 
 					http.SetCookie(w, &http.Cookie{
-						Name:  "kobs-auth",
-						Value: token,
+						Name:     "kobs-auth",
+						Value:    token,
+						Secure:   true,
+						HttpOnly: true,
 					})
 					ctx = context.WithValue(ctx, authContext.UserKey, newUser)
 				} else {

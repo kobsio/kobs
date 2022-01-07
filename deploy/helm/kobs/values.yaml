@@ -113,6 +113,7 @@ kobs:
   ##
   settings:
     development: false
+    debug: false
     auth:
       enabled: false
       headerTeams: X-Auth-Request-Groups

@@ -28,7 +28,7 @@ plugins:
 | name | string | Name of the Azure instance. | Yes |
 | displayName | string | Name of the Azure instance as it is shown in the UI. | Yes |
 | descriptions | string | Description of the Azure instance. | No |
-| permissionsEnabled | boolean | Enable the permission handling. The permissions can be defined via the [PermissionsCustom](../resources/teams.md#permissionscustom) in a team. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
+| permissionsEnabled | boolean | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 | credentials | [Credentials](#credentials) | The credentials to access the Azure API. | Yes |
 
 ### Credentials
