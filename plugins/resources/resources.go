@@ -434,9 +434,9 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if !user.HasResourceAccess(clusterName, namespace, "pods/log", "get") {
+		if !user.HasResourceAccess(clusterName, namespace, "pods/log", "*") {
 			log.Warn(r.Context(), "User is not authorized to access the resource.", zap.String("cluster", clusterName), zap.String("namespace", namespace))
-			c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("You are not authorized to access the resource: cluster: %s, namespace: %s, resource: pods/log, verb: get", clusterName, namespace)))
+			c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("You are not authorized to access the resource: cluster: %s, namespace: %s, resource: pods/log, verb: *", clusterName, namespace)))
 			return
 		}
 
@@ -458,9 +458,9 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/log", "get") {
+	if !user.HasResourceAccess(clusterName, namespace, "pods/log", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource.", zap.String("cluster", clusterName), zap.String("namespace", namespace))
-		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/log, verb: get", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/log, verb: *", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
 		return
 	}
 
@@ -531,12 +531,12 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "get") {
+	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource.", zap.String("cluster", clusterName), zap.String("namespace", namespace))
 
 		msg, _ := json.Marshal(terminal.Message{
 			Op:   "stdout",
-			Data: fmt.Sprintf("You are not authorized to access the resource: cluster: %s, namespace: %s, resource: pods/exec, verb: get", clusterName, namespace),
+			Data: fmt.Sprintf("You are not authorized to access the resource: cluster: %s, namespace: %s, resource: pods/exec, verb: *", clusterName, namespace),
 		})
 
 		c.WriteMessage(websocket.TextMessage, msg)
@@ -586,9 +586,9 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "get") {
+	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("container", container))
-		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/exec, verb: get", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/exec, verb: *", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
 		return
 	}
 
@@ -632,9 +632,9 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "post") {
+	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("container", container))
-		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/exec, verb: post", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/exec, verb: *", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
 		return
 	}
 
