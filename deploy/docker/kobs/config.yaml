@@ -7,7 +7,14 @@ clusters:
 plugins:
   resources:
     forbidden:
-      - secrets
+      - clusters:
+          - "*"
+        namespaces:
+          - "*"
+        resources:
+          - "secrets"
+        verbs:
+          - "*"
 
   applications:
     cache:

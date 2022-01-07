@@ -4,13 +4,20 @@ The resources plugin allows you to show a list of Kubernetes resources on a dash
 
 ## Configuration
 
-The following configuration can be used to  forbid several resources. This means that the provided resources can not be retrieved via the kobs API.
+The following configuration can be used to forbid several resources. This means that the provided resources can not be retrieved via the kobs API.
 
 ```yaml
 plugins:
   resources:
     forbidden:
-      - secrets
+      - clusters:
+          - "*"
+        namespaces:
+          - "*"
+        resources:
+          - "secrets"
+        verbs:
+          - "*"
     webSocket:
       address: ws://localhost:15220
       allowAllOrigins: true
@@ -18,10 +25,19 @@ plugins:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| forbidden | []string | A list of resources, which can not be retrieved via the kobs API. | No |
+| forbidden | [[]Forbidden](#forbidden) | A list of resources, which can not be retrieved or modified via the kobs API. | No |
 | webSocket.address | string | The address, which should be used for the WebSocket connection. By default this will be the current host, but it can be overwritten for development purposes. | No |
 | webSocket.allowAllOrigins | boolean | When this is `true`, WebSocket connections are allowed for all origins. This should only be used for development. | No |
 | ephemeralContainers | [[]EphemeralContainer](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#ephemeralcontainer-v1-core) | A list of templates for Ephemeral Containers, which can be used to [debug running pods](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-running-pod/#ephemeral-container). | No |
+
+### Forbidden
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| clusters | []string | A list of clusters. | Yes |
+| namespaces | []string | A list of namespaces. | Yes |
+| resources | []string | A list of resources. | Yes |
+| verbs | []string | A list of verbs. | No |
 
 ## Options
 

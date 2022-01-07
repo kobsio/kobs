@@ -58,7 +58,7 @@ In the following you can found the specification for the User CRD.
 !!! note
     The following strings can be used in the resources list: `cronjobs`, `daemonsets`, `deployments`, `jobs`, `pods`, `replicasets`, `statefulsets`, `endpoints`, `horizontalpodautoscalers`, `ingresses`, `networkpolicies`, `services`, `configmaps`, `persistentvolumeclaims`, `persistentvolumes`, `poddisruptionbudgets`, `secrets`, `serviceaccounts`, `storageclasses`, `clusterrolebindings`, `clusterroles`, `rolebindings`, `roles`, `events`, `nodes`, `podsecuritypolicies`.
 
-    The special terms `pods/logs` and `pods/exec` can be used to allow users to get the logs or a terminal for a Pod. To download / upload a file from / to a Pod a user needs the `pods/exec` resource with the `get` / `post` verb.
+    The special terms `pods/log` and `pods/exec` can be used to allow users to get the logs or a terminal for a Pod. To download / upload a file from / to a Pod a user also needs the `pods/exec` resource. The `pods/log` and `pods/exec` permission can only be set together with the `*` value for the `verbs` parameter.
 
     A Custom Resource can be specified in the following form `<name>.<group>/<version>` (e.g. `vaultsecrets.ricoberger.de/v1alpha1`).
 
