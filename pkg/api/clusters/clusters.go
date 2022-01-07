@@ -12,7 +12,6 @@ import (
 
 var (
 	cacheDurationNamespaces time.Duration
-	forbiddenResources      []string
 )
 
 // init is used to define all command-line flags for the clusters package.
