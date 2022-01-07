@@ -2,7 +2,10 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"net/http/httputil"
+	"net/http/pprof"
 	"os"
 	"time"
 
@@ -22,6 +25,7 @@ import (
 
 var (
 	address string
+	debug   bool
 )
 
 // init is used to define all flags, which are needed for the api server. We have to define the address, where the api
@@ -33,6 +37,7 @@ func init() {
 	}
 
 	flag.StringVar(&address, "api.address", defaultAddress, "The address, where the API server is listen on.")
+	flag.BoolVar(&debug, "api.debug", false, "Enable \"/api/debug\" endpoints for the API server.")
 }
 
 // Server implements the api server. The api server is used to serve the rest api for kobs.
@@ -86,6 +91,33 @@ func New(clustersClient clusters.Client, pluginsRouter chi.Router, isDevelopment
 	router.Get("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, nil)
 	})
+
+	if debug {
+		router.Route("/api/debug", func(r chi.Router) {
+			r.Get("/request/dump", func(w http.ResponseWriter, r *http.Request) {
+				dump, err := httputil.DumpRequest(r, true)
+				if err != nil {
+					http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+					return
+				}
+
+				fmt.Fprintf(w, "%s", string(dump))
+			})
+
+			r.HandleFunc("/pprof/", pprof.Index)
+			r.HandleFunc("/pprof/cmdline", pprof.Cmdline)
+			r.HandleFunc("/pprof/profile", pprof.Profile)
+			r.HandleFunc("/pprof/symbol", pprof.Symbol)
+
+			r.Handle("/pprof/allocs", pprof.Handler("allocs"))
+			r.Handle("/pprof/block", pprof.Handler("block"))
+			r.Handle("/pprof/goroutine", pprof.Handler("goroutine"))
+			r.Handle("/pprof/heap", pprof.Handler("heap"))
+			r.Handle("/pprof/mutex", pprof.Handler("mutex"))
+			r.Handle("/pprof/threadcreate", pprof.Handler("threadcreate"))
+			r.Handle("/pprof/trace", pprof.Handler("trace"))
+		})
+	}
 
 	router.Route("/api", func(r chi.Router) {
 		r.Use(middleware.RequestID)

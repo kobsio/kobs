@@ -33,6 +33,7 @@ spec:
           imagePullPolicy: {{ .Values.kobs.image.pullPolicy }}
           args:
             - --development={{ .Values.kobs.settings.development }}
+            - --api.debug={{ .Values.kobs.settings.debug }}
             - --api.auth.enabled={{ .Values.kobs.settings.auth.enabled }}
             - --api.auth.header.teams={{ .Values.kobs.settings.auth.headerTeams }}
             - --api.auth.header.user={{ .Values.kobs.settings.auth.headerUser }}
