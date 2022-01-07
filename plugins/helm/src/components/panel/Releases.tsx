@@ -111,7 +111,25 @@ const Releases: React.FunctionComponent<IReleasesProps> = ({
   }
 
   if (!data || data.length === 0) {
-    return null;
+    return (
+      <Alert
+        variant={AlertVariant.warning}
+        isInline={true}
+        title="Could not found Helm releases"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IRelease[], Error>> => refetch()}>
+              Retry
+            </AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>
+          We did not found any Helm releases for the selected cluster / namespace. It might be that there are no Helm
+          releases in the selected cluster / namespace or that you do not have the permissions to view them.
+        </p>
+      </Alert>
+    );
   }
 
   return (

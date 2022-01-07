@@ -110,7 +110,25 @@ const History: React.FunctionComponent<IHistoryProps> = ({
   }
 
   if (!data || data.length === 0) {
-    return null;
+    return (
+      <Alert
+        variant={AlertVariant.warning}
+        isInline={true}
+        title="Could not found Helm release history"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IRelease[], Error>> => refetch()}>
+              Retry
+            </AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>
+          We did not found any history for the sepcified Helm release. It might be that that the Helm release does not
+          exists or that you do not have the permissions to view the history of the Helm release.
+        </p>
+      </Alert>
+    );
   }
 
   return (
