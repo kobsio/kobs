@@ -52,6 +52,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({ resources, times,
                               namespaces={resource.namespaces || []}
                               resource={clustersContext.resources[item]}
                               selector={resource.selector || ''}
+                              columns={resource.columns?.filter((column) => column.resource === item)}
                               times={times}
                               setDetails={setDetails}
                             />

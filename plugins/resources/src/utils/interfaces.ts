@@ -1,6 +1,6 @@
 import { AlertVariant } from '@patternfly/react-core';
 
-import { IPluginTimes } from '@kobsio/plugin-core';
+import { IPluginTimes, IResourceColumn } from '@kobsio/plugin-core';
 
 // IOptions is the interface for the options of the page implementation of the resources.plugin.
 export interface IOptions {
@@ -19,6 +19,7 @@ export interface IPanelOptions {
   namespaces?: string[];
   resources?: string[];
   selector?: string;
+  columns?: IResourceColumn[];
 }
 
 // IMetric is the interface for the response for a metrics request.

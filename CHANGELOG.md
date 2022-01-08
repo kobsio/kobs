@@ -36,6 +36,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#282](https://github.com/kobsio/kobs/pull/282): [helm] Add permission handling based on clusters, namespaces and the names of Helm releases.
 - [#283](https://github.com/kobsio/kobs/pull/283): [core] Add optional `defaultTime` argument to `getTimeParams` function to overwrite the default time range.
 - [#285](https://github.com/kobsio/kobs/pull/285): [core] Add `/api/debug` endpoints for debugging the API server.
+- [#288](https://github.com/kobsio/kobs/pull/288): [resources] Add support to show custom columns for a resource.
 
 ### Fixed
 

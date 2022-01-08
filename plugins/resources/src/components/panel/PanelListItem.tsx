@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useQuery } from 'react-query';
 
-import { IPluginTimes, IResource, IResourceRow, emptyState } from '@kobsio/plugin-core';
+import { IPluginTimes, IResource, IResourceColumn, IResourceRow, emptyState } from '@kobsio/plugin-core';
 import Details from './details/Details';
 
 interface IPanelListItemProps {
@@ -10,6 +10,7 @@ interface IPanelListItemProps {
   namespaces: string[];
   resource: IResource;
   selector: string;
+  columns?: IResourceColumn[];
   times: IPluginTimes;
   setDetails?: (details: React.ReactNode) => void;
 }
@@ -19,6 +20,7 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
   namespaces,
   resource,
   selector,
+  columns,
   times,
   setDetails,
 }: IPanelListItemProps) => {
@@ -50,7 +52,7 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return resource.rows(json);
+          return resource.rows(json, columns);
         } else {
           if (json.error) {
             throw new Error(json.error);
@@ -92,23 +94,32 @@ const PanelListItem: React.FunctionComponent<IPanelListItemProps> = ({
   return (
     <TableComposable aria-label={resource.title} variant={TableVariant.compact} borders={true}>
       <Thead>
-        <Tr>
-          {resource.columns.map((column) => (
-            <Th key={column}>{column}</Th>
-          ))}
-        </Tr>
+        {columns ? (
+          <Tr>
+            <Th>Name</Th>
+            <Th>Namespace</Th>
+            <Th>Cluster</Th>
+            {columns.map((column) => (
+              <Th key={column.title}>{column.title}</Th>
+            ))}
+          </Tr>
+        ) : (
+          <Tr>
+            {resource.columns.map((column) => (
+              <Th key={column}>{column}</Th>
+            ))}
+          </Tr>
+        )}
       </Thead>
       <Tbody>
-        {data && data.length > 0 && data[0].cells?.length === resource.columns.length
+        {data && data.length > 0
           ? data.map((row, rowIndex) => (
               <Tr
                 key={rowIndex}
                 isHoverable={setDetails ? true : false}
                 isRowSelected={selectedRow === rowIndex}
                 onClick={(): void =>
-                  setDetails && data && data.length > 0 && data[0].cells?.length === resource.columns.length
-                    ? handleRowClick(rowIndex, row)
-                    : undefined
+                  setDetails && data && data.length > 0 ? handleRowClick(rowIndex, row) : undefined
                 }
               >
                 {row.cells.map((cell, cellIndex) => (
