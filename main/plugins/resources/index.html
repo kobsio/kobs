@@ -830,6 +830,19 @@
     Options
   </a>
   
+    <nav class="md-nav" aria-label="Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#columns" class="md-nav__link">
+    Columns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1141,6 +1154,19 @@
     Options
   </a>
   
+    <nav class="md-nav" aria-label="Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#columns" class="md-nav__link">
+    Columns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1291,7 +1317,13 @@
 <tr>
 <td>selector</td>
 <td>string</td>
-<td>An optional selector for the selection of resources</td>
+<td>An optional selector for the selection of resources.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>columns</td>
+<td><a href="#column">[]Column</a></td>
+<td>An optional list of columns to customize the shown fields for a resource.</td>
 <td>No</td>
 </tr>
 </tbody>
@@ -1301,6 +1333,43 @@
 <p>The following strings can be used in the resources list: <code>cronjobs</code>, <code>daemonsets</code>, <code>deployments</code>, <code>jobs</code>, <code>pods</code>, <code>replicasets</code>, <code>statefulsets</code>, <code>endpoints</code>, <code>horizontalpodautoscalers</code>, <code>ingresses</code>, <code>networkpolicies</code>, <code>services</code>, <code>configmaps</code>, <code>persistentvolumeclaims</code>, <code>persistentvolumes</code>, <code>poddisruptionbudgets</code>, <code>secrets</code>, <code>serviceaccounts</code>, <code>storageclasses</code>, <code>clusterrolebindings</code>, <code>clusterroles</code>, <code>rolebindings</code>, <code>roles</code>, <code>events</code>, <code>nodes</code>, <code>podsecuritypolicies</code>.</p>
 <p>A Custom Resource can be specified in the following form <code>&lt;name&gt;.&lt;group&gt;/&lt;version&gt;</code> (e.g. <code>vaultsecrets.ricoberger.de/v1alpha1</code>).</p>
 </div>
+<h3 id="columns">Columns</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>A title for the column.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>resource</td>
+<td>string</td>
+<td>The name of the resource for which the column should be used.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>jsonPath</td>
+<td>string</td>
+<td>The <a href="https://goessner.net/articles/JsonPath/">JSONPath</a> which should be used to select the value from the resource manifest file.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>An optional type for formatting the column values. Currently only <code>date</code> is supported as special formatter.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="example">Example</h2>
 <p>The following dashboard will display all Deployments and Pods from the <code>bookinfo</code> namespace, which are having the label <code>app=reviews</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
@@ -1321,6 +1390,61 @@
 <span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
 <span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
 <span class="w">                </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=reviews</span><span class="w"></span>
+</code></pre></div>
+<p>The following dashboard will display all Pods and Deployments from the <code>bookinfo</code> namespace. Besides that the dashboard also shows a list of all <code>VaultSecrets</code> in the namespace.</p>
+<p>The example also uses the <code>columns</code> field so that for Pods it will show the image for the <code>reviews</code> container and the creation time. For the selected deployments it will show all used images. For the <code>VaultSecrets</code> it will show all status fields.</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Resources in the bookinfo namespace</span><span class="w"></span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
+<span class="w">                </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
+<span class="w">                </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=reviews</span><span class="w"></span>
+<span class="w">                </span><span class="nt">columns</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Image</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.spec.containers[?(@.name===&#39;bookinfo&#39;)].image&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Creation Time</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.metadata.creationTimestamp&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Image</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.spec.template.spec.containers[*].image&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.__cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
+<span class="w">                </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
+<span class="w">                </span><span class="nt">columns</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Status</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].status&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reason</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].reason&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Type</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].type&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Message</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].message&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Last Transition Time</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].lastTransitionTime&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span><span class="w"></span>
 </code></pre></div>
 
               
