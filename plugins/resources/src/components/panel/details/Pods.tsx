@@ -29,7 +29,7 @@ const Pods: React.FunctionComponent<IPodsProps> = ({ cluster, namespace, paramNa
 
         if (response.status >= 200 && response.status < 300) {
           if (clustersContext.resources && clustersContext.resources.hasOwnProperty('pods')) {
-            return clustersContext.resources.pods.rows(json);
+            return clustersContext.resources.pods.rows(json, undefined);
           }
         }
 

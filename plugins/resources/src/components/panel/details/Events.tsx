@@ -28,7 +28,7 @@ const Events: React.FunctionComponent<IEventsProps> = ({ cluster, namespace, nam
 
         if (response.status >= 200 && response.status < 300) {
           if (clustersContext.resources && clustersContext.resources.hasOwnProperty('events')) {
-            return clustersContext.resources.events.rows(json);
+            return clustersContext.resources.events.rows(json, undefined);
           }
         }
 

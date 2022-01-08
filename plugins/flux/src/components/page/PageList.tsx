@@ -46,7 +46,7 @@ const PageList: React.FunctionComponent<IPageListProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return resource.rows(json);
+          return resource.rows(json, undefined);
         } else {
           if (json.error) {
             throw new Error(json.error);
