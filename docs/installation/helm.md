@@ -89,6 +89,9 @@ helm upgrade --install kobs kobs/kobs
 | `service.type` | Set the type for the created Service: `ClusterIP`, `NodePort`, `LoadBalancer`. | `ClusterIP` |
 | `service.annotations` | Specify additional annotations for the created Service. | `{}` |
 | `service.labels` | Specify additional labels for the created Service. | `{}` |
+| `networkPolicy.create` | Enable the creation of a NetworkPolicy for kobs. | `false` |
+| `networkPolicy.ingressRules` | Ingress rules to allow / deny traffic from. | `[{}]` |
+| `networkPolicy.egressRules` | Egress rules to allow / deny traffic to. | `[{}]` |
 | `ingress.enabled` | Create an Ingress to expose kobs. | `false` |
 | `ingress.annotations` | Annotations to add to the ingress. | `{}` |
 | `ingress.hosts` | Hosts to use for the ingress. | `[]` |

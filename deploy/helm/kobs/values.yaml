@@ -176,8 +176,9 @@ serviceAccount:
 ##
 rbac:
   create: true
-  # The name of the cluster role and cluster role binding to use.
-  # If not set and create is true, a name is generated using the fullname template.
+  ## The name of the cluster role and cluster role binding to use.
+  ## If not set and create is true, a name is generated using the fullname template.
+  ##
   name:
 
 ## Set the type for the created service: ClusterIP, NodePort, LoadBalancer.
@@ -188,6 +189,46 @@ service:
 
   annotations: {}
   labels: {}
+
+## Create a NetworkPolicy for kobs. To use network policies you must be using a networking solution which supports
+## NetworkPolicy.
+## See: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+##
+networkPolicy:
+  create: false
+  ## A list of ingress rules, to allow / deny traffic to kobs. By default all ingress traffic is allowed.
+  ##
+  ingressRules:
+    - {}
+    ## The following example allows only ingress traffic from the Istio Ingressgateway, which is running in the
+    ## istio-system namespace and from Prometheus which is running in the monitoring namespace.
+    ##
+    # - from:
+    #     - namespaceSelector:
+    #         matchLabels:
+    #           namespace: istio-system
+    #       podSelector:
+    #         matchLabels:
+    #           app: istio-ingressgateway
+    #   ports:
+    #     - protocol: TCP
+    #       port: 15219
+    #     - protocol: TCP
+    #       port: 15220
+    # - from:
+    #     - namespaceSelector:
+    #         matchLabels:
+    #           namespace: monitoring
+    #       podSelector:
+    #         matchLabels:
+    #           app.kubernetes.io/name: prometheus
+    #   ports:
+    #     - protocol: TCP
+    #       port: 15221
+  ## A list of egress rules, to allow / deny traffic from kobs. By default all egress traffic is allowed.
+  ##
+  egressRules:
+    - {}
 
 ## Create an Ingress to expose kobs.
 ## See: https://kubernetes.io/docs/concepts/services-networking/ingress/
