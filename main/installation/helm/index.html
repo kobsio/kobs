@@ -1424,6 +1424,21 @@ helm search repo -l kobs/
 <td><code>{}</code></td>
 </tr>
 <tr>
+<td><code>networkPolicy.create</code></td>
+<td>Enable the creation of a NetworkPolicy for kobs.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>networkPolicy.ingressRules</code></td>
+<td>Ingress rules to allow / deny traffic from.</td>
+<td><code>[{}]</code></td>
+</tr>
+<tr>
+<td><code>networkPolicy.egressRules</code></td>
+<td>Egress rules to allow / deny traffic to.</td>
+<td><code>[{}]</code></td>
+</tr>
+<tr>
 <td><code>ingress.enabled</code></td>
 <td>Create an Ingress to expose kobs.</td>
 <td><code>false</code></td>
