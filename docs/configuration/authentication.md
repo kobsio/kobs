@@ -247,7 +247,7 @@ Now we have to adjust the `istio` section in the kobs Helm chart. In contrast to
 ```yaml
 istio:
   virtualService:
-    create: true
+    enabled: true
     gateways:
       - istio-system/istio-default-gateway
     hosts:

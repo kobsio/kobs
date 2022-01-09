@@ -78,6 +78,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#281](https://github.com/kobsio/kobs/pull/281): [helm] Remove `helm.sh/helm/v3` package and use a custom implementation to get Helm releases.
 - [#284](https://github.com/kobsio/kobs/pull/284): [core] :warning: _Breaking change:_ :warning: Update CRD versions from `v1beta1` to `v1`.
 - [#287](https://github.com/kobsio/kobs/pull/287): [resources] :warning: _Breaking change:_ :warning: Refactor permission handling for `pods/logs`, `pods/exec` and the global forbidden resources configuration.
+- [#290](https://github.com/kobsio/kobs/pull/290): :warning: _Breaking change:_ :warning: Rename `create` values to `enabled` in the Helm chart.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

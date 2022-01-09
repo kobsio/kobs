@@ -76,20 +76,20 @@ helm upgrade --install kobs kobs/kobs
 | `kobs.settings.logFormat` | Set the output format of the logs. Must be `console` or `json`. | `console` |
 | `kobs.settings.logLevel` | Set the log level. Must be `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |
 | `kobs.config` | Content of the `config.yaml` file, which is loaded during the start of kobs and contains the configuration. | |
-| `istio.virtualService.create` | Specifies whether a VirtualService should be created. | `false` |
+| `istio.virtualService.enabled` | Specifies whether a VirtualService should be created. | `false` |
 | `istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |
 | `istio.virtualService.hosts` | A list of hosts for the VirtualService. | `[]` |
 | `istio.virtualService.timeout` | Timeout for gRPC requests. | `300s` |
 | `istio.virtualService.additionalRoutes` | A list of additional routes for the VirtualService. | `[]` |
-| `serviceAccount.create` | Specifies whether a service account should be created. | `true` |
+| `serviceAccount.enabled` | Specifies whether a service account should be created. | `true` |
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
 | `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `""` |
-| `rbac.create` | Specifies whether a cluster role and cluster role binding should be created. | `true` |
+| `rbac.enabled` | Specifies whether a cluster role and cluster role binding should be created. | `true` |
 | `rbac.name` | The name of the cluster role and cluster role binding to use. If not set and create is true, a name is generated using the fullname template. | `""` |
 | `service.type` | Set the type for the created Service: `ClusterIP`, `NodePort`, `LoadBalancer`. | `ClusterIP` |
 | `service.annotations` | Specify additional annotations for the created Service. | `{}` |
 | `service.labels` | Specify additional labels for the created Service. | `{}` |
-| `networkPolicy.create` | Enable the creation of a NetworkPolicy for kobs. | `false` |
+| `networkPolicy.enabled` | Enable the creation of a NetworkPolicy for kobs. | `false` |
 | `networkPolicy.ingressRules` | Ingress rules to allow / deny traffic from. | `[{}]` |
 | `networkPolicy.egressRules` | Egress rules to allow / deny traffic to. | `[{}]` |
 | `ingress.enabled` | Create an Ingress to expose kobs. | `false` |

@@ -55,7 +55,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "kobs.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
+{{- if .Values.serviceAccount.enabled -}}
     {{ default (include "kobs.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
@@ -66,7 +66,7 @@ Create the name of the service account to use
 Create the name of the cluster role and cluster role binding to use
 */}}
 {{- define "kobs.rbacName" -}}
-{{- if .Values.rbac.create -}}
+{{- if .Values.rbac.enabled -}}
     {{ default (include "kobs.fullname" .) .Values.rbac.name }}
 {{- else -}}
     {{ default "default" .Values.rbac.name }}

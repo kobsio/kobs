@@ -140,7 +140,7 @@ istio:
   ## of gateways and hosts for the VirtualService.
   ##
   virtualService:
-    create: false
+    enabled: false
 
     gateways: []
       # - gateway
@@ -159,7 +159,7 @@ istio:
 ## See: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 ##
 serviceAccount:
-  create: true
+  enabled: true
 
   ## Annotations to add to the service account
   ##
@@ -175,7 +175,7 @@ serviceAccount:
 ## See: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 ##
 rbac:
-  create: true
+  enabled: true
   ## The name of the cluster role and cluster role binding to use.
   ## If not set and create is true, a name is generated using the fullname template.
   ##
@@ -195,7 +195,7 @@ service:
 ## See: https://kubernetes.io/docs/concepts/services-networking/network-policies/
 ##
 networkPolicy:
-  create: false
+  enabled: false
   ## A list of ingress rules, to allow / deny traffic to kobs. By default all ingress traffic is allowed.
   ##
   ingressRules:
