@@ -1388,7 +1388,7 @@
 <p>Now we have to adjust the <code>istio</code> section in the kobs Helm chart. In contrast to the NGINX Ingress Controller example we do not create an additional Ingress / VirtualService for the OAuth2 Proxy. Instead the OAuth2 Proxy is exposed on the same domain as kobs via an additiona route:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">istio</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">virtualService</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 <span class="w">    </span><span class="nt">gateways</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio-system/istio-default-gateway</span><span class="w"></span>
 <span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
