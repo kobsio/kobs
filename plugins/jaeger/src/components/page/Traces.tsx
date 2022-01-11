@@ -6,10 +6,11 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import { Link, useHistory, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
+import TracesActions from './TracesActions';
 import TracesPanel from '../panel/Traces';
 import TracesToolbar from './TracesToolbar';
 import { getInitialOptions } from '../../utils/helpers';
@@ -50,12 +51,12 @@ const Traces: React.FunctionComponent<ITracesProps> = ({ name, displayName, desc
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Title headingLevel="h6" size="xl">
-          {displayName}
-          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
-            <Link to={`/${name}/trace`}>Compare Traces</Link>
-          </span>
-        </Title>
+        <div style={{ position: 'relative' }}>
+          <Title headingLevel="h6" size="xl">
+            {displayName}
+          </Title>
+          <TracesActions name={name} />
+        </div>
         <p>{description}</p>
         <TracesToolbar name={name} options={options} setOptions={changeOptions} />
       </PageSection>
