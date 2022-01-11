@@ -1,20 +1,18 @@
 import {
-  Divider,
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  Flex,
-  FlexItem,
   PageSection,
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import { Link, useHistory, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { IOptions } from '../../utils/interfaces';
 import { IPluginTimes } from '@kobsio/plugin-core';
 import Logs from './Logs';
+import LogsPageActions from './LogsPageActions';
 import LogsToolbar from './LogsToolbar';
 import { getInitialOptions } from '../../utils/helpers';
 
@@ -106,22 +104,12 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ name, displayName, 
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Title headingLevel="h6" size="xl">
-          {displayName}
-          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
-            <Flex>
-              <FlexItem>
-                <Link to={`/${name}/aggregation`}>Aggregation</Link>
-              </FlexItem>
-              <Divider isVertical={true} />
-              <FlexItem>
-                <a href="https://kobs.io/plugins/klogs/" target="_blank" rel="noreferrer">
-                  Documentation
-                </a>
-              </FlexItem>
-            </Flex>
-          </span>
-        </Title>
+        <div style={{ position: 'relative' }}>
+          <Title headingLevel="h6" size="xl">
+            {displayName}
+          </Title>
+          <LogsPageActions name={name} />
+        </div>
         <p>{description}</p>
         <LogsToolbar options={options} setOptions={changeOptions} />
       </PageSection>

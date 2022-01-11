@@ -1,21 +1,19 @@
 import {
-  Divider,
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  Flex,
-  FlexItem,
   Grid,
   GridItem,
   PageSection,
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import { Link, useHistory, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import Aggregation from './Aggregation';
 import AggregationOptions from './AggregationOptions';
+import AggregationPageActions from './AggregationPageActions';
 import AggregationToolbar from './AggregationToolbar';
 import { IAggregationOptions } from '../../utils/interfaces';
 import { getInitialAggregationOptions } from '../../utils/helpers';
@@ -65,22 +63,12 @@ const AggregationPage: React.FunctionComponent<IAggregationPageProps> = ({
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Title headingLevel="h6" size="xl">
-          {displayName}
-          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
-            <Flex>
-              <FlexItem>
-                <Link to={`/${name}`}>Logs</Link>
-              </FlexItem>
-              <Divider isVertical={true} />
-              <FlexItem>
-                <a href="https://kobs.io/plugins/klogs/" target="_blank" rel="noreferrer">
-                  Documentation
-                </a>
-              </FlexItem>
-            </Flex>
-          </span>
-        </Title>
+        <div style={{ position: 'relative' }}>
+          <Title headingLevel="h6" size="xl">
+            {displayName}
+          </Title>
+          <AggregationPageActions name={name} />
+        </div>
         <p>{description}</p>
         <AggregationToolbar options={tmpOptions} setOptions={setTmpOptions} />
       </PageSection>

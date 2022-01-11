@@ -11,6 +11,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { IPluginPageProps, IPluginTimes } from '@kobsio/plugin-core';
 import { IOptions } from '../../utils/interfaces';
+import PageActions from './PageActions';
 import PageLogs from './PageLogs';
 import PageToolbar from './PageToolbar';
 import { getInitialOptions } from '../../utils/helpers';
@@ -75,14 +76,12 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ name, displayName, de
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Title headingLevel="h6" size="xl">
-          {displayName}
-          <span className="pf-u-font-size-md pf-u-font-weight-normal" style={{ float: 'right' }}>
-            <a href="https://kobs.io/plugins/elasticsearch/" target="_blank" rel="noreferrer">
-              Documentation
-            </a>
-          </span>
-        </Title>
+        <div style={{ position: 'relative' }}>
+          <Title headingLevel="h6" size="xl">
+            {displayName}
+          </Title>
+          <PageActions name={name} />
+        </div>
         <p>{description}</p>
         <PageToolbar options={options} setOptions={changeOptions} />
       </PageSection>
