@@ -2,6 +2,7 @@ package azure
 
 import (
 	"net/http"
+	"strconv"
 
 	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
 	"github.com/kobsio/kobs/pkg/api/middleware/errresponse"
@@ -133,6 +134,8 @@ func (router *Router) getContainerLogs(w http.ResponseWriter, r *http.Request) {
 	resourceGroup := r.URL.Query().Get("resourceGroup")
 	containerGroup := r.URL.Query().Get("containerGroup")
 	container := r.URL.Query().Get("container")
+	tail := r.URL.Query().Get("tail")
+	timestamps := r.URL.Query().Get("timestamps")
 
 	log.Debug(r.Context(), "Get container logs.", zap.String("name", name), zap.String("resourceGroup", resourceGroup), zap.String("containerGroup", containerGroup), zap.String("container", container))
 
@@ -140,6 +143,21 @@ func (router *Router) getContainerLogs(w http.ResponseWriter, r *http.Request) {
 	if i == nil {
 		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTail, err := strconv.ParseInt(tail, 10, 32)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse tail.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse tail")
+		return
+	}
+	parsedTailInt32 := int32(parsedTail)
+
+	parsedTimestamps, err := strconv.ParseBool(timestamps)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse timestamps.", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse timestamps")
 		return
 	}
 
@@ -157,10 +175,7 @@ func (router *Router) getContainerLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tail := int32(10000)
-	timestamps := false
-
-	logs, err := i.ContainerInstancesClient().GetContainerLogs(r.Context(), resourceGroup, containerGroup, container, &tail, &timestamps)
+	logs, err := i.ContainerInstancesClient().GetContainerLogs(r.Context(), resourceGroup, containerGroup, container, &parsedTailInt32, &parsedTimestamps)
 	if err != nil {
 		log.Error(r.Context(), "Could not get container logs.", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get container logs")

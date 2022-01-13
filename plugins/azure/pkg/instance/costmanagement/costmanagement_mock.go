@@ -5,7 +5,8 @@ package costmanagement
 import (
 	context "context"
 
-	"github.com/Azure/azure-sdk-for-go/profiles/latest/costmanagement/mgmt/costmanagement"
+	"github.com/Azure/azure-sdk-for-go/services/costmanagement/mgmt/2019-11-01/costmanagement"
+
 	mock "github.com/stretchr/testify/mock"
 )
 

@@ -385,9 +385,34 @@ func TestGetContainerLogs(t *testing.T) {
 				router.getContainerLogs(w, req)
 			},
 		},
+
+		{
+			name:               "invalid tail parameter",
+			url:                "/azure/containerinstances/containergroup/logs",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not parse tail: strconv.ParseInt: parsing \\\"\\\": invalid syntax\"}\n",
+			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
+				mockInstance.On("GetName").Return("azure")
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				router.getContainerLogs(w, req)
+			},
+		},
+		{
+			name:               "invalid timestamps paramter",
+			url:                "/azure/containerinstances/containergroup/logs?tail=10000",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not parse timestamps: strconv.ParseBool: parsing \\\"\\\": invalid syntax\"}\n",
+			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
+				mockInstance.On("GetName").Return("azure")
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				router.getContainerLogs(w, req)
+			},
+		},
 		{
 			name:               "no user context",
-			url:                "/azure/containerinstances/containergroup/logs",
+			url:                "/azure/containerinstances/containergroup/logs?tail=10000&timestamps=false",
 			expectedStatusCode: http.StatusUnauthorized,
 			expectedBody:       "{\"error\":\"You are not authorized to get container logs: Unauthorized\"}\n",
 			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
@@ -399,7 +424,7 @@ func TestGetContainerLogs(t *testing.T) {
 		},
 		{
 			name:               "check permissions fails",
-			url:                "/azure/containerinstances/containergroup/logs",
+			url:                "/azure/containerinstances/containergroup/logs?tail=10000&timestamps=false",
 			expectedStatusCode: http.StatusForbidden,
 			expectedBody:       "{\"error\":\"You are not allowed to get the logs of the container instance: access forbidden\"}\n",
 			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
@@ -413,7 +438,7 @@ func TestGetContainerLogs(t *testing.T) {
 		},
 		{
 			name:               "get container logs fails",
-			url:                "/azure/containerinstances/containergroup/logs",
+			url:                "/azure/containerinstances/containergroup/logs?tail=10000&timestamps=false",
 			expectedStatusCode: http.StatusInternalServerError,
 			expectedBody:       "{\"error\":\"Could not get container logs: could not get container logs\"}\n",
 			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
@@ -430,7 +455,7 @@ func TestGetContainerLogs(t *testing.T) {
 		},
 		{
 			name:               "get container logs",
-			url:                "/azure/containerinstances/containergroup/logs",
+			url:                "/azure/containerinstances/containergroup/logs?tail=10000&timestamps=false",
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{\"logs\":\"log line\"}\n",
 			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {

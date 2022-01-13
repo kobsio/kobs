@@ -81,7 +81,7 @@ func (i *instance) MonitorClient() monitor.Client {
 	return i.monitorClient
 }
 
-// New returns a new Elasticsearch instance for the given configuration.
+// New returns a new Azure instance for the given configuration.
 func New(config Config) (Instance, error) {
 	credentials, err := azidentity.NewClientSecretCredential(config.Credentials.TenantID, config.Credentials.ClientID, config.Credentials.ClientSecret, nil)
 	if err != nil {

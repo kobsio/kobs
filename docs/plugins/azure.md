@@ -63,6 +63,8 @@ The following options can be used for a panel with the Azure plugin:
 | containers | string[] | A list of container names. This is only required if the type is `logs`. | No |
 | metricNames | string | The name of the metric for which the data should be displayed. Supported values are `CPUUsage`, `MemoryUsage`, `NetworkBytesReceivedPerSecond` and `NetworkBytesTransmittedPerSecond`. This is only required if the type is `metrics`. | No |
 | aggregationType | string | The aggregation type for the metric. Supported values are `Average`, `Minimum`, `Maximum`, `Total` and `Count`. This is only required if the type is `metrics`. | No |
+| tail | number | The number of log lines which should be shown. This is only required if the type is `logs`. The default value is `10000`. | No |
+| timestamps | boolean | Show timestamps infront of the log lines. This is only required if the type is `logs`. The default value is `false`. | No |
 
 ### Cost Management
 

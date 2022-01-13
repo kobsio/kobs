@@ -19,6 +19,8 @@ interface IDetailsLogsProps {
   resourceGroup: string;
   containerGroup: string;
   containers: string[];
+  tail: number;
+  timestamps: boolean;
 }
 
 const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
@@ -26,6 +28,8 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
   resourceGroup,
   containerGroup,
   containers,
+  tail,
+  timestamps,
 }: IDetailsLogsProps) => {
   const [container, setContainer] = useState<string>(containers.length > 0 ? containers[0] : '');
   const [showSelect, setShowSelect] = useState<boolean>(false);
@@ -33,12 +37,12 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
   const wrapperSize = useDimensions(refWrapper);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IContainerLogs, Error>(
-    ['azure/containergroups/containergroup/logs', name, resourceGroup, containerGroup, container],
+    ['azure/containergroups/containergroup/logs', name, resourceGroup, containerGroup, container, tail, timestamps],
     async () => {
       try {
         if (container !== '') {
           const response = await fetch(
-            `/api/plugins/azure/${name}/containerinstances/containergroup/logs?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}&container=${container}`,
+            `/api/plugins/azure/${name}/containerinstances/containergroup/logs?resourceGroup=${resourceGroup}&containerGroup=${containerGroup}&container=${container}&tail=${tail}&timestamps=${timestamps}`,
             {
               method: 'get',
             },
@@ -61,6 +65,11 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
     },
   );
 
+  const selectContainer = (value: string): void => {
+    setContainer(value);
+    setShowSelect(false);
+  };
+
   return (
     <div style={{ height: '100%', maxWidth: '100%', overflow: 'scroll' }} ref={refWrapper}>
       <Select
@@ -68,7 +77,7 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
         typeAheadAriaLabel="Select container"
         placeholderText="Select container"
         onToggle={(): void => setShowSelect(!showSelect)}
-        onSelect={(e, value): void => setContainer(value as string)}
+        onSelect={(e, value): void => selectContainer(value as string)}
         selections={container}
         isOpen={showSelect}
       >
