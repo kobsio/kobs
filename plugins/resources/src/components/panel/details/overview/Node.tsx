@@ -5,6 +5,7 @@ import { Title } from '@patternfly/react-core';
 import { useQuery } from 'react-query';
 
 import { IMetric, IMetricUsage } from '../../../../utils/interfaces';
+import Conditions from './Conditions';
 import NodeChart from './NodeChart';
 import { formatResourceValue } from '../../../../utils/helpers';
 
@@ -161,6 +162,7 @@ const Node: React.FunctionComponent<INodeProps> = ({ cluster, namespace, name, n
 
   return (
     <React.Fragment>
+      {node.status?.conditions && <Conditions conditions={node.status.conditions} />}
       <Title headingLevel="h4" size="lg">
         CPU
       </Title>

@@ -50,6 +50,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#274](https://github.com/kobsio/kobs/pull/274): Fix Docker build by setting `CGO_ENABLED=0`.
 - [#280](https://github.com/kobsio/kobs/pull/280): [core] Fix returned capacity value for persistent volumes.
 - [#286](https://github.com/kobsio/kobs/pull/286): [helm] Show warning when no Helm releases were found or the history of an Helm release was not found.
+- [#292](https://github.com/kobsio/kobs/pull/292): [resources] Fix shown conditions in details view.
 
 ### Changed
 

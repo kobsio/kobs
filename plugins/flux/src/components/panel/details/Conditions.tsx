@@ -24,16 +24,14 @@ const Conditions: React.FunctionComponent<IConditionsProps> = ({ conditions }: I
 
           <Tbody>
             {conditions
-              ? conditions
-                  .filter((condition) => condition.status === 'True')
-                  .map((condition, index) => (
-                    <Tr key={index}>
-                      <Td dataLabel="Type">{condition.type}</Td>
-                      <Td dataLabel="Status">{condition.status}</Td>
-                      <Td dataLabel="Reason">{condition.reason}</Td>
-                      <Td dataLabel="Message">{condition.message}</Td>
-                    </Tr>
-                  ))
+              ? conditions.map((condition, index) => (
+                  <Tr key={index}>
+                    <Td dataLabel="Type">{condition.type}</Td>
+                    <Td dataLabel="Status">{condition.status}</Td>
+                    <Td dataLabel="Reason">{condition.reason}</Td>
+                    <Td dataLabel="Message">{condition.message}</Td>
+                  </Tr>
+                ))
               : null}
           </Tbody>
         </TableComposable>
