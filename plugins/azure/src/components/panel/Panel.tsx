@@ -102,6 +102,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
           resourceGroup={options.containerinstances.resourceGroup}
           containerGroup={options.containerinstances.containerGroup}
           containers={options.containerinstances.containers}
+          tail={options.containerinstances.tail || 10000}
+          timestamps={options.containerinstances.timestamps || false}
         />
       </PluginCard>
     );

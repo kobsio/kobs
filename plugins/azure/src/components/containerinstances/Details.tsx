@@ -86,6 +86,8 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
                       resourceGroup={resourceGroup}
                       containerGroup={containerGroup}
                       containers={containers}
+                      tail={10000}
+                      timestamps={false}
                     />
                   </CardBody>
                 </Card>

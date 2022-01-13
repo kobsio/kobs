@@ -9,6 +9,8 @@ export interface IPanelOptions {
     containers?: string[];
     metricNames?: string;
     aggregationType?: string;
+    tail?: number;
+    timestamps?: boolean;
   };
   costmanagement?: {
     type?: string;
