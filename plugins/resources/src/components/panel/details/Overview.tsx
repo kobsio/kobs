@@ -31,7 +31,10 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ request, resource }
   // additions contains a React component with additional details for a resource. The default component just renders the
   // conditions of a resource.
   let additions =
-    resource.props && resource.props.status && resource.props.status.conditions ? (
+    resource.props &&
+    resource.props.status &&
+    resource.props.status.conditions &&
+    Array.isArray(resource.props.status.conditions) ? (
       <Conditions conditions={resource.props.status.conditions} />
     ) : null;
 
