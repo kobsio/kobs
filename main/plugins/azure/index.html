@@ -1508,6 +1508,18 @@
 <td>The aggregation type for the metric. Supported values are <code>Average</code>, <code>Minimum</code>, <code>Maximum</code>, <code>Total</code> and <code>Count</code>. This is only required if the type is <code>metrics</code>.</td>
 <td>No</td>
 </tr>
+<tr>
+<td>tail</td>
+<td>number</td>
+<td>The number of log lines which should be shown. This is only required if the type is <code>logs</code>. The default value is <code>10000</code>.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>timestamps</td>
+<td>boolean</td>
+<td>Show timestamps infront of the log lines. This is only required if the type is <code>logs</code>. The default value is <code>false</code>.</td>
+<td>No</td>
+</tr>
 </tbody>
 </table>
 <h3 id="cost-management">Cost Management</h3>
