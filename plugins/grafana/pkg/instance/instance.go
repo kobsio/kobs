@@ -43,7 +43,7 @@ type instance struct {
 // doRequest is a helper function to run a request against a Grafana instance for the given path. It returns the body
 // or if the request failed an error message.
 func (i *instance) doRequest(ctx context.Context, url string) ([]byte, error) {
-	log.Debug(ctx, "Request URL.", zap.String("url", fmt.Sprintf("%s%s", i.address, url)))
+	log.Debug(ctx, "Request URL", zap.String("url", fmt.Sprintf("%s%s", i.address, url)))
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s%s", i.address, url), nil)
 	if err != nil {

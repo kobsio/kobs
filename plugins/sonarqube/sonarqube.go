@@ -43,18 +43,18 @@ func (router *Router) getProjects(w http.ResponseWriter, r *http.Request) {
 	pageNumber := r.URL.Query().Get("pageNumber")
 	pageSize := r.URL.Query().Get("pageSize")
 
-	log.Debug(r.Context(), "Get projects parameters.", zap.String("name", name), zap.String("query", query), zap.String("pageNumber", pageNumber), zap.String("pageSize", pageSize))
+	log.Debug(r.Context(), "Get projects parameters", zap.String("name", name), zap.String("query", query), zap.String("pageNumber", pageNumber), zap.String("pageSize", pageSize))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	projects, err := i.GetProjects(r.Context(), query, pageNumber, pageSize)
 	if err != nil {
-		log.Error(r.Context(), "Could not get projects.", zap.Error(err))
+		log.Error(r.Context(), "Could not get projects", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get projects")
 		return
 	}
@@ -67,18 +67,18 @@ func (router *Router) getProjectMeasures(w http.ResponseWriter, r *http.Request)
 	project := r.URL.Query().Get("project")
 	metricKeys := r.URL.Query()["metricKey"]
 
-	log.Debug(r.Context(), "Get project measures.", zap.String("name", name), zap.String("project", project), zap.Strings("metricKeys", metricKeys))
+	log.Debug(r.Context(), "Get project measures", zap.String("name", name), zap.String("project", project), zap.Strings("metricKeys", metricKeys))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	projectMeasures, err := i.GetProjectMeasures(r.Context(), project, metricKeys)
 	if err != nil {
-		log.Error(r.Context(), "Could not get project measures.", zap.Error(err))
+		log.Error(r.Context(), "Could not get project measures", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get project measures")
 		return
 	}
@@ -93,7 +93,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create SonarQube instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create SonarQube instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

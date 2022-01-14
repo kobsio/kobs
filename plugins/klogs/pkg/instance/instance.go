@@ -78,9 +78,9 @@ func (i *Instance) refreshCachedFields() []string {
 
 	fields, err := i.getFields(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not refresh cached fields.", zap.Error(err))
+		log.Error(ctx, "Could not refresh cached fields", zap.Error(err))
 	} else {
-		log.Info(ctx, "Refreshed fields.", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
+		log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
 		i.cachedFields = fields
 	}
 
@@ -95,9 +95,9 @@ func (i *Instance) refreshCachedFields() []string {
 
 			fields, err := i.getFields(ctx)
 			if err != nil {
-				log.Error(ctx, "Could not refresh cached fields.", zap.Error(err))
+				log.Error(ctx, "Could not refresh cached fields", zap.Error(err))
 			} else {
-				log.Info(ctx, "Refreshed fields.", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
+				log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
 
 				for _, field := range fields.String {
 					i.cachedFields.String = appendIfMissing(i.cachedFields.String, field)
@@ -185,7 +185,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is used
 	// to render the distribution chart, which shows how many documents/rows are available within a bucket.
 	sqlQueryBuckets := fmt.Sprintf(`SELECT toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data, count(*) AS count_data FROM %s.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) %s GROUP BY interval_data ORDER BY interval_data WITH FILL FROM toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) TO toStartOfInterval(FROM_UNIXTIME(%d), INTERVAL %d second) STEP %d SETTINGS skip_unavailable_shards = 1`, interval, i.database, timeStart, timeEnd, conditions, timeStart, interval, timeEnd, interval, interval)
-	log.Debug(ctx, "SQL query buckets.", zap.String("query", sqlQueryBuckets))
+	log.Debug(ctx, "SQL query buckets", zap.String("query", sqlQueryBuckets))
 	rowsBuckets, err := i.client.QueryContext(ctx, sqlQueryBuckets)
 	if err != nil {
 		return nil, nil, 0, 0, nil, err
@@ -264,7 +264,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 		}
 	}
 
-	log.Debug(ctx, "SQL result buckets.", zap.Int64("count", count), zap.Any("buckets", buckets))
+	log.Debug(ctx, "SQL result buckets", zap.Int64("count", count), zap.Any("buckets", buckets))
 
 	// If the count of documents is 0 we can already return the result, because the following query wouldn't return any
 	// documents.
@@ -276,7 +276,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
 	sqlQueryRawLogs := fmt.Sprintf("SELECT %s FROM %s.logs WHERE (%s) %s ORDER BY %s LIMIT %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, timeConditions, conditions, parsedOrder, limit)
-	log.Debug(ctx, "SQL query raw logs.", zap.String("query", sqlQueryRawLogs))
+	log.Debug(ctx, "SQL query raw logs", zap.String("query", sqlQueryRawLogs))
 	rowsRawLogs, err := i.client.QueryContext(ctx, sqlQueryRawLogs)
 	if err != nil {
 		return nil, nil, 0, 0, nil, err
@@ -324,7 +324,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	}
 
 	sort.Strings(fields)
-	log.Debug(ctx, "SQL result raw logs.", zap.Int("documentsCount", len(documents)))
+	log.Debug(ctx, "SQL result raw logs", zap.Int("documentsCount", len(documents)))
 
 	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
 }
@@ -333,7 +333,7 @@ func (i *Instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 // plugins. If users should be able to directly access a Clickhouse instance you can expose the instance using the SQL
 // plugin.
 func (i *Instance) GetRawQueryResults(ctx context.Context, query string) ([][]interface{}, []string, error) {
-	log.Debug(ctx, "Raw SQL query.", zap.String("query", query))
+	log.Debug(ctx, "Raw SQL query", zap.String("query", query))
 
 	rows, err := i.client.QueryContext(ctx, query)
 	if err != nil {
@@ -382,7 +382,7 @@ func New(config Config) (*Instance, error) {
 
 	client, err := sql.Open("clickhouse", dns)
 	if err != nil {
-		log.Error(nil, "Could not initialize database connection.", zap.Error(err))
+		log.Error(nil, "Could not initialize database connection", zap.Error(err))
 		return nil, err
 	}
 

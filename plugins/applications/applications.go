@@ -59,7 +59,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	teamNamespace := r.URL.Query().Get("teamNamespace")
 	teamName := r.URL.Query().Get("teamName")
 
-	log.Debug(r.Context(), "Get applications parameters.", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces), zap.Strings("tags", tagsList), zap.String("teamCluster", teamCluster), zap.String("teamNamespace", teamNamespace), zap.String("teamName", teamName), zap.String("view", view))
+	log.Debug(r.Context(), "Get applications parameters", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces), zap.Strings("tags", tagsList), zap.String("teamCluster", teamCluster), zap.String("teamNamespace", teamNamespace), zap.String("teamName", teamName), zap.String("view", view))
 
 	if view == "gallery" {
 		// If the view parameter has the value "gallery" and the team parameters are defined we return all applications
@@ -71,7 +71,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		if teamCluster != "" && teamNamespace != "" && teamName != "" {
 			if router.teams.LastFetch.After(time.Now().Add(-1 * router.teams.CacheDuration)) {
 				applications := teams.GetApplications(router.teams.Teams, teamCluster, teamNamespace, teamName)
-				log.Debug(r.Context(), "Get applications result.", zap.String("team", "return cached applications"), zap.Int("applicationsCount", len(applications)))
+				log.Debug(r.Context(), "Get applications result", zap.String("team", "return cached applications"), zap.Int("applicationsCount", len(applications)))
 				render.JSON(w, r, applications)
 				return
 			}
@@ -83,7 +83,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 					router.teams.Teams = ts
 
 					applications := teams.GetApplications(ts, teamCluster, teamNamespace, teamName)
-					log.Debug(r.Context(), "Get applications result.", zap.String("team", "get and return applications"), zap.Int("applicationsCount", len(applications)))
+					log.Debug(r.Context(), "Get applications result", zap.String("team", "get and return applications"), zap.Int("applicationsCount", len(applications)))
 					render.JSON(w, r, applications)
 					return
 				}
@@ -96,14 +96,14 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			go func() {
 				ts := teams.Get(r.Context(), router.clustersClient)
 				if ts != nil {
-					log.Debug(r.Context(), "Get applications result.", zap.String("team", "get teams in background"), zap.Int("teamsCount", len(ts)))
+					log.Debug(r.Context(), "Get applications result", zap.String("team", "get teams in background"), zap.Int("teamsCount", len(ts)))
 					router.teams.LastFetch = time.Now()
 					router.teams.Teams = ts
 				}
 			}()
 
 			applications := teams.GetApplications(router.teams.Teams, teamCluster, teamNamespace, teamName)
-			log.Debug(r.Context(), "Get applications result.", zap.String("team", "return applications"), zap.Int("applicationsCount", len(applications)))
+			log.Debug(r.Context(), "Get applications result", zap.String("team", "return applications"), zap.Int("applicationsCount", len(applications)))
 			render.JSON(w, r, applications)
 			return
 		}
@@ -116,7 +116,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		for _, clusterName := range clusterNames {
 			cluster := router.clustersClient.GetCluster(clusterName)
 			if cluster == nil {
-				log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+				log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 				errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 				return
 			}
@@ -124,7 +124,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			if namespaces == nil {
 				application, err := cluster.GetApplications(r.Context(), "")
 				if err != nil {
-					log.Error(r.Context(), "Could not get applications.", zap.Error(err))
+					log.Error(r.Context(), "Could not get applications", zap.Error(err))
 					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get applications")
 					return
 				}
@@ -134,7 +134,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 				for _, namespace := range namespaces {
 					application, err := cluster.GetApplications(r.Context(), namespace)
 					if err != nil {
-						log.Error(r.Context(), "Could not get applications.", zap.Error(err))
+						log.Error(r.Context(), "Could not get applications", zap.Error(err))
 						errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get applications")
 						return
 					}
@@ -146,7 +146,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 
 		applications = tags.FilterApplications(applications, tagsList)
 
-		log.Debug(r.Context(), "Get applications results.", zap.Int("applicationsCount", len(applications)))
+		log.Debug(r.Context(), "Get applications results", zap.Int("applicationsCount", len(applications)))
 		render.JSON(w, r, applications)
 		return
 	}
@@ -159,7 +159,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	if view == "topology" {
 		if router.topology.LastFetch.After(time.Now().Add(-1 * router.topology.CacheDuration)) {
 			topo := topology.Generate(router.topology.Topology, clusterNames, namespaces, tagsList)
-			log.Debug(r.Context(), "Get applications result.", zap.String("topology", "return cached topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
+			log.Debug(r.Context(), "Get applications result", zap.String("topology", "return cached topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 			render.JSON(w, r, topo)
 			return
 		}
@@ -171,12 +171,12 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 				router.topology.Topology = topo
 
 				topo = topology.Generate(topo, clusterNames, namespaces, tagsList)
-				log.Debug(r.Context(), "Get applications result.", zap.String("topology", "get and return topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
+				log.Debug(r.Context(), "Get applications result", zap.String("topology", "get and return topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 				render.JSON(w, r, topo)
 				return
 			}
 
-			log.Error(r.Context(), "Could not generate topology.")
+			log.Error(r.Context(), "Could not generate topology")
 			errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not generate topology")
 			return
 		}
@@ -184,19 +184,19 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		go func() {
 			topo := topology.Get(context.Background(), router.clustersClient)
 			if topo != nil && topo.Nodes != nil {
-				log.Debug(r.Context(), "Get applications result.", zap.String("topology", "get topology in background"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
+				log.Debug(r.Context(), "Get applications result", zap.String("topology", "get topology in background"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 				router.topology.LastFetch = time.Now()
 				router.topology.Topology = topo
 			}
 		}()
 
 		topo := topology.Generate(router.topology.Topology, clusterNames, namespaces, tagsList)
-		log.Debug(r.Context(), "Get applications result.", zap.String("topology", "return topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
+		log.Debug(r.Context(), "Get applications result", zap.String("topology", "return topology"), zap.Int("edges", len(topo.Edges)), zap.Int("nodes", len(topo.Nodes)))
 		render.JSON(w, r, topo)
 		return
 	}
 
-	log.Error(r.Context(), "Invalid view property.")
+	log.Error(r.Context(), "Invalid view property")
 	errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid view property")
 }
 
@@ -207,18 +207,18 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 
-	log.Debug(r.Context(), "Get application parameters.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
+	log.Debug(r.Context(), "Get application parameters", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
 
 	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
-		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	application, err := cluster.GetApplication(r.Context(), namespace, name)
 	if err != nil {
-		log.Error(r.Context(), "Could not get applications.")
+		log.Error(r.Context(), "Could not get applications")
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get application")
 		return
 	}
@@ -232,10 +232,10 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 
-	log.Debug(r.Context(), "Get tags.", zap.String("name", name))
+	log.Debug(r.Context(), "Get tags", zap.String("name", name))
 
 	if router.tags.LastFetch.After(time.Now().Add(-1 * router.tags.CacheDuration)) {
-		log.Debug(r.Context(), "Get tags from cache result.", zap.Int("tagsCount", len(router.tags.Tags)))
+		log.Debug(r.Context(), "Get tags from cache result", zap.Int("tagsCount", len(router.tags.Tags)))
 		render.JSON(w, r, router.tags.Tags)
 		return
 	}
@@ -245,7 +245,7 @@ func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 	for _, cluster := range router.clustersClient.GetClusters() {
 		applications, err := cluster.GetApplications(r.Context(), "")
 		if err != nil {
-			log.Error(r.Context(), "Could not get tags.", zap.Error(err))
+			log.Error(r.Context(), "Could not get tags", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get tags")
 			return
 		}
@@ -259,7 +259,7 @@ func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 	router.topology.LastFetch = time.Now()
 	router.tags.Tags = uniqueTags
 
-	log.Debug(r.Context(), "Get tags result.", zap.Int("tagsCount", len(uniqueTags)))
+	log.Debug(r.Context(), "Get tags result", zap.Int("tagsCount", len(uniqueTags)))
 	render.JSON(w, r, uniqueTags)
 }
 

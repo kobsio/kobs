@@ -47,25 +47,25 @@ type Server struct {
 
 // Start starts serving the api server.
 func (s *Server) Start() {
-	log.Info(nil, "API server started.", zap.String("address", s.server.Addr))
+	log.Info(nil, "API server started", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.Error(nil, "API server died unexpected.", zap.Error(err))
+			log.Error(nil, "API server died unexpected", zap.Error(err))
 		}
 	}
 }
 
 // Stop terminates the api server gracefully.
 func (s *Server) Stop() {
-	log.Debug(nil, "Start shutdown of the API server.")
+	log.Debug(nil, "Start shutdown of the API server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		log.Error(nil, "Graceful shutdown of the API server failed.", zap.Error(err))
+		log.Error(nil, "Graceful shutdown of the API server failed", zap.Error(err))
 	}
 }
 

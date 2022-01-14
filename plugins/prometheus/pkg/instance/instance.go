@@ -39,7 +39,7 @@ type Instance struct {
 // GetVariable returns all values for a label from the given query. For that we have to retrive the label sets from the
 // Prometheus instance and so that we can add the values for the specified label to the values slice.
 func (i *Instance) GetVariable(ctx context.Context, label, query, queryType string, timeStart, timeEnd int64) ([]string, error) {
-	log.Debug(ctx, "Query variable values.", zap.String("query", query))
+	log.Debug(ctx, "Query variable values", zap.String("query", query))
 
 	labelSets, _, err := i.v1api.Series(ctx, []string{query}, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
@@ -84,7 +84,7 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 	var metrics []Metric
 
 	for queryIndex, query := range queries {
-		log.Debug(ctx, "Query time series.", zap.String("query", query.Query), zap.String("label", query.Label), zap.String("resolution", resolution), zap.Time("start", r.Start), zap.Time("end", r.End))
+		log.Debug(ctx, "Query time series", zap.String("query", query.Query), zap.String("label", query.Label), zap.String("resolution", resolution), zap.Time("start", r.Start), zap.Time("end", r.End))
 
 		result, _, err := i.v1api.QueryRange(ctx, query.Query, r)
 		if err != nil {
@@ -211,7 +211,7 @@ func (i *Instance) GetTableData(ctx context.Context, queries []Query, timeEnd in
 	rows = make(map[string]map[string]string)
 
 	for queryIndex, query := range queries {
-		log.Debug(ctx, "Query table data.", zap.String("query", query.Query), zap.String("label", query.Label), zap.Time("time", queryTime))
+		log.Debug(ctx, "Query table data", zap.String("query", query.Query), zap.String("label", query.Label), zap.Time("time", queryTime))
 
 		result, _, err := i.v1api.Query(ctx, query.Query, queryTime)
 		if err != nil {
@@ -269,9 +269,9 @@ func (i *Instance) GetLabelValues(ctx context.Context, searchTerm string) ([]str
 
 		i.labelValues = labelValues
 		i.labelValuesLastFetch = now
-		log.Debug(ctx, "Get metric names.", zap.String("name", i.Name))
+		log.Debug(ctx, "Get metric names", zap.String("name", i.Name))
 	} else {
-		log.Debug(ctx, "Use cached metric names.", zap.String("name", i.Name))
+		log.Debug(ctx, "Use cached metric names", zap.String("name", i.Name))
 	}
 
 	var names []string

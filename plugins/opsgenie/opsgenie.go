@@ -43,18 +43,18 @@ func (router *Router) getAlerts(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 
-	log.Debug(r.Context(), "Get alerts parameters.", zap.String("name", name), zap.String("query", query))
+	log.Debug(r.Context(), "Get alerts parameters", zap.String("name", name), zap.String("query", query))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	alerts, err := i.GetAlerts(r.Context(), query)
 	if err != nil {
-		log.Error(r.Context(), "Could not get alerts.", zap.Error(err))
+		log.Error(r.Context(), "Could not get alerts", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alerts")
 		return
 	}
@@ -66,18 +66,18 @@ func (router *Router) getAlertDetails(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Get alert details parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Get alert details parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	details, err := i.GetAlertDetails(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get alert details.", zap.Error(err))
+		log.Error(r.Context(), "Could not get alert details", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alert details")
 		return
 	}
@@ -89,18 +89,18 @@ func (router *Router) getAlertLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Get alert logs parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Get alert logs parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	logs, err := i.GetAlertLogs(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get alert logs.", zap.Error(err))
+		log.Error(r.Context(), "Could not get alert logs", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alert logs")
 		return
 	}
@@ -112,18 +112,18 @@ func (router *Router) getAlertNotes(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Get alert notes parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Get alert notes parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	notes, err := i.GetAlertNotes(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get alert notes.", zap.Error(err))
+		log.Error(r.Context(), "Could not get alert notes", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get alert notes")
 		return
 	}
@@ -135,18 +135,18 @@ func (router *Router) getIncidents(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 
-	log.Debug(r.Context(), "Get incidents parameters.", zap.String("name", name), zap.String("query", query))
+	log.Debug(r.Context(), "Get incidents parameters", zap.String("name", name), zap.String("query", query))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	incidents, err := i.GetIncidents(r.Context(), query)
 	if err != nil {
-		log.Error(r.Context(), "Could not get incidents.", zap.Error(err))
+		log.Error(r.Context(), "Could not get incidents", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incidents")
 		return
 	}
@@ -158,18 +158,18 @@ func (router *Router) getIncidentLogs(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Get incident logs parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Get incident logs parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	logs, err := i.GetIncidentLogs(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get incident logs.", zap.Error(err))
+		log.Error(r.Context(), "Could not get incident logs", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incident logs")
 		return
 	}
@@ -181,18 +181,18 @@ func (router *Router) getIncidentNotes(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Get incident notes parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Get incident notes parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	notes, err := i.GetIncidentNotes(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get incident notes.", zap.Error(err))
+		log.Error(r.Context(), "Could not get incident notes", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incident notes")
 		return
 	}
@@ -204,18 +204,18 @@ func (router *Router) getIncidentTimeline(w http.ResponseWriter, r *http.Request
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Get incident timeline parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Get incident timeline parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	timeline, err := i.GetIncidentTimeline(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get incident timeline.", zap.Error(err))
+		log.Error(r.Context(), "Could not get incident timeline", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get incident timeline")
 		return
 	}
@@ -227,31 +227,31 @@ func (router *Router) acknowledgeAlert(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Acknowlege alert parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Acknowlege alert parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to acknowledge the alert.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to acknowledge the alert", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to acknowledge the alert")
 		return
 	}
 
 	if err := i.CheckPermissions(name, user, "acknowledgeAlert"); err != nil {
-		log.Warn(r.Context(), "User is not allowed to acknowledge alerts.", zap.Error(err))
+		log.Warn(r.Context(), "User is not allowed to acknowledge alerts", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to acknowledge alerts")
 		return
 	}
 
 	err = i.AcknowledgeAlert(r.Context(), id, user.ID)
 	if err != nil {
-		log.Error(r.Context(), "Could not acknowledge alert.", zap.Error(err))
+		log.Error(r.Context(), "Could not acknowledge alert", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not acknowledge alert")
 		return
 	}
@@ -264,31 +264,31 @@ func (router *Router) snoozeAlert(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	snooze := r.URL.Query().Get("snooze")
 
-	log.Debug(r.Context(), "Snooze alert parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Snooze alert parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to snooze the alert.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to snooze the alert", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to snooze the alert")
 		return
 	}
 
 	if err := i.CheckPermissions(name, user, "snoozeAlert"); err != nil {
-		log.Warn(r.Context(), "User is not allowed to snooze alerts.", zap.Error(err))
+		log.Warn(r.Context(), "User is not allowed to snooze alerts", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to snooze alerts")
 		return
 	}
 
 	snoozeParsed, err := time.ParseDuration(snooze)
 	if err != nil {
-		log.Error(r.Context(), "Could not snooze alert.", zap.Error(err))
+		log.Error(r.Context(), "Could not snooze alert", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not parse snooze parameter")
 		return
 	}
@@ -306,31 +306,31 @@ func (router *Router) closeAlert(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Close alert parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Close alert parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to close the alert.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to close the alert", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to close the alert")
 		return
 	}
 
 	if err := i.CheckPermissions(name, user, "closeAlert"); err != nil {
-		log.Warn(r.Context(), "User is not allowed to close alerts.", zap.Error(err))
+		log.Warn(r.Context(), "User is not allowed to close alerts", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to close alerts")
 		return
 	}
 
 	err = i.CloseAlert(r.Context(), id, user.ID)
 	if err != nil {
-		log.Error(r.Context(), "Could not close alert.", zap.Error(err))
+		log.Error(r.Context(), "Could not close alert", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not close alert")
 		return
 	}
@@ -342,31 +342,31 @@ func (router *Router) resolveIncident(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Resolve incident parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Resolve incident parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to resolve the incident.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to resolve the incident", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to resolve the incident")
 		return
 	}
 
 	if err := i.CheckPermissions(name, user, "resolveIncident"); err != nil {
-		log.Warn(r.Context(), "User is not allowed to resolve incidents.", zap.Error(err))
+		log.Warn(r.Context(), "User is not allowed to resolve incidents", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to resolve incidents")
 		return
 	}
 
 	err = i.ResolveIncident(r.Context(), id, user.ID)
 	if err != nil {
-		log.Error(r.Context(), "Could not resolve incidents.", zap.Error(err))
+		log.Error(r.Context(), "Could not resolve incidents", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not resolve incident")
 		return
 	}
@@ -378,31 +378,31 @@ func (router *Router) closeIncident(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	id := r.URL.Query().Get("id")
 
-	log.Debug(r.Context(), "Close incident parameters.", zap.String("name", name), zap.String("id", id))
+	log.Debug(r.Context(), "Close incident parameters", zap.String("name", name), zap.String("id", id))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to close the incident.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to close the incident", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to close the incident")
 		return
 	}
 
 	if err := i.CheckPermissions(name, user, "closeIncident"); err != nil {
-		log.Warn(r.Context(), "User is not allowed to close incidents.", zap.Error(err))
+		log.Warn(r.Context(), "User is not allowed to close incidents", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to close incidents")
 		return
 	}
 
 	err = i.CloseIncident(r.Context(), id, user.ID)
 	if err != nil {
-		log.Error(r.Context(), "Could not close incident.", zap.Error(err))
+		log.Error(r.Context(), "Could not close incident", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not close incident")
 		return
 	}
@@ -417,7 +417,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create Opsgenie instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create Opsgenie instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

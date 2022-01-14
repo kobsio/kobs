@@ -101,7 +101,7 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			// If the request doesn't contain a user id we return an unauthorized error, because at least the user id is
 			// required to perform any kind of authorization.
 			if userID == "" {
-				log.Warn(r.Context(), "User ID is missing.")
+				log.Warn(r.Context(), "User ID is missing")
 				errresponse.Render(w, r, nil, http.StatusUnauthorized, "Unauthorized")
 				return
 			}
@@ -111,18 +111,18 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			// return an unauthorized error.
 			cookie, err := r.Cookie("kobs-auth")
 			if err != nil {
-				log.Warn(r.Context(), "Error while getting \"kobs-auth\" cookie.", zap.Error(err))
+				log.Warn(r.Context(), "Error while getting \"kobs-auth\" cookie", zap.Error(err))
 
 				user, err := a.getUser(r.Context(), userID, teamIDs)
 				if err != nil {
-					log.Warn(r.Context(), "Could not get user.", zap.Error(err), zap.String("user", userID), zap.Strings("teams", teamIDs))
+					log.Warn(r.Context(), "Could not get user", zap.Error(err), zap.String("user", userID), zap.Strings("teams", teamIDs))
 					errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 					return
 				}
 
 				token, err := jwt.CreateToken(user, a.sessionToken, a.sessionInterval)
 				if err != nil {
-					log.Warn(r.Context(), "Could not create jwt token.", zap.Error(err))
+					log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
 					errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 					return
 				}
@@ -138,22 +138,22 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 				// We have to check if the token from the "kobs-auth" cookie is still valid. If this is the case we are
 				// done. If the token isn't valid anymore, we try to create a new token and update the cookie value with
 				// the new token.
-				log.Debug(r.Context(), "Found existing cookie.")
+				log.Debug(r.Context(), "Found existing cookie")
 
 				user, err := jwt.ValidateToken(cookie.Value, a.sessionToken)
 				if err != nil || user == nil {
-					log.Warn(r.Context(), "Token validation failed.", zap.Error(err))
+					log.Warn(r.Context(), "Token validation failed", zap.Error(err))
 
 					newUser, err := a.getUser(r.Context(), userID, teamIDs)
 					if err != nil {
-						log.Warn(r.Context(), "Could not get user.", zap.Error(err), zap.String("user", userID), zap.Strings("teams", teamIDs))
+						log.Warn(r.Context(), "Could not get user", zap.Error(err), zap.String("user", userID), zap.Strings("teams", teamIDs))
 						errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 						return
 					}
 
 					token, err := jwt.CreateToken(newUser, a.sessionToken, a.sessionInterval)
 					if err != nil {
-						log.Warn(r.Context(), "Could not create jwt token.", zap.Error(err))
+						log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
 						errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 						return
 					}
@@ -193,13 +193,13 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			if len(urlPaths) >= 4 && urlPaths[1] == "api" && urlPaths[2] == "plugins" {
 				user, err := authContext.GetUser(ctx)
 				if err != nil {
-					log.Warn(r.Context(), "User is now allowed to access the plugin.", zap.String("plugin", urlPaths[3]))
+					log.Warn(r.Context(), "User is now allowed to access the plugin", zap.String("plugin", urlPaths[3]))
 					errresponse.Render(w, r, nil, http.StatusForbidden, "Your are not allowed to access the plugin")
 					return
 				}
 
 				if !user.HasPluginAccess(urlPaths[3]) {
-					log.Warn(r.Context(), "User is now allowed to access the plugin.", zap.String("plugin", urlPaths[3]))
+					log.Warn(r.Context(), "User is now allowed to access the plugin", zap.String("plugin", urlPaths[3]))
 					errresponse.Render(w, r, nil, http.StatusForbidden, "Your are not allowed to access the plugin")
 					return
 				}

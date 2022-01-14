@@ -47,11 +47,11 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
 	uids := r.URL.Query()["uid"]
 
-	log.Debug(r.Context(), "Get dashboards parameters.", zap.String(name, name), zap.String("query", query), zap.Strings("uids", uids))
+	log.Debug(r.Context(), "Get dashboards parameters", zap.String(name, name), zap.String("query", query), zap.Strings("uids", uids))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -61,7 +61,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 		for _, uid := range uids {
 			dashboard, err := i.GetDashboard(r.Context(), uid)
 			if err != nil {
-				log.Error(r.Context(), "Could not get dashboard.", zap.Error(err))
+				log.Error(r.Context(), "Could not get dashboard", zap.Error(err))
 				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get dashboard")
 				return
 			}
@@ -77,7 +77,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 
 	dashboards, err := i.GetDashboards(r.Context(), query)
 	if err != nil {
-		log.Error(r.Context(), "Could not get dashboards.", zap.Error(err))
+		log.Error(r.Context(), "Could not get dashboards", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get dashboards")
 		return
 	}

@@ -36,7 +36,7 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 	urls := r.URL.Query()["url"]
 	sortBy := r.URL.Query().Get("sortBy")
 
-	log.Debug(r.Context(), "Get feed parameters.", zap.Int("urlCount", len(urls)), zap.String("sortBy", sortBy))
+	log.Debug(r.Context(), "Get feed parameters", zap.Int("urlCount", len(urls)), zap.String("sortBy", sortBy))
 
 	var feeds []*gofeed.Feed
 	var wg sync.WaitGroup
@@ -49,7 +49,7 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 
 			feed, err := fp.ParseURL(url)
 			if err != nil {
-				log.Error(r.Context(), "Error while getting feed.", zap.Error(err))
+				log.Error(r.Context(), "Error while getting feed", zap.Error(err))
 			}
 
 			if feed != nil {
@@ -64,7 +64,7 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 
 	items := feed.Transform(feeds, sortBy)
 
-	log.Debug(r.Context(), "Get feed result.", zap.Int("itemsCount", len(items)))
+	log.Debug(r.Context(), "Get feed result", zap.Int("itemsCount", len(items)))
 	render.JSON(w, r, items)
 }
 

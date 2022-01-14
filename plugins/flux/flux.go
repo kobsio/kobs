@@ -33,11 +33,11 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 	resource := r.URL.Query().Get("resource")
 
-	log.Debug(r.Context(), "Sync resource.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource))
+	log.Debug(r.Context(), "Sync resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource))
 
 	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
-		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
@@ -45,7 +45,7 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 	if resource == "kustomizations" {
 		err := sync.Kustomization(r.Context(), cluster, namespace, name)
 		if err != nil {
-			log.Error(r.Context(), "Could not sync Kustomization.", zap.Error(err))
+			log.Error(r.Context(), "Could not sync Kustomization", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not sync Kustomization")
 			return
 		}
@@ -57,7 +57,7 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 	if resource == "helmreleases" {
 		err := sync.HelmRelease(r.Context(), cluster, namespace, name)
 		if err != nil {
-			log.Error(r.Context(), "Could not sync HelmRelease.", zap.Error(err))
+			log.Error(r.Context(), "Could not sync HelmRelease", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not sync HelmRelease")
 			return
 		}
@@ -66,7 +66,7 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Error(r.Context(), "invalid resource.")
+	log.Error(r.Context(), "invalid resource")
 	errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid resource")
 	return
 }

@@ -39,18 +39,18 @@ func (router *Router) getInstance(name string) *instance.Instance {
 func (router *Router) getServices(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.Debug(r.Context(), "Get services parameters.", zap.String("name", name))
+	log.Debug(r.Context(), "Get services parameters", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	body, err := i.GetServices(r.Context())
 	if err != nil {
-		log.Error(r.Context(), "Could not get services.", zap.Error(err))
+		log.Error(r.Context(), "Could not get services", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get services")
 		return
 	}
@@ -62,18 +62,18 @@ func (router *Router) getOperations(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	service := r.URL.Query().Get("service")
 
-	log.Debug(r.Context(), "Get operations parameters.", zap.String("name", name), zap.String("service", service))
+	log.Debug(r.Context(), "Get operations parameters", zap.String("name", name), zap.String("service", service))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	body, err := i.GetOperations(r.Context(), service)
 	if err != nil {
-		log.Error(r.Context(), "Could not get operations.", zap.Error(err))
+		log.Error(r.Context(), "Could not get operations", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get operations")
 		return
 	}
@@ -92,32 +92,32 @@ func (router *Router) getTraces(w http.ResponseWriter, r *http.Request) {
 	timeEnd := r.URL.Query().Get("timeEnd")
 	timeStart := r.URL.Query().Get("timeStart")
 
-	log.Debug(r.Context(), "Get traces parameters.", zap.String("name", name), zap.String("limit", limit), zap.String("maxDuration", maxDuration), zap.String("minDuration", minDuration), zap.String("operation", operation), zap.String("service", service), zap.String("tags", tags), zap.String("timeEnd", timeEnd), zap.String("timeStart", timeStart))
+	log.Debug(r.Context(), "Get traces parameters", zap.String("name", name), zap.String("limit", limit), zap.String("maxDuration", maxDuration), zap.String("minDuration", minDuration), zap.String("operation", operation), zap.String("service", service), zap.String("tags", tags), zap.String("timeEnd", timeEnd), zap.String("timeStart", timeStart))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
+		log.Error(r.Context(), "Could not parse start time", zap.Error(err))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
+		log.Error(r.Context(), "Could not parse end time", zap.Error(err))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
 
 	body, err := i.GetTraces(r.Context(), limit, maxDuration, minDuration, operation, service, tags, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
-		log.Error(r.Context(), "Could not get traces.", zap.Error(err))
+		log.Error(r.Context(), "Could not get traces", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get traces")
 		return
 	}
@@ -129,18 +129,18 @@ func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	traceID := r.URL.Query().Get("traceID")
 
-	log.Debug(r.Context(), "Get trace parameters.", zap.String("name", name), zap.String("traceID", traceID))
+	log.Debug(r.Context(), "Get trace parameters", zap.String("name", name), zap.String("traceID", traceID))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	body, err := i.GetTrace(r.Context(), traceID)
 	if err != nil {
-		log.Error(r.Context(), "Could not get trace.", zap.Error(err))
+		log.Error(r.Context(), "Could not get trace", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get trace")
 		return
 	}
@@ -155,7 +155,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create Jaeger instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create Jaeger instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

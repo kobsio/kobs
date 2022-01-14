@@ -43,17 +43,17 @@ func (router *Router) getFields(w http.ResponseWriter, r *http.Request) {
 	filter := r.URL.Query().Get("filter")
 	fieldType := r.URL.Query().Get("fieldType")
 
-	log.Debug(r.Context(), "Get fields parameters.", zap.String("name", name), zap.String("filter", filter), zap.String("fieldType", fieldType))
+	log.Debug(r.Context(), "Get fields parameters", zap.String("name", name), zap.String("filter", filter), zap.String("fieldType", fieldType))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	fields := i.GetFields(filter, fieldType)
-	log.Debug(r.Context(), "Get fields result.", zap.Int("fieldsCount", len(fields)))
+	log.Debug(r.Context(), "Get fields result", zap.Int("fieldsCount", len(fields)))
 	render.JSON(w, r, fields)
 }
 
@@ -68,25 +68,25 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.Debug(r.Context(), "Get logs paramters.", zap.String("name", name), zap.String("query", query), zap.String("order", order), zap.String("orderBy", orderBy), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
+	log.Debug(r.Context(), "Get logs paramters", zap.String("name", name), zap.String("query", query), zap.String("order", order), zap.String("orderBy", orderBy), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse start time.", zap.Error(err))
+		log.Error(r.Context(), "Could not parse start time", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse end time.", zap.Error(err))
+		log.Error(r.Context(), "Could not parse end time", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse end time")
 		return
 	}
@@ -126,7 +126,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	documents, fields, count, took, buckets, err := i.GetLogs(r.Context(), query, order, orderBy, 1000, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
-		log.Error(r.Context(), "Could not get logs.", zap.Error(err))
+		log.Error(r.Context(), "Could not get logs", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get logs")
 		return
 	}
@@ -153,11 +153,11 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.Debug(r.Context(), "Get aggregation paramters.", zap.String("name", name))
+	log.Debug(r.Context(), "Get aggregation paramters", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -166,7 +166,7 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&aggregationData)
 	if err != nil {
-		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
+		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
@@ -197,7 +197,7 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 
 	rows, columns, err := i.GetAggregation(r.Context(), aggregationData)
 	if err != nil {
-		log.Error(r.Context(), "Error while running aggregation.", zap.Error(err))
+		log.Error(r.Context(), "Error while running aggregation", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Error while running aggregation")
 		return
 	}
@@ -220,7 +220,7 @@ func Register(plugins *plugin.Plugins, config Config) (chi.Router, []*instance.I
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create klogs instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create klogs instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

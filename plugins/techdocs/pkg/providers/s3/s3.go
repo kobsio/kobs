@@ -33,13 +33,13 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 
 	for object := range p.client.ListObjects(ctx, p.config.Bucket, minio.ListObjectsOptions{Recursive: false}) {
 		if object.Err != nil {
-			log.Error(ctx, "Could not read file.", zap.Error(object.Err))
+			log.Error(ctx, "Could not read file", zap.Error(object.Err))
 		} else {
 			if object.Key[len(object.Key)-1:] == "/" {
 				indexPath := fmt.Sprintf("%sindex.yaml", object.Key)
 				obj, err := p.client.GetObject(ctx, p.config.Bucket, indexPath, minio.GetObjectOptions{})
 				if err != nil {
-					log.Error(ctx, "Could not read file.", zap.Error(err), zap.String("file", indexPath))
+					log.Error(ctx, "Could not read file", zap.Error(err), zap.String("file", indexPath))
 				} else {
 					defer obj.Close()
 					fileInfo, _ := obj.Stat()
@@ -50,7 +50,7 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 
 						index, err := shared.ParseIndex(buffer)
 						if err != nil {
-							log.Error(ctx, "Could not parse index file.", zap.Error(err), zap.String("file", indexPath))
+							log.Error(ctx, "Could not parse index file", zap.Error(err), zap.String("file", indexPath))
 						} else {
 							indexes = append(indexes, index)
 						}

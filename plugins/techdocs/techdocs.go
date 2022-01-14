@@ -42,18 +42,18 @@ func (router *Router) getInstance(name string) *instance.Instance {
 func (router *Router) getIndexes(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.Debug(r.Context(), "Get TechDocs parameters.", zap.String("name", name))
+	log.Debug(r.Context(), "Get TechDocs parameters", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	indexes, err := i.GetIndexes(r.Context())
 	if err != nil {
-		log.Error(r.Context(), "Could not get indexes.", zap.Error(err))
+		log.Error(r.Context(), "Could not get indexes", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get indexes")
 		return
 	}
@@ -65,18 +65,18 @@ func (router *Router) getIndex(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	service := r.URL.Query().Get("service")
 
-	log.Debug(r.Context(), "Get TechDoc parameters.", zap.String("name", name), zap.String("service", service))
+	log.Debug(r.Context(), "Get TechDoc parameters", zap.String("name", name), zap.String("service", service))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	index, err := i.GetIndex(r.Context(), service)
 	if err != nil {
-		log.Error(r.Context(), "Could not get index.", zap.Error(err))
+		log.Error(r.Context(), "Could not get index", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get index")
 		return
 	}
@@ -89,18 +89,18 @@ func (router *Router) getMarkdown(w http.ResponseWriter, r *http.Request) {
 	service := r.URL.Query().Get("service")
 	path := r.URL.Query().Get("path")
 
-	log.Debug(r.Context(), "Get markdown parameters.", zap.String("name", name), zap.String("service", service), zap.String("path", path))
+	log.Debug(r.Context(), "Get markdown parameters", zap.String("name", name), zap.String("service", service), zap.String("path", path))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	markdown, err := i.GetMarkdown(r.Context(), service, path)
 	if err != nil {
-		log.Error(r.Context(), "Could not get markdown.", zap.Error(err))
+		log.Error(r.Context(), "Could not get markdown", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get markdown")
 		return
 	}
@@ -113,11 +113,11 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 	service := r.URL.Query().Get("service")
 	path := r.URL.Query().Get("path")
 
-	log.Debug(r.Context(), "Get file parameters.", zap.String("name", name), zap.String("service", service), zap.String("path", path))
+	log.Debug(r.Context(), "Get file parameters", zap.String("name", name), zap.String("service", service), zap.String("path", path))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		render.Status(r, http.StatusBadRequest)
 		render.Data(w, r, []byte(`Could not find instance name`))
 		return
@@ -125,7 +125,7 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 
 	bytes, err := i.GetFile(r.Context(), service, path)
 	if err != nil {
-		log.Error(r.Context(), "Could not get file.", zap.Error(err))
+		log.Error(r.Context(), "Could not get file", zap.Error(err))
 		render.Status(r, http.StatusBadRequest)
 		render.Data(w, r, []byte(`Could not get file`))
 		return
@@ -142,7 +142,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create TechDocs instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create TechDocs instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

@@ -39,18 +39,18 @@ func (router *Router) getInstance(name string) *instance.Instance {
 func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.Debug(r.Context(), "Get namespaces parameters.", zap.String("name", name))
+	log.Debug(r.Context(), "Get namespaces parameters", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	namespaces, err := i.GetNamespaces(r.Context())
 	if err != nil {
-		log.Error(r.Context(), "Could not get namespaces.", zap.Error(err))
+		log.Error(r.Context(), "Could not get namespaces", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get namespaces")
 		return
 	}
@@ -72,32 +72,32 @@ func (router *Router) getGraph(w http.ResponseWriter, r *http.Request) {
 	appenders := r.URL.Query()["appender"]
 	namespaces := r.URL.Query()["namespace"]
 
-	log.Debug(r.Context(), "Get graph parameters.", zap.String("name", name), zap.String("duration", duration), zap.String("graphType", graphType), zap.String("groupBy", groupBy), zap.String("injecteServiceNodes", injectServiceNodes), zap.Strings("appenders", appenders), zap.Strings("namespaces", namespaces))
+	log.Debug(r.Context(), "Get graph parameters", zap.String("name", name), zap.String("duration", duration), zap.String("graphType", graphType), zap.String("groupBy", groupBy), zap.String("injecteServiceNodes", injectServiceNodes), zap.Strings("appenders", appenders), zap.Strings("namespaces", namespaces))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	parsedDuration, err := strconv.ParseInt(duration, 10, 64)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse duration parameter.", zap.Error(err))
+		log.Error(r.Context(), "Could not parse duration parameter", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse duration parameter")
 		return
 	}
 
 	parsedInjectServiceNodes, err := strconv.ParseBool(injectServiceNodes)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse inject service nodes parameter.", zap.Error(err))
+		log.Error(r.Context(), "Could not parse inject service nodes parameter", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse inject service nodes parameter")
 		return
 	}
 
 	graph, err := i.GetGraph(r.Context(), parsedDuration, graphType, groupBy, parsedInjectServiceNodes, appenders, namespaces)
 	if err != nil {
-		log.Error(r.Context(), "Could not get topology graph.", zap.Error(err))
+		log.Error(r.Context(), "Could not get topology graph", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get topology graph")
 		return
 	}
@@ -109,18 +109,18 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	url := r.URL.Query().Get("url")
 
-	log.Debug(r.Context(), "Get metrics parameters.", zap.String("name", name), zap.String("url", url))
+	log.Debug(r.Context(), "Get metrics parameters", zap.String("name", name), zap.String("url", url))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	metrics, err := i.GetMetrics(r.Context(), url)
 	if err != nil {
-		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
+		log.Error(r.Context(), "Could not get metrics", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get metrics")
 		return
 	}
@@ -135,7 +135,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create Kiali instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create Kiali instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

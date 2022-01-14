@@ -31,7 +31,7 @@ func FileFromPod(w http.ResponseWriter, config *rest.Config, reqURL *url.URL) er
 			Tty:    false,
 		})
 		if err != nil {
-			log.Error(nil, "Could not copy file from pod.")
+			log.Error(nil, "Could not copy file from pod")
 		}
 	}()
 

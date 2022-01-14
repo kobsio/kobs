@@ -29,11 +29,11 @@ type client struct {
 // GetCluster returns the cluster, where kobs is running in via the incluster configuration. For the selection of the
 // cluster via a name, the user has to provide this name.
 func (c *client) GetCluster() ([]cluster.Client, error) {
-	log.Debug(nil, "Load incluster config.", zap.String("name", c.config.Name))
+	log.Debug(nil, "Load incluster config", zap.String("name", c.config.Name))
 
 	restConfig, err := getInClusterConfig()
 	if err != nil {
-		log.Error(nil, "Could not create rest config.", zap.Error(err))
+		log.Error(nil, "Could not create rest config", zap.Error(err))
 		return nil, err
 	}
 

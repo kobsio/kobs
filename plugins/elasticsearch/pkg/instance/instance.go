@@ -52,7 +52,7 @@ func (i *instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 	url = fmt.Sprintf("%s/_search", i.address)
 	body = []byte(fmt.Sprintf(`{"size":1000,"sort":[{"@timestamp":{"order":"desc"}}],"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%d","lte":"%d"}}},{"query_string":{"query":"%s"}}]}},"aggs":{"logcount":{"auto_date_histogram":{"field":"@timestamp","buckets":30}}}}`, timeStart*1000, timeEnd*1000, strings.ReplaceAll(query, "\"", "\\\"")))
 
-	log.Debug(ctx, "Run Elasticsearch query.", zap.ByteString("query", body))
+	log.Debug(ctx, "Run Elasticsearch query", zap.ByteString("query", body))
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(body))
 	if err != nil {
@@ -87,7 +87,7 @@ func (i *instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 			Buckets:   res.Aggregations.LogCount.Buckets,
 		}
 
-		log.Debug(ctx, "Elasticsearch query results.", zap.Int64("took", data.Took), zap.Int64("hits", data.Hits), zap.Int("documentsCount", len(data.Documents)), zap.Int("bucketsCount", len(data.Buckets)))
+		log.Debug(ctx, "Elasticsearch query results", zap.Int64("took", data.Took), zap.Int64("hits", data.Hits), zap.Int("documentsCount", len(data.Documents)), zap.Int("bucketsCount", len(data.Buckets)))
 
 		return data, nil
 	}

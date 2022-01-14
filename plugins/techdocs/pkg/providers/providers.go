@@ -45,7 +45,7 @@ func New(config Config) (Provider, error) {
 	case S3:
 		return s3.New(config.S3)
 	default:
-		log.Error(nil, "Invalid provider.", zap.String("provider", string(config.Type)))
+		log.Error(nil, "Invalid provider", zap.String("provider", string(config.Type)))
 		return nil, fmt.Errorf("invalid provider type")
 	}
 }

@@ -37,7 +37,7 @@ func Logger(next http.Handler) http.Handler {
 			zap.Float64("requestLatency", float64(time.Since(start).Nanoseconds())/1000000),
 		}
 
-		log.Info(r.Context(), "Request completed.", fields...)
+		log.Info(r.Context(), "Request completed", fields...)
 	}
 
 	return http.HandlerFunc(fn)

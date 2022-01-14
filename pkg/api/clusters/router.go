@@ -35,7 +35,7 @@ func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 		return clusterNames[i] < clusterNames[j]
 	})
 
-	log.Debug(r.Context(), "Get clusters result.", zap.Strings("clusters", clusterNames))
+	log.Debug(r.Context(), "Get clusters result", zap.Strings("clusters", clusterNames))
 	render.JSON(w, r, clusterNames)
 }
 
@@ -45,21 +45,21 @@ func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 // namespaces alphabetically.
 func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	clusterNames := r.URL.Query()["cluster"]
-	log.Debug(r.Context(), "Get namespaces parameters.", zap.Strings("clusters", clusterNames))
+	log.Debug(r.Context(), "Get namespaces parameters", zap.Strings("clusters", clusterNames))
 
 	var namespaces []string
 
 	for _, clusterName := range clusterNames {
 		cluster := router.clustersClient.GetCluster(clusterName)
 		if cluster == nil {
-			log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+			log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 			return
 		}
 
 		clusterNamespaces, err := cluster.GetNamespaces(r.Context(), cacheDurationNamespaces)
 		if err != nil {
-			log.Error(r.Context(), "Could not get namespaces.")
+			log.Error(r.Context(), "Could not get namespaces")
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get namespaces")
 			return
 		}
@@ -83,7 +83,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 		return uniqueNamespaces[i] < uniqueNamespaces[j]
 	})
 
-	log.Debug(r.Context(), "Get namespaces result.", zap.Int("namespacesCount", len(uniqueNamespaces)), zap.Strings("namespaces", uniqueNamespaces))
+	log.Debug(r.Context(), "Get namespaces result", zap.Int("namespacesCount", len(uniqueNamespaces)), zap.Strings("namespaces", uniqueNamespaces))
 	render.JSON(w, r, uniqueNamespaces)
 }
 
@@ -91,7 +91,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 // Instead of only returning the CRDs for a list of specified clusters, we return all CRDs, so that we only have to call
 // this function once from the React app. The CRDs form all loaded clusters are merged and then deduplicated.
 func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
-	log.Debug(r.Context(), "Get CRDs.")
+	log.Debug(r.Context(), "Get CRDs")
 
 	var crds []cluster.CRD
 

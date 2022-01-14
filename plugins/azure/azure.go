@@ -40,7 +40,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		inst, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create Azure instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create Azure instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, inst)

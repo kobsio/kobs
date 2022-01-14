@@ -42,18 +42,18 @@ func (router *Router) getProjects(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	pageSize := r.URL.Query().Get("pageSize")
 
-	log.Debug(r.Context(), "Get projects parameters.", zap.String("name", name), zap.String("page", page), zap.String("pageSize", pageSize))
+	log.Debug(r.Context(), "Get projects parameters", zap.String("name", name), zap.String("page", page), zap.String("pageSize", pageSize))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	projectsData, err := i.GetProjects(r.Context(), page, pageSize)
 	if err != nil {
-		log.Error(r.Context(), "Could not get projects.", zap.Error(err))
+		log.Error(r.Context(), "Could not get projects", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get projects")
 		return
 	}
@@ -68,18 +68,18 @@ func (router *Router) getRepositories(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	pageSize := r.URL.Query().Get("pageSize")
 
-	log.Debug(r.Context(), "Get repositories parameters.", zap.String("name", name), zap.String("projectName", projectName), zap.String("query", query), zap.String("page", page), zap.String("pageSize", pageSize))
+	log.Debug(r.Context(), "Get repositories parameters", zap.String("name", name), zap.String("projectName", projectName), zap.String("query", query), zap.String("page", page), zap.String("pageSize", pageSize))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	repositoriesData, err := i.GetRepositories(r.Context(), projectName, query, page, pageSize)
 	if err != nil {
-		log.Error(r.Context(), "Could not get repositories.", zap.Error(err))
+		log.Error(r.Context(), "Could not get repositories", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get repositories")
 		return
 	}
@@ -95,18 +95,18 @@ func (router *Router) getArtifacts(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	pageSize := r.URL.Query().Get("pageSize")
 
-	log.Debug(r.Context(), "Get repositories parameters.", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("query", query), zap.String("page", page), zap.String("pageSize", pageSize))
+	log.Debug(r.Context(), "Get repositories parameters", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("query", query), zap.String("page", page), zap.String("pageSize", pageSize))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	artifactsData, err := i.GetArtifacts(r.Context(), projectName, repositoryName, query, page, pageSize)
 	if err != nil {
-		log.Error(r.Context(), "Could not get artifacts.", zap.Error(err))
+		log.Error(r.Context(), "Could not get artifacts", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get artifacts")
 		return
 	}
@@ -120,18 +120,18 @@ func (router *Router) getArtifact(w http.ResponseWriter, r *http.Request) {
 	repositoryName := r.URL.Query().Get("repositoryName")
 	artifactReference := r.URL.Query().Get("artifactReference")
 
-	log.Debug(r.Context(), "Get artifact parameters.", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("artifactReference", artifactReference))
+	log.Debug(r.Context(), "Get artifact parameters", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("artifactReference", artifactReference))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	artifact, err := i.GetArtifact(r.Context(), projectName, repositoryName, artifactReference)
 	if err != nil {
-		log.Error(r.Context(), "Could not get artifact.", zap.Error(err))
+		log.Error(r.Context(), "Could not get artifact", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get artifact")
 		return
 	}
@@ -145,11 +145,11 @@ func (router *Router) getVulnerabilities(w http.ResponseWriter, r *http.Request)
 	repositoryName := r.URL.Query().Get("repositoryName")
 	artifactReference := r.URL.Query().Get("artifactReference")
 
-	log.Debug(r.Context(), "Get vulnerabilities parameters.", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("artifactReference", artifactReference))
+	log.Debug(r.Context(), "Get vulnerabilities parameters", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("artifactReference", artifactReference))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -170,18 +170,18 @@ func (router *Router) getBuildHistory(w http.ResponseWriter, r *http.Request) {
 	repositoryName := r.URL.Query().Get("repositoryName")
 	artifactReference := r.URL.Query().Get("artifactReference")
 
-	log.Debug(r.Context(), "Get build history parameters.", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("artifactReference", artifactReference))
+	log.Debug(r.Context(), "Get build history parameters", zap.String("name", name), zap.String("projectName", projectName), zap.String("repositoryName", repositoryName), zap.String("artifactReference", artifactReference))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	buildHistory, err := i.GetBuildHistory(r.Context(), projectName, repositoryName, artifactReference)
 	if err != nil {
-		log.Error(r.Context(), "Could not get build history.", zap.Error(err))
+		log.Error(r.Context(), "Could not get build history", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get build history")
 		return
 	}
@@ -196,7 +196,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create Harbor instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create Harbor instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

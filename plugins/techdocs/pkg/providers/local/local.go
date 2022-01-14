@@ -35,11 +35,11 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 			indexPath := fmt.Sprintf("%s/%s/index.yaml", p.config.RootDirectory, file.Name())
 			content, err := ioutil.ReadFile(indexPath)
 			if err != nil {
-				log.Error(ctx, "Could not read file.", zap.Error(err), zap.String("file", indexPath))
+				log.Error(ctx, "Could not read file", zap.Error(err), zap.String("file", indexPath))
 			} else {
 				index, err := shared.ParseIndex(content)
 				if err != nil {
-					log.Error(ctx, "Could not parse index file.", zap.Error(err), zap.String("file", indexPath))
+					log.Error(ctx, "Could not parse index file", zap.Error(err), zap.String("file", indexPath))
 				} else {
 					indexes = append(indexes, index)
 				}

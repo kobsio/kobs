@@ -42,11 +42,11 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 	clusterNames := r.URL.Query()["cluster"]
 	namespaces := r.URL.Query()["namespace"]
 
-	log.Debug(r.Context(), "Get Helm releases.", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces))
+	log.Debug(r.Context(), "Get Helm releases", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces))
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to get Helm releases.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to get Helm releases", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get the Helm releases")
 		return
 	}
@@ -56,7 +56,7 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 	for _, clusterName := range clusterNames {
 		cluster := router.clustersClient.GetCluster(clusterName)
 		if cluster == nil {
-			log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+			log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 			return
 		}
@@ -64,7 +64,7 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 		if namespaces == nil {
 			tmpReleases, err := newHelmClient(cluster).List(r.Context(), "")
 			if err != nil {
-				log.Error(r.Context(), "Could not list Helm releases.", zap.Error(err), zap.String("cluster", clusterName))
+				log.Error(r.Context(), "Could not list Helm releases", zap.Error(err), zap.String("cluster", clusterName))
 				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not list Helm releases")
 				return
 			}
@@ -74,7 +74,7 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 			for _, namespace := range namespaces {
 				tmpReleases, err := newHelmClient(cluster).List(r.Context(), namespace)
 				if err != nil {
-					log.Error(r.Context(), "Could not list Helm releases.", zap.Error(err), zap.String("cluster", clusterName))
+					log.Error(r.Context(), "Could not list Helm releases", zap.Error(err), zap.String("cluster", clusterName))
 					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not list Helm releases")
 					return
 				}
@@ -94,7 +94,7 @@ func (router *Router) getReleases(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.Debug(r.Context(), "Get Helm releases result.", zap.Int("releasesCount", len(helmReleases)), zap.Int("filteredReleasesCount", len(filteredHelmReleases)))
+	log.Debug(r.Context(), "Get Helm releases result", zap.Int("releasesCount", len(helmReleases)), zap.Int("filteredReleasesCount", len(filteredHelmReleases)))
 	render.JSON(w, r, filteredHelmReleases)
 }
 
@@ -105,39 +105,39 @@ func (router *Router) getRelease(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 	version := r.URL.Query().Get("version")
 
-	log.Debug(r.Context(), "Get Helm release.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
+	log.Debug(r.Context(), "Get Helm release", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to get Helm release.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to get Helm release", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get the Helm release")
 		return
 	}
 
 	err = permissions.CheckPermissions(router.config.PermissionsEnabled, user, clusterName, namespace, name)
 	if err != nil {
-		log.Warn(r.Context(), "User is not allowed to get the Helm release.", zap.Error(err))
+		log.Warn(r.Context(), "User is not allowed to get the Helm release", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the Helm release")
 		return
 	}
 
 	parsedVersion, err := strconv.Atoi(version)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse version parameter.", zap.Error(err), zap.String("version", version))
+		log.Error(r.Context(), "Could not parse version parameter", zap.Error(err), zap.String("version", version))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse version parameter")
 		return
 	}
 
 	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
-		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	release, err := newHelmClient(cluster).Get(r.Context(), namespace, name, parsedVersion)
 	if err != nil {
-		log.Error(r.Context(), "Could not get Helm release.", zap.Error(err), zap.String("cluster", clusterName))
+		log.Error(r.Context(), "Could not get Helm release", zap.Error(err), zap.String("cluster", clusterName))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get Helm release")
 		return
 	}
@@ -151,37 +151,37 @@ func (router *Router) getReleaseHistory(w http.ResponseWriter, r *http.Request) 
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 
-	log.Debug(r.Context(), "Get Helm release history.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
+	log.Debug(r.Context(), "Get Helm release history", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
 
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "User is not authorized to get Helm release history.", zap.Error(err))
+		log.Warn(r.Context(), "User is not authorized to get Helm release history", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to get the Helm release history")
 		return
 	}
 
 	err = permissions.CheckPermissions(router.config.PermissionsEnabled, user, clusterName, namespace, name)
 	if err != nil {
-		log.Warn(r.Context(), "User is not allowed to get the Helm release history.", zap.Error(err))
+		log.Warn(r.Context(), "User is not allowed to get the Helm release history", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to get the Helm release history")
 		return
 	}
 
 	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
-		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	releases, err := newHelmClient(cluster).History(r.Context(), namespace, name)
 	if err != nil {
-		log.Error(r.Context(), "Could not get Helm release.", zap.Error(err), zap.String("cluster", clusterName))
+		log.Error(r.Context(), "Could not get Helm release", zap.Error(err), zap.String("cluster", clusterName))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get Helm release")
 		return
 	}
 
-	log.Debug(r.Context(), "Get Helm release history result.", zap.Int("releasesCount", len(releases)))
+	log.Debug(r.Context(), "Get Helm release history result", zap.Int("releasesCount", len(releases)))
 	render.JSON(w, r, releases)
 }
 

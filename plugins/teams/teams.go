@@ -32,14 +32,14 @@ type Router struct {
 // getTeams returns a list of teams for all clusters and namespaces. We always return all teams for all clusters and
 // namespaces. For this we are looping though the loaded clusters and callend the GetTeams function for each one.
 func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
-	log.Debug(r.Context(), "Get team.")
+	log.Debug(r.Context(), "Get team")
 
 	var teams []teamv1.TeamSpec
 
 	for _, cluster := range router.clustersClient.GetClusters() {
 		team, err := cluster.GetTeams(r.Context(), "")
 		if err != nil {
-			log.Error(r.Context(), "Could not get teams.", zap.Error(err))
+			log.Error(r.Context(), "Could not get teams", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get teams")
 			return
 		}
@@ -47,7 +47,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 		teams = append(teams, team...)
 	}
 
-	log.Debug(r.Context(), "Get teams result.", zap.Int("teamsCount", len(teams)))
+	log.Debug(r.Context(), "Get teams result", zap.Int("teamsCount", len(teams)))
 	render.JSON(w, r, teams)
 }
 
@@ -59,11 +59,11 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 
-	log.Debug(r.Context(), "Get team parameters.", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
+	log.Debug(r.Context(), "Get team parameters", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
 
 	cluster := router.clustersClient.GetCluster(clusterName)
 	if cluster == nil {
-		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", clusterName))
+		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}

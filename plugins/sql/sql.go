@@ -39,18 +39,18 @@ func (router *Router) getQueryResults(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	query := r.URL.Query().Get("query")
 
-	log.Debug(r.Context(), "Get SQL parameters.", zap.String("name", name), zap.String("query", query))
+	log.Debug(r.Context(), "Get SQL parameters", zap.String("name", name), zap.String("query", query))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	rows, columns, err := i.GetQueryResults(r.Context(), query)
 	if err != nil {
-		log.Error(r.Context(), "Could not get result for SQL query.", zap.Error(err))
+		log.Error(r.Context(), "Could not get result for SQL query", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get result for SQL query")
 		return
 	}
@@ -73,7 +73,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create sql instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create sql instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

@@ -62,11 +62,11 @@ func (router *Router) getInstance(name string) *instance.Instance {
 func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.Debug(r.Context(), "Get variables parameters.", zap.String("name", name))
+	log.Debug(r.Context(), "Get variables parameters", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -75,19 +75,19 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
+		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	values, err := i.GetVariable(r.Context(), data.Label, data.Query, data.Type, data.TimeStart, data.TimeEnd)
 	if err != nil {
-		log.Error(r.Context(), "Could not get variable.", zap.Error(err))
+		log.Error(r.Context(), "Could not get variable", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get variable")
 		return
 	}
 
-	log.Debug(r.Context(), "Get variables result.", zap.Int("valuesCount", len(values)))
+	log.Debug(r.Context(), "Get variables result", zap.Int("valuesCount", len(values)))
 	render.JSON(w, r, values)
 }
 
@@ -97,11 +97,11 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.Debug(r.Context(), "Get metrics parameters.", zap.String("name", name))
+	log.Debug(r.Context(), "Get metrics parameters", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -110,19 +110,19 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
+		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	metrics, err := i.GetMetrics(r.Context(), data.Queries, data.Resolution, data.TimeStart, data.TimeEnd)
 	if err != nil {
-		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
+		log.Error(r.Context(), "Could not get metrics", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
-	log.Debug(r.Context(), "Get metrics result.", zap.Int("metricsCount", len(metrics.Metrics)))
+	log.Debug(r.Context(), "Get metrics result", zap.Int("metricsCount", len(metrics.Metrics)))
 	render.JSON(w, r, metrics)
 }
 
@@ -132,11 +132,11 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getTable(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
-	log.Debug(r.Context(), "Get table parameters.", zap.String("name", name))
+	log.Debug(r.Context(), "Get table parameters", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
@@ -145,19 +145,19 @@ func (router *Router) getTable(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
+		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
 	rows, err := i.GetTableData(r.Context(), data.Queries, data.TimeEnd)
 	if err != nil {
-		log.Error(r.Context(), "Could not get metrics.", zap.Error(err))
+		log.Error(r.Context(), "Could not get metrics", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get metrics")
 		return
 	}
 
-	log.Debug(r.Context(), "Get table results.", zap.Int("rowsCount", len(rows)))
+	log.Debug(r.Context(), "Get table results", zap.Int("rowsCount", len(rows)))
 	render.JSON(w, r, rows)
 }
 
@@ -167,23 +167,23 @@ func (router *Router) getLabels(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	searchTerm := r.URL.Query().Get("searchTerm")
 
-	log.Debug(r.Context(), "Get labels parameters.", zap.String("name", name), zap.String("searchTerm", searchTerm))
+	log.Debug(r.Context(), "Get labels parameters", zap.String("name", name), zap.String("searchTerm", searchTerm))
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name.", zap.String("name", name))
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
 		return
 	}
 
 	labelValues, err := i.GetLabelValues(r.Context(), searchTerm)
 	if err != nil {
-		log.Error(r.Context(), "Could not get label values.", zap.Error(err))
+		log.Error(r.Context(), "Could not get label values", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get label values")
 		return
 	}
 
-	log.Debug(r.Context(), "Get labels result.", zap.Int("labelValuesCount", len(labelValues)))
+	log.Debug(r.Context(), "Get labels result", zap.Int("labelValuesCount", len(labelValues)))
 	render.JSON(w, r, labelValues)
 }
 
@@ -194,7 +194,7 @@ func Register(plugins *plugin.Plugins, config Config) (chi.Router, []*instance.I
 	for _, cfg := range config {
 		instance, err := instance.New(cfg)
 		if err != nil {
-			log.Fatal(nil, "Could not create Prometheus instance.", zap.Error(err), zap.String("name", cfg.Name))
+			log.Fatal(nil, "Could not create Prometheus instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
 		instances = append(instances, instance)

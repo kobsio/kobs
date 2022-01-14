@@ -49,7 +49,7 @@ func (p *provider) GetClusters() ([]cluster.Client, error) {
 	case KUBECONFIG:
 		return kubeconfig.New(&p.config.Kubeconfig).GetClusters()
 	default:
-		log.Warn(nil, "Invalid provider.", zap.String("provider", string(p.config.Provider)))
+		log.Warn(nil, "Invalid provider", zap.String("provider", string(p.config.Provider)))
 		return nil, nil
 	}
 }

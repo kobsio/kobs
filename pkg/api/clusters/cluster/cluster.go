@@ -137,10 +137,10 @@ func (c *client) GetClient(schema *runtime.Scheme) (controllerRuntimeClient.Clie
 // "caching" the namespaces. This means that if a new namespace is created in a cluster, this namespaces is only shown
 // after the configured cache duration.
 func (c *client) GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error) {
-	log.Debug(ctx, "Last namespace fetch.", zap.Time("lastFetch", c.cache.namespacesLastFetch))
+	log.Debug(ctx, "Last namespace fetch", zap.Time("lastFetch", c.cache.namespacesLastFetch))
 
 	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * cacheDuration)) {
-		log.Debug(ctx, "Return namespaces from cache.", zap.String("cluster", c.name))
+		log.Debug(ctx, "Return namespaces from cache", zap.String("cluster", c.name))
 		return c.cache.namespaces, nil
 	}
 
@@ -155,7 +155,7 @@ func (c *client) GetNamespaces(ctx context.Context, cacheDuration time.Duration)
 		namespaces = append(namespaces, namespace.ObjectMeta.Name)
 	}
 
-	log.Debug(ctx, "Return namespaces from Kubernetes API.", zap.String("cluster", c.name))
+	log.Debug(ctx, "Return namespaces from Kubernetes API", zap.String("cluster", c.name))
 	c.cache.namespaces = namespaces
 	c.cache.namespacesLastFetch = time.Now()
 
@@ -170,7 +170,7 @@ func (c *client) GetResources(ctx context.Context, namespace, name, path, resour
 		if namespace != "" {
 			res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).DoRaw(ctx)
 			if err != nil {
-				log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
+				log.Error(ctx, "Could not get resources", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 				return nil, err
 			}
 
@@ -179,7 +179,7 @@ func (c *client) GetResources(ctx context.Context, namespace, name, path, resour
 
 		res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath(path).Resource(resource).Name(name).DoRaw(ctx)
 		if err != nil {
-			log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
+			log.Error(ctx, "Could not get resources", zap.Error(err), zap.String("cluster", c.name), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 			return nil, err
 		}
 
@@ -188,7 +188,7 @@ func (c *client) GetResources(ctx context.Context, namespace, name, path, resour
 
 	res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath(path).Namespace(namespace).Resource(resource).Param(paramName, param).DoRaw(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not get resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
+		log.Error(ctx, "Could not get resources", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return nil, err
 	}
 
@@ -200,7 +200,7 @@ func (c *client) GetResources(ctx context.Context, namespace, name, path, resour
 func (c *client) DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	_, err := c.clientset.CoreV1().RESTClient().Delete().AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not delete resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
+		log.Error(ctx, "Could not delete resources", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
 	}
 
@@ -212,7 +212,7 @@ func (c *client) DeleteResource(ctx context.Context, namespace, name, path, reso
 func (c *client) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not patch resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
+		log.Error(ctx, "Could not patch resources", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
 	}
 
@@ -225,7 +225,7 @@ func (c *client) CreateResource(ctx context.Context, namespace, name, path, reso
 	if name != "" && subResource != "" {
 		_, err := c.clientset.CoreV1().RESTClient().Put().AbsPath(path).Namespace(namespace).Name(name).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 		if err != nil {
-			log.Error(ctx, "Could not create resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
+			log.Error(ctx, "Could not create resources", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
 			return err
 		}
 
@@ -234,7 +234,7 @@ func (c *client) CreateResource(ctx context.Context, namespace, name, path, reso
 
 	_, err := c.clientset.CoreV1().RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not create resources.", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
+		log.Error(ctx, "Could not create resources", zap.Error(err), zap.String("cluster", c.name), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		return err
 	}
 
@@ -507,11 +507,11 @@ func (c *client) loadCRDs() {
 
 	for {
 		ctx := context.Background()
-		log.Debug(ctx, "Load CRDs.")
+		log.Debug(ctx, "Load CRDs")
 
 		res, err := c.clientset.CoreV1().RESTClient().Get().AbsPath("apis/apiextensions.k8s.io/v1/customresourcedefinitions").DoRaw(ctx)
 		if err != nil {
-			log.Error(ctx, "Could not get Custom Resource Definitions.", zap.Error(err), zap.String("name", c.name))
+			log.Error(ctx, "Could not get Custom Resource Definitions", zap.Error(err), zap.String("name", c.name))
 			time.Sleep(time.Duration(offset) * time.Second)
 			offset = offset * 2
 			continue
@@ -521,7 +521,7 @@ func (c *client) loadCRDs() {
 
 		err = json.Unmarshal(res, &crdList)
 		if err != nil {
-			log.Error(ctx, "Could not get unmarshal Custom Resource Definitions List.", zap.Error(err), zap.String("name", c.name))
+			log.Error(ctx, "Could not get unmarshal Custom Resource Definitions List", zap.Error(err), zap.String("name", c.name))
 			time.Sleep(time.Duration(offset) * time.Second)
 			offset = offset * 2
 			continue
@@ -557,7 +557,7 @@ func (c *client) loadCRDs() {
 			}
 		}
 
-		log.Debug(ctx, "CRDs were loaded.", zap.String("name", c.name), zap.Int("crdsCount", len(c.crds)))
+		log.Debug(ctx, "CRDs were loaded", zap.String("name", c.name), zap.Int("crdsCount", len(c.crds)))
 		break
 	}
 }
@@ -568,31 +568,31 @@ func (c *client) loadCRDs() {
 func NewClient(name string, restConfig *rest.Config) (Client, error) {
 	clientset, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create Kubernetes clientset.", zap.Error(err))
+		log.Error(nil, "Could not create Kubernetes clientset", zap.Error(err))
 		return nil, err
 	}
 
 	applicationClientset, err := applicationClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create application clientset.", zap.Error(err))
+		log.Error(nil, "Could not create application clientset", zap.Error(err))
 		return nil, err
 	}
 
 	teamClientset, err := teamClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create team clientset.", zap.Error(err))
+		log.Error(nil, "Could not create team clientset", zap.Error(err))
 		return nil, err
 	}
 
 	dashboardClientset, err := dashboardClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create dashboard clientset.", zap.Error(err))
+		log.Error(nil, "Could not create dashboard clientset", zap.Error(err))
 		return nil, err
 	}
 
 	userClientset, err := userClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create user clientset.", zap.Error(err))
+		log.Error(nil, "Could not create user clientset", zap.Error(err))
 		return nil, err
 	}
 

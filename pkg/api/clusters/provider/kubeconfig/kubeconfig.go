@@ -41,7 +41,7 @@ type client struct {
 // GetClusters returns all clusters from a given Kubeconfig file. For that the user have to provide the path to the
 // Kubeconfig file.
 func (c *client) GetClusters() ([]cluster.Client, error) {
-	log.Debug(nil, "Load Kubeconfig file.", zap.String("path", c.config.Path))
+	log.Debug(nil, "Load Kubeconfig file", zap.String("path", c.config.Path))
 
 	raw, err := getRawConfig(c.config.Path)
 	if err != nil {
@@ -53,7 +53,7 @@ func (c *client) GetClusters() ([]cluster.Client, error) {
 	for name, context := range raw.Contexts {
 		if _, ok := raw.Clusters[context.Cluster]; ok {
 			if _, ok := raw.AuthInfos[context.AuthInfo]; ok {
-				log.Debug(nil, "Context was found.", zap.String("name", name), zap.String("cluster", context.Cluster), zap.String("authInfo", context.AuthInfo))
+				log.Debug(nil, "Context was found", zap.String("name", name), zap.String("cluster", context.Cluster), zap.String("authInfo", context.AuthInfo))
 
 				clientConfig := clientcmd.NewDefaultClientConfig(clientcmdapi.Config{
 					APIVersion:     "v1",
@@ -66,7 +66,7 @@ func (c *client) GetClusters() ([]cluster.Client, error) {
 
 				restConfig, err := clientConfig.ClientConfig()
 				if err != nil {
-					log.Error(nil, "Could not create rest config.", zap.Error(err))
+					log.Error(nil, "Could not create rest config", zap.Error(err))
 					return nil, err
 				}
 
@@ -77,10 +77,10 @@ func (c *client) GetClusters() ([]cluster.Client, error) {
 
 				clusters = append(clusters, c)
 			} else {
-				log.Warn(nil, "Could not find auth info.", zap.String("name", name))
+				log.Warn(nil, "Could not find auth info", zap.String("name", name))
 			}
 		} else {
-			log.Warn(nil, "Could not find cluster.", zap.String("name", name))
+			log.Warn(nil, "Could not find cluster", zap.String("name", name))
 		}
 	}
 

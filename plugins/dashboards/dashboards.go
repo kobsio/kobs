@@ -51,14 +51,14 @@ type getDashboardRequest struct {
 // through all the clusters and retrieving all dashboards via the GetDashboards function. Finally we return an array of
 // dashboards.
 func (router *Router) getAllDashboards(w http.ResponseWriter, r *http.Request) {
-	log.Debug(r.Context(), "Get all dashboards.")
+	log.Debug(r.Context(), "Get all dashboards")
 
 	var dashboards []dashboardv1.DashboardSpec
 
 	for _, cluster := range router.clustersClient.GetClusters() {
 		dashboard, err := cluster.GetDashboards(r.Context(), "")
 		if err != nil {
-			log.Error(r.Context(), "Could not get dashboards.", zap.Error(err))
+			log.Error(r.Context(), "Could not get dashboards", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboards")
 			return
 		}
@@ -66,7 +66,7 @@ func (router *Router) getAllDashboards(w http.ResponseWriter, r *http.Request) {
 		dashboards = append(dashboards, dashboard...)
 	}
 
-	log.Debug(r.Context(), "Get all dashboards result.", zap.Int("dashboardsCount", len(dashboards)))
+	log.Debug(r.Context(), "Get all dashboards result", zap.Int("dashboardsCount", len(dashboards)))
 	render.JSON(w, r, dashboards)
 }
 
@@ -74,13 +74,13 @@ func (router *Router) getAllDashboards(w http.ResponseWriter, r *http.Request) {
 // list of references and some defaults, which are used to set the cluster/namespace in the reference when they are not
 // provided.
 func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
-	log.Debug(r.Context(), "Get dashboards.")
+	log.Debug(r.Context(), "Get dashboards")
 
 	var data getDashboardsRequest
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		log.Error(r.Context(), "Could not decode request body.", zap.Error(err))
+		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
@@ -105,14 +105,14 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 		} else {
 			cluster := router.clustersClient.GetCluster(reference.Cluster)
 			if cluster == nil {
-				log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", reference.Cluster))
+				log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", reference.Cluster))
 				errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 				return
 			}
 
 			dashboard, err := cluster.GetDashboard(r.Context(), reference.Namespace, reference.Name)
 			if err != nil {
-				log.Error(r.Context(), "Could not get dashboard.", zap.Error(err))
+				log.Error(r.Context(), "Could not get dashboard", zap.Error(err))
 				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboard")
 				return
 			}
@@ -123,7 +123,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.Debug(r.Context(), "Get dashboards result.", zap.Int("dashboardsCount", len(dashboards)))
+	log.Debug(r.Context(), "Get dashboards result", zap.Int("dashboardsCount", len(dashboards)))
 	render.JSON(w, r, dashboards)
 }
 
@@ -141,25 +141,25 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Debug(r.Context(), "Get dashboard request data.", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name), zap.Any("placeholders", data.Placeholders))
+	log.Debug(r.Context(), "Get dashboard request data", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name), zap.Any("placeholders", data.Placeholders))
 
 	cluster := router.clustersClient.GetCluster(data.Cluster)
 	if cluster == nil {
-		log.Error(r.Context(), "Invalid cluster name.", zap.String("cluster", data.Cluster))
+		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", data.Cluster))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
 	dashboard, err := cluster.GetDashboard(r.Context(), data.Namespace, data.Name)
 	if err != nil {
-		log.Error(r.Context(), "Could not get dashboard.", zap.Error(err))
+		log.Error(r.Context(), "Could not get dashboard", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboard")
 		return
 	}
 
 	dashboard.Variables = variables.GetVariables(dashboard.Variables, "", "", data.Placeholders)
 
-	log.Debug(r.Context(), "Return dashboard.", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name))
+	log.Debug(r.Context(), "Return dashboard", zap.String("cluster", data.Cluster), zap.String("namespace", data.Namespace), zap.String("name", data.Name))
 	render.JSON(w, r, dashboard)
 	return
 }

@@ -132,7 +132,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
             router.config.HelloWorldName,
         }
 
-        log.Debug(r.Context(), "Get name result.", zap.String("name", data.Name))
+        log.Debug(r.Context(), "Get name result", zap.String("name", data.Name))
         render.JSON(w, r, data)
     }
 
