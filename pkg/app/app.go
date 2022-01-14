@@ -48,27 +48,25 @@ type Server struct {
 
 // Start starts serving the application server.
 func (s *Server) Start() {
-	log.Info(nil, "Application server started.", zap.String("address", s.server.Addr))
+	log.Info(nil, "Application server started", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.Error(nil, "Application server died unexpected.", zap.Error(err))
-		} else {
-			log.Info(nil, "Application server was stopped.")
+			log.Error(nil, "Application server died unexpected", zap.Error(err))
 		}
 	}
 }
 
 // Stop terminates the application server gracefully.
 func (s *Server) Stop() {
-	log.Debug(nil, "Start shutdown of the Application server.")
+	log.Debug(nil, "Start shutdown of the Application server")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		log.Error(nil, "Graceful shutdown of the Application server failed.", zap.Error(err))
+		log.Error(nil, "Graceful shutdown of the Application server failed", zap.Error(err))
 	}
 }
 
