@@ -52,8 +52,6 @@ func (s *Server) Start() {
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
 			log.Error(nil, "API server died unexpected.", zap.Error(err))
-		} else {
-			log.Info(nil, "API server was stopped.")
 		}
 	}
 }
@@ -62,7 +60,7 @@ func (s *Server) Start() {
 func (s *Server) Stop() {
 	log.Debug(nil, "Start shutdown of the API server.")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
@@ -102,6 +100,14 @@ func New(clustersClient clusters.Client, pluginsRouter chi.Router, isDevelopment
 				}
 
 				fmt.Fprintf(w, "%s", string(dump))
+			})
+			r.Get("/request/timeout", func(w http.ResponseWriter, r *http.Request) {
+				timeout := r.URL.Query().Get("timeout")
+				if parsedTimeout, err := time.ParseDuration(timeout); err == nil {
+					time.Sleep(parsedTimeout)
+				}
+
+				w.WriteHeader(http.StatusOK)
 			})
 
 			r.HandleFunc("/pprof/", pprof.Index)

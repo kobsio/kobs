@@ -73,6 +73,7 @@ spec:
             {{- if .Values.kobs.volumeMounts }}
             {{- toYaml .Values.kobs.volumeMounts | nindent 12 }}
             {{- end }}
+      terminationGracePeriodSeconds: 90
       volumes:
         - name: config
           configMap:

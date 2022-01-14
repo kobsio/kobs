@@ -57,6 +57,7 @@ spec:
               mountPath: /kobs/config.yaml
               subPath: config.yaml
               readOnly: true
+      terminationGracePeriodSeconds: 90
       volumes:
         - name: config
           configMap:

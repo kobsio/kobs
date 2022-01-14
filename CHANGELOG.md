@@ -82,6 +82,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#290](https://github.com/kobsio/kobs/pull/290): :warning: _Breaking change:_ :warning: Rename `create` values to `enabled` in the Helm chart.
 - [#291](https://github.com/kobsio/kobs/pull/291): [klogs] Show link to aggragations and documentation in dropdown.
 - [#293](https://github.com/kobsio/kobs/pull/293): [azure] It is now possible to set a custom value for the number of logs lines which should be shown and if the timestamps should be shown for the logs of a container.
+- [#294](https://github.com/kobsio/kobs/pull/294): Improve shutdown of kobs by extending context timeout and adding `terminationGracePeriodSeconds` property.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

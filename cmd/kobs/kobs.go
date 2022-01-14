@@ -146,15 +146,15 @@ func main() {
 	// to gracefully shutdown the started kobs components. This ensures that established connections or tasks are not
 	// interrupted.
 	done := make(chan os.Signal, 1)
-	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 
 	log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
 	<-done
-	log.Debug(nil, "Start shutdown process")
+	log.Info(nil, "Shutdown kobs...")
 
 	metricsServer.Stop()
 	appServer.Stop()
 	apiServer.Stop()
 
-	log.Info(nil, "Shutdown kobs...")
+	log.Info(nil, "Shutdown is done")
 }
