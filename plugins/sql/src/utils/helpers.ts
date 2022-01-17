@@ -1,4 +1,5 @@
 import { IOptions } from './interfaces';
+import { formatTime } from '@kobsio/plugin-core';
 
 // getInitialOptions is used to get the initial options from the url.
 export const getInitialOptions = (search: string): IOptions => {
@@ -10,10 +11,20 @@ export const getInitialOptions = (search: string): IOptions => {
   };
 };
 
-export const renderCellValue = (value: string | number | string[] | number[]): string => {
+export const renderCellValue = (value: string | number | string[] | number[], format?: string): string => {
+  let formattedValue = `${value}`;
+
   if (Array.isArray(value)) {
-    return `[${value.join(', ')}]`;
+    formattedValue = `[${value.join(', ')}]`;
   }
 
-  return `${value}`;
+  if (format) {
+    if (format === 'time') {
+      formatTime(Math.floor(new Date(formattedValue).getTime() / 1000));
+    } else {
+      formattedValue = format.replaceAll(`{% .value %}`, formattedValue);
+    }
+  }
+
+  return formattedValue;
 };

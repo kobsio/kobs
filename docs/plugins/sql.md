@@ -38,6 +38,14 @@ The following options can be used for a panel with the SQL plugin:
 | ----- | ---- | ----------- | -------- |
 | name | string | A name for the SQL query, which is displayed in the select box. | Yes |
 | query | string | The query which should be run against the configured SQL database. | Yes |
+| columns | map<string, [Column](#column)> | A map of columns to format the returned data for a query. The key must match the returned column name. | Yes |
+
+### Column
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| title | string | Set a title for the column. | No |
+| format | string | Format the results for the column. This can be a string with `{% .value %}` as placeholder for the value or one of the following special keys: `time`. | No |
 
 ```yaml
 ---

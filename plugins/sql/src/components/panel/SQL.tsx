@@ -25,18 +25,18 @@ interface ISQLProps {
 
 const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, queries }: ISQLProps) => {
   const [showSelect, setShowSelect] = useState<boolean>(false);
-  const [selectedQuery, setSelectedQuery] = useState<IQuery>(queries[0]);
+  const [selectedQueryIndex, setSelectedQueryIndex] = useState<number>(0);
 
-  const { isError, isFetching, error, data, refetch } = useQuery<ISQLData, Error>(
-    ['sql/query', selectedQuery],
-    async ({ pageParam }) => {
+  const { isError, isFetching, isLoading, error, data, refetch } = useQuery<ISQLData, Error>(
+    ['sql/query', queries, selectedQueryIndex],
+    async () => {
       try {
-        if (!selectedQuery.query) {
+        if (!queries[selectedQueryIndex].query) {
           throw new Error('Query is missing');
         }
 
         const response = await fetch(
-          `/api/plugins/sql/${name}/query?query=${encodeURIComponent(selectedQuery.query)}`,
+          `/api/plugins/sql/${name}/query?query=${encodeURIComponent(queries[selectedQueryIndex].query || '')}`,
           {
             method: 'get',
           },
@@ -56,21 +56,26 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
         throw err;
       }
     },
+    {
+      keepPreviousData: true,
+    },
   );
 
   const select = (
     event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
     value: string | SelectOptionObject,
   ): void => {
-    const query = queries.filter((query) => query.name === value);
-    if (query.length === 1) {
-      setSelectedQuery(query[0]);
-    }
+    const queryIndex = queries.map((query) => query.name).indexOf(value as string);
+    setSelectedQueryIndex(queryIndex);
     setShowSelect(false);
   };
 
   return (
-    <PluginCard title={title} description={description} actions={<SQLActions name={name} queries={queries} />}>
+    <PluginCard
+      title={title}
+      description={description}
+      actions={<SQLActions name={name} queries={queries} isFetching={isFetching} />}
+    >
       <div>
         {queries.length > 1 ? (
           <div>
@@ -80,7 +85,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
               placeholderText="Select query"
               onToggle={(): void => setShowSelect(!showSelect)}
               onSelect={select}
-              selections={selectedQuery.name}
+              selections={queries[selectedQueryIndex].name}
               isOpen={showSelect}
             >
               {queries.map((query, index) => (
@@ -91,7 +96,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
           </div>
         ) : null}
 
-        {isFetching ? (
+        {isLoading ? (
           <div className="pf-u-text-align-center">
             <Spinner />
           </div>
@@ -111,7 +116,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
             <p>{error?.message}</p>
           </Alert>
         ) : data ? (
-          <SQLTable columns={data.columns} rows={data.rows} />
+          <SQLTable columns={data.columns} rows={data.rows} columnOptions={queries[selectedQueryIndex].columns} />
         ) : null}
       </div>
     </PluginCard>
