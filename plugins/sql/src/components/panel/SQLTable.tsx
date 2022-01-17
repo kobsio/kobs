@@ -1,12 +1,14 @@
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
 
-import { ISQLData } from '../../utils/interfaces';
+import { IColumns, ISQLData } from '../../utils/interfaces';
 import { renderCellValue } from '../../utils/helpers';
 
-type ISQLTableProps = ISQLData;
+interface ISQLTableProps extends ISQLData {
+  columnOptions?: IColumns;
+}
 
-const SQLTable: React.FunctionComponent<ISQLTableProps> = ({ rows, columns }: ISQLTableProps) => {
+const SQLTable: React.FunctionComponent<ISQLTableProps> = ({ rows, columns, columnOptions }: ISQLTableProps) => {
   if (!columns || columns.length === 0) {
     return null;
   }
@@ -16,7 +18,11 @@ const SQLTable: React.FunctionComponent<ISQLTableProps> = ({ rows, columns }: IS
       <Thead>
         <Tr>
           {columns.map((column, index) => (
-            <Th key={index}>{column}</Th>
+            <Th key={index}>
+              {columnOptions && columnOptions.hasOwnProperty(column) && columnOptions[column].title
+                ? columnOptions[column].title
+                : column}
+            </Th>
           ))}
         </Tr>
       </Thead>
@@ -26,7 +32,14 @@ const SQLTable: React.FunctionComponent<ISQLTableProps> = ({ rows, columns }: IS
               <Tr key={rowIndex}>
                 {columns.map((column, columnIndex) => (
                   <Td key={`${rowIndex}_${columnIndex}`}>
-                    {row.hasOwnProperty(column) ? renderCellValue(row[column]) : ''}
+                    {row.hasOwnProperty(column)
+                      ? renderCellValue(
+                          row[column],
+                          columnOptions && columnOptions.hasOwnProperty(column)
+                            ? columnOptions[column].format
+                            : undefined,
+                        )
+                      : ''}
                   </Td>
                 ))}
               </Tr>
