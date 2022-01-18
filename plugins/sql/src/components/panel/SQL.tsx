@@ -28,7 +28,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
   const [selectedQueryIndex, setSelectedQueryIndex] = useState<number>(0);
 
   const { isError, isFetching, isLoading, error, data, refetch } = useQuery<ISQLData, Error>(
-    ['sql/query', queries, selectedQueryIndex],
+    ['sql/query', name, queries, selectedQueryIndex],
     async () => {
       try {
         if (!queries[selectedQueryIndex].query) {
@@ -104,7 +104,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ name, title, description, que
           <Alert
             variant={AlertVariant.danger}
             isInline={true}
-            title="Could not get logs"
+            title="Could not get query results"
             actionLinks={
               <React.Fragment>
                 <AlertActionLink onClick={(): Promise<QueryObserverResult<ISQLData, Error>> => refetch()}>
