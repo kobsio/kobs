@@ -36,7 +36,7 @@ const SQLTable: React.FunctionComponent<ISQLTableProps> = ({ rows, columns, colu
                       ? renderCellValue(
                           row[column],
                           columnOptions && columnOptions.hasOwnProperty(column)
-                            ? columnOptions[column].format
+                            ? columnOptions[column].unit
                             : undefined,
                         )
                       : ''}

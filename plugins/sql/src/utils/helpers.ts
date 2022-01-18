@@ -11,20 +11,18 @@ export const getInitialOptions = (search: string): IOptions => {
   };
 };
 
-export const renderCellValue = (value: string | number | string[] | number[], format?: string): string => {
-  let formattedValue = `${value}`;
-
+export const renderCellValue = (value: string | number | string[] | number[], unit?: string): string => {
   if (Array.isArray(value)) {
-    formattedValue = `[${value.join(', ')}]`;
+    return `[${value.join(', ')}] ${unit}`;
   }
 
-  if (format) {
-    if (format === 'time') {
-      formatTime(Math.floor(new Date(formattedValue).getTime() / 1000));
+  if (unit) {
+    if (unit === 'time') {
+      return formatTime(Math.floor(new Date(value).getTime() / 1000));
     } else {
-      formattedValue = format.replaceAll(`{% .value %}`, formattedValue);
+      return `${value} ${unit}`;
     }
   }
 
-  return formattedValue;
+  return `${value}`;
 };

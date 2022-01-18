@@ -29,8 +29,9 @@ The following options can be used for a panel with the SQL plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The type which should be used to visualize the data. Currently we only support the `table` value. | Yes |
-| queries | [[]Query](#query) | A list of queries, which can be selected by the user. | Yes |
+| type | string | The type which should be used to visualize the data. This can be `table` or `chart`. | Yes |
+| queries | [[]Query](#query) | A list of queries, which can be selected by the user. This is required when the `type` is set to `table`. | No |
+| chart | [Chart](#chart) | Settings to render the results of a query in a chart. This is required when the `type` is set to `chart`. | No |
 
 ### Query
 
@@ -38,30 +39,158 @@ The following options can be used for a panel with the SQL plugin:
 | ----- | ---- | ----------- | -------- |
 | name | string | A name for the SQL query, which is displayed in the select box. | Yes |
 | query | string | The query which should be run against the configured SQL database. | Yes |
-| columns | map<string, [Column](#column)> | A map of columns to format the returned data for a query. The key must match the returned column name. | Yes |
+| columns | map<string, [Column](#column)> | A map of columns to format the returned data for a query. The key must match the returned column name. | No |
 
 ### Column
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | title | string | Set a title for the column. | No |
-| format | string | Format the results for the column. This can be a string with `{% .value %}` as placeholder for the value or one of the following special keys: `time`. | No |
+| unit | string | A unit which should be displayed behind the column value. If this is `time` we automatically try to auto format the column to the users local time. | No |
 
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Dashboard
-spec:
-  rows:
-    - size: -1
-      panels:
-        - title: User Data
-          colSpan: 12
-          plugin:
-            name: sql
-            options:
-              type: table
-              queries:
-                - name: User Data
-                  query: "SELECT * FROM example.users"
-```
+### Chart
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The chart type. This could be `line` or `area`. | Yes |
+| query | string | The query which which results should be used in the chart. | Yes |
+| xAxisColumn | string | The column which should be used for the x axis. | Yes |
+| xAxisType | string | The type for the x axis. This could be empty or `time`. | No |
+| xAxisUnit | string | The unit which should be used for the x axis. | No |
+| yAxisColumns | []string | A list of columns which should be shown for the y axis. | Yes |
+| yAxisUnit | string | The unit for the y axis. | No |
+| yAxisStacked | boolean | When this is `true` the values of the y axis are stacked. | No |
+| legend | map<string, string> | A map of string pairs, to set the displayed title for a column in the legend. The key is the column name as returned by the query and the value is the shown title. | No |
+
+## Examples
+
+The following example uses a configured SQL which access the data from a [klogs](klogs.md) ClickHouse instance to show the difference between the duration and upstream service time from the Istio access logs.
+
+??? note "Dashboard"
+
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Dashboard
+    metadata:
+      name: latency
+      namespace: kobs
+    spec:
+      rows:
+        - size: 3
+          panels:
+            - title: Raw Data
+              colSpan: 6
+              rowSpan: 2
+              plugin:
+                name: sql-klogs-clickhouse
+                options:
+                  type: table
+                  queries:
+                    - name: Duration and Upstream Service Time
+                      query: |
+                        SELECT
+                          toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
+                          avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
+                          avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust,
+                          avg_duration - avg_ust as avg_diff
+                        FROM
+                          logs.logs
+                        WHERE
+                          timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                          AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                          AND namespace='myservice'
+                          AND app='myservice'
+                          AND container_name='istio-proxy'
+                          AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                        GROUP BY
+                          time
+                        ORDER BY
+                          time
+                      columns:
+                        time:
+                          title: Time
+                          unit: time
+                        avg_duration:
+                          title: Duration
+                          unit: ms
+                        avg_ust:
+                          title: Upstream Service Time
+                          unit: ms
+                        avg_diff:
+                          title: Difference
+                          unit: ms
+
+            - title: Difference
+              colSpan: 6
+              plugin:
+                name: sql-klogs-clickhouse
+                options:
+                  type: chart
+                  chart:
+                    type: line
+                    query: |
+                      SELECT
+                        toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
+                        avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) - avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_diff
+                      FROM
+                        logs.logs
+                      WHERE
+                        timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                        AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                        AND namespace='myservice'
+                        AND app='myservice'
+                        AND container_name='istio-proxy'
+                        AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                      GROUP BY
+                        time
+                      ORDER BY
+                        time
+                    xAxisColumn: time
+                    xAxisType: time
+                    yAxisColumns:
+                      - avg_diff
+                    yAxisUnit: ms
+                    yAxisStacked: false
+                    legend:
+                      avg_diff: Difference
+
+            - title: Duration vs Upstream Service Time
+              colSpan: 6
+              plugin:
+                name: sql-klogs-clickhouse
+                options:
+                  type: chart
+                  chart:
+                    type: line
+                    query: |
+                      SELECT
+                        toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
+                        avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
+                        avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust
+                      FROM
+                        logs.logs
+                      WHERE
+                        timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                        AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                        AND namespace='myservice'
+                        AND app='myservice'
+                        AND container_name='istio-proxy'
+                        AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                      GROUP BY
+                        time
+                      ORDER BY
+                        time
+                    xAxisColumn: time
+                    xAxisType: time
+                    yAxisColumns:
+                      - avg_duration
+                      - avg_ust
+                    yAxisUnit: ms
+                    yAxisStacked: false
+                    legend:
+                      avg_duration: Duration
+                      avg_ust: Upstream Service Time
+    ```
+
+![SQL Example](assets/sql-example.png)

@@ -39,6 +39,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#288](https://github.com/kobsio/kobs/pull/288): [resources] Add support to show custom columns for a resource.
 - [#289](https://github.com/kobsio/kobs/pull/289): Add an option to create a NetworkPolicy via the Helm chart.
 - [#295](https://github.com/kobsio/kobs/pull/295): [sql] Add `columns` options to set the title and formation of the returned columns from a query.
+- [#296](https://github.com/kobsio/kobs/pull/296): [sql] Add support to visualize data via line and area charts.
 
 ### Fixed
 

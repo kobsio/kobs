@@ -14,26 +14,29 @@ interface IPageSQLProps {
 const PageSQL: React.FunctionComponent<IPageSQLProps> = ({ name, query }: IPageSQLProps) => {
   const history = useHistory();
 
-  const { isError, isFetching, error, data, refetch } = useQuery<ISQLData, Error>(['sql/query', query], async () => {
-    try {
-      const response = await fetch(`/api/plugins/sql/${name}/query?query=${encodeURIComponent(query)}`, {
-        method: 'get',
-      });
-      const json = await response.json();
+  const { isError, isFetching, error, data, refetch } = useQuery<ISQLData, Error>(
+    ['sql/query', name, query],
+    async () => {
+      try {
+        const response = await fetch(`/api/plugins/sql/${name}/query?query=${encodeURIComponent(query)}`, {
+          method: 'get',
+        });
+        const json = await response.json();
 
-      if (response.status >= 200 && response.status < 300) {
-        return json;
-      } else {
-        if (json.error) {
-          throw new Error(json.error);
+        if (response.status >= 200 && response.status < 300) {
+          return json;
         } else {
-          throw new Error('An unknown error occured');
+          if (json.error) {
+            throw new Error(json.error);
+          } else {
+            throw new Error('An unknown error occured');
+          }
         }
+      } catch (err) {
+        throw err;
       }
-    } catch (err) {
-      throw err;
-    }
-  });
+    },
+  );
 
   if (isFetching) {
     return (
@@ -47,7 +50,7 @@ const PageSQL: React.FunctionComponent<IPageSQLProps> = ({ name, query }: IPageS
     return (
       <Alert
         variant={AlertVariant.danger}
-        title="Could not get result for SQL query"
+        title="Could not get query results"
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => history.push('/')}>Home</AlertActionLink>
