@@ -1350,7 +1350,7 @@
 <tr>
 <td>type</td>
 <td>string</td>
-<td>The chart type. This could be <code>line</code> or <code>area</code>.</td>
+<td>The chart type. This could be <code>pie</code>, <code>line</code> or <code>area</code>.</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -1360,10 +1360,22 @@
 <td>Yes</td>
 </tr>
 <tr>
+<td>pieLabelColumn</td>
+<td>string</td>
+<td>The name of the column which should be used for the labels in the pie chart. This is required when the type is <code>pie</code>.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>pieValueColumn</td>
+<td>string</td>
+<td>The name of the column which should be used for the values in the pie chart. This is required when the type is <code>pie</code>.</td>
+<td>No</td>
+</tr>
+<tr>
 <td>xAxisColumn</td>
 <td>string</td>
-<td>The column which should be used for the x axis.</td>
-<td>Yes</td>
+<td>The column which should be used for the x axis. This is required when the type is <code>line</code> or <code>area</code>.</td>
+<td>No</td>
 </tr>
 <tr>
 <td>xAxisType</td>
@@ -1380,8 +1392,8 @@
 <tr>
 <td>yAxisColumns</td>
 <td>[]string</td>
-<td>A list of columns which should be shown for the y axis.</td>
-<td>Yes</td>
+<td>A list of columns which should be shown for the y axis. This is required when the type is <code>line</code> or <code>area</code>.</td>
+<td>No</td>
 </tr>
 <tr>
 <td>yAxisUnit</td>
@@ -1531,7 +1543,74 @@
 <span class="w">                  </span><span class="nt">avg_ust</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upstream Service Time</span><span class="w"></span>
 </code></pre></div>
 </details>
-<p><img alt="SQL Example" src="../assets/sql-example.png" /></p>
+<p><img alt="SQL Example" src="../assets/sql-example-1.png" /></p>
+<p>In the next example we are visualizing the distribution of log levels from the same SQL instance via a Pie chart.</p>
+<details class="note">
+<summary>Dashboard</summary>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">log-levels</span><span class="w"></span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
+<span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Raw Data</span><span class="w"></span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-clickhouse-logging</span><span class="w"></span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span><span class="w"></span>
+<span class="w">              </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Levels</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">                    </span><span class="no">SELECT</span><span class="w"></span>
+<span class="w">                      </span><span class="no">content.level,</span><span class="w"></span>
+<span class="w">                      </span><span class="no">count(content.level) as count_data</span><span class="w"></span>
+<span class="w">                    </span><span class="no">FROM</span><span class="w"></span>
+<span class="w">                      </span><span class="no">logs.logs</span><span class="w"></span>
+<span class="w">                    </span><span class="no">WHERE</span><span class="w"></span>
+<span class="w">                      </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
+<span class="w">                      </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
+<span class="w">                      </span><span class="no">AND namespace=&#39;myservice&#39;</span><span class="w"></span>
+<span class="w">                      </span><span class="no">AND app=&#39;myservice&#39;</span><span class="w"></span>
+<span class="w">                      </span><span class="no">AND container_name=&#39;myservice&#39;</span><span class="w"></span>
+<span class="w">                    </span><span class="no">GROUP BY</span><span class="w"></span>
+<span class="w">                      </span><span class="no">content.level</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">columns</span><span class="p">:</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">content.level</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Level</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">count_data</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Count</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Level Distribution</span><span class="w"></span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-clickhouse-logging</span><span class="w"></span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
+<span class="w">              </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pie</span><span class="w"></span>
+<span class="w">                </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">                  </span><span class="no">SELECT</span><span class="w"></span>
+<span class="w">                    </span><span class="no">content.level,</span><span class="w"></span>
+<span class="w">                    </span><span class="no">count(content.level) as count_data</span><span class="w"></span>
+<span class="w">                  </span><span class="no">FROM</span><span class="w"></span>
+<span class="w">                    </span><span class="no">logs.logs</span><span class="w"></span>
+<span class="w">                  </span><span class="no">WHERE</span><span class="w"></span>
+<span class="w">                    </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
+<span class="w">                    </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
+<span class="w">                    </span><span class="no">AND namespace=&#39;myservice&#39;</span><span class="w"></span>
+<span class="w">                    </span><span class="no">AND app=&#39;myservice&#39;</span><span class="w"></span>
+<span class="w">                    </span><span class="no">AND container_name=&#39;myservice&#39;</span><span class="w"></span>
+<span class="w">                  </span><span class="no">GROUP BY</span><span class="w"></span>
+<span class="w">                    </span><span class="no">content.level</span><span class="w"></span>
+<span class="w">                </span><span class="nt">pieLabelColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content.level</span><span class="w"></span>
+<span class="w">                </span><span class="nt">pieValueColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">count_data</span><span class="w"></span>
+</code></pre></div>
+</details>
+<p><img alt="SQL Example" src="../assets/sql-example-2.png" /></p>
 
               
             </article>
