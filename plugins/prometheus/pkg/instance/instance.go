@@ -115,7 +115,7 @@ func (i *Instance) GetMetrics(ctx context.Context, queries []Query, resolution s
 					globalTimeEnd = timestamp
 				}
 
-				if math.IsNaN(val) {
+				if math.IsNaN(val) || math.IsInf(val, 0) {
 					data = append(data, Datum{
 						X: timestamp,
 					})
