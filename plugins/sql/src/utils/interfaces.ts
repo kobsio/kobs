@@ -28,6 +28,8 @@ export interface IColumn {
 export interface IChart {
   type?: string;
   query?: string;
+  pieLabelColumn?: string;
+  pieValueColumn?: string;
   xAxisColumn?: string;
   xAxisType?: string;
   xAxisUnit?: string;
