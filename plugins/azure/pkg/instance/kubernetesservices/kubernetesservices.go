@@ -11,7 +11,7 @@ import (
 // Client is the interface for a client to interact with the Azure Kubernetes services api.
 type Client interface {
 	ListManagedClusters(ctx context.Context, resourceGroup string) ([]*armcontainerservice.ManagedCluster, error)
-	GetManagedCluster(ctx context.Context, resourceGroup, managedCluster string) (armcontainerservice.ManagedClustersGetResponse, error)
+	GetManagedCluster(ctx context.Context, resourceGroup, managedCluster string) (armcontainerservice.ManagedClustersClientGetResponse, error)
 	ListNodePools(ctx context.Context, resourceGroup, managedCluster string) ([]*armcontainerservice.AgentPool, error)
 }
 
@@ -25,7 +25,7 @@ type client struct {
 func (c *client) ListManagedClusters(ctx context.Context, resourceGroup string) ([]*armcontainerservice.ManagedCluster, error) {
 	var managedClusters []*armcontainerservice.ManagedCluster
 
-	pager := c.managedClustersClient.ListByResourceGroup(resourceGroup, &armcontainerservice.ManagedClustersListByResourceGroupOptions{})
+	pager := c.managedClustersClient.ListByResourceGroup(resourceGroup, &armcontainerservice.ManagedClustersClientListByResourceGroupOptions{})
 	if pager.Err() != nil {
 		return nil, pager.Err()
 	}
@@ -38,15 +38,15 @@ func (c *client) ListManagedClusters(ctx context.Context, resourceGroup string) 
 }
 
 // GetManagedCluster returns a single managed cluster.
-func (c *client) GetManagedCluster(ctx context.Context, resourceGroup, managedCluster string) (armcontainerservice.ManagedClustersGetResponse, error) {
-	return c.managedClustersClient.Get(ctx, resourceGroup, managedCluster, &armcontainerservice.ManagedClustersGetOptions{})
+func (c *client) GetManagedCluster(ctx context.Context, resourceGroup, managedCluster string) (armcontainerservice.ManagedClustersClientGetResponse, error) {
+	return c.managedClustersClient.Get(ctx, resourceGroup, managedCluster, &armcontainerservice.ManagedClustersClientGetOptions{})
 }
 
 // ListNodePools list all node pools for a manged cluster.
 func (c *client) ListNodePools(ctx context.Context, resourceGroup, managedCluster string) ([]*armcontainerservice.AgentPool, error) {
 	var nodePools []*armcontainerservice.AgentPool
 
-	pager := c.agentPoolsClient.List(resourceGroup, managedCluster, &armcontainerservice.AgentPoolsListOptions{})
+	pager := c.agentPoolsClient.List(resourceGroup, managedCluster, &armcontainerservice.AgentPoolsClientListOptions{})
 	if pager.Err() != nil {
 		return nil, pager.Err()
 	}

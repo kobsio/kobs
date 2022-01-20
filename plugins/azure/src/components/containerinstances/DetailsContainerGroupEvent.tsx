@@ -1,11 +1,11 @@
 import { Td, Tr } from '@patternfly/react-table';
-import { ContainerInstanceManagementModels } from '@azure/arm-containerinstance';
+import { Event } from '@azure/arm-containerinstance';
 import React from 'react';
 
 import { formatTime } from '../../utils/helpers';
 
 interface IDetailsContainerGroupEventProps {
-  event: ContainerInstanceManagementModels.Event;
+  event: Event;
 }
 
 const DetailsContainerGroupEvent: React.FunctionComponent<IDetailsContainerGroupEventProps> = ({

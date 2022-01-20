@@ -89,7 +89,7 @@ func TestGetManagedClusters(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"id\":\"managedcluster1\"}]\n",
 			prepare: func(mockClient *kubernetesservices.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("ListManagedClusters", mock.Anything, mock.Anything).Return([]*armcontainerservice.ManagedCluster{{Resource: armcontainerservice.Resource{ID: to.StringPtr("managedcluster1")}}}, nil)
+				mockClient.On("ListManagedClusters", mock.Anything, mock.Anything).Return([]*armcontainerservice.ManagedCluster{{ID: to.StringPtr("managedcluster1")}}, nil)
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
@@ -186,7 +186,7 @@ func TestGetManagedCluster(t *testing.T) {
 			expectedStatusCode: http.StatusInternalServerError,
 			expectedBody:       "{\"error\":\"Could not get managed cluster: could not get managed cluster\"}\n",
 			prepare: func(mockClient *kubernetesservices.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("GetManagedCluster", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerservice.ManagedClustersGetResponse{}, fmt.Errorf("could not get managed cluster"))
+				mockClient.On("GetManagedCluster", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerservice.ManagedClustersClientGetResponse{}, fmt.Errorf("could not get managed cluster"))
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
@@ -203,7 +203,7 @@ func TestGetManagedCluster(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{}\n",
 			prepare: func(mockClient *kubernetesservices.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("GetManagedCluster", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerservice.ManagedClustersGetResponse{}, nil)
+				mockClient.On("GetManagedCluster", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerservice.ManagedClustersClientGetResponse{}, nil)
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)

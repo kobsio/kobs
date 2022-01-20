@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@kobsio/plugin-core": "*",
-    "@nivo/scatterplot": "^0.74.0",
+    "@nivo/scatterplot": "^0.79.1",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.10.11",
     "@types/react": "^17.0.0",

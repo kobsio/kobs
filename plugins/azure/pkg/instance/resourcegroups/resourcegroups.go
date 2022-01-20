@@ -19,7 +19,7 @@ type client struct {
 
 // ListResourceGroups lists all resource groups for the configured subscription.
 func (c *client) ListResourceGroups(ctx context.Context) ([]*armresources.ResourceGroup, error) {
-	pager := c.resourceGroupsClient.List(&armresources.ResourceGroupsListOptions{Top: nil})
+	pager := c.resourceGroupsClient.List(&armresources.ResourceGroupsClientListOptions{Top: nil})
 
 	var resourceGroups []*armresources.ResourceGroup
 	for pager.NextPage(ctx) {

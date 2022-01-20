@@ -16,14 +16,14 @@ type MockClient struct {
 }
 
 // GetVirtualMachineScaleSet provides a mock function with given fields: ctx, resourceGroup, virtualMachineScaleSet
-func (_m *MockClient) GetVirtualMachineScaleSet(ctx context.Context, resourceGroup string, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsGetResponse, error) {
+func (_m *MockClient) GetVirtualMachineScaleSet(ctx context.Context, resourceGroup string, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsClientGetResponse, error) {
 	ret := _m.Called(ctx, resourceGroup, virtualMachineScaleSet)
 
-	var r0 armcompute.VirtualMachineScaleSetsGetResponse
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) armcompute.VirtualMachineScaleSetsGetResponse); ok {
+	var r0 armcompute.VirtualMachineScaleSetsClientGetResponse
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) armcompute.VirtualMachineScaleSetsClientGetResponse); ok {
 		r0 = rf(ctx, resourceGroup, virtualMachineScaleSet)
 	} else {
-		r0 = ret.Get(0).(armcompute.VirtualMachineScaleSetsGetResponse)
+		r0 = ret.Get(0).(armcompute.VirtualMachineScaleSetsClientGetResponse)
 	}
 
 	var r1 error

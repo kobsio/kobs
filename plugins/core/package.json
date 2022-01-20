@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.16.1",
-    "@nivo/core": "^0.74.0",
-    "@nivo/tooltip": "^0.74.0",
+    "@nivo/core": "^0.79.0",
+    "@nivo/tooltip": "^0.79.0",
     "@patternfly/patternfly": "^4.115.2",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.10.11",

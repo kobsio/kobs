@@ -41,6 +41,14 @@ generate-crds:
 		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
 	done
 
+.PHONY: clean
+clean:
+	rm -rf ./bin
+	rm -rf ./app/build
+	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+	find . -name 'lib' -type d -prune -exec rm -rf '{}' +
+	find . -name 'lib-esm' -type d -prune -exec rm -rf '{}' +
+
 .PHONY: release-major
 release-major:
 	$(eval MAJORVERSION=$(shell git describe --tags --abbrev=0 | sed s/v// | awk -F. '{print "v"$$1+1".0.0"}'))

@@ -89,7 +89,7 @@ func TestGetVirtualMachineScaleSets(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"id\":\"containergroup1\"}]\n",
 			prepare: func(mockClient *virtualmachinescalesets.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("ListVirtualMachineScaleSets", mock.Anything, mock.Anything).Return([]*armcompute.VirtualMachineScaleSet{{Resource: armcompute.Resource{ID: to.StringPtr("containergroup1")}}}, nil)
+				mockClient.On("ListVirtualMachineScaleSets", mock.Anything, mock.Anything).Return([]*armcompute.VirtualMachineScaleSet{{ID: to.StringPtr("containergroup1")}}, nil)
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
@@ -186,7 +186,7 @@ func TestGetVirtualMachineScaleSetDetails(t *testing.T) {
 			expectedStatusCode: http.StatusInternalServerError,
 			expectedBody:       "{\"error\":\"Could not get virtual machine scale set: could not get virtual machine scale set\"}\n",
 			prepare: func(mockClient *virtualmachinescalesets.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("GetVirtualMachineScaleSet", mock.Anything, mock.Anything, mock.Anything).Return(armcompute.VirtualMachineScaleSetsGetResponse{}, fmt.Errorf("could not get virtual machine scale set"))
+				mockClient.On("GetVirtualMachineScaleSet", mock.Anything, mock.Anything, mock.Anything).Return(armcompute.VirtualMachineScaleSetsClientGetResponse{}, fmt.Errorf("could not get virtual machine scale set"))
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
@@ -203,7 +203,7 @@ func TestGetVirtualMachineScaleSetDetails(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{}\n",
 			prepare: func(mockClient *virtualmachinescalesets.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("GetVirtualMachineScaleSet", mock.Anything, mock.Anything, mock.Anything).Return(armcompute.VirtualMachineScaleSetsGetResponse{}, nil)
+				mockClient.On("GetVirtualMachineScaleSet", mock.Anything, mock.Anything, mock.Anything).Return(armcompute.VirtualMachineScaleSetsClientGetResponse{}, nil)
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)

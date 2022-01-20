@@ -89,7 +89,7 @@ func TestGetContainerGroups(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "[{\"id\":\"containergroup1\"}]\n",
 			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("ListContainerGroups", mock.Anything, mock.Anything).Return([]*armcontainerinstance.ContainerGroup{{Resource: armcontainerinstance.Resource{ID: to.StringPtr("containergroup1")}}}, nil)
+				mockClient.On("ListContainerGroups", mock.Anything, mock.Anything).Return([]*armcontainerinstance.ContainerGroup{{ID: to.StringPtr("containergroup1")}}, nil)
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
@@ -187,7 +187,7 @@ func TestGetContainerGroup(t *testing.T) {
 			expectedStatusCode: http.StatusInternalServerError,
 			expectedBody:       "{\"error\":\"Could not get container instances: could not get container group\"}\n",
 			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("GetContainerGroup", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerinstance.ContainerGroupsGetResponse{}, fmt.Errorf("could not get container group"))
+				mockClient.On("GetContainerGroup", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerinstance.ContainerGroupsClientGetResponse{}, fmt.Errorf("could not get container group"))
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
@@ -204,7 +204,7 @@ func TestGetContainerGroup(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{}\n",
 			prepare: func(mockClient *containerinstances.MockClient, mockInstance *instance.MockInstance) {
-				mockClient.On("GetContainerGroup", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerinstance.ContainerGroupsGetResponse{}, nil)
+				mockClient.On("GetContainerGroup", mock.Anything, mock.Anything, mock.Anything).Return(armcontainerinstance.ContainerGroupsClientGetResponse{}, nil)
 
 				mockInstance.On("GetName").Return("azure")
 				mockInstance.On("CheckPermissions", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
