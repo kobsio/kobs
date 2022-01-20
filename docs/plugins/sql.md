@@ -52,12 +52,14 @@ The following options can be used for a panel with the SQL plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The chart type. This could be `line` or `area`. | Yes |
+| type | string | The chart type. This could be `pie`, `line` or `area`. | Yes |
 | query | string | The query which which results should be used in the chart. | Yes |
-| xAxisColumn | string | The column which should be used for the x axis. | Yes |
+| pieLabelColumn | string | The name of the column which should be used for the labels in the pie chart. This is required when the type is `pie`. | No |
+| pieValueColumn | string | The name of the column which should be used for the values in the pie chart. This is required when the type is `pie`. | No |
+| xAxisColumn | string | The column which should be used for the x axis. This is required when the type is `line` or `area`. | No |
 | xAxisType | string | The type for the x axis. This could be empty or `time`. | No |
 | xAxisUnit | string | The unit which should be used for the x axis. | No |
-| yAxisColumns | []string | A list of columns which should be shown for the y axis. | Yes |
+| yAxisColumns | []string | A list of columns which should be shown for the y axis. This is required when the type is `line` or `area`. | No |
 | yAxisUnit | string | The unit for the y axis. | No |
 | yAxisStacked | boolean | When this is `true` the values of the y axis are stacked. | No |
 | legend | map<string, string> | A map of string pairs, to set the displayed title for a column in the legend. The key is the column name as returned by the query and the value is the shown title. | No |
@@ -193,4 +195,74 @@ The following example uses a configured SQL which access the data from a [klogs]
                       avg_ust: Upstream Service Time
     ```
 
-![SQL Example](assets/sql-example.png)
+![SQL Example](assets/sql-example-1.png)
+
+In the next example we are visualizing the distribution of log levels from the same SQL instance via a Pie chart.
+
+??? note "Dashboard"
+
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Dashboard
+    metadata:
+      name: log-levels
+      namespace: kobs
+    spec:
+      rows:
+        - size: 3
+          panels:
+            - title: Raw Data
+              colSpan: 6
+              plugin:
+                name: sql-clickhouse-logging
+                options:
+                  type: table
+                  queries:
+                    - name: Log Levels
+                      query: |
+                        SELECT
+                          content.level,
+                          count(content.level) as count_data
+                        FROM
+                          logs.logs
+                        WHERE
+                          timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                          AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                          AND namespace='myservice'
+                          AND app='myservice'
+                          AND container_name='myservice'
+                        GROUP BY
+                          content.level
+                      columns:
+                        content.level:
+                          title: Level
+                        count_data:
+                          title: Count
+            - title: Log Level Distribution
+              colSpan: 6
+              plugin:
+                name: sql-clickhouse-logging
+                options:
+                  type: chart
+                  chart:
+                    type: pie
+                    query: |
+                      SELECT
+                        content.level,
+                        count(content.level) as count_data
+                      FROM
+                        logs.logs
+                      WHERE
+                        timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                        AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                        AND namespace='myservice'
+                        AND app='myservice'
+                        AND container_name='myservice'
+                      GROUP BY
+                        content.level
+                    pieLabelColumn: content.level
+                    pieValueColumn: count_data
+    ```
+
+![SQL Example](assets/sql-example-2.png)

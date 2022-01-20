@@ -7,6 +7,7 @@ import { PluginCard } from '@kobsio/plugin-core';
 import SQLChartActions from './SQLChartActions';
 import SQLChartLine from './SQLChartLine';
 import SQLChartLineLegend from './SQLChartLineLegend';
+import SQLChartPie from './SQLChartPie';
 
 interface ISQLChartProps {
   name: string;
@@ -14,10 +15,12 @@ interface ISQLChartProps {
   description?: string;
   type: string;
   query: string;
-  xAxisColumn: string;
+  pieLabelColumn?: string;
+  pieValueColumn?: string;
+  xAxisColumn?: string;
   xAxisType?: string;
   xAxisUnit?: string;
-  yAxisColumns: string[];
+  yAxisColumns?: string[];
   yAxisUnit?: string;
   yAxisStacked?: boolean;
   legend?: ILegend;
@@ -29,6 +32,8 @@ const SQLChart: React.FunctionComponent<ISQLChartProps> = ({
   description,
   type,
   query,
+  pieLabelColumn,
+  pieValueColumn,
   xAxisColumn,
   xAxisType,
   xAxisUnit,
@@ -89,7 +94,7 @@ const SQLChart: React.FunctionComponent<ISQLChartProps> = ({
         >
           <p>{error?.message}</p>
         </Alert>
-      ) : data && (type === 'line' || type === 'area') ? (
+      ) : data && (type === 'line' || type === 'area') && xAxisColumn && yAxisColumns ? (
         <React.Fragment>
           <div style={{ height: 'calc(100% - 80px)' }}>
             <SQLChartLine
@@ -109,7 +114,15 @@ const SQLChart: React.FunctionComponent<ISQLChartProps> = ({
             <SQLChartLineLegend data={data} yAxisColumns={yAxisColumns} yAxisUnit={yAxisUnit} legend={legend} />
           </div>
         </React.Fragment>
-      ) : null}
+      ) : data && type === 'pie' && pieLabelColumn && pieValueColumn ? (
+        <React.Fragment>
+          <SQLChartPie data={data} pieLabelColumn={pieLabelColumn} pieValueColumn={pieValueColumn} />
+        </React.Fragment>
+      ) : (
+        <Alert variant={AlertVariant.warning} isInline={true} title="No data found">
+          <p>The query does not returned any data or a property for the selected chart is missing.</p>
+        </Alert>
+      )}
     </PluginCard>
   );
 };

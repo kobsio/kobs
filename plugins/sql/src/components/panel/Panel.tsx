@@ -20,15 +20,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     return <SQL name={name} title={title} description={description} queries={options.queries} />;
   }
 
-  if (
-    options &&
-    options.type === 'chart' &&
-    options.chart &&
-    options.chart.type &&
-    options.chart.query &&
-    options.chart.xAxisColumn &&
-    options.chart.yAxisColumns
-  ) {
+  if (options && options.type === 'chart' && options.chart && options.chart.type && options.chart.query) {
     return (
       <SQLChart
         name={name}
@@ -36,6 +28,8 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         description={description}
         type={options.chart.type}
         query={options.chart.query}
+        pieLabelColumn={options.chart.pieLabelColumn}
+        pieValueColumn={options.chart.pieValueColumn}
         xAxisColumn={options.chart.xAxisColumn}
         xAxisType={options.chart.xAxisType}
         xAxisUnit={options.chart.xAxisUnit}
