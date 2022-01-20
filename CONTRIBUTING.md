@@ -20,10 +20,10 @@ Please note we have a [Code of Conduct](https://github.com/kobsio/kobs/blob/mast
 
 If you encounter any issue or you have an idea to improve, please:
 
-- Search through [existing open and closed GitHub Issues](https://github.com/kobsio/kobs/issues) for the answer first. If you find a relevant topic, please comment on the issue.
-- If none of the issues are relevant, please add an issue to [GitHub issues](https://github.com/kobsio/kobs/issues). Please provide any relevant information.
+- Search through [existing open and closed GitHub Issues](https://github.com/kobsio/kobs/issues) and [discussions](https://github.com/kobsio/kobs/discussions) for the answer first. If you find a relevant topic, please comment on the issue.
+- If none of the issues are relevant, please add an issue to [GitHub issues](https://github.com/kobsio/kobs/issues) or start a new [discussions](https://github.com/kobsio/kobs/discussions). Please use the issue templates and provide any relevant information.
 
-If you encounter a security vulnerability, please do not open an issue and instead send an email to admin@kobs.io.
+If you encounter a security vulnerability, please do not open an issue and instead send an email to [admin@kobs.io](mailto:admin@kobs.io?subject=[GitHub]%20Security%20Vulnerability).
 
 ## Adding new Features
 
