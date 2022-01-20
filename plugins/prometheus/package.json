@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@kobsio/plugin-core": "*",
-    "@nivo/core": "^0.74.0",
-    "@nivo/line": "^0.74.0",
+    "@nivo/core": "^0.79.0",
+    "@nivo/line": "^0.79.1",
     "@patternfly/react-core": "^4.128.2",
     "@patternfly/react-icons": "^4.10.11",
     "@patternfly/react-table": "^4.27.24",

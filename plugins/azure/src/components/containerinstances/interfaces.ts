@@ -1,23 +1,22 @@
-import { ContainerInstanceManagementModels } from '@azure/arm-containerinstance';
+import { Container, ContainerGroup, InitContainerDefinition, Resource } from '@azure/arm-containerinstance';
 
-export interface IContainerGroup extends ContainerInstanceManagementModels.Resource {
+export interface IContainerGroup extends Resource {
   properties?: IContainerGroupProperties;
 }
 
-export interface IContainerGroupProperties
-  extends Omit<ContainerInstanceManagementModels.ContainerGroup, 'containers' | 'initContainers'> {
+export interface IContainerGroupProperties extends Omit<ContainerGroup, 'containers' | 'initContainers'> {
   containers?: IContainer[];
   initContainers?: IInitContainer[];
 }
 
 export interface IContainer {
   name?: string;
-  properties?: ContainerInstanceManagementModels.Container;
+  properties?: Container;
 }
 
 export interface IInitContainer {
   name?: string;
-  properties?: ContainerInstanceManagementModels.InitContainerDefinition;
+  properties?: InitContainerDefinition;
 }
 
 export interface IContainerLogs {

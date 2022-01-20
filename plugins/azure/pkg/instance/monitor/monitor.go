@@ -22,7 +22,7 @@ type client struct {
 func (c *client) GetMetrics(ctx context.Context, resourceGroup, provider, metricNames, aggregationType string, timeStart, timeEnd int64) ([]*armmonitor.Metric, error) {
 	interval, timespan, top := getMetricsOptions(timeStart, timeEnd)
 
-	res, err := c.metricsClient.List(ctx, "/subscriptions/"+c.subscriptionID+"/resourceGroups/"+resourceGroup+"/providers/"+provider, &armmonitor.MetricsListOptions{
+	res, err := c.metricsClient.List(ctx, "/subscriptions/"+c.subscriptionID+"/resourceGroups/"+resourceGroup+"/providers/"+provider, &armmonitor.MetricsClientListOptions{
 		Aggregation: &aggregationType,
 		Interval:    &interval,
 		Metricnames: &metricNames,

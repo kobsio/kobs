@@ -1,9 +1,9 @@
-import { ContainerServiceModels } from '@azure/arm-containerservice';
+import { AgentPool, ManagedCluster, Resource } from '@azure/arm-containerservice';
 
-export interface IManagedCluster extends ContainerServiceModels.Resource {
-  properties?: ContainerServiceModels.ManagedCluster;
+export interface IManagedCluster extends Resource {
+  properties?: ManagedCluster;
 }
 
-export interface INodePool extends ContainerServiceModels.Resource {
-  properties?: ContainerServiceModels.AgentPool;
+export interface INodePool extends Resource {
+  properties?: AgentPool;
 }

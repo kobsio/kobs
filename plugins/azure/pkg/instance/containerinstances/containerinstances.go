@@ -11,7 +11,7 @@ import (
 // Client is the interface for a client to interact with the Azure container instances.
 type Client interface {
 	ListContainerGroups(ctx context.Context, resourceGroup string) ([]*armcontainerinstance.ContainerGroup, error)
-	GetContainerGroup(ctx context.Context, resourceGroup, containerGroup string) (armcontainerinstance.ContainerGroupsGetResponse, error)
+	GetContainerGroup(ctx context.Context, resourceGroup, containerGroup string) (armcontainerinstance.ContainerGroupsClientGetResponse, error)
 	GetContainerLogs(ctx context.Context, resourceGroup, containerGroup, container string, tail *int32, timestamps *bool) (*string, error)
 	RestartContainerGroup(ctx context.Context, resourceGroup, containerGroup string) error
 }
@@ -29,7 +29,7 @@ type client struct {
 func (c *client) ListContainerGroups(ctx context.Context, resourceGroup string) ([]*armcontainerinstance.ContainerGroup, error) {
 	var containerGroups []*armcontainerinstance.ContainerGroup
 
-	pager := c.containerGroupsClient.ListByResourceGroup(resourceGroup, &armcontainerinstance.ContainerGroupsListByResourceGroupOptions{})
+	pager := c.containerGroupsClient.ListByResourceGroup(resourceGroup, &armcontainerinstance.ContainerGroupsClientListByResourceGroupOptions{})
 	if pager.Err() != nil {
 		return nil, pager.Err()
 	}
@@ -42,13 +42,13 @@ func (c *client) ListContainerGroups(ctx context.Context, resourceGroup string) 
 }
 
 // GetContainerGroup returns a single container group.
-func (c *client) GetContainerGroup(ctx context.Context, resourceGroup, containerGroup string) (armcontainerinstance.ContainerGroupsGetResponse, error) {
-	return c.containerGroupsClient.Get(ctx, resourceGroup, containerGroup, &armcontainerinstance.ContainerGroupsGetOptions{})
+func (c *client) GetContainerGroup(ctx context.Context, resourceGroup, containerGroup string) (armcontainerinstance.ContainerGroupsClientGetResponse, error) {
+	return c.containerGroupsClient.Get(ctx, resourceGroup, containerGroup, &armcontainerinstance.ContainerGroupsClientGetOptions{})
 }
 
 // GetContainerLogs returns the logs for a container.
 func (c *client) GetContainerLogs(ctx context.Context, resourceGroup, containerGroup, container string, tail *int32, timestamps *bool) (*string, error) {
-	res, err := c.containersClient.ListLogs(ctx, resourceGroup, containerGroup, container, &armcontainerinstance.ContainersListLogsOptions{
+	res, err := c.containersClient.ListLogs(ctx, resourceGroup, containerGroup, container, &armcontainerinstance.ContainersClientListLogsOptions{
 		Tail:       tail,
 		Timestamps: timestamps,
 	})
@@ -61,7 +61,7 @@ func (c *client) GetContainerLogs(ctx context.Context, resourceGroup, containerG
 
 // RestartContainerGroup restarts a container group.
 func (c *client) RestartContainerGroup(ctx context.Context, resourceGroup, containerGroup string) error {
-	_, err := c.containerGroupsClient.BeginRestart(ctx, resourceGroup, containerGroup, &armcontainerinstance.ContainerGroupsBeginRestartOptions{})
+	_, err := c.containerGroupsClient.BeginRestart(ctx, resourceGroup, containerGroup, &armcontainerinstance.ContainerGroupsClientBeginRestartOptions{})
 	if err != nil {
 		return err
 	}

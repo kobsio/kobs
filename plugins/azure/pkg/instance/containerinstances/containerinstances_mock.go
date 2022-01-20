@@ -16,14 +16,14 @@ type MockClient struct {
 }
 
 // GetContainerGroup provides a mock function with given fields: ctx, resourceGroup, containerGroup
-func (_m *MockClient) GetContainerGroup(ctx context.Context, resourceGroup string, containerGroup string) (armcontainerinstance.ContainerGroupsGetResponse, error) {
+func (_m *MockClient) GetContainerGroup(ctx context.Context, resourceGroup string, containerGroup string) (armcontainerinstance.ContainerGroupsClientGetResponse, error) {
 	ret := _m.Called(ctx, resourceGroup, containerGroup)
 
-	var r0 armcontainerinstance.ContainerGroupsGetResponse
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) armcontainerinstance.ContainerGroupsGetResponse); ok {
+	var r0 armcontainerinstance.ContainerGroupsClientGetResponse
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) armcontainerinstance.ContainerGroupsClientGetResponse); ok {
 		r0 = rf(ctx, resourceGroup, containerGroup)
 	} else {
-		r0 = ret.Get(0).(armcontainerinstance.ContainerGroupsGetResponse)
+		r0 = ret.Get(0).(armcontainerinstance.ContainerGroupsClientGetResponse)
 	}
 
 	var r1 error

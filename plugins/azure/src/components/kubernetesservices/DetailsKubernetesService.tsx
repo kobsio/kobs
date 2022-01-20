@@ -104,7 +104,7 @@ const DetailsKubernetesService: React.FunctionComponent<IDetailsKubernetesServic
         <DescriptionListGroup>
           <DescriptionListTerm>RBAC</DescriptionListTerm>
           <DescriptionListDescription>
-            {data.properties?.enableRBAC ? 'Enabled' : 'Disabled'}
+            {data.properties?.enableRbac ? 'Enabled' : 'Disabled'}
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>

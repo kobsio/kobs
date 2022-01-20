@@ -11,7 +11,7 @@ import (
 // Client is the interface for a client to interact with the Azure virtual machien scale sets api.
 type Client interface {
 	ListVirtualMachineScaleSets(ctx context.Context, resourceGroup string) ([]*armcompute.VirtualMachineScaleSet, error)
-	GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsGetResponse, error)
+	GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsClientGetResponse, error)
 	ListVirtualMachines(ctx context.Context, resourceGroup, virtualMachineScaleSet string) ([]*armcompute.VirtualMachineScaleSetVM, error)
 }
 
@@ -25,7 +25,7 @@ type client struct {
 func (c *client) ListVirtualMachineScaleSets(ctx context.Context, resourceGroup string) ([]*armcompute.VirtualMachineScaleSet, error) {
 	var vmsss []*armcompute.VirtualMachineScaleSet
 
-	pager := c.vmssClient.List(resourceGroup, &armcompute.VirtualMachineScaleSetsListOptions{})
+	pager := c.vmssClient.List(resourceGroup, &armcompute.VirtualMachineScaleSetsClientListOptions{})
 	if pager.Err() != nil {
 		return nil, pager.Err()
 	}
@@ -39,8 +39,8 @@ func (c *client) ListVirtualMachineScaleSets(ctx context.Context, resourceGroup 
 
 // GetVirtualMachineScaleSet returns a virtual machine scale set for the given resource group and virtual machine scale
 // set name.
-func (c *client) GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsGetResponse, error) {
-	return c.vmssClient.Get(ctx, resourceGroup, virtualMachineScaleSet, &armcompute.VirtualMachineScaleSetsGetOptions{})
+func (c *client) GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, virtualMachineScaleSet string) (armcompute.VirtualMachineScaleSetsClientGetResponse, error) {
+	return c.vmssClient.Get(ctx, resourceGroup, virtualMachineScaleSet, &armcompute.VirtualMachineScaleSetsClientGetOptions{})
 }
 
 // ListVirtualMachines returns all virtual machine scale sets for the given resource group and virtual machine scale
@@ -48,7 +48,7 @@ func (c *client) GetVirtualMachineScaleSet(ctx context.Context, resourceGroup, v
 func (c *client) ListVirtualMachines(ctx context.Context, resourceGroup, virtualMachineScaleSet string) ([]*armcompute.VirtualMachineScaleSetVM, error) {
 	var vmsss []*armcompute.VirtualMachineScaleSetVM
 
-	pager := c.vmssVMsClient.List(resourceGroup, virtualMachineScaleSet, &armcompute.VirtualMachineScaleSetVMsListOptions{})
+	pager := c.vmssVMsClient.List(resourceGroup, virtualMachineScaleSet, &armcompute.VirtualMachineScaleSetVMsClientListOptions{})
 	if pager.Err() != nil {
 		return nil, pager.Err()
 	}

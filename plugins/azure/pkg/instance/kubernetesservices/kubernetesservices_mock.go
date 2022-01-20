@@ -16,14 +16,14 @@ type MockClient struct {
 }
 
 // GetManagedCluster provides a mock function with given fields: ctx, resourceGroup, managedCluster
-func (_m *MockClient) GetManagedCluster(ctx context.Context, resourceGroup string, managedCluster string) (armcontainerservice.ManagedClustersGetResponse, error) {
+func (_m *MockClient) GetManagedCluster(ctx context.Context, resourceGroup string, managedCluster string) (armcontainerservice.ManagedClustersClientGetResponse, error) {
 	ret := _m.Called(ctx, resourceGroup, managedCluster)
 
-	var r0 armcontainerservice.ManagedClustersGetResponse
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) armcontainerservice.ManagedClustersGetResponse); ok {
+	var r0 armcontainerservice.ManagedClustersClientGetResponse
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) armcontainerservice.ManagedClustersClientGetResponse); ok {
 		r0 = rf(ctx, resourceGroup, managedCluster)
 	} else {
-		r0 = ret.Get(0).(armcontainerservice.ManagedClustersGetResponse)
+		r0 = ret.Get(0).(armcontainerservice.ManagedClustersClientGetResponse)
 	}
 
 	var r1 error
