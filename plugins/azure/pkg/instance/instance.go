@@ -5,6 +5,7 @@ import (
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/containerinstances"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/costmanagement"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/kubernetesservices"
+	"github.com/kobsio/kobs/plugins/azure/pkg/instance/loadbalancers"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/monitor"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/resourcegroups"
 	"github.com/kobsio/kobs/plugins/azure/pkg/instance/virtualmachinescalesets"
@@ -32,25 +33,31 @@ type Credentials struct {
 
 // Instance is the interface which must be implemented by an Azure instance.
 type Instance interface {
-	GetName() string
-	ResourceGroupsClient() resourcegroups.Client
-	KubernetesServicesClient() kubernetesservices.Client
+	CheckPermissions(pluginName string, user *authContext.User, resource, resourceGroup, verb string) error
 	ContainerInstancesClient() containerinstances.Client
 	CostManagementClient() costmanagement.Client
-	VirtualMachineScaleSetsClient() virtualmachinescalesets.Client
+	GetName() string
+	KubernetesServicesClient() kubernetesservices.Client
+	LoadBalancersClient() loadbalancers.Client
 	MonitorClient() monitor.Client
-	CheckPermissions(pluginName string, user *authContext.User, resource, resourceGroup, verb string) error
+	ResourceGroupsClient() resourcegroups.Client
+	VirtualMachineScaleSetsClient() virtualmachinescalesets.Client
 }
 
 type instance struct {
 	Name                          string
-	permissionsEnabled            bool
-	resourceGroupsClient          resourcegroups.Client
-	kubernetesServicesClient      kubernetesservices.Client
 	containerInstancesClient      containerinstances.Client
 	costManagementClient          costmanagement.Client
-	virtualMachineScaleSetsClient virtualmachinescalesets.Client
+	kubernetesServicesClient      kubernetesservices.Client
+	loadBalancersClient           loadbalancers.Client
 	monitorClient                 monitor.Client
+	permissionsEnabled            bool
+	resourceGroupsClient          resourcegroups.Client
+	virtualMachineScaleSetsClient virtualmachinescalesets.Client
+}
+
+func (i *instance) LoadBalancersClient() loadbalancers.Client {
+	return i.loadBalancersClient
 }
 
 func (i *instance) GetName() string {
@@ -94,21 +101,23 @@ func New(config Config) (Instance, error) {
 		return nil, err
 	}
 
-	resourceGroups := resourcegroups.New(config.Credentials.SubscriptionID, credentials)
-	kubernetesServices := kubernetesservices.New(config.Credentials.SubscriptionID, credentials)
 	containerInstances := containerinstances.New(config.Credentials.SubscriptionID, credentials)
 	costManagement := costmanagement.New(config.Credentials.SubscriptionID, authorizer)
-	virtualmachinescalesets := virtualmachinescalesets.New(config.Credentials.SubscriptionID, credentials)
+	kubernetesServices := kubernetesservices.New(config.Credentials.SubscriptionID, credentials)
+	loadBalancers := loadbalancers.New(config.Credentials.SubscriptionID, authorizer)
 	monitor := monitor.New(config.Credentials.SubscriptionID, credentials)
+	resourceGroups := resourcegroups.New(config.Credentials.SubscriptionID, credentials)
+	virtualmachinescalesets := virtualmachinescalesets.New(config.Credentials.SubscriptionID, credentials)
 
 	return &instance{
 		Name:                          config.Name,
-		permissionsEnabled:            config.PermissionsEnabled,
-		resourceGroupsClient:          resourceGroups,
-		kubernetesServicesClient:      kubernetesServices,
 		containerInstancesClient:      containerInstances,
 		costManagementClient:          costManagement,
-		virtualMachineScaleSetsClient: virtualmachinescalesets,
+		kubernetesServicesClient:      kubernetesServices,
+		loadBalancersClient:           loadBalancers,
 		monitorClient:                 monitor,
+		permissionsEnabled:            config.PermissionsEnabled,
+		resourceGroupsClient:          resourceGroups,
+		virtualMachineScaleSetsClient: virtualmachinescalesets,
 	}, nil
 }

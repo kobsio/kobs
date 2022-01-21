@@ -78,6 +78,12 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 			kubernetesServicesRouter.Get("/managedcluster/nodepools", router.getNodePools)
 		})
 
+		r.Route("/loadbalancers", func(loadBalancersRouter chi.Router) {
+			loadBalancersRouter.Get("/listAll", router.listAllLoadBalancers)
+			loadBalancersRouter.Get("/list", router.listLoadBalancers)
+			loadBalancersRouter.Get("/metrics", router.getLoadBalancerMetrics)
+		})
+
 		r.Route("/virtualmachinescalesets", func(virtualMachineScaleSetsRouter chi.Router) {
 			virtualMachineScaleSetsRouter.Get("/virtualmachinescalesets", router.getVirtualMachineScaleSets)
 			virtualMachineScaleSetsRouter.Get("/virtualmachinescaleset/details", router.getVirtualMachineScaleSetDetails)
