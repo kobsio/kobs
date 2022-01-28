@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './index.css';
-
 // Import plugins. Here we import all plugins, which we want to add to the current kobs app. By default this are all
 // first party plugins from the /plugins folder.
 import { App } from '@kobsio/plugin-core';
@@ -28,6 +26,10 @@ import sqlPlugin from '@kobsio/plugin-sql';
 import teamsPlugin from '@kobsio/plugin-teams';
 import techdocsPlugin from '@kobsio/plugin-techdocs';
 import usersPlugin from '@kobsio/plugin-users';
+
+// The index.css file must be imported after all other components and css files, so that the fix for
+// ".pf-c-select__toggle:before" is applied correctly.
+import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
