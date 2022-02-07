@@ -1678,11 +1678,16 @@ export const customResourceDefinition = (crds: ICRD[]): IResources => {
               const crdCells =
                 crd.columns && crd.columns.length > 0
                   ? crd.columns.map((column) => {
-                      const value = JSONPath({ json: cr, path: `$.${column.jsonPath}` })[0];
-                      if (!value) return '';
-                      if (column.type === 'date')
+                      const value = JSONPath<string | string[]>({ json: cr, path: `$.${column.jsonPath}` })[0];
+                      if (!value) {
+                        return '';
+                      } else if (column.type === 'date') {
                         return timeDifference(new Date().getTime(), new Date(value).getTime());
-                      return value;
+                      } else if (Array.isArray(value)) {
+                        return value.join(', ');
+                      } else {
+                        return value;
+                      }
                     })
                   : [timeDifference(new Date().getTime(), new Date(cr.metadata?.creationTimestamp).getTime())];
 
