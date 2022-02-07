@@ -162,6 +162,21 @@ const Container: React.FunctionComponent<IContainerProps> = ({
         <Td colSpan={11}>
           <ExpandableRowContent>
             <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
+              {containerStatus && containerStatus.state && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>State</DescriptionListTerm>
+                  <DescriptionListDescription>{getContainerStatus(containerStatus.state)}</DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {containerStatus && containerStatus.lastState && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Last State</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {getContainerStatus(containerStatus.lastState)}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+
               <DescriptionListGroup>
                 <DescriptionListTerm>Image</DescriptionListTerm>
                 <DescriptionListDescription>{container.image}</DescriptionListDescription>
