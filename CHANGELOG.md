@@ -56,6 +56,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#292](https://github.com/kobsio/kobs/pull/292): [resources] Fix shown conditions in details view.
 - [#297](https://github.com/kobsio/kobs/pull/297): [prometheus] Fix metrics, when Prometheus returns `Inf` value.
 - [#303](https://github.com/kobsio/kobs/pull/303): [core] Fix missing borders for select elements.
+- [#304](https://github.com/kobsio/kobs/pull/304): [resources] Fix formatting of cells for Custom Resource Definition.
 
 ### Changed
 
