@@ -46,6 +46,8 @@ func (router *Router) getManagedClusters(w http.ResponseWriter, r *http.Request)
 			}
 
 			managedClusters = append(managedClusters, clusters...)
+		} else {
+			log.Warn(r.Context(), "User is not authorized to get managed clusters", zap.String("resourceGroup", resourceGroup), zap.String("name", name), zap.String("user", user.ID), zap.String("method", r.Method), zap.Error(err))
 		}
 	}
 

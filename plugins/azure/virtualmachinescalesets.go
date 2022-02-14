@@ -46,6 +46,8 @@ func (router *Router) getVirtualMachineScaleSets(w http.ResponseWriter, r *http.
 			}
 
 			virtualMachineScaleSets = append(virtualMachineScaleSets, vsss...)
+		} else {
+			log.Warn(r.Context(), "User is not authorized to get virtual machine scale sets", zap.String("resourceGroup", resourceGroup), zap.String("name", name), zap.String("user", user.ID), zap.String("method", r.Method), zap.Error(err))
 		}
 	}
 
