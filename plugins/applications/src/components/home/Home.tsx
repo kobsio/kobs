@@ -134,7 +134,7 @@ const Home: React.FunctionComponent<IPluginPageProps> = () => {
                     </span>
                   </CardTitle>
                   <CardBody style={{ height: '150px', maxHeight: '150px', minHeight: '150px' }}>
-                    <div style={{ height: '124px', overflow: 'scroll' }}>
+                    <div style={{ height: '124px', overflow: 'auto' }}>
                       {application.tags && (
                         <p>
                           {application.tags.map((tag) => (

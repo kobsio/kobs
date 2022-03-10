@@ -83,7 +83,7 @@ const DetailsVirtualMachineScaleSets: React.FunctionComponent<IDetailsVirtualMac
   }
 
   return (
-    <div style={{ maxWidth: '100%', overflow: 'scroll' }}>
+    <div style={{ maxWidth: '100%', overflow: 'auto' }}>
       <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
         <DescriptionListGroup>
           <DescriptionListTerm>Status</DescriptionListTerm>

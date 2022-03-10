@@ -71,7 +71,7 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
   };
 
   return (
-    <div style={{ height: '100%', maxWidth: '100%', overflow: 'scroll' }} ref={refWrapper}>
+    <div style={{ height: '100%', maxWidth: '100%', overflow: 'auto' }} ref={refWrapper}>
       <Select
         variant={SelectVariant.single}
         typeAheadAriaLabel="Select container"

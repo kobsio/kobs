@@ -36,7 +36,7 @@ const ApplicationsGalleryItem: React.FunctionComponent<IApplicationsGalleryItemP
               />
             </div>
           ) : (
-            <div style={{ height: '124px', overflow: 'scroll' }}>
+            <div style={{ height: '124px', overflow: 'auto' }}>
               {application.tags && (
                 <p>
                   {application.tags.map((tag) => (

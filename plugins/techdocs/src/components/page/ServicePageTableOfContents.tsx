@@ -20,7 +20,7 @@ const ServicePageTableOfContents: React.FunctionComponent<IServicePageTableOfCon
 }: IServicePageTableOfContentsProps) => {
   return (
     <Card style={{ width: '100%' }} isCompact={true}>
-      <CardBody style={{ overflow: 'scroll' }}>
+      <CardBody style={{ overflow: 'auto' }}>
         <TextContent>
           <ReactMarkdown
             components={{
