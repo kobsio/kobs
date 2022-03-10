@@ -44,7 +44,9 @@ export const PluginCard: React.FunctionComponent<IPluginCardProps> = ({
         </CardHeaderMain>
         {actions || null}
       </CardHeader>
-      <CardBody style={{ overflow: 'scroll' }}>{children}</CardBody>
+      <CardBody className="kobsio-hide-scrollbar" style={{ overflow: 'auto' }}>
+        {children}
+      </CardBody>
     </Card>
   );
 };

@@ -83,7 +83,7 @@ const DetailsKubernetesService: React.FunctionComponent<IDetailsKubernetesServic
   }
 
   return (
-    <div style={{ maxWidth: '100%', overflow: 'scroll' }}>
+    <div className="kobsio-hide-scrollbar" style={{ maxWidth: '100%', overflow: 'auto' }}>
       <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
         <DescriptionListGroup>
           <DescriptionListTerm>Status</DescriptionListTerm>

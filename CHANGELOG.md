@@ -91,6 +91,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#293](https://github.com/kobsio/kobs/pull/293): [azure] It is now possible to set a custom value for the number of logs lines which should be shown and if the timestamps should be shown for the logs of a container.
 - [#294](https://github.com/kobsio/kobs/pull/294): Improve shutdown of kobs by extending context timeout and adding `terminationGracePeriodSeconds` property.
 - [#305](https://github.com/kobsio/kobs/pull/305): [resources] Show state and last state of container in containers overview.
+- [#308](https://github.com/kobsio/kobs/pull/308): [core] Hide scrollbars to have a cleaner UI.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

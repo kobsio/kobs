@@ -76,7 +76,7 @@ const DetailsVirtualMachines: React.FunctionComponent<IDetailsVirtualMachinesPro
   }
 
   return (
-    <div style={{ maxWidth: '100%', overflow: 'scroll' }}>
+    <div className="kobsio-hide-scrollbar" style={{ maxWidth: '100%', overflow: 'auto' }}>
       <TableComposable aria-label="Virtual Machines" variant={TableVariant.compact} borders={true}>
         <Thead>
           <Tr>

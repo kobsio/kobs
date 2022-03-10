@@ -178,10 +178,11 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                     <div ref={ref}>
                       {inView ? (
                         <div
+                          className="kobsio-hide-scrollbar"
                           style={
                             row.size !== undefined && row.size === -1
                               ? undefined
-                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'scroll' }
+                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
                           }
                         >
                           <PluginPanel
@@ -195,10 +196,11 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                         </div>
                       ) : (
                         <div
+                          className="kobsio-hide-scrollbar"
                           style={
                             row.size !== undefined && row.size === -1
                               ? undefined
-                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'scroll' }
+                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
                           }
                         ></div>
                       )}

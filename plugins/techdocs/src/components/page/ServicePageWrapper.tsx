@@ -60,7 +60,7 @@ const ServicePageWrapper: React.FunctionComponent<IServicePageWrapperProps> = ({
       <Grid hasGutter={true}>
         <GridItem sm={12} md={12} lg={3} xl={2} xl2={2}>
           <Card style={{ width: '100%' }} isCompact={true}>
-            <CardBody style={{ overflow: 'scroll' }}>
+            <CardBody className="kobsio-hide-scrollbar" style={{ overflow: 'auto' }}>
               <TableOfContents name={name} service={index.key} toc={index.toc} />
             </CardBody>
           </Card>

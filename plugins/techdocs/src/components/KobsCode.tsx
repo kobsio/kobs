@@ -15,7 +15,7 @@ const KobsCode: React.FunctionComponent<IKobsCodeProps> = ({ panel, setDetails }
   };
 
   return (
-    <div style={{ height: '300px', overflow: 'scroll' }}>
+    <div className="kobsio-hide-scrollbar" style={{ height: '300px', overflow: 'auto' }}>
       <PluginPanel
         times={times}
         title={panel.title}
