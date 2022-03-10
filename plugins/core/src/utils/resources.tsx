@@ -175,7 +175,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Cron Jobs',
+    title: 'CronJobs',
   },
   daemonsets: {
     columns: [
@@ -260,7 +260,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Daemon Sets',
+    title: 'DaemonSets',
   },
   deployments: {
     columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Up to date', 'Available', 'Age', ''],
@@ -525,7 +525,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Replica Sets',
+    title: 'ReplicaSets',
   },
   statefulsets: {
     columns: ['Name', 'Namespace', 'Cluster', 'Ready', 'Up to date', 'Age', ''],
@@ -585,7 +585,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Stateful Sets',
+    title: 'StatefulSets',
   },
   // eslint-disable-next-line sort-keys
   endpoints: {
@@ -697,7 +697,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Horizontal Pod Autoscalers',
+    title: 'HorizontalPodAutoscalers',
   },
   ingresses: {
     columns: ['Name', 'Namespace', 'Cluster', 'Hosts', 'Adress', 'Age'],
@@ -800,7 +800,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Network Policies',
+    title: 'NetworkPolicies',
   },
   services: {
     columns: ['Name', 'Namespace', 'Cluster', 'Type', 'Cluster IP', 'External IP', 'Port(s)', 'Age'],
@@ -913,7 +913,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Config Maps',
+    title: 'ConfigMaps',
   },
   persistentvolumeclaims: {
     columns: ['Name', 'Namespace', 'Cluster', 'Status', 'Volume', 'Capacity', 'Access Modes', 'Storage Class', 'Age'],
@@ -966,7 +966,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Persistent Volume Claims',
+    title: 'PersistentVolumeClaims',
   },
   persistentvolumes: {
     columns: [
@@ -1052,7 +1052,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Cluster',
-    title: 'Persistent Volumes',
+    title: 'PersistentVolumes',
   },
   poddisruptionbudgets: {
     columns: ['Name', 'Namespace', 'Cluster', 'Min. Available', 'Max. Unavailable', 'Allowed Disruptions', 'Age', ''],
@@ -1113,7 +1113,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Pod Disruption Budgets',
+    title: 'PodDisruptionBudgets',
   },
   secrets: {
     columns: ['Name', 'Namespace', 'Cluster', 'Type', 'Data', 'Age'],
@@ -1206,7 +1206,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Service Accounts',
+    title: 'ServiceAccounts',
   },
   storageclasses: {
     columns: [
@@ -1266,7 +1266,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Cluster',
-    title: 'Storage Classes',
+    title: 'StorageClasses',
   },
   // eslint-disable-next-line sort-keys
   clusterrolebindings: {
@@ -1307,7 +1307,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Cluster',
-    title: 'Cluster Role Bindings',
+    title: 'ClusterRoleBindings',
   },
   clusterroles: {
     columns: ['Name', 'Cluster', 'Age'],
@@ -1347,7 +1347,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Cluster',
-    title: 'Cluster Roles',
+    title: 'ClusterRoles',
   },
   rolebindings: {
     columns: ['Name', 'Namespace', 'Cluster', 'Age'],
@@ -1392,7 +1392,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Namespaced',
-    title: 'Role Bindings',
+    title: 'RoleBindings',
   },
   roles: {
     columns: ['Name', 'Namespace', 'Cluster', 'Age'],
@@ -1637,7 +1637,7 @@ export const resources: IResources = {
       return rows;
     },
     scope: 'Cluster',
-    title: 'Pod Security Policies',
+    title: 'PodSecurityPolicies',
   },
 };
 

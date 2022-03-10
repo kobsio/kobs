@@ -50,7 +50,7 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
   ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
     if (value && data) {
       return data
-        .filter((item) => item.includes(value))
+        .filter((item) => item.toLowerCase().includes(value.toLowerCase()))
         .map((item, index) => <SelectOption key={index} value={item} />);
     } else {
       if (data) {
@@ -82,7 +82,9 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
       {isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get operations.'} />]
         : data
-        ? data.map((operation, index) => <SelectOption key={index} value={operation} />)
+        ? data
+            .slice(0, data.length > 50 ? 50 : data.length)
+            .map((operation, index) => <SelectOption key={index} value={operation} />)
         : []}
     </Select>
   );

@@ -29,7 +29,7 @@ const ToolbarItemResources: React.FunctionComponent<IToolbarItemResourcesProps> 
       isOpen={showOptions}
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         Object.keys(resources)
-          .filter((key) => !value || key.includes(value))
+          .filter((key) => !value || key.toLowerCase().includes(value.toLowerCase()))
           .map((key) => (
             <SelectOption
               key={key}

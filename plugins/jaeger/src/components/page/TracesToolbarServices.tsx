@@ -43,7 +43,7 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
   ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
     if (value && data) {
       return data
-        .filter((item) => item.includes(value))
+        .filter((item) => item.toLowerCase().includes(value.toLowerCase()))
         .map((item, index) => <SelectOption key={index} value={item} />);
     } else {
       if (data) {
@@ -75,7 +75,9 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
       {isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get services.'} />]
         : data
-        ? data.map((service, index) => <SelectOption key={index} value={service} />)
+        ? data
+            .slice(0, data.length > 50 ? 50 : data.length)
+            .map((service, index) => <SelectOption key={index} value={service} />)
         : []}
     </Select>
   );
