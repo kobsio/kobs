@@ -128,11 +128,11 @@ export const ChartWrapper: React.FunctionComponent<IChartWrapperProps> = ({
             />
           </div>
           {options.legend === 'table' ? (
-            <div className="pf-u-mt-md" style={{ height: '60px', overflow: 'auto' }}>
+            <div className="pf-u-mt-md kobsio-hide-scrollbar" style={{ height: '60px', overflow: 'auto' }}>
               <ChartLegend series={data.series} unit={options.unit || ''} selected={selectedSeries} select={select} />
             </div>
           ) : options.legend === 'table-large' ? (
-            <div className="pf-u-mt-md" style={{ height: '120px', overflow: 'auto' }}>
+            <div className="pf-u-mt-md kobsio-hide-scrollbar" style={{ height: '120px', overflow: 'auto' }}>
               <ChartLegend series={data.series} unit={options.unit || ''} selected={selectedSeries} select={select} />
             </div>
           ) : null}

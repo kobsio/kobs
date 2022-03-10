@@ -110,7 +110,7 @@ const SQLChart: React.FunctionComponent<ISQLChartProps> = ({
             />
           </div>
 
-          <div className="pf-u-mt-md" style={{ height: '60px', overflow: 'auto' }}>
+          <div className="pf-u-mt-md kobsio-hide-scrollbar" style={{ height: '60px', overflow: 'auto' }}>
             <SQLChartLineLegend data={data} yAxisColumns={yAxisColumns} yAxisUnit={yAxisUnit} legend={legend} />
           </div>
         </React.Fragment>

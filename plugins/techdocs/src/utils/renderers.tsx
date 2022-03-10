@@ -61,7 +61,10 @@ export const renderCode = (
 
   return (
     <CodeBlock style={{ maxWidth: '100%' }}>
-      <CodeBlockCode className="kobsio-techdocs-code" style={{ maxWidth: '100%', overflow: 'auto' }}>
+      <CodeBlockCode
+        className="kobsio-techdocs-code kobsio-hide-scrollbar"
+        style={{ maxWidth: '100%', overflow: 'auto' }}
+      >
         {props.children}
       </CodeBlockCode>
     </CodeBlock>
