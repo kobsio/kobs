@@ -1,6 +1,6 @@
 import { AlertVariant, Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import { V1CronJob, V1Job } from '@kubernetes/client-node';
 import React from 'react';
-import { V1Job } from '@kubernetes/client-node';
 
 import { IResource, IResourceRow } from '@kobsio/plugin-core';
 import { IAlert } from '../../../../utils/interfaces';
@@ -44,6 +44,8 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({
         throw new Error('Resource is not defined');
       }
 
+      const cronJob = resource.props as V1CronJob;
+
       const job: V1Job = {
         apiVersion: 'batch/v1',
         kind: 'Job',
@@ -57,20 +59,22 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({
           name: jobName,
           namespace: resource.props.metadata.namespace,
         },
-        spec: {
-          backoffLimit: resource.props.spec.jobTemplate.spec.backoffLimit,
-          completions: resource.props.spec.jobTemplate.spec.completions,
-          parallelism: resource.props.spec.jobTemplate.spec.parallelism,
-          template: {
-            metadata: {
-              labels: {
-                'job-name': jobName,
-              },
-            },
-            spec: resource.props.spec.jobTemplate.spec.template.spec,
-          },
-        },
+        spec: cronJob.spec?.jobTemplate.spec,
       };
+
+      if (job.spec) {
+        if (job.spec.template.metadata) {
+          if (job.spec.template.metadata.labels) {
+            job.spec.template.metadata.labels['job-name'] = jobName;
+          }
+        } else {
+          job.spec.template.metadata = {
+            labels: {
+              'job-name': jobName,
+            },
+          };
+        }
+      }
 
       const response = await fetch(
         `/api/plugins/resources/resources?cluster=${resource.cluster}${
