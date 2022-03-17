@@ -19,6 +19,7 @@ type Config struct {
 	Name            string `json:"name"`
 	DisplayName     string `json:"displayName"`
 	Description     string `json:"description"`
+	Home            bool   `json:"home"`
 	InternalAddress string `json:"internalAddress"`
 	PublicAddress   string `json:"publicAddress"`
 	Username        string `json:"username"`

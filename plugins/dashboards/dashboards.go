@@ -20,7 +20,9 @@ import (
 const Route = "/dashboards"
 
 // Config is the structure of the configuration for the dashboards plugin.
-type Config struct{}
+type Config struct {
+	Home bool `json:"home"`
+}
 
 // Router implements the router for the dashboards plugin, which can be registered in the router for our rest api. Next
 // to the api routes it contains a clusters client to load the dashboards via the Kubernetes api server and the user
@@ -170,6 +172,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		Name:        "dashboards",
 		DisplayName: "Dashboards",
 		Description: "Create dashboards for your Teams and Applications.",
+		Home:        config.Home,
 		Type:        "dashboards",
 	})
 

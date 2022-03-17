@@ -136,7 +136,6 @@ export interface IPluginPreviewProps {
 // IPluginComponent is the interface which must be implemented by each plugin. It must contain an icon and panel
 // component. The page and preview component is optional for each plugin.
 export interface IPluginComponent {
-  home?: React.FunctionComponent<IPluginPageProps>;
   icon: string;
   page?: React.FunctionComponent<IPluginPageProps>;
   panel: React.FunctionComponent<IPluginPanelProps>;

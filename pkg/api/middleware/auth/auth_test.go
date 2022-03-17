@@ -20,13 +20,23 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestContainsTeam(t *testing.T) {
+func TestIsTeamInTeamIDs(t *testing.T) {
 	t.Run("teams contain team", func(t *testing.T) {
-		require.Equal(t, containsTeam("team1", []string{"team1", "team2"}), true)
+		require.Equal(t, isTeamInTeamIDs("team1", []string{"team1", "team2"}), true)
 	})
 
+	t.Run("teams not contain team", func(t *testing.T) {
+		require.Equal(t, isTeamInTeamIDs("team3", []string{"team1", "team2"}), false)
+	})
+}
+
+func TestIsTeamInTeams(t *testing.T) {
 	t.Run("teams contain team", func(t *testing.T) {
-		require.Equal(t, containsTeam("team3", []string{"team1", "team2"}), false)
+		require.Equal(t, isTeamInTeams(teamv1.TeamSpec{Cluster: "test", Namespace: "kobs", Name: "team1"}, []userv1.TeamReference{{Cluster: "test", Namespace: "kobs", Name: "team1"}}), true)
+	})
+
+	t.Run("teams not contain team", func(t *testing.T) {
+		require.Equal(t, isTeamInTeams(teamv1.TeamSpec{Cluster: "test", Namespace: "kobs", Name: "team1"}, []userv1.TeamReference{}), false)
 	})
 }
 
@@ -56,7 +66,7 @@ func TestGetUser(t *testing.T) {
 		{
 			name:          "get user",
 			expectedError: nil,
-			expectedUser:  authContext.User{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io", Profile: userv1.Profile{FullName: "", Email: "", Position: "", Bio: ""}, Teams: nil, Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
+			expectedUser:  authContext.User{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io", Profile: userv1.Profile{FullName: "", Email: "", Position: "", Bio: ""}, Teams: []userv1.TeamReference{{Cluster: "", Namespace: "", Name: ""}}, Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
 			prepare: func(mockClusterClient *cluster.MockClient) {
 				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
 				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
@@ -103,7 +113,7 @@ func TestAuthHandler(t *testing.T) {
 			name:                 "auth disabled",
 			auth:                 Auth{enabled: false},
 			expectedStatusCode:   http.StatusOK,
-			expectedBody:         "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":[{\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}}\n",
+			expectedBody:         "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":[{\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]},\"rows\":null}\n",
 			prepareRequest:       func(r *http.Request) {},
 			prepareClusterClient: func(mockClusterClient *cluster.MockClient) {},
 		},
@@ -146,7 +156,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth enabled, request without cookie, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null},\"rows\":null}\n",
 			prepareRequest: func(r *http.Request) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},
@@ -190,7 +200,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth enabled, request with cookie, validate token error, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null},\"rows\":null}\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{}, "sessionToken", 10*time.Second)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
@@ -205,7 +215,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth enabled, request with cookie, valid token, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null},\"rows\":null}\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{}, "", 10*time.Second)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
@@ -235,7 +245,7 @@ func TestAuthHandler(t *testing.T) {
 			url:                "/api/plugins/test",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":null}}\n",
+			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":null},\"rows\":null}\n",
 			prepareRequest: func(r *http.Request) {
 				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
 			},

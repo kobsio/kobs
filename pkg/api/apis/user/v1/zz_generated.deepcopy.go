@@ -22,6 +22,7 @@ limitations under the License.
 package v1
 
 import (
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -210,6 +211,13 @@ func (in *UserSpec) DeepCopyInto(out *UserSpec) {
 		copy(*out, *in)
 	}
 	in.Permissions.DeepCopyInto(&out.Permissions)
+	if in.Rows != nil {
+		in, out := &in.Rows, &out.Rows
+		*out = make([]dashboardv1.Row, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
 	return
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 	userv1 "github.com/kobsio/kobs/pkg/api/apis/user/v1"
 )
 
@@ -23,6 +24,7 @@ type User struct {
 	Profile     userv1.Profile         `json:"profile"`
 	Teams       []userv1.TeamReference `json:"teams"`
 	Permissions userv1.Permissions     `json:"permissions"`
+	Rows        []dashboardv1.Row      `json:"rows"`
 }
 
 // HasPluginAccess checks if the user has access to the given plugin.

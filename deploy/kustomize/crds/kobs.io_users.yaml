@@ -96,6 +96,47 @@ spec:
                 - email
                 - fullName
                 type: object
+              rows:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    panels:
+                      items:
+                        properties:
+                          colSpan:
+                            format: int64
+                            type: integer
+                          description:
+                            type: string
+                          plugin:
+                            properties:
+                              name:
+                                type: string
+                              options:
+                                x-kubernetes-preserve-unknown-fields: true
+                            required:
+                            - name
+                            type: object
+                          rowSpan:
+                            format: int64
+                            type: integer
+                          title:
+                            type: string
+                        required:
+                        - plugin
+                        - title
+                        type: object
+                      type: array
+                    size:
+                      format: int64
+                      type: integer
+                    title:
+                      type: string
+                  required:
+                  - panels
+                  type: object
+                type: array
               teams:
                 items:
                   properties:

@@ -50,7 +50,7 @@ jobs:
 
       - name: Test
         run: |
-          go test -coverpkg ./cmd/...,./pkg/...,./plugins/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./plugins/...
+          make test-coverage
           cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/api/apis" | grep -v "github.com/kobsio/kobs/pkg/api/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 
       - name: Upload Coverage to Codecov

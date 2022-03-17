@@ -125,7 +125,7 @@ func TestRegister(t *testing.T) {
 			Name:        "teams",
 			DisplayName: "Teams",
 			Description: "Define an ownership for your Kubernetes resources.",
-			Home:        true,
+			Home:        false,
 			Type:        "teams",
 		},
 	}, plugins)

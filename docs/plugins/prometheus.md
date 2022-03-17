@@ -22,7 +22,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Prometheus instance. | Yes |
 | displayName | string | Name of the Prometheus as it is shown in the UI. | Yes |
-| descriptions | string | Description of the Prometheus instance. | No |
+| description | string | Description of the Prometheus instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | address | string | Address of the Prometheus instance. | Yes |
 | username | string | Username to access a Prometheus instance via basic authentication. | No |
 | password | string | Password to access a Prometheus instance via basic authentication. | No |

@@ -26,6 +26,7 @@ const Route = "/applications"
 type Config struct {
 	Cache    CacheConfig       `json:"cache"`
 	Topology []topology.Config `json:"topology"`
+	Home     bool              `json:"home"`
 }
 
 // CacheConfig is the structure of the cache configuration for the topology graph, teams and tags.
@@ -273,7 +274,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		Name:        "applications",
 		DisplayName: "Applications",
 		Description: "Monitor your Kubernetes workloads.",
-		Home:        true,
+		Home:        config.Home,
 		Type:        "applications",
 		Options:     options,
 	})

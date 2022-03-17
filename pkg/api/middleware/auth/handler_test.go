@@ -27,7 +27,7 @@ func TestUserHandler(t *testing.T) {
 			name:               "get user",
 			user:               authContext.User{},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null},\"rows\":null}\n",
 		},
 		{
 			name:               "could not get user",

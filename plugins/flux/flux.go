@@ -18,7 +18,9 @@ import (
 const Route = "/flux"
 
 // Config is the structure of the configuration for the Flux plugin.
-type Config struct{}
+type Config struct {
+	Home bool `json:"home"`
+}
 
 // Router implements the router for the flux plugin, which can be registered in the router for our rest api.
 type Router struct {
@@ -77,6 +79,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		Name:        "flux",
 		DisplayName: "Flux",
 		Description: "Flux is a set of continuous and progressive delivery solutions for Kubernetes.",
+		Home:        config.Home,
 		Type:        "flux",
 	})
 

@@ -14,6 +14,7 @@ type Config struct {
 	Name        string           `json:"name"`
 	DisplayName string           `json:"displayName"`
 	Description string           `json:"description"`
+	Home        bool             `json:"home"`
 	Prometheus  ConfigPrometheus `json:"prometheus"`
 	Klogs       ConfigKlogs      `json:"klogs"`
 }

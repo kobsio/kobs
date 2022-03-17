@@ -27,7 +27,7 @@ type Auth struct {
 	clustersClient  clusters.Client
 }
 
-func containsTeam(teamID string, teamIDs []string) bool {
+func isTeamInTeamIDs(teamID string, teamIDs []string) bool {
 	for _, id := range teamIDs {
 		if id == teamID {
 			return true
@@ -37,6 +37,22 @@ func containsTeam(teamID string, teamIDs []string) bool {
 	return false
 }
 
+func isTeamInTeams(team teamv1.TeamSpec, teams []userv1.TeamReference) bool {
+	for _, t := range teams {
+		if t.Cluster == team.Cluster && t.Namespace == team.Namespace && t.Name == team.Name {
+			return true
+		}
+	}
+
+	return false
+}
+
+// getUser returns the user information for the currently authenticated user. For that we are getting all users and
+// teams from all clusters. Then we are checking if the given userID is set for one of the returned users. If this is
+// the case we are setting the user information from this User CR.
+// In the next step we are looping through all the returned teams and adding the user permissions. Since as could happen
+// that the passed in teamIDs contains teams that are not set for a user or there is no User CR for a user, we also add
+// these teams to the list of teams for a user, when it is not already present.
 func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (authContext.User, error) {
 	authContextUser := authContext.User{ID: userID}
 
@@ -69,6 +85,7 @@ func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (au
 			authContextUser.ID = u.ID
 			authContextUser.Profile = u.Profile
 			authContextUser.Teams = u.Teams
+			authContextUser.Rows = u.Rows
 			authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, u.Permissions.Plugins...)
 			authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, u.Permissions.Resources...)
 			break
@@ -76,9 +93,17 @@ func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (au
 	}
 
 	for _, t := range teams {
-		if containsTeam(t.ID, teamIDs) {
+		if isTeamInTeamIDs(t.ID, teamIDs) {
 			authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, t.Permissions.Plugins...)
 			authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, t.Permissions.Resources...)
+
+			if !isTeamInTeams(t, authContextUser.Teams) {
+				authContextUser.Teams = append(authContextUser.Teams, userv1.TeamReference{
+					Cluster:   t.Cluster,
+					Namespace: t.Namespace,
+					Name:      t.Name,
+				})
+			}
 		}
 	}
 

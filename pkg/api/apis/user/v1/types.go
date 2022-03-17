@@ -3,6 +3,8 @@ package v1
 import (
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	dashboardv1 "github.com/kobsio/kobs/pkg/api/apis/dashboard/v1"
 )
 
 // +genclient
@@ -27,13 +29,14 @@ type UserList struct {
 }
 
 type UserSpec struct {
-	Cluster     string          `json:"cluster,omitempty"`
-	Namespace   string          `json:"namespace,omitempty"`
-	Name        string          `json:"name,omitempty"`
-	ID          string          `json:"id"`
-	Profile     Profile         `json:"profile"`
-	Teams       []TeamReference `json:"teams,omitempty"`
-	Permissions Permissions     `json:"permissions,omitempty"`
+	Cluster     string            `json:"cluster,omitempty"`
+	Namespace   string            `json:"namespace,omitempty"`
+	Name        string            `json:"name,omitempty"`
+	ID          string            `json:"id"`
+	Profile     Profile           `json:"profile"`
+	Teams       []TeamReference   `json:"teams,omitempty"`
+	Permissions Permissions       `json:"permissions,omitempty"`
+	Rows        []dashboardv1.Row `json:"rows,omitempty"`
 }
 
 type Profile struct {

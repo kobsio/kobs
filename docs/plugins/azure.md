@@ -27,7 +27,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Azure instance. | Yes |
 | displayName | string | Name of the Azure instance as it is shown in the UI. | Yes |
-| descriptions | string | Description of the Azure instance. | No |
+| description | string | Description of the Azure instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | permissionsEnabled | boolean | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 | credentials | [Credentials](#credentials) | The credentials to access the Azure API. | Yes |
 

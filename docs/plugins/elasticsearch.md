@@ -26,7 +26,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Elasticsearch instance. | Yes |
 | displayName | string | Name of the Elasticsearch as it is shown in the UI. | Yes |
-| descriptions | string | Description of the Elasticsearch instance. | No |
+| description | string | Description of the Elasticsearch instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | address | string | Address of the Elasticsearch instance. | Yes |
 | username | string | Username to access an Elasticsearch instance via basic authentication. | No |
 | password | string | Password to access an Elasticsearch instance via basic authentication. | No |
