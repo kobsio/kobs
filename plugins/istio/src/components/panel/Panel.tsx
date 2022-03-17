@@ -38,7 +38,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <PluginCard
         title={title}
         description={description}
-        transparent={false}
         actions={
           <PanelActions
             link={`/${name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}${namespaceParams}`}
@@ -75,7 +74,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <PluginCard
         title={title}
         description={description}
-        transparent={false}
         actions={
           <PanelActions
             link={`/${name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=metrics`}
@@ -110,7 +108,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <PluginCard
         title={title}
         description={description}
-        transparent={false}
         actions={
           <PanelActions
             link={`/${name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=metrics`}
@@ -145,7 +142,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <PluginCard
         title={title}
         description={description}
-        transparent={true}
         actions={
           <PanelActions
             link={`/${name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=metrics`}
@@ -182,7 +178,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <PluginCard
         title={title}
         description={description}
-        transparent={false}
         actions={
           <PanelActions
             link={`/${name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${
@@ -225,7 +220,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <PluginCard
         title={title}
         description={description}
-        transparent={false}
         actions={
           <PanelActions
             link={`/${name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${

@@ -32,7 +32,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     <PluginCard
       title={title}
       description={description}
-      transparent={true}
       actions={<PanelActions url={pluginOptions ? pluginOptions.url : ''} project={options.project} />}
     >
       <Measures name={name} project={options.project} metricKeys={options.metricKeys} />

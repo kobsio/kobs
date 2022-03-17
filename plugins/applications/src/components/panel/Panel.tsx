@@ -65,7 +65,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         <PluginCard
           title={title}
           description={description}
-          transparent={true}
           actions={
             <PanelActions
               view="topology"
@@ -92,7 +91,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 
     if (title) {
       return (
-        <PluginCard title={title} description={description} transparent={true}>
+        <PluginCard title={title} description={description}>
           {gallery}
         </PluginCard>
       );
@@ -119,7 +118,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         <PluginCard
           title={title}
           description={description}
-          transparent={true}
           actions={
             <PanelActions
               view="gallery"
@@ -155,7 +153,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
         <PluginCard
           title={title}
           description={description}
-          transparent={true}
           actions={
             options.team ? undefined : (
               <PanelActions

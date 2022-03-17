@@ -92,6 +92,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#294](https://github.com/kobsio/kobs/pull/294): Improve shutdown of kobs by extending context timeout and adding `terminationGracePeriodSeconds` property.
 - [#305](https://github.com/kobsio/kobs/pull/305): [resources] Show state and last state of container in containers overview.
 - [#308](https://github.com/kobsio/kobs/pull/308): [core] Hide scrollbars to have a cleaner UI.
+- [#309](https://github.com/kobsio/kobs/pull/309): [core] :warning: _Breaking change:_ :warning: Remove `transparent` option for plugin panels.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 

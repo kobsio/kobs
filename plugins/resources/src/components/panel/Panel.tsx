@@ -25,12 +25,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     // the component is used in the resources page and we do not wrap it in the PluginCard component.
     if (title) {
       return (
-        <PluginCard
-          title={title}
-          description={description}
-          transparent={true}
-          actions={<PanelActions options={options} />}
-        >
+        <PluginCard title={title} description={description} actions={<PanelActions options={options} />}>
           <PanelList resources={options} times={times} setDetails={setDetails} />
         </PluginCard>
       );

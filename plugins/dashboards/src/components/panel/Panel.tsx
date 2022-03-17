@@ -22,7 +22,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ title, description
   }
 
   return (
-    <PluginCard title={title} description={description} transparent={true}>
+    <PluginCard title={title} description={description}>
       <Menu>
         <MenuContent>
           <MenuList>

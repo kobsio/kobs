@@ -103,7 +103,6 @@ const Traces: React.FunctionComponent<ITracesProps> = ({
     <PluginCard
       title={title}
       description={description}
-      transparent={true}
       actions={<TracesActions name={name} queries={queries} times={times} />}
     >
       <div>
