@@ -12,6 +12,7 @@ type Config struct {
 	Name        string           `json:"name"`
 	DisplayName string           `json:"displayName"`
 	Description string           `json:"description"`
+	Home        bool             `json:"home"`
 	Provider    providers.Config `json:"provider"`
 }
 

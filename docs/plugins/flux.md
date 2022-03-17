@@ -4,6 +4,12 @@ The Flux plugin can be used to retrieve, display and reconcile [Flux](https://fl
 
 ![Flux](assets/flux.png)
 
+## Configuration
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
+
 ## Options
 
 The following options can be used for a panel with the Flux plugin:

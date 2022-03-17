@@ -16,7 +16,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { AuthContext, IAuthContext } from '../../context/AuthContext';
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
-import Account from './account/Account';
+import Authenticated from './authenticated/Authenticated';
+import Dashboard from './dashboard/Dashboard';
+import { LinkWrapper } from '../misc/LinkWrapper';
 import Plugins from './plugins/Plugins';
 import { getGravatarImageUrl } from '../../utils/gravatar';
 
@@ -27,85 +29,82 @@ const HomePage: React.FunctionComponent = () => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const pluginHome = pluginsContext.getPluginHome();
-  const [activePage, setActivePage] = useState<string>('plugins');
+  const [activePage, setActivePage] = useState<string>('');
 
-  const pluginDetails = pluginsContext.getPluginDetails(activePage);
-  const Component =
-    pluginDetails && pluginsContext.components.hasOwnProperty(pluginDetails.type)
-      ? pluginsContext.components[pluginDetails.type].home
-      : undefined;
-
-  const changeActivePage = (
-    event?: React.MouseEvent<Element, MouseEvent> | undefined,
-    itemId?: string | number | undefined,
-  ): void => {
-    if (itemId) {
-      history.push({
-        pathname: location.pathname,
-        search: `?page=${itemId}`,
-      });
-    }
+  const changeActivePage = (itemId: string): void => {
+    history.push({
+      pathname: location.pathname,
+      search: `?page=${itemId}`,
+    });
   };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const page = params.get('page');
-
-    if (page) {
-      setActivePage(page);
-    }
+    setActivePage(page ?? '');
   }, [location.search]);
 
   return (
     <PageSection variant={PageSectionVariants.default}>
       <Grid hasGutter={true}>
         <GridItem sm={12} md={12} lg={3} xl={2} xl2={2}>
-          {authContext.user.profile.email && (
-            <React.Fragment>
-              <Card
-                style={{ cursor: 'pointer' }}
-                isCompact={true}
-                isHoverable={true}
-                onClick={(): void => changeActivePage(undefined, 'account')}
-              >
-                <CardBody>
-                  <div className="pf-u-text-align-center">
-                    <Avatar
-                      src={getGravatarImageUrl(authContext.user.profile.email, 64)}
-                      alt={authContext.user.profile.fullName}
-                      style={{ height: '64px', width: '64px' }}
-                    />
-                    <div className="pf-c-title pf-m-xl">{authContext.user.profile.fullName}</div>
-                    <div className="pf-u-font-size-md pf-u-color-400">{authContext.user.profile.position}</div>
+          <React.Fragment>
+            <Card
+              style={{ cursor: 'pointer' }}
+              isCompact={true}
+              isHoverable={true}
+              onClick={(): void => changeActivePage('')}
+            >
+              <CardBody>
+                <div className="pf-u-text-align-center">
+                  <Avatar
+                    src={getGravatarImageUrl(authContext.user.profile.email ? authContext.user.profile.email : '', 64)}
+                    alt={authContext.user.profile.fullName}
+                    style={{ height: '64px', width: '64px' }}
+                  />
+                  <div className="pf-c-title pf-m-xl">
+                    {authContext.user.profile.fullName
+                      ? authContext.user.profile.fullName
+                      : authContext.user.id !== 'kobs.io'
+                      ? authContext.user.id
+                      : 'Welcome to kobs'}
                   </div>
-                </CardBody>
-              </Card>
-              <p>&nbsp;</p>
-            </React.Fragment>
-          )}
-          <Menu activeItemId={activePage} onSelect={changeActivePage}>
+                  <div className="pf-u-font-size-md pf-u-color-400">
+                    {authContext.user.profile.position ? authContext.user.profile.position : ''}
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+            <p>&nbsp;</p>
+          </React.Fragment>
+
+          <Menu activeItemId={activePage}>
             <MenuContent>
               <MenuList>
-                <MenuItem itemId="plugins">Plugins</MenuItem>
                 {pluginHome.map((plugin, index) => (
-                  <MenuItem key={index} itemId={plugin.name}>
-                    {plugin.displayName}
-                  </MenuItem>
+                  <LinkWrapper key={plugin.name} link={`/${plugin.name}`}>
+                    <MenuItem>{plugin.displayName}</MenuItem>
+                  </LinkWrapper>
                 ))}
+                <MenuItem onClick={(): void => changeActivePage('plugins')}>All Plugins</MenuItem>
               </MenuList>
             </MenuContent>
           </Menu>
         </GridItem>
         <GridItem sm={12} md={12} lg={9} xl={10} xl2={10}>
-          {activePage !== 'plugins' && activePage !== 'account' && pluginDetails && Component ? (
-            <Component
-              name={pluginDetails.name}
-              displayName={pluginDetails.displayName}
-              description={pluginDetails.description}
-              pluginOptions={pluginDetails.options}
+          {activePage === 'plugins' ? (
+            <Plugins plugins={pluginsContext.plugins} />
+          ) : authContext.user.id !== 'kobs.io' &&
+            authContext.user &&
+            authContext.user.rows &&
+            authContext.user.rows.length > 0 ? (
+            <Dashboard
+              cluster={authContext.user.cluster}
+              namespace={authContext.user.namespace}
+              rows={authContext.user.rows}
             />
-          ) : activePage === 'account' ? (
-            <Account />
+          ) : authContext.user.id !== 'kobs.io' && authContext.user.teams && authContext.user.teams.length > 0 ? (
+            <Authenticated teams={authContext.user.teams} />
           ) : (
             <Plugins plugins={pluginsContext.plugins} />
           )}

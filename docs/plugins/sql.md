@@ -19,7 +19,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the ClickHouse instance. | Yes |
 | displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
-| descriptions | string | Description of the ClickHouse instance. | No |
+| description | string | Description of the ClickHouse instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | connection | string | The connection string, to connect to a SQL database. | Yes |
 | driver | string | The driver which should be used for the database instance. This must be `clickhouse`, `postgres` or `mysql`. | Yes |
 

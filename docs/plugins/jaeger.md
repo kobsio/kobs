@@ -25,7 +25,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Jaeger instance. | Yes |
 | displayName | string | Name of the Jaeger as it is shown in the UI. | Yes |
-| descriptions | string | Description of the Jaeger instance. | No |
+| description | string | Description of the Jaeger instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | address | string | Address of the Jaeger instance. | Yes |
 | username | string | Username to access a Jaeger instance via basic authentication. | No |
 | password | string | Password to access a Jaeger instance via basic authentication. | No |

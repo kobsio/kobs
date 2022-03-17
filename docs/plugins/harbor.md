@@ -24,7 +24,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Harbor instance. | Yes |
 | displayName | string | Name of the Harbor as it is shown in the UI. | Yes |
-| descriptions | string | Description of the Harbor instance. | No |
+| description | string | Description of the Harbor instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | address | string | Address of the Harbor instance. | Yes |
 | username | string | Username to access an Harbor instance via basic authentication. | No |
 | password | string | Password to access an Harbor instance via basic authentication. | No |

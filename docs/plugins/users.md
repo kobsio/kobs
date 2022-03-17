@@ -2,6 +2,12 @@
 
 The users plugin can be used to show a list of users which are members of the specified team on a dashboard.
 
+## Configuration
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
+
 ## Options
 
 | Field | Type | Description | Required |

@@ -16,6 +16,14 @@ build:
 		-X ${REPO}/pkg/version.BuildDate=${BUILDTIME}" \
 		-o ./bin/kobs ./cmd/kobs;
 
+.PHONY: test
+test:
+	go test ./cmd/... ./pkg/... ./plugins/...
+
+.PHONY: test-coverage
+test-coverage:
+	go test -coverpkg ./cmd/...,./pkg/...,./plugins/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./plugins/...
+
 .PHONY: generate
 generate: generate-crds
 

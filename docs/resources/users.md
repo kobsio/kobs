@@ -14,6 +14,7 @@ In the following you can found the specification for the User CRD.
 | profile | [Profile](#profile) | The users profile information. | Yes |
 | teams | [[]Team](#team) | A list of links (e.g. a link to the teams Slack channel, Confluence page, etc.) | No |
 | permissions | [Permissions](#permissions) | Permissions for the user when the authentication / authorization middleware is enabled. | Yes |
+| rows | [[]Row](./dashboards.md#row) | A list of rows which should be used for the users start page. When no list is provided the default start page will be used. | No |
 
 ### Profile
 

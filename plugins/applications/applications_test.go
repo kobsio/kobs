@@ -347,7 +347,7 @@ func TestRegister(t *testing.T) {
 			Name:        "applications",
 			DisplayName: "Applications",
 			Description: "Monitor your Kubernetes workloads.",
-			Home:        true,
+			Home:        false,
 			Type:        "applications",
 			Options: map[string]interface{}{
 				"topology": []topology.Config(nil),

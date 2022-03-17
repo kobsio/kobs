@@ -25,6 +25,7 @@ plugins:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | forbidden | [[]Forbidden](#forbidden) | A list of resources, which can not be retrieved or modified via the kobs API. | No |
 | webSocket.address | string | The address, which should be used for the WebSocket connection. By default this will be the current host, but it can be overwritten for development purposes. | No |
 | webSocket.allowAllOrigins | boolean | When this is `true`, WebSocket connections are allowed for all origins. This should only be used for development. | No |

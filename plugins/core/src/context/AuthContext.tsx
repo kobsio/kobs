@@ -3,6 +3,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
 import { IUserProfile, IUserTeamReference } from '../crds/user';
+import { IDashboardRow } from '../crds/dashboard';
 
 export interface IAuth {
   cluster: string;
@@ -11,6 +12,7 @@ export interface IAuth {
   id: string;
   profile: IUserProfile;
   teams: IUserTeamReference[];
+  rows?: IDashboardRow[];
   permissions: IAuthPermissions;
 }
 

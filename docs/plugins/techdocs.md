@@ -31,7 +31,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the TechDocs instance. | Yes |
 | displayName | string | Name of the TechDocs instance as it is shown in the UI. | Yes |
-| descriptions | string | Description of the TechDocs instance. | No |
+| description | string | Description of the TechDocs instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | provider | [Provider](#provider) | The provider where your TechDocs are saved. | Yes |
 
 ### Provider

@@ -244,7 +244,7 @@ func TestRegister(t *testing.T) {
 			Name:        "users",
 			DisplayName: "Users",
 			Description: "Define the members of your Teams.",
-			Home:        true,
+			Home:        false,
 			Type:        "users",
 		},
 	}, plugins)

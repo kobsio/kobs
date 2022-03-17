@@ -2,6 +2,12 @@
 
 The dashboards plugin allows you to show a list of dashboards.
 
+## Configuration
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
+
 ## Options
 
 The options for the dashboards plugin is a list of objects with the following properties:

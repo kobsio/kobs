@@ -22,6 +22,7 @@ const Route = "/helm"
 
 // Config is the structure of the configuration for the Helm plugin.
 type Config struct {
+	Home               bool `json:"home"`
 	PermissionsEnabled bool `json:"permissionsEnabled"`
 }
 
@@ -190,6 +191,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 	plugins.Append(plugin.Plugin{
 		Name:        "helm",
 		DisplayName: "Helm",
+		Home:        config.Home,
 		Description: "The package manager for Kubernetes.",
 		Type:        "helm",
 	})

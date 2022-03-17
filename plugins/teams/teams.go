@@ -18,7 +18,9 @@ import (
 const Route = "/teams"
 
 // Config is the structure of the configuration for the teams plugin.
-type Config struct{}
+type Config struct {
+	Home bool `json:"home"`
+}
 
 // Router implements the router for the teams plugin, which can be registered in the router for our rest api. The router
 // contains all api endpoints for the plugin, the cluster client to get the teams from the Kubernetes api server and the
@@ -83,7 +85,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		Name:        "teams",
 		DisplayName: "Teams",
 		Description: "Define an ownership for your Kubernetes resources.",
-		Home:        true,
+		Home:        config.Home,
 		Type:        "teams",
 	})
 

@@ -44,6 +44,7 @@ type Config struct {
 	Forbidden           []userv1.Resources          `json:"forbidden"`
 	WebSocket           WebSocket                   `json:"webSocket"`
 	EphemeralContainers []corev1.EphemeralContainer `json:"ephemeralContainers"`
+	Home                bool                        `json:"home"`
 }
 
 // WebSocket is the structure for the WebSocket configuration for terminal for Pods.
@@ -725,6 +726,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		DisplayName: "Resources",
 		Description: "View and edit Kubernetes resources.",
 		Type:        "resources",
+		Home:        config.Home,
 		Options:     options,
 	})
 

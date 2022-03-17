@@ -18,6 +18,7 @@ plugins:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | permissionsEnabled | boolean | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 
 ## Options

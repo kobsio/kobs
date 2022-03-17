@@ -42,7 +42,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Istio instance. | Yes |
 | displayName | string | Name of the Istio as it is shown in the UI. | Yes |
-| descriptions | string | Description of the Istio instance. | No |
+| description | string | Description of the Istio instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | prometheus.enabled | boolean | Enabled the Prometheus integration for Istio. | No |
 | prometheus.name | string | The name of the Prometheus instance which should be used for the Istio instance. | No |
 | klogs.enabled | boolean | Enabled the klogs integration for Istio. | No |

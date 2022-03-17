@@ -21,6 +21,7 @@ type Config struct {
 	Name               string `json:"name"`
 	DisplayName        string `json:"displayName"`
 	Description        string `json:"description"`
+	Home               bool   `json:"home"`
 	APIKey             string `json:"apiKey"`
 	APIUrl             string `json:"apiUrl"`
 	URL                string `json:"url"`

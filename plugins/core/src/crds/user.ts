@@ -1,3 +1,5 @@
+import { IDashboardRow } from './dashboard';
+
 // The IUser interface implements the User CRD.
 export interface IUser {
   cluster: string;
@@ -6,6 +8,7 @@ export interface IUser {
   id: string;
   profile: IUserProfile;
   teams?: IUserTeamReference[];
+  rows?: IDashboardRow[];
 }
 
 export interface IUserProfile {

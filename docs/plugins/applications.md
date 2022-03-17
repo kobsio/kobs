@@ -22,6 +22,7 @@ plugins:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | cache | [Cache](#cache) | Customize the caching behaviour for applications. | No |
 | topology | [[]Topology](#topology) | Add custom node types for the topology graph, which can then selected in the Applications CRs via the `topology.type` option. | No |
 

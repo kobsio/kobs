@@ -23,7 +23,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the ClickHouse instance. | Yes |
 | displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
-| descriptions | string | Description of the ClickHouse instance. | No |
+| description | string | Description of the ClickHouse instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | address | string | Address of the ClickHouse instance. | Yes |
 | username | string | Username to access a ClickHouse instance. | No |
 | password | string | Password to access a ClickHouse instance. | No |

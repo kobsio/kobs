@@ -21,7 +21,8 @@ plugins:
 | ----- | ---- | ----------- | -------- |
 | name | string | Name of the Grafana instance. | Yes |
 | displayName | string | Name of the Grafana as it is shown in the UI. | Yes |
-| descriptions | string | Description of the Grafana instance. | No |
+| description | string | Description of the Grafana instance. | No |
+| home | boolean | When this is `true` the plugin will be added to the home page. | No |
 | internalAddress | string | The cluster internal address of the Grafana instance. | Yes |
 | publicAddress | string | The public address of the Grafana instance. | Yes |
 | username | string | Username to access an Grafana instance via basic authentication. | No |

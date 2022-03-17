@@ -413,6 +413,7 @@ func Register(plugins *plugin.Plugins, config Config, prometheusInstances []*pro
 			Name:        cfg.Name,
 			DisplayName: cfg.DisplayName,
 			Description: cfg.Description,
+			Home:        cfg.Home,
 			Type:        "istio",
 			Options:     options,
 		})

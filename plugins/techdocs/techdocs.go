@@ -151,6 +151,7 @@ func Register(plugins *plugin.Plugins, config Config) chi.Router {
 			Name:        cfg.Name,
 			DisplayName: cfg.DisplayName,
 			Description: cfg.Description,
+			Home:        cfg.Home,
 			Type:        "techdocs",
 		})
 	}
