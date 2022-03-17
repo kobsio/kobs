@@ -4,7 +4,6 @@ import React from 'react';
 interface IPluginCardProps {
   title: string;
   description?: string;
-  transparent?: boolean;
   children: React.ReactElement | null;
   actions?: React.ReactElement;
 }
@@ -15,7 +14,6 @@ interface IPluginCardProps {
 export const PluginCard: React.FunctionComponent<IPluginCardProps> = ({
   title,
   description,
-  transparent,
   children,
   actions,
 }: IPluginCardProps) => {
@@ -24,14 +22,7 @@ export const PluginCard: React.FunctionComponent<IPluginCardProps> = ({
   }
 
   return (
-    <Card
-      isCompact={true}
-      style={
-        transparent
-          ? { backgroundColor: '#f0f0f0', boxShadow: 'none', height: '100%', width: '100%' }
-          : { height: '100%', width: '100%' }
-      }
-    >
+    <Card isCompact={true} style={{ height: '100%', width: '100%' }}>
       <CardHeader>
         <CardHeaderMain>
           {description ? (
@@ -44,7 +35,7 @@ export const PluginCard: React.FunctionComponent<IPluginCardProps> = ({
         </CardHeaderMain>
         {actions || null}
       </CardHeader>
-      <CardBody className="kobsio-hide-scrollbar" style={{ overflow: 'auto' }}>
+      <CardBody className="kobsio-hide-scrollbar" style={{ overflow: 'auto', paddingTop: '8px' }}>
         {children}
       </CardBody>
     </Card>

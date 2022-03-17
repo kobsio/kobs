@@ -26,7 +26,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
   }
 
   return (
-    <PluginCard title={title} description={description} transparent={true}>
+    <PluginCard title={title} description={description}>
       <Feed urls={options.urls} sortBy={options.sortBy || 'published'} setDetails={setDetails} />
     </PluginCard>
   );

@@ -22,7 +22,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 }: IPanelProps) => {
   if (options && options.type === 'projects') {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <Projects name={name} />
       </PluginCard>
     );
@@ -30,7 +30,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 
   if (options && options.type === 'repositories' && options.repositories && options.repositories.projectName) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <Repositories
           name={name}
           projectName={options.repositories.projectName}
@@ -48,7 +48,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options.artifacts.repositoryName
   ) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <Artifacts
           name={name}
           address={pluginOptions && pluginOptions.address ? pluginOptions.address : ''}

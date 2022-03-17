@@ -18,7 +18,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
 }: IPanelProps) => {
   if (options && options.type && options.type === 'list') {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <TechDocsList name={name} />
       </PluginCard>
     );

@@ -46,7 +46,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options.containerinstances.resourceGroups
   ) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <CIContainerGroups
           name={name}
           resourceGroups={options.containerinstances.resourceGroups}
@@ -157,7 +157,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options.kubernetesservices.resourceGroups
   ) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <KSKubernetesServices
           name={name}
           resourceGroups={options.kubernetesservices.resourceGroups}
@@ -239,7 +239,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options.virtualmachinescalesets.resourceGroups
   ) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <VMSSVirtualMachineScaleSets
           name={name}
           resourceGroups={options.virtualmachinescalesets.resourceGroups}

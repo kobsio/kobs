@@ -45,7 +45,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     options.dashboards.length > 0
   ) {
     return (
-      <PluginCard title={title} description={description} transparent={true}>
+      <PluginCard title={title} description={description}>
         <Dashboards
           name={name}
           dashboardIDs={options.dashboards}

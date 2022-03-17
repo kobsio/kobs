@@ -21,7 +21,7 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({ title, description
   }
 
   return (
-    <PluginCard title={title} description={description} transparent={true}>
+    <PluginCard title={title} description={description}>
       <Users cluster={options.cluster} namespace={options.namespace} name={options.name} />
     </PluginCard>
   );

@@ -7,7 +7,7 @@ import Teams from './Teams';
 // because it can only be used to display all teams from all clusters and namespaces.
 export const Panel: React.FunctionComponent<IPluginPanelProps> = ({ title, description }: IPluginPanelProps) => {
   return (
-    <PluginCard title={title} description={description} transparent={true}>
+    <PluginCard title={title} description={description}>
       <Teams />
     </PluginCard>
   );

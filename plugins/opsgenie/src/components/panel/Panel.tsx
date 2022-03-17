@@ -35,7 +35,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
       <PluginCard
         title={title}
         description={description}
-        transparent={true}
         actions={<IncidentsActions name={name} query={options.query || ''} times={times} type="incidents" />}
       >
         <Incidents
@@ -53,7 +52,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     <PluginCard
       title={title}
       description={description}
-      transparent={true}
       actions={<AlertsActions name={name} query={options.query || ''} times={times} type="alerts" />}
     >
       <Alerts

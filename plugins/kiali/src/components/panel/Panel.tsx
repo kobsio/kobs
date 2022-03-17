@@ -32,7 +32,6 @@ export const Panel: React.FunctionComponent<IPanelProps> = ({
     <PluginCard
       title={title}
       description={description}
-      transparent={true}
       actions={<GraphActions name={name} namespaces={options.namespaces} times={times} />}
     >
       <GraphWrapper name={name} namespaces={options.namespaces} times={times} setDetails={setDetails} />
