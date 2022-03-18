@@ -48,6 +48,7 @@ nav:
       - Getting Started: plugins/getting-started.md
       - Applications: plugins/applications.md
       - Azure: plugins/azure.md
+      - Backstage: plugins/backstage.md
       - Dashboards: plugins/dashboards.md
       - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md

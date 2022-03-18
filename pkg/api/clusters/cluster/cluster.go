@@ -393,7 +393,7 @@ func (c *client) GetApplications(ctx context.Context, namespace string) ([]appli
 	return applications, nil
 }
 
-// GetApplication returns a application for the given namespace and name. After the application is retrieved we replace,
+// GetApplication returns an application for the given namespace and name. After the application is retrieved we replace,
 // the cluster, namespace and name in the spec of the Application CR. This is needed, so that the user doesn't have to,
 // provide these fields.
 func (c *client) GetApplication(ctx context.Context, namespace, name string) (*applicationv1.ApplicationSpec, error) {

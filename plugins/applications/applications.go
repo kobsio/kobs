@@ -2,6 +2,8 @@ package applications
 
 import (
 	"context"
+	"errors"
+	apimachineryErrors "k8s.io/apimachinery/pkg/api/errors"
 	"net/http"
 	"time"
 
@@ -200,9 +202,9 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid view property")
 }
 
-// getApplication returns a a single application for the given clusters and namespaces and name. The cluster, namespace
+// GetApplication returns a single application for the given clusters and namespaces and name. The cluster, namespace
 // and name is defined via the corresponding query parameters.
-func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
+func (router *Router) GetApplication(w http.ResponseWriter, r *http.Request) {
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -218,6 +220,12 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 
 	application, err := cluster.GetApplication(r.Context(), namespace, name)
 	if err != nil {
+		statusErr := &apimachineryErrors.StatusError{}
+		if errors.As(err, &statusErr) && statusErr.Status().Code == http.StatusNotFound {
+			log.Debug(r.Context(), "Could not found application", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name))
+			errresponse.Render(w, r, err, http.StatusNotFound, "Could not found application")
+		}
+
 		log.Error(r.Context(), "Could not get applications")
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get application")
 		return
@@ -228,7 +236,7 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 
 // getTags returns a list of tags from all applications in all clusters. For that we have to create a slice of tags
 // across all clusters, namespaces and applications. After we created the slice of tag, we run our unique function to
-// return each tag only once. Finally we are saving the unique slice of tags in our cache.
+// return each tag only once. Finally, we are saving the unique slice of tags in our cache.
 func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 
@@ -264,7 +272,7 @@ func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register returns a new router which can be used in the router for the kobs rest api.
-func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) chi.Router {
+func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Config) Router {
 	var options map[string]interface{}
 	options = make(map[string]interface{})
 	options["topology"] = config.Topology
@@ -278,18 +286,18 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		Options:     options,
 	})
 
-	var topology topology.Cache
+	var topo topology.Cache
 	topologyCacheDuration, err := time.ParseDuration(config.Cache.TopologyDuration)
 	if err != nil || topologyCacheDuration.Seconds() < 60 {
-		topology.CacheDuration = time.Duration(1 * time.Hour)
+		topo.CacheDuration = 1 * time.Hour
 	} else {
-		topology.CacheDuration = topologyCacheDuration
+		topo.CacheDuration = topologyCacheDuration
 	}
 
 	var teams teams.Cache
 	teamsCacheDuration, err := time.ParseDuration(config.Cache.TeamsDuration)
 	if err != nil || teamsCacheDuration.Seconds() < 60 {
-		teams.CacheDuration = time.Duration(1 * time.Hour)
+		teams.CacheDuration = 1 * time.Hour
 	} else {
 		teams.CacheDuration = teamsCacheDuration
 	}
@@ -297,7 +305,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 	var tags tags.Cache
 	tagsCacheDuration, err := time.ParseDuration(config.Cache.TagsDuration)
 	if err != nil || tagsCacheDuration.Seconds() < 60 {
-		tags.CacheDuration = time.Duration(1 * time.Hour)
+		tags.CacheDuration = 1 * time.Hour
 	} else {
 		tags.CacheDuration = tagsCacheDuration
 	}
@@ -306,13 +314,13 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
 		chi.NewRouter(),
 		clustersClient,
 		config,
-		topology,
+		topo,
 		teams,
 		tags,
 	}
 
 	router.Get("/applications", router.getApplications)
-	router.Get("/application", router.getApplication)
+	router.Get("/application", router.GetApplication)
 	router.Get("/tags", router.getTags)
 
 	return router

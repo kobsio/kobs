@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	"github.com/kobsio/kobs/plugins/backstage"
 	"net/http"
 
 	"github.com/kobsio/kobs/pkg/api/clusters"
@@ -39,6 +40,7 @@ import (
 type Config struct {
 	Applications  applications.Config  `json:"applications"`
 	Azure         azure.Config         `json:"azure"`
+	Backstage     backstage.Config     `json:"backstage"`
 	Dashboards    dashboards.Config    `json:"dashboards"`
 	Elasticsearch elasticsearch.Config `json:"elasticsearch"`
 	Flux          flux.Config          `json:"flux"`
@@ -105,6 +107,7 @@ func Register(clustersClient clusters.Client, config Config) chi.Router {
 	sqlRouter := sql.Register(router.plugins, config.SQL)
 	markdownRouter := markdown.Register(router.plugins, config.Markdown)
 	rssRouter := rss.Register(router.plugins, config.RSS)
+	backstageRouter := backstage.Register(router.plugins, config.Backstage, applicationsRouter, prometheusInstances)
 
 	// Register all plugins
 	router.Mount(resources.Route, resourcesRouter)
@@ -129,6 +132,7 @@ func Register(clustersClient clusters.Client, config Config) chi.Router {
 	router.Mount(sql.Route, sqlRouter)
 	router.Mount(markdown.Route, markdownRouter)
 	router.Mount(rss.Route, rssRouter)
+	router.Mount(backstage.Route, backstageRouter)
 
 	return router
 }

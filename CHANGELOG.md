@@ -41,6 +41,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#295](https://github.com/kobsio/kobs/pull/295): [sql] Add `columns` options to set the title and formation of the returned columns from a query.
 - [#296](https://github.com/kobsio/kobs/pull/296): [sql] Add support to visualize data via line and area charts.
 - [#298](https://github.com/kobsio/kobs/pull/298): [sql] Add support for pie charts.
+- [#311](https://github.com/kobsio/kobs/pull/311): [backstage] Introduce new plugin for upcoming Backstage integration.
 
 ### Fixed
 

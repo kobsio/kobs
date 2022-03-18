@@ -260,12 +260,12 @@ func TestGetApplication(t *testing.T) {
 			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
 
 			router := Router{chi.NewRouter(), mockClustersClient, Config{}, topology.Cache{}, teams.Cache{}, tags.Cache{}}
-			router.Get("/application", router.getApplication)
+			router.Get("/application", router.GetApplication)
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			w := httptest.NewRecorder()
 
-			router.getApplication(w, req)
+			router.GetApplication(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
 			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))

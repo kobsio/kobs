@@ -35,10 +35,10 @@ type getVariableRequest struct {
 	Type      string `json:"type"`
 }
 
-// getMetricsRequest is the format of the request body for the getMetrics request. To get metrics from a Prometheus
+// GetMetricsRequest is the format of the request body for the getMetrics request. To get metrics from a Prometheus
 // instance we need at least one query and the start and end time. Optionally the user can also set a resolution for the
 // metrics to overwrite the default one.
-type getMetricsRequest struct {
+type GetMetricsRequest struct {
 	Queries    []instance.Query `json:"queries"`
 	Resolution string           `json:"Resolution"`
 	TimeStart  int64            `json:"timeStart"`
@@ -91,10 +91,10 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, values)
 }
 
-// getMetrics returns a list of metrics for the queries specified in the request body. To get the metrics we have to
-// select the correct Prometheus instance, by the name path paramter. After that we can use the GetMetrics function of
+// GetMetrics returns a list of metrics for the queries specified in the request body. To get the metrics we have to
+// select the correct Prometheus instance, by the name path parameter. After that we can use the GetMetrics function of
 // the instance to get a list of metrics.
-func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
+func (router *Router) GetMetrics(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 
 	log.Debug(r.Context(), "Get metrics parameters", zap.String("name", name))
@@ -106,7 +106,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data getMetricsRequest
+	var data GetMetricsRequest
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
@@ -141,7 +141,7 @@ func (router *Router) getTable(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data getMetricsRequest
+	var data GetMetricsRequest
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
@@ -192,12 +192,12 @@ func Register(plugins *plugin.Plugins, config Config) (chi.Router, []*instance.I
 	var instances []*instance.Instance
 
 	for _, cfg := range config {
-		instance, err := instance.New(cfg)
+		inst, err := instance.New(cfg)
 		if err != nil {
 			log.Fatal(nil, "Could not create Prometheus instance", zap.Error(err), zap.String("name", cfg.Name))
 		}
 
-		instances = append(instances, instance)
+		instances = append(instances, inst)
 
 		plugins.Append(plugin.Plugin{
 			Name:        cfg.Name,
@@ -214,7 +214,7 @@ func Register(plugins *plugin.Plugins, config Config) (chi.Router, []*instance.I
 
 	router.Route("/{name}", func(r chi.Router) {
 		r.Post("/variable", router.getVariable)
-		r.Post("/metrics", router.getMetrics)
+		r.Post("/metrics", router.GetMetrics)
 		r.Post("/table", router.getTable)
 		r.Get("/labels", router.getLabels)
 	})
