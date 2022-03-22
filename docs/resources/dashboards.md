@@ -113,7 +113,7 @@ A row can be used to create logical groups in the dashboard.
 | ----- | ---- | ----------- | -------- |
 | title | string | The title for a row. | No |
 | description | string | The description for the row, to provide additional details about the content of the row. | No |
-| size | number | The size of the row. This must be a value between `1` and `12`. The default value is `2`. You can also use the special value `-1` to not limit the height of the row. | No |
+| size | number | The size of the row. This must be a value between `1` and `12`. The default value is `2`. You can also use the special value `-1` to not limit the height of the row. **Note:** When a dashboard makes use of the `-1` value the Intersection Observer API is disabled, so that all dashboard panels are loaded at once. | No |
 | panels | [[]Panel](#panel) | A list of panels for the row. | Yes |
 
 ### Panel

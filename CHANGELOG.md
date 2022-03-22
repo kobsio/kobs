@@ -94,6 +94,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#308](https://github.com/kobsio/kobs/pull/308): [core] Hide scrollbars to have a cleaner UI.
 - [#309](https://github.com/kobsio/kobs/pull/309): [core] :warning: _Breaking change:_ :warning: Remove `transparent` option for plugin panels.
 - [#310](https://github.com/kobsio/kobs/pull/310): [core] :warning: _Breaking change:_ :warning: Rework home page, so that it can be customized by a user.
+- [#312](https://github.com/kobsio/kobs/pull/312): [dashboards] Do not use Intersection Observer API, when a dashboard contains a row with `size: -1`.
 
 ## [v0.7.0](https://github.com/kobsio/kobs/releases/tag/v0.7.0) (2021-11-19)
 
