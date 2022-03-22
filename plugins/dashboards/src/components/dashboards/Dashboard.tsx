@@ -124,6 +124,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   // in the dashboard first with users selected values. For that we have to convert the array to a string first so that
   // we can replace the variables in the string and then we have to convert it back to an array,
   const rows: IDashboardRow[] = JSON.parse(interpolate(JSON.stringify(dashboard.rows), data ? data : [], times));
+  const containsUnlimited = rows.filter((row) => row.size === -1).length > 0;
 
   if (isError) {
     return (
@@ -173,40 +174,60 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                 span={toGridSpans(12, forceDefaultSpan, panel.colSpan)}
                 rowSpan={toGridSpans(1, forceDefaultSpan, panel.rowSpan)}
               >
-                <InView>
-                  {({ inView, ref }): React.ReactNode => (
-                    <div ref={ref}>
-                      {inView ? (
-                        <div
-                          className="kobsio-hide-scrollbar"
-                          style={
-                            row.size !== undefined && row.size === -1
-                              ? undefined
-                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
-                          }
-                        >
-                          <PluginPanel
-                            times={times}
-                            title={panel.title}
-                            description={panel.description}
-                            name={panel.plugin.name}
-                            options={panel.plugin.options}
-                            setDetails={setDetails}
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          className="kobsio-hide-scrollbar"
-                          style={
-                            row.size !== undefined && row.size === -1
-                              ? undefined
-                              : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
-                          }
-                        ></div>
-                      )}
-                    </div>
-                  )}
-                </InView>
+                {containsUnlimited ? (
+                  <div
+                    className="kobsio-hide-scrollbar"
+                    style={
+                      row.size !== undefined && row.size === -1
+                        ? undefined
+                        : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
+                    }
+                  >
+                    <PluginPanel
+                      times={times}
+                      title={panel.title}
+                      description={panel.description}
+                      name={panel.plugin.name}
+                      options={panel.plugin.options}
+                      setDetails={setDetails}
+                    />
+                  </div>
+                ) : (
+                  <InView>
+                    {({ inView, ref }): React.ReactNode => (
+                      <div ref={ref}>
+                        {inView ? (
+                          <div
+                            className="kobsio-hide-scrollbar"
+                            style={
+                              row.size !== undefined && row.size === -1
+                                ? undefined
+                                : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
+                            }
+                          >
+                            <PluginPanel
+                              times={times}
+                              title={panel.title}
+                              description={panel.description}
+                              name={panel.plugin.name}
+                              options={panel.plugin.options}
+                              setDetails={setDetails}
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className="kobsio-hide-scrollbar"
+                            style={
+                              row.size !== undefined && row.size === -1
+                                ? undefined
+                                : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
+                            }
+                          ></div>
+                        )}
+                      </div>
+                    )}
+                  </InView>
+                )}
               </GridItem>
             ))}
           </React.Fragment>
