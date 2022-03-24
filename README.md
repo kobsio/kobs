@@ -11,7 +11,7 @@ kobs brings your metrics, logs, traces and Kubernetes into one place, to provide
 
 ## Features
 
-- **Multi-Cluster Support:** kobs has built-in multi cluster support. The clusters are configured via the available [providers](https://kobs.io/configuration/clusters/#provider).
+- **Multi-Cluster Support:** kobs has built-in multi cluster support. The clusters are configured via the available [providers](https://kobs.io/main/configuration/clusters/#provider).
 - **Manage all your Kubernetes Resources:** All major resources like Deployments, StatefulSets, DaemonSets, Pods, etc. are supported.
 - **Custom Resource Definitions:** View all Custom Resource Definitions and mange Custom Resources.
 - **Modify Resources:** Edit and delete all available resources or scale your Deployments and StatefulSets.
@@ -39,7 +39,7 @@ kubectl create namespace kobs
 kustomize build github.com/kobsio/kobs/deploy/kustomize | kubectl apply -f -
 ```
 
-More information regarding the [installation](https://kobs.io/installation/helm/) and [configuration](https://kobs.io/configuration/getting-started/) of kobs can be found in the documentation at [kobs.io](https://kobs.io).
+More information regarding the [installation](https://kobs.io/installation/helm/) and [configuration](https://kobs.io/main/configuration/getting-started/) of kobs can be found in the documentation at [kobs.io](https://kobs.io).
 
 You can also try the provided [demo](https://kobs.io/installation/demo/) to have a first look at kobs. After your kobs instance is up and running your can start with creating **[Applications](https://kobs.io/resources/applications/)** and **[Dashboards](https://kobs.io/resources/dashboards/)** for your running services.
 

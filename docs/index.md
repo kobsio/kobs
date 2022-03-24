@@ -8,7 +8,7 @@ kobs brings your metrics, logs, traces and Kubernetes into one place, to provide
 
 ## Features
 
-- **Multi-Cluster Support:** kobs has built-in multi cluster support. The clusters are configured via the available [providers](https://kobs.io/configuration/clusters/#provider).
+- **Multi-Cluster Support:** kobs has built-in multi cluster support. The clusters are configured via the available [providers](https://kobs.io/main/configuration/clusters/#provider).
 - **Manage all your Kubernetes Resources:** All major resources like Deployments, StatefulSets, DaemonSets, Pods, etc. are supported.
 - **Custom Resource Definitions:** View all Custom Resource Definitions and mange Custom Resources.
 - **Modify Resources:** Edit and delete all available resources or scale your Deployments and StatefulSets.
