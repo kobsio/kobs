@@ -54,7 +54,7 @@ kobs:
   ##
   image:
     repository: kobsio/kobs
-    tag: v0.7.0
+    tag: v0.8.0
     pullPolicy: IfNotPresent
 
   ## Specify additional labels and annotations for the created Pods.
