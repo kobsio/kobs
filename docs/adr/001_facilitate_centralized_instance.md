@@ -3,7 +3,7 @@
 -->
 # ADR001: Facilitate Centralized Instance
 
-* Status: proposed  <!-- [proposed | rejected | accepted | deprecated | … | superseded by [ADR-0005](0005-example.md)] -->
+* Status: accepted  <!-- [proposed | rejected | accepted | deprecated | … | superseded by [ADR-0005](0005-example.md)] -->
 * Date: 2022-04-11 <!-- [YYYY-MM-DD when the decision was last updated] -->
 
 ## Context and Problem Statement
