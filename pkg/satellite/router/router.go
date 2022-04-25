@@ -41,6 +41,9 @@ func NewRouter(config Config, clustersClient clusters.Client) chi.Router {
 			router.Get("/file", router.getFile)
 			router.Post("/file", router.postFile)
 		})
+
+		r.Get("/applications", router.getApplications)
+		r.Get("/application", router.getApplication)
 	})
 
 	return router
