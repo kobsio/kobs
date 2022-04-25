@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/satellite"
+	"github.com/kobsio/kobs/pkg/satellite/router"
 	"github.com/kobsio/kobs/pkg/version"
 	"go.uber.org/zap"
 
@@ -54,6 +55,8 @@ var Cmd = &cobra.Command{
 			log.Fatal(nil, "Could not load clusters", zap.Error(err))
 		}
 
+		clustersRouter := router.NewRouter(cfg.Router, clustersClient)
+
 		pluginsRouter := plugins.Register(clustersClient, cfg.Plugins)
 
 		// Initialize each component and start it in it's own goroutine, so that the main goroutine is only used as
@@ -61,7 +64,7 @@ var Cmd = &cobra.Command{
 		// The satelliteServer handles all requests from a kobs hub and serves the configuration, so the hub knows which
 		// clusters and plugins are available via this satellite instance. The metrics server is used to serve the kobs
 		// metrics.
-		satelliteServer, err := satellite.New(satelliteAddress, satelliteToken, clustersClient, pluginsRouter)
+		satelliteServer, err := satellite.New(satelliteAddress, satelliteToken, clustersRouter, pluginsRouter)
 		if err != nil {
 			log.Fatal(nil, "Could not create satellite server", zap.Error(err))
 		}
