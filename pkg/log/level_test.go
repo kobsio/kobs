@@ -9,24 +9,24 @@ import (
 )
 
 func TestPrint(t *testing.T) {
-	debugLevel := ParseLevel("debug")
+	debugLevel := parseLevel("debug")
 	require.Equal(t, zap.NewAtomicLevelAt(zapcore.DebugLevel), debugLevel)
 
-	infoLevel := ParseLevel("info")
+	infoLevel := parseLevel("info")
 	require.Equal(t, zap.NewAtomicLevelAt(zapcore.InfoLevel), infoLevel)
 
-	warnLevel := ParseLevel("warn")
+	warnLevel := parseLevel("warn")
 	require.Equal(t, zap.NewAtomicLevelAt(zapcore.WarnLevel), warnLevel)
 
-	errorLevel := ParseLevel("error")
+	errorLevel := parseLevel("error")
 	require.Equal(t, zap.NewAtomicLevelAt(zapcore.ErrorLevel), errorLevel)
 
-	fatalLevel := ParseLevel("fatal")
+	fatalLevel := parseLevel("fatal")
 	require.Equal(t, zap.NewAtomicLevelAt(zapcore.FatalLevel), fatalLevel)
 
-	panicLevel := ParseLevel("panic")
+	panicLevel := parseLevel("panic")
 	require.Equal(t, zap.NewAtomicLevelAt(zapcore.PanicLevel), panicLevel)
 
-	defaultLevel := ParseLevel("default")
+	defaultLevel := parseLevel("default")
 	require.Equal(t, zap.NewAtomicLevelAt(zapcore.InfoLevel), defaultLevel)
 }

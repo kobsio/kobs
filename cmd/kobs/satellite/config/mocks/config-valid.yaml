@@ -1,0 +1,5 @@
+clusters:
+  providers:
+    - provider: kubeconfig
+      kubeconfig:
+        path: ${HOME}/.kube/config

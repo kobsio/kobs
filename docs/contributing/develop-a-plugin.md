@@ -94,7 +94,7 @@ func Register(clustersClient clusters.Client, plugins *plugin.Plugins, config Co
         "net/http"
 
         "github.com/kobsio/kobs/pkg/api/clusters"
-        "github.com/kobsio/kobs/pkg/api/middleware/errresponse"
+        "github.com/kobsio/kobs/pkg/middleware/errresponse"
         "github.com/kobsio/kobs/pkg/api/plugins/plugin"
         "github.com/kobsio/kobs/pkg/log"
 

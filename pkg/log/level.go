@@ -5,8 +5,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// ParseLevel parses the give string for the log level and returns the corresponding log level for zap.
-func ParseLevel(level string) zap.AtomicLevel {
+// parseLevel parses the give string for the log level and returns the corresponding log level for zap.
+func parseLevel(level string) zap.AtomicLevel {
 	switch level {
 	case "debug":
 		return zap.NewAtomicLevelAt(zapcore.DebugLevel)

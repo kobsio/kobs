@@ -15,14 +15,21 @@
       ]
     },
     {
-      "name": "Chrome",
+      "name": "App",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/app/src",
-      "sourceMapPathOverrides": {
-        "webpack:///src/*": "${webRoot}/*"
-      }
+      "sourceMaps": true
+    },
+    {
+      "name": "Plugin",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3001",
+      "webRoot": "${workspaceFolder}/app/src",
+      "sourceMaps": true
     }
+
   ]
 }

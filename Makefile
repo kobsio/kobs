@@ -30,16 +30,16 @@ generate: generate-crds
 .PHONY: generate-crds
 generate-crds:
 	for crd in $(CRDS); do \
-		${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/api/clients/$$crd github.com/kobsio/kobs/pkg/api/apis $$crd:v1 --output-base ./tmp; \
-		rm -rf ./pkg/api/apis/$$crd/v1/zz_generated.deepcopy.go; \
-		rm -rf ./pkg/api/clients/$$crd/clientset; \
-		rm -rf ./pkg/api/clients/$$crd/informers; \
-		rm -rf ./pkg/api/clients/$$crd/listers; \
-		mkdir -p ./pkg/api/clients/$$crd; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/api/apis/$$crd/v1/zz_generated.deepcopy.go ./pkg/api/apis/$$crd/v1; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/clientset ./pkg/api/clients/$$crd/clientset; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/informers ./pkg/api/clients/$$crd/informers; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/api/clients/$$crd/listers ./pkg/api/clients/$$crd/listers; \
+		${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/kube/clients/$$crd github.com/kobsio/kobs/pkg/kube/apis $$crd:v1 --output-base ./tmp; \
+		rm -rf ./pkg/kube/apis/$$crd/v1/zz_generated.deepcopy.go; \
+		rm -rf ./pkg/kube/clients/$$crd/clientset; \
+		rm -rf ./pkg/kube/clients/$$crd/informers; \
+		rm -rf ./pkg/kube/clients/$$crd/listers; \
+		mkdir -p ./pkg/kube/clients/$$crd; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/kube/apis/$$crd/v1/zz_generated.deepcopy.go ./pkg/kube/apis/$$crd/v1; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/kube/clients/$$crd/clientset ./pkg/kube/clients/$$crd/clientset; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/kube/clients/$$crd/informers ./pkg/kube/clients/$$crd/informers; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/kube/clients/$$crd/listers ./pkg/kube/clients/$$crd/listers; \
 		rm -rf ./tmp; \
 	done
 

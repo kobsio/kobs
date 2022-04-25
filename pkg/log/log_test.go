@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	authContext "github.com/kobsio/kobs/pkg/api/middleware/auth/context"
+	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/stretchr/testify/require"

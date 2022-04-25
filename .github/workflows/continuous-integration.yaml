@@ -51,7 +51,7 @@ jobs:
       - name: Test
         run: |
           make test-coverage
-          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/api/apis" | grep -v "github.com/kobsio/kobs/pkg/api/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
+          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/kube/apis" | grep -v "github.com/kobsio/kobs/pkg/kube/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v2
