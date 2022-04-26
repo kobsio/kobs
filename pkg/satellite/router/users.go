@@ -86,8 +86,8 @@ func (router *Router) getUser(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, user)
 }
 
-// getTeams returns all teams, where a users are a member of.
-func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
+// getUserTeams returns all teams, where a users are a member of.
+func (router *Router) getUserTeams(w http.ResponseWriter, r *http.Request) {
 	var data getTeamsData
 
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -120,8 +120,8 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, teams)
 }
 
-// getTeam returns all users for the given team.
-func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
+// getUserTeam returns all users for the given team.
+func (router *Router) getUserTeam(w http.ResponseWriter, r *http.Request) {
 	teamCluster := r.URL.Query().Get("cluster")
 	teamNamespace := r.URL.Query().Get("namespace")
 	teamName := r.URL.Query().Get("name")

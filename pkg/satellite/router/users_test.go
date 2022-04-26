@@ -120,7 +120,7 @@ func TestGetUser(t *testing.T) {
 	}
 }
 
-func TestGetTeams(t *testing.T) {
+func TestGetUserTeams(t *testing.T) {
 	for _, tt := range []struct {
 		name               string
 		url                string
@@ -168,12 +168,12 @@ func TestGetTeams(t *testing.T) {
 			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
 
 			router := Router{Mux: chi.NewRouter(), clustersClient: mockClustersClient, config: Config{}}
-			router.Get("/teams", router.getTeams)
+			router.Get("/teams", router.getUserTeams)
 
 			req, _ := http.NewRequest(http.MethodPost, tt.url, bytes.NewBuffer(tt.body))
 			w := httptest.NewRecorder()
 
-			router.getTeams(w, req)
+			router.getUserTeams(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
 			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
@@ -181,7 +181,7 @@ func TestGetTeams(t *testing.T) {
 	}
 }
 
-func TestGetTeam(t *testing.T) {
+func TestGetUserTeam(t *testing.T) {
 	for _, tt := range []struct {
 		name               string
 		url                string
@@ -219,12 +219,12 @@ func TestGetTeam(t *testing.T) {
 			tt.prepare(mockClusterClient)
 
 			router := Router{Mux: chi.NewRouter(), clustersClient: mockClustersClient, config: Config{}}
-			router.Get("/team", router.getTeam)
+			router.Get("/team", router.getUserTeam)
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			w := httptest.NewRecorder()
 
-			router.getTeam(w, req)
+			router.getUserTeam(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
 			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
