@@ -78,7 +78,8 @@ Most of the kobs functions are implemented via plugins, which can be found in th
 If you adjust the Custom Resource Definitions for kobs, you must install the Kubernetes [code-generator](https://github.com/kubernetes/code-generator) into your `GOPATH`:
 
 ```sh
-go get k8s.io/code-generator@v0.20.2
+go install k8s.io/code-generator/...@v0.23.6
+go install sigs.k8s.io/controller-tools/...@v0.8.0
 ```
 
 ### Components

@@ -30,7 +30,7 @@ generate: generate-crds
 .PHONY: generate-crds
 generate-crds:
 	for crd in $(CRDS); do \
-		${GOPATH}/src/k8s.io/code-generator/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/kube/clients/$$crd github.com/kobsio/kobs/pkg/kube/apis $$crd:v1 --output-base ./tmp; \
+		./hack/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/kube/clients/$$crd github.com/kobsio/kobs/pkg/kube/apis $$crd:v1 --go-header-file ./hack/boilerplate.go.txt --output-base ./tmp; \
 		rm -rf ./pkg/kube/apis/$$crd/v1/zz_generated.deepcopy.go; \
 		rm -rf ./pkg/kube/clients/$$crd/clientset; \
 		rm -rf ./pkg/kube/clients/$$crd/informers; \
@@ -43,7 +43,7 @@ generate-crds:
 		rm -rf ./tmp; \
 	done
 
-	controller-gen "crd:crdVersions={v1},trivialVersions=true" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
+	controller-gen "crd:crdVersions={v1}" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
 
 	for crd in $(CRDS); do \
 		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
