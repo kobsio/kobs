@@ -46,5 +46,11 @@ func NewRouter(config Config, clustersClient clusters.Client) chi.Router {
 	router.Post("/dashboards", router.getDashboards)
 	router.Post("/dashboard", router.getDashboard)
 
+	router.Get("/users", router.getUsers)
+	router.Get("/user", router.getUser)
+
+	router.Post("/teams", router.getTeams)
+	router.Get("/team", router.getTeam)
+
 	return router
 }
