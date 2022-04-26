@@ -28,23 +28,19 @@ func NewRouter(config Config, clustersClient clusters.Client) chi.Router {
 		clustersClient,
 	}
 
-	router.Route("/clusters", func(r chi.Router) {
-		r.Get("/", router.getClusters)
+	router.Get("/clusters", router.getClusters)
 
-		r.Route("/resources", func(r chi.Router) {
-			router.Get("/", router.getResources)
-			router.Delete("/", router.deleteResource)
-			router.Put("/", router.patchResource)
-			router.Post("/", router.createResource)
-			router.Get("/logs", router.getLogs)
-			router.HandleFunc("/terminal", router.getTerminal)
-			router.Get("/file", router.getFile)
-			router.Post("/file", router.postFile)
-		})
+	router.Get("/resources", router.getResources)
+	router.Delete("/resources", router.deleteResource)
+	router.Put("/resources", router.patchResource)
+	router.Post("/resources", router.createResource)
+	router.Get("/resources/logs", router.getLogs)
+	router.HandleFunc("/resources/terminal", router.getTerminal)
+	router.Get("/resources/file", router.getFile)
+	router.Post("/resources/file", router.postFile)
 
-		r.Get("/applications", router.getApplications)
-		r.Get("/application", router.getApplication)
-	})
+	router.Get("/applications", router.getApplications)
+	router.Get("/application", router.getApplication)
 
 	return router
 }

@@ -22,6 +22,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 
 	var applications []v1application.ApplicationSpec
 	var clusters []cluster.Client
+
 	if len(clusterNames) == 0 {
 		clusters = router.clustersClient.GetClusters()
 		log.Debug(r.Context(), "No clusters defined, will automatically fetch from config")
