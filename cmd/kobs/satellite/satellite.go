@@ -6,21 +6,22 @@ import (
 	"syscall"
 
 	"github.com/kobsio/kobs/cmd/kobs/satellite/config"
-	"github.com/kobsio/kobs/cmd/kobs/satellite/plugins"
 	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/satellite"
+	"github.com/kobsio/kobs/pkg/satellite/plugins"
 	"github.com/kobsio/kobs/pkg/satellite/router"
 	"github.com/kobsio/kobs/pkg/version"
-	"go.uber.org/zap"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 var (
 	satelliteAddress    string
 	satelliteConfigFile string
+	satellitePlugins    string
 	satelliteToken      string
 	metricsAddress      string
 )
@@ -57,14 +58,17 @@ var Cmd = &cobra.Command{
 
 		clustersRouter := router.NewRouter(cfg.Router, clustersClient)
 
-		pluginsRouter := plugins.Register(clustersClient, cfg.Plugins)
+		pluginsClient, err := plugins.NewClient(satellitePlugins, cfg.Plugins, clustersClient)
+		if err != nil {
+			log.Fatal(nil, "Could not initialize plugins client", zap.Error(err))
+		}
 
 		// Initialize each component and start it in it's own goroutine, so that the main goroutine is only used as
 		// listener for terminal signals, to initialize the graceful shutdown of the components.
 		// The satelliteServer handles all requests from a kobs hub and serves the configuration, so the hub knows which
 		// clusters and plugins are available via this satellite instance. The metrics server is used to serve the kobs
 		// metrics.
-		satelliteServer, err := satellite.New(satelliteAddress, satelliteToken, clustersRouter, pluginsRouter)
+		satelliteServer, err := satellite.New(satelliteAddress, satelliteToken, clustersRouter, pluginsClient)
 		if err != nil {
 			log.Fatal(nil, "Could not create satellite server", zap.Error(err))
 		}
@@ -106,6 +110,11 @@ func init() {
 		defaultSatelliteToken = os.Getenv("KOBS_SATELLITE_TOKEN")
 	}
 
+	defaultSatellitePlugins := "plugins"
+	if os.Getenv("KOBS_SATELLITE_PLUGINS") != "" {
+		defaultSatellitePlugins = os.Getenv("KOBS_SATELLITE_PLUGINS")
+	}
+
 	defaultMetricsAddress := ":15222"
 	if os.Getenv("KOBS_METRICS_ADDRESS") != "" {
 		defaultMetricsAddress = os.Getenv("KOBS_METRICS_ADDRESS")
@@ -113,6 +122,7 @@ func init() {
 
 	Cmd.PersistentFlags().StringVar(&satelliteAddress, "satellite.address", defaultSatelliteAddress, "The address, where the satellite is listen on.")
 	Cmd.PersistentFlags().StringVar(&satelliteConfigFile, "satellite.config", defaultSatelliteConfigFile, "Path to the configuration file for the satellite.")
+	Cmd.PersistentFlags().StringVar(&satellitePlugins, "satellite.plugins", defaultSatellitePlugins, "The directory which contains the plugin files.")
 	Cmd.PersistentFlags().StringVar(&satelliteToken, "satellite.token", defaultSatelliteToken, "A token to protect the kobs satellite.")
 	Cmd.PersistentFlags().StringVar(&metricsAddress, "metrics.address", defaultMetricsAddress, "The address, where the metrics server is listen on.")
 }

@@ -28,7 +28,7 @@ func NewRouter(config Config, clustersClient clusters.Client) chi.Router {
 		clustersClient,
 	}
 
-	router.Get("/clusters", router.getClusters)
+	router.Get("/", router.getClusters)
 
 	router.Get("/resources", router.getResources)
 	router.Delete("/resources", router.deleteResource)

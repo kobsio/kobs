@@ -5,7 +5,8 @@ REPO      ?= github.com/kobsio/kobs
 REVISION  ?= $(shell git rev-parse HEAD)
 VERSION   ?= $(shell git describe --tags)
 
-CRDS ?= team application dashboard user
+CRDS    ?= application dashboard team user
+PLUGINS ?= prometheus
 
 .PHONY: build
 build:
@@ -16,20 +17,30 @@ build:
 		-X ${REPO}/pkg/version.BuildDate=${BUILDTIME}" \
 		-o ./bin/kobs ./cmd/kobs;
 
+.PHONY: build-plugins
+build-plugins:
+	@if [ "${PLUGIN}" = "" ]; then \
+		for plugin in $(PLUGINS); do \
+			go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./plugins/$$plugin/cmd; \
+		done; \
+	else \
+		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./plugins/${PLUGIN}/cmd; \
+	fi
+
 .PHONY: test
 test:
-	go test ./cmd/... ./pkg/... ./plugins/...
+	@go test ./cmd/... ./pkg/... ./plugins/...
 
 .PHONY: test-coverage
 test-coverage:
-	go test -coverpkg ./cmd/...,./pkg/...,./plugins/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./plugins/...
+	@go test -coverpkg ./cmd/...,./pkg/...,./plugins/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./plugins/...
 
 .PHONY: generate
 generate: generate-crds
 
 .PHONY: generate-crds
 generate-crds:
-	for crd in $(CRDS); do \
+	@for crd in $(CRDS); do \
 		./hack/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/kube/clients/$$crd github.com/kobsio/kobs/pkg/kube/apis $$crd:v1 --go-header-file ./hack/boilerplate.go.txt --output-base ./tmp; \
 		rm -rf ./pkg/kube/apis/$$crd/v1/zz_generated.deepcopy.go; \
 		rm -rf ./pkg/kube/clients/$$crd/clientset; \
@@ -43,9 +54,9 @@ generate-crds:
 		rm -rf ./tmp; \
 	done
 
-	controller-gen "crd:crdVersions={v1}" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
+	@controller-gen "crd:crdVersions={v1}" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
 
-	for crd in $(CRDS); do \
+	@for crd in $(CRDS); do \
 		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
 	done
 

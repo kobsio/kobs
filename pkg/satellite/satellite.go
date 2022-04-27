@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/middleware/metrics"
 	"github.com/kobsio/kobs/pkg/satellite/middleware/tokenauth"
 	"github.com/kobsio/kobs/pkg/satellite/middleware/user"
+	"github.com/kobsio/kobs/pkg/satellite/plugins"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -59,7 +60,7 @@ func (s *server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(satelliteAddress, satelliteToken string, clustersRouter chi.Router, pluginsRouter chi.Router) (Server, error) {
+func New(satelliteAddress, satelliteToken string, clustersRouter chi.Router, pluginsClient plugins.Client) (Server, error) {
 	router := chi.NewRouter()
 	debug.MountRoutes(router)
 
@@ -78,7 +79,7 @@ func New(satelliteAddress, satelliteToken string, clustersRouter chi.Router, plu
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/clusters", clustersRouter)
-		r.Mount("/plugins", pluginsRouter)
+		r.Mount("/plugins", pluginsClient.GetRouter())
 	})
 
 	return &server{
