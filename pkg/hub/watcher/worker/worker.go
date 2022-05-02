@@ -77,10 +77,6 @@ done:
 
 // add adds a new go routine to the worker pool.
 func (wp *pool) add(nums int64) {
-	if nums <= 0 {
-		return
-	}
-
 	var i int64 = 1
 	for ; i <= nums; i++ {
 		wp.routines++

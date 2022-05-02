@@ -22,10 +22,14 @@ type resource interface {
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
 // specified type and returns it. if the response code is not 200 it returns an error.
 func doRequest[T resource](ctx context.Context, client *http.Client, url, token string) ([]T, error) {
-	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
-	defer cancel()
+	if ctx == nil {
+		return nil, fmt.Errorf("context is nil")
+	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	reqCtx, reqCancel := context.WithTimeout(ctx, 30*time.Second)
+	defer reqCancel()
+
+	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}

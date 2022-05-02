@@ -7,38 +7,54 @@ import (
 	"errors"
 	"fmt"
 
-	"go.uber.org/zap"
-	_ "modernc.org/sqlite"
-
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/log"
+	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
+
+	"go.uber.org/zap"
+	_ "modernc.org/sqlite"
 )
 
 const schema string = `
+  CREATE TABLE IF NOT EXISTS plugins (
+    name VARCHAR(255),
+    type VARCHAR(255),
+    satellite VARCHAR(255),
+    description TEXT,
+    address TEXT,
+    PRIMARY KEY (name, type, satellite)
+  );
+
+  CREATE TABLE IF NOT EXISTS clusters (
+    name VARCHAR(255),
+    satellite VARCHAR(255),
+    PRIMARY KEY (name, satellite)
+  );
+
   CREATE TABLE IF NOT EXISTS specs (
     type VARCHAR(255),
-	cluster VARCHAR(255),
-	namespace VARCHAR(255),
-	name VARCHAR(255),
+    cluster VARCHAR(255),
+    namespace VARCHAR(255),
+    name VARCHAR(255),
     satellite VARCHAR(255),
-	spec TEXT,
-	PRIMARY KEY (type, cluster, namespace, name)
+    spec TEXT,
+    PRIMARY KEY (type, cluster, namespace, name, satellite)
   );
 `
 
-type Config struct {
-	DSNUri string `json:"dsnUri"`
-}
-
 // Client is the interface with all the methods to interact with the store.
 type Client interface {
+	SavePlugins(satellite string, plugins []plugin.Instance) error
+	SaveClusters(satellite string, clusters []string) error
 	SaveApplications(satellite string, applications []applicationv1.ApplicationSpec) error
 	SaveDashboards(satellite string, dashboards []dashboardv1.DashboardSpec) error
 	SaveTeams(satellite string, teams []teamv1.TeamSpec) error
 	SaveUsers(satellite string, users []userv1.UserSpec) error
+	GetPlugins(ctx context.Context) ([]plugin.Instance, error)
+	GetClusters(ctx context.Context) ([]string, error)
 	GetApplicationsBySatellite(satellite string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
 	GetApplicationsByCluster(cluster string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
 	GetApplicationsByNamespace(namespace string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
@@ -58,12 +74,15 @@ type Client interface {
 }
 
 type client struct {
-	config *Config
-	db     *sql.DB
+	db *sql.DB
 }
 
-func NewClient(cfg *Config) (Client, error) {
-	db, err := sql.Open("sqlite", cfg.DSNUri)
+func NewClient(storeType, storeURI string) (Client, error) {
+	if storeType != "sqlite" {
+		return nil, fmt.Errorf("invalid store type")
+	}
+
+	db, err := sql.Open(storeType, storeURI)
 	if err != nil {
 		return nil, err
 	}
@@ -74,32 +93,151 @@ func NewClient(cfg *Config) (Client, error) {
 	}
 
 	return &client{
-		config: cfg,
-		db:     db,
+		db: db,
 	}, nil
 }
 
-//SaveApplications Deletes all applications for the given satellite and insert afterwards all passed applications.
+// SavePlugins deletes all plugins for the given satellite and insert afterwards all passed plugins.
+func (s *client) SavePlugins(satellite string, plugins []plugin.Instance) error {
+	tx, err := s.db.BeginTx(context.Background(), nil)
+	if err != nil {
+		log.Error(nil, "failed to begin transaction", zap.Error(err))
+	}
+	defer tx.Rollback()
+
+	if _, err = tx.Exec("DELETE FROM plugins WHERE satellite=?", satellite); err != nil {
+		log.Error(nil, "failed to delete plugins for satellite", zap.String("satellite", satellite), zap.Error(err))
+		return err
+	}
+
+	insert, err := tx.Prepare("INSERT INTO plugins VALUES (?, ?, ?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	defer insert.Close()
+
+	for _, p := range plugins {
+		_, err = insert.Exec(p.Name, p.Type, satellite, p.Description, p.Address)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		log.Error(nil, "failed to commit transaction", zap.Error(err))
+		return err
+	}
+
+	return nil
+}
+
+// SaveDashboards deletes all clusters for the given satellite and insert afterwards all passed clusters.
+func (s *client) SaveClusters(satellite string, clusters []string) error {
+	tx, err := s.db.BeginTx(context.Background(), nil)
+	if err != nil {
+		log.Error(nil, "failed to begin transaction", zap.Error(err))
+	}
+	defer tx.Rollback()
+
+	if _, err = tx.Exec("DELETE FROM clusters WHERE satellite=?", satellite); err != nil {
+		log.Error(nil, "failed to delete clusters for satellite", zap.String("satellite", satellite), zap.Error(err))
+		return err
+	}
+
+	insert, err := tx.Prepare("INSERT INTO clusters VALUES (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer insert.Close()
+
+	for _, cluster := range clusters {
+		_, err = insert.Exec(cluster, satellite)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		log.Error(nil, "failed to commit transaction", zap.Error(err))
+		return err
+	}
+
+	return nil
+}
+
+// SaveApplications Deletes all applications for the given satellite and insert afterwards all passed applications.
 func (s *client) SaveApplications(satellite string, applications []applicationv1.ApplicationSpec) error {
 	return save(satellite, "application", applications, s)
 }
 
-//SaveDashboards Deletes all dashboards for the given satellite and insert afterwards all passed dashboards.
+// SaveDashboards Deletes all dashboards for the given satellite and insert afterwards all passed dashboards.
 func (s *client) SaveDashboards(satellite string, dashboards []dashboardv1.DashboardSpec) error {
 	return save(satellite, "dashboard", dashboards, s)
 }
 
-//SaveTeams Deletes all teams for the given satellite and insert afterwards all passed teams.
+// SaveTeams Deletes all teams for the given satellite and insert afterwards all passed teams.
 func (s *client) SaveTeams(satellite string, teams []teamv1.TeamSpec) error {
 	return save(satellite, "team", teams, s)
 }
 
-//SaveUsers Deletes all users for the given satellite and insert afterwards all passed users.
+// SaveUsers Deletes all users for the given satellite and insert afterwards all passed users.
 func (s *client) SaveUsers(satellite string, users []userv1.UserSpec) error {
 	return save(satellite, "user", users, s)
 }
 
-//GetApplicationsBySatellite Returns slice of applications for given satellite ordered by name
+func (s *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
+	rows, err := s.db.QueryContext(ctx, "SELECT name, type, description, address FROM plugins")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
+	var instances []plugin.Instance
+
+	for rows.Next() {
+		var instance plugin.Instance
+		err := rows.Scan(&instance.Name, &instance.Type, &instance.Description, &instance.Address)
+		if err != nil {
+			return nil, err
+		}
+
+		instances = append(instances, instance)
+	}
+
+	return instances, nil
+}
+
+func (s *client) GetClusters(ctx context.Context) ([]string, error) {
+	rows, err := s.db.QueryContext(ctx, "SELECT name FROM clusters")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
+	var clusters []string
+
+	for rows.Next() {
+		var cluster string
+		err := rows.Scan(&cluster)
+		if err != nil {
+			return nil, err
+		}
+
+		clusters = append(clusters, cluster)
+	}
+
+	return clusters, nil
+}
+
+// GetApplicationsBySatellite Returns slice of applications for given satellite ordered by name
 func (s *client) GetApplicationsBySatellite(satellite string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
 	if satellite == "" {
 		return []applicationv1.ApplicationSpec{}, errors.New("param satellite can not be empty")
@@ -113,7 +251,7 @@ func (s *client) GetApplicationsBySatellite(satellite string, limit, offset int)
 	return apps, nil
 }
 
-//GetApplicationsByCluster Returns slice of applications for given cluster ordered by name
+// GetApplicationsByCluster Returns slice of applications for given cluster ordered by name
 func (s *client) GetApplicationsByCluster(cluster string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
 	if cluster == "" {
 		return []applicationv1.ApplicationSpec{}, errors.New("param cluster can not be empty")
@@ -127,7 +265,7 @@ func (s *client) GetApplicationsByCluster(cluster string, limit, offset int) ([]
 	return apps, nil
 }
 
-//GetApplicationsByNamespace Returns slice of applications for given namespace ordered by name
+// GetApplicationsByNamespace Returns slice of applications for given namespace ordered by name
 func (s *client) GetApplicationsByNamespace(namespace string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
 	if namespace == "" {
 		return []applicationv1.ApplicationSpec{}, errors.New("param namespace can not be empty")
@@ -141,7 +279,7 @@ func (s *client) GetApplicationsByNamespace(namespace string, limit, offset int)
 	return apps, nil
 }
 
-//GetApplication Returns a single application by its primary key
+// GetApplication Returns a single application by its primary key
 func (s *client) GetApplication(cluster, namespace, name string) (applicationv1.ApplicationSpec, error) {
 	application := applicationv1.ApplicationSpec{}
 	err := s.getSpec("application", cluster, namespace, name, &application)
@@ -151,7 +289,7 @@ func (s *client) GetApplication(cluster, namespace, name string) (applicationv1.
 	return application, nil
 }
 
-//GetDashboardsBySatellite Returns slice of dashboards for given satellite ordered by name
+// GetDashboardsBySatellite Returns slice of dashboards for given satellite ordered by name
 func (s *client) GetDashboardsBySatellite(satellite string, limit, offset int) ([]dashboardv1.DashboardSpec, error) {
 	if satellite == "" {
 		return []dashboardv1.DashboardSpec{}, errors.New("param satellite can not be empty")
@@ -165,7 +303,7 @@ func (s *client) GetDashboardsBySatellite(satellite string, limit, offset int) (
 	return dashboards, nil
 }
 
-//GetDashboardsByCluster Returns slice of dashboards for given cluster ordered by name
+// GetDashboardsByCluster Returns slice of dashboards for given cluster ordered by name
 func (s *client) GetDashboardsByCluster(cluster string, limit, offset int) ([]dashboardv1.DashboardSpec, error) {
 	if cluster == "" {
 		return []dashboardv1.DashboardSpec{}, errors.New("param cluster can not be empty")
@@ -179,7 +317,7 @@ func (s *client) GetDashboardsByCluster(cluster string, limit, offset int) ([]da
 	return dashboards, nil
 }
 
-//GetDashboardsByNamespace Returns slice of dashboards for given namespace ordered by name
+// GetDashboardsByNamespace Returns slice of dashboards for given namespace ordered by name
 func (s *client) GetDashboardsByNamespace(namespace string, limit, offset int) ([]dashboardv1.DashboardSpec, error) {
 	if namespace == "" {
 		return []dashboardv1.DashboardSpec{}, errors.New("param namespace can not be empty")
@@ -193,7 +331,7 @@ func (s *client) GetDashboardsByNamespace(namespace string, limit, offset int) (
 	return dashboards, nil
 }
 
-//GetDashboard Returns a single dashboard by its primary key
+// GetDashboard Returns a single dashboard by its primary key
 func (s *client) GetDashboard(cluster, namespace, name string) (dashboardv1.DashboardSpec, error) {
 	dashboard := dashboardv1.DashboardSpec{}
 	err := s.getSpec("dashboard", cluster, namespace, name, &dashboard)
@@ -203,7 +341,7 @@ func (s *client) GetDashboard(cluster, namespace, name string) (dashboardv1.Dash
 	return dashboard, nil
 }
 
-//GetTeamsBySatellite Returns slice of teams for given satellite ordered by name
+// GetTeamsBySatellite Returns slice of teams for given satellite ordered by name
 func (s *client) GetTeamsBySatellite(satellite string, limit, offset int) ([]teamv1.TeamSpec, error) {
 	if satellite == "" {
 		return []teamv1.TeamSpec{}, errors.New("param satellite can not be empty")
@@ -217,7 +355,7 @@ func (s *client) GetTeamsBySatellite(satellite string, limit, offset int) ([]tea
 	return teams, nil
 }
 
-//GetTeamByCluster Returns slice of teams for given cluster ordered by name
+// GetTeamByCluster Returns slice of teams for given cluster ordered by name
 func (s *client) GetTeamByCluster(cluster string, limit, offset int) ([]teamv1.TeamSpec, error) {
 	if cluster == "" {
 		return []teamv1.TeamSpec{}, errors.New("param cluster can not be empty")
@@ -231,7 +369,7 @@ func (s *client) GetTeamByCluster(cluster string, limit, offset int) ([]teamv1.T
 	return teams, nil
 }
 
-//GetTeamsByNamespace Returns slice of teams for given namespace ordered by name
+// GetTeamsByNamespace Returns slice of teams for given namespace ordered by name
 func (s *client) GetTeamsByNamespace(namespace string, limit, offset int) ([]teamv1.TeamSpec, error) {
 	if namespace == "" {
 		return []teamv1.TeamSpec{}, errors.New("param namespace can not be empty")
@@ -245,7 +383,7 @@ func (s *client) GetTeamsByNamespace(namespace string, limit, offset int) ([]tea
 	return teams, nil
 }
 
-//GetTeam Returns a single team by its primary key
+// GetTeam Returns a single team by its primary key
 func (s *client) GetTeam(cluster, namespace, name string) (teamv1.TeamSpec, error) {
 	team := teamv1.TeamSpec{}
 	err := s.getSpec("team", cluster, namespace, name, &team)
@@ -255,7 +393,7 @@ func (s *client) GetTeam(cluster, namespace, name string) (teamv1.TeamSpec, erro
 	return team, nil
 }
 
-//GetUsersBySatellite Returns slice of users for given satellite ordered by name
+// GetUsersBySatellite Returns slice of users for given satellite ordered by name
 func (s *client) GetUsersBySatellite(satellite string, limit, offset int) ([]userv1.UserSpec, error) {
 	if satellite == "" {
 		return []userv1.UserSpec{}, errors.New("param satellite can not be empty")
@@ -269,7 +407,7 @@ func (s *client) GetUsersBySatellite(satellite string, limit, offset int) ([]use
 	return users, nil
 }
 
-//GetUsersByCluster Returns slice of users for given cluster ordered by name
+// GetUsersByCluster Returns slice of users for given cluster ordered by name
 func (s *client) GetUsersByCluster(cluster string, limit, offset int) ([]userv1.UserSpec, error) {
 	if cluster == "" {
 		return []userv1.UserSpec{}, errors.New("param cluster can not be empty")
@@ -283,7 +421,7 @@ func (s *client) GetUsersByCluster(cluster string, limit, offset int) ([]userv1.
 	return users, nil
 }
 
-//GetUsersByNamespace Returns slice of users for given namespace ordered by name
+// GetUsersByNamespace Returns slice of users for given namespace ordered by name
 func (s *client) GetUsersByNamespace(namespace string, limit, offset int) ([]userv1.UserSpec, error) {
 	if namespace == "" {
 		return []userv1.UserSpec{}, errors.New("param namespace can not be empty")
@@ -297,7 +435,7 @@ func (s *client) GetUsersByNamespace(namespace string, limit, offset int) ([]use
 	return users, nil
 }
 
-//GetUser Returns a single user by its primary key
+// GetUser Returns a single user by its primary key
 func (s *client) GetUser(cluster, namespace, name string) (userv1.UserSpec, error) {
 	user := userv1.UserSpec{}
 	err := s.getSpec("user", cluster, namespace, name, &user)

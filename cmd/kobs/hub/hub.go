@@ -10,6 +10,7 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/hub/config"
 	"github.com/kobsio/kobs/pkg/api/hub"
 	"github.com/kobsio/kobs/pkg/app"
+	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/watcher"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/metrics"
@@ -24,6 +25,8 @@ var (
 	appAssetsDir        string
 	hubAddress          string
 	hubConfigFile       string
+	hubStoreURI         string
+	hubStoreType        string
 	hubWatcherEnabled   bool
 	hubWatcherInterval  time.Duration
 	hubWatcherWorker    int64
@@ -71,9 +74,14 @@ var Cmd = &cobra.Command{
 		// 	log.Fatal(nil, "Could not load plugins", zap.Error(err))
 		// }
 
+		storeClient, err := store.NewClient(hubStoreType, hubStoreURI)
+		if err != nil {
+			log.Fatal(nil, "Could not create store", zap.Error(err))
+		}
+
 		var watcherClient watcher.Client
 		if hubWatcherEnabled {
-			watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, cfg.Satellites)
+			watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, cfg.Satellites, storeClient)
 			if err != nil {
 				log.Fatal(nil, "Could not create watcher", zap.Error(err))
 			}
@@ -145,6 +153,16 @@ func init() {
 		defaultHubConfigFile = os.Getenv("KOBS_HUB_CONFIG")
 	}
 
+	defaultHubStoreType := "sqlite"
+	if os.Getenv("KOBS_HUB_STORE_TYPE") != "" {
+		defaultHubStoreType = os.Getenv("KOBS_HUB_STORE_TYPE")
+	}
+
+	defaultHubStoreURI := "file::memory:?cache=shared"
+	if os.Getenv("KOBS_HUB_STORE_URI") != "" {
+		defaultHubStoreURI = os.Getenv("KOBS_HUB_STORE_URI")
+	}
+
 	defaultHubWatcherInterval := 300 * time.Second
 	if os.Getenv("KOBS_HUB_WATCHER_INTERVAL") != "" {
 		defaultHubWatcherIntervalEnv := os.Getenv("KOBS_HUB_WATCHER_INTERVAL")
@@ -193,6 +211,8 @@ func init() {
 	Cmd.PersistentFlags().StringVar(&appAssetsDir, "app.assets", defaultAppAssetsDir, "The location of the assets directory.")
 	Cmd.PersistentFlags().StringVar(&hubAddress, "hub.address", defaultHubAddress, "The address, where the hub is listen on.")
 	Cmd.PersistentFlags().StringVar(&hubConfigFile, "hub.config", defaultHubConfigFile, "Path to the configuration file for the hub.")
+	Cmd.PersistentFlags().StringVar(&hubStoreType, "hub.store.type", defaultHubStoreType, "The database type, which should be used for the store.")
+	Cmd.PersistentFlags().StringVar(&hubStoreURI, "hub.store.uri", defaultHubStoreURI, "The URI for the store.")
 	Cmd.PersistentFlags().BoolVar(&hubWatcherEnabled, "hub.watcher.enabled", true, "Enable / disable the watcher.")
 	Cmd.PersistentFlags().DurationVar(&hubWatcherInterval, "hub.watcher.interval", defaultHubWatcherInterval, "The interval for the watcher to sync the satellite configuration.")
 	Cmd.PersistentFlags().Int64Var(&hubWatcherWorker, "hub.watcher.worker", defaultHubWatcherWorker, "The number of parallel sync processes for the watcher.")
