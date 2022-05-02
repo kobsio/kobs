@@ -4,14 +4,14 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/kobsio/kobs/pkg/kube/clusters"
+	"github.com/kobsio/kobs/pkg/hub/watcher/satellite"
 
 	"sigs.k8s.io/yaml"
 )
 
 // Config is the complete configuration for kobs.
 type Config struct {
-	Clusters clusters.Config `json:"clusters"`
+	Satellites []satellite.Config `json:"satellites"`
 }
 
 // Load the configuration for kobs. Most of the configuration options are available as command-line flag, but we also

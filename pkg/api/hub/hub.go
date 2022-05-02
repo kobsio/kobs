@@ -77,7 +77,7 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		r.Use(userAuth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
-		r.Mount("/plugins", pluginsRouter)
+		// r.Mount("/plugins", pluginsRouter)
 	})
 
 	return &Server{

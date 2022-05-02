@@ -1,15 +1,16 @@
 package hub
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/kobsio/kobs/cmd/kobs/hub/config"
 	"github.com/kobsio/kobs/pkg/api/hub"
 	"github.com/kobsio/kobs/pkg/app"
+	"github.com/kobsio/kobs/pkg/hub/watcher"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/version"
@@ -23,7 +24,9 @@ var (
 	appAssetsDir        string
 	hubAddress          string
 	hubConfigFile       string
-	hubSyncInterval     time.Duration
+	hubWatcherEnabled   bool
+	hubWatcherInterval  time.Duration
+	hubWatcherWorker    int64
 	metricsAddress      string
 	authEnabled         bool
 	authHeaderUser      string
@@ -52,7 +55,6 @@ var Cmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(nil, "Could not load configuration file", zap.Error(err), zap.String("config", hubConfigFile))
 		}
-		fmt.Println(cfg)
 
 		// TODO: Add "sync satellites" process, which is responsible for retrieving the configuration from all
 		// satellites and sets all plugins and clusters.
@@ -68,6 +70,15 @@ var Cmd = &cobra.Command{
 		// if err != nil {
 		// 	log.Fatal(nil, "Could not load plugins", zap.Error(err))
 		// }
+
+		var watcherClient watcher.Client
+		if hubWatcherEnabled {
+			watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, cfg.Satellites)
+			if err != nil {
+				log.Fatal(nil, "Could not create watcher", zap.Error(err))
+			}
+			go watcherClient.Watch()
+		}
 
 		// Initialize each component and start it in it's own goroutine, so that the main goroutine is only used as
 		// listener for terminal signals, to initialize the graceful shutdown of the components.
@@ -98,6 +109,13 @@ var Cmd = &cobra.Command{
 		<-done
 		log.Info(nil, "Shutdown kobs hub...")
 
+		if watcherClient != nil {
+			err := watcherClient.Stop()
+			if err != nil {
+				log.Error(nil, "Failed to stop watcher", zap.Error(err))
+			}
+		}
+
 		metricsServer.Stop()
 		appServer.Stop()
 		hubSever.Stop()
@@ -125,6 +143,22 @@ func init() {
 	defaultHubConfigFile := "config.yaml"
 	if os.Getenv("KOBS_HUB_CONFIG") != "" {
 		defaultHubConfigFile = os.Getenv("KOBS_HUB_CONFIG")
+	}
+
+	defaultHubWatcherInterval := 300 * time.Second
+	if os.Getenv("KOBS_HUB_WATCHER_INTERVAL") != "" {
+		defaultHubWatcherIntervalEnv := os.Getenv("KOBS_HUB_WATCHER_INTERVAL")
+		if defaultHubWatcherIntervalEnvParsed, err := time.ParseDuration(defaultHubWatcherIntervalEnv); err != nil {
+			defaultHubWatcherInterval = defaultHubWatcherIntervalEnvParsed
+		}
+	}
+
+	defaultHubWatcherWorker := int64(10)
+	if os.Getenv("KOBS_HUB_WATCHER_WORKER") != "" {
+		defaultHubWatcherWorkerEnv := os.Getenv("KOBS_HUB_WATCHER_WORKER")
+		if defaultHubWatcherWorkerEnvParsed, err := strconv.ParseInt(defaultHubWatcherWorkerEnv, 10, 64); err != nil {
+			defaultHubWatcherWorker = defaultHubWatcherWorkerEnvParsed
+		}
 	}
 
 	defaultMetricsAddress := ":15222"
@@ -159,7 +193,9 @@ func init() {
 	Cmd.PersistentFlags().StringVar(&appAssetsDir, "app.assets", defaultAppAssetsDir, "The location of the assets directory.")
 	Cmd.PersistentFlags().StringVar(&hubAddress, "hub.address", defaultHubAddress, "The address, where the hub is listen on.")
 	Cmd.PersistentFlags().StringVar(&hubConfigFile, "hub.config", defaultHubConfigFile, "Path to the configuration file for the hub.")
-	Cmd.PersistentFlags().DurationVar(&hubSyncInterval, "hub.sync-interval", time.Duration(10*time.Minute), "The sync interval for the hub with the satellites.")
+	Cmd.PersistentFlags().BoolVar(&hubWatcherEnabled, "hub.watcher.enabled", true, "Enable / disable the watcher.")
+	Cmd.PersistentFlags().DurationVar(&hubWatcherInterval, "hub.watcher.interval", defaultHubWatcherInterval, "The interval for the watcher to sync the satellite configuration.")
+	Cmd.PersistentFlags().Int64Var(&hubWatcherWorker, "hub.watcher.worker", defaultHubWatcherWorker, "The number of parallel sync processes for the watcher.")
 	Cmd.PersistentFlags().StringVar(&metricsAddress, "metrics.address", defaultMetricsAddress, "The address, where the metrics server is listen on.")
 	Cmd.PersistentFlags().BoolVar(&authEnabled, "auth.enabled", false, "Enable the authentication and authorization middleware.")
 	Cmd.PersistentFlags().StringVar(&authHeaderUser, "auth.header.user", defaultAuthHeaderUser, "The header, which contains the user id.")
