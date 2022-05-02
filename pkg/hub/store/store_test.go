@@ -22,7 +22,7 @@ func TestStore(t *testing.T) {
 
 	// Test
 	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	store, err := NewStore(&cfg)
+	client, err := NewClient(&cfg)
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -39,10 +39,10 @@ func TestStore(t *testing.T) {
 		Name:      "test-name3",
 	},
 	}
-	err = store.SaveApplications("test-satellite", applications)
+	err = client.SaveApplications("test-satellite", applications)
 	require.NoError(t, err)
 
-	storedApplication, err := store.GetApplication("test-cluster", "test-namespace1", "test-name1")
+	storedApplication, err := client.GetApplication("test-cluster", "test-namespace1", "test-name1")
 	require.NoError(t, err)
 	require.Equal(t, applications[0], storedApplication)
 }
@@ -69,7 +69,7 @@ func TestStore_GetApplicationsBySatellite(t *testing.T) {
 
 	// Test
 	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	store, err := NewStore(&cfg)
+	client, err := NewClient(&cfg)
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -87,11 +87,11 @@ func TestStore_GetApplicationsBySatellite(t *testing.T) {
 	},
 	}
 
-	storedApplications, err := store.GetApplicationsBySatellite("test-satellite", 1, 0)
+	storedApplications, err := client.GetApplicationsBySatellite("test-satellite", 1, 0)
 	require.NoError(t, err)
 	require.Equal(t, applications[0:1:1], storedApplications)
 
-	storedApplications, err = store.GetApplicationsBySatellite("test-satellite", 1, 1)
+	storedApplications, err = client.GetApplicationsBySatellite("test-satellite", 1, 1)
 	require.NoError(t, err)
 	require.Equal(t, applications[1:2:2], storedApplications)
 }
@@ -118,7 +118,7 @@ func TestStore_GetApplicationsByCluster(t *testing.T) {
 
 	// Test
 	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	store, err := NewStore(&cfg)
+	client, err := NewClient(&cfg)
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -136,11 +136,11 @@ func TestStore_GetApplicationsByCluster(t *testing.T) {
 	},
 	}
 
-	storedApplications, err := store.GetApplicationsByCluster("test-cluster", 1, 0)
+	storedApplications, err := client.GetApplicationsByCluster("test-cluster", 1, 0)
 	require.NoError(t, err)
 	require.Equal(t, applications[0:1:1], storedApplications)
 
-	storedApplications, err = store.GetApplicationsByCluster("test-cluster", 1, 1)
+	storedApplications, err = client.GetApplicationsByCluster("test-cluster", 1, 1)
 	require.NoError(t, err)
 	require.Equal(t, applications[1:2:2], storedApplications)
 }
@@ -167,18 +167,18 @@ func TestStore_GetApplicationsByNamespace(t *testing.T) {
 
 	// Test
 	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	store, err := NewStore(&cfg)
+	client, err := NewClient(&cfg)
 	require.NoError(t, err)
 
-	storedApplications, err := store.GetApplicationsByNamespace("test-namespace1", 1, 0)
+	storedApplications, err := client.GetApplicationsByNamespace("test-namespace1", 1, 0)
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedApplications))
 
-	storedApplications, err = store.GetApplicationsByNamespace("test-namespace1", 2, 1)
+	storedApplications, err = client.GetApplicationsByNamespace("test-namespace1", 2, 1)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedApplications))
 
-	storedApplications, err = store.GetApplicationsByNamespace("test-namespace1", 10, 0)
+	storedApplications, err = client.GetApplicationsByNamespace("test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 4, len(storedApplications))
 }
@@ -212,25 +212,25 @@ func TestStore_Dashboards(t *testing.T) {
 
 	// Test
 	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	store, err := NewStore(&cfg)
+	client, err := NewClient(&cfg)
 	require.NoError(t, err)
 
-	err = store.SaveDashboards("test-satellite", dashboards)
+	err = client.SaveDashboards("test-satellite", dashboards)
 	require.NoError(t, err)
 
-	dashboard, err := store.GetDashboard("test-cluster", "test-namespace1", "test-name2")
+	dashboard, err := client.GetDashboard("test-cluster", "test-namespace1", "test-name2")
 	require.NoError(t, err)
 	require.Equal(t, dashboards[1], dashboard)
 
-	actualDashboards, err := store.GetDashboardsByCluster("test-cluster", 10, 0)
+	actualDashboards, err := client.GetDashboardsByCluster("test-cluster", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualDashboards))
 
-	actualDashboards, err = store.GetDashboardsByNamespace("test-namespace1", 10, 0)
+	actualDashboards, err = client.GetDashboardsByNamespace("test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(actualDashboards))
 
-	actualDashboards, err = store.GetDashboardsBySatellite("test-satellite", 10, 0)
+	actualDashboards, err = client.GetDashboardsBySatellite("test-satellite", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualDashboards))
 }
@@ -264,25 +264,25 @@ func TestStore_Teams(t *testing.T) {
 
 	// Test
 	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	store, err := NewStore(&cfg)
+	client, err := NewClient(&cfg)
 	require.NoError(t, err)
 
-	err = store.SaveTeams("test-satellite", teams)
+	err = client.SaveTeams("test-satellite", teams)
 	require.NoError(t, err)
 
-	team, err := store.GetTeam("test-cluster", "test-namespace1", "test-name2")
+	team, err := client.GetTeam("test-cluster", "test-namespace1", "test-name2")
 	require.NoError(t, err)
 	require.Equal(t, teams[1], team)
 
-	actualTeams, err := store.GetTeamByCluster("test-cluster", 10, 0)
+	actualTeams, err := client.GetTeamByCluster("test-cluster", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualTeams))
 
-	actualTeams, err = store.GetTeamsByNamespace("test-namespace1", 10, 0)
+	actualTeams, err = client.GetTeamsByNamespace("test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(actualTeams))
 
-	actualTeams, err = store.GetTeamsBySatellite("test-satellite", 10, 0)
+	actualTeams, err = client.GetTeamsBySatellite("test-satellite", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualTeams))
 }
@@ -316,25 +316,25 @@ func TestStore_Users(t *testing.T) {
 
 	// Test
 	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	store, err := NewStore(&cfg)
+	client, err := NewClient(&cfg)
 	require.NoError(t, err)
 
-	err = store.SaveUsers("test-satellite", users)
+	err = client.SaveUsers("test-satellite", users)
 	require.NoError(t, err)
 
-	user, err := store.GetUser("test-cluster", "test-namespace1", "test-name2")
+	user, err := client.GetUser("test-cluster", "test-namespace1", "test-name2")
 	require.NoError(t, err)
 	require.Equal(t, users[1], user)
 
-	actualUsers, err := store.GetUsersByCluster("test-cluster", 10, 0)
+	actualUsers, err := client.GetUsersByCluster("test-cluster", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualUsers))
 
-	actualUsers, err = store.GetUsersByNamespace("test-namespace1", 10, 0)
+	actualUsers, err = client.GetUsersByNamespace("test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(actualUsers))
 
-	actualUsers, err = store.GetUsersBySatellite("test-satellite", 10, 0)
+	actualUsers, err = client.GetUsersBySatellite("test-satellite", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualUsers))
 }
