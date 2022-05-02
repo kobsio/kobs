@@ -34,3 +34,4 @@ yarn-error.log*
 /config*.yaml
 /test.yaml
 /values.yaml
+/pkg/hub/store/test.db
