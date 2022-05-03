@@ -1,19 +1,60 @@
 package store
 
 import (
+	"context"
 	"database/sql"
+	"testing"
+
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
+
+func TestStore_Plugins(t *testing.T) {
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	require.NoError(t, err)
+
+	instances := []plugin.Instance{{
+		Name:        "plugin1",
+		Type:        "prometheus",
+		Description: "",
+		Address:     "",
+	}, {
+		Name:        "plugin2",
+		Type:        "prometheus",
+		Description: "description for prometheus",
+		Address:     "https://prometheus.kobs.io",
+	}}
+
+	err = client.SavePlugins("test.satellite", instances)
+	require.NoError(t, err)
+
+	storedInstances, err := client.GetPlugins(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, instances, storedInstances)
+}
+
+func TestStore_GetClusters(t *testing.T) {
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	require.NoError(t, err)
+
+	clusters := []string{"cluster1", "cluster2"}
+
+	err = client.SaveClusters("test-satellite", clusters)
+	require.NoError(t, err)
+
+	storedClusters, err := client.GetClusters(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, clusters, storedClusters)
+}
 
 func TestStore(t *testing.T) {
 
 	// Connect to DB and wipe all data
-	db, err := sql.Open("sqlite", "file:./test.db?cache=shared")
+	db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	if err != nil {
 		t.FailNow()
 	}
@@ -21,8 +62,7 @@ func TestStore(t *testing.T) {
 	_, _ = db.Exec("DROP TABLE specs")
 
 	// Test
-	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	client, err := NewClient(&cfg)
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -49,7 +89,7 @@ func TestStore(t *testing.T) {
 
 func TestStore_GetApplicationsBySatellite(t *testing.T) {
 	// Prepare
-	db, err := sql.Open("sqlite", "file:./test.db?cache=shared")
+	db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	if err != nil {
 		t.FailNow()
 	}
@@ -68,8 +108,7 @@ func TestStore_GetApplicationsBySatellite(t *testing.T) {
 		"")
 
 	// Test
-	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	client, err := NewClient(&cfg)
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -98,7 +137,7 @@ func TestStore_GetApplicationsBySatellite(t *testing.T) {
 
 func TestStore_GetApplicationsByCluster(t *testing.T) {
 	// Prepare
-	db, err := sql.Open("sqlite", "file:./test.db?cache=shared")
+	db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	if err != nil {
 		t.FailNow()
 	}
@@ -117,8 +156,7 @@ func TestStore_GetApplicationsByCluster(t *testing.T) {
 		"")
 
 	// Test
-	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	client, err := NewClient(&cfg)
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -147,7 +185,7 @@ func TestStore_GetApplicationsByCluster(t *testing.T) {
 
 func TestStore_GetApplicationsByNamespace(t *testing.T) {
 	// Prepare
-	db, err := sql.Open("sqlite", "file:./test.db?cache=shared")
+	db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	if err != nil {
 		t.FailNow()
 	}
@@ -166,8 +204,7 @@ func TestStore_GetApplicationsByNamespace(t *testing.T) {
 		"")
 
 	// Test
-	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	client, err := NewClient(&cfg)
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	storedApplications, err := client.GetApplicationsByNamespace("test-namespace1", 1, 0)
@@ -185,7 +222,7 @@ func TestStore_GetApplicationsByNamespace(t *testing.T) {
 
 func TestStore_Dashboards(t *testing.T) {
 	// Prepare
-	db, err := sql.Open("sqlite", "file:./test.db?cache=shared")
+	db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	if err != nil {
 		t.FailNow()
 	}
@@ -211,8 +248,7 @@ func TestStore_Dashboards(t *testing.T) {
 	}
 
 	// Test
-	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	client, err := NewClient(&cfg)
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	err = client.SaveDashboards("test-satellite", dashboards)
@@ -237,7 +273,7 @@ func TestStore_Dashboards(t *testing.T) {
 
 func TestStore_Teams(t *testing.T) {
 	// Prepare
-	db, err := sql.Open("sqlite", "file:./test.db?cache=shared")
+	db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	if err != nil {
 		t.FailNow()
 	}
@@ -263,8 +299,7 @@ func TestStore_Teams(t *testing.T) {
 	}
 
 	// Test
-	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	client, err := NewClient(&cfg)
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	err = client.SaveTeams("test-satellite", teams)
@@ -289,7 +324,7 @@ func TestStore_Teams(t *testing.T) {
 
 func TestStore_Users(t *testing.T) {
 	// Prepare
-	db, err := sql.Open("sqlite", "file:./test.db?cache=shared")
+	db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	if err != nil {
 		t.FailNow()
 	}
@@ -315,8 +350,7 @@ func TestStore_Users(t *testing.T) {
 	}
 
 	// Test
-	cfg := Config{DSNUri: "file:./test.db?cache=shared"}
-	client, err := NewClient(&cfg)
+	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	err = client.SaveUsers("test-satellite", users)
