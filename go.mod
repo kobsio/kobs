@@ -11,6 +11,8 @@ require (
 	github.com/prometheus/client_golang v1.12.0
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
+	github.com/timshannon/bolthold v0.0.0-20210913165410-232392fc8a6a
+	go.etcd.io/bbolt v1.3.6
 	go.uber.org/zap v1.20.0
 	k8s.io/api v0.23.2
 	k8s.io/apiextensions-apiserver v0.23.2

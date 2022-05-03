@@ -1,4 +1,4 @@
-package store
+package sqlite
 
 import (
 	"context"
@@ -10,11 +10,12 @@ import (
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
+
 	"github.com/stretchr/testify/require"
 )
 
 func TestStore_Plugins(t *testing.T) {
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	instances := []plugin.Instance{{
@@ -38,7 +39,7 @@ func TestStore_Plugins(t *testing.T) {
 }
 
 func TestStore_GetClusters(t *testing.T) {
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	clusters := []string{"cluster1", "cluster2"}
@@ -62,7 +63,7 @@ func TestStore(t *testing.T) {
 	_, _ = db.Exec("DROP TABLE specs")
 
 	// Test
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -108,7 +109,7 @@ func TestStore_GetApplicationsBySatellite(t *testing.T) {
 		"")
 
 	// Test
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -156,7 +157,7 @@ func TestStore_GetApplicationsByCluster(t *testing.T) {
 		"")
 
 	// Test
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	applications := []applicationv1.ApplicationSpec{{
@@ -204,7 +205,7 @@ func TestStore_GetApplicationsByNamespace(t *testing.T) {
 		"")
 
 	// Test
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	storedApplications, err := client.GetApplicationsByNamespace("test-namespace1", 1, 0)
@@ -248,7 +249,7 @@ func TestStore_Dashboards(t *testing.T) {
 	}
 
 	// Test
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	err = client.SaveDashboards("test-satellite", dashboards)
@@ -299,7 +300,7 @@ func TestStore_Teams(t *testing.T) {
 	}
 
 	// Test
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	err = client.SaveTeams("test-satellite", teams)
@@ -350,7 +351,7 @@ func TestStore_Users(t *testing.T) {
 	}
 
 	// Test
-	client, err := NewClient("sqlite", "file::memory:?cache=shared")
+	client, err := NewClient("file::memory:?cache=shared")
 	require.NoError(t, err)
 
 	err = client.SaveUsers("test-satellite", users)
