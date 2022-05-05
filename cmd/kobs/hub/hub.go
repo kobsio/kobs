@@ -10,6 +10,7 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/hub/config"
 	"github.com/kobsio/kobs/pkg/app"
 	"github.com/kobsio/kobs/pkg/hub"
+	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/watcher"
 	"github.com/kobsio/kobs/pkg/log"
@@ -65,6 +66,11 @@ var Cmd = &cobra.Command{
 		// The store is then passed to the watcher. The watcher is used to get the resources from the satellites in a
 		// preconfigured interval and to pass them to the store. To watch the resources we start the "Watch" process in
 		// a new goroutine.
+		satellitesClient, err := satellites.NewClient(cfg.Satellites)
+		if err != nil {
+			log.Fatal(nil, "Could not create satellites client", zap.Error(err))
+		}
+
 		storeClient, err := store.NewClient(hubStoreType, hubStoreURI)
 		if err != nil {
 			log.Fatal(nil, "Could not create store", zap.Error(err))
@@ -72,7 +78,7 @@ var Cmd = &cobra.Command{
 
 		var watcherClient watcher.Client
 		if hubWatcherEnabled {
-			watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, cfg.Satellites, storeClient)
+			watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, satellitesClient, storeClient)
 			if err != nil {
 				log.Fatal(nil, "Could not create watcher", zap.Error(err))
 			}
@@ -83,7 +89,7 @@ var Cmd = &cobra.Command{
 		// listener for terminal signals, to initialize the graceful shutdown of the components.
 		// The hubServer handles all requests from the kobs ui, which is served via the appServer. The metrics server is
 		// used to serve the kobs metrics.
-		hubSever, err := hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient)
+		hubSever, err := hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, satellitesClient, storeClient)
 		if err != nil {
 			log.Fatal(nil, "Could not create hub server", zap.Error(err))
 		}

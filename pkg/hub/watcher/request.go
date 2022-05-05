@@ -35,7 +35,7 @@ func doRequest[T resource](ctx context.Context, client *http.Client, url, token 
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	req.Header.Add("X-Kobs-User", "{\"id\": \"kobs.io\"}")
+	req.Header.Add("x-kobs-user", "{\"id\": \"TODO\"}")
 
 	resp, err := client.Do(req)
 	if err != nil {
