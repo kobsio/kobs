@@ -6,8 +6,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "postinstall": "yarn link",
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/",
+    "format": "prettier --check --write ./src/**/*.{js,jsx,ts,tsx}"
   },
   "devDependencies": {
     "@patternfly/patternfly": "^4.185.1",

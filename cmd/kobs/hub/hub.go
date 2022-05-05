@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/cmd/kobs/hub/config"
-	"github.com/kobsio/kobs/pkg/api/hub"
 	"github.com/kobsio/kobs/pkg/app"
+	"github.com/kobsio/kobs/pkg/hub"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/watcher"
 	"github.com/kobsio/kobs/pkg/log"
@@ -59,21 +59,12 @@ var Cmd = &cobra.Command{
 			log.Fatal(nil, "Could not load configuration file", zap.Error(err), zap.String("config", hubConfigFile))
 		}
 
-		// TODO: Add "sync satellites" process, which is responsible for retrieving the configuration from all
-		// satellites and sets all plugins and clusters.
-		//
-		// The sync process is also responsible for keeping the plugins and clustersClient in sync with the satellites
-		// via polling.
-		// clustersClient, err := clusters.NewClientForHub(cfg.Clusters)
-		// if err != nil {
-		// 	log.Fatal(nil, "Could not load clusters", zap.Error(err))
-		// }
-
-		// pluginsRouter, err := plugins.Register(cfg.Clusters)
-		// if err != nil {
-		// 	log.Fatal(nil, "Could not load plugins", zap.Error(err))
-		// }
-
+		// Initialize the store, which is used to "cache" all clusters, plugins, applications, etc. from the satellites.
+		// So that we can directly interact with the store for these resources and do not have to call each satellite
+		// for every single API request.
+		// The store is then passed to the watcher. The watcher is used to get the resources from the satellites in a
+		// preconfigured interval and to pass them to the store. To watch the resources we start the "Watch" process in
+		// a new goroutine.
 		storeClient, err := store.NewClient(hubStoreType, hubStoreURI)
 		if err != nil {
 			log.Fatal(nil, "Could not create store", zap.Error(err))
@@ -92,7 +83,7 @@ var Cmd = &cobra.Command{
 		// listener for terminal signals, to initialize the graceful shutdown of the components.
 		// The hubServer handles all requests from the kobs ui, which is served via the appServer. The metrics server is
 		// used to serve the kobs metrics.
-		hubSever, err := hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil, nil)
+		hubSever, err := hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient)
 		if err != nil {
 			log.Fatal(nil, "Could not create hub server", zap.Error(err))
 		}

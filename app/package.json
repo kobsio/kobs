@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "postinstall": "yarn link @kobsio/shared",
     "build": "webpack --config webpack.prod.js",
     "start": "webpack serve --open --config webpack.dev.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/",

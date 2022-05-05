@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/kobsio/kobs/pkg/kube/clusters"
+	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/log"
 	userAuth "github.com/kobsio/kobs/pkg/middleware/auth/user"
 	"github.com/kobsio/kobs/pkg/middleware/debug"
@@ -54,7 +54,7 @@ func (s *Server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authSessionToken string, authSessionInterval time.Duration, clustersClient clusters.Client, pluginsRouter chi.Router) (*Server, error) {
+func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authSessionToken string, authSessionInterval time.Duration, storeClient store.Client) (*Server, error) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
