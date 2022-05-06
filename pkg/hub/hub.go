@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/hub/api/plugins"
+	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/log"
 	userAuth "github.com/kobsio/kobs/pkg/middleware/auth/user"
@@ -54,7 +56,7 @@ func (s *Server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authSessionToken string, authSessionInterval time.Duration, storeClient store.Client) (*Server, error) {
+func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (*Server, error) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -77,7 +79,7 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		r.Use(userAuth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
-		// r.Mount("/plugins", pluginsRouter)
+		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))
 	})
 
 	return &Server{

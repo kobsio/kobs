@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/hub/satellites"
+	"github.com/kobsio/kobs/pkg/hub/satellites/satellite"
 	"github.com/kobsio/kobs/pkg/hub/store"
-	"github.com/kobsio/kobs/pkg/hub/watcher/satellite"
 	"github.com/kobsio/kobs/pkg/hub/watcher/worker"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
@@ -35,11 +36,11 @@ type Client interface {
 // satellites, an interval which defines the time between each sync with the satellites, a worker pool and a store, to
 // save the requested resources.
 type client struct {
-	client      *http.Client
-	interval    time.Duration
-	workerPool  worker.Pool
-	satellites  []satellite.Config
-	storeClient store.Client
+	interval         time.Duration
+	workerPool       worker.Pool
+	httpClient       *http.Client
+	satellitesClient satellites.Client
+	storeClient      store.Client
 }
 
 // Watch triggers the internal watch function in the specified interval. This should be called in a new go routine.
@@ -66,112 +67,112 @@ func (c *client) watch() {
 	startTime := time.Now()
 	ctx := log.ContextWithValue(context.Background(), zap.Time("startTime", startTime))
 
-	for _, s := range c.satellites {
-		go func(s satellite.Config) {
+	for _, s := range c.satellitesClient.GetSatellites() {
+		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				plugins, err := doRequest[plugin.Instance](ctx, c.client, s.Address+"/api/plugins", s.Token)
+				plugins, err := doRequest[plugin.Instance](ctx, c.httpClient, s.GetAddress()+"/api/plugins", s.GetToken())
 				if err != nil {
-					instrument(ctx, s.Name, "plugins", err, startTime)
+					instrument(ctx, s.GetName(), "plugins", err, startTime)
 					return
 				}
 
-				err = c.storeClient.SavePlugins(s.Name, plugins)
+				err = c.storeClient.SavePlugins(s.GetName(), plugins)
 				if err != nil {
-					instrument(ctx, s.Name, "plugins", err, startTime)
+					instrument(ctx, s.GetName(), "plugins", err, startTime)
 					return
 				}
 
-				instrument(ctx, s.Name, "plugins", nil, startTime)
+				instrument(ctx, s.GetName(), "plugins", nil, startTime)
 			}))
 		}(s)
 
-		go func(s satellite.Config) {
+		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				clusters, err := doRequest[string](ctx, c.client, s.Address+"/api/clusters", s.Token)
+				clusters, err := doRequest[string](ctx, c.httpClient, s.GetAddress()+"/api/clusters", s.GetToken())
 				if err != nil {
-					instrument(ctx, s.Name, "clusters", err, startTime)
+					instrument(ctx, s.GetName(), "clusters", err, startTime)
 					return
 				}
 
-				err = c.storeClient.SaveClusters(s.Name, clusters)
+				err = c.storeClient.SaveClusters(s.GetName(), clusters)
 				if err != nil {
-					instrument(ctx, s.Name, "clusters", err, startTime)
+					instrument(ctx, s.GetName(), "clusters", err, startTime)
 					return
 				}
 
-				instrument(ctx, s.Name, "clusters", nil, startTime)
+				instrument(ctx, s.GetName(), "clusters", nil, startTime)
 			}))
 		}(s)
 
-		go func(s satellite.Config) {
+		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				applications, err := doRequest[applicationv1.ApplicationSpec](ctx, c.client, s.Address+"/api/clusters/applications", s.Token)
+				applications, err := doRequest[applicationv1.ApplicationSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/applications", s.GetToken())
 				if err != nil {
-					instrument(ctx, s.Name, "applications", err, startTime)
+					instrument(ctx, s.GetName(), "applications", err, startTime)
 					return
 				}
 
-				err = c.storeClient.SaveApplications(s.Name, applications)
+				err = c.storeClient.SaveApplications(s.GetName(), applications)
 				if err != nil {
-					instrument(ctx, s.Name, "applications", err, startTime)
+					instrument(ctx, s.GetName(), "applications", err, startTime)
 					return
 				}
 
-				instrument(ctx, s.Name, "applications", nil, startTime)
+				instrument(ctx, s.GetName(), "applications", nil, startTime)
 			}))
 		}(s)
 
-		go func(s satellite.Config) {
+		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				dashboards, err := doRequest[dashboardv1.DashboardSpec](ctx, c.client, s.Address+"/api/clusters/dashboards", s.Token)
+				dashboards, err := doRequest[dashboardv1.DashboardSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/dashboards", s.GetToken())
 				if err != nil {
-					instrument(ctx, s.Name, "dashboards", err, startTime)
+					instrument(ctx, s.GetName(), "dashboards", err, startTime)
 					return
 				}
 
-				err = c.storeClient.SaveDashboards(s.Name, dashboards)
+				err = c.storeClient.SaveDashboards(s.GetName(), dashboards)
 				if err != nil {
-					instrument(ctx, s.Name, "dashboards", err, startTime)
+					instrument(ctx, s.GetName(), "dashboards", err, startTime)
 					return
 				}
 
-				instrument(ctx, s.Name, "dashboards", nil, startTime)
+				instrument(ctx, s.GetName(), "dashboards", nil, startTime)
 			}))
 		}(s)
 
-		go func(s satellite.Config) {
+		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				teams, err := doRequest[teamv1.TeamSpec](ctx, c.client, s.Address+"/api/clusters/teams", s.Token)
+				teams, err := doRequest[teamv1.TeamSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/teams", s.GetToken())
 				if err != nil {
-					instrument(ctx, s.Name, "teams", err, startTime)
+					instrument(ctx, s.GetName(), "teams", err, startTime)
 					return
 				}
 
-				err = c.storeClient.SaveTeams(s.Name, teams)
+				err = c.storeClient.SaveTeams(s.GetName(), teams)
 				if err != nil {
-					instrument(ctx, s.Name, "teams", err, startTime)
+					instrument(ctx, s.GetName(), "teams", err, startTime)
 					return
 				}
 
-				instrument(ctx, s.Name, "teams", nil, startTime)
+				instrument(ctx, s.GetName(), "teams", nil, startTime)
 			}))
 		}(s)
 
-		go func(s satellite.Config) {
+		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				users, err := doRequest[userv1.UserSpec](ctx, c.client, s.Address+"/api/clusters/users", s.Token)
+				users, err := doRequest[userv1.UserSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/users", s.GetToken())
 				if err != nil {
-					instrument(ctx, s.Name, "users", err, startTime)
+					instrument(ctx, s.GetName(), "users", err, startTime)
 					return
 				}
 
-				err = c.storeClient.SaveUsers(s.Name, users)
+				err = c.storeClient.SaveUsers(s.GetName(), users)
 				if err != nil {
-					instrument(ctx, s.Name, "users", err, startTime)
+					instrument(ctx, s.GetName(), "users", err, startTime)
 					return
 				}
 
-				instrument(ctx, s.Name, "users", nil, startTime)
+				instrument(ctx, s.GetName(), "users", nil, startTime)
 			}))
 		}(s)
 	}
@@ -179,20 +180,18 @@ func (c *client) watch() {
 
 // NewClient returns a new watcher. To create the watcher a interval, the number of workers in the worker pool, the
 // satellites and a store is needed.
-func NewClient(interval time.Duration, numberOfWorker int64, satellites []satellite.Config, storeClient store.Client) (Client, error) {
+func NewClient(interval time.Duration, numberOfWorker int64, satellitesClient satellites.Client, storeClient store.Client) (Client, error) {
 	workerPool, err := worker.NewPool(numberOfWorker)
 	if err != nil {
 		return nil, err
 	}
 
 	client := &client{
-		client: &http.Client{
-			Timeout: 60 * time.Second,
-		},
-		interval:    interval,
-		workerPool:  workerPool,
-		satellites:  satellites,
-		storeClient: storeClient,
+		interval:         interval,
+		workerPool:       workerPool,
+		httpClient:       &http.Client{Timeout: 60 * time.Second},
+		satellitesClient: satellitesClient,
+		storeClient:      storeClient,
 	}
 
 	go client.watch()
