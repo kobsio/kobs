@@ -1,4 +1,4 @@
-package user
+package userauth
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
-	"github.com/kobsio/kobs/pkg/hub/middleware/auth/user/jwt"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	"github.com/kobsio/kobs/pkg/hub/middleware/userauth/jwt"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"

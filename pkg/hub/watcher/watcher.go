@@ -2,19 +2,13 @@ package watcher
 
 import (
 	"context"
-	"net/http"
 	"time"
 
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/satellites/satellite"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/watcher/worker"
-	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
-	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
-	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
-	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/log"
-	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
 	"go.uber.org/zap"
 )
@@ -38,7 +32,6 @@ type Client interface {
 type client struct {
 	interval         time.Duration
 	workerPool       worker.Pool
-	httpClient       *http.Client
 	satellitesClient satellites.Client
 	storeClient      store.Client
 }
@@ -65,12 +58,14 @@ func (c *client) Stop() error {
 // each resource (clusters, plugins, applications, dashboards, teams and users) to the worker pool.
 func (c *client) watch() {
 	startTime := time.Now()
-	ctx := log.ContextWithValue(context.Background(), zap.Time("startTime", startTime))
 
 	for _, s := range c.satellitesClient.GetSatellites() {
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				plugins, err := doRequest[plugin.Instance](ctx, c.httpClient, s.GetAddress()+"/api/plugins", s.GetToken())
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
+				plugins, err := s.GetPlugins(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "plugins", err, startTime)
 					return
@@ -88,7 +83,10 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				clusters, err := doRequest[string](ctx, c.httpClient, s.GetAddress()+"/api/clusters", s.GetToken())
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
+				clusters, err := s.GetClusters(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "clusters", err, startTime)
 					return
@@ -106,7 +104,10 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				applications, err := doRequest[applicationv1.ApplicationSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/applications", s.GetToken())
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
+				applications, err := s.GetApplications(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "applications", err, startTime)
 					return
@@ -124,7 +125,10 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				dashboards, err := doRequest[dashboardv1.DashboardSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/dashboards", s.GetToken())
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
+				dashboards, err := s.GetDashboards(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "dashboards", err, startTime)
 					return
@@ -142,7 +146,10 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				teams, err := doRequest[teamv1.TeamSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/teams", s.GetToken())
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
+				teams, err := s.GetTeams(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "teams", err, startTime)
 					return
@@ -160,7 +167,10 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				users, err := doRequest[userv1.UserSpec](ctx, c.httpClient, s.GetAddress()+"/api/clusters/users", s.GetToken())
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
+				users, err := s.GetUsers(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "users", err, startTime)
 					return
@@ -189,7 +199,6 @@ func NewClient(interval time.Duration, numberOfWorker int64, satellitesClient sa
 	client := &client{
 		interval:         interval,
 		workerPool:       workerPool,
-		httpClient:       &http.Client{Timeout: 60 * time.Second},
 		satellitesClient: satellitesClient,
 		storeClient:      storeClient,
 	}

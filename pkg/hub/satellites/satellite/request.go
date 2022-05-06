@@ -1,35 +1,18 @@
-package watcher
+package satellite
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
-	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
-	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
-	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
-	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
-	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 )
-
-type resource interface {
-	plugin.Instance | string | applicationv1.ApplicationSpec | dashboardv1.DashboardSpec | teamv1.TeamSpec | userv1.UserSpec
-}
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
 // specified type and returns it. if the response code is not 200 it returns an error.
-func doRequest[T resource](ctx context.Context, client *http.Client, url, token string) ([]T, error) {
-	if ctx == nil {
-		return nil, fmt.Errorf("context is nil")
-	}
-
-	reqCtx, reqCancel := context.WithTimeout(ctx, 30*time.Second)
-	defer reqCancel()
-
-	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, url, nil)
+func doRequest[T any](ctx context.Context, client *http.Client, url, token string) ([]T, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}

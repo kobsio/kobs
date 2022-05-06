@@ -34,6 +34,8 @@ test:
 .PHONY: test-coverage
 test-coverage:
 	@go test -coverpkg ./cmd/...,./pkg/...,./plugins/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./plugins/...
+	@cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/kube/apis" | grep -v "github.com/kobsio/kobs/pkg/kube/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
+	@go tool cover -html coverage.out -o coverage.html
 
 .PHONY: generate
 generate: generate-crds

@@ -1,10 +1,10 @@
-package user
+package userauth
 
 import (
 	"net/http"
 	"time"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 

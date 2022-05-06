@@ -20,14 +20,70 @@ func TestGetName(t *testing.T) {
 	require.Equal(t, testConfig.Name, client.GetName())
 }
 
-func TestGetAddress(t *testing.T) {
-	client, _ := NewClient(testConfig)
-	require.Equal(t, testConfig.Address, client.GetAddress())
+func TestGetPlugins(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	plugins, err := client.GetPlugins(nil)
+	require.Error(t, err)
+	require.Empty(t, plugins)
 }
 
-func TestGetToken(t *testing.T) {
-	client, _ := NewClient(testConfig)
-	require.Equal(t, testConfig.Token, client.GetToken())
+func TestGetClusters(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	plugins, err := client.GetClusters(nil)
+	require.Error(t, err)
+	require.Empty(t, plugins)
+}
+
+func TestGetApplications(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	plugins, err := client.GetApplications(nil)
+	require.Error(t, err)
+	require.Empty(t, plugins)
+}
+
+func TestGetDashboards(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	plugins, err := client.GetDashboards(nil)
+	require.Error(t, err)
+	require.Empty(t, plugins)
+}
+
+func TestGetTeams(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	plugins, err := client.GetTeams(nil)
+	require.Error(t, err)
+	require.Empty(t, plugins)
+}
+
+func TestGetUsers(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	plugins, err := client.GetUsers(nil)
+	require.Error(t, err)
+	require.Empty(t, plugins)
 }
 
 func TestProxy(t *testing.T) {

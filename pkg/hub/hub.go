@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/hub/api/plugins"
-	userAuth "github.com/kobsio/kobs/pkg/hub/middleware/auth/user"
+	"github.com/kobsio/kobs/pkg/hub/middleware/userauth"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/log"
@@ -76,7 +76,7 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		r.Use(middleware.URLFormat)
 		r.Use(metrics.Metrics)
 		r.Use(httplog.Logger)
-		r.Use(userAuth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil))
+		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))

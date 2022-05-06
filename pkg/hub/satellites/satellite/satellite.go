@@ -1,12 +1,19 @@
 package satellite
 
 import (
+	"context"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 
+	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
 	"go.uber.org/zap"
 )
@@ -19,26 +26,47 @@ type Config struct {
 
 type Client interface {
 	GetName() string
-	GetAddress() string
-	GetToken() string
+	GetPlugins(ctx context.Context) ([]plugin.Instance, error)
+	GetClusters(ctx context.Context) ([]string, error)
+	GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error)
+	GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error)
+	GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error)
+	GetUsers(ctx context.Context) ([]userv1.UserSpec, error)
 	Proxy(w http.ResponseWriter, r *http.Request)
 }
 
 type client struct {
-	config   Config
-	proxyURL *url.URL
+	config     Config
+	httpClient *http.Client
+	proxyURL   *url.URL
 }
 
 func (c *client) GetName() string {
 	return c.config.Name
 }
 
-func (c *client) GetAddress() string {
-	return c.config.Address
+func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
+	return doRequest[plugin.Instance](ctx, c.httpClient, c.config.Address+"/api/plugins", c.config.Token)
 }
 
-func (c *client) GetToken() string {
-	return c.config.Token
+func (c *client) GetClusters(ctx context.Context) ([]string, error) {
+	return doRequest[string](ctx, c.httpClient, c.config.Address+"/api/clusters", c.config.Token)
+}
+
+func (c *client) GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error) {
+	return doRequest[applicationv1.ApplicationSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/applications", c.config.Token)
+}
+
+func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
+	return doRequest[dashboardv1.DashboardSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/dashboards", c.config.Token)
+}
+
+func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
+	return doRequest[teamv1.TeamSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/teams", c.config.Token)
+}
+
+func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
+	return doRequest[userv1.UserSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/users", c.config.Token)
 }
 
 func (c *client) Proxy(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +97,10 @@ func NewClient(config Config) (Client, error) {
 	}
 
 	return &client{
-		config:   config,
+		config: config,
+		httpClient: &http.Client{
+			Timeout: 60 * time.Second,
+		},
 		proxyURL: proxyURL,
 	}, nil
 }

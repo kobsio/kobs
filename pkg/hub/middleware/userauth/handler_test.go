@@ -1,4 +1,4 @@
-package user
+package userauth
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/stretchr/testify/require"
 )
