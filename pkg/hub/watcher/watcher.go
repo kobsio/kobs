@@ -76,7 +76,7 @@ func (c *client) watch() {
 					return
 				}
 
-				err = c.storeClient.SavePlugins(s.GetName(), plugins)
+				err = c.storeClient.SavePlugins(ctx, s.GetName(), plugins)
 				if err != nil {
 					instrument(ctx, s.GetName(), "plugins", err, startTime)
 					return
@@ -94,7 +94,7 @@ func (c *client) watch() {
 					return
 				}
 
-				err = c.storeClient.SaveClusters(s.GetName(), clusters)
+				err = c.storeClient.SaveClusters(ctx, s.GetName(), clusters)
 				if err != nil {
 					instrument(ctx, s.GetName(), "clusters", err, startTime)
 					return
@@ -112,7 +112,7 @@ func (c *client) watch() {
 					return
 				}
 
-				err = c.storeClient.SaveApplications(s.GetName(), applications)
+				err = c.storeClient.SaveApplications(ctx, s.GetName(), applications)
 				if err != nil {
 					instrument(ctx, s.GetName(), "applications", err, startTime)
 					return
@@ -130,7 +130,7 @@ func (c *client) watch() {
 					return
 				}
 
-				err = c.storeClient.SaveDashboards(s.GetName(), dashboards)
+				err = c.storeClient.SaveDashboards(ctx, s.GetName(), dashboards)
 				if err != nil {
 					instrument(ctx, s.GetName(), "dashboards", err, startTime)
 					return
@@ -148,7 +148,7 @@ func (c *client) watch() {
 					return
 				}
 
-				err = c.storeClient.SaveTeams(s.GetName(), teams)
+				err = c.storeClient.SaveTeams(ctx, s.GetName(), teams)
 				if err != nil {
 					instrument(ctx, s.GetName(), "teams", err, startTime)
 					return
@@ -166,7 +166,7 @@ func (c *client) watch() {
 					return
 				}
 
-				err = c.storeClient.SaveUsers(s.GetName(), users)
+				err = c.storeClient.SaveUsers(ctx, s.GetName(), users)
 				if err != nil {
 					instrument(ctx, s.GetName(), "users", err, startTime)
 					return
