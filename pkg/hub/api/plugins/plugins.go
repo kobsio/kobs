@@ -40,6 +40,7 @@ func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {
 func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 	satelliteName := r.Header.Get("x-kobs-satellite")
 	pluginName := r.Header.Get("x-kobs-plugin")
+	userId := r.Header.Get("x-kobs-user")
 
 	satellite := router.satellitesClient.GetSatellite(satelliteName)
 	if satellite == nil {
@@ -49,7 +50,7 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.Header.Add("x-kobs-plugin", pluginName)
-	r.Header.Add("x-kobs-user", "{\"id\": \"TODO\"}")
+	r.Header.Add("x-kobs-user", userId)
 
 	satellite.Proxy(w, r)
 }

@@ -3,19 +3,19 @@ package user
 import (
 	"context"
 	"fmt"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
+	"github.com/kobsio/kobs/pkg/hub/middleware/auth/user/jwt"
+	"github.com/kobsio/kobs/pkg/hub/store"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/kube/clusters/cluster"
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
-	"github.com/kobsio/kobs/pkg/middleware/auth/user/jwt"
-
-	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -45,46 +45,51 @@ func TestGetUser(t *testing.T) {
 		name          string
 		expectedError error
 		expectedUser  authContext.User
-		prepare       func(mockClusterClient *cluster.MockClient)
+		prepare       func(mockStoreClient *store.MockClient)
 	}{
 		{
 			name:          "could not get users",
 			expectedError: fmt.Errorf("could not get users"),
-			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return(nil, fmt.Errorf("could not get users"))
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return(nil, nil)
+			prepare: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "", -1, 0).Return(nil, fmt.Errorf("could not get users"))
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "", -1, 0).Return(nil, nil)
 			},
 		},
 		{
 			name:          "could not get teams",
 			expectedError: fmt.Errorf("could not get teams"),
-			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return(nil, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return(nil, fmt.Errorf("could not get teams"))
+			prepare: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "", -1, 0).Return(nil, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "", -1, 0).Return(nil, fmt.Errorf("could not get teams"))
 			},
 		},
 		{
 			name:          "get user",
 			expectedError: nil,
 			expectedUser:  authContext.User{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io", Profile: userv1.Profile{FullName: "", Email: "", Position: "", Bio: ""}, Teams: []userv1.TeamReference{{Cluster: "", Namespace: "", Name: ""}}, Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
-			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+			prepare: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "", -1, 0).Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
 			},
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
+			mockStoreClient := &store.MockClient{}
+			mockStoreClient.AssertExpectations(t)
+
 			mockClusterClient := &cluster.MockClient{}
 			mockClusterClient.AssertExpectations(t)
+			mockClusterClient.On("GetName").Return("")
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
 			mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
 
-			tt.prepare(mockClusterClient)
+			tt.prepare(mockStoreClient)
 
 			a := Auth{
 				clustersClient: mockClustersClient,
+				storeClient:    mockStoreClient,
 			}
 
 			user, err := a.getUser(context.Background(), "admin@kobs.io", []string{"team1@kobs.io"})
@@ -288,5 +293,5 @@ func TestAuthHandler(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	require.NotEmpty(t, New(false, "", "", "", 10*time.Second, &clusters.MockClient{}))
+	require.NotEmpty(t, New(false, "", "", "", 10*time.Second, &clusters.MockClient{}, &store.MockClient{}))
 }

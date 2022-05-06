@@ -2,9 +2,8 @@ package jwt
 
 import (
 	"fmt"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
 	"time"
-
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
 
 	goJWT "github.com/golang-jwt/jwt/v4"
 )

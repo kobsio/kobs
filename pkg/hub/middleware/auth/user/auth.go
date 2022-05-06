@@ -2,6 +2,9 @@ package user
 
 import (
 	"context"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
+	"github.com/kobsio/kobs/pkg/hub/middleware/auth/user/jwt"
+	"github.com/kobsio/kobs/pkg/hub/store"
 	"net/http"
 	"strings"
 	"time"
@@ -10,8 +13,6 @@ import (
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/log"
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
-	"github.com/kobsio/kobs/pkg/middleware/auth/user/jwt"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
 	"go.uber.org/zap"
@@ -25,6 +26,7 @@ type Auth struct {
 	sessionToken    string
 	sessionInterval time.Duration
 	clustersClient  clusters.Client
+	storeClient     store.Client
 }
 
 func isTeamInTeamIDs(teamID string, teamIDs []string) bool {
@@ -60,7 +62,7 @@ func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (au
 	var teams []teamv1.TeamSpec
 
 	for _, c := range a.clustersClient.GetClusters() {
-		tmpUsers, err := c.GetUsers(ctx, "")
+		tmpUsers, err := a.storeClient.GetUsersByCluster(ctx, c.GetName(), -1, 0)
 		if err != nil {
 			return authContextUser, err
 		}
@@ -68,7 +70,7 @@ func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (au
 		users = append(users, tmpUsers...)
 
 		if teamIDs != nil {
-			tmpTeams, err := c.GetTeams(ctx, "")
+			tmpTeams, err := a.storeClient.GetTeamsByCluster(ctx, c.GetName(), -1, 0)
 			if err != nil {
 				return authContextUser, err
 			}
@@ -236,7 +238,7 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 }
 
 // New returns a new authentication and authorization object.
-func New(enabled bool, headerUser, headerTeams, sessionToken string, sessionInterval time.Duration, clustersClient clusters.Client) *Auth {
+func New(enabled bool, headerUser, headerTeams, sessionToken string, sessionInterval time.Duration, clustersClient clusters.Client, storeClient store.Client) *Auth {
 	return &Auth{
 		enabled:         enabled,
 		headerUser:      headerUser,
@@ -244,5 +246,6 @@ func New(enabled bool, headerUser, headerTeams, sessionToken string, sessionInte
 		sessionToken:    sessionToken,
 		sessionInterval: sessionInterval,
 		clustersClient:  clustersClient,
+		storeClient:     storeClient,
 	}
 }

@@ -1,10 +1,9 @@
 package jwt
 
 import (
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
 	"testing"
 	"time"
-
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
 
 	"github.com/stretchr/testify/require"
 )

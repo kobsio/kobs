@@ -2,19 +2,19 @@ package user
 
 import (
 	"context"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
+	"github.com/kobsio/kobs/pkg/hub/store"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
 	"github.com/kobsio/kobs/pkg/kube/clusters"
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
-
 	"github.com/stretchr/testify/require"
 )
 
 func TestHandler(t *testing.T) {
-	require.NotEmpty(t, Handler(false, "", "", "", 10*time.Second, &clusters.MockClient{}))
+	require.NotEmpty(t, Handler(false, "", "", "", 10*time.Second, &clusters.MockClient{}, &store.MockClient{}))
 }
 
 func TestUserHandler(t *testing.T) {

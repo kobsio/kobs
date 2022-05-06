@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 	"encoding/json"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
 	"net/http"
 
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 )
 
