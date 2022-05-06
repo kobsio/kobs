@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
 
 	"github.com/stretchr/testify/require"
 )

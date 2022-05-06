@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
+
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 )
 

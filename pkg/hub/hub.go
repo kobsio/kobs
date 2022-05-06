@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/hub/api/plugins"
+	userAuth "github.com/kobsio/kobs/pkg/hub/middleware/auth/user"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/log"
-	userAuth "github.com/kobsio/kobs/pkg/middleware/auth/user"
 	"github.com/kobsio/kobs/pkg/middleware/debug"
 	"github.com/kobsio/kobs/pkg/middleware/httplog"
 	"github.com/kobsio/kobs/pkg/middleware/metrics"

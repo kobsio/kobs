@@ -29,7 +29,7 @@ func TestStore_Plugins(t *testing.T) {
 		Address:     "https://prometheus.kobs.io",
 	}}
 
-	err = client.SavePlugins("test.satellite", instances)
+	err = client.SavePlugins(context.Background(), "test.satellite", instances)
 	require.NoError(t, err)
 
 	storedInstances, err := client.GetPlugins(context.Background())
@@ -43,7 +43,7 @@ func TestStore_GetClusters(t *testing.T) {
 
 	clusters := []string{"cluster1", "cluster2"}
 
-	err = client.SaveClusters("test-satellite", clusters)
+	err = client.SaveClusters(context.Background(), "test-satellite", clusters)
 	require.NoError(t, err)
 
 	storedClusters, err := client.GetClusters(context.Background())
@@ -79,10 +79,10 @@ func TestStore(t *testing.T) {
 		Name:      "test-name3",
 	},
 	}
-	err = client.SaveApplications("test-satellite", applications)
+	err = client.SaveApplications(context.Background(), "test-satellite", applications)
 	require.NoError(t, err)
 
-	storedApplication, err := client.GetApplication("test-cluster", "test-namespace1", "test-name1")
+	storedApplication, err := client.GetApplication(context.Background(), "test-cluster", "test-namespace1", "test-name1")
 	require.NoError(t, err)
 	require.Equal(t, applications[0], storedApplication)
 }
@@ -126,11 +126,11 @@ func TestStore_GetApplicationsBySatellite(t *testing.T) {
 	},
 	}
 
-	storedApplications, err := client.GetApplicationsBySatellite("test-satellite", 1, 0)
+	storedApplications, err := client.GetApplicationsBySatellite(context.Background(), "test-satellite", 1, 0)
 	require.NoError(t, err)
 	require.Equal(t, applications[0:1:1], storedApplications)
 
-	storedApplications, err = client.GetApplicationsBySatellite("test-satellite", 1, 1)
+	storedApplications, err = client.GetApplicationsBySatellite(context.Background(), "test-satellite", 1, 1)
 	require.NoError(t, err)
 	require.Equal(t, applications[1:2:2], storedApplications)
 }
@@ -174,11 +174,11 @@ func TestStore_GetApplicationsByCluster(t *testing.T) {
 	},
 	}
 
-	storedApplications, err := client.GetApplicationsByCluster("test-cluster", 1, 0)
+	storedApplications, err := client.GetApplicationsByCluster(context.Background(), "test-cluster", 1, 0)
 	require.NoError(t, err)
 	require.Equal(t, applications[0:1:1], storedApplications)
 
-	storedApplications, err = client.GetApplicationsByCluster("test-cluster", 1, 1)
+	storedApplications, err = client.GetApplicationsByCluster(context.Background(), "test-cluster", 1, 1)
 	require.NoError(t, err)
 	require.Equal(t, applications[1:2:2], storedApplications)
 }
@@ -207,15 +207,15 @@ func TestStore_GetApplicationsByNamespace(t *testing.T) {
 	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
-	storedApplications, err := client.GetApplicationsByNamespace("test-namespace1", 1, 0)
+	storedApplications, err := client.GetApplicationsByNamespace(context.Background(), "test-namespace1", 1, 0)
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedApplications))
 
-	storedApplications, err = client.GetApplicationsByNamespace("test-namespace1", 2, 1)
+	storedApplications, err = client.GetApplicationsByNamespace(context.Background(), "test-namespace1", 2, 1)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedApplications))
 
-	storedApplications, err = client.GetApplicationsByNamespace("test-namespace1", 10, 0)
+	storedApplications, err = client.GetApplicationsByNamespace(context.Background(), "test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 4, len(storedApplications))
 }
@@ -251,22 +251,22 @@ func TestStore_Dashboards(t *testing.T) {
 	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
-	err = client.SaveDashboards("test-satellite", dashboards)
+	err = client.SaveDashboards(context.Background(), "test-satellite", dashboards)
 	require.NoError(t, err)
 
-	dashboard, err := client.GetDashboard("test-cluster", "test-namespace1", "test-name2")
+	dashboard, err := client.GetDashboard(context.Background(), "test-cluster", "test-namespace1", "test-name2")
 	require.NoError(t, err)
 	require.Equal(t, dashboards[1], dashboard)
 
-	actualDashboards, err := client.GetDashboardsByCluster("test-cluster", 10, 0)
+	actualDashboards, err := client.GetDashboardsByCluster(context.Background(), "test-cluster", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualDashboards))
 
-	actualDashboards, err = client.GetDashboardsByNamespace("test-namespace1", 10, 0)
+	actualDashboards, err = client.GetDashboardsByNamespace(context.Background(), "test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(actualDashboards))
 
-	actualDashboards, err = client.GetDashboardsBySatellite("test-satellite", 10, 0)
+	actualDashboards, err = client.GetDashboardsBySatellite(context.Background(), "test-satellite", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualDashboards))
 }
@@ -302,22 +302,22 @@ func TestStore_Teams(t *testing.T) {
 	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
-	err = client.SaveTeams("test-satellite", teams)
+	err = client.SaveTeams(context.Background(), "test-satellite", teams)
 	require.NoError(t, err)
 
-	team, err := client.GetTeam("test-cluster", "test-namespace1", "test-name2")
+	team, err := client.GetTeam(context.Background(), "test-cluster", "test-namespace1", "test-name2")
 	require.NoError(t, err)
 	require.Equal(t, teams[1], team)
 
-	actualTeams, err := client.GetTeamByCluster("test-cluster", 10, 0)
+	actualTeams, err := client.GetTeamsByCluster(context.Background(), "test-cluster", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualTeams))
 
-	actualTeams, err = client.GetTeamsByNamespace("test-namespace1", 10, 0)
+	actualTeams, err = client.GetTeamsByNamespace(context.Background(), "test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(actualTeams))
 
-	actualTeams, err = client.GetTeamsBySatellite("test-satellite", 10, 0)
+	actualTeams, err = client.GetTeamsBySatellite(context.Background(), "test-satellite", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualTeams))
 }
@@ -353,22 +353,22 @@ func TestStore_Users(t *testing.T) {
 	client, err := NewClient("sqlite", "file::memory:?cache=shared")
 	require.NoError(t, err)
 
-	err = client.SaveUsers("test-satellite", users)
+	err = client.SaveUsers(context.Background(), "test-satellite", users)
 	require.NoError(t, err)
 
-	user, err := client.GetUser("test-cluster", "test-namespace1", "test-name2")
+	user, err := client.GetUser(context.Background(), "test-cluster", "test-namespace1", "test-name2")
 	require.NoError(t, err)
 	require.Equal(t, users[1], user)
 
-	actualUsers, err := client.GetUsersByCluster("test-cluster", 10, 0)
+	actualUsers, err := client.GetUsersByCluster(context.Background(), "test-cluster", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualUsers))
 
-	actualUsers, err = client.GetUsersByNamespace("test-namespace1", 10, 0)
+	actualUsers, err = client.GetUsersByNamespace(context.Background(), "test-namespace1", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(actualUsers))
 
-	actualUsers, err = client.GetUsersBySatellite("test-satellite", 10, 0)
+	actualUsers, err = client.GetUsersBySatellite(context.Background(), "test-satellite", 10, 0)
 	require.NoError(t, err)
 	require.Equal(t, 3, len(actualUsers))
 }

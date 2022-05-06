@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"time"
 
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
 	"github.com/kobsio/kobs/pkg/kube/clusters/cluster/terminal"
 	"github.com/kobsio/kobs/pkg/log"
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
 	"github.com/go-chi/render"

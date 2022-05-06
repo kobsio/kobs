@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/auth/user/context"
+	"github.com/kobsio/kobs/pkg/hub/middleware/auth/user/jwt"
+	"github.com/kobsio/kobs/pkg/hub/store"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
-	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/log"
-	authContext "github.com/kobsio/kobs/pkg/middleware/auth/user/context"
-	"github.com/kobsio/kobs/pkg/middleware/auth/user/jwt"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
 	"go.uber.org/zap"
@@ -24,7 +24,7 @@ type Auth struct {
 	headerTeams     string
 	sessionToken    string
 	sessionInterval time.Duration
-	clustersClient  clusters.Client
+	storeClient     store.Client
 }
 
 func isTeamInTeamIDs(teamID string, teamIDs []string) bool {
@@ -50,8 +50,8 @@ func isTeamInTeams(team teamv1.TeamSpec, teams []userv1.TeamReference) bool {
 // getUser returns the user information for the currently authenticated user. For that we are getting all users and
 // teams from all clusters. Then we are checking if the given userID is set for one of the returned users. If this is
 // the case we are setting the user information from this User CR.
-// In the next step we are looping through all the returned teams and adding the user permissions. Since as could happen
-// that the passed in teamIDs contains teams that are not set for a user or there is no User CR for a user, we also add
+// In the next step we are looping through all the returned teams and adding the user permissions. Since it could happen
+// that the passed-in teamIDs contains teams that are not set for a user or there is no User CR for a user, we also add
 // these teams to the list of teams for a user, when it is not already present.
 func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (authContext.User, error) {
 	authContextUser := authContext.User{ID: userID}
@@ -59,8 +59,13 @@ func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (au
 	var users []userv1.UserSpec
 	var teams []teamv1.TeamSpec
 
-	for _, c := range a.clustersClient.GetClusters() {
-		tmpUsers, err := c.GetUsers(ctx, "")
+	clusterNames, err := a.storeClient.GetClusters(ctx)
+	if err != nil {
+		return authContextUser, err
+	}
+
+	for _, c := range clusterNames {
+		tmpUsers, err := a.storeClient.GetUsersByCluster(ctx, c, -1, 0)
 		if err != nil {
 			return authContextUser, err
 		}
@@ -68,7 +73,7 @@ func (a *Auth) getUser(ctx context.Context, userID string, teamIDs []string) (au
 		users = append(users, tmpUsers...)
 
 		if teamIDs != nil {
-			tmpTeams, err := c.GetTeams(ctx, "")
+			tmpTeams, err := a.storeClient.GetTeamsByCluster(ctx, c, -1, 0)
 			if err != nil {
 				return authContextUser, err
 			}
@@ -132,8 +137,8 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			}
 
 			// Get the value of the auth cookie. When we can not read the value of the cookie, we try to create a cookie
-			// for the user. If we found the user or the teams he is part of we set a cookie for the user. If not we
-			// return an unauthorized error.
+			// for the user. If we found the user or the teams the user is part of we set a cookie for the user. If not
+			// we return an unauthorized error.
 			cookie, err := r.Cookie("kobs-auth")
 			if err != nil {
 				log.Warn(r.Context(), "Error while getting \"kobs-auth\" cookie", zap.Error(err))
@@ -196,8 +201,8 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			}
 		} else {
 			// If authentication is disabled, we still check if the request contains a user id, which can be used for a
-			// leightweighted audit loggin. If there is no user id we set a user with a static id, so that we still have
-			// an valid user object which can be used by the plugins to simplify the authorization logic there.
+			// lightweight audit logging. If there is no user id we set a user with a static id, so that we still have
+			// a valid user object which can be used by the plugins to simplify the authorization logic there.
 			if userID == "" {
 				userID = "kobs.io"
 			}
@@ -236,13 +241,13 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 }
 
 // New returns a new authentication and authorization object.
-func New(enabled bool, headerUser, headerTeams, sessionToken string, sessionInterval time.Duration, clustersClient clusters.Client) *Auth {
+func New(enabled bool, headerUser, headerTeams, sessionToken string, sessionInterval time.Duration, storeClient store.Client) *Auth {
 	return &Auth{
 		enabled:         enabled,
 		headerUser:      headerUser,
 		headerTeams:     headerTeams,
 		sessionToken:    sessionToken,
 		sessionInterval: sessionInterval,
-		clustersClient:  clustersClient,
+		storeClient:     storeClient,
 	}
 }
