@@ -26,8 +26,8 @@ var (
 	appAssetsDir        string
 	hubAddress          string
 	hubConfigFile       string
+	hubStoreDriver      string
 	hubStoreURI         string
-	hubStoreType        string
 	hubWatcherEnabled   bool
 	hubWatcherInterval  time.Duration
 	hubWatcherWorker    int64
@@ -71,7 +71,7 @@ var Cmd = &cobra.Command{
 			log.Fatal(nil, "Could not create satellites client", zap.Error(err))
 		}
 
-		storeClient, err := store.NewClient(hubStoreType, hubStoreURI)
+		storeClient, err := store.NewClient(hubStoreDriver, hubStoreURI)
 		if err != nil {
 			log.Fatal(nil, "Could not create store", zap.Error(err))
 		}
@@ -150,9 +150,9 @@ func init() {
 		defaultHubConfigFile = os.Getenv("KOBS_HUB_CONFIG")
 	}
 
-	defaultHubStoreType := "sqlite"
-	if os.Getenv("KOBS_HUB_STORE_TYPE") != "" {
-		defaultHubStoreType = os.Getenv("KOBS_HUB_STORE_TYPE")
+	defaultHubStoreDriver := "sqlite"
+	if os.Getenv("KOBS_HUB_STORE_DRIVER") != "" {
+		defaultHubStoreDriver = os.Getenv("KOBS_HUB_STORE_DRIVER")
 	}
 
 	defaultHubStoreURI := "file::memory:?cache=shared"
@@ -208,7 +208,7 @@ func init() {
 	Cmd.PersistentFlags().StringVar(&appAssetsDir, "app.assets", defaultAppAssetsDir, "The location of the assets directory.")
 	Cmd.PersistentFlags().StringVar(&hubAddress, "hub.address", defaultHubAddress, "The address, where the hub is listen on.")
 	Cmd.PersistentFlags().StringVar(&hubConfigFile, "hub.config", defaultHubConfigFile, "Path to the configuration file for the hub.")
-	Cmd.PersistentFlags().StringVar(&hubStoreType, "hub.store.type", defaultHubStoreType, "The database type, which should be used for the store.")
+	Cmd.PersistentFlags().StringVar(&hubStoreDriver, "hub.store.driver", defaultHubStoreDriver, "The database driver, which should be used for the store.")
 	Cmd.PersistentFlags().StringVar(&hubStoreURI, "hub.store.uri", defaultHubStoreURI, "The URI for the store.")
 	Cmd.PersistentFlags().BoolVar(&hubWatcherEnabled, "hub.watcher.enabled", true, "Enable / disable the watcher.")
 	Cmd.PersistentFlags().DurationVar(&hubWatcherInterval, "hub.watcher.interval", defaultHubWatcherInterval, "The interval for the watcher to sync the satellite configuration.")
