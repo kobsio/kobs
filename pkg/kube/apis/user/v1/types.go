@@ -29,13 +29,13 @@ type UserList struct {
 }
 
 type UserSpec struct {
-	ID          string                  `json:"id,omitempty"`
+	ID          string                  `json:"id,omitempty" boltholdUnique:"UniqueID"`
 	Satellite   string                  `json:"satellite,omitempty"`
 	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
 	Cluster     string                  `json:"cluster,omitempty"`
 	Namespace   string                  `json:"namespace,omitempty"`
 	Name        string                  `json:"name,omitempty"`
-	Email       string                  `json:"email,omitempty"`
+	Email       string                  `json:"email" boltholdIndex:"Email"`
 	Permissions Permissions             `json:"permissions,omitempty"`
 	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
@@ -51,6 +51,7 @@ type Plugin struct {
 }
 
 type Resources struct {
+	Satellites []string `json:"satellites"`
 	Clusters   []string `json:"clusters"`
 	Namespaces []string `json:"namespaces"`
 	Resources  []string `json:"resources"`

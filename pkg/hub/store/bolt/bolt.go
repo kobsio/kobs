@@ -84,7 +84,7 @@ func (c *client) SaveApplications(ctx context.Context, satellite string, applica
 			a.Satellite = satellite
 			a.UpdatedAt = updatedAt
 
-			err := c.store.TxUpsert(tx, a.ID, a)
+			err := c.store.TxUpsert(tx, a.ID, shared.SetSatelliteForApplication(a, satellite))
 			if err != nil {
 				return err
 			}
@@ -105,7 +105,7 @@ func (c *client) SaveDashboards(ctx context.Context, satellite string, dashboard
 			d.Satellite = satellite
 			d.UpdatedAt = updatedAt
 
-			err := c.store.TxUpsert(tx, d.ID, d)
+			err := c.store.TxUpsert(tx, d.ID, shared.SetSatelliteForDashboard(d, satellite))
 			if err != nil {
 				return err
 			}
@@ -126,7 +126,7 @@ func (c *client) SaveTeams(ctx context.Context, satellite string, teams []teamv1
 			t.Satellite = satellite
 			t.UpdatedAt = updatedAt
 
-			err := c.store.TxUpsert(tx, t.ID, t)
+			err := c.store.TxUpsert(tx, t.ID, shared.SetSatelliteForTeam(t, satellite))
 			if err != nil {
 				return err
 			}
@@ -147,7 +147,7 @@ func (c *client) SaveUsers(ctx context.Context, satellite string, users []userv1
 			u.Satellite = satellite
 			u.UpdatedAt = updatedAt
 
-			err := c.store.TxUpsert(tx, u.ID, u)
+			err := c.store.TxUpsert(tx, u.ID, shared.SetSatelliteForUser(u, satellite))
 			if err != nil {
 				return err
 			}

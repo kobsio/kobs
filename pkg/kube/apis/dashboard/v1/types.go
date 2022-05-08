@@ -27,7 +27,7 @@ type DashboardList struct {
 }
 
 type DashboardSpec struct {
-	ID           string        `json:"id,omitempty"`
+	ID           string        `json:"id,omitempty" boltholdUnique:"UniqueID"`
 	Satellite    string        `json:"satellite,omitempty"`
 	UpdatedAt    int64         `json:"updatedAt,omitempty"`
 	Cluster      string        `json:"cluster,omitempty"`
