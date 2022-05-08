@@ -30,6 +30,8 @@ type UserList struct {
 
 type UserSpec struct {
 	ID          string                  `json:"id,omitempty"`
+	Satellite   string                  `json:"satellite,omitempty"`
+	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
 	Cluster     string                  `json:"cluster,omitempty"`
 	Namespace   string                  `json:"namespace,omitempty"`
 	Name        string                  `json:"name,omitempty"`

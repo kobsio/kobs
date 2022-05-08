@@ -98,8 +98,13 @@ spec:
                   - panels
                   type: object
                 type: array
+              satellite:
+                type: string
               title:
                 type: string
+              updatedAt:
+                format: int64
+                type: integer
               variables:
                 items:
                   properties:

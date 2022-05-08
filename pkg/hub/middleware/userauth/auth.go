@@ -35,7 +35,27 @@ type Auth struct {
 func (a *Auth) getUser(ctx context.Context, userEmail string, teamGroups []string) (authContext.User, error) {
 	authContextUser := authContext.User{Email: userEmail}
 
-	// TODO: Get user based on userEmail and teams based on teamGroup from store
+	users, err := a.storeClient.GetUsersByEmail(ctx, userEmail)
+	if err != nil {
+		return authContextUser, err
+	}
+
+	for _, user := range users {
+		authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, user.Permissions.Plugins...)
+		authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, user.Permissions.Resources...)
+	}
+
+	if teamGroups != nil {
+		teams, err := a.storeClient.GetTeamsByGroups(ctx, teamGroups)
+		if err != nil {
+			return authContextUser, err
+		}
+
+		for _, team := range teams {
+			authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, team.Permissions.Plugins...)
+			authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, team.Permissions.Resources...)
+		}
+	}
 
 	return authContextUser, nil
 }
@@ -48,7 +68,11 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		userEmail := r.Header.Get(a.headerUser)
-		teamGroups := strings.Split(r.Header.Get(a.headerTeams), ",")
+
+		var teamGroups []string
+		if r.Header.Get(a.headerTeams) != "" {
+			teamGroups = strings.Split(r.Header.Get(a.headerTeams), ",")
+		}
 
 		// If the authentication / authorization middleware is enabled, we have to check the permissions of the user by
 		// using the provided information from the user and teams header.
@@ -56,7 +80,7 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			// If the request doesn't contain a user id we return an unauthorized error, because at least the user id is
 			// required to perform any kind of authorization.
 			if userEmail == "" {
-				log.Warn(r.Context(), "User ID is missing")
+				log.Warn(r.Context(), "User email is missing")
 				errresponse.Render(w, r, nil, http.StatusUnauthorized, "Unauthorized")
 				return
 			}
@@ -129,7 +153,7 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			// lightweight audit logging. If there is no user id we set a user with a static id, so that we still have
 			// a valid user object which can be used by the plugins to simplify the authorization logic there.
 			if userEmail == "" {
-				userEmail = "kobs.io"
+				userEmail = ""
 			}
 
 			ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{
@@ -139,26 +163,6 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 					Resources: []userv1.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
 				},
 			})
-		}
-
-		// At this point the request context contains a valid user, so if authentication is enabled we have can check at
-		// this point if the user can access a plugin.
-		if a.enabled {
-			urlPaths := strings.Split(r.URL.Path, "/")
-			if len(urlPaths) >= 4 && urlPaths[1] == "api" && urlPaths[2] == "plugins" {
-				user, err := authContext.GetUser(ctx)
-				if err != nil {
-					log.Warn(r.Context(), "User is now allowed to access the plugin", zap.String("plugin", urlPaths[3]))
-					errresponse.Render(w, r, nil, http.StatusForbidden, "Your are not allowed to access the plugin")
-					return
-				}
-
-				if !user.HasPluginAccess(urlPaths[3]) {
-					log.Warn(r.Context(), "User is now allowed to access the plugin", zap.String("plugin", urlPaths[3]))
-					errresponse.Render(w, r, nil, http.StatusForbidden, "Your are not allowed to access the plugin")
-					return
-				}
-			}
 		}
 
 		next.ServeHTTP(w, r.WithContext(ctx))

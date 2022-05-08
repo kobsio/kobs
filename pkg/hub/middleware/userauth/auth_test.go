@@ -26,37 +26,27 @@ func TestGetUser(t *testing.T) {
 		prepare       func(mockStoreClient *store.MockClient)
 	}{
 		{
-			name:          "could not get clusters",
-			expectedError: fmt.Errorf("could not get clusters"),
-			prepare: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return(nil, fmt.Errorf("could not get clusters"))
-			},
-		},
-		{
 			name:          "could not get users",
 			expectedError: fmt.Errorf("could not get users"),
 			prepare: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return(nil, fmt.Errorf("could not get users"))
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return(nil, fmt.Errorf("could not get users"))
 			},
 		},
 		{
 			name:          "could not get teams",
 			expectedError: fmt.Errorf("could not get teams"),
 			prepare: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return(nil, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return(nil, fmt.Errorf("could not get teams"))
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return(nil, nil)
+				mockStoreClient.On("GetTeamsByGroups", mock.Anything, []string{"team1@kobs.io"}).Return(nil, fmt.Errorf("could not get teams"))
 			},
 		},
 		{
 			name:          "get user",
 			expectedError: nil,
-			expectedUser:  authContext.User{Email: "user1@kobs.io", Teams: []string{}, Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
+			expectedUser:  authContext.User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
 			prepare: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByGroups", mock.Anything, []string{"team1@kobs.io"}).Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 	} {
@@ -69,7 +59,7 @@ func TestGetUser(t *testing.T) {
 				storeClient: mockStoreClient,
 			}
 
-			user, err := a.getUser(context.Background(), "admin@kobs.io", []string{"team1@kobs.io"})
+			user, err := a.getUser(context.Background(), "user1@kobs.io", []string{"team1@kobs.io"})
 			if tt.expectedError != nil {
 				require.Error(t, err)
 				require.Equal(t, tt.expectedError, err)
@@ -84,42 +74,58 @@ func TestGetUser(t *testing.T) {
 
 func TestAuthHandler(t *testing.T) {
 	for _, tt := range []struct {
-		name                 string
-		url                  string
-		auth                 Auth
-		expectedStatusCode   int
-		expectedBody         string
-		prepareRequest       func(r *http.Request)
-		prepareClusterClient func(mockStoreClient *store.MockClient)
+		name               string
+		url                string
+		auth               Auth
+		expectedStatusCode int
+		expectedBody       string
+		prepareRequest     func(r *http.Request)
+		prepareStoreClient func(mockStoreClient *store.MockClient)
 	}{
 		{
-			name:                 "auth disabled",
-			auth:                 Auth{enabled: false},
-			expectedStatusCode:   http.StatusOK,
-			expectedBody:         "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":[{\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]},\"rows\":null}\n",
-			prepareRequest:       func(r *http.Request) {},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {},
+			name:               "auth disabled",
+			auth:               Auth{enabled: false},
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "{\"email\":\"\",\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":[{\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}}\n",
+			prepareRequest:     func(r *http.Request) {},
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {},
 		},
 		{
-			name:                 "auth enabled, request without user id",
-			auth:                 Auth{enabled: true},
-			expectedStatusCode:   http.StatusUnauthorized,
-			expectedBody:         "{\"error\":\"Unauthorized\"}\n",
-			prepareRequest:       func(r *http.Request) {},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {},
+			name:               "auth enabled, request without user email",
+			auth:               Auth{enabled: true},
+			expectedStatusCode: http.StatusUnauthorized,
+			expectedBody:       "{\"error\":\"Unauthorized\"}\n",
+			prepareRequest:     func(r *http.Request) {},
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetUsersByEmail", mock.Anything, mock.Anything)
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
+			},
 		},
 		{
-			name:               "auth enabled, request without cookie, getClusters error",
+			name:               "auth enabled, request without cookie, getUser error",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"Unauthorized: could not get clusters\"}\n",
+			expectedBody:       "{\"error\":\"Unauthorized: could not get users\"}\n",
 			prepareRequest: func(r *http.Request) {
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return(nil, fmt.Errorf("could not get clusters"))
-				mockStoreClient.AssertNotCalled(t, "GetUsersByCluster", mock.Anything, "c1", -1, 0)
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByCluster", mock.Anything, "c1", -1, 0)
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return(nil, fmt.Errorf("could not get users"))
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
+			},
+		},
+		{
+			name:               "auth enabled, request without cookie and teams, getUser error",
+			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email", headerTeams: "X-Auth-Request-Groups"},
+			expectedStatusCode: http.StatusUnauthorized,
+			expectedBody:       "{\"error\":\"Unauthorized: could not get teams\"}\n",
+			prepareRequest: func(r *http.Request) {
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
+				r.Header.Add("X-Auth-Request-Groups", "team1@kobs.io")
+			},
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return(nil, nil)
+				mockStoreClient.On("GetTeamsByGroups", mock.Anything, []string{"team1@kobs.io"}).Return(nil, fmt.Errorf("could not get teams"))
 			},
 		},
 		{
@@ -128,43 +134,40 @@ func TestAuthHandler(t *testing.T) {
 			expectedStatusCode: http.StatusUnauthorized,
 			expectedBody:       "{\"error\":\"Unauthorized: invalid session interval\"}\n",
 			prepareRequest: func(r *http.Request) {
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
 			},
 		},
 		{
 			name:               "auth enabled, request without cookie, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"c1\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null},\"rows\":null}\n",
+			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
 			prepareRequest: func(r *http.Request) {
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
 			},
 		},
 
 		{
-			name:               "auth enabled, request with cookie, validate token error, getClusters error",
+			name:               "auth enabled, request with cookie, validate token error, getUser error",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"Unauthorized: could not get clusters\"}\n",
+			expectedBody:       "{\"error\":\"Unauthorized: could not get users\"}\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{}, "sessionToken", 10*time.Second)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return(nil, fmt.Errorf("could not get clusters"))
-				mockStoreClient.AssertNotCalled(t, "GetUsersByCluster", mock.Anything, "", -1, 0)
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByCluster", mock.Anything, "", -1, 0)
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return(nil, fmt.Errorf("could not get users"))
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
 			},
 		},
 		{
@@ -175,77 +178,48 @@ func TestAuthHandler(t *testing.T) {
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{}, "sessionToken", 10*time.Second)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
 			},
 		},
 		{
 			name:               "auth enabled, request with cookie, validate token error, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"c1\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null},\"rows\":null}\n",
+			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{}, "sessionToken", 10*time.Second)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
 			},
 		},
 		{
 			name:               "auth enabled, request with cookie, valid token, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"\",\"namespace\":\"\",\"name\":\"\",\"id\":\"\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null},\"rows\":null}\n",
+			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
 			prepareRequest: func(r *http.Request) {
-				token, _ := jwt.CreateToken(authContext.User{}, "", 10*time.Minute)
+				token, _ := jwt.CreateToken(authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
+				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {},
-		},
-		{
-			name:               "auth enabled, plugin request, forbidden",
-			url:                "/api/plugins/test",
-			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
-			expectedStatusCode: http.StatusForbidden,
-			expectedBody:       "{\"error\":\"Your are not allowed to access the plugin\"}\n",
-			prepareRequest: func(r *http.Request) {
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
-			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
-			},
-		},
-		{
-			name:               "auth enabled, plugin request, allowed",
-			url:                "/api/plugins/test",
-			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"c1\",\"namespace\":\"\",\"name\":\"\",\"id\":\"admin@kobs.io\",\"profile\":{\"fullName\":\"\",\"email\":\"\"},\"teams\":null,\"permissions\":{\"plugins\":[{\"name\":\"*\",\"permissions\":null}],\"resources\":null},\"rows\":null}\n",
-			prepareRequest: func(r *http.Request) {
-				r.Header.Add("X-Auth-Request-Email", "admin@kobs.io")
-			},
-			prepareClusterClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "*"}}}}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+			prepareStoreClient: func(mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetUsersByEmail", mock.Anything, mock.Anything)
+				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
 			},
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 
-			tt.prepareClusterClient(mockStoreClient)
+			tt.prepareStoreClient(mockStoreClient)
 			tt.auth.storeClient = mockStoreClient
 
 			url := "/"

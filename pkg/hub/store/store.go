@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kobsio/kobs/pkg/hub/store/bolt"
+	"github.com/kobsio/kobs/pkg/hub/store/shared"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
@@ -21,23 +22,13 @@ type Client interface {
 	SaveTeams(ctx context.Context, satellite string, teams []teamv1.TeamSpec) error
 	SaveUsers(ctx context.Context, satellite string, users []userv1.UserSpec) error
 	GetPlugins(ctx context.Context) ([]plugin.Instance, error)
-	GetClusters(ctx context.Context) ([]string, error)
-	GetApplicationsBySatellite(ctx context.Context, satellite string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
-	GetApplicationsByCluster(ctx context.Context, cluster string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
-	GetApplicationsByNamespace(ctx context.Context, namespace string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
-	GetApplication(ctx context.Context, cluster, namespace, name string) (applicationv1.ApplicationSpec, error)
-	GetDashboardsBySatellite(ctx context.Context, satellite string, limit, offset int) ([]dashboardv1.DashboardSpec, error)
-	GetDashboardsByCluster(ctx context.Context, cluster string, limit, offset int) ([]dashboardv1.DashboardSpec, error)
-	GetDashboardsByNamespace(ctx context.Context, namespace string, limit, offset int) ([]dashboardv1.DashboardSpec, error)
-	GetDashboard(ctx context.Context, cluster, namespace, name string) (dashboardv1.DashboardSpec, error)
-	GetTeamsBySatellite(ctx context.Context, satellite string, limit, offset int) ([]teamv1.TeamSpec, error)
-	GetTeamsByCluster(ctx context.Context, cluster string, limit, offset int) ([]teamv1.TeamSpec, error)
-	GetTeamsByNamespace(ctx context.Context, namespace string, limit, offset int) ([]teamv1.TeamSpec, error)
-	GetTeam(ctx context.Context, cluster, namespace, name string) (teamv1.TeamSpec, error)
-	GetUsersBySatellite(ctx context.Context, satellite string, limit, offset int) ([]userv1.UserSpec, error)
-	GetUsersByCluster(ctx context.Context, cluster string, limit, offset int) ([]userv1.UserSpec, error)
-	GetUsersByNamespace(ctx context.Context, namespace string, limit, offset int) ([]userv1.UserSpec, error)
-	GetUser(ctx context.Context, cluster, namespace, name string) (userv1.UserSpec, error)
+	GetClusters(ctx context.Context) ([]shared.Cluster, error)
+	GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error)
+	GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error)
+	GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error)
+	GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv1.TeamSpec, error)
+	GetUsers(ctx context.Context) ([]userv1.UserSpec, error)
+	GetUsersByEmail(ctx context.Context, email string) ([]userv1.UserSpec, error)
 }
 
 func NewClient(driver, uri string) (Client, error) {

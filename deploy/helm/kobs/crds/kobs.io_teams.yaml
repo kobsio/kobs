@@ -197,6 +197,11 @@ spec:
                 - plugins
                 - resources
                 type: object
+              satellite:
+                type: string
+              updatedAt:
+                format: int64
+                type: integer
             type: object
         type: object
     served: true
