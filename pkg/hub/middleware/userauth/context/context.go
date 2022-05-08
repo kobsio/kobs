@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 )
 
@@ -17,14 +16,9 @@ const UserKey ctxKeyUser = 0
 // User is the structure of the user object saved in the request context. It contains the users id and permissions if
 // authentication is enabled.
 type User struct {
-	Cluster     string                 `json:"cluster"`
-	Namespace   string                 `json:"namespace"`
-	Name        string                 `json:"name"`
-	ID          string                 `json:"id"`
-	Profile     userv1.Profile         `json:"profile"`
-	Teams       []userv1.TeamReference `json:"teams"`
-	Permissions userv1.Permissions     `json:"permissions"`
-	Rows        []dashboardv1.Row      `json:"rows"`
+	Email       string             `json:"email"`
+	Teams       []string           `json:"teams"`
+	Permissions userv1.Permissions `json:"permissions"`
 }
 
 // HasPluginAccess checks if the user has access to the given plugin.

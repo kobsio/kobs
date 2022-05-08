@@ -43,7 +43,7 @@ func getFields(ctx context.Context, fields ...zapcore.Field) []zapcore.Field {
 	}
 
 	if user, _ := authContext.GetUser(ctx); user != nil {
-		fields = append(fields, zap.String("userID", user.ID))
+		fields = append(fields, zap.String("userEmail", user.Email))
 	}
 
 	if ctxFields, ok := ctx.Value(LogKey).([]zapcore.Field); ok {

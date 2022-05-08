@@ -29,27 +29,13 @@ type UserList struct {
 }
 
 type UserSpec struct {
-	Cluster     string            `json:"cluster,omitempty"`
-	Namespace   string            `json:"namespace,omitempty"`
-	Name        string            `json:"name,omitempty"`
-	ID          string            `json:"id"`
-	Profile     Profile           `json:"profile"`
-	Teams       []TeamReference   `json:"teams,omitempty"`
-	Permissions Permissions       `json:"permissions,omitempty"`
-	Rows        []dashboardv1.Row `json:"rows,omitempty"`
-}
-
-type Profile struct {
-	FullName string `json:"fullName"`
-	Email    string `json:"email"`
-	Position string `json:"position,omitempty"`
-	Bio      string `json:"bio,omitempty"`
-}
-
-type TeamReference struct {
-	Cluster   string `json:"cluster,omitempty"`
-	Namespace string `json:"namespace,omitempty"`
-	Name      string `json:"name"`
+	ID          string                  `json:"id,omitempty"`
+	Cluster     string                  `json:"cluster,omitempty"`
+	Namespace   string                  `json:"namespace,omitempty"`
+	Name        string                  `json:"name,omitempty"`
+	Email       string                  `json:"email,omitempty"`
+	Permissions Permissions             `json:"permissions,omitempty"`
+	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
 
 type Permissions struct {

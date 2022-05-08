@@ -29,13 +29,13 @@ type TeamList struct {
 }
 
 type TeamSpec struct {
+	ID          string                  `json:"id,omitempty"`
 	Cluster     string                  `json:"cluster,omitempty"`
 	Namespace   string                  `json:"namespace,omitempty"`
 	Name        string                  `json:"name,omitempty"`
-	ID          string                  `json:"id"`
+	Group       string                  `json:"group,omitempty"`
 	Description string                  `json:"description,omitempty"`
 	Links       []Link                  `json:"links,omitempty"`
-	Logo        string                  `json:"logo,omitempty"`
 	Permissions userv1.Permissions      `json:"permissions,omitempty"`
 	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
@@ -43,11 +43,4 @@ type TeamSpec struct {
 type Link struct {
 	Title string `json:"title"`
 	Link  string `json:"link"`
-}
-
-type Reference struct {
-	Cluster     string `json:"cluster,omitempty"`
-	Namespace   string `json:"namespace,omitempty"`
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
 }

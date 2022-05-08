@@ -38,6 +38,8 @@ spec:
                 type: string
               description:
                 type: string
+              id:
+                type: string
               name:
                 type: string
               namespace:
@@ -72,6 +74,8 @@ spec:
                                 type: string
                               options:
                                 x-kubernetes-preserve-unknown-fields: true
+                              satellite:
+                                type: string
                             required:
                             - name
                             type: object
@@ -111,6 +115,8 @@ spec:
                           type: string
                         options:
                           x-kubernetes-preserve-unknown-fields: true
+                        satellite:
+                          type: string
                       required:
                       - name
                       type: object

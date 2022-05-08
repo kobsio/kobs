@@ -28,7 +28,7 @@ func TestHandler(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"x-kobs-user header is missing or invalid\"}\n",
 			prepareRequest: func(r *http.Request) {
-				r.Header.Add("x-kobs-user", "{\"id\":{\"key\":\"value\"}}")
+				r.Header.Add("x-kobs-user", "{\"email\":{\"foo\":\"bar\"}}")
 			},
 		},
 		{
@@ -36,7 +36,7 @@ func TestHandler(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "null\n",
 			prepareRequest: func(r *http.Request) {
-				r.Header.Add("x-kobs-user", "{\"id\":\"admin@kobs.io\"}")
+				r.Header.Add("x-kobs-user", "{\"email\":\"user1@kobs.io\"}")
 			},
 		},
 	} {

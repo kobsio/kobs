@@ -64,6 +64,8 @@ spec:
                                           type: string
                                         options:
                                           x-kubernetes-preserve-unknown-fields: true
+                                        satellite:
+                                          type: string
                                       required:
                                       - name
                                       type: object
@@ -101,6 +103,8 @@ spec:
                                     type: string
                                   options:
                                     x-kubernetes-preserve-unknown-fields: true
+                                  satellite:
+                                    type: string
                                 required:
                                 - name
                                 type: object
@@ -120,6 +124,8 @@ spec:
                       additionalProperties:
                         type: string
                       type: object
+                    satellite:
+                      type: string
                     title:
                       type: string
                   required:
@@ -127,6 +133,8 @@ spec:
                   type: object
                 type: array
               description:
+                type: string
+              group:
                 type: string
               id:
                 type: string
@@ -142,8 +150,6 @@ spec:
                   - title
                   type: object
                 type: array
-              logo:
-                type: string
               name:
                 type: string
               namespace:
@@ -191,8 +197,6 @@ spec:
                 - plugins
                 - resources
                 type: object
-            required:
-            - id
             type: object
         type: object
     served: true

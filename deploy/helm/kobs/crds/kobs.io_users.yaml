@@ -36,6 +36,104 @@ spec:
             properties:
               cluster:
                 type: string
+              dashboards:
+                items:
+                  properties:
+                    cluster:
+                      type: string
+                    description:
+                      type: string
+                    inline:
+                      properties:
+                        rows:
+                          items:
+                            properties:
+                              description:
+                                type: string
+                              panels:
+                                items:
+                                  properties:
+                                    colSpan:
+                                      format: int64
+                                      type: integer
+                                    description:
+                                      type: string
+                                    plugin:
+                                      properties:
+                                        name:
+                                          type: string
+                                        options:
+                                          x-kubernetes-preserve-unknown-fields: true
+                                        satellite:
+                                          type: string
+                                      required:
+                                      - name
+                                      type: object
+                                    rowSpan:
+                                      format: int64
+                                      type: integer
+                                    title:
+                                      type: string
+                                  required:
+                                  - plugin
+                                  - title
+                                  type: object
+                                type: array
+                              size:
+                                format: int64
+                                type: integer
+                              title:
+                                type: string
+                            required:
+                            - panels
+                            type: object
+                          type: array
+                        variables:
+                          items:
+                            properties:
+                              hide:
+                                type: boolean
+                              label:
+                                type: string
+                              name:
+                                type: string
+                              plugin:
+                                properties:
+                                  name:
+                                    type: string
+                                  options:
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  satellite:
+                                    type: string
+                                required:
+                                - name
+                                type: object
+                            required:
+                            - name
+                            - plugin
+                            type: object
+                          type: array
+                      required:
+                      - rows
+                      type: object
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                    placeholders:
+                      additionalProperties:
+                        type: string
+                      type: object
+                    satellite:
+                      type: string
+                    title:
+                      type: string
+                  required:
+                  - title
+                  type: object
+                type: array
+              email:
+                type: string
               id:
                 type: string
               name:
@@ -85,77 +183,6 @@ spec:
                 - plugins
                 - resources
                 type: object
-              profile:
-                properties:
-                  bio:
-                    type: string
-                  email:
-                    type: string
-                  fullName:
-                    type: string
-                  position:
-                    type: string
-                required:
-                - email
-                - fullName
-                type: object
-              rows:
-                items:
-                  properties:
-                    description:
-                      type: string
-                    panels:
-                      items:
-                        properties:
-                          colSpan:
-                            format: int64
-                            type: integer
-                          description:
-                            type: string
-                          plugin:
-                            properties:
-                              name:
-                                type: string
-                              options:
-                                x-kubernetes-preserve-unknown-fields: true
-                            required:
-                            - name
-                            type: object
-                          rowSpan:
-                            format: int64
-                            type: integer
-                          title:
-                            type: string
-                        required:
-                        - plugin
-                        - title
-                        type: object
-                      type: array
-                    size:
-                      format: int64
-                      type: integer
-                    title:
-                      type: string
-                  required:
-                  - panels
-                  type: object
-                type: array
-              teams:
-                items:
-                  properties:
-                    cluster:
-                      type: string
-                    name:
-                      type: string
-                    namespace:
-                      type: string
-                  required:
-                  - name
-                  type: object
-                type: array
-            required:
-            - id
-            - profile
             type: object
         type: object
     served: true

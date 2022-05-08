@@ -18,26 +18,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIsTeamInTeamIDs(t *testing.T) {
-	t.Run("teams contain team", func(t *testing.T) {
-		require.Equal(t, isTeamInTeamIDs("team1", []string{"team1", "team2"}), true)
-	})
-
-	t.Run("teams not contain team", func(t *testing.T) {
-		require.Equal(t, isTeamInTeamIDs("team3", []string{"team1", "team2"}), false)
-	})
-}
-
-func TestIsTeamInTeams(t *testing.T) {
-	t.Run("teams contain team", func(t *testing.T) {
-		require.Equal(t, isTeamInTeams(teamv1.TeamSpec{Cluster: "test", Namespace: "kobs", Name: "team1"}, []userv1.TeamReference{{Cluster: "test", Namespace: "kobs", Name: "team1"}}), true)
-	})
-
-	t.Run("teams not contain team", func(t *testing.T) {
-		require.Equal(t, isTeamInTeams(teamv1.TeamSpec{Cluster: "test", Namespace: "kobs", Name: "team1"}, []userv1.TeamReference{}), false)
-	})
-}
-
 func TestGetUser(t *testing.T) {
 	for _, tt := range []struct {
 		name          string
@@ -72,11 +52,11 @@ func TestGetUser(t *testing.T) {
 		{
 			name:          "get user",
 			expectedError: nil,
-			expectedUser:  authContext.User{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io", Profile: userv1.Profile{FullName: "", Email: "", Position: "", Bio: ""}, Teams: []userv1.TeamReference{{Cluster: "c1", Namespace: "", Name: ""}}, Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
+			expectedUser:  authContext.User{Email: "user1@kobs.io", Teams: []string{}, Permissions: userv1.Permissions{Plugins: nil, Resources: nil}},
 			prepare: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 	} {
@@ -152,8 +132,8 @@ func TestAuthHandler(t *testing.T) {
 			},
 			prepareClusterClient: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -166,8 +146,8 @@ func TestAuthHandler(t *testing.T) {
 			},
 			prepareClusterClient: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 
@@ -199,8 +179,8 @@ func TestAuthHandler(t *testing.T) {
 			},
 			prepareClusterClient: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -215,8 +195,8 @@ func TestAuthHandler(t *testing.T) {
 			},
 			prepareClusterClient: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -242,8 +222,8 @@ func TestAuthHandler(t *testing.T) {
 			},
 			prepareClusterClient: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io"}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 		{
@@ -257,8 +237,8 @@ func TestAuthHandler(t *testing.T) {
 			},
 			prepareClusterClient: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetClusters", mock.Anything).Return([]string{"c1"}, nil)
-				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "admin@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "*"}}}}}, nil)
-				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", ID: "team1@kobs.io"}}, nil)
+				mockStoreClient.On("GetUsersByCluster", mock.Anything, "c1", -1, 0).Return([]userv1.UserSpec{{Cluster: "c1", Namespace: "", Name: "", Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Name: "*"}}}}}, nil)
+				mockStoreClient.On("GetTeamsByCluster", mock.Anything, "c1", -1, 0).Return([]teamv1.TeamSpec{{Cluster: "c1", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
 			},
 		},
 	} {

@@ -16,30 +16,12 @@ func setApplicationDefaults(application applicationv1.ApplicationSpec, cluster, 
 		application.Topology.Type = "application"
 	}
 
-	for i := 0; i < len(application.Teams); i++ {
-		if application.Teams[i].Cluster == "" {
-			application.Teams[i].Cluster = application.Cluster
-		}
-		if application.Teams[i].Namespace == "" {
-			application.Teams[i].Namespace = application.Namespace
-		}
-	}
-
 	for i := 0; i < len(application.Topology.Dependencies); i++ {
 		if application.Topology.Dependencies[i].Cluster == "" {
 			application.Topology.Dependencies[i].Cluster = application.Cluster
 		}
 		if application.Topology.Dependencies[i].Namespace == "" {
 			application.Topology.Dependencies[i].Namespace = application.Namespace
-		}
-
-		for j := 0; j < len(application.Topology.Dependencies[i].Dashboards); j++ {
-			if application.Topology.Dependencies[i].Dashboards[j].Cluster == "" {
-				application.Topology.Dependencies[i].Dashboards[j].Cluster = application.Cluster
-			}
-			if application.Topology.Dependencies[i].Dashboards[j].Namespace == "" {
-				application.Topology.Dependencies[i].Dashboards[j].Namespace = application.Namespace
-			}
 		}
 	}
 
@@ -59,6 +41,12 @@ func setTeamDefaults(team teamv1.TeamSpec, cluster, namespace, name string) team
 	team.Cluster = cluster
 	team.Namespace = namespace
 	team.Name = name
+
+	// TODO: Remove before v1.0.0, because this is only a workaround, so that the authentication handling works for the
+	// old and the new kobs implementation.
+	if team.Group == "" {
+		team.Group = team.ID
+	}
 
 	for i := 0; i < len(team.Dashboards); i++ {
 		if team.Dashboards[i].Cluster == "" {
@@ -86,13 +74,10 @@ func setUserDefaults(user userv1.UserSpec, cluster, namespace, name string) user
 	user.Namespace = namespace
 	user.Name = name
 
-	for i := 0; i < len(user.Teams); i++ {
-		if user.Teams[i].Cluster == "" {
-			user.Teams[i].Cluster = user.Cluster
-		}
-		if user.Teams[i].Namespace == "" {
-			user.Teams[i].Namespace = user.Namespace
-		}
+	// TODO: Remove before v1.0.0, because this is only a workaround, so that the authentication handling works for the
+	// old and the new kobs implementation.
+	if user.Email == "" {
+		user.Email = user.ID
 	}
 
 	return user

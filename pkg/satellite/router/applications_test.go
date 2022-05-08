@@ -43,9 +43,9 @@ func TestGetApplications(t *testing.T) {
 			name:               "namespaces nil",
 			url:                "/applications?cluster=cluster1",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team1\"}],\"topology\":{}}]\n",
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[\"team1\"],\"topology\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []string{"team1"}}}, nil)
 			},
 		},
 		{
@@ -61,18 +61,18 @@ func TestGetApplications(t *testing.T) {
 			name:               "ok",
 			url:                "/applications?cluster=cluster1&namespace=namespace1",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team1\"}],\"topology\":{}}]\n",
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[\"team1\"],\"topology\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "namespace1").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "namespace1").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []string{"team1"}}}, nil)
 			},
 		},
 		{
 			name:               "ok with no cluster",
 			url:                "/applications?namespace=namespace1",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"team1\"}],\"topology\":{}}]\n",
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"application1\",\"teams\":[\"team1\"],\"topology\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
-				mockClusterClient.On("GetApplications", mock.Anything, "namespace1").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []applicationv1.TeamReference{{Cluster: "cluster1", Namespace: "namespace1", Name: "team1"}}}}, nil)
+				mockClusterClient.On("GetApplications", mock.Anything, "namespace1").Return([]applicationv1.ApplicationSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "application1", Teams: []string{"team1"}}}, nil)
 			},
 		},
 	} {
