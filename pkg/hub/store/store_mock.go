@@ -95,6 +95,29 @@ func (_m *MockClient) GetDashboards(ctx context.Context) ([]dashboardv1.Dashboar
 	return r0, r1
 }
 
+// GetNamespaces provides a mock function with given fields: ctx
+func (_m *MockClient) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) {
+	ret := _m.Called(ctx)
+
+	var r0 []shared.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context) []shared.Namespace); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]shared.Namespace)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetPlugins provides a mock function with given fields: ctx
 func (_m *MockClient) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 	ret := _m.Called(ctx)
@@ -245,6 +268,20 @@ func (_m *MockClient) SaveDashboards(ctx context.Context, satellite string, dash
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, []dashboardv1.DashboardSpec) error); ok {
 		r0 = rf(ctx, satellite, dashboards)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// SaveNamespaces provides a mock function with given fields: ctx, satellite, namespaces
+func (_m *MockClient) SaveNamespaces(ctx context.Context, satellite string, namespaces map[string][]string) error {
+	ret := _m.Called(ctx, satellite, namespaces)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, map[string][]string) error); ok {
+		r0 = rf(ctx, satellite, namespaces)
 	} else {
 		r0 = ret.Error(0)
 	}

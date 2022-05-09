@@ -22,6 +22,7 @@ func Mount(config Config, clustersClient clusters.Client) chi.Router {
 	}
 
 	router.Get("/", router.getClusters)
+	router.Get("/namespaces", router.getNamespaces)
 
 	return router
 }

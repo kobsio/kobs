@@ -75,6 +75,33 @@ func (c *client) SaveClusters(ctx context.Context, satellite string, clusters []
 	return err
 }
 
+func (c *client) SaveNamespaces(ctx context.Context, satellite string, namespaces map[string][]string) error {
+	updatedAt := time.Now().Unix()
+
+	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
+		for k, v := range namespaces {
+			for _, n := range v {
+				namespace := shared.Namespace{
+					ID:        fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, k, n),
+					Namespace: n,
+					Cluster:   k,
+					Satellite: satellite,
+					UpdatedAt: updatedAt,
+				}
+
+				err := c.store.TxUpsert(tx, namespace.ID, namespace)
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		return c.store.TxDeleteMatching(tx, &shared.Namespace{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
+	})
+
+	return err
+}
+
 func (c *client) SaveApplications(ctx context.Context, satellite string, applications []applicationv1.ApplicationSpec) error {
 	updatedAt := time.Now().Unix()
 
@@ -179,6 +206,17 @@ func (c *client) GetClusters(ctx context.Context) ([]shared.Cluster, error) {
 	}
 
 	return clusters, nil
+}
+
+func (c *client) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) {
+	var namespaces []shared.Namespace
+
+	err := c.store.Find(&namespaces, &bh.Query{})
+	if err != nil {
+		return nil, err
+	}
+
+	return namespaces, nil
 }
 
 func (c *client) GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error) {

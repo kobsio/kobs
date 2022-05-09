@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	v1dashboards "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
-
-	"github.com/go-chi/render"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+
+	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
 

@@ -79,6 +79,35 @@ func TestSaveAndGetClusters(t *testing.T) {
 	require.Equal(t, 1, len(storedClusters2))
 }
 
+func TestSaveAndGetNamespaces(t *testing.T) {
+	var namespaces1 map[string][]string
+	namespaces1 = make(map[string][]string)
+	namespaces1["dev-de1"] = []string{"default", "kube-system"}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveNamespaces(context.Background(), "test-satellite", namespaces1)
+	require.NoError(t, err)
+
+	storedClusters1, err := c.GetNamespaces(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, 2, len(storedClusters1))
+
+	time.Sleep(2 * time.Second)
+
+	var namespaces2 map[string][]string
+	namespaces2 = make(map[string][]string)
+	namespaces2["dev-de1"] = []string{"default"}
+
+	err = c.SaveNamespaces(context.Background(), "test-satellite", namespaces2)
+	require.NoError(t, err)
+
+	storedClusters2, err := c.GetNamespaces(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, 1, len(storedClusters2))
+}
+
 func TestSaveAndGetApplications(t *testing.T) {
 	applications := []applicationv1.ApplicationSpec{{
 		Cluster:   "dev-de1",

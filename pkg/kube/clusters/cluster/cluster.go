@@ -46,7 +46,7 @@ type Client interface {
 	GetName() string
 	GetCRDs() []CRD
 	GetClient(schema *runtime.Scheme) (controllerRuntimeClient.Client, error)
-	GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error)
+	GetNamespaces(ctx context.Context) ([]string, error)
 	GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error)
 	DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
 	PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
@@ -75,7 +75,6 @@ type Client interface {
 //   - dashboardClientsetVersioned.Interface   --> *dashboardClientsetVersioned.Clientset
 //   - userClientsetVersioned.Interface        --> *userClientsetVersioned.Clientset
 type client struct {
-	cache                Cache
 	config               *rest.Config
 	clientset            kubernetes.Interface
 	applicationClientset applicationClientsetVersioned.Interface
@@ -110,13 +109,6 @@ type CRDColumn struct {
 	Type        string `json:"type"`
 }
 
-// Cache implements a simple caching layer, for the loaded manifest files. The goal of the caching layer is to return
-// the manifests faster to the user.
-type Cache struct {
-	namespaces          []string
-	namespacesLastFetch time.Time
-}
-
 // GetName returns the name of the cluster.
 func (c *client) GetName() string {
 	return c.name
@@ -134,17 +126,8 @@ func (c *client) GetClient(schema *runtime.Scheme) (controllerRuntimeClient.Clie
 	})
 }
 
-// GetNamespaces returns all namespaces for the cluster. To reduce the latency and the number of API calls, we are
-// "caching" the namespaces. This means that if a new namespace is created in a cluster, this namespaces is only shown
-// after the configured cache duration.
-func (c *client) GetNamespaces(ctx context.Context, cacheDuration time.Duration) ([]string, error) {
-	log.Debug(ctx, "Last namespace fetch", zap.Time("lastFetch", c.cache.namespacesLastFetch))
-
-	if c.cache.namespacesLastFetch.After(time.Now().Add(-1 * cacheDuration)) {
-		log.Debug(ctx, "Return namespaces from cache", zap.String("cluster", c.name))
-		return c.cache.namespaces, nil
-	}
-
+// GetNamespaces returns all namespaces for the cluster.
+func (c *client) GetNamespaces(ctx context.Context) ([]string, error) {
 	namespaceList, err := c.clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -155,10 +138,6 @@ func (c *client) GetNamespaces(ctx context.Context, cacheDuration time.Duration)
 	for _, namespace := range namespaceList.Items {
 		namespaces = append(namespaces, namespace.ObjectMeta.Name)
 	}
-
-	log.Debug(ctx, "Return namespaces from Kubernetes API", zap.String("cluster", c.name))
-	c.cache.namespaces = namespaces
-	c.cache.namespacesLastFetch = time.Now()
 
 	return namespaces, nil
 }
