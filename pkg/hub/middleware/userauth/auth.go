@@ -159,8 +159,8 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{
 				Email: userEmail,
 				Permissions: userv1.Permissions{
-					Plugins:   []userv1.Plugin{{Name: "*"}},
-					Resources: []userv1.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
+					Plugins:   []userv1.Plugin{{Satellite: "*", Name: "*"}},
+					Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
 				},
 			})
 		}

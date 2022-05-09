@@ -9,8 +9,8 @@ import (
 
 func TestNewClient(t *testing.T) {
 	t.Run("store created", func(t *testing.T) {
-		client, err := NewClient("bolt", "/tmp/kobs-test.db")
-		defer os.Remove("/tmp/kobs-test.db")
+		client, err := NewClient("bolt", "/tmp/kobs-store-test.db")
+		defer os.Remove("/tmp/kobs-store-test.db")
 		require.NoError(t, err)
 		require.NotEmpty(t, client)
 	})

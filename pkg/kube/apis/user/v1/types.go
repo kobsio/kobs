@@ -46,6 +46,7 @@ type Permissions struct {
 }
 
 type Plugin struct {
+	Satellite   string               `json:"satellite"`
 	Name        string               `json:"name"`
 	Permissions apiextensionsv1.JSON `json:"permissions,omitempty"`
 }

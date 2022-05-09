@@ -22,21 +22,10 @@ type User struct {
 }
 
 // HasPluginAccess checks if the user has access to the given plugin.
-func (u *User) HasPluginAccess(plugin string) bool {
+func (u *User) HasPluginAccess(satellite, plugin string) bool {
 	for _, p := range u.Permissions.Plugins {
-		if p.Name == plugin || p.Name == "*" {
-			return true
-		}
-	}
-
-	return false
-}
-
-// HasClusterAccess checks if the user has access to the given cluster.
-func (u *User) HasClusterAccess(cluster string) bool {
-	for _, resource := range u.Permissions.Resources {
-		for _, c := range resource.Clusters {
-			if c == cluster || c == "*" {
+		if p.Satellite == satellite || p.Satellite == "*" {
+			if p.Name == plugin || p.Name == "*" {
 				return true
 			}
 		}
@@ -45,35 +34,22 @@ func (u *User) HasClusterAccess(cluster string) bool {
 	return false
 }
 
-// HasNamespaceAccess checks if the user has access to the given namespace in the given cluster.
-func (u *User) HasNamespaceAccess(cluster, namespace string) bool {
-	for _, resource := range u.Permissions.Resources {
-		for _, c := range resource.Clusters {
-			if c == cluster || c == "*" {
-				for _, n := range resource.Namespaces {
-					if n == namespace || n == "*" {
-						return true
-					}
-				}
-			}
-		}
-	}
-
-	return false
-}
-
 // HasResourceAccess checks if the user has access to the given resource in the given cluster and namespace.
-func (u *User) HasResourceAccess(cluster, namespace, name, verb string) bool {
+func (u *User) HasResourceAccess(satellite, cluster, namespace, name, verb string) bool {
 	for _, resource := range u.Permissions.Resources {
-		for _, c := range resource.Clusters {
-			if c == cluster || c == "*" {
-				for _, n := range resource.Namespaces {
-					if n == namespace || n == "*" {
-						for _, r := range resource.Resources {
-							if r == name || r == "*" {
-								for _, v := range resource.Verbs {
-									if v == verb || v == "*" {
-										return true
+		for _, s := range resource.Satellites {
+			if s == satellite || s == "*" {
+				for _, c := range resource.Clusters {
+					if c == cluster || c == "*" {
+						for _, n := range resource.Namespaces {
+							if n == namespace || n == "*" {
+								for _, r := range resource.Resources {
+									if r == name || r == "*" {
+										for _, v := range resource.Verbs {
+											if v == verb || v == "*" {
+												return true
+											}
+										}
 									}
 								}
 							}
