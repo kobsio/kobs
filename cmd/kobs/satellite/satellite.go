@@ -11,7 +11,6 @@ import (
 	"github.com/kobsio/kobs/pkg/metrics"
 	"github.com/kobsio/kobs/pkg/satellite"
 	"github.com/kobsio/kobs/pkg/satellite/plugins"
-	"github.com/kobsio/kobs/pkg/satellite/router"
 	"github.com/kobsio/kobs/pkg/version"
 
 	"github.com/spf13/cobra"
@@ -56,8 +55,6 @@ var Cmd = &cobra.Command{
 			log.Fatal(nil, "Could not load clusters", zap.Error(err))
 		}
 
-		clustersRouter := router.NewRouter(cfg.Router, clustersClient)
-
 		pluginsClient, err := plugins.NewClient(satellitePlugins, cfg.Plugins, clustersClient)
 		if err != nil {
 			log.Fatal(nil, "Could not initialize plugins client", zap.Error(err))
@@ -68,7 +65,7 @@ var Cmd = &cobra.Command{
 		// The satelliteServer handles all requests from a kobs hub and serves the configuration, so the hub knows which
 		// clusters and plugins are available via this satellite instance. The metrics server is used to serve the kobs
 		// metrics.
-		satelliteServer, err := satellite.New(satelliteAddress, satelliteToken, clustersRouter, pluginsClient)
+		satelliteServer, err := satellite.New(satelliteAddress, satelliteToken, cfg.API, clustersClient, pluginsClient)
 		if err != nil {
 			log.Fatal(nil, "Could not create satellite server", zap.Error(err))
 		}

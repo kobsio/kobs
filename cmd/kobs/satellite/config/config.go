@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/kobsio/kobs/pkg/kube/clusters"
+	"github.com/kobsio/kobs/pkg/satellite/api"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
-	"github.com/kobsio/kobs/pkg/satellite/router"
 
 	"sigs.k8s.io/yaml"
 )
@@ -15,7 +15,7 @@ import (
 type Config struct {
 	Clusters clusters.Config   `json:"clusters"`
 	Plugins  []plugin.Instance `json:"plugins"`
-	Router   router.Config     `json:"router"`
+	API      api.Config        `json:"api"`
 }
 
 // Load the configuration for kobs. Most of the configuration options are available as command-line flag, but we also

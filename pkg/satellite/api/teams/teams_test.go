@@ -1,4 +1,4 @@
-package router
+package teams
 
 import (
 	"fmt"
@@ -56,57 +56,6 @@ func TestGetTeams(t *testing.T) {
 			w := httptest.NewRecorder()
 
 			router.getTeams(w, req)
-
-			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-		})
-	}
-}
-
-func TestGetTeam(t *testing.T) {
-	for _, tt := range []struct {
-		name               string
-		url                string
-		expectedStatusCode int
-		expectedBody       string
-	}{
-		{
-			name:               "invalid cluster name",
-			url:                "/team",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Invalid cluster name\"}\n",
-		},
-		{
-			name:               "get team error",
-			url:                "/team?cluster=cluster1&namespace=namespace1&name=team2",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not get team: could not get team\"}\n",
-		},
-		{
-			name:               "get team",
-			url:                "/team?cluster=cluster1&namespace=namespace1&name=team1",
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"group\":\"team1@kobs.io\",\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			mockClusterClient := &cluster.MockClient{}
-			mockClusterClient.AssertExpectations(t)
-			mockClusterClient.On("GetTeam", mock.Anything, "namespace1", "team1").Return(&teamv1.TeamSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", Group: "team1@kobs.io"}, nil)
-			mockClusterClient.On("GetTeam", mock.Anything, "namespace1", "team2").Return(nil, fmt.Errorf("could not get team"))
-
-			mockClustersClient := &clusters.MockClient{}
-			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetCluster", "").Return(nil)
-			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
-
-			router := Router{Mux: chi.NewRouter(), clustersClient: mockClustersClient, config: Config{}}
-			router.Get("/team", router.getTeam)
-
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
-			w := httptest.NewRecorder()
-
-			router.getTeam(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
 			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))

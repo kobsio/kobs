@@ -54,19 +54,19 @@ func (c *client) GetClusters(ctx context.Context) ([]string, error) {
 }
 
 func (c *client) GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error) {
-	return doRequest[applicationv1.ApplicationSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/applications", c.config.Token)
+	return doRequest[applicationv1.ApplicationSpec](ctx, c.httpClient, c.config.Address+"/api/applications", c.config.Token)
 }
 
 func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
-	return doRequest[dashboardv1.DashboardSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/dashboards", c.config.Token)
+	return doRequest[dashboardv1.DashboardSpec](ctx, c.httpClient, c.config.Address+"/api/dashboards", c.config.Token)
 }
 
 func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
-	return doRequest[teamv1.TeamSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/teams", c.config.Token)
+	return doRequest[teamv1.TeamSpec](ctx, c.httpClient, c.config.Address+"/api/teams", c.config.Token)
 }
 
 func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
-	return doRequest[userv1.UserSpec](ctx, c.httpClient, c.config.Address+"/api/clusters/users", c.config.Token)
+	return doRequest[userv1.UserSpec](ctx, c.httpClient, c.config.Address+"/api/users", c.config.Token)
 }
 
 func (c *client) Proxy(w http.ResponseWriter, r *http.Request) {

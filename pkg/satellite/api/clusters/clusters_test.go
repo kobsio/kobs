@@ -1,4 +1,4 @@
-package router
+package clusters
 
 import (
 	"net/http"
@@ -33,8 +33,6 @@ func TestGetClusters(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			// mockClustersClient.On("GetCluster", "").Return(nil)
-			// mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
 			mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
 
 			router := Router{chi.NewRouter(), Config{}, mockClustersClient}

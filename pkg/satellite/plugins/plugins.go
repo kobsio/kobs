@@ -15,7 +15,7 @@ import (
 // Client is the interface which must be implemented by a plugins client. The plugins client must only be export a
 // router with all plugin routes mounted.
 type Client interface {
-	GetRouter() chi.Router
+	Mount() chi.Router
 }
 
 // client implements the plugins Client interface. it contains a router and a list of plugin instances, which are
@@ -25,8 +25,8 @@ type client struct {
 	instances []plugin.Instance
 }
 
-// GetRouter returns the router of the plugins client.
-func (c *client) GetRouter() chi.Router {
+// Mount returns the router of the plugins client, so it can be mounted into an existing chi router.
+func (c *client) Mount() chi.Router {
 	return c.router
 }
 

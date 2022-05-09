@@ -1,4 +1,4 @@
-package router
+package clusters
 
 import (
 	"testing"
@@ -7,6 +7,6 @@ import (
 )
 
 func TestNewRouter(t *testing.T) {
-	router := NewRouter(Config{}, nil)
+	router := Mount(Config{}, nil)
 	require.NotNil(t, router)
 }

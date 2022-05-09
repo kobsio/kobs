@@ -1,4 +1,4 @@
-package router
+package users
 
 import (
 	"fmt"
@@ -55,57 +55,6 @@ func TestGetUsers(t *testing.T) {
 			w := httptest.NewRecorder()
 
 			router.getUsers(w, req)
-
-			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-		})
-	}
-}
-
-func TestGetUser(t *testing.T) {
-	for _, tt := range []struct {
-		name               string
-		url                string
-		expectedStatusCode int
-		expectedBody       string
-	}{
-		{
-			name:               "invalid cluster name",
-			url:                "/users",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Invalid cluster name\"}\n",
-		},
-		{
-			name:               "get users error",
-			url:                "/users?cluster=cluster1&namespace=namespace1&name=user2",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not get user: could not get user\"}\n",
-		},
-		{
-			name:               "get users",
-			url:                "/users?cluster=cluster1&namespace=namespace1&name=user1",
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"email\":\"user1@kobs.io\",\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			mockClusterClient := &cluster.MockClient{}
-			mockClusterClient.AssertExpectations(t)
-			mockClusterClient.On("GetUser", mock.Anything, "namespace1", "user1").Return(&userv1.UserSpec{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", Email: "user1@kobs.io"}, nil)
-			mockClusterClient.On("GetUser", mock.Anything, "namespace1", "user2").Return(nil, fmt.Errorf("could not get user"))
-
-			mockClustersClient := &clusters.MockClient{}
-			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetCluster", "").Return(nil)
-			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
-
-			router := Router{Mux: chi.NewRouter(), clustersClient: mockClustersClient, config: Config{}}
-			router.Get("/user", router.getUser)
-
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
-			w := httptest.NewRecorder()
-
-			router.getUser(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
 			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
