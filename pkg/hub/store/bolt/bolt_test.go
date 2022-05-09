@@ -20,8 +20,8 @@ func TestNewClient(t *testing.T) {
 	require.Error(t, err1)
 	require.Empty(t, c1)
 
-	c2, err2 := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c2, err2 := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	require.NoError(t, err2)
 	require.NotEmpty(t, c2)
@@ -36,8 +36,8 @@ func TestSaveAndGetPlugins(t *testing.T) {
 		Type: "klogs",
 	}}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SavePlugins(context.Background(), "test-satellite", plugins)
 	require.NoError(t, err)
@@ -59,8 +59,8 @@ func TestSaveAndGetPlugins(t *testing.T) {
 func TestSaveAndGetClusters(t *testing.T) {
 	clusters := []string{"dev-de1", "stage-de1"}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SaveClusters(context.Background(), "test-satellite", clusters)
 	require.NoError(t, err)
@@ -90,8 +90,8 @@ func TestSaveAndGetApplications(t *testing.T) {
 		Name:      "application2",
 	}}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SaveApplications(context.Background(), "test-satellite", applications)
 	require.NoError(t, err)
@@ -121,8 +121,8 @@ func TestSaveAndGetDashboards(t *testing.T) {
 		Name:      "dashboard2",
 	}}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SaveDashboards(context.Background(), "test-satellite", dashboards)
 	require.NoError(t, err)
@@ -152,8 +152,8 @@ func TestSaveAndGetTeams(t *testing.T) {
 		Name:      "team2",
 	}}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SaveTeams(context.Background(), "test-satellite", teams)
 	require.NoError(t, err)
@@ -183,8 +183,8 @@ func TestSaveAndGetUsers(t *testing.T) {
 		Name:      "user2",
 	}}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SaveUsers(context.Background(), "test-satellite", users)
 	require.NoError(t, err)
@@ -226,8 +226,8 @@ func TestGetTeamsByGroups(t *testing.T) {
 		Group:     "team3@kobs.io",
 	}}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SaveTeams(context.Background(), "test-satellite", teams)
 	require.NoError(t, err)
@@ -271,8 +271,8 @@ func TestGetGetUsersByEmail(t *testing.T) {
 		Email:     "user2@kobs.io",
 	}}
 
-	c, _ := NewClient("/tmp/kobs.db")
-	defer os.Remove("/tmp/kobs.db")
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
 
 	err := c.SaveUsers(context.Background(), "test-satellite", users)
 	require.NoError(t, err)
