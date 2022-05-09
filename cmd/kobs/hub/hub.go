@@ -89,8 +89,8 @@ var Cmd = &cobra.Command{
 		// listener for terminal signals, to initialize the graceful shutdown of the components.
 		// The hubServer handles all requests from the kobs ui, which is served via the appServer. The metrics server is
 		// used to serve the kobs metrics.
-		var hubSever *hub.Server
-		var appServer *app.Server
+		var hubSever hub.Server
+		var appServer app.Server
 
 		if hubMode == "default" || hubMode == "server" {
 			hubSever, err = hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, satellitesClient, storeClient)

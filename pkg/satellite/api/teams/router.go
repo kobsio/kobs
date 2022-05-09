@@ -21,7 +21,7 @@ func Mount(config Config, clustersClient clusters.Client) chi.Router {
 		clustersClient,
 	}
 
-	router.Get("/teams", router.getTeams)
+	router.Get("/", router.getTeams)
 
 	return router
 }
