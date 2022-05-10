@@ -150,6 +150,8 @@ spec:
                   - title
                   type: object
                 type: array
+              logo:
+                type: string
               name:
                 type: string
               namespace:
@@ -163,8 +165,11 @@ spec:
                           type: string
                         permissions:
                           x-kubernetes-preserve-unknown-fields: true
+                        satellite:
+                          type: string
                       required:
                       - name
+                      - satellite
                       type: object
                     type: array
                   resources:
@@ -198,9 +203,14 @@ spec:
                       - verbs
                       type: object
                     type: array
+                  teams:
+                    items:
+                      type: string
+                    type: array
                 required:
                 - plugins
                 - resources
+                - teams
                 type: object
               satellite:
                 type: string

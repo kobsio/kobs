@@ -33,7 +33,7 @@ func TestGetTeams(t *testing.T) {
 		{
 			name:               "get teams",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"group\":\"team1@kobs.io\",\"permissions\":{\"plugins\":null,\"resources\":null}}]\n",
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"group\":\"team1@kobs.io\",\"permissions\":{\"teams\":null,\"plugins\":null,\"resources\":null}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
 				mockClusterClient.On("GetTeams", mock.Anything, "").Return([]teamv1.TeamSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", Group: "team1@kobs.io"}}, nil)
 			},

@@ -20,7 +20,7 @@ func doRequest[T any](ctx context.Context, client *http.Client, url, token strin
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	req.Header.Add("x-kobs-user", "{\"id\": \"TODO\"}")
+	req.Header.Add("x-kobs-user", "{\"email\": \"\"}")
 
 	resp, err := client.Do(req)
 	if err != nil {

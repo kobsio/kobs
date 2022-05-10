@@ -67,17 +67,17 @@ func (c *client) watch() {
 
 				plugins, err := s.GetPlugins(ctx)
 				if err != nil {
-					instrument(ctx, s.GetName(), "plugins", err, startTime)
+					instrument(ctx, s.GetName(), "plugins", err, len(plugins), startTime)
 					return
 				}
 
 				err = c.storeClient.SavePlugins(ctx, s.GetName(), plugins)
 				if err != nil {
-					instrument(ctx, s.GetName(), "plugins", err, startTime)
+					instrument(ctx, s.GetName(), "plugins", err, len(plugins), startTime)
 					return
 				}
 
-				instrument(ctx, s.GetName(), "plugins", nil, startTime)
+				instrument(ctx, s.GetName(), "plugins", nil, len(plugins), startTime)
 			}))
 		}(s)
 
@@ -88,17 +88,17 @@ func (c *client) watch() {
 
 				clusters, err := s.GetClusters(ctx)
 				if err != nil {
-					instrument(ctx, s.GetName(), "clusters", err, startTime)
+					instrument(ctx, s.GetName(), "clusters", err, len(clusters), startTime)
 					return
 				}
 
 				err = c.storeClient.SaveClusters(ctx, s.GetName(), clusters)
 				if err != nil {
-					instrument(ctx, s.GetName(), "clusters", err, startTime)
+					instrument(ctx, s.GetName(), "clusters", err, len(clusters), startTime)
 					return
 				}
 
-				instrument(ctx, s.GetName(), "clusters", nil, startTime)
+				instrument(ctx, s.GetName(), "clusters", nil, len(clusters), startTime)
 			}))
 		}(s)
 
@@ -109,17 +109,17 @@ func (c *client) watch() {
 
 				namespaces, err := s.GetNamespaces(ctx)
 				if err != nil {
-					instrument(ctx, s.GetName(), "clusters", err, startTime)
+					instrument(ctx, s.GetName(), "namespaces", err, len(namespaces), startTime)
 					return
 				}
 
 				err = c.storeClient.SaveNamespaces(ctx, s.GetName(), namespaces)
 				if err != nil {
-					instrument(ctx, s.GetName(), "clusters", err, startTime)
+					instrument(ctx, s.GetName(), "namespaces", err, len(namespaces), startTime)
 					return
 				}
 
-				instrument(ctx, s.GetName(), "clusters", nil, startTime)
+				instrument(ctx, s.GetName(), "namespaces", nil, len(namespaces), startTime)
 			}))
 		}(s)
 
@@ -130,17 +130,17 @@ func (c *client) watch() {
 
 				applications, err := s.GetApplications(ctx)
 				if err != nil {
-					instrument(ctx, s.GetName(), "applications", err, startTime)
+					instrument(ctx, s.GetName(), "applications", err, len(applications), startTime)
 					return
 				}
 
 				err = c.storeClient.SaveApplications(ctx, s.GetName(), applications)
 				if err != nil {
-					instrument(ctx, s.GetName(), "applications", err, startTime)
+					instrument(ctx, s.GetName(), "applications", err, len(applications), startTime)
 					return
 				}
 
-				instrument(ctx, s.GetName(), "applications", nil, startTime)
+				instrument(ctx, s.GetName(), "applications", nil, len(applications), startTime)
 			}))
 		}(s)
 
@@ -151,17 +151,17 @@ func (c *client) watch() {
 
 				dashboards, err := s.GetDashboards(ctx)
 				if err != nil {
-					instrument(ctx, s.GetName(), "dashboards", err, startTime)
+					instrument(ctx, s.GetName(), "dashboards", err, len(dashboards), startTime)
 					return
 				}
 
 				err = c.storeClient.SaveDashboards(ctx, s.GetName(), dashboards)
 				if err != nil {
-					instrument(ctx, s.GetName(), "dashboards", err, startTime)
+					instrument(ctx, s.GetName(), "dashboards", err, len(dashboards), startTime)
 					return
 				}
 
-				instrument(ctx, s.GetName(), "dashboards", nil, startTime)
+				instrument(ctx, s.GetName(), "dashboards", nil, len(dashboards), startTime)
 			}))
 		}(s)
 
@@ -172,17 +172,17 @@ func (c *client) watch() {
 
 				teams, err := s.GetTeams(ctx)
 				if err != nil {
-					instrument(ctx, s.GetName(), "teams", err, startTime)
+					instrument(ctx, s.GetName(), "teams", err, len(teams), startTime)
 					return
 				}
 
 				err = c.storeClient.SaveTeams(ctx, s.GetName(), teams)
 				if err != nil {
-					instrument(ctx, s.GetName(), "teams", err, startTime)
+					instrument(ctx, s.GetName(), "teams", err, len(teams), startTime)
 					return
 				}
 
-				instrument(ctx, s.GetName(), "teams", nil, startTime)
+				instrument(ctx, s.GetName(), "teams", nil, len(teams), startTime)
 			}))
 		}(s)
 
@@ -193,17 +193,17 @@ func (c *client) watch() {
 
 				users, err := s.GetUsers(ctx)
 				if err != nil {
-					instrument(ctx, s.GetName(), "users", err, startTime)
+					instrument(ctx, s.GetName(), "users", err, len(users), startTime)
 					return
 				}
 
 				err = c.storeClient.SaveUsers(ctx, s.GetName(), users)
 				if err != nil {
-					instrument(ctx, s.GetName(), "users", err, startTime)
+					instrument(ctx, s.GetName(), "users", err, len(users), startTime)
 					return
 				}
 
-				instrument(ctx, s.GetName(), "users", nil, startTime)
+				instrument(ctx, s.GetName(), "users", nil, len(users), startTime)
 			}))
 		}(s)
 	}

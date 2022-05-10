@@ -25,14 +25,14 @@ var (
 	}, []string{"satellite", "status", "resource"})
 )
 
-func instrument(ctx context.Context, satellite, resource string, err error, startTime time.Time) {
+func instrument(ctx context.Context, satellite, resource string, err error, length int, startTime time.Time) {
 	if err != nil {
 		syncsTotalMetric.WithLabelValues(satellite, "error", resource).Inc()
 		syncsSumMetric.WithLabelValues(satellite, "error", resource).Observe(float64(time.Since(startTime).Nanoseconds()) / 1000000)
-		log.Error(ctx, "Could not get resources", zap.Error(err), zap.String("satellite", satellite), zap.String("resource", resource), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Now().Sub(startTime)))
+		log.Error(ctx, "Could not get resources", zap.Error(err), zap.String("satellite", satellite), zap.String("resource", resource), zap.Int("count", length), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Now().Sub(startTime)))
 	} else {
 		syncsTotalMetric.WithLabelValues(satellite, "success", resource).Inc()
 		syncsSumMetric.WithLabelValues(satellite, "success", resource).Observe(float64(time.Since(startTime).Nanoseconds()) / 1000000)
-		log.Debug(ctx, "Resources were saved", zap.String("satellite", satellite), zap.String("resource", resource), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Now().Sub(startTime)))
+		log.Debug(ctx, "Resources were saved", zap.String("satellite", satellite), zap.String("resource", resource), zap.Int("count", length), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Now().Sub(startTime)))
 	}
 }

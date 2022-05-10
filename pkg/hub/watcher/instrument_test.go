@@ -10,9 +10,9 @@ import (
 )
 
 func TestInstrument(t *testing.T) {
-	testInstrumentWithError := func() { instrument(context.Background(), "", "", fmt.Errorf("test error"), time.Now()) }
+	testInstrumentWithError := func() { instrument(context.Background(), "", "", fmt.Errorf("test error"), 0, time.Now()) }
 	require.NotPanics(t, testInstrumentWithError)
 
-	testInstrumentWithoutError := func() { instrument(context.Background(), "", "", nil, time.Now()) }
+	testInstrumentWithoutError := func() { instrument(context.Background(), "", "", nil, 0, time.Now()) }
 	require.NotPanics(t, testInstrumentWithoutError)
 }

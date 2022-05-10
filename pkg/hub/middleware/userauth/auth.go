@@ -33,7 +33,7 @@ type Auth struct {
 // that the passed-in teamGroups contains teams that are not set for a user or there is no User CR for a user, we also add
 // these teams to the list of teams for a user, when it is not already present.
 func (a *Auth) getUser(ctx context.Context, userEmail string, teamGroups []string) (authContext.User, error) {
-	authContextUser := authContext.User{Email: userEmail}
+	authContextUser := authContext.User{Email: userEmail, Teams: teamGroups}
 
 	users, err := a.storeClient.GetUsersByEmail(ctx, userEmail)
 	if err != nil {
@@ -41,6 +41,7 @@ func (a *Auth) getUser(ctx context.Context, userEmail string, teamGroups []strin
 	}
 
 	for _, user := range users {
+		authContextUser.Permissions.Teams = append(authContextUser.Permissions.Teams, user.Permissions.Teams...)
 		authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, user.Permissions.Plugins...)
 		authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, user.Permissions.Resources...)
 	}
@@ -52,6 +53,7 @@ func (a *Auth) getUser(ctx context.Context, userEmail string, teamGroups []strin
 		}
 
 		for _, team := range teams {
+			authContextUser.Permissions.Teams = append(authContextUser.Permissions.Teams, team.Permissions.Teams...)
 			authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, team.Permissions.Plugins...)
 			authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, team.Permissions.Resources...)
 		}
@@ -152,13 +154,11 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			// If authentication is disabled, we still check if the request contains a user id, which can be used for a
 			// lightweight audit logging. If there is no user id we set a user with a static id, so that we still have
 			// a valid user object which can be used by the plugins to simplify the authorization logic there.
-			if userEmail == "" {
-				userEmail = ""
-			}
-
 			ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{
 				Email: userEmail,
+				Teams: []string{"*"},
 				Permissions: userv1.Permissions{
+					Teams:     []string{"*"},
 					Plugins:   []userv1.Plugin{{Satellite: "*", Name: "*"}},
 					Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
 				},

@@ -1,7 +1,6 @@
 package plugins
 
 import (
-	"encoding/json"
 	"net/http"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
@@ -48,7 +47,6 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the plugin")
 		return
 	}
-	userJson, _ := json.Marshal(user)
 
 	satellite := router.satellitesClient.GetSatellite(satelliteName)
 	if satellite == nil {
@@ -58,7 +56,7 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.Header.Add("x-kobs-plugin", pluginName)
-	r.Header.Add("x-kobs-user", string(userJson))
+	r.Header.Add("x-kobs-user", user.ToString())
 
 	satellite.Proxy(w, r)
 }
