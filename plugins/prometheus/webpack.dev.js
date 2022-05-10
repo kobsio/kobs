@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-undef */
 /* eslint-disable sort-keys */
 const path = require('path');
@@ -14,6 +15,9 @@ module.exports = merge(common('development'), {
   devServer: {
     port: 3001,
     historyApiFallback: true,
+    proxy: {
+      '/api': 'http://localhost:15220',
+    },
   },
 
   module: {

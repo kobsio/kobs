@@ -3,12 +3,22 @@ package clusters
 import (
 	"net/http"
 
+	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+type Config struct{}
+
+type Router struct {
+	*chi.Mux
+	config         Config
+	clustersClient clusters.Client
+}
 
 func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 	var clusters []string
@@ -35,4 +45,17 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.JSON(w, r, namespaces)
+}
+
+func Mount(config Config, clustersClient clusters.Client) chi.Router {
+	router := Router{
+		chi.NewRouter(),
+		config,
+		clustersClient,
+	}
+
+	router.Get("/", router.getClusters)
+	router.Get("/namespaces", router.getNamespaces)
+
+	return router
 }

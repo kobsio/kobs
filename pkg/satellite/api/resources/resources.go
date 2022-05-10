@@ -9,10 +9,13 @@ import (
 	"time"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/kube/clusters/cluster/terminal"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
@@ -21,6 +24,16 @@ import (
 var (
 	pingPeriod = 30 * time.Second
 )
+
+type Config struct {
+	Forbidden []userv1.Resources `json:"forbidden"`
+}
+
+type Router struct {
+	*chi.Mux
+	config         Config
+	clustersClient clusters.Client
+}
 
 // Resources is the structure for the getResources api call. It contains the cluster, namespace and the json
 // representation of the retunred list object from the Kuberntes API.
@@ -694,4 +707,23 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.JSON(w, r, nil)
+}
+
+func Mount(config Config, clustersClient clusters.Client) chi.Router {
+	router := Router{
+		chi.NewRouter(),
+		config,
+		clustersClient,
+	}
+
+	router.Get("/", router.getResources)
+	router.Delete("/", router.deleteResource)
+	router.Put("/", router.patchResource)
+	router.Post("/", router.createResource)
+	router.Get("/logs", router.getLogs)
+	router.HandleFunc("/terminal", router.getTerminal)
+	router.Get("/file", router.getFile)
+	router.Post("/file", router.postFile)
+
+	return router
 }

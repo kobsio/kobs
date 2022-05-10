@@ -61,3 +61,8 @@ func TestGetUsers(t *testing.T) {
 		})
 	}
 }
+
+func TestMount(t *testing.T) {
+	router := Mount(Config{}, nil)
+	require.NotNil(t, router)
+}
