@@ -4,9 +4,12 @@ package plugin
 // type and an optionsl description. It can also contains a map with additional options. The options can be used to
 // specify the addess, username, password, etc. to access an service within the plugin.
 type Instance struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Type        string                 `json:"type"`
-	Address     string                 `json:"address"`
-	Options     map[string]interface{} `json:"options"`
+	ID            string                 `json:"id"`
+	Satellite     string                 `json:"satellite"`
+	Name          string                 `json:"name"`
+	Description   string                 `json:"description"`
+	Type          string                 `json:"type"`
+	Options       map[string]interface{} `json:"options"`
+	SecureOptions map[string]interface{} `json:"secureOptions"`
+	UpdatedAt     int64                  `json:"updatedAt"`
 }

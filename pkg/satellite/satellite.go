@@ -5,10 +5,18 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/debug"
 	"github.com/kobsio/kobs/pkg/middleware/httplog"
 	"github.com/kobsio/kobs/pkg/middleware/metrics"
+	"github.com/kobsio/kobs/pkg/satellite/api"
+	"github.com/kobsio/kobs/pkg/satellite/api/applications"
+	apiClusters "github.com/kobsio/kobs/pkg/satellite/api/clusters"
+	"github.com/kobsio/kobs/pkg/satellite/api/dashboards"
+	"github.com/kobsio/kobs/pkg/satellite/api/resources"
+	"github.com/kobsio/kobs/pkg/satellite/api/teams"
+	"github.com/kobsio/kobs/pkg/satellite/api/users"
 	"github.com/kobsio/kobs/pkg/satellite/middleware/tokenauth"
 	"github.com/kobsio/kobs/pkg/satellite/middleware/user"
 	"github.com/kobsio/kobs/pkg/satellite/plugins"
@@ -60,7 +68,7 @@ func (s *server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(satelliteAddress, satelliteToken string, clustersRouter chi.Router, pluginsClient plugins.Client) (Server, error) {
+func New(satelliteAddress, satelliteToken string, apiConfig api.Config, clustersClient clusters.Client, pluginsClient plugins.Client) (Server, error) {
 	router := chi.NewRouter()
 	debug.MountRoutes(router)
 
@@ -78,8 +86,13 @@ func New(satelliteAddress, satelliteToken string, clustersRouter chi.Router, plu
 		r.Use(httplog.Logger)
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
-		r.Mount("/clusters", clustersRouter)
-		r.Mount("/plugins", pluginsClient.GetRouter())
+		r.Mount("/clusters", apiClusters.Mount(apiConfig.Clusters, clustersClient))
+		r.Mount("/resources", resources.Mount(apiConfig.Resources, clustersClient))
+		r.Mount("/applications", applications.Mount(apiConfig.Applications, clustersClient))
+		r.Mount("/dashboards", dashboards.Mount(apiConfig.Dashboards, clustersClient))
+		r.Mount("/teams", teams.Mount(apiConfig.Teams, clustersClient))
+		r.Mount("/users", users.Mount(apiConfig.Users, clustersClient))
+		r.Mount("/plugins", pluginsClient.Mount())
 	})
 
 	return &server{

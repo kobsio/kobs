@@ -30,13 +30,13 @@ func TestGetFields(t *testing.T) {
 	ctx1 = context.Background()
 
 	ctx1 = context.WithValue(ctx1, middleware.RequestIDKey, "requestID")
-	ctx1 = context.WithValue(ctx1, authContext.UserKey, authContext.User{ID: "userID"})
+	ctx1 = context.WithValue(ctx1, authContext.UserKey, authContext.User{Email: "user1@kobs.io"})
 	fields = getFields(ctx1, zap.String("foo", "bar"))
-	require.Equal(t, []zap.Field{zap.String("foo", "bar"), zap.String("requestID", "requestID"), zap.String("userID", "userID")}, fields)
+	require.Equal(t, []zap.Field{zap.String("foo", "bar"), zap.String("requestID", "requestID"), zap.String("userEmail", "user1@kobs.io")}, fields)
 
 	ctx2 := ContextWithValue(ctx1, zap.String("hello", "world"))
 	fields = getFields(ctx2, zap.String("foo", "bar"))
-	require.Equal(t, []zap.Field{zap.String("foo", "bar"), zap.String("requestID", "requestID"), zap.String("userID", "userID"), zap.String("hello", "world")}, fields)
+	require.Equal(t, []zap.Field{zap.String("foo", "bar"), zap.String("requestID", "requestID"), zap.String("userEmail", "user1@kobs.io"), zap.String("hello", "world")}, fields)
 }
 
 func TestDebug(t *testing.T) {

@@ -10,7 +10,7 @@ import (
 )
 
 func TestValidateToken(t *testing.T) {
-	token1, _ := CreateToken(authContext.User{ID: "userID"}, "sessionToken", time.Duration(48*time.Hour))
+	token1, _ := CreateToken(authContext.User{Email: "user1@kobs.io"}, "sessionToken", time.Duration(48*time.Hour))
 	_, err := ValidateToken(token1, "wrongSessionToken")
 	require.Error(t, err)
 
@@ -20,12 +20,12 @@ func TestValidateToken(t *testing.T) {
 }
 
 func TestCreateToken(t *testing.T) {
-	token, err := CreateToken(authContext.User{ID: "userID"}, "sessionToken", time.Duration(48*time.Hour))
+	token, err := CreateToken(authContext.User{Email: "user1@kobs.io"}, "sessionToken", time.Duration(48*time.Hour))
 	require.NoError(t, err)
 	user, err := ValidateToken(token, "sessionToken")
 	require.NoError(t, err)
-	require.Equal(t, authContext.User{ID: "userID"}, *user)
+	require.Equal(t, authContext.User{Email: "user1@kobs.io"}, *user)
 
-	_, err = CreateToken(authContext.User{ID: "userID"}, "sessionToken", time.Duration(-48*time.Hour))
+	_, err = CreateToken(authContext.User{Email: "user1@kobs.io"}, "sessionToken", time.Duration(-48*time.Hour))
 	require.Error(t, err)
 }

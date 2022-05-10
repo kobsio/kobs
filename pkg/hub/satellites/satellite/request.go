@@ -11,10 +11,12 @@ import (
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
 // specified type and returns it. if the response code is not 200 it returns an error.
-func doRequest[T any](ctx context.Context, client *http.Client, url, token string) ([]T, error) {
+func doRequest[T any](ctx context.Context, client *http.Client, url, token string) (T, error) {
+	var result T
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return result, err
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -22,24 +24,23 @@ func doRequest[T any](ctx context.Context, client *http.Client, url, token strin
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return result, err
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
-		var res []T
-		if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
-			return nil, err
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			return result, err
 		}
 
-		return res, nil
+		return result, nil
 	}
 
 	var res errresponse.ErrResponse
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
-		return nil, err
+		return result, err
 	}
 
-	return nil, fmt.Errorf("%s", res.Error)
+	return result, fmt.Errorf("%s", res.Error)
 }

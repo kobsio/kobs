@@ -21,14 +21,19 @@ import (
 	"go.uber.org/zap"
 )
 
-// Server implements the hub server. The hub server handles all the Kubernetes resource requests and delegates plugin
-// requests to the correct satellite instance.
-type Server struct {
+// Server is the interface of a hub service, which provides the options to start and stop the underlying http server.
+type Server interface {
+	Start()
+	Stop()
+}
+
+// server implements the Server interface.
+type server struct {
 	server *http.Server
 }
 
 // Start starts serving the hub server.
-func (s *Server) Start() {
+func (s *server) Start() {
 	log.Info(nil, "Hub server started", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
@@ -39,7 +44,7 @@ func (s *Server) Start() {
 }
 
 // Stop terminates the hub server gracefully.
-func (s *Server) Stop() {
+func (s *server) Stop() {
 	log.Debug(nil, "Start shutdown of the hub server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -56,7 +61,7 @@ func (s *Server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (*Server, error) {
+func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (Server, error) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -82,7 +87,7 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))
 	})
 
-	return &Server{
+	return &server{
 		server: &http.Server{
 			Addr:    hubAddress,
 			Handler: router,

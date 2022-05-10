@@ -1,4 +1,4 @@
-package router
+package resources
 
 import (
 	"encoding/json"
@@ -59,6 +59,8 @@ func (router *Router) isForbidden(cluster, namespace, name, verb string) bool {
 // getResources returns a list of resources for the given clusters and namespaces. The result can limited by the
 // paramName and param query parameter.
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
 		log.Warn(r.Context(), "The user is not authorized to access the resource", zap.Error(err))
@@ -98,7 +100,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			if !user.HasResourceAccess(clusterName, "*", resource, "get") {
+			if !user.HasResourceAccess(satellite, clusterName, "*", resource, "get") {
 				log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", "*"), zap.String("resource", resource), zap.String("verb", "get"))
 				errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: *, resource: %s, verb: get", clusterName, resource), http.StatusForbidden, "You are not authorized to access the resource")
 				return
@@ -132,7 +134,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 
-				if !user.HasResourceAccess(clusterName, namespace, resource, "get") {
+				if !user.HasResourceAccess(satellite, clusterName, namespace, resource, "get") {
 					log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", resource), zap.String("verb", "get"))
 					errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s, verb: get", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
 					return
@@ -171,6 +173,8 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 // When the user sets the "force" parameter to "true" we will set a body on the delete request, where we set the
 // "gracePeriodSeconds" to 0. This will cause the same behaviour as "kubectl delete --force --grace-period 0".
 func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
 		log.Warn(r.Context(), "The user is not authorized to access the resource", zap.Error(err))
@@ -193,7 +197,7 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, resource, "delete") {
+	if !user.HasResourceAccess(satellite, clusterName, namespace, resource, "delete") {
 		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", resource), zap.String("verb", "delete"))
 		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s, verb: delete", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
 		return
@@ -231,6 +235,8 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 // patchResource hadnles patch operations for resources. The resource can be identified by the given cluster,
 // namespace, name, resource and path. The patch operation must be provided in the request body.
 func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
 		log.Warn(r.Context(), "The user is not authorized to access the resource", zap.Error(err))
@@ -252,7 +258,7 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, resource, "patch") {
+	if !user.HasResourceAccess(satellite, clusterName, namespace, resource, "patch") {
 		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", resource), zap.String("verb", "patch"))
 		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s, verb: patch", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
 		return
@@ -285,6 +291,8 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 // createResource hadnles patch operations for resources. The resource can be identified by the given cluster,
 // namespace, name, resource and path. The resource must be provided in the request body.
 func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
 		log.Warn(r.Context(), "The user is not authorized to access the resource", zap.Error(err))
@@ -307,7 +315,7 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, resource, "post") {
+	if !user.HasResourceAccess(satellite, clusterName, namespace, resource, "post") {
 		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", resource))
 		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s, verb: create", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
 		return
@@ -340,6 +348,8 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 // getLogs returns the logs for the container of a pod in a cluster and namespace. A user can also set the time since
 // when the logs should be returned.
 func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -430,7 +440,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if !user.HasResourceAccess(clusterName, namespace, "pods/log", "*") {
+		if !user.HasResourceAccess(satellite, clusterName, namespace, "pods/log", "*") {
 			log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", "pods/log"), zap.String("verb", "*"))
 			c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("You are not authorized to access the resource: cluster: %s, namespace: %s, resource: pods/log, verb: *", clusterName, namespace)))
 			return
@@ -460,7 +470,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/log", "*") {
+	if !user.HasResourceAccess(satellite, clusterName, namespace, "pods/log", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", "pods/log"), zap.String("verb", "*"))
 		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/log, verb: *", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
 		return
@@ -483,6 +493,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 // and container via the corresponding query parameter. It is also possible to specify the shell which should be used
 // for the terminal.
 func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -542,7 +554,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "*") {
+	if !user.HasResourceAccess(satellite, clusterName, namespace, "pods/exec", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", "pods/exec"), zap.String("verb", "*"))
 
 		msg, _ := json.Marshal(terminal.Message{
@@ -582,6 +594,8 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 // getFile allows a user to download a file from a given container. For that the file/folder which should be downloaded
 // must be specified as source path (srcPath).
 func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -603,7 +617,7 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "*") {
+	if !user.HasResourceAccess(satellite, clusterName, namespace, "pods/exec", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", "pods/exec"), zap.String("verb", "*"), zap.String("name", name), zap.String("container", container))
 		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/exec, verb: *", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
 		return
@@ -627,6 +641,8 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 // postFile allows a user to upload a file to a given container. For that the file must be sent as form data, so that it
 // can be created in the destination (destPath).
 func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
+	satellite := r.Header.Get("x-kobs-satellite")
+
 	clusterName := r.URL.Query().Get("cluster")
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
@@ -655,7 +671,7 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.HasResourceAccess(clusterName, namespace, "pods/exec", "*") {
+	if !user.HasResourceAccess(satellite, clusterName, namespace, "pods/exec", "*") {
 		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", "pods/exec"), zap.String("verb", "*"), zap.String("name", name), zap.String("container", container))
 		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: pods/exec, verb: *", clusterName, namespace), http.StatusForbidden, "You are not authorized to access the resource")
 		return

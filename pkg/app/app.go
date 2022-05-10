@@ -15,14 +15,19 @@ import (
 	"go.uber.org/zap"
 )
 
-// Server implements the application server. The application server is used to serve the React app and the health
-// endpoint.
-type Server struct {
+// Server is the interface of a app service, which provides the options to start and stop the underlying http server.
+type Server interface {
+	Start()
+	Stop()
+}
+
+// server implements the Server interface.
+type server struct {
 	server *http.Server
 }
 
 // Start starts serving the application server.
-func (s *Server) Start() {
+func (s *server) Start() {
 	log.Info(nil, "Application server started", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
@@ -33,7 +38,7 @@ func (s *Server) Start() {
 }
 
 // Stop terminates the application server gracefully.
-func (s *Server) Stop() {
+func (s *server) Stop() {
 	log.Debug(nil, "Start shutdown of the Application server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -49,7 +54,7 @@ func (s *Server) Stop() {
 // app.address flag.
 // When you haven't build the React app via "yarn build" you can skip serving of the frontend, by passing an empty
 // localtion for the app.assets flag.
-func New(hubAddress, appAddress, appAssetsDir string) (*Server, error) {
+func New(hubAddress, appAddress, appAssetsDir string) (Server, error) {
 	router := chi.NewRouter()
 
 	// Serve the React app, when a directory for all assets is defined. We can not just serve the assets via
@@ -80,7 +85,7 @@ func New(hubAddress, appAddress, appAssetsDir string) (*Server, error) {
 		})
 	}
 
-	return &Server{
+	return &server{
 		server: &http.Server{
 			Addr:    appAddress,
 			Handler: router,

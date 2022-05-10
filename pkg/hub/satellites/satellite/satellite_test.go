@@ -42,6 +42,17 @@ func TestGetClusters(t *testing.T) {
 	require.Empty(t, plugins)
 }
 
+func TestGetNamespaces(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	namespaces, err := client.GetNamespaces(nil)
+	require.Error(t, err)
+	require.Empty(t, namespaces)
+}
+
 func TestGetApplications(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 	defer ts.Close()

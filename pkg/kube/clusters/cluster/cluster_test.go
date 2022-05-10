@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"testing"
-	"time"
 
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
@@ -55,21 +54,9 @@ func TestGetNamespaces(t *testing.T) {
 
 	t.Run("get namespaces", func(t *testing.T) {
 		client := getClient()
-		namespaces, err := client.GetNamespaces(context.Background(), 10*time.Second)
+		namespaces, err := client.GetNamespaces(context.Background())
 		require.NoError(t, err)
 		require.Equal(t, []string([]string{"default", "kube-system"}), namespaces)
-	})
-
-	t.Run("get namespaces from cache", func(t *testing.T) {
-		client := getClient()
-		client.cache = Cache{
-			namespaces:          []string{"default", "kube-system", "kube-public"},
-			namespacesLastFetch: time.Now().Add(-5 * time.Second),
-		}
-
-		namespaces, err := client.GetNamespaces(context.Background(), 10*time.Second)
-		require.NoError(t, err)
-		require.Equal(t, []string([]string{"default", "kube-system", "kube-public"}), namespaces)
 	})
 
 	t.Run("get namespaces error", func(t *testing.T) {
@@ -77,7 +64,7 @@ func TestGetNamespaces(t *testing.T) {
 		client.clientset.CoreV1().(*fakecorev1.FakeCoreV1).PrependReactor("list", "namespaces", func(action kubernetesTesting.Action) (handled bool, ret runtime.Object, err error) {
 			return true, &corev1.NamespaceList{}, fmt.Errorf("error getting namespaces")
 		})
-		namespaces, err := client.GetNamespaces(context.Background(), 10*time.Second)
+		namespaces, err := client.GetNamespaces(context.Background())
 		require.Error(t, err)
 		require.Equal(t, "error getting namespaces", err.Error())
 		require.Equal(t, []string(nil), namespaces)

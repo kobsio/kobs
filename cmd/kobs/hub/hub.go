@@ -26,9 +26,9 @@ var (
 	appAssetsDir        string
 	hubAddress          string
 	hubConfigFile       string
+	hubMode             string
+	hubStoreDriver      string
 	hubStoreURI         string
-	hubStoreType        string
-	hubWatcherEnabled   bool
 	hubWatcherInterval  time.Duration
 	hubWatcherWorker    int64
 	metricsAddress      string
@@ -71,13 +71,13 @@ var Cmd = &cobra.Command{
 			log.Fatal(nil, "Could not create satellites client", zap.Error(err))
 		}
 
-		storeClient, err := store.NewClient(hubStoreType, hubStoreURI)
+		storeClient, err := store.NewClient(hubStoreDriver, hubStoreURI)
 		if err != nil {
 			log.Fatal(nil, "Could not create store", zap.Error(err))
 		}
 
 		var watcherClient watcher.Client
-		if hubWatcherEnabled {
+		if hubMode == "default" || hubMode == "watcher" {
 			watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, satellitesClient, storeClient)
 			if err != nil {
 				log.Fatal(nil, "Could not create watcher", zap.Error(err))
@@ -89,17 +89,22 @@ var Cmd = &cobra.Command{
 		// listener for terminal signals, to initialize the graceful shutdown of the components.
 		// The hubServer handles all requests from the kobs ui, which is served via the appServer. The metrics server is
 		// used to serve the kobs metrics.
-		hubSever, err := hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, satellitesClient, storeClient)
-		if err != nil {
-			log.Fatal(nil, "Could not create hub server", zap.Error(err))
-		}
-		go hubSever.Start()
+		var hubSever hub.Server
+		var appServer app.Server
 
-		appServer, err := app.New(hubAddress, appAddress, appAssetsDir)
-		if err != nil {
-			log.Fatal(nil, "Could not create Application server", zap.Error(err))
+		if hubMode == "default" || hubMode == "server" {
+			hubSever, err = hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, satellitesClient, storeClient)
+			if err != nil {
+				log.Fatal(nil, "Could not create hub server", zap.Error(err))
+			}
+			go hubSever.Start()
+
+			appServer, err = app.New(hubAddress, appAddress, appAssetsDir)
+			if err != nil {
+				log.Fatal(nil, "Could not create Application server", zap.Error(err))
+			}
+			go appServer.Start()
 		}
-		go appServer.Start()
 
 		metricsServer := metrics.New(metricsAddress)
 		go metricsServer.Start()
@@ -114,7 +119,7 @@ var Cmd = &cobra.Command{
 		<-done
 		log.Info(nil, "Shutdown kobs hub...")
 
-		if watcherClient != nil {
+		if hubMode == "default" || hubMode == "watcher" {
 			err := watcherClient.Stop()
 			if err != nil {
 				log.Error(nil, "Failed to stop watcher", zap.Error(err))
@@ -122,8 +127,11 @@ var Cmd = &cobra.Command{
 		}
 
 		metricsServer.Stop()
-		appServer.Stop()
-		hubSever.Stop()
+
+		if hubMode == "default" || hubMode == "server" {
+			appServer.Stop()
+			hubSever.Stop()
+		}
 
 		log.Info(nil, "Shutdown is done")
 	},
@@ -150,12 +158,17 @@ func init() {
 		defaultHubConfigFile = os.Getenv("KOBS_HUB_CONFIG")
 	}
 
-	defaultHubStoreType := "sqlite"
-	if os.Getenv("KOBS_HUB_STORE_TYPE") != "" {
-		defaultHubStoreType = os.Getenv("KOBS_HUB_STORE_TYPE")
+	defaultHubMode := "default"
+	if os.Getenv("KOBS_HUB_MODE") != "" {
+		defaultHubMode = os.Getenv("KOBS_HUB_MODE")
 	}
 
-	defaultHubStoreURI := "file::memory:?cache=shared"
+	defaultHubStoreDriver := "bolt"
+	if os.Getenv("KOBS_HUB_STORE_DRIVER") != "" {
+		defaultHubStoreDriver = os.Getenv("KOBS_HUB_STORE_DRIVER")
+	}
+
+	defaultHubStoreURI := "/tmp/kobs.db"
 	if os.Getenv("KOBS_HUB_STORE_URI") != "" {
 		defaultHubStoreURI = os.Getenv("KOBS_HUB_STORE_URI")
 	}
@@ -208,9 +221,9 @@ func init() {
 	Cmd.PersistentFlags().StringVar(&appAssetsDir, "app.assets", defaultAppAssetsDir, "The location of the assets directory.")
 	Cmd.PersistentFlags().StringVar(&hubAddress, "hub.address", defaultHubAddress, "The address, where the hub is listen on.")
 	Cmd.PersistentFlags().StringVar(&hubConfigFile, "hub.config", defaultHubConfigFile, "Path to the configuration file for the hub.")
-	Cmd.PersistentFlags().StringVar(&hubStoreType, "hub.store.type", defaultHubStoreType, "The database type, which should be used for the store.")
+	Cmd.PersistentFlags().StringVar(&hubMode, "hub.mode", defaultHubMode, "The mode in which the hub should be started. Must be \"default\", \"server\" or \"watcher\".")
+	Cmd.PersistentFlags().StringVar(&hubStoreDriver, "hub.store.driver", defaultHubStoreDriver, "The database driver, which should be used for the store.")
 	Cmd.PersistentFlags().StringVar(&hubStoreURI, "hub.store.uri", defaultHubStoreURI, "The URI for the store.")
-	Cmd.PersistentFlags().BoolVar(&hubWatcherEnabled, "hub.watcher.enabled", true, "Enable / disable the watcher.")
 	Cmd.PersistentFlags().DurationVar(&hubWatcherInterval, "hub.watcher.interval", defaultHubWatcherInterval, "The interval for the watcher to sync the satellite configuration.")
 	Cmd.PersistentFlags().Int64Var(&hubWatcherWorker, "hub.watcher.worker", defaultHubWatcherWorker, "The number of parallel sync processes for the watcher.")
 	Cmd.PersistentFlags().StringVar(&metricsAddress, "metrics.address", defaultMetricsAddress, "The address, where the metrics server is listen on.")

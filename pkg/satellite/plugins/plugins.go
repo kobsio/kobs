@@ -15,7 +15,7 @@ import (
 // Client is the interface which must be implemented by a plugins client. The plugins client must only be export a
 // router with all plugin routes mounted.
 type Client interface {
-	GetRouter() chi.Router
+	Mount() chi.Router
 }
 
 // client implements the plugins Client interface. it contains a router and a list of plugin instances, which are
@@ -25,8 +25,8 @@ type client struct {
 	instances []plugin.Instance
 }
 
-// GetRouter returns the router of the plugins client.
-func (c *client) GetRouter() chi.Router {
+// Mount returns the router of the plugins client, so it can be mounted into an existing chi router.
+func (c *client) Mount() chi.Router {
 	return c.router
 }
 
@@ -38,18 +38,18 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 	// passwords. Therefore we are just returning the name, description, type and address for a plugin instance.
 	router := chi.NewRouter()
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		var saveInstances []plugin.Instance
+		var secureInstances []plugin.Instance
 
 		for _, instance := range instances {
-			saveInstances = append(saveInstances, plugin.Instance{
+			secureInstances = append(secureInstances, plugin.Instance{
 				Name:        instance.Name,
 				Description: instance.Description,
 				Type:        instance.Type,
-				Address:     instance.Address,
+				Options:     instance.Options,
 			})
 		}
 
-		render.JSON(w, r, saveInstances)
+		render.JSON(w, r, secureInstances)
 	})
 
 	// We are checking which plugin types are used in the configuration, so that we are just loading and mounting the

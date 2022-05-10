@@ -107,6 +107,27 @@ func (c *client) watch() {
 				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
+				namespaces, err := s.GetNamespaces(ctx)
+				if err != nil {
+					instrument(ctx, s.GetName(), "clusters", err, startTime)
+					return
+				}
+
+				err = c.storeClient.SaveNamespaces(ctx, s.GetName(), namespaces)
+				if err != nil {
+					instrument(ctx, s.GetName(), "clusters", err, startTime)
+					return
+				}
+
+				instrument(ctx, s.GetName(), "clusters", nil, startTime)
+			}))
+		}(s)
+
+		go func(s satellite.Client) {
+			c.workerPool.RunTask(task(func() {
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
 				applications, err := s.GetApplications(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "applications", err, startTime)
