@@ -2,6 +2,7 @@ package context
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
@@ -19,6 +20,23 @@ type User struct {
 	Email       string             `json:"email"`
 	Teams       []string           `json:"teams"`
 	Permissions userv1.Permissions `json:"permissions"`
+}
+
+// ToString returns the marshaled user object.
+func (u *User) ToString() string {
+	userString, _ := json.Marshal(u)
+	return string(userString)
+}
+
+// HasTeamAccess checks if the user is allowed to view a team. Teams are identified by the group property.
+func (u *User) HasTeamAccess(teamGroup string) bool {
+	for _, t := range u.Permissions.Teams {
+		if t == teamGroup || t == "*" {
+			return true
+		}
+	}
+
+	return false
 }
 
 // HasPluginAccess checks if the user has access to the given plugin.

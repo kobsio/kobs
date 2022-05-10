@@ -27,7 +27,7 @@ func TestUserHandler(t *testing.T) {
 			name:               "get user",
 			user:               authContext.User{},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"\",\"teams\":null,\"permissions\":{\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"email\":\"\",\"teams\":null,\"permissions\":{\"teams\":null,\"plugins\":null,\"resources\":null}}\n",
 		},
 		{
 			name:               "could not get user",

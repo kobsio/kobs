@@ -41,6 +41,7 @@ type UserSpec struct {
 }
 
 type Permissions struct {
+	Teams     []string    `json:"teams"`
 	Plugins   []Plugin    `json:"plugins"`
 	Resources []Resources `json:"resources"`
 }

@@ -9,6 +9,29 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestToString(t *testing.T) {
+	u := User{Email: "test1"}
+	require.Equal(t, "{\"email\":\"test1\",\"teams\":null,\"permissions\":{\"teams\":null,\"plugins\":null,\"resources\":null}}", u.ToString())
+}
+
+func TestHasTeamAccess(t *testing.T) {
+	for _, tt := range []struct {
+		user              User
+		expectedHasAccess bool
+	}{
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"*"}}}, expectedHasAccess: true},
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team1"}}}, expectedHasAccess: true},
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2", "team1"}}}, expectedHasAccess: true},
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2", "*"}}}, expectedHasAccess: true},
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2"}}}, expectedHasAccess: false},
+	} {
+		t.Run(tt.user.Email, func(t *testing.T) {
+			actualHasAccess := tt.user.HasTeamAccess("team1")
+			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
+		})
+	}
+}
+
 func TestHasPluginAccess(t *testing.T) {
 	for _, tt := range []struct {
 		user              User

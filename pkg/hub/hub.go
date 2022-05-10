@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/hub/api/plugins"
+	"github.com/kobsio/kobs/pkg/hub/api/teams"
 	"github.com/kobsio/kobs/pkg/hub/middleware/userauth"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
@@ -85,6 +86,7 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))
+		r.Mount("/teams", teams.Mount(storeClient))
 	})
 
 	return &server{

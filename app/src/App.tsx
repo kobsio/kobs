@@ -11,6 +11,7 @@ import PluginInstances from './components/plugins/PluginInstances';
 import PluginPage from './components/plugins/PluginPage';
 import { PluginsContextProvider } from './context/PluginsContext';
 import Sidebar from './components/sidebar/Sidebar';
+import Teams from './components/teams/Teams';
 
 import './assets/index.css';
 
@@ -33,6 +34,7 @@ export const App: React.FunctionComponent = () => {
         <BrowserRouter>
           <Page isManagedSidebar={true} header={<Header />} sidebar={<Sidebar />}>
             <Routes>
+              <Route path="/teams" element={<Teams />} />
               <Route path="/plugins" element={<PluginInstances />} />
               <Route path="/plugins/:type/:name" element={<PluginPage />} />
             </Routes>

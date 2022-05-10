@@ -38,6 +38,7 @@ type TeamSpec struct {
 	Group       string                  `json:"group" boltholdIndex:"Group"`
 	Description string                  `json:"description,omitempty"`
 	Links       []Link                  `json:"links,omitempty"`
+	Logo        string                  `json:"logo,omitempty"`
 	Permissions userv1.Permissions      `json:"permissions,omitempty"`
 	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
