@@ -38,54 +38,18 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
   const { isError, isLoading, error, data, refetch } = useQuery<IPluginInstance[], Error>(
     ['app/pluginscontext'],
     async () => {
-      return [
-        { name: 'dev/de1', type: 'prometheus' },
-        { name: 'stage/de1', type: 'prometheus' },
-        { name: 'prod/de1', type: 'prometheus' },
-        { name: 'prod/us1', type: 'prometheus' },
-        { name: 'dev/de1', type: 'klogs' },
-        { name: 'stage/de1', type: 'klogs' },
-        { name: 'prod/de1', type: 'klogs' },
-        { name: 'prod/us1', type: 'klogs' },
-        { name: '1', type: 'prometheus' },
-        { name: '2', type: 'prometheus' },
-        { name: '3', type: 'prometheus' },
-        { name: '4', type: 'prometheus' },
-        { name: '5', type: 'prometheus' },
-        { name: '6', type: 'prometheus' },
-        { name: '7', type: 'prometheus' },
-        { name: '8', type: 'prometheus' },
-        { name: '9', type: 'prometheus' },
-        { name: '10', type: 'prometheus' },
-        { name: '11', type: 'prometheus' },
-        { name: '12', type: 'prometheus' },
-        { name: '13', type: 'prometheus' },
-        { name: '14', type: 'prometheus' },
-        { name: '15', type: 'prometheus' },
-        { name: '16', type: 'prometheus' },
-        { name: '17', type: 'prometheus' },
-        { name: '18', type: 'prometheus' },
-        { name: '19', type: 'prometheus' },
-        { name: '20', type: 'prometheus' },
-        { name: '21', type: 'prometheus' },
-        { name: '22', type: 'prometheus' },
-        { name: '23', type: 'prometheus' },
-        { name: '24', type: 'prometheus' },
-        { name: '25', type: 'prometheus' },
-        { name: '26', type: 'prometheus' },
-      ];
-      // const response = await fetch('/api/plugins', { method: 'get' });
-      // const json = await response.json();
+      const response = await fetch('/api/plugins', { method: 'get' });
+      const json = await response.json();
 
-      // if (response.status >= 200 && response.status < 300) {
-      //   return json;
-      // } else {
-      //   if (json.error) {
-      //     throw new Error(json.error);
-      //   } else {
-      //     throw new Error('An unknown error occured');
-      //   }
-      // }
+      if (response.status >= 200 && response.status < 300) {
+        return json ? json : [];
+      } else {
+        if (json.error) {
+          throw new Error(json.error);
+        } else {
+          throw new Error('An unknown error occured');
+        }
+      }
     },
   );
 

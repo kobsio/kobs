@@ -10,10 +10,13 @@ export interface IPluginInstanceOptions {
 // IPluginInstance represents a single instance for a plugin. It contains the name of the instances as well as the
 // configured options.
 export interface IPluginInstance {
+  id: string;
+  satellite: string;
   type: string;
   name: string;
   description?: string;
   options?: IPluginInstanceOptions;
+  updatedAt: number;
 }
 
 // IPluginPageProps are the properties for the page component of each plugin. This interface must be implemented by all

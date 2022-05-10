@@ -31,7 +31,7 @@ const Teams: React.FunctionComponent = () => {
   const debouncedSearchTerm = useDebounce<string>(state.searchTerm, 500);
 
   const { isError, isLoading, error, data, refetch } = useQuery<ITeam[], Error>(
-    ['teams/teams', state.all],
+    ['app/teams/teams', state.all],
     async () => {
       const response = await fetch(`/api/teams?all=${state.all}`, {
         method: 'get',
