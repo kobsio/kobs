@@ -15,6 +15,58 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// func TestPrepare(t *testing.T) {
+// 	fmt.Println("run1")
+
+// 	applicationsSatellite1 := []applicationv1.ApplicationSpec{
+// 		{Cluster: "dev-de1", Namespace: "default", Name: "application1", Description: "This is a test", Teams: []string{"team1"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "dev-de1", Namespace: "default", Name: "application2", Description: "This is a test", Teams: []string{"team1", "team2"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "dev-de1", Namespace: "default", Name: "application3", Teams: []string{"team3"}, Tags: []string{}, Topology: applicationv1.Topology{External: true}},
+// 		{Cluster: "stage-de1", Namespace: "default", Name: "application4", Teams: []string{"team1", "team2", "team3"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "default", Name: "application5", Teams: []string{}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application6", Description: "This is a test", Teams: []string{"team1"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application7", Description: "This is a test", Teams: []string{}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application8", Teams: []string{"team3"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application9", Teams: []string{"team1"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application10", Teams: []string{}, Tags: []string{"core", "provider", "logging"}, Topology: applicationv1.Topology{External: true}},
+// 	}
+// 	applicationsSatellite2 := []applicationv1.ApplicationSpec{
+// 		{Cluster: "dev-de1", Namespace: "default", Name: "application1", Teams: []string{"team1"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "dev-de1", Namespace: "default", Name: "application2", Teams: []string{"team1", "team2"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "dev-de1", Namespace: "default", Name: "application3", Description: "This is a test", Teams: []string{"team3"}, Tags: []string{}, Topology: applicationv1.Topology{External: true}},
+// 		{Cluster: "stage-de1", Namespace: "default", Name: "application4", Description: "This is a test", Teams: []string{"team1", "team2", "team3"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "default", Name: "application5", Description: "This is a test", Teams: []string{}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application6", Teams: []string{"team1"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application7", Teams: []string{}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application8", Description: "This is a test", Teams: []string{"team3"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application9", Description: "This is a test", Teams: []string{"team1"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+// 		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application10", Description: "This is a test", Teams: []string{}, Tags: []string{"core", "provider", "logging"}, Topology: applicationv1.Topology{External: true}},
+// 	}
+
+// 	c, err := NewClient("/tmp/kobs.db")
+// 	require.NoError(t, err)
+
+// 	err = c.SaveApplications(context.Background(), "satellite1", applicationsSatellite1)
+// 	require.NoError(t, err)
+// 	err = c.SaveApplications(context.Background(), "satellite2", applicationsSatellite2)
+// 	require.NoError(t, err)
+
+// 	err = c.SaveTags(context.Background(), applicationsSatellite1)
+// 	require.NoError(t, err)
+// 	err = c.SaveTags(context.Background(), applicationsSatellite2)
+// 	require.NoError(t, err)
+
+// 	err = c.SaveClusters(context.Background(), "satellite1", []string{"dev-de1", "stage-de1"})
+// 	require.NoError(t, err)
+// 	err = c.SaveClusters(context.Background(), "satellite2", []string{"dev-de1", "stage-de1"})
+// 	require.NoError(t, err)
+
+// 	err = c.SaveNamespaces(context.Background(), "satellite1", map[string][]string{"dev-de1": {"default"}, "stage-de1": {"default", "kube-system"}})
+// 	require.NoError(t, err)
+// 	err = c.SaveNamespaces(context.Background(), "satellite2", map[string][]string{"dev-de1": {"default"}, "stage-de1": {"default", "kube-system"}})
+// 	require.NoError(t, err)
+// }
+
 func TestNewClient(t *testing.T) {
 	c1, err1 := NewClient("")
 	require.Error(t, err1)
@@ -230,6 +282,142 @@ func TestSaveAndGetUsers(t *testing.T) {
 	storedUsers2, err := c.GetUsers(context.Background())
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedUsers2))
+}
+
+func TestSaveAndGetTags(t *testing.T) {
+	applications := []applicationv1.ApplicationSpec{{
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "application1",
+		Tags:      []string{"tag1", "tag2", "tag3"},
+	}, {
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "application2",
+		Tags:      []string{"tag3", "tag4", "tag5"},
+	}}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveTags(context.Background(), applications)
+	require.NoError(t, err)
+
+	storedTags1, err := c.GetTags(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, 5, len(storedTags1))
+
+	time.Sleep(2 * time.Second)
+
+	err = c.SaveApplications(context.Background(), "test-satellite", applications[0:1])
+	require.NoError(t, err)
+
+	storedTags2, err := c.GetTags(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, 5, len(storedTags2))
+}
+
+func TestGetNamespacesByClusterIDs(t *testing.T) {
+	var namespaces map[string][]string
+	namespaces = make(map[string][]string)
+	namespaces["dev-de1"] = []string{"default", "kube-system"}
+	namespaces["stage-de1"] = []string{"default", "kube-system", "istio-system"}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveNamespaces(context.Background(), "test-satellite", namespaces)
+	require.NoError(t, err)
+
+	storedNamespaces1, err := c.GetNamespacesByClusterIDs(context.Background(), []string{"/satellite/test-satellite/cluster/dev-de1"})
+	require.NoError(t, err)
+	require.Equal(t, 2, len(storedNamespaces1))
+
+	storedNamespaces2, err := c.GetNamespacesByClusterIDs(context.Background(), []string{"/satellite/test-satellite/cluster/dev-de1", "/satellite/test-satellite/cluster/stage-de1"})
+	require.NoError(t, err)
+	require.Equal(t, 5, len(storedNamespaces2))
+
+	storedNamespaces3, err := c.GetNamespacesByClusterIDs(context.Background(), []string{})
+	require.NoError(t, err)
+	require.Equal(t, 0, len(storedNamespaces3))
+
+	storedNamespaces4, err := c.GetNamespacesByClusterIDs(context.Background(), nil)
+	require.NoError(t, err)
+	require.Equal(t, 0, len(storedNamespaces4))
+}
+
+func TestGetApplicationsByFilter(t *testing.T) {
+	applications := []applicationv1.ApplicationSpec{
+		{Cluster: "dev-de1", Namespace: "default", Name: "application1", Teams: []string{"team1"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "dev-de1", Namespace: "default", Name: "application2", Teams: []string{"team1", "team2"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "dev-de1", Namespace: "default", Name: "application3", Teams: []string{"team3"}, Tags: []string{}, Topology: applicationv1.Topology{External: true}},
+		{Cluster: "stage-de1", Namespace: "default", Name: "application4", Teams: []string{"team1", "team2", "team3"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "stage-de1", Namespace: "default", Name: "application5", Teams: []string{}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application6", Teams: []string{"team1"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application7", Teams: []string{}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application8", Teams: []string{"team3"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application9", Teams: []string{"team1"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
+		{Cluster: "stage-de1", Namespace: "kube-system", Name: "application10", Teams: []string{}, Tags: []string{"core", "provider", "logging"}, Topology: applicationv1.Topology{External: true}},
+	}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveApplications(context.Background(), "test-satellite", applications)
+	require.NoError(t, err)
+
+	getApplicationsNames := func(storedApplications []applicationv1.ApplicationSpec) []string {
+		var names []string
+		for _, a := range storedApplications {
+			names = append(names, a.Name)
+		}
+		return names
+	}
+
+	for _, tt := range []struct {
+		name                 string
+		teams                []string
+		clusterIDs           []string
+		namespaceIDs         []string
+		tags                 []string
+		searchTerm           string
+		external             string
+		limit                int
+		offset               int
+		expectedError        bool
+		expectedApplications []string
+		expectedCount        int
+	}{
+		{name: "searchTerm can not be compiled to regexp", teams: nil, clusterIDs: nil, namespaceIDs: nil, tags: nil, searchTerm: "*", external: "include", limit: 100, offset: 0, expectedError: true, expectedApplications: nil, expectedCount: 0},
+		{name: "no filters", teams: nil, clusterIDs: nil, namespaceIDs: nil, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10", "application2", "application3", "application4", "application5", "application6", "application7", "application8", "application9"}, expectedCount: 10},
+		{name: "no filters but limit", teams: nil, clusterIDs: nil, namespaceIDs: nil, tags: nil, searchTerm: "", external: "include", limit: 5, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10", "application2", "application3", "application4"}, expectedCount: 10},
+		{name: "no filters but limit and offset", teams: nil, clusterIDs: nil, namespaceIDs: nil, tags: nil, searchTerm: "", external: "include", limit: 5, offset: 5, expectedError: false, expectedApplications: []string{"application5", "application6", "application7", "application8", "application9"}, expectedCount: 10},
+		{name: "only searchTerm", teams: nil, clusterIDs: nil, namespaceIDs: nil, tags: nil, searchTerm: "application1", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10"}, expectedCount: 2},
+		{name: "filter by team", teams: []string{"team2"}, clusterIDs: nil, namespaceIDs: nil, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application2", "application4"}, expectedCount: 2},
+		{name: "filter by teams", teams: []string{"team1", "team3"}, clusterIDs: nil, namespaceIDs: nil, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application3", "application4", "application6", "application8", "application9"}, expectedCount: 7},
+		{name: "filter by cluster and namespace", teams: nil, clusterIDs: []string{"/satellite/test-satellite/cluster/dev-de1", "/satellite/test-satellite/cluster/stage-de1"}, namespaceIDs: []string{"/satellite/test-satellite/cluster/dev-de1/namespace/default", "/satellite/test-satellite/cluster/stage-de1/namespace/default"}, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application3", "application4", "application5"}, expectedCount: 5},
+		{name: "filter by cluster and namespace but exclude external", teams: nil, clusterIDs: []string{"/satellite/test-satellite/cluster/dev-de1", "/satellite/test-satellite/cluster/stage-de1"}, namespaceIDs: []string{"/satellite/test-satellite/cluster/dev-de1/namespace/default", "/satellite/test-satellite/cluster/stage-de1/namespace/default"}, tags: nil, searchTerm: "", external: "exclude", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application4", "application5"}, expectedCount: 4},
+		{name: "filter by cluster and namespace but onyl external", teams: nil, clusterIDs: []string{"/satellite/test-satellite/cluster/dev-de1", "/satellite/test-satellite/cluster/stage-de1"}, namespaceIDs: []string{"/satellite/test-satellite/cluster/dev-de1/namespace/default", "/satellite/test-satellite/cluster/stage-de1/namespace/default"}, tags: nil, searchTerm: "", external: "only", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application3"}, expectedCount: 1},
+		{name: "filter by tags", teams: nil, clusterIDs: nil, namespaceIDs: nil, tags: []string{"logging"}, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application10"}, expectedCount: 1},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			storedApplications, err := c.GetApplicationsByFilter(context.Background(), tt.teams, tt.clusterIDs, tt.namespaceIDs, tt.tags, tt.searchTerm, tt.external, tt.limit, tt.offset)
+			if tt.expectedError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+			require.Equal(t, tt.expectedApplications, getApplicationsNames(storedApplications))
+
+			count, err := c.GetApplicationsByFilterCount(context.Background(), tt.teams, tt.clusterIDs, tt.namespaceIDs, tt.tags, tt.searchTerm, tt.external)
+			if tt.expectedError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+			require.Equal(t, tt.expectedCount, count)
+		})
+	}
 }
 
 func TestGetTeamsByGroups(t *testing.T) {

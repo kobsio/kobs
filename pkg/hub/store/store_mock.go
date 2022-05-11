@@ -49,6 +49,50 @@ func (_m *MockClient) GetApplications(ctx context.Context) ([]v1.ApplicationSpec
 	return r0, r1
 }
 
+// GetApplicationsByFilter provides a mock function with given fields: ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, limit, offset
+func (_m *MockClient) GetApplicationsByFilter(ctx context.Context, teams []string, clusterIDs []string, namespaceIDs []string, tags []string, searchTerm string, external string, limit int, offset int) ([]v1.ApplicationSpec, error) {
+	ret := _m.Called(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, limit, offset)
+
+	var r0 []v1.ApplicationSpec
+	if rf, ok := ret.Get(0).(func(context.Context, []string, []string, []string, []string, string, string, int, int) []v1.ApplicationSpec); ok {
+		r0 = rf(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, limit, offset)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]v1.ApplicationSpec)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, []string, []string, []string, []string, string, string, int, int) error); ok {
+		r1 = rf(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, limit, offset)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetApplicationsByFilterCount provides a mock function with given fields: ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external
+func (_m *MockClient) GetApplicationsByFilterCount(ctx context.Context, teams []string, clusterIDs []string, namespaceIDs []string, tags []string, searchTerm string, external string) (int, error) {
+	ret := _m.Called(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, []string, []string, []string, []string, string, string) int); ok {
+		r0 = rf(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, []string, []string, []string, []string, string, string) error); ok {
+		r1 = rf(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetClusters provides a mock function with given fields: ctx
 func (_m *MockClient) GetClusters(ctx context.Context) ([]shared.Cluster, error) {
 	ret := _m.Called(ctx)
@@ -118,6 +162,29 @@ func (_m *MockClient) GetNamespaces(ctx context.Context) ([]shared.Namespace, er
 	return r0, r1
 }
 
+// GetNamespacesByClusterIDs provides a mock function with given fields: ctx, clusterIDs
+func (_m *MockClient) GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []string) ([]shared.Namespace, error) {
+	ret := _m.Called(ctx, clusterIDs)
+
+	var r0 []shared.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context, []string) []shared.Namespace); ok {
+		r0 = rf(ctx, clusterIDs)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]shared.Namespace)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, []string) error); ok {
+		r1 = rf(ctx, clusterIDs)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetPlugins provides a mock function with given fields: ctx
 func (_m *MockClient) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 	ret := _m.Called(ctx)
@@ -128,6 +195,29 @@ func (_m *MockClient) GetPlugins(ctx context.Context) ([]plugin.Instance, error)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]plugin.Instance)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTags provides a mock function with given fields: ctx
+func (_m *MockClient) GetTags(ctx context.Context) ([]shared.Tag, error) {
+	ret := _m.Called(ctx)
+
+	var r0 []shared.Tag
+	if rf, ok := ret.Get(0).(func(context.Context) []shared.Tag); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]shared.Tag)
 		}
 	}
 
@@ -296,6 +386,20 @@ func (_m *MockClient) SavePlugins(ctx context.Context, satellite string, plugins
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, []plugin.Instance) error); ok {
 		r0 = rf(ctx, satellite, plugins)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// SaveTags provides a mock function with given fields: ctx, applications
+func (_m *MockClient) SaveTags(ctx context.Context, applications []v1.ApplicationSpec) error {
+	ret := _m.Called(ctx, applications)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, []v1.ApplicationSpec) error); ok {
+		r0 = rf(ctx, applications)
 	} else {
 		r0 = ret.Error(0)
 	}

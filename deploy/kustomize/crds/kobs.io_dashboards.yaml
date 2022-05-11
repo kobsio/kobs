@@ -36,6 +36,8 @@ spec:
             properties:
               cluster:
                 type: string
+              clusterID:
+                type: string
               description:
                 type: string
               id:
@@ -43,6 +45,8 @@ spec:
               name:
                 type: string
               namespace:
+                type: string
+              namespaceID:
                 type: string
               placeholders:
                 items:

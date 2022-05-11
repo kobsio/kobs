@@ -12,7 +12,10 @@ import {
   ToggleGroup,
   ToggleGroupItem,
   ToolbarContent,
+  ToolbarGroup,
+  ToolbarGroupVariant,
   ToolbarItem,
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
@@ -57,23 +60,23 @@ const Teams: React.FunctionComponent = () => {
       <PageContentSection
         toolbarContent={
           <ToolbarContent>
-            <ToolbarItem>
-              <ToggleGroup aria-label="Select owned or all teams">
-                <ToggleGroupItem
-                  className="pf-u-text-nowrap"
-                  text="Owned"
-                  isSelected={state.all === false}
-                  onChange={(): void => setState({ ...state, all: false, page: 1 })}
-                />
-                <ToggleGroupItem
-                  className="pf-u-text-nowrap"
-                  text="All"
-                  isSelected={state.all === true}
-                  onChange={(): void => setState({ ...state, all: true, page: 1 })}
-                />
-              </ToggleGroup>
-            </ToolbarItem>
-            <ToolbarItem variant="search-filter">
+            <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
+              <ToolbarItem>
+                <ToggleGroup aria-label="Select owned or all teams">
+                  <ToggleGroupItem
+                    text="Owned"
+                    isSelected={state.all === false}
+                    onChange={(): void => setState({ ...state, all: false, page: 1 })}
+                  />
+                  <ToggleGroupItem
+                    text="All"
+                    isSelected={state.all === true}
+                    onChange={(): void => setState({ ...state, all: true, page: 1 })}
+                  />
+                </ToggleGroup>
+              </ToolbarItem>
+            </ToolbarGroup>
+            <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
               <SearchInput
                 aria-label="Search team input"
                 onChange={(value: string): void => setState({ ...state, page: 1, searchTerm: value })}

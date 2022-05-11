@@ -72,7 +72,7 @@ func TestGetTeams(t *testing.T) {
 			name:               "get all teams",
 			url:                "/teams?all=true",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"group\":\"team1\",\"permissions\":{\"teams\":null,\"plugins\":null,\"resources\":null}},{\"group\":\"team2\",\"permissions\":{\"teams\":null,\"plugins\":null,\"resources\":null}},{\"group\":\"team3\",\"permissions\":{\"teams\":null,\"plugins\":null,\"resources\":null}}]\n",
+			expectedBody:       "[{\"group\":\"team1\",\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}},{\"group\":\"team2\",\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}},{\"group\":\"team3\",\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}]\n",
 			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetTeams", mock.Anything).Return([]teamv1.TeamSpec{{Group: "team1"}, {Group: "team2"}, {Group: "team3"}, {Group: "team1"}, {Group: "team2"}}, nil)
 				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
@@ -100,7 +100,7 @@ func TestGetTeams(t *testing.T) {
 			name:               "get own teams",
 			url:                "/teams",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"group\":\"team1\",\"permissions\":{\"teams\":null,\"plugins\":null,\"resources\":null}}]\n",
+			expectedBody:       "[{\"group\":\"team1\",\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}]\n",
 			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
 				mockStoreClient.AssertNotCalled(t, "GetTeams", mock.Anything)
 				mockStoreClient.On("GetTeamsByGroups", mock.Anything, []string{"team1"}).Return([]teamv1.TeamSpec{{Group: "team1"}, {Group: "team1"}}, nil)

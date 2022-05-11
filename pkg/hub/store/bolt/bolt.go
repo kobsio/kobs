@@ -3,6 +3,7 @@ package bolt
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/kobsio/kobs/pkg/hub/store/shared"
@@ -58,7 +59,8 @@ func (c *client) SaveClusters(ctx context.Context, satellite string, clusters []
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
 		for _, clusterName := range clusters {
 			cluster := shared.Cluster{
-				ID:        fmt.Sprintf("/satellite/%s/name/%s", satellite, clusterName),
+				ID:        fmt.Sprintf("/satellite/%s/cluster/%s", satellite, clusterName),
+				Cluster:   clusterName,
 				Satellite: satellite,
 				UpdatedAt: updatedAt,
 			}
@@ -86,6 +88,7 @@ func (c *client) SaveNamespaces(ctx context.Context, satellite string, namespace
 					Namespace: n,
 					Cluster:   k,
 					Satellite: satellite,
+					ClusterID: fmt.Sprintf("/satellite/%s/cluster/%s", satellite, k),
 					UpdatedAt: updatedAt,
 				}
 
@@ -110,6 +113,8 @@ func (c *client) SaveApplications(ctx context.Context, satellite string, applica
 			a.ID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s/name/%s", satellite, a.Cluster, a.Namespace, a.Name)
 			a.Satellite = satellite
 			a.UpdatedAt = updatedAt
+			a.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, a.Cluster)
+			a.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, a.Cluster, a.Namespace)
 
 			err := c.store.TxUpsert(tx, a.ID, shared.SetSatelliteForApplication(a, satellite))
 			if err != nil {
@@ -131,6 +136,8 @@ func (c *client) SaveDashboards(ctx context.Context, satellite string, dashboard
 			d.ID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s/name/%s", satellite, d.Cluster, d.Namespace, d.Name)
 			d.Satellite = satellite
 			d.UpdatedAt = updatedAt
+			d.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, d.Cluster)
+			d.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, d.Cluster, d.Namespace)
 
 			err := c.store.TxUpsert(tx, d.ID, shared.SetSatelliteForDashboard(d, satellite))
 			if err != nil {
@@ -152,6 +159,8 @@ func (c *client) SaveTeams(ctx context.Context, satellite string, teams []teamv1
 			t.ID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s/name/%s", satellite, t.Cluster, t.Namespace, t.Name)
 			t.Satellite = satellite
 			t.UpdatedAt = updatedAt
+			t.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, t.Cluster)
+			t.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, t.Cluster, t.Namespace)
 
 			err := c.store.TxUpsert(tx, t.ID, shared.SetSatelliteForTeam(t, satellite))
 			if err != nil {
@@ -173,6 +182,8 @@ func (c *client) SaveUsers(ctx context.Context, satellite string, users []userv1
 			u.ID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s/name/%s", satellite, u.Cluster, u.Namespace, u.Name)
 			u.Satellite = satellite
 			u.UpdatedAt = updatedAt
+			u.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, u.Cluster)
+			u.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, u.Cluster, u.Namespace)
 
 			err := c.store.TxUpsert(tx, u.ID, shared.SetSatelliteForUser(u, satellite))
 			if err != nil {
@@ -186,10 +197,37 @@ func (c *client) SaveUsers(ctx context.Context, satellite string, users []userv1
 	return err
 }
 
+func (c *client) SaveTags(ctx context.Context, applications []applicationv1.ApplicationSpec) error {
+	updatedAtTime := time.Now()
+	updatedAt := updatedAtTime.Unix()
+
+	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
+		for _, a := range applications {
+			for _, t := range a.Tags {
+				tag := shared.Tag{
+					ID:        fmt.Sprintf("/tag/%s", t),
+					Tag:       t,
+					UpdatedAt: updatedAt,
+				}
+
+				err := c.store.TxUpsert(tx, tag.ID, tag)
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		return c.store.TxDeleteMatching(tx, &shared.Tag{}, bh.Where("UpdatedAt").Lt(updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix()))
+	})
+
+	return err
+}
+
 func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 	var plugins []plugin.Instance
+	query := &bh.Query{}
 
-	err := c.store.Find(&plugins, &bh.Query{})
+	err := c.store.Find(&plugins, query.SortBy("ID"))
 	if err != nil {
 		return nil, err
 	}
@@ -199,8 +237,9 @@ func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 
 func (c *client) GetClusters(ctx context.Context) ([]shared.Cluster, error) {
 	var clusters []shared.Cluster
+	query := &bh.Query{}
 
-	err := c.store.Find(&clusters, &bh.Query{})
+	err := c.store.Find(&clusters, query.SortBy("ID"))
 	if err != nil {
 		return nil, err
 	}
@@ -210,8 +249,24 @@ func (c *client) GetClusters(ctx context.Context) ([]shared.Cluster, error) {
 
 func (c *client) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) {
 	var namespaces []shared.Namespace
+	query := &bh.Query{}
 
-	err := c.store.Find(&namespaces, &bh.Query{})
+	err := c.store.Find(&namespaces, query.SortBy("ID"))
+	if err != nil {
+		return nil, err
+	}
+
+	return namespaces, nil
+}
+
+func (c *client) GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []string) ([]shared.Namespace, error) {
+	if len(clusterIDs) == 0 {
+		return nil, nil
+	}
+
+	var namespaces []shared.Namespace
+
+	err := c.store.Find(&namespaces, bh.Where("ClusterID").In(bh.Slice(clusterIDs)...).SortBy("ID").Index("ClusterID"))
 	if err != nil {
 		return nil, err
 	}
@@ -221,8 +276,9 @@ func (c *client) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) 
 
 func (c *client) GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error) {
 	var applications []applicationv1.ApplicationSpec
+	query := &bh.Query{}
 
-	err := c.store.Find(&applications, &bh.Query{})
+	err := c.store.Find(&applications, query.SortBy("ID"))
 	if err != nil {
 		return nil, err
 	}
@@ -230,10 +286,89 @@ func (c *client) GetApplications(ctx context.Context) ([]applicationv1.Applicati
 	return applications, nil
 }
 
+func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
+	searchTermRegexp, err := regexp.Compile(searchTerm)
+	if err != nil {
+		return nil, err
+	}
+
+	query := bh.Where("Name").RegExp(searchTermRegexp)
+
+	if len(teams) > 0 {
+		query = query.And("Teams").ContainsAny(bh.Slice(teams)...)
+	}
+
+	if len(clusterIDs) > 0 {
+		query = query.And("ClusterID").In(bh.Slice(clusterIDs)...)
+	}
+
+	if len(namespaceIDs) > 0 {
+		query = query.And("NamespaceID").In(bh.Slice(namespaceIDs)...)
+	}
+
+	if len(tags) > 0 {
+		query = query.And("Tags").ContainsAny(bh.Slice(tags)...)
+	}
+
+	if external == "exclude" {
+		query = query.And("Topology.External").Eq(false)
+	} else if external == "only" {
+		query = query.And("Topology.External").Eq(true)
+	}
+
+	var applications []applicationv1.ApplicationSpec
+
+	err = c.store.Find(&applications, query.SortBy("Name").Limit(limit).Skip(offset))
+	if err != nil {
+		return nil, err
+	}
+
+	return applications, nil
+}
+
+func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string) (int, error) {
+	searchTermRegexp, err := regexp.Compile(searchTerm)
+	if err != nil {
+		return 0, err
+	}
+
+	query := bh.Where("Name").RegExp(searchTermRegexp)
+
+	if len(teams) > 0 {
+		query = query.And("Teams").ContainsAny(bh.Slice(teams)...)
+	}
+
+	if len(clusterIDs) > 0 {
+		query = query.And("ClusterID").In(bh.Slice(clusterIDs)...)
+	}
+
+	if len(namespaceIDs) > 0 {
+		query = query.And("NamespaceID").In(bh.Slice(namespaceIDs)...)
+	}
+
+	if len(tags) > 0 {
+		query = query.And("Tags").ContainsAny(bh.Slice(tags)...)
+	}
+
+	if external == "exclude" {
+		query = query.And("Topology.External").Eq(false)
+	} else if external == "only" {
+		query = query.And("Topology.External").Eq(true)
+	}
+
+	count, err := c.store.Count(&applicationv1.ApplicationSpec{}, query)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
 func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
 	var dashboards []dashboardv1.DashboardSpec
+	query := &bh.Query{}
 
-	err := c.store.Find(&dashboards, &bh.Query{})
+	err := c.store.Find(&dashboards, query.SortBy("ID"))
 	if err != nil {
 		return nil, err
 	}
@@ -243,8 +378,9 @@ func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec
 
 func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
 	var teams []teamv1.TeamSpec
+	query := &bh.Query{}
 
-	err := c.store.Find(&teams, &bh.Query{})
+	err := c.store.Find(&teams, query.SortBy("Group"))
 	if err != nil {
 		return nil, err
 	}
@@ -253,9 +389,13 @@ func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
 }
 
 func (c *client) GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv1.TeamSpec, error) {
+	if len(groups) == 0 {
+		return nil, nil
+	}
+
 	var teams []teamv1.TeamSpec
 
-	err := c.store.Find(&teams, bh.Where("Group").ContainsAny(bh.Slice(groups)...))
+	err := c.store.Find(&teams, bh.Where("Group").In(bh.Slice(groups)...).SortBy("Group").Index("Group"))
 	if err != nil {
 		return nil, err
 	}
@@ -265,8 +405,9 @@ func (c *client) GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv
 
 func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
 	var users []userv1.UserSpec
+	query := &bh.Query{}
 
-	err := c.store.Find(&users, &bh.Query{})
+	err := c.store.Find(&users, query.SortBy("ID"))
 	if err != nil {
 		return nil, err
 	}
@@ -277,10 +418,21 @@ func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
 func (c *client) GetUsersByEmail(ctx context.Context, email string) ([]userv1.UserSpec, error) {
 	var users []userv1.UserSpec
 
-	err := c.store.Find(&users, bh.Where("Email").Eq(email))
+	err := c.store.Find(&users, bh.Where("Email").Eq(email).Index("Email"))
 	if err != nil {
 		return nil, err
 	}
 
 	return users, nil
+}
+
+func (c *client) GetTags(ctx context.Context) ([]shared.Tag, error) {
+	var tags []shared.Tag
+
+	err := c.store.Find(&tags, bh.Where("Tag").Ne("").SortBy("Tag"))
+	if err != nil {
+		return nil, err
+	}
+
+	return tags, nil
 }

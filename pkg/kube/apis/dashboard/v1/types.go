@@ -33,6 +33,8 @@ type DashboardSpec struct {
 	Cluster      string        `json:"cluster,omitempty"`
 	Namespace    string        `json:"namespace,omitempty"`
 	Name         string        `json:"name,omitempty"`
+	ClusterID    string        `json:"clusterID,omitempty"`
+	NamespaceID  string        `json:"namespaceID,omitempty"`
 	Title        string        `json:"title,omitempty"`
 	Description  string        `json:"description,omitempty"`
 	Placeholders []Placeholder `json:"placeholders,omitempty"`

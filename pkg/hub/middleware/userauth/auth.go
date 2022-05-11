@@ -41,6 +41,7 @@ func (a *Auth) getUser(ctx context.Context, userEmail string, teamGroups []strin
 	}
 
 	for _, user := range users {
+		authContextUser.Permissions.Applications = append(authContextUser.Permissions.Applications, user.Permissions.Applications...)
 		authContextUser.Permissions.Teams = append(authContextUser.Permissions.Teams, user.Permissions.Teams...)
 		authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, user.Permissions.Plugins...)
 		authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, user.Permissions.Resources...)
@@ -53,6 +54,7 @@ func (a *Auth) getUser(ctx context.Context, userEmail string, teamGroups []strin
 		}
 
 		for _, team := range teams {
+			authContextUser.Permissions.Applications = append(authContextUser.Permissions.Applications, team.Permissions.Applications...)
 			authContextUser.Permissions.Teams = append(authContextUser.Permissions.Teams, team.Permissions.Teams...)
 			authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, team.Permissions.Plugins...)
 			authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, team.Permissions.Resources...)
@@ -158,9 +160,10 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 				Email: userEmail,
 				Teams: []string{"*"},
 				Permissions: userv1.Permissions{
-					Teams:     []string{"*"},
-					Plugins:   []userv1.Plugin{{Satellite: "*", Name: "*"}},
-					Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
+					Applications: []userv1.ApplicationPermissions{{Type: "all"}},
+					Teams:        []string{"*"},
+					Plugins:      []userv1.Plugin{{Satellite: "*", Name: "*"}},
+					Resources:    []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
 				},
 			})
 		}

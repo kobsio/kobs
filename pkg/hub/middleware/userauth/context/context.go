@@ -28,6 +28,43 @@ func (u *User) ToString() string {
 	return string(userString)
 }
 
+// HasApplicationAccess checks if the user is allowed to view an application.
+func (u *User) HasApplicationAccess(satellite, cluster, namespace string, teams []string) bool {
+	for _, a := range u.Permissions.Applications {
+		if a.Type == "all" {
+			return true
+		}
+
+		if a.Type == "own" {
+			for _, applicationTeam := range teams {
+				for _, userTeam := range u.Teams {
+					if userTeam == applicationTeam {
+						return true
+					}
+				}
+			}
+		}
+
+		if a.Type == "custom" {
+			for _, s := range a.Satellites {
+				if s == satellite || s == "*" {
+					for _, c := range a.Clusters {
+						if c == cluster || c == "*" {
+							for _, n := range a.Namespaces {
+								if n == namespace || n == "*" {
+									return true
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false
+}
+
 // HasTeamAccess checks if the user is allowed to view a team. Teams are identified by the group property.
 func (u *User) HasTeamAccess(teamGroup string) bool {
 	for _, t := range u.Permissions.Teams {

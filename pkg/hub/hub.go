@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/hub/api/applications"
+	"github.com/kobsio/kobs/pkg/hub/api/clusters"
 	"github.com/kobsio/kobs/pkg/hub/api/plugins"
 	"github.com/kobsio/kobs/pkg/hub/api/teams"
 	"github.com/kobsio/kobs/pkg/hub/middleware/userauth"
@@ -85,8 +87,10 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
-		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))
+		r.Mount("/clusters", clusters.Mount(storeClient))
+		r.Mount("/applications", applications.Mount(storeClient))
 		r.Mount("/teams", teams.Mount(storeClient))
+		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))
 	})
 
 	return &server{
