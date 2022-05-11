@@ -25,10 +25,12 @@ const Applications: React.FunctionComponent<IApplicationPanelProps> = ({
     <DrawerPanelContent>
       <DrawerHead>
         <Title headingLevel="h2" size="xl">
-          {application.name}{' '}
-          {application.topology && application.topology.external === true
-            ? ''
-            : `(${application.namespace} / ${application.cluster})`}
+          {application.name}
+          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+            {application.topology && application.topology.external === true
+              ? ''
+              : `(${application.namespace} / ${application.cluster})`}
+          </span>
         </Title>
         <DrawerActions>
           <DrawerCloseButton onClick={close} />

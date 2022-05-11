@@ -35,6 +35,7 @@ var (
 	authEnabled         bool
 	authHeaderUser      string
 	authHeaderTeams     string
+	authLogoutRedirect  string
 	authSessionToken    string
 	authSessionInterval time.Duration
 )
@@ -93,7 +94,7 @@ var Cmd = &cobra.Command{
 		var appServer app.Server
 
 		if hubMode == "default" || hubMode == "server" {
-			hubSever, err = hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, satellitesClient, storeClient)
+			hubSever, err = hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken, authSessionInterval, satellitesClient, storeClient)
 			if err != nil {
 				log.Fatal(nil, "Could not create hub server", zap.Error(err))
 			}
@@ -204,6 +205,11 @@ func init() {
 		defaultAuthHeaderTeams = os.Getenv("KOBS_AUTH_HEADER_TEAMS")
 	}
 
+	defaultAuthLogoutRedirect := "/oauth2/sign_out"
+	if os.Getenv("KOBS_AUTH_LOGOUT_REDIRECT") != "" {
+		defaultAuthLogoutRedirect = os.Getenv("KOBS_AUTH_LOGOUT_REDIRECT")
+	}
+
 	defaultAuthSessionToken := ""
 	if os.Getenv("KOBS_AUTH_SESSION_TOKEN") != "" {
 		defaultAuthSessionToken = os.Getenv("KOBS_AUTH_SESSION_TOKEN")
@@ -230,6 +236,7 @@ func init() {
 	Cmd.PersistentFlags().BoolVar(&authEnabled, "auth.enabled", false, "Enable the authentication and authorization middleware.")
 	Cmd.PersistentFlags().StringVar(&authHeaderUser, "auth.header.user", defaultAuthHeaderUser, "The header, which contains the user id.")
 	Cmd.PersistentFlags().StringVar(&authHeaderTeams, "auth.header.teams", defaultAuthHeaderTeams, "The header, which contains the team ids.")
+	Cmd.PersistentFlags().StringVar(&authLogoutRedirect, "auth.logout.redirect", defaultAuthLogoutRedirect, "The redirect url which should be used, when the user clicks on the logout button.")
 	Cmd.PersistentFlags().StringVar(&authSessionToken, "auth.session.token", defaultAuthSessionToken, "The token to encrypt the session cookie.")
 	Cmd.PersistentFlags().DurationVar(&authSessionInterval, "auth.session.interval", defaultAuthSessionInterval, "The interval for how long a session is valid.")
 }

@@ -229,7 +229,7 @@ func TestAuthHandler(t *testing.T) {
 
 			router := chi.NewRouter()
 			router.Use(tt.auth.Handler)
-			router.Get(url, UserHandler)
+			router.Mount(url, Mount(""))
 
 			req, _ := http.NewRequest(http.MethodGet, url, nil)
 			tt.prepareRequest(req)

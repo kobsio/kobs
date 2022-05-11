@@ -1,5 +1,16 @@
-import { DataListCell, DataListItem, DataListItemCells, DataListItemRow, Flex, FlexItem } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  DataListAction,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+  Flex,
+  FlexItem,
+} from '@patternfly/react-core';
 import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
 import React from 'react';
 
 import { IApplication } from '../../crds/application';
@@ -12,7 +23,7 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
   application,
 }: IApplicationsListItemProps) => {
   return (
-    <DataListItem id={application.id}>
+    <DataListItem id={application.id} aria-labelledby={application.id}>
       <DataListItemRow>
         <DataListItemCells
           dataListCells={[
@@ -20,10 +31,12 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
               <Flex direction={{ default: 'column' }}>
                 <FlexItem>
                   <p>
-                    {application.name}{' '}
-                    {application.topology && application.topology.external === true
-                      ? ''
-                      : `(${application.namespace} / ${application.cluster})`}
+                    {application.name}
+                    <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+                      {application.topology && application.topology.external === true
+                        ? ''
+                        : `(${application.namespace} / ${application.cluster})`}
+                    </span>
                   </p>
                   <small>{application.description}</small>
                 </FlexItem>
@@ -57,6 +70,16 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
             </DataListCell>,
           ]}
         />
+        <DataListAction aria-labelledby={application.id} id={application.id} aria-label="Actions">
+          <Button
+            variant={ButtonVariant.link}
+            component={(props): React.ReactElement => (
+              <Link {...props} to={`/applications/${encodeURIComponent(application.id)}`} />
+            )}
+          >
+            View Details
+          </Button>
+        </DataListAction>
       </DataListItemRow>
     </DataListItem>
   );

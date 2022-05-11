@@ -1,4 +1,6 @@
 import '@patternfly/react-core/dist/styles/base.css';
+import '@patternfly/patternfly/patternfly.css';
+import '@patternfly/patternfly/patternfly-addons.css';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -7,6 +9,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Applications from './components/applications/Applications';
+import { AuthContextProvider } from './context/AuthContext';
 import Header from './components/header/Header';
 import PluginInstances from './components/plugins/PluginInstances';
 import PluginPage from './components/plugins/PluginPage';
@@ -31,18 +34,20 @@ const queryClient = new QueryClient({
 export const App: React.FunctionComponent = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <PluginsContextProvider>
-        <BrowserRouter>
-          <Page isManagedSidebar={true} header={<Header />} sidebar={<Sidebar />}>
-            <Routes>
-              <Route path="/" element={<Applications />} />
-              <Route path="/teams" element={<Teams />} />
-              <Route path="/plugins" element={<PluginInstances />} />
-              <Route path="/plugins/:type/:name" element={<PluginPage />} />
-            </Routes>
-          </Page>
-        </BrowserRouter>
-      </PluginsContextProvider>
+      <AuthContextProvider>
+        <PluginsContextProvider>
+          <BrowserRouter>
+            <Page isManagedSidebar={true} header={<Header />} sidebar={<Sidebar />}>
+              <Routes>
+                <Route path="/" element={<Applications />} />
+                <Route path="/teams" element={<Teams />} />
+                <Route path="/plugins" element={<PluginInstances />} />
+                <Route path="/plugins/:type/:name" element={<PluginPage />} />
+              </Routes>
+            </Page>
+          </BrowserRouter>
+        </PluginsContextProvider>
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 };

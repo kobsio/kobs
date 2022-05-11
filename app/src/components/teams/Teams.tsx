@@ -55,7 +55,10 @@ const Teams: React.FunctionComponent = () => {
 
   return (
     <React.Fragment>
-      <PageHeaderSection title="Teams" description="A list of all available teams." />
+      <PageHeaderSection
+        title="Teams"
+        description="A list of your / all teams. You can search for teams by providing the group name of the team."
+      />
 
       <PageContentSection
         toolbarContent={

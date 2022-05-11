@@ -39,7 +39,7 @@ const PluginInstances: React.FunctionComponent = () => {
     <React.Fragment>
       <PageHeaderSection
         title="Plugins"
-        description="A list of all available plugins, which can be used within your Applications."
+        description="A list of all available plugins, which can be used within your applications, dashboards, teams and users. You can also select a plugin to directly interact with the underlying service."
       />
 
       <PageContentSection

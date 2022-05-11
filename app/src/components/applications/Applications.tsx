@@ -38,7 +38,10 @@ const Applications: React.FunctionComponent = () => {
 
   return (
     <React.Fragment>
-      <PageHeaderSection title="Applications" description="A list of your / all applications." />
+      <PageHeaderSection
+        title="Applications"
+        description="A list of your / all applications. You can search for applications or filter them by clusters, namespaces or tags. It is also possible to include or exclude external applications or only view them."
+      />
 
       <PageContentSection
         toolbarContent={options ? <ApplicationsToolbar options={options} setOptions={changeOptions} /> : undefined}
