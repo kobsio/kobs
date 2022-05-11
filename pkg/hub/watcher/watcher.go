@@ -140,6 +140,12 @@ func (c *client) watch() {
 					return
 				}
 
+				err = c.storeClient.SaveTags(ctx, applications)
+				if err != nil {
+					instrument(ctx, s.GetName(), "tags", err, len(applications), startTime)
+					return
+				}
+
 				instrument(ctx, s.GetName(), "applications", nil, len(applications), startTime)
 			}))
 		}(s)

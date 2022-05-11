@@ -36,6 +36,8 @@ spec:
             properties:
               cluster:
                 type: string
+              clusterID:
+                type: string
               dashboards:
                 items:
                   properties:
@@ -156,8 +158,34 @@ spec:
                 type: string
               namespace:
                 type: string
+              namespaceID:
+                type: string
               permissions:
                 properties:
+                  applications:
+                    items:
+                      properties:
+                        clusters:
+                          items:
+                            type: string
+                          type: array
+                        namespaces:
+                          items:
+                            type: string
+                          type: array
+                        satellites:
+                          items:
+                            type: string
+                          type: array
+                        type:
+                          type: string
+                      required:
+                      - clusters
+                      - namespaces
+                      - satellites
+                      - type
+                      type: object
+                    type: array
                   plugins:
                     items:
                       properties:
@@ -208,6 +236,7 @@ spec:
                       type: string
                     type: array
                 required:
+                - applications
                 - plugins
                 - resources
                 - teams

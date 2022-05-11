@@ -35,15 +35,25 @@ type UserSpec struct {
 	Cluster     string                  `json:"cluster,omitempty"`
 	Namespace   string                  `json:"namespace,omitempty"`
 	Name        string                  `json:"name,omitempty"`
+	ClusterID   string                  `json:"clusterID,omitempty"`
+	NamespaceID string                  `json:"namespaceID,omitempty"`
 	Email       string                  `json:"email" boltholdIndex:"Email"`
 	Permissions Permissions             `json:"permissions,omitempty"`
 	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
 
 type Permissions struct {
-	Teams     []string    `json:"teams"`
-	Plugins   []Plugin    `json:"plugins"`
-	Resources []Resources `json:"resources"`
+	Applications []ApplicationPermissions `json:"applications"`
+	Teams        []string                 `json:"teams"`
+	Plugins      []Plugin                 `json:"plugins"`
+	Resources    []Resources              `json:"resources"`
+}
+
+type ApplicationPermissions struct {
+	Type       string   `json:"type"`
+	Satellites []string `json:"satellites"`
+	Clusters   []string `json:"clusters"`
+	Namespaces []string `json:"namespaces"`
 }
 
 type Plugin struct {

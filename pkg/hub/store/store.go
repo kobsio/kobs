@@ -22,15 +22,20 @@ type Client interface {
 	SaveDashboards(ctx context.Context, satellite string, dashboards []dashboardv1.DashboardSpec) error
 	SaveTeams(ctx context.Context, satellite string, teams []teamv1.TeamSpec) error
 	SaveUsers(ctx context.Context, satellite string, users []userv1.UserSpec) error
+	SaveTags(ctx context.Context, applications []applicationv1.ApplicationSpec) error
 	GetPlugins(ctx context.Context) ([]plugin.Instance, error)
 	GetClusters(ctx context.Context) ([]shared.Cluster, error)
 	GetNamespaces(ctx context.Context) ([]shared.Namespace, error)
+	GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []string) ([]shared.Namespace, error)
 	GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error)
+	GetApplicationsByFilter(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
+	GetApplicationsByFilterCount(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string) (int, error)
 	GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error)
 	GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error)
 	GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv1.TeamSpec, error)
 	GetUsers(ctx context.Context) ([]userv1.UserSpec, error)
 	GetUsersByEmail(ctx context.Context, email string) ([]userv1.UserSpec, error)
+	GetTags(ctx context.Context) ([]shared.Tag, error)
 }
 
 func NewClient(driver, uri string) (Client, error) {

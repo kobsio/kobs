@@ -11,7 +11,9 @@ import {
   SelectVariant,
   ToolbarContent,
   ToolbarGroup,
+  ToolbarGroupVariant,
   ToolbarItem,
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
 
@@ -43,7 +45,7 @@ const PluginInstances: React.FunctionComponent = () => {
       <PageContentSection
         toolbarContent={
           <ToolbarContent>
-            <ToolbarItem variant="search-filter">
+            <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
               <SearchInput
                 aria-label="Search plugin input"
                 onChange={(value: string): void => setState({ ...state, page: 1, searchTerm: value })}
@@ -51,12 +53,12 @@ const PluginInstances: React.FunctionComponent = () => {
                 onClear={(): void => setState({ ...state, page: 1, searchTerm: '' })}
               />
             </ToolbarItem>
-            <ToolbarGroup variant="filter-group">
+            <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
               <ToolbarItem>
                 <Select
                   variant={SelectVariant.single}
                   aria-label="Select plugin type input"
-                  placeholderText="Select plugin type"
+                  placeholderText="Plugin Type"
                   onToggle={(): void => setState({ ...state, pluginTypeIsOpen: !state.pluginTypeIsOpen })}
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   onSelect={(_, value: string | SelectOptionObject): void =>

@@ -34,6 +34,8 @@ type ApplicationSpec struct {
 	Cluster     string                  `json:"cluster,omitempty"`
 	Namespace   string                  `json:"namespace,omitempty"`
 	Name        string                  `json:"name,omitempty"`
+	ClusterID   string                  `json:"clusterID,omitempty"`
+	NamespaceID string                  `json:"namespaceID,omitempty"`
 	Description string                  `json:"description,omitempty"`
 	Tags        []string                `json:"tags,omitempty"`
 	Links       []Link                  `json:"links,omitempty"`

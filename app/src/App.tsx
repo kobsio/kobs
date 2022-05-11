@@ -6,6 +6,7 @@ import { Page } from '@patternfly/react-core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Applications from './components/applications/Applications';
 import Header from './components/header/Header';
 import PluginInstances from './components/plugins/PluginInstances';
 import PluginPage from './components/plugins/PluginPage';
@@ -34,6 +35,7 @@ export const App: React.FunctionComponent = () => {
         <BrowserRouter>
           <Page isManagedSidebar={true} header={<Header />} sidebar={<Sidebar />}>
             <Routes>
+              <Route path="/" element={<Applications />} />
               <Route path="/teams" element={<Teams />} />
               <Route path="/plugins" element={<PluginInstances />} />
               <Route path="/plugins/:type/:name" element={<PluginPage />} />

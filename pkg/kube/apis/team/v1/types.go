@@ -35,6 +35,8 @@ type TeamSpec struct {
 	Cluster     string                  `json:"cluster,omitempty"`
 	Namespace   string                  `json:"namespace,omitempty"`
 	Name        string                  `json:"name,omitempty"`
+	ClusterID   string                  `json:"clusterID,omitempty"`
+	NamespaceID string                  `json:"namespaceID,omitempty"`
 	Group       string                  `json:"group" boltholdIndex:"Group"`
 	Description string                  `json:"description,omitempty"`
 	Links       []Link                  `json:"links,omitempty"`
