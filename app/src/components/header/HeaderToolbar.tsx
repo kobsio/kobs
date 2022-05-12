@@ -6,6 +6,7 @@ import {
   DropdownItem,
   DropdownSeparator,
   DropdownToggle,
+  KebabToggle,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -22,12 +23,44 @@ import { AuthContext, IAuthContext } from '../../context/AuthContext';
 const HeaderToolbar: React.FunctionComponent = () => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [isProfileDrowdownOpen, setIsProfileDrowdownOpen] = useState<boolean>(false);
+  const [isMobileDrowdownOpen, setIsMobileDrowdownOpen] = useState<boolean>(false);
 
   const getProfileImageURL = (): string => {
     return (
       'https://secure.gravatar.com/avatar/' + md5(authContext.user.email.toLowerCase().trim()) + '?size=64&default=mm'
     );
   };
+
+  const mobileDrowdownOpen: React.ReactElement[] = [];
+  if (authContext.user.email) {
+    mobileDrowdownOpen.push(
+      <DropdownItem key="myprofile" component={(props): React.ReactElement => <Link {...props} to="/profile" />}>
+        My profile
+      </DropdownItem>,
+    );
+    mobileDrowdownOpen.push(<DropdownSeparator key="divider1" />);
+    mobileDrowdownOpen.push(
+      <DropdownItem key="logout" component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}>
+        Logout
+      </DropdownItem>,
+    );
+    mobileDrowdownOpen.push(<DropdownSeparator key="divider2" />);
+  }
+  mobileDrowdownOpen.push(
+    <DropdownItem key="settings" component={(props): React.ReactElement => <Link {...props} to="/settings" />}>
+      <CogIcon /> Settings
+    </DropdownItem>,
+  );
+  mobileDrowdownOpen.push(
+    <DropdownItem
+      key="help"
+      component={(props): React.ReactElement => (
+        <a {...props} href="https://kobs.io" target="_blank" rel="noreferrer" />
+      )}
+    >
+      <QuestionCircleIcon /> Help
+    </DropdownItem>,
+  );
 
   return (
     <Toolbar id="header-toolbar" isFullHeight={true} isStatic={true}>
@@ -68,6 +101,16 @@ const HeaderToolbar: React.FunctionComponent = () => {
             </ToolbarItem>
           </ToolbarGroup>
         </ToolbarGroup>
+        {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
+        <ToolbarItem visibility={{ '2xl': 'hidden', default: 'visible', lg: 'hidden', md: 'hidden', xl: 'hidden' }}>
+          <Dropdown
+            isPlain={true}
+            position="right"
+            toggle={<KebabToggle onToggle={(): void => setIsMobileDrowdownOpen(!isMobileDrowdownOpen)} />}
+            isOpen={isMobileDrowdownOpen}
+            dropdownItems={mobileDrowdownOpen}
+          />
+        </ToolbarItem>
         {authContext.user.email ? (
           <ToolbarItem visibility={{ default: 'hidden', md: 'visible' }}>
             <Dropdown

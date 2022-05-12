@@ -14,6 +14,8 @@ import Header from './components/header/Header';
 import PluginInstances from './components/plugins/PluginInstances';
 import PluginPage from './components/plugins/PluginPage';
 import { PluginsContextProvider } from './context/PluginsContext';
+import Profile from './components/profile/Profile';
+import Settings from './components/settings/Settings';
 import Sidebar from './components/sidebar/Sidebar';
 import Teams from './components/teams/Teams';
 
@@ -43,6 +45,8 @@ export const App: React.FunctionComponent = () => {
                 <Route path="/teams" element={<Teams />} />
                 <Route path="/plugins" element={<PluginInstances />} />
                 <Route path="/plugins/:type/:name" element={<PluginPage />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
               </Routes>
             </Page>
           </BrowserRouter>
