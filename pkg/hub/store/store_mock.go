@@ -5,7 +5,10 @@ package store
 import (
 	context "context"
 
+	cluster "github.com/kobsio/kobs/pkg/kube/clusters/cluster"
+
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
+
 	mock "github.com/stretchr/testify/mock"
 
 	plugin "github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
@@ -86,6 +89,52 @@ func (_m *MockClient) GetApplicationsByFilterCount(ctx context.Context, teams []
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, []string, []string, []string, []string, string, string) error); ok {
 		r1 = rf(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetCRDByID provides a mock function with given fields: ctx, id
+func (_m *MockClient) GetCRDByID(ctx context.Context, id string) (*cluster.CRD, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *cluster.CRD
+	if rf, ok := ret.Get(0).(func(context.Context, string) *cluster.CRD); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*cluster.CRD)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetCRDs provides a mock function with given fields: ctx
+func (_m *MockClient) GetCRDs(ctx context.Context) ([]cluster.CRD, error) {
+	ret := _m.Called(ctx)
+
+	var r0 []cluster.CRD
+	if rf, ok := ret.Get(0).(func(context.Context) []cluster.CRD); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]cluster.CRD)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -330,6 +379,20 @@ func (_m *MockClient) SaveApplications(ctx context.Context, satellite string, ap
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, []v1.ApplicationSpec) error); ok {
 		r0 = rf(ctx, satellite, applications)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// SaveCRDs provides a mock function with given fields: ctx, crds
+func (_m *MockClient) SaveCRDs(ctx context.Context, crds []cluster.CRD) error {
+	ret := _m.Called(ctx, crds)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, []cluster.CRD) error); ok {
+		r0 = rf(ctx, crds)
 	} else {
 		r0 = ret.Error(0)
 	}

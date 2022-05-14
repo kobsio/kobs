@@ -4,15 +4,15 @@ import { useQuery } from 'react-query';
 
 import { ICluster, IClusters } from '../../resources/clusters';
 
-interface IApplicationsToolbarClustersProps {
+interface IResourcesToolbarClustersProps {
   selectedClusterIDs: string[];
   selectClusterID: (clusterIDs: string) => void;
 }
 
-const ApplicationsToolbarClusters: React.FunctionComponent<IApplicationsToolbarClustersProps> = ({
+const ResourcesToolbarClusters: React.FunctionComponent<IResourcesToolbarClustersProps> = ({
   selectedClusterIDs,
   selectClusterID,
-}: IApplicationsToolbarClustersProps) => {
+}: IResourcesToolbarClustersProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { data } = useQuery<IClusters, Error>(['app/clusters'], async () => {
@@ -47,7 +47,7 @@ const ApplicationsToolbarClusters: React.FunctionComponent<IApplicationsToolbarC
       hasInlineFilter={true}
       maxHeight="50vh"
     >
-      {data
+      {data && Object.keys(data).length > 0
         ? Object.keys(data).map((satellite) => (
             <SelectGroup label={satellite} key={satellite}>
               {data[satellite].map((cluster: ICluster) => (
@@ -57,9 +57,9 @@ const ApplicationsToolbarClusters: React.FunctionComponent<IApplicationsToolbarC
               ))}
             </SelectGroup>
           ))
-        : []}
+        : [<SelectOption key="noresultsfound" value="No results found" isDisabled={true} />]}
     </Select>
   );
 };
 
-export default ApplicationsToolbarClusters;
+export default ResourcesToolbarClusters;

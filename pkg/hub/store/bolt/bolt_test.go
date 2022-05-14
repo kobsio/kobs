@@ -10,6 +10,7 @@ import (
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/kube/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
 	"github.com/stretchr/testify/require"
@@ -142,9 +143,9 @@ func TestSaveAndGetNamespaces(t *testing.T) {
 	err := c.SaveNamespaces(context.Background(), "test-satellite", namespaces1)
 	require.NoError(t, err)
 
-	storedClusters1, err := c.GetNamespaces(context.Background())
+	storedNamespaces1, err := c.GetNamespaces(context.Background())
 	require.NoError(t, err)
-	require.Equal(t, 2, len(storedClusters1))
+	require.Equal(t, 2, len(storedNamespaces1))
 
 	time.Sleep(2 * time.Second)
 
@@ -155,9 +156,35 @@ func TestSaveAndGetNamespaces(t *testing.T) {
 	err = c.SaveNamespaces(context.Background(), "test-satellite", namespaces2)
 	require.NoError(t, err)
 
-	storedClusters2, err := c.GetNamespaces(context.Background())
+	storedNamespaces2, err := c.GetNamespaces(context.Background())
 	require.NoError(t, err)
-	require.Equal(t, 1, len(storedClusters2))
+	require.Equal(t, 1, len(storedNamespaces2))
+}
+
+func TestSaveAndGetCRDs(t *testing.T) {
+	crds1 := []cluster.CRD{
+		{ID: "resource1.path1/v1", Resource: "resource1", Path: "path1/v1"},
+		{ID: "resource2.path2/v2", Resource: "resource2", Path: "path2/v2"},
+	}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveCRDs(context.Background(), crds1)
+	require.NoError(t, err)
+
+	storedCRDs1, err := c.GetCRDs(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, 2, len(storedCRDs1))
+
+	time.Sleep(2 * time.Second)
+
+	err = c.SaveCRDs(context.Background(), crds1[0:1])
+	require.NoError(t, err)
+
+	storedCRDs2, err := c.GetCRDs(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, 2, len(storedCRDs2))
 }
 
 func TestSaveAndGetApplications(t *testing.T) {
@@ -344,6 +371,27 @@ func TestGetNamespacesByClusterIDs(t *testing.T) {
 	storedNamespaces4, err := c.GetNamespacesByClusterIDs(context.Background(), nil)
 	require.NoError(t, err)
 	require.Equal(t, 0, len(storedNamespaces4))
+}
+
+func TestGetCRDByID(t *testing.T) {
+	crds := []cluster.CRD{
+		{ID: "resource1.path1/v1", Resource: "resource1", Path: "path1/v1"},
+		{ID: "resource2.path2/v2", Resource: "resource2", Path: "path2/v2"},
+	}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveCRDs(context.Background(), crds)
+	require.NoError(t, err)
+
+	crd1, err := c.GetCRDByID(context.Background(), "resource1.path1/v1")
+	require.NoError(t, err)
+	require.NotNil(t, crd1)
+
+	crd2, err := c.GetCRDByID(context.Background(), "resource3.path3/v3")
+	require.Error(t, err)
+	require.Nil(t, crd2)
 }
 
 func TestGetApplicationsByFilter(t *testing.T) {

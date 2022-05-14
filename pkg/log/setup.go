@@ -34,7 +34,7 @@ func Setup(level, format string) {
 		},
 	}
 
-	logger, err := zapConfig.Build()
+	logger, err := zapConfig.Build(zap.AddCaller(), zap.AddCallerSkip(1))
 	if err != nil {
 		panic(err)
 	}

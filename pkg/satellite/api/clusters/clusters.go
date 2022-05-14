@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/kobsio/kobs/pkg/kube/clusters"
+	"github.com/kobsio/kobs/pkg/kube/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
@@ -47,6 +48,16 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, namespaces)
 }
 
+func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
+	var crds []cluster.CRD
+
+	for _, c := range router.clustersClient.GetClusters() {
+		crds = append(crds, c.GetCRDs()...)
+	}
+
+	render.JSON(w, r, crds)
+}
+
 func Mount(config Config, clustersClient clusters.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
@@ -56,6 +67,7 @@ func Mount(config Config, clustersClient clusters.Client) chi.Router {
 
 	router.Get("/", router.getClusters)
 	router.Get("/namespaces", router.getNamespaces)
+	router.Get("/crds", router.getCRDs)
 
 	return router
 }

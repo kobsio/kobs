@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { PageContentSection, PageHeaderSection } from '@kobsio/shared';
+import ApplicationPanel from './ApplicationPanel';
 import ApplicationsList from './ApplicationsList';
 import ApplicationsPagination from './ApplicationsPagination';
-import ApplicationsPanel from './ApplicationsPanel';
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { IApplication } from '../../crds/application';
 import { IOptions } from './utils/interfaces';
@@ -47,10 +47,7 @@ const Applications: React.FunctionComponent = () => {
         toolbarContent={options ? <ApplicationsToolbar options={options} setOptions={changeOptions} /> : undefined}
         panelContent={
           selectedApplication ? (
-            <ApplicationsPanel
-              application={selectedApplication}
-              close={(): void => setSelectedApplication(undefined)}
-            />
+            <ApplicationPanel application={selectedApplication} close={(): void => setSelectedApplication(undefined)} />
           ) : undefined
         }
       >

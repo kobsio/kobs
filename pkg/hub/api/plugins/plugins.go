@@ -50,7 +50,7 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 
 	satellite := router.satellitesClient.GetSatellite(satelliteName)
 	if satellite == nil {
-		log.Error(r.Context(), "Satellite was not found", zap.String("satelliteName", satelliteName), zap.String("pluginName", pluginName))
+		log.Error(r.Context(), "Satellite was not found", zap.String("satellite", satelliteName), zap.String("plugin", pluginName))
 		errresponse.Render(w, r, nil, http.StatusInternalServerError, "Satellite was not found")
 		return
 	}

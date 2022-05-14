@@ -47,7 +47,9 @@ const ApplicationsToolbarTags: React.FunctionComponent<IApplicationsToolbarTagsP
       hasInlineFilter={true}
       maxHeight="50vh"
     >
-      {data ? data.map((tag) => <SelectOption key={tag.tag} value={tag.tag} />) : []}
+      {data && data.length > 0
+        ? data.map((tag) => <SelectOption key={tag.tag} value={tag.tag} />)
+        : [<SelectOption key="noresultsfound" value="No results found" isDisabled={true} />]}
     </Select>
   );
 };

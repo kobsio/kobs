@@ -11,6 +11,7 @@ import (
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/kube/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
 	bh "github.com/timshannon/bolthold"
@@ -100,6 +101,26 @@ func (c *client) SaveNamespaces(ctx context.Context, satellite string, namespace
 		}
 
 		return c.store.TxDeleteMatching(tx, &shared.Namespace{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
+	})
+
+	return err
+}
+
+func (c *client) SaveCRDs(ctx context.Context, crds []cluster.CRD) error {
+	updatedAtTime := time.Now()
+	updatedAt := updatedAtTime.Unix()
+
+	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
+		for _, crd := range crds {
+			crd.UpdatedAt = updatedAt
+
+			err := c.store.TxUpsert(tx, crd.ID, crd)
+			if err != nil {
+				return err
+			}
+		}
+
+		return c.store.TxDeleteMatching(tx, &cluster.CRD{}, bh.Where("UpdatedAt").Lt(updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix()))
 	})
 
 	return err
@@ -257,6 +278,29 @@ func (c *client) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) 
 	}
 
 	return namespaces, nil
+}
+
+func (c *client) GetCRDs(ctx context.Context) ([]cluster.CRD, error) {
+	var crds []cluster.CRD
+	query := &bh.Query{}
+
+	err := c.store.Find(&crds, query.SortBy("ID"))
+	if err != nil {
+		return nil, err
+	}
+
+	return crds, nil
+}
+
+func (c *client) GetCRDByID(ctx context.Context, id string) (*cluster.CRD, error) {
+	var crd cluster.CRD
+
+	err := c.store.Get(id, &crd)
+	if err != nil {
+		return nil, err
+	}
+
+	return &crd, nil
 }
 
 func (c *client) GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []string) ([]shared.Namespace, error) {

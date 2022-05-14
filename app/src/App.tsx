@@ -15,10 +15,12 @@ import PluginInstances from './components/plugins/PluginInstances';
 import PluginPage from './components/plugins/PluginPage';
 import { PluginsContextProvider } from './context/PluginsContext';
 import Profile from './components/profile/Profile';
+import Resources from './components/resources/Resources';
 import Settings from './components/settings/Settings';
 import Sidebar from './components/sidebar/Sidebar';
 import Teams from './components/teams/Teams';
 
+import 'xterm/css/xterm.css';
 import './assets/index.css';
 
 const queryClient = new QueryClient({
@@ -43,6 +45,7 @@ export const App: React.FunctionComponent = () => {
               <Routes>
                 <Route path="/" element={<Applications />} />
                 <Route path="/teams" element={<Teams />} />
+                <Route path="/resources" element={<Resources />} />
                 <Route path="/plugins" element={<PluginInstances />} />
                 <Route path="/plugins/:type/:name" element={<PluginPage />} />
                 <Route path="/profile" element={<Profile />} />

@@ -19,6 +19,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "importHelpers": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": false,
   }
 }

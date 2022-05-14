@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,7 +16,15 @@ func TestDoRequest(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 		defer ts.Close()
 
-		_, err := doRequest[[]string](nil, ts.Client(), ts.URL, "")
+		_, err := doRequest[[]string](nil, nil, ts.Client(), ts.URL, "")
+		require.Error(t, err)
+	})
+
+	t.Run("invalid request with user context", func(t *testing.T) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+		defer ts.Close()
+
+		_, err := doRequest[[]string](context.Background(), &authContext.User{Email: "test"}, ts.Client(), "", "")
 		require.Error(t, err)
 	})
 
@@ -22,7 +32,7 @@ func TestDoRequest(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 		defer ts.Close()
 
-		_, err := doRequest[[]string](context.Background(), ts.Client(), "", "")
+		_, err := doRequest[[]string](context.Background(), nil, ts.Client(), "", "")
 		require.Error(t, err)
 	})
 
@@ -34,7 +44,7 @@ func TestDoRequest(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		clusters, err := doRequest[[]string](context.Background(), ts.Client(), ts.URL, "")
+		clusters, err := doRequest[[]string](context.Background(), nil, ts.Client(), ts.URL, "")
 		require.NoError(t, err)
 		require.Equal(t, []string{"cluster1", "cluster2"}, clusters)
 	})
@@ -51,7 +61,7 @@ func TestDoRequest(t *testing.T) {
 		expectedNamespaces = make(map[string][]string)
 		expectedNamespaces["cluster1"] = []string{"default", "kube-system"}
 
-		actualNamespaces, err := doRequest[map[string][]string](context.Background(), ts.Client(), ts.URL, "")
+		actualNamespaces, err := doRequest[map[string][]string](context.Background(), nil, ts.Client(), ts.URL, "")
 		require.NoError(t, err)
 		require.Equal(t, expectedNamespaces, actualNamespaces)
 	})
@@ -64,7 +74,7 @@ func TestDoRequest(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		_, err := doRequest[[]string](context.Background(), ts.Client(), ts.URL, "")
+		_, err := doRequest[[]string](context.Background(), nil, ts.Client(), ts.URL, "")
 		require.Error(t, err)
 	})
 
@@ -76,7 +86,7 @@ func TestDoRequest(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		_, err := doRequest[[]string](context.Background(), ts.Client(), ts.URL, "")
+		_, err := doRequest[[]string](context.Background(), nil, ts.Client(), ts.URL, "")
 		require.Error(t, err)
 	})
 
@@ -88,7 +98,7 @@ func TestDoRequest(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		_, err := doRequest[[]string](context.Background(), ts.Client(), ts.URL, "")
+		_, err := doRequest[[]string](context.Background(), nil, ts.Client(), ts.URL, "")
 		require.Error(t, err)
 	})
 }

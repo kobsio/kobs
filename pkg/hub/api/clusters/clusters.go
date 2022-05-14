@@ -67,6 +67,17 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, groupedNamespaces)
 }
 
+func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
+	crds, err := router.storeClient.GetCRDs(r.Context())
+	if err != nil {
+		log.Error(r.Context(), "Could not get Custom Resource Definitions", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get Custom Resource Definitions")
+		return
+	}
+
+	render.JSON(w, r, shared.GetResources(crds))
+}
+
 func Mount(storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
@@ -75,6 +86,7 @@ func Mount(storeClient store.Client) chi.Router {
 
 	router.Get("/", router.getClusters)
 	router.Get("/namespaces", router.getNamespaces)
+	router.Get("/resources", router.getResources)
 
 	return router
 }

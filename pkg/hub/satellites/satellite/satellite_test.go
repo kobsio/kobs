@@ -53,6 +53,17 @@ func TestGetNamespaces(t *testing.T) {
 	require.Empty(t, namespaces)
 }
 
+func TestGetCRDs(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	crds, err := client.GetCRDs(nil)
+	require.Error(t, err)
+	require.Empty(t, crds)
+}
+
 func TestGetApplications(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 	defer ts.Close()
@@ -93,6 +104,17 @@ func TestGetUsers(t *testing.T) {
 	client, _ := NewClient(Config{Address: ts.URL})
 
 	plugins, err := client.GetUsers(nil)
+	require.Error(t, err)
+	require.Empty(t, plugins)
+}
+
+func TestGetResources(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer ts.Close()
+
+	client, _ := NewClient(Config{Address: ts.URL})
+
+	plugins, err := client.GetResources(nil, nil, "", "", "", "", "", "", "")
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }

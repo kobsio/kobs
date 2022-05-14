@@ -35,17 +35,13 @@ type Router struct {
 	clustersClient clusters.Client
 }
 
-// Resources is the structure for the getResources api call. It contains the cluster, namespace and the json
-// representation of the retunred list object from the Kuberntes API.
-type Resources struct {
-	Cluster   string                 `json:"cluster"`
-	Namespace string                 `json:"namespace"`
-	Resources map[string]interface{} `json:"resources"`
-}
-
 // isForbidden checks if the requested resource was specified in the forbidden resources list. This can be used to use
 // wildcard selectors in the RBAC permissions for kobs, but disallow the users to view secrets.
 func (router *Router) isForbidden(cluster, namespace, name, verb string) bool {
+	if namespace == "" {
+		namespace = "*"
+	}
+
 	for _, resource := range router.config.Forbidden {
 		for _, c := range resource.Clusters {
 			if c == cluster || c == "*" {
@@ -81,103 +77,50 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clusterNames := r.URL.Query()["cluster"]
-	namespaces := r.URL.Query()["namespace"]
+	clusterName := r.URL.Query().Get("cluster")
+	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 	resource := r.URL.Query().Get("resource")
 	path := r.URL.Query().Get("path")
 	paramName := r.URL.Query().Get("paramName")
 	param := r.URL.Query().Get("param")
 
-	log.Debug(r.Context(), "Get resources parameters", zap.Strings("clusters", clusterNames), zap.Strings("namespaces", namespaces), zap.String("name", name), zap.String("resource", resource), zap.String("path", path), zap.String("paramName", paramName), zap.String("param", param))
+	log.Debug(r.Context(), "Get resources parameters", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource), zap.String("path", path), zap.String("paramName", paramName), zap.String("param", param))
 
-	var resources []Resources
-
-	// Loop through all the given cluster names and get for each provided name the cluster interface. After that we
-	// check if the resource was provided via the forbidden resources list.
-	for _, clusterName := range clusterNames {
-		cluster := router.clustersClient.GetCluster(clusterName)
-		if cluster == nil {
-			log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
-			errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
-			return
-		}
-
-		// If the namespaces slice is nil, we retrieve the resource for all namespaces. If a list of namespaces was
-		// provided we loop through all the namespaces and return the resources for these namespaces. All results are
-		// added to the resources slice, which is then returned by the api.
-		if namespaces == nil {
-			if router.isForbidden(clusterName, "*", resource, "get") {
-				log.Warn(r.Context(), "Access for the resource is forbidden", zap.String("cluster", clusterName), zap.String("namespace", "*"), zap.String("resource", resource), zap.String("verb", "get"))
-				errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: *, resource: %s, verb: get", clusterName, resource), http.StatusForbidden, "Access for the resource is forbidden")
-				return
-			}
-
-			if !user.HasResourceAccess(satellite, clusterName, "*", resource, "get") {
-				log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", "*"), zap.String("resource", resource), zap.String("verb", "get"))
-				errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: *, resource: %s, verb: get", clusterName, resource), http.StatusForbidden, "You are not authorized to access the resource")
-				return
-			}
-
-			list, err := cluster.GetResources(r.Context(), "", name, path, resource, paramName, param)
-			if err != nil {
-				log.Error(r.Context(), "Could not get resource", zap.Error(err))
-				errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
-				return
-			}
-
-			var tmpResources map[string]interface{}
-			err = json.Unmarshal(list, &tmpResources)
-			if err != nil {
-				log.Error(r.Context(), "Could not unmarshal resources", zap.Error(err))
-				errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not unmarshal resources")
-				return
-			}
-
-			resources = append(resources, Resources{
-				Cluster:   clusterName,
-				Namespace: "",
-				Resources: tmpResources,
-			})
-		} else {
-			for _, namespace := range namespaces {
-				if router.isForbidden(clusterName, namespace, resource, "get") {
-					log.Warn(r.Context(), "Access for the resource is forbidden", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", resource), zap.String("verb", "get"))
-					errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s, verb: get", clusterName, namespace, resource), http.StatusForbidden, "Access for the resource is forbidden")
-					return
-				}
-
-				if !user.HasResourceAccess(satellite, clusterName, namespace, resource, "get") {
-					log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("resource", resource), zap.String("verb", "get"))
-					errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: %s, resource: %s, verb: get", clusterName, namespace, resource), http.StatusForbidden, "You are not authorized to access the resource")
-					return
-				}
-
-				list, err := cluster.GetResources(r.Context(), namespace, name, path, resource, paramName, param)
-				if err != nil {
-					log.Error(r.Context(), "Could not get resources", zap.Error(err))
-					errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
-					return
-				}
-
-				var tmpResources map[string]interface{}
-				err = json.Unmarshal(list, &tmpResources)
-				if err != nil {
-					log.Error(r.Context(), "Could not unmarshal resources", zap.Error(err))
-					errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not unmarshal resources")
-					return
-				}
-
-				resources = append(resources, Resources{
-					Cluster:   clusterName,
-					Namespace: namespace,
-					Resources: tmpResources,
-				})
-			}
-		}
+	cluster := router.clustersClient.GetCluster(clusterName)
+	if cluster == nil {
+		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
+		return
 	}
 
-	log.Debug(r.Context(), "Get resources result", zap.Int("resourcesCount", len(resources)))
+	if router.isForbidden(clusterName, namespace, resource, "get") {
+		log.Warn(r.Context(), "Access for the resource is forbidden", zap.String("cluster", clusterName), zap.String("namespace", "*"), zap.String("resource", resource), zap.String("verb", "get"))
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: *, resource: %s, verb: get", clusterName, resource), http.StatusForbidden, "Access for the resource is forbidden")
+		return
+	}
+
+	if !user.HasResourceAccess(satellite, clusterName, namespace, resource, "get") {
+		log.Warn(r.Context(), "User is not authorized to access the resource", zap.String("cluster", clusterName), zap.String("namespace", "*"), zap.String("resource", resource), zap.String("verb", "get"))
+		errresponse.Render(w, r, fmt.Errorf("cluster: %s, namespace: *, resource: %s, verb: get", clusterName, resource), http.StatusForbidden, "You are not authorized to access the resource")
+		return
+	}
+
+	list, err := cluster.GetResources(r.Context(), namespace, name, path, resource, paramName, param)
+	if err != nil {
+		log.Error(r.Context(), "Could not get resource", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get resources")
+		return
+	}
+
+	var resources map[string]any
+	err = json.Unmarshal(list, &resources)
+	if err != nil {
+		log.Error(r.Context(), "Could not unmarshal resources", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not unmarshal resources")
+		return
+	}
+
 	render.JSON(w, r, resources)
 }
 

@@ -21,3 +21,21 @@ export interface INamespace {
   clusterID: string;
   updatedAt: number;
 }
+
+export interface IResource {
+  id: string;
+  description: string;
+  isCRD: boolean;
+  path: string;
+  resource: string;
+  scope: string;
+  title: string;
+  columns: ICRDColumn[];
+}
+
+export interface ICRDColumn {
+  description: string;
+  jsonPath: string;
+  name: string;
+  type: string;
+}

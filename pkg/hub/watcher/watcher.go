@@ -128,6 +128,27 @@ func (c *client) watch() {
 				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
+				crds, err := s.GetCRDs(ctx)
+				if err != nil {
+					instrument(ctx, s.GetName(), "crds", err, len(crds), startTime)
+					return
+				}
+
+				err = c.storeClient.SaveCRDs(ctx, crds)
+				if err != nil {
+					instrument(ctx, s.GetName(), "crds", err, len(crds), startTime)
+					return
+				}
+
+				instrument(ctx, s.GetName(), "crds", nil, len(crds), startTime)
+			}))
+		}(s)
+
+		go func(s satellite.Client) {
+			c.workerPool.RunTask(task(func() {
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				defer cancel()
+
 				applications, err := s.GetApplications(ctx)
 				if err != nil {
 					instrument(ctx, s.GetName(), "applications", err, len(applications), startTime)
