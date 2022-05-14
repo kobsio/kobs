@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 )
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
 // specified type and returns it. if the response code is not 200 it returns an error.
-func doRequest[T any](ctx context.Context, client *http.Client, url, token string) (T, error) {
+func doRequest[T any](ctx context.Context, user *authContext.User, client *http.Client, url, token string) (T, error) {
 	var result T
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -20,7 +21,11 @@ func doRequest[T any](ctx context.Context, client *http.Client, url, token strin
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	req.Header.Add("x-kobs-user", "{\"email\": \"\"}")
+	if user != nil {
+		req.Header.Add("x-kobs-user", user.ToString())
+	} else {
+		req.Header.Add("x-kobs-user", "{\"email\": \"\"}")
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {

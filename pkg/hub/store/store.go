@@ -10,6 +10,7 @@ import (
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/kube/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/kube/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 )
 
@@ -18,6 +19,7 @@ type Client interface {
 	SavePlugins(ctx context.Context, satellite string, plugins []plugin.Instance) error
 	SaveClusters(ctx context.Context, satellite string, clusters []string) error
 	SaveNamespaces(ctx context.Context, satellite string, namespaces map[string][]string) error
+	SaveCRDs(ctx context.Context, crds []cluster.CRD) error
 	SaveApplications(ctx context.Context, satellite string, applications []applicationv1.ApplicationSpec) error
 	SaveDashboards(ctx context.Context, satellite string, dashboards []dashboardv1.DashboardSpec) error
 	SaveTeams(ctx context.Context, satellite string, teams []teamv1.TeamSpec) error
@@ -27,6 +29,8 @@ type Client interface {
 	GetClusters(ctx context.Context) ([]shared.Cluster, error)
 	GetNamespaces(ctx context.Context) ([]shared.Namespace, error)
 	GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []string) ([]shared.Namespace, error)
+	GetCRDs(ctx context.Context) ([]cluster.CRD, error)
+	GetCRDByID(ctx context.Context, id string) (*cluster.CRD, error)
 	GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error)
 	GetApplicationsByFilter(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
 	GetApplicationsByFilterCount(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string) (int, error)

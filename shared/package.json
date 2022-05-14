@@ -163,5 +163,9 @@
     "singleQuote": true,
     "printWidth": 120,
     "tabWidth": 2
+  },
+  "dependencies": {
+    "@nivo/core": "^0.79.0",
+    "react-ace": "^10.1.0"
   }
 }

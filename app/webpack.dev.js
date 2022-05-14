@@ -37,6 +37,7 @@ module.exports = merge(common('development'), {
             __dirname,
             'node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css',
           ),
+          path.resolve(__dirname, 'node_modules/xterm/css'),
         ],
         use: ['style-loader', 'css-loader'],
       },

@@ -13,10 +13,10 @@ import {
 import React, { useState } from 'react';
 import { SearchIcon } from '@patternfly/react-icons';
 
-import ApplicationsToolbarClusters from './ApplicationsToolbarClusters';
-import ApplicationsToolbarNamespaces from './ApplicationsToolbarNamespaces';
 import ApplicationsToolbarTags from './ApplicationsToolbarTags';
 import { IOptions } from './utils/interfaces';
+import ResourcesToolbarClusters from '../resources/ResourcesToolbarClusters';
+import ResourcesToolbarNamespaces from '../resources/ResourcesToolbarNamespaces';
 
 interface IApplicationsToolbarProps {
   options: IOptions;
@@ -97,10 +97,10 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
       </ToolbarItem>
       <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
         <ToolbarItem>
-          <ApplicationsToolbarClusters selectedClusterIDs={state.clusterIDs} selectClusterID={selectClusterID} />
+          <ResourcesToolbarClusters selectedClusterIDs={state.clusterIDs} selectClusterID={selectClusterID} />
         </ToolbarItem>
         <ToolbarItem>
-          <ApplicationsToolbarNamespaces
+          <ResourcesToolbarNamespaces
             selectedClusterIDs={state.clusterIDs}
             selectedNamespaceIDs={state.namespaceIDs}
             selectNamespaceID={selectNamespaceID}

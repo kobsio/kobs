@@ -43,17 +43,25 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@kubernetes/client-node": "^0.16.3",
+    "@nivo/bar": "^0.79.1",
+    "@nivo/core": "^0.79.0",
     "@patternfly/patternfly": "^4.192.1",
     "@patternfly/react-core": "^4.181.1",
     "@patternfly/react-icons": "^4.32.1",
+    "@patternfly/react-log-viewer": "^4.59.1",
     "@patternfly/react-styles": "^4.31.1",
     "@patternfly/react-table": "^4.71.16",
+    "fast-json-patch": "^3.1.1",
+    "jsonpath-plus": "^6.0.1",
     "md5": "^2.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-error-boundary": "^3.1.4",
     "react-query": "^3.35.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "xterm": "^4.18.0",
+    "xterm-addon-fit": "^0.5.0"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",

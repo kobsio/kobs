@@ -91,12 +91,14 @@ type client struct {
 // the CRs (namespaced vs. cluster) and an optional list of columns with the fields, which should be shown in the
 // frontend table.
 type CRD struct {
+	ID          string      `json:"id"`
 	Path        string      `json:"path"`
 	Resource    string      `json:"resource"`
 	Title       string      `json:"title"`
 	Description string      `json:"description"`
 	Scope       string      `json:"scope"`
 	Columns     []CRDColumn `json:"columns,omitempty"`
+	UpdatedAt   int64       `json:"updatedAt"`
 }
 
 // CRDColumn is a single column for the CRD. A column has the same fields as the additionalPrinterColumns from the CRD
@@ -527,7 +529,8 @@ func (c *client) loadCRDs() {
 				}
 
 				c.crds = append(c.crds, CRD{
-					Path:        fmt.Sprintf("%s/%s", crd.Spec.Group, version.Name),
+					ID:          fmt.Sprintf("%s.%s/%s", crd.Spec.Names.Plural, crd.Spec.Group, version.Name),
+					Path:        fmt.Sprintf("/apis/%s/%s", crd.Spec.Group, version.Name),
 					Resource:    crd.Spec.Names.Plural,
 					Title:       crd.Spec.Names.Kind,
 					Description: description,

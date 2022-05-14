@@ -104,6 +104,32 @@ func TestGetNamespaces(t *testing.T) {
 	}
 }
 
+func TestGetCRDs(t *testing.T) {
+	mockClusterClient := &cluster.MockClient{}
+	mockClusterClient.AssertExpectations(t)
+	mockClusterClient.On("GetName").Return("cluster1")
+	mockClusterClient.On("GetCRDs").Return(nil)
+
+	mockClustersClient := &clusters.MockClient{}
+	mockClustersClient.AssertExpectations(t)
+	mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
+
+	router := Router{
+		Mux:            chi.NewRouter(),
+		config:         Config{},
+		clustersClient: mockClustersClient,
+	}
+	router.Get("/crds", router.getCRDs)
+
+	req, _ := http.NewRequest(http.MethodGet, "/crds", nil)
+	w := httptest.NewRecorder()
+
+	router.getCRDs(w, req)
+
+	require.Equal(t, http.StatusOK, w.Code)
+	require.Equal(t, "null\n", string(w.Body.Bytes()))
+}
+
 func TestMount(t *testing.T) {
 	router := Mount(Config{}, nil)
 	require.NotNil(t, router)

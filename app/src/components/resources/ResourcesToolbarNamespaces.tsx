@@ -4,17 +4,17 @@ import { useQuery } from 'react-query';
 
 import { INamespace, INamespaces } from '../../resources/clusters';
 
-interface IApplicationsToolbarNamespacesProps {
+interface IResourcesToolbarNamespacesProps {
   selectedClusterIDs: string[];
   selectedNamespaceIDs: string[];
   selectNamespaceID: (clusterIDs: string) => void;
 }
 
-const ApplicationsToolbarNamespaces: React.FunctionComponent<IApplicationsToolbarNamespacesProps> = ({
+const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNamespacesProps> = ({
   selectedClusterIDs,
   selectedNamespaceIDs,
   selectNamespaceID,
-}: IApplicationsToolbarNamespacesProps) => {
+}: IResourcesToolbarNamespacesProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { data } = useQuery<INamespaces, Error>(['app/clusters/namespaces', selectedClusterIDs], async () => {
@@ -51,7 +51,7 @@ const ApplicationsToolbarNamespaces: React.FunctionComponent<IApplicationsToolba
       hasInlineFilter={true}
       maxHeight="50vh"
     >
-      {data
+      {data && Object.keys(data).length > 0
         ? Object.keys(data).map((cluster) => (
             <SelectGroup label={cluster} key={cluster}>
               {data[cluster].map((namespace: INamespace) => (
@@ -61,9 +61,9 @@ const ApplicationsToolbarNamespaces: React.FunctionComponent<IApplicationsToolba
               ))}
             </SelectGroup>
           ))
-        : []}
+        : [<SelectOption key="noresultsfound" value="No results found" isDisabled={true} />]}
     </Select>
   );
 };
 
-export default ApplicationsToolbarNamespaces;
+export default ResourcesToolbarNamespaces;

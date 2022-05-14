@@ -8,6 +8,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/api/applications"
 	"github.com/kobsio/kobs/pkg/hub/api/clusters"
 	"github.com/kobsio/kobs/pkg/hub/api/plugins"
+	"github.com/kobsio/kobs/pkg/hub/api/resources"
 	"github.com/kobsio/kobs/pkg/hub/api/teams"
 	"github.com/kobsio/kobs/pkg/hub/middleware/userauth"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
@@ -91,6 +92,7 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		r.Mount("/clusters", clusters.Mount(storeClient))
 		r.Mount("/applications", applications.Mount(storeClient))
 		r.Mount("/teams", teams.Mount(storeClient))
+		r.Mount("/resources", resources.Mount(satellitesClient, storeClient))
 		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))
 	})
 

@@ -17,7 +17,7 @@ interface IApplicationPanelProps {
   close: () => void;
 }
 
-const Applications: React.FunctionComponent<IApplicationPanelProps> = ({
+const ApplicationPanel: React.FunctionComponent<IApplicationPanelProps> = ({
   application,
   close,
 }: IApplicationPanelProps) => {
@@ -47,4 +47,4 @@ const Applications: React.FunctionComponent<IApplicationPanelProps> = ({
   );
 };
 
-export default Applications;
+export default ApplicationPanel;
