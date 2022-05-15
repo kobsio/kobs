@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Page } from '@patternfly/react-core';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import Applications from './components/applications/Applications';
 import { AuthContextProvider } from './context/AuthContext';
@@ -35,7 +35,7 @@ const queryClient = new QueryClient({
   },
 });
 
-export const App: React.FunctionComponent = () => {
+const App: React.FunctionComponent = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
@@ -59,4 +59,8 @@ export const App: React.FunctionComponent = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

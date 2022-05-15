@@ -3,22 +3,16 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": false,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "postinstall": "yarn link",
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/",
-    "format": "prettier --check --write ./src/**/*.{js,jsx,ts,tsx}"
-  },
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "devDependencies": {
+    "@nivo/core": "^0.79.0",
     "@patternfly/patternfly": "^4.185.1",
     "@patternfly/react-core": "^4.202.16",
     "@patternfly/react-icons": "^4.53.16",
     "@patternfly/react-table": "^4.71.16",
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.2",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
@@ -28,144 +22,18 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
     "prettier": "^2.6.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-query": "^3.34.19",
+    "react": "^18.1.0",
+    "react-ace": "^10.1.0",
+    "react-dom": "^18.1.0",
+    "react-query": "^3.39.0",
     "react-router-dom": "^6.3.0",
     "typescript": "^4.5.2"
   },
-  "peerDependencies": {
-    "@patternfly/patternfly": "^4.185.1",
-    "@patternfly/react-core": "^4.202.16",
-    "@patternfly/react-icons": "^4.53.16",
-    "@patternfly/react-table": "^4.71.16",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-query": "^3.34.19",
-    "react-router-dom": "^6.3.0"
-  },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "extends": [
-      "prettier",
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:prettier/recommended"
-    ],
-    "plugins": [
-      "@typescript-eslint",
-      "react-hooks",
-      "eslint-plugin-react-hooks"
-    ],
-    "rules": {
-      "react-hooks/exhaustive-deps": "error",
-      "sort-imports": [
-        "error",
-        {
-          "ignoreCase": false,
-          "ignoreDeclarationSort": false,
-          "ignoreMemberSort": false,
-          "memberSyntaxSortOrder": [
-            "none",
-            "all",
-            "multiple",
-            "single"
-          ],
-          "allowSeparatedGroups": true
-        }
-      ],
-      "sort-keys": [
-        "error",
-        "asc",
-        {
-          "caseSensitive": true,
-          "natural": false,
-          "minKeys": 2
-        }
-      ],
-      "sort-vars": [
-        "error",
-        {
-          "ignoreCase": false
-        }
-      ],
-      "@typescript-eslint/explicit-function-return-type": "error",
-      "@typescript-eslint/no-empty-function": "error",
-      "@typescript-eslint/no-empty-interface": "error",
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/no-non-null-assertion": "error",
-      "@typescript-eslint/no-unused-vars": "error",
-      "@typescript-eslint/no-use-before-define": "off",
-      "@typescript-eslint/naming-convention": [
-        "error",
-        {
-          "format": [
-            "camelCase"
-          ],
-          "selector": "default",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "camelCase",
-            "UPPER_CASE",
-            "PascalCase"
-          ],
-          "selector": "variable",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "camelCase",
-            "UPPER_CASE",
-            "PascalCase"
-          ],
-          "selector": "property",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "PascalCase"
-          ],
-          "selector": "interface",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid",
-          "prefix": [
-            "I"
-          ]
-        },
-        {
-          "format": [
-            "PascalCase"
-          ],
-          "selector": "typeAlias",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "PascalCase"
-          ],
-          "selector": "typeParameter",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        }
-      ]
-    }
-  },
-  "prettier": {
-    "semi": true,
-    "trailingComma": "all",
-    "singleQuote": true,
-    "printWidth": 120,
-    "tabWidth": 2
-  },
-  "dependencies": {
-    "@nivo/core": "^0.79.0",
-    "react-ace": "^10.1.0"
+  "scripts": {
+    "postinstall": "yarn link",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/",
+    "format": "prettier --check --write ./src/**/*.{js,jsx,ts,tsx}"
   }
 }

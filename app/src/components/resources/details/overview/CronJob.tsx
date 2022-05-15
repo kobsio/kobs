@@ -43,7 +43,7 @@ const CronJob: React.FunctionComponent<ICronJobProps> = ({ cronJob }: ICronJobPr
         {cronJob.status?.lastScheduleTime ? (
           <DescriptionListDescription>
             {timeDifference(new Date().getTime(), new Date(cronJob.status.lastScheduleTime.toString()).getTime())}
-            <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">({cronJob.status.lastScheduleTime})</span>
+            <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{`({cronJob.status.lastScheduleTime})`}</span>
           </DescriptionListDescription>
         ) : (
           <DescriptionListDescription>-</DescriptionListDescription>

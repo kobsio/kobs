@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
-const loadedScripts = {};
+const loadedScripts: {[name: string]: any} = {};
 
 export const useDynamicScript = (
   name: string,
@@ -14,13 +14,13 @@ export const useDynamicScript = (
   const [ready, setReady] = React.useState(false);
   const [failed, setFailed] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!name) {
       return;
     }
 
     if (name in loadedScripts) {
-      return loadedScripts[name]
+      loadedScripts[name]
         .then(() => {
           setReady(true);
           setFailed(false);
@@ -29,6 +29,7 @@ export const useDynamicScript = (
           setReady(false);
           setFailed(true);
         });
+        return
     }
 
     const element = document.createElement('script');

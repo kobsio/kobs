@@ -16,7 +16,7 @@ import {
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import Panel from './components/panel/Panel';
 
@@ -45,7 +45,7 @@ export const App: React.FunctionComponent = () => {
             <Masthead>
               <MastheadMain>
                 <MastheadBrand>
-                  <Brand style={{ maxHeight: '35px' }} src={icon} alt="Prometheus" />
+                  Prometheus
                 </MastheadBrand>
               </MastheadMain>
               <MastheadContent>
@@ -59,11 +59,15 @@ export const App: React.FunctionComponent = () => {
             </Masthead>
           }
         >
-          <Panel title="test" instance={{ name: 'name', type: 'prometheus' }} />
+          <Panel title="test" instance={{ id: '', name: 'name', satellite: '', type: 'prometheus', updatedAt: 0 }} />
         </Page>
       </BrowserRouter>
     </QueryClientProvider>
   );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

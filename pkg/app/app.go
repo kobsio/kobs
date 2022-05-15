@@ -72,7 +72,7 @@ func New(hubAddress, appAddress, appAssetsDir string) (Server, error) {
 			// status code, to preserve the used http method. This can be used to test the production build of the React
 			// app locally without the need of another proxy, which handles the redirect.
 			if strings.HasPrefix(r.URL.Path, "/api") {
-				http.Redirect(w, r, "http://localhost:"+hubAddress+r.URL.Path+"?"+r.URL.RawQuery, http.StatusTemporaryRedirect)
+				http.Redirect(w, r, "http://localhost"+hubAddress+r.URL.Path+"?"+r.URL.RawQuery, http.StatusTemporaryRedirect)
 				return
 			}
 

@@ -530,7 +530,7 @@ export const resourcesTableData: ITableData = {
             }
 
             rows.push({
-              cells: [endpoint.metadata?.name, endpoint.metadata?.namespace || '', item.cluster, ep.join(', '), age],
+              cells: [endpoint.metadata?.name, endpoint.metadata?.namespace || '', resourceList.cluster, ep.join(', '), age],
               cluster: resourceList.cluster,
               name: endpoint.metadata?.name || '',
               namespace: endpoint.metadata?.namespace || '',

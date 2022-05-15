@@ -32,11 +32,13 @@ const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   const loadingContent = (): React.ReactElement => {
     return (
       <SharedPluginPanel title={title} description={description}>
+        <React.Fragment>
         <Skeleton width="100%" fontSize="sm" screenreaderText="Loading content" />
         <br />
         <Skeleton width="100%" fontSize="sm" screenreaderText="Loading content" />
         <br />
         <Skeleton width="75%" fontSize="sm" screenreaderText="Loading content" />
+        </React.Fragment>
       </SharedPluginPanel>
     );
   };

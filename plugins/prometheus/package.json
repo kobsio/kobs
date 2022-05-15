@@ -2,175 +2,54 @@
   "name": "prometheus",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "postinstall": "yarn link @kobsio/shared",
-    "build": "webpack --config webpack.prod.js",
-    "start": "webpack serve --open --config webpack.dev.js",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/",
-    "format": "prettier --check --write ./src/**/*.{js,jsx,ts,tsx}"
-  },
-  "devDependencies": {
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.2",
-    "@types/react-router-dom": "^5.3.3",
-    "@typescript-eslint/eslint-plugin": "^5.19.0",
-    "@typescript-eslint/parser": "^5.19.0",
-    "css-loader": "^5.2.7",
-    "css-minimizer-webpack-plugin": "^3.0.1",
-    "eslint": "^8.13.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.3.1",
-    "mini-css-extract-plugin": "^2.6.0",
-    "postcss": "^8.3.1",
-    "prettier": "^2.3.1",
-    "raw-loader": "^4.0.2",
-    "style-loader": "^3.3.1",
-    "svg-url-loader": "^7.1.1",
-    "terser-webpack-plugin": "^5.1.3",
-    "ts-loader": "^9.2.3",
-    "tsconfig-paths-webpack-plugin": "^3.5.1",
-    "tslib": "^2.2.0",
-    "typescript": "^4.3.2",
-    "url-loader": "^4.1.1",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^4.8.1",
-    "webpack-merge": "^5.8.0"
-  },
   "dependencies": {
-    "@patternfly/patternfly": "^4.192.1",
-    "@patternfly/react-core": "^4.181.1",
-    "@patternfly/react-icons": "^4.32.1",
-    "@patternfly/react-styles": "^4.31.1",
-    "@patternfly/react-table": "^4.71.16",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-error-boundary": "^3.1.4",
-    "react-query": "^3.35.0",
-    "react-router-dom": "^6.3.0"
+    "@kobsio/react-scripts": "5.0.1-1",
+    "@nivo/bar": "^0.79.1",
+    "@nivo/core": "^0.79.0",
+    "@patternfly/patternfly": "^4.194.4",
+    "@patternfly/react-core": "^4.214.1",
+    "@patternfly/react-icons": "^4.65.1",
+    "@patternfly/react-log-viewer": "^4.59.1",
+    "@patternfly/react-styles": "^4.64.1",
+    "@patternfly/react-table": "^4.83.1",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^13.0.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.13",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/react-router-dom": "^5.3.3",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-query": "^3.39.0",
+    "react-router-dom": "^6.3.0",
+    "typescript": "^4.4.2"
   },
+  "scripts": {
+    "start": "PUBLIC_URL='http://localhost:3001/' PORT=3001 react-scripts start",
+    "build": "PUBLIC_URL='/plugins/prometheus' react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "postinstall": "yarn link @kobsio/shared"
+  },
+  "proxy": "http://localhost:15220",
   "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
     "extends": [
-      "prettier",
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:prettier/recommended"
-    ],
-    "plugins": [
-      "@typescript-eslint",
-      "react-hooks",
-      "eslint-plugin-react-hooks"
-    ],
-    "rules": {
-      "react-hooks/exhaustive-deps": "error",
-      "sort-imports": [
-        "error",
-        {
-          "ignoreCase": false,
-          "ignoreDeclarationSort": false,
-          "ignoreMemberSort": false,
-          "memberSyntaxSortOrder": [
-            "none",
-            "all",
-            "multiple",
-            "single"
-          ],
-          "allowSeparatedGroups": true
-        }
-      ],
-      "sort-keys": [
-        "error",
-        "asc",
-        {
-          "caseSensitive": true,
-          "natural": false,
-          "minKeys": 2
-        }
-      ],
-      "sort-vars": [
-        "error",
-        {
-          "ignoreCase": false
-        }
-      ],
-      "@typescript-eslint/explicit-function-return-type": "error",
-      "@typescript-eslint/no-empty-function": "error",
-      "@typescript-eslint/no-empty-interface": "error",
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/no-non-null-assertion": "error",
-      "@typescript-eslint/no-unused-vars": "error",
-      "@typescript-eslint/no-use-before-define": "off",
-      "@typescript-eslint/naming-convention": [
-        "error",
-        {
-          "format": [
-            "camelCase"
-          ],
-          "selector": "default",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "camelCase",
-            "UPPER_CASE",
-            "PascalCase"
-          ],
-          "selector": "variable",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "camelCase",
-            "UPPER_CASE",
-            "PascalCase"
-          ],
-          "selector": "property",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "PascalCase"
-          ],
-          "selector": "interface",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid",
-          "prefix": [
-            "I"
-          ]
-        },
-        {
-          "format": [
-            "PascalCase"
-          ],
-          "selector": "typeAlias",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "PascalCase"
-          ],
-          "selector": "typeParameter",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        }
-      ]
-    }
+      "react-app",
+      "react-app/jest"
+    ]
   },
-  "prettier": {
-    "semi": true,
-    "trailingComma": "all",
-    "singleQuote": true,
-    "printWidth": 120,
-    "tabWidth": 2
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

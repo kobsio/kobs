@@ -1,23 +1,29 @@
 {
-  "include": ["src"],
-  "exclude": ["node_modules"],
   "compilerOptions": {
     "target": "es5",
-    "module": "esnext",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
-    "jsx": "react",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "useUnknownInCatchVariables": false,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./dist",
-    "isolatedModules": true,
-
-    "strict": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "useUnknownInCatchVariables": false,
-  }
+    "outDir": "./build",
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": ["node_modules"],
 }
