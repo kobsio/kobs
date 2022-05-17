@@ -21,24 +21,24 @@ build:
 build-plugins:
 	@if [ "${PLUGIN}" = "" ]; then \
 		for plugin in $(PLUGINS); do \
-			go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./plugins/$$plugin/cmd; \
+			go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./packages/plugin-$$plugin/cmd; \
 		done; \
 	else \
-		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./plugins/${PLUGIN}/cmd; \
+		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./packages/plugin-${PLUGIN}/cmd; \
 	fi
 
 .PHONY: test
 test:
-	@go test ./cmd/... ./pkg/... ./plugins/...
+	@go test ./cmd/... ./pkg/... ./packages/...
 
 .PHONY: test-coverage
 test-coverage:
-	@go test -coverpkg ./cmd/...,./pkg/...,./plugins/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./plugins/...
+	@go test -coverpkg ./cmd/...,./pkg/...,./packages/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./packages/...
 	@cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/kube/apis" | grep -v "github.com/kobsio/kobs/pkg/kube/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 	@go tool cover -html coverage.out -o coverage.html
 
 .PHONY: generate
-generate: generate-crds
+generate: generate-crds generate-assets
 
 .PHONY: generate-crds
 generate-crds:
@@ -62,13 +62,21 @@ generate-crds:
 		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
 	done
 
+.PHONY: generate-assets
+generate-assets:
+	@mkdir -p ./bin
+	@rm -rf ./bin/app
+	@cp -r ./packages/app/build ./bin/app
+	@mkdir -p ./bin/app/plugins
+	@for plugin in $(PLUGINS); do \
+		cp -r ./packages/plugin-$$plugin/build ./bin/app/plugins/$$plugin; \
+	done;
+
 .PHONY: clean
 clean:
 	rm -rf ./bin
-	rm -rf ./app/build
 	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
-	find . -name 'lib' -type d -prune -exec rm -rf '{}' +
-	find . -name 'lib-esm' -type d -prune -exec rm -rf '{}' +
+	find . -name 'build' -type d -prune -exec rm -rf '{}' +
 
 .PHONY: release-major
 release-major:
