@@ -3,7 +3,6 @@ import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/patternfly/patternfly-addons.css';
 
 import {
-  Brand,
   Masthead,
   MastheadBrand,
   MastheadContent,
@@ -19,8 +18,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import Panel from './components/panel/Panel';
-
-import icon from './assets/icon.png';
 
 import './assets/index.css';
 
@@ -44,9 +41,7 @@ export const App: React.FunctionComponent = () => {
           header={
             <Masthead>
               <MastheadMain>
-                <MastheadBrand>
-                  Prometheus
-                </MastheadBrand>
+                <MastheadBrand>Prometheus</MastheadBrand>
               </MastheadMain>
               <MastheadContent>
                 <Toolbar id="header-toolbar" isFullHeight={true} isStatic={true}>
@@ -69,5 +64,5 @@ export const App: React.FunctionComponent = () => {
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -1,10 +1,15 @@
+/* eslint-disable */
 const deps = require('../package.json').dependencies;
 
 module.exports = {
-  name: 'app',
+  name: 'prometheus',
   filename: 'remoteEntry.js',
   remotes: {},
-  exposes: {},
+  exposes: {
+    './Instance': './src/components/instance/Instance.tsx',
+    './Panel': './src/components/panel/Panel.tsx',
+    './Page': './src/components/page/Page.tsx',
+  },
   shared: {
     ...deps,
     react: {
@@ -41,3 +46,4 @@ module.exports = {
     },
   },
 }
+/* eslint-enable */

@@ -33,11 +33,11 @@ const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
     return (
       <SharedPluginPanel title={title} description={description}>
         <React.Fragment>
-        <Skeleton width="100%" fontSize="sm" screenreaderText="Loading content" />
-        <br />
-        <Skeleton width="100%" fontSize="sm" screenreaderText="Loading content" />
-        <br />
-        <Skeleton width="75%" fontSize="sm" screenreaderText="Loading content" />
+          <Skeleton width="100%" fontSize="sm" screenreaderText="Loading content" />
+          <br />
+          <Skeleton width="100%" fontSize="sm" screenreaderText="Loading content" />
+          <br />
+          <Skeleton width="75%" fontSize="sm" screenreaderText="Loading content" />
         </React.Fragment>
       </SharedPluginPanel>
     );

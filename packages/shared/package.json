@@ -5,7 +5,7 @@
   "private": false,
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "devDependencies": {
+  "dependencies": {
     "@nivo/core": "^0.79.0",
     "@patternfly/patternfly": "^4.185.1",
     "@patternfly/react-core": "^4.202.16",
@@ -30,10 +30,7 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
-    "postinstall": "yarn link",
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/",
-    "format": "prettier --check --write ./src/**/*.{js,jsx,ts,tsx}"
+    "build:shared": "tsc",
+    "watch:shared": "tsc --watch"
   }
 }

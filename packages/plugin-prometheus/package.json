@@ -1,10 +1,10 @@
 {
-  "name": "app",
+  "name": "@kobsio/plugin-prometheus",
   "version": "0.0.0",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@kobsio/react-scripts": "5.0.1-1",
-    "@kubernetes/client-node": "^0.16.3",
     "@nivo/bar": "^0.79.1",
     "@nivo/core": "^0.79.0",
     "@patternfly/patternfly": "^4.194.4",
@@ -21,32 +21,19 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/react-router-dom": "^5.3.3",
-    "fast-json-patch": "^3.1.1",
-    "jsonpath-plus": "^6.0.1",
-    "md5": "^2.3.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-error-boundary": "^3.1.4",
     "react-query": "^3.39.0",
     "react-router-dom": "^6.3.0",
-    "typescript": "^4.4.2",
-    "xterm": "^4.18.0",
-    "xterm-addon-fit": "^0.5.0"
+    "typescript": "^4.4.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "PUBLIC_URL='http://localhost:3001/' PORT=3001 react-scripts start",
+    "build": "PUBLIC_URL='/plugins/prometheus' react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "postinstall": "yarn link @kobsio/shared"
+    "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:15220",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

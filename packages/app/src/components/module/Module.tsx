@@ -6,12 +6,16 @@ import { useDynamicScript } from '../../hooks/useDynamicScript';
 const loadComponent = (scope: string, module: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (): Promise<any> => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await __webpack_init_sharing__('default');
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const container = window[scope];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await container.init(__webpack_share_scopes__.default);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const factory = await window[scope].get(module);
     const Module = factory();

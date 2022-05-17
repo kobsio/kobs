@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
-const loadedScripts: {[name: string]: any} = {};
+const loadedScripts: { [name: string]: Promise<void> } = {};
 
 export const useDynamicScript = (
   name: string,
@@ -29,7 +29,7 @@ export const useDynamicScript = (
           setReady(false);
           setFailed(true);
         });
-        return
+      return;
     }
 
     const element = document.createElement('script');

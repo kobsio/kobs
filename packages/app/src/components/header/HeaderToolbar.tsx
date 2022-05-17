@@ -3,10 +3,10 @@ import {
   Button,
   ButtonVariant,
   Dropdown,
-  DropdownItem,
-  DropdownSeparator,
+  // DropdownItem,
+  // DropdownSeparator,
   DropdownToggle,
-  KebabToggle,
+  // KebabToggle,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -23,7 +23,7 @@ import { AuthContext, IAuthContext } from '../../context/AuthContext';
 const HeaderToolbar: React.FunctionComponent = () => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [isProfileDrowdownOpen, setIsProfileDrowdownOpen] = useState<boolean>(false);
-  const [isMobileDrowdownOpen, setIsMobileDrowdownOpen] = useState<boolean>(false);
+  // const [isMobileDrowdownOpen, setIsMobileDrowdownOpen] = useState<boolean>(false);
 
   const getProfileImageURL = (): string => {
     return (
@@ -93,7 +93,9 @@ const HeaderToolbar: React.FunctionComponent = () => {
                 aria-label="Help actions"
                 variant={ButtonVariant.plain}
                 component={(props): React.ReactElement => (
-                  <a {...props} href="https://kobs.io" target="_blank" rel="noreferrer" />
+                  <a {...props} href="https://kobs.io" target="_blank" rel="noreferrer">
+                    Help
+                  </a>
                 )}
               >
                 <QuestionCircleIcon />
@@ -125,21 +127,23 @@ const HeaderToolbar: React.FunctionComponent = () => {
                   {authContext.user.email}
                 </DropdownToggle>
               }
-              dropdownItems={[
-                // <DropdownItem
-                //   key="myprofile"
-                //   component={(props): React.ReactElement => <Link {...props} to="/profile" />}
-                // >
-                //   My profile
-                // </DropdownItem>,
-                // <DropdownSeparator key="divider" />,
-                // <DropdownItem
-                //   key="logout"
-                //   component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}
-                // >
-                //   Logout
-                // </DropdownItem>,
-              ]}
+              dropdownItems={
+                [
+                  // <DropdownItem
+                  //   key="myprofile"
+                  //   component={(props): React.ReactElement => <Link {...props} to="/profile" />}
+                  // >
+                  //   My profile
+                  // </DropdownItem>,
+                  // <DropdownSeparator key="divider" />,
+                  // <DropdownItem
+                  //   key="logout"
+                  //   component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}
+                  // >
+                  //   Logout
+                  // </DropdownItem>,
+                ]
+              }
             />
           </ToolbarItem>
         ) : null}
