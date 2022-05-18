@@ -2,32 +2,44 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Server",
+      "name": "hub",
       "type": "go",
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
       "args": [
-        "--log.level=trace",
-        "--config=../../deploy/docker/kobs/config.yaml",
-        "--app.assets=../../app/build",
-        "--development"
+        "--log.level=debug",
+        "--hub.config=../../deploy/docker/kobs/config.yaml",
+        "--app.assets=''"
       ]
     },
     {
-      "name": "App",
+      "name": "satellite",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/kobs",
+      "args": [
+        "--log.level=debug",
+        "--satellite.config=../../deploy/docker/kobs/config.yaml",
+        "--satellite.plugins=../../bin/plugins",
+        "--satellite.token=unsecuretoken"
+      ]
+    },
+    {
+      "name": "app",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/app/src",
+      "webRoot": "${workspaceFolder}/packages/app",
       "sourceMaps": true
     },
     {
-      "name": "Plugin",
+      "name": "plugin",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3001",
-      "webRoot": "${workspaceFolder}/app/src",
+      "webRoot": "${workspaceFolder}/packages",
       "sourceMaps": true
     }
 
