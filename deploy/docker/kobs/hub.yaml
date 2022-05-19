@@ -1,0 +1,4 @@
+satellites:
+  - name: global
+    address: http://localhost:15221
+    token: unsecuretoken
