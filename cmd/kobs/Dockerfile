@@ -3,11 +3,9 @@ WORKDIR /kobs
 COPY lerna.json package.json yarn.lock Makefile /kobs/
 COPY packages /kobs/packages
 RUN yarn install --frozen-lockfile --network-timeout 3600000
-RUN yarn build
 RUN make generate-assets
 
-FROM golang:1.18.2-alpine3.15 as api
-RUN apk update && apk add git make build-base
+FROM golang:1.18.2 as api
 WORKDIR /kobs
 COPY go.mod go.sum /kobs/
 RUN go mod download

@@ -98,4 +98,4 @@ jobs:
 
       - name: Build
         run: |
-          yarn build
+          make generate-assets

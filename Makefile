@@ -5,11 +5,11 @@ REPO      ?= github.com/kobsio/kobs
 REVISION  ?= $(shell git rev-parse HEAD)
 VERSION   ?= $(shell git describe --tags)
 
-CRDS    ?= application dashboard team user
-PLUGINS ?= prometheus
+CRDS ?= application dashboard team user
 
 .PHONY: build
 build:
+	@echo "Build 'kobs' binary"
 	@go build -ldflags "-X ${REPO}/pkg/version.Version=${VERSION} \
 		-X ${REPO}/pkg/version.Revision=${REVISION} \
 		-X ${REPO}/pkg/version.Branch=${BRANCH} \
@@ -19,9 +19,14 @@ build:
 
 .PHONY: build-plugins
 build-plugins:
+	@mkdir -p ./bin/plugins
 	@if [ "${PLUGIN}" = "" ]; then \
-		for plugin in $(PLUGINS); do \
-			go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./packages/plugin-$$plugin/cmd; \
+		for plugin in packages/plugin-*/; do \
+			if [ -d "$$plugin/cmd" ]; then \
+				plugin=`echo "$$plugin" | sed -e "s/^packages\/plugin-//" -e "s/\/$///"`; \
+				echo "Build '$$plugin' plugin"; \
+				go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./packages/plugin-$$plugin/cmd; \
+			fi \
 		done; \
 	else \
 		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./packages/plugin-${PLUGIN}/cmd; \
@@ -64,12 +69,18 @@ generate-crds:
 
 .PHONY: generate-assets
 generate-assets:
+	@yarn build
 	@mkdir -p ./bin
 	@rm -rf ./bin/app
+	@echo "Copy files for 'app'"
 	@cp -r ./packages/app/build ./bin/app
 	@mkdir -p ./bin/app/plugins
-	@for plugin in $(PLUGINS); do \
-		cp -r ./packages/plugin-$$plugin/build ./bin/app/plugins/$$plugin; \
+	@for plugin in packages/plugin-*/; do \
+		if [ -d "$$plugin/src" ]; then \
+			plugin=`echo "$$plugin" | sed -e "s/^packages\/plugin-//" -e "s/\/$///"`; \
+			echo "Copy files for '$$plugin' plugin"; \
+			cp -r ./packages/plugin-$$plugin/build ./bin/app/plugins/$$plugin; \
+		fi \
 	done;
 
 .PHONY: clean
