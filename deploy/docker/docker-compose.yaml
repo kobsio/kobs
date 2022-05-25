@@ -1,17 +1,30 @@
 version: '3'
 services:
-  kobs:
-    container_name: kobs
+  kobs-satellite:
+    container_name: kobs-satellite
     build:
-      context: .
+      context: ../../
       dockerfile: ./cmd/kobs/Dockerfile
     image: kobs
     volumes:
-      - ./kobs/config.yaml:/kobs/config.yaml
+      - ./kobs/satellite.yaml:/kobs/config.yaml
       - $HOME/.kube/config:/.kube/config
+    ports:
+      - 15221:15221
+    command:
+      - satellite
+      - --log.level=debug
+      - --satellite.token=unsecuretoken
+  kobs-hub:
+    container_name: kobs-hub
+    depends_on:
+      - kobs-satellite
+    image: kobs
+    volumes:
+      - ./kobs/hub.yaml:/kobs/config.yaml
     ports:
       - 15219:15219
       - 15220:15220
-      - 15221:15221
     command:
-      --log.level=trace
+      - hub
+      - --log.level=debug

@@ -91,8 +91,10 @@ func (in *ApplicationSpec) DeepCopyInto(out *ApplicationSpec) {
 	in.Topology.DeepCopyInto(&out.Topology)
 	if in.Preview != nil {
 		in, out := &in.Preview, &out.Preview
-		*out = new(Preview)
-		(*in).DeepCopyInto(*out)
+		*out = make([]Preview, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 	if in.Dashboards != nil {
 		in, out := &in.Dashboards, &out.Dashboards

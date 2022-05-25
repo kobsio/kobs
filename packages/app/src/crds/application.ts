@@ -12,12 +12,13 @@ export interface IApplication {
   links?: ILink[];
   teams?: string[];
   topology?: ITopology;
-  preview?: IPreview;
+  preview?: IPreview[];
   dashboards?: IReference[];
 }
 
 export interface IPreview {
   title: string;
+  type: string;
   plugin: IPlugin;
 }
 

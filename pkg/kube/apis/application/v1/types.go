@@ -41,7 +41,7 @@ type ApplicationSpec struct {
 	Links       []Link                  `json:"links,omitempty"`
 	Teams       []string                `json:"teams,omitempty"`
 	Topology    Topology                `json:"topology,omitempty"`
-	Preview     *Preview                `json:"preview,omitempty"`
+	Preview     []Preview               `json:"preview,omitempty"`
 	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
 
@@ -66,5 +66,6 @@ type Dependency struct {
 
 type Preview struct {
 	Title  string             `json:"title"`
+	Type   string             `json:"type"`
 	Plugin dashboardv1.Plugin `json:"plugin"`
 }

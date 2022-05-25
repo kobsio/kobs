@@ -3,11 +3,3 @@ clusters:
     - provider: kubeconfig
       kubeconfig:
         path: ${HOME}/.kube/config
-
-prometheus-options: &prometheus-options
-  address: http://localhost:9090
-
-plugins:
-  - name: prometheus
-    type: prometheus
-    options: *prometheus-options

@@ -144,7 +144,7 @@ func init() {
 		defaultAppAddress = os.Getenv("KOBS_APP_ADDRESS")
 	}
 
-	defaultAppAssetsDir := "app/build"
+	defaultAppAssetsDir := "app"
 	if os.Getenv("KOBS_APP_ASSETS") != "" {
 		defaultAppAssetsDir = os.Getenv("KOBS_APP_ASSETS")
 	}

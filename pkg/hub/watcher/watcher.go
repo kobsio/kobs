@@ -58,8 +58,9 @@ func (c *client) Stop() error {
 // each resource (clusters, plugins, applications, dashboards, teams and users) to the worker pool.
 func (c *client) watch() {
 	startTime := time.Now()
+	ss := c.satellitesClient.GetSatellites()
 
-	for _, s := range c.satellitesClient.GetSatellites() {
+	for _, s := range ss {
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
 				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)

@@ -163,27 +163,32 @@ spec:
               namespaceID:
                 type: string
               preview:
-                properties:
-                  plugin:
-                    properties:
-                      name:
-                        type: string
-                      options:
-                        x-kubernetes-preserve-unknown-fields: true
-                      satellite:
-                        type: string
-                      type:
-                        type: string
-                    required:
-                    - name
-                    - type
-                    type: object
-                  title:
-                    type: string
-                required:
-                - plugin
-                - title
-                type: object
+                items:
+                  properties:
+                    plugin:
+                      properties:
+                        name:
+                          type: string
+                        options:
+                          x-kubernetes-preserve-unknown-fields: true
+                        satellite:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                      - name
+                      - type
+                      type: object
+                    title:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - plugin
+                  - title
+                  - type
+                  type: object
+                type: array
               satellite:
                 type: string
               tags:

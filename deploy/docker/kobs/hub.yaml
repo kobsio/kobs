@@ -1,4 +1,4 @@
 satellites:
-  - name: global
-    address: http://localhost:15221
+  - name: kobs-demo
+    address: http://kobs-satellite:15221
     token: unsecuretoken
