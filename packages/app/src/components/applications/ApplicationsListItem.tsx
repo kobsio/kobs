@@ -8,6 +8,7 @@ import {
   DataListItemRow,
   Flex,
   FlexItem,
+  Label,
 } from '@patternfly/react-core';
 import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
@@ -41,30 +42,47 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
                   <small>{application.description}</small>
                 </FlexItem>
                 <Flex>
-                  <FlexItem>
-                    <UsersIcon />
-                    {application.teams
-                      ? application.teams.length === 1
-                        ? ` 1 Team`
-                        : ` ${application.teams.length} Teams`
-                      : ` 0 Teams`}
-                  </FlexItem>
-                  <FlexItem>
-                    <TopologyIcon />
-                    {application.topology &&
+                  {application.tags && application.tags.length > 0 && (
+                    <FlexItem>
+                      {application.tags.map((tag) => (
+                        <Label key={tag} className="pf-u-mr-sm" color="blue">
+                          {tag}
+                        </Label>
+                      ))}
+                    </FlexItem>
+                  )}
+                  {application.teams && application.teams.length > 0 && (
+                    <FlexItem>
+                      <Label color="grey" icon={<UsersIcon />}>
+                        {application.teams.length === 1 ? '1 Team' : `${application.teams.length} Teams`}
+                      </Label>
+                    </FlexItem>
+                  )}
+                  {application.topology &&
                     application.topology.dependencies &&
-                    application.topology.dependencies.length
-                      ? application.topology.dependencies.length === 1
-                        ? ` 1 Dependency`
-                        : ` ${application.topology.dependencies.length} Dependencies`
-                      : ` 0 Dependencies`}
-                  </FlexItem>
-                  {application.topology && application.topology.external && application.topology.external === true ? (
-                    <FlexItem>External Application</FlexItem>
-                  ) : null}
-                  {application.topology && application.topology.type ? (
-                    <FlexItem>{application.topology.type}</FlexItem>
-                  ) : null}
+                    application.topology.dependencies.length > 0 && (
+                      <FlexItem>
+                        <Label color="grey" icon={<TopologyIcon />}>
+                          {application.topology.dependencies.length === 1
+                            ? '1 Team'
+                            : `${application.topology.dependencies.length} Teams`}
+                        </Label>
+                      </FlexItem>
+                    )}
+                  {application.topology && application.topology.external && application.topology.external === true && (
+                    <FlexItem>
+                      <Label color="grey" icon={<TopologyIcon />}>
+                        External Application
+                      </Label>
+                    </FlexItem>
+                  )}
+                  {application.topology && application.topology.type && (
+                    <FlexItem>
+                      <Label color="grey" icon={<TopologyIcon />}>
+                        {application.topology.type}
+                      </Label>
+                    </FlexItem>
+                  )}
                 </Flex>
               </Flex>
             </DataListCell>,

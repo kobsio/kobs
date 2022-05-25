@@ -6,7 +6,7 @@ import { IPluginInstance } from '@kobsio/shared';
 
 // IPluginsContext is the plugin context, is contains all the instances of all configured plugins.
 export interface IPluginsContext {
-  getInstance: (type: string, name: string) => IPluginInstance | undefined;
+  getInstance: (satellite: string, type: string, name: string) => IPluginInstance | undefined;
   getInstances: (type: string, name: string) => IPluginInstance[];
   getPluginTypes: () => string[];
   instances: IPluginInstance[];
@@ -55,8 +55,10 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
 
   // getInstance returns a single instance with the given type and name or undefined, when we could not found a instance
   // with the provided type and name.
-  const getInstance = (type: string, name: string): IPluginInstance | undefined => {
-    const instances = data?.filter((instance) => instance.name === name && instance.type === type);
+  const getInstance = (satellite: string, type: string, name: string): IPluginInstance | undefined => {
+    const instances = data?.filter(
+      (instance) => instance.satellite === satellite && instance.name === name && instance.type === type,
+    );
     if (instances?.length === 1) {
       return instances[0];
     }

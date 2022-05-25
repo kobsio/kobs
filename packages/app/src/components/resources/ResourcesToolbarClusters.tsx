@@ -38,8 +38,10 @@ const ResourcesToolbarClusters: React.FunctionComponent<IResourcesToolbarCluster
       aria-label="Select clusters input"
       placeholderText="Clusters"
       onToggle={(): void => setIsOpen(!isOpen)}
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      onSelect={(_, value: string | SelectOptionObject): void => selectClusterID(value.toString())}
+      onSelect={(
+        event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+        value: string | SelectOptionObject,
+      ): void => selectClusterID(value.toString())}
       onClear={(): void => selectClusterID('')}
       selections={selectedClusterIDs}
       isOpen={isOpen}

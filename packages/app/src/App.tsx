@@ -8,6 +8,7 @@ import { Page } from '@patternfly/react-core';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
+import Application from './components/applications/Application';
 import Applications from './components/applications/Applications';
 import { AuthContextProvider } from './context/AuthContext';
 import Header from './components/header/Header';
@@ -18,6 +19,7 @@ import Profile from './components/profile/Profile';
 import Resources from './components/resources/Resources';
 import Settings from './components/settings/Settings';
 import Sidebar from './components/sidebar/Sidebar';
+import Team from './components/teams/Team';
 import Teams from './components/teams/Teams';
 
 import 'xterm/css/xterm.css';
@@ -44,10 +46,12 @@ const App: React.FunctionComponent = () => {
             <Page isManagedSidebar={true} header={<Header />} sidebar={<Sidebar />}>
               <Routes>
                 <Route path="/" element={<Applications />} />
+                <Route path="/applications/:application" element={<Application />} />
                 <Route path="/teams" element={<Teams />} />
+                <Route path="/teams/:team" element={<Team />} />
                 <Route path="/resources" element={<Resources />} />
                 <Route path="/plugins" element={<PluginInstances />} />
-                <Route path="/plugins/:type/:name" element={<PluginPage />} />
+                <Route path="/plugins/:satellite/:type/:name" element={<PluginPage />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
               </Routes>

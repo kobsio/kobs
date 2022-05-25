@@ -114,7 +114,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ resourceData }: ILogsProps)
     ws.current?.close();
 
     try {
-      const host = window.location.host === 'localhost:3000' ? 'ws://localhost:15220' : `wss://${window.location.host}`;
+      const host = window.location.host === 'localhost:' ? 'ws://localhost:15220' : `wss://${window.location.host}`;
 
       ws.current = new WebSocket(
         `${host}/api/resources/logs?satellite=${resourceData.satellite}&cluster=${resourceData.cluster}${
@@ -158,10 +158,10 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ resourceData }: ILogsProps)
                           aria-label="Select container input"
                           placeholderText="Container"
                           onToggle={(): void => setOptions({ ...options, showContainers: !options.showContainers })}
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          onSelect={(_, value: string | SelectOptionObject): void =>
-                            setOptions({ ...options, container: value.toString() })
-                          }
+                          onSelect={(
+                            event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                            value: string | SelectOptionObject,
+                          ): void => setOptions({ ...options, container: value.toString() })}
                           selections={options.container}
                           isOpen={options.showContainers}
                           maxHeight="50vh"
@@ -185,10 +185,10 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ resourceData }: ILogsProps)
                           aria-label="Select since input"
                           placeholderText="Since"
                           onToggle={(): void => setOptions({ ...options, showSince: !options.showSince })}
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          onSelect={(_, value: string | SelectOptionObject): void =>
-                            setOptions({ ...options, since: parseInt(value.toString()) })
-                          }
+                          onSelect={(
+                            event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                            value: string | SelectOptionObject,
+                          ): void => setOptions({ ...options, since: parseInt(value.toString()) })}
                           selections={options.since}
                           isOpen={options.showSince}
                           maxHeight="50vh"

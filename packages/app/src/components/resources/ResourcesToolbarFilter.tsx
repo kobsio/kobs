@@ -33,8 +33,10 @@ const ResourcesToolbarFilter: React.FunctionComponent<IResourcesToolbarFilterPro
           aria-label="Select filter type input"
           placeholderText="Filter"
           onToggle={(): void => setIsOpen(!isOpen)}
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          onSelect={(_, value: string | SelectOptionObject): void => setParamName(value.toString())}
+          onSelect={(
+            event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+            value: string | SelectOptionObject,
+          ): void => setParamName(value.toString())}
           onClear={(): void => setParamName('')}
           selections={paramName}
           isOpen={isOpen}

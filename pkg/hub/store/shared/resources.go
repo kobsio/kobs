@@ -81,7 +81,6 @@ var resources = []Resource{
 		Scope:       "Namespaced",
 		Title:       "StatefulSets",
 	},
-	// eslint-disable-next-line sort-keys
 	{
 		ID:          "endpoints",
 		Description: "",
@@ -127,7 +126,6 @@ var resources = []Resource{
 		Scope:       "Namespaced",
 		Title:       "Services",
 	},
-	// eslint-disable-next-line sort-keys
 	{
 		ID:          "configmaps",
 		Description: "",

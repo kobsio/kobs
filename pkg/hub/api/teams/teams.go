@@ -62,6 +62,32 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, aggregatedTeams)
 }
 
+func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "The user is not authorized to access the team", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the team")
+		return
+	}
+
+	group := r.URL.Query().Get("group")
+
+	if !user.HasTeamAccess(group) {
+		log.Warn(r.Context(), "The user is not authorized to view the team", zap.Error(err), zap.String("group", group))
+		errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view the team")
+		return
+	}
+
+	team, err := router.storeClient.GetTeamByGroup(r.Context(), group)
+	if err != nil {
+		log.Error(r.Context(), "Could not get team", zap.Error(err), zap.String("group", group))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get team")
+		return
+	}
+
+	render.JSON(w, r, team)
+}
+
 func Mount(storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
@@ -69,6 +95,7 @@ func Mount(storeClient store.Client) chi.Router {
 	}
 
 	router.Get("/", router.getTeams)
+	router.Get("/team", router.getTeam)
 
 	return router
 }

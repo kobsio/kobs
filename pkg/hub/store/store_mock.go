@@ -29,6 +29,29 @@ type MockClient struct {
 	mock.Mock
 }
 
+// GetApplicationByID provides a mock function with given fields: ctx, id
+func (_m *MockClient) GetApplicationByID(ctx context.Context, id string) (*v1.ApplicationSpec, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *v1.ApplicationSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string) *v1.ApplicationSpec); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*v1.ApplicationSpec)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetApplications provides a mock function with given fields: ctx
 func (_m *MockClient) GetApplications(ctx context.Context) ([]v1.ApplicationSpec, error) {
 	ret := _m.Called(ctx)
@@ -165,6 +188,29 @@ func (_m *MockClient) GetClusters(ctx context.Context) ([]shared.Cluster, error)
 	return r0, r1
 }
 
+// GetDashboardByID provides a mock function with given fields: ctx, id
+func (_m *MockClient) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.DashboardSpec, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *dashboardv1.DashboardSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string) *dashboardv1.DashboardSpec); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboardv1.DashboardSpec)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetDashboards provides a mock function with given fields: ctx
 func (_m *MockClient) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
 	ret := _m.Called(ctx)
@@ -273,6 +319,29 @@ func (_m *MockClient) GetTags(ctx context.Context) ([]shared.Tag, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
 		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTeamByGroup provides a mock function with given fields: ctx, group
+func (_m *MockClient) GetTeamByGroup(ctx context.Context, group string) (*teamv1.TeamSpec, error) {
+	ret := _m.Called(ctx, group)
+
+	var r0 *teamv1.TeamSpec
+	if rf, ok := ret.Get(0).(func(context.Context, string) *teamv1.TeamSpec); ok {
+		r0 = rf(ctx, group)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*teamv1.TeamSpec)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, group)
 	} else {
 		r1 = ret.Error(1)
 	}

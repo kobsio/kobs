@@ -42,8 +42,10 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
       aria-label="Select namespaces input"
       placeholderText="Namespaces"
       onToggle={(): void => setIsOpen(!isOpen)}
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      onSelect={(_, value: string | SelectOptionObject): void => selectNamespaceID(value.toString())}
+      onSelect={(
+        event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+        value: string | SelectOptionObject,
+      ): void => selectNamespaceID(value.toString())}
       onClear={(): void => selectNamespaceID('')}
       selections={selectedNamespaceIDs}
       isOpen={isOpen}

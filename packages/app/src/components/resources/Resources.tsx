@@ -41,6 +41,7 @@ const Resources: React.FunctionComponent = () => {
       />
 
       <PageContentSection
+        hasPadding={true}
         toolbarContent={options ? <ResourcesToolbar options={options} setOptions={changeOptions} /> : undefined}
         panelContent={details ? details : undefined}
       >

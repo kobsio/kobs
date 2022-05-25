@@ -38,8 +38,10 @@ const ApplicationsToolbarTags: React.FunctionComponent<IApplicationsToolbarTagsP
       aria-label="Select tags input"
       placeholderText="Tags"
       onToggle={(): void => setIsOpen(!isOpen)}
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      onSelect={(_, value: string | SelectOptionObject): void => selectTag(value.toString())}
+      onSelect={(
+        event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+        value: string | SelectOptionObject,
+      ): void => selectTag(value.toString())}
       onClear={(): void => selectTag('')}
       selections={selectedTags}
       isOpen={isOpen}

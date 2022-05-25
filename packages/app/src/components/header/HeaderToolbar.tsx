@@ -3,10 +3,10 @@ import {
   Button,
   ButtonVariant,
   Dropdown,
-  // DropdownItem,
-  // DropdownSeparator,
+  DropdownItem,
+  DropdownSeparator,
   DropdownToggle,
-  // KebabToggle,
+  KebabToggle,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -23,7 +23,7 @@ import { AuthContext, IAuthContext } from '../../context/AuthContext';
 const HeaderToolbar: React.FunctionComponent = () => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [isProfileDrowdownOpen, setIsProfileDrowdownOpen] = useState<boolean>(false);
-  // const [isMobileDrowdownOpen, setIsMobileDrowdownOpen] = useState<boolean>(false);
+  const [isMobileDrowdownOpen, setIsMobileDrowdownOpen] = useState<boolean>(false);
 
   const getProfileImageURL = (): string => {
     return (
@@ -31,36 +31,45 @@ const HeaderToolbar: React.FunctionComponent = () => {
     );
   };
 
-  // const mobileDrowdownOpen: React.ReactElement[] = [];
-  // if (authContext.user.email) {
-  //   mobileDrowdownOpen.push(
-  //     <DropdownItem key="myprofile" component={(props): React.ReactElement => <Link {...props} to="/profile" />}>
-  //       My profile
-  //     </DropdownItem>,
-  //   );
-  //   mobileDrowdownOpen.push(<DropdownSeparator key="divider1" />);
-  //   mobileDrowdownOpen.push(
-  //     <DropdownItem key="logout" component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}>
-  //       Logout
-  //     </DropdownItem>,
-  //   );
-  //   mobileDrowdownOpen.push(<DropdownSeparator key="divider2" />);
-  // }
-  // mobileDrowdownOpen.push(
-  //   <DropdownItem key="settings" component={(props): React.ReactElement => <Link {...props} to="/settings" />}>
-  //     <CogIcon /> Settings
-  //   </DropdownItem>,
-  // );
-  // mobileDrowdownOpen.push(
-  //   <DropdownItem
-  //     key="help"
-  //     component={(props): React.ReactElement => (
-  //       <a {...props} href="https://kobs.io" target="_blank" rel="noreferrer" />
-  //     )}
-  //   >
-  //     <QuestionCircleIcon /> Help
-  //   </DropdownItem>,
-  // );
+  const mobileDrowdownOpen: React.ReactElement[] = [];
+  if (authContext.user.email) {
+    mobileDrowdownOpen.push(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      <DropdownItem key="myprofile" component={(props): React.ReactNode => <Link {...props} to="/profile" />}>
+        My profile
+      </DropdownItem>,
+    );
+    mobileDrowdownOpen.push(<DropdownSeparator key="divider1" />);
+    mobileDrowdownOpen.push(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <DropdownItem key="logout" component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}>
+        Logout
+      </DropdownItem>,
+    );
+    mobileDrowdownOpen.push(<DropdownSeparator key="divider2" />);
+  }
+  mobileDrowdownOpen.push(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    <DropdownItem key="settings" component={(props): React.ReactElement => <Link {...props} to="/settings" />}>
+      <CogIcon /> Settings
+    </DropdownItem>,
+  );
+  mobileDrowdownOpen.push(
+    <DropdownItem
+      key="help"
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      component={(props): React.ReactElement => (
+        <a {...props} href="https://kobs.io" target="_blank" rel="noreferrer">
+          <QuestionCircleIcon /> Help
+        </a>
+      )}
+    ></DropdownItem>,
+  );
 
   return (
     <Toolbar id="header-toolbar" isFullHeight={true} isStatic={true}>
@@ -93,9 +102,8 @@ const HeaderToolbar: React.FunctionComponent = () => {
                 aria-label="Help actions"
                 variant={ButtonVariant.plain}
                 component={(props): React.ReactElement => (
-                  <a {...props} href="https://kobs.io" target="_blank" rel="noreferrer">
-                    Help
-                  </a>
+                  // eslint-disable-next-line jsx-a11y/anchor-has-content
+                  <a {...props} href="https://kobs.io" target="_blank" rel="noreferrer" />
                 )}
               >
                 <QuestionCircleIcon />
@@ -104,7 +112,7 @@ const HeaderToolbar: React.FunctionComponent = () => {
           </ToolbarGroup>
         </ToolbarGroup>
         {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
-        {/* <ToolbarItem visibility={{ '2xl': 'hidden', default: 'visible', lg: 'hidden', md: 'hidden', xl: 'hidden' }}>
+        <ToolbarItem visibility={{ '2xl': 'hidden', default: 'visible', lg: 'hidden', md: 'hidden', xl: 'hidden' }}>
           <Dropdown
             isPlain={true}
             position="right"
@@ -112,7 +120,7 @@ const HeaderToolbar: React.FunctionComponent = () => {
             isOpen={isMobileDrowdownOpen}
             dropdownItems={mobileDrowdownOpen}
           />
-        </ToolbarItem> */}
+        </ToolbarItem>
         {authContext.user.email ? (
           <ToolbarItem visibility={{ default: 'hidden', md: 'visible' }}>
             <Dropdown
@@ -127,23 +135,26 @@ const HeaderToolbar: React.FunctionComponent = () => {
                   {authContext.user.email}
                 </DropdownToggle>
               }
-              dropdownItems={
-                [
-                  // <DropdownItem
-                  //   key="myprofile"
-                  //   component={(props): React.ReactElement => <Link {...props} to="/profile" />}
-                  // >
-                  //   My profile
-                  // </DropdownItem>,
-                  // <DropdownSeparator key="divider" />,
-                  // <DropdownItem
-                  //   key="logout"
-                  //   component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}
-                  // >
-                  //   Logout
-                  // </DropdownItem>,
-                ]
-              }
+              dropdownItems={[
+                <DropdownItem
+                  key="myprofile"
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  component={(props): React.ReactElement => <Link {...props} to="/profile" />}
+                >
+                  My profile
+                </DropdownItem>,
+                <DropdownSeparator key="divider" />,
+                <DropdownItem
+                  key="logout"
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  // eslint-disable-next-line jsx-a11y/anchor-has-content
+                  component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}
+                >
+                  Logout
+                </DropdownItem>,
+              ]}
             />
           </ToolbarItem>
         ) : null}

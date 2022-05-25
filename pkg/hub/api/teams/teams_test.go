@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
@@ -119,7 +118,87 @@ func TestGetTeams(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
-			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
+			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+			w := httptest.NewRecorder()
+			tt.do(router, w, req)
+
+			require.Equal(t, tt.expectedStatusCode, w.Code)
+			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
+			mockStoreClient.AssertExpectations(t)
+		})
+	}
+}
+
+func TestGetTeam(t *testing.T) {
+	for _, tt := range []struct {
+		name               string
+		url                string
+		expectedStatusCode int
+		expectedBody       string
+		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
+		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
+	}{
+		{
+			name:               "no user context",
+			url:                "/teams/team",
+			expectedStatusCode: http.StatusUnauthorized,
+			expectedBody:       "{\"error\":\"You are not authorized to access the team: Unauthorized\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetTeamByGroup", mock.Anything, mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				router.getTeam(w, req)
+			},
+		},
+		{
+			name:               "get team fails, because user is not authorized to view the team",
+			url:                "/teams/team",
+			expectedStatusCode: http.StatusForbidden,
+			expectedBody:       "{\"error\":\"You are not allowed to view the team\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetTeamByGroup", mock.Anything, mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
+				router.getTeam(w, req)
+			},
+		},
+		{
+			name:               "get team fails",
+			url:                "/teams/team?group=team1",
+			expectedStatusCode: http.StatusInternalServerError,
+			expectedBody:       "{\"error\":\"Could not get team: could not get team\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetTeamByGroup", mock.Anything, "team1").Return(nil, fmt.Errorf("could not get team"))
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Teams: []string{"*"}}}))
+				router.getTeam(w, req)
+			},
+		},
+		{
+			name:               "get team",
+			url:                "/teams/team?group=team1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "{\"group\":\"team1\",\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetTeamByGroup", mock.Anything, "team1").Return(&teamv1.TeamSpec{Group: "team1"}, nil)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Teams: []string{"*"}}}))
+				router.getTeam(w, req)
+			},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			mockStoreClient := &store.MockClient{}
+			tt.prepare(t, mockStoreClient)
+
+			router := Router{chi.NewRouter(), mockStoreClient}
+
+			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 			w := httptest.NewRecorder()

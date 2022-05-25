@@ -21,7 +21,7 @@ const Profile: React.FunctionComponent = () => {
     <React.Fragment>
       <PageHeaderSection title={authContext.user.email} description="" />
 
-      <PageContentSection toolbarContent={undefined} panelContent={undefined}>
+      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={undefined}>
         <div>TODO: Show dashboards</div>
       </PageContentSection>
     </React.Fragment>

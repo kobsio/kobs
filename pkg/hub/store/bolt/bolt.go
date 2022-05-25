@@ -408,6 +408,17 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 	return count, nil
 }
 
+func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicationv1.ApplicationSpec, error) {
+	var application applicationv1.ApplicationSpec
+
+	err := c.store.Get(id, &application)
+	if err != nil {
+		return nil, err
+	}
+
+	return &application, nil
+}
+
 func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
 	var dashboards []dashboardv1.DashboardSpec
 	query := &bh.Query{}
@@ -418,6 +429,17 @@ func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec
 	}
 
 	return dashboards, nil
+}
+
+func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.DashboardSpec, error) {
+	var dashboard dashboardv1.DashboardSpec
+
+	err := c.store.Get(id, &dashboard)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dashboard, nil
 }
 
 func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
@@ -445,6 +467,30 @@ func (c *client) GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv
 	}
 
 	return teams, nil
+}
+
+func (c *client) GetTeamByGroup(ctx context.Context, group string) (*teamv1.TeamSpec, error) {
+	var teams []teamv1.TeamSpec
+
+	err := c.store.Find(&teams, bh.Where("Group").Eq(group).Index("Group"))
+	if err != nil {
+		return nil, err
+	}
+
+	if len(teams) == 0 {
+		return nil, fmt.Errorf("team was not found")
+	}
+
+	if len(teams) == 1 {
+		return &teams[0], nil
+	}
+
+	team := teams[0]
+	for i := 1; i < len(teams); i++ {
+		team.Dashboards = append(team.Dashboards, teams[i].Dashboards...)
+	}
+
+	return &team, nil
 }
 
 func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/hub/store"
+	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 
 	"github.com/go-chi/chi/v5"
@@ -112,7 +112,6 @@ func TestGetApplications(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
-			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 			w := httptest.NewRecorder()
@@ -194,7 +193,6 @@ func TestGetApplicationsCount(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
-			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 			w := httptest.NewRecorder()
@@ -249,7 +247,100 @@ func TestGetTags(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
-			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
+			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+			w := httptest.NewRecorder()
+			tt.do(router, w, req)
+
+			require.Equal(t, tt.expectedStatusCode, w.Code)
+			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
+			mockStoreClient.AssertExpectations(t)
+		})
+	}
+}
+
+func TestGetApplication(t *testing.T) {
+	for _, tt := range []struct {
+		name               string
+		url                string
+		expectedStatusCode int
+		expectedBody       string
+		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
+		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
+	}{
+		{
+			name:               "no user context",
+			url:                "/applications/application",
+			expectedStatusCode: http.StatusUnauthorized,
+			expectedBody:       "{\"error\":\"You are not authorized to access the application: Unauthorized\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetApplicationByID", mock.Anything, mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				router.getApplication(w, req)
+			},
+		},
+		{
+			name:               "get application fails",
+			url:                "/applications/application?id=id1",
+			expectedStatusCode: http.StatusInternalServerError,
+			expectedBody:       "{\"error\":\"Could not get application: could not get application\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetApplicationByID", mock.Anything, "id1").Return(nil, fmt.Errorf("could not get application"))
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
+				router.getApplication(w, req)
+			},
+		},
+		{
+			name:               "application not found",
+			url:                "/applications/application?id=id1",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Application was not found\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetApplicationByID", mock.Anything, mock.Anything).Return(nil, nil)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
+				router.getApplication(w, req)
+			},
+		},
+		{
+			name:               "user does not have permissions to view application",
+			url:                "/applications/application?id=id1",
+			expectedStatusCode: http.StatusForbidden,
+			expectedBody:       "{\"error\":\"You are not allowed to view the application\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetApplicationByID", mock.Anything, mock.Anything).Return(&applicationv1.ApplicationSpec{Satellite: "satellite1", Cluster: "cluster1", Namespace: "namespace1"}, nil)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}))
+				router.getApplication(w, req)
+			},
+		},
+		{
+			name:               "get application succeeds",
+			url:                "/applications/application?id=id1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "{\"satellite\":\"satellite1\",\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"topology\":{}}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetApplicationByID", mock.Anything, mock.Anything).Return(&applicationv1.ApplicationSpec{Satellite: "satellite1", Cluster: "cluster1", Namespace: "namespace1"}, nil)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
+				router.getApplication(w, req)
+			},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			mockStoreClient := &store.MockClient{}
+			tt.prepare(t, mockStoreClient)
+
+			router := Router{chi.NewRouter(), mockStoreClient}
+
+			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 			w := httptest.NewRecorder()

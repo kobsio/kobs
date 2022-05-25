@@ -7,9 +7,9 @@ import PluginPageError from './PluginPageError';
 import PluginPageLoading from './PluginPageLoading';
 
 const PluginPage: React.FunctionComponent = () => {
-  const params = useParams<{ type: string; name: string }>();
+  const params = useParams<{ satellite: string; type: string; name: string }>();
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
-  const instance = pluginsContext.getInstance(params.type || '', params.name || '');
+  const instance = pluginsContext.getInstance(params.satellite || '', params.type || '', params.name || '');
 
   if (!instance) {
     return (

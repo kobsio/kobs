@@ -124,6 +124,38 @@ func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, tags)
 }
 
+func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "The user is not authorized to access the application", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the application")
+		return
+	}
+
+	id := r.URL.Query().Get("id")
+
+	application, err := router.storeClient.GetApplicationByID(r.Context(), id)
+	if err != nil {
+		log.Error(r.Context(), "Could not get application", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get application")
+		return
+	}
+
+	if application == nil {
+		log.Error(r.Context(), "Application was not found", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Application was not found")
+		return
+	}
+
+	if !user.HasApplicationAccess(application.Satellite, application.Cluster, application.Namespace, application.Teams) {
+		log.Warn(r.Context(), "The user is not authorized to view the application", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view the application")
+		return
+	}
+
+	render.JSON(w, r, application)
+}
+
 func Mount(storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
@@ -133,6 +165,7 @@ func Mount(storeClient store.Client) chi.Router {
 	router.Get("/", router.getApplications)
 	router.Get("/count", router.getApplicationsCount)
 	router.Get("/tags", router.getTags)
+	router.Get("/application", router.getApplication)
 
 	return router
 }
