@@ -43,16 +43,9 @@ const PluginInstances: React.FunctionComponent = () => {
       />
 
       <PageContentSection
+        hasPadding={true}
         toolbarContent={
           <ToolbarContent>
-            <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
-              <SearchInput
-                aria-label="Search plugin input"
-                onChange={(value: string): void => setState({ ...state, page: 1, searchTerm: value })}
-                value={state.searchTerm}
-                onClear={(): void => setState({ ...state, page: 1, searchTerm: '' })}
-              />
-            </ToolbarItem>
             <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
               <ToolbarItem>
                 <Select
@@ -60,10 +53,10 @@ const PluginInstances: React.FunctionComponent = () => {
                   aria-label="Select plugin type input"
                   placeholderText="Plugin Type"
                   onToggle={(): void => setState({ ...state, pluginTypeIsOpen: !state.pluginTypeIsOpen })}
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  onSelect={(_, value: string | SelectOptionObject): void =>
-                    setState({ ...state, page: 1, pluginType: value.toString(), pluginTypeIsOpen: false })
-                  }
+                  onSelect={(
+                    event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                    value: string | SelectOptionObject,
+                  ): void => setState({ ...state, page: 1, pluginType: value.toString(), pluginTypeIsOpen: false })}
                   onClear={(): void => setState({ ...state, page: 1, pluginType: '' })}
                   selections={state.pluginType}
                   isOpen={state.pluginTypeIsOpen}
@@ -74,6 +67,14 @@ const PluginInstances: React.FunctionComponent = () => {
                 </Select>
               </ToolbarItem>
             </ToolbarGroup>
+            <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
+              <SearchInput
+                aria-label="Search plugin input"
+                onChange={(value: string): void => setState({ ...state, page: 1, searchTerm: value })}
+                value={state.searchTerm}
+                onClear={(): void => setState({ ...state, page: 1, searchTerm: '' })}
+              />
+            </ToolbarItem>
           </ToolbarContent>
         }
         panelContent={undefined}

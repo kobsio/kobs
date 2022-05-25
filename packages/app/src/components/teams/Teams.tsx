@@ -61,6 +61,7 @@ const Teams: React.FunctionComponent = () => {
       />
 
       <PageContentSection
+        hasPadding={true}
         toolbarContent={
           <ToolbarContent>
             <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>

@@ -80,8 +80,11 @@ spec:
                                 x-kubernetes-preserve-unknown-fields: true
                               satellite:
                                 type: string
+                              type:
+                                type: string
                             required:
                             - name
+                            - type
                             type: object
                           rowSpan:
                             format: int64
@@ -126,8 +129,11 @@ spec:
                           x-kubernetes-preserve-unknown-fields: true
                         satellite:
                           type: string
+                        type:
+                          type: string
                       required:
                       - name
+                      - type
                       type: object
                   required:
                   - name

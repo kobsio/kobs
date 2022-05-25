@@ -41,6 +41,7 @@ export interface IPanel {
 
 export interface IPlugin {
   satellite: string;
+  type: string;
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
@@ -64,4 +65,9 @@ export interface IPlaceholders {
 export interface IReferenceInline {
   variables?: IVariable[];
   rows: IRow[];
+}
+
+export interface IVariableValues extends IVariable {
+  value: string;
+  values: string[];
 }

@@ -71,6 +71,7 @@ type Panel struct {
 
 type Plugin struct {
 	Satellite string                `json:"satellite,omitempty"`
+	Type      string                `json:"type"`
 	Name      string                `json:"name"`
 	Options   *apiextensionsv1.JSON `json:"options,omitempty"`
 }

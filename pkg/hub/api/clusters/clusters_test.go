@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/kobsio/kobs/pkg/hub/store"
@@ -62,7 +61,6 @@ func TestGetClusters(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
-			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 			w := httptest.NewRecorder()
@@ -121,7 +119,6 @@ func TestGetNamespaces(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
-			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 			w := httptest.NewRecorder()
@@ -176,7 +173,6 @@ func TestGetResources(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
-			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 			w := httptest.NewRecorder()

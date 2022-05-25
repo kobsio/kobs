@@ -11,7 +11,7 @@ const PluginPageLoading: React.FunctionComponent = () => {
         <br />
         <Skeleton width="75%" fontSize="sm" screenreaderText="Loading description" />
       </PageSection>
-      <PageContentSection toolbarContent={undefined} panelContent={undefined}>
+      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={undefined}>
         <p></p>
       </PageContentSection>
     </React.Fragment>

@@ -10,7 +10,7 @@ const Settings: React.FunctionComponent = () => {
         description="The settings for you hub and all the satellites. You can also view the resources, which are available via each satellite."
       />
 
-      <PageContentSection toolbarContent={undefined} panelContent={undefined}>
+      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={undefined}>
         <div>TODO: Show settings</div>
       </PageContentSection>
     </React.Fragment>

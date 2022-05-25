@@ -10,12 +10,14 @@ import {
 import React from 'react';
 
 interface IPageContentSectionProps {
+  hasPadding: boolean;
   panelContent: React.ReactNode;
   toolbarContent: React.ReactNode;
   children: React.ReactElement;
 }
 
 export const PageContentSection: React.FunctionComponent<IPageContentSectionProps> = ({
+  hasPadding,
   panelContent,
   toolbarContent,
   children,
@@ -30,7 +32,7 @@ export const PageContentSection: React.FunctionComponent<IPageContentSectionProp
           </DrawerSection>
         )}
         <DrawerContent className="pf-m-no-background" panelContent={panelContent}>
-          <DrawerContentBody hasPadding={true}>{children}</DrawerContentBody>
+          <DrawerContentBody hasPadding={hasPadding}>{children}</DrawerContentBody>
         </DrawerContent>
       </Drawer>
     </PageSection>

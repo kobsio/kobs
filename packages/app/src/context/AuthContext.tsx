@@ -43,7 +43,6 @@ export interface IAuthContext {
 
 // AuthContext is the plugin context object.
 export const AuthContext = React.createContext<IAuthContext>({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   hasPluginAccess: (satellite: string, name: string) => {
     return false;
   },

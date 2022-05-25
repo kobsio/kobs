@@ -17,8 +17,6 @@ import (
 )
 
 // func TestPrepare(t *testing.T) {
-// 	fmt.Println("run1")
-
 // 	applicationsSatellite1 := []applicationv1.ApplicationSpec{
 // 		{Cluster: "dev-de1", Namespace: "default", Name: "application1", Description: "This is a test", Teams: []string{"team1"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
 // 		{Cluster: "dev-de1", Namespace: "default", Name: "application2", Description: "This is a test", Teams: []string{"team1", "team2"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
@@ -468,6 +466,58 @@ func TestGetApplicationsByFilter(t *testing.T) {
 	}
 }
 
+func TestGetApplicationByID(t *testing.T) {
+	applications := []applicationv1.ApplicationSpec{{
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "application1",
+	}, {
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "application2",
+	}}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveApplications(context.Background(), "test-satellite", applications)
+	require.NoError(t, err)
+
+	storedApplication1, err := c.GetApplicationByID(context.Background(), "/satellite/test-satellite/cluster/dev-de1/namespace/default/name/application1")
+	require.NoError(t, err)
+	require.NotNil(t, storedApplication1)
+
+	storedApplication2, err := c.GetApplicationByID(context.Background(), "/satellite/test-satellite/cluster/dev-de1/namespace/default/name/application3")
+	require.Error(t, err)
+	require.Nil(t, storedApplication2)
+}
+
+func TestGetDashboardByID(t *testing.T) {
+	dashboards := []dashboardv1.DashboardSpec{{
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "dashboard1",
+	}, {
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "dashboard2",
+	}}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveDashboards(context.Background(), "test-satellite", dashboards)
+	require.NoError(t, err)
+
+	storedDashboard1, err := c.GetDashboardByID(context.Background(), "/satellite/test-satellite/cluster/dev-de1/namespace/default/name/dashboard1")
+	require.NoError(t, err)
+	require.NotNil(t, storedDashboard1)
+
+	storedDashboard2, err := c.GetDashboardByID(context.Background(), "/satellite/test-satellite/cluster/dev-de1/namespace/default/name/dashboard3")
+	require.Error(t, err)
+	require.Nil(t, storedDashboard2)
+}
+
 func TestGetTeamsByGroups(t *testing.T) {
 	teams := []teamv1.TeamSpec{{
 		Cluster:   "dev-de1",
@@ -516,6 +566,60 @@ func TestGetTeamsByGroups(t *testing.T) {
 	storedTeams5, err := c.GetTeamsByGroups(context.Background(), []string{"team3@kobs.io"})
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedTeams5))
+}
+
+func TestGetTeamByGroup(t *testing.T) {
+	teams := []teamv1.TeamSpec{{
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "team1",
+		Group:     "team1@kobs.io",
+		Dashboards: []dashboardv1.Reference{
+			{Cluster: "dev-de1", Namespace: "default", Name: "dashboard1", Title: "Dashboard 1"},
+		},
+	}, {
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "team2",
+		Group:     "team2@kobs.io",
+		Dashboards: []dashboardv1.Reference{
+			{Cluster: "dev-de1", Namespace: "default", Name: "dashboard1", Title: "Dashboard 1"},
+		},
+	}, {
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "team3",
+		Group:     "team3@kobs.io",
+		Dashboards: []dashboardv1.Reference{
+			{Cluster: "dev-de1", Namespace: "default", Name: "dashboard1", Title: "Dashboard 1"},
+		},
+	}, {
+		Cluster:   "stage-de1",
+		Namespace: "default",
+		Name:      "team3",
+		Group:     "team3@kobs.io",
+		Dashboards: []dashboardv1.Reference{
+			{Cluster: "dev-de1", Namespace: "default", Name: "dashboard1", Title: "Dashboard 1"},
+		},
+	}}
+
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveTeams(context.Background(), "test-satellite", teams)
+	require.NoError(t, err)
+
+	storedTeam1, err := c.GetTeamByGroup(context.Background(), "team1@kobs.io")
+	require.NoError(t, err)
+	require.Equal(t, 1, len(storedTeam1.Dashboards))
+
+	storedTeam2, err := c.GetTeamByGroup(context.Background(), "team3@kobs.io")
+	require.NoError(t, err)
+	require.Equal(t, 2, len(storedTeam2.Dashboards))
+
+	storedTeam3, err := c.GetTeamByGroup(context.Background(), "team4@kobs.io")
+	require.Error(t, err)
+	require.Nil(t, storedTeam3)
 }
 
 func TestGetGetUsersByEmail(t *testing.T) {

@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
 import { ITimes, PluginPanel as SharedPluginPanel } from '@kobsio/shared';
+import AppPanel from './AppPanel';
 import Module from '../module/Module';
 
 interface IPluginPanelProps {
@@ -11,6 +12,7 @@ interface IPluginPanelProps {
   description?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
+  satellite: string;
   type: string;
   name: string;
   times?: ITimes;
@@ -20,6 +22,7 @@ interface IPluginPanelProps {
 const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   title,
   description,
+  satellite,
   type,
   name,
   options,
@@ -27,7 +30,21 @@ const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   setDetails,
 }: IPluginPanelProps) => {
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
-  const instance = pluginsContext.getInstance(type, name);
+  const instance = pluginsContext.getInstance(satellite, type, name);
+
+  if (type === 'app') {
+    return (
+      <AppPanel
+        title={title}
+        description={description}
+        satellite={satellite}
+        name={name}
+        options={options}
+        times={times}
+        setDetails={setDetails}
+      />
+    );
+  }
 
   const loadingContent = (): React.ReactElement => {
     return (
@@ -58,7 +75,8 @@ const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
       <SharedPluginPanel title={title} description={description}>
         <Alert isInline={true} variant={AlertVariant.danger} title="Plugin instance was not found">
           <p>
-            The plugin instance with the name <b>{name}</b> and the type <b>{type}</b> was not found
+            The plugin instance with the name <b>{name}</b> and the type <b>{type}</b> was not found on satellite{' '}
+            <b>{satellite}</b>
           </p>
         </Alert>
       </SharedPluginPanel>

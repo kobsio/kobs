@@ -137,6 +137,7 @@ const ResourcesPanel: React.FunctionComponent<IResourcesPanelProps> = ({
     <Card isCompact={true}>
       <Tabs
         activeKey={state.activeKey}
+        isFilled={true}
         onSelect={(event: React.MouseEvent<HTMLElement, MouseEvent>, eventKey: string | number): void => {
           setState({ activeKey: eventKey.toString(), selectedRow: -1 });
           if (setDetails) {

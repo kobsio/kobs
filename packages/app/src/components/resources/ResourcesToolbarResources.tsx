@@ -38,8 +38,10 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
       aria-label="Select resources input"
       placeholderText="Resources"
       onToggle={(): void => setIsOpen(!isOpen)}
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      onSelect={(_, value: string | SelectOptionObject): void => selectResourceID(value.toString())}
+      onSelect={(
+        event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+        value: string | SelectOptionObject,
+      ): void => selectResourceID(value.toString())}
       onClear={(): void => selectResourceID('')}
       selections={selectedResourcesIDs}
       isOpen={isOpen}
