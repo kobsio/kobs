@@ -410,7 +410,7 @@ func (router *Router) closeIncident(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, nil)
 }
 
-// Mount mounts the Prometheus plugin routes in the plugins router of a kobs satellite instance.
+// Mount mounts the Opsgenie plugin routes in the plugins router of a kobs satellite instance.
 func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
 	var opsgenieInstances []instance.Instance
 

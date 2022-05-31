@@ -25,3 +25,19 @@ spec:
                   type: app
                   options:
                     team: dia@kobs.io
+    - title: Status of External Services
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: External Services
+                plugin:
+                  name: rss
+                  type: rss
+                  options:
+                    urls:
+                      - https://www.githubstatus.com/history.rss
+                      - https://status.aws.amazon.com/rss/route53.rss
+                      - https://azurestatuscdn.azureedge.net/de-de/status/feed/
+                      - https://www.cloudflarestatus.com/history.atom
+                    sortBy: updated

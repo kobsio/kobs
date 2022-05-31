@@ -9,18 +9,18 @@ import Incidents from './Incidents';
 import IncidentsActions from './IncidentsActions';
 import IncidentsWrapper from './IncidentsWrapper';
 
-interface IPrometheusPluginPanelProps extends IPluginPanelProps {
+interface IOpsgeniePluginPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
 }
 
-const Panel: React.FunctionComponent<IPrometheusPluginPanelProps> = ({
+const Panel: React.FunctionComponent<IOpsgeniePluginPanelProps> = ({
   title,
   description,
   options,
   instance,
   times,
   setDetails,
-}: IPrometheusPluginPanelProps) => {
+}: IOpsgeniePluginPanelProps) => {
   if (options && times) {
     if (options.type === 'incidents') {
       return (
