@@ -90,7 +90,7 @@ const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
       props={{
         description: description,
         instance: instance,
-        optiosn: options,
+        options: options,
         setDetails: setDetails,
         times: times,
         title: title,

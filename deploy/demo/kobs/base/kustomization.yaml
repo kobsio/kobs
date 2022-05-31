@@ -2,19 +2,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../../kustomize/kobs
-  - dashboards/istio-http.yaml
-  - dashboards/istio-logs.yaml
-  - dashboards/pod-logs.yaml
-  - dashboards/resource-usage.yaml
-  - dashboards/resources.yaml
-  - dashboards/traces.yaml
-  - teams/team-call-of-duty.yaml
-  - teams/team-diablo.yaml
-  - teams/team-resident-evil.yaml
-  - kobs-application.yaml
-  - kobs-gateway.yaml
+  # - ../../../kustomize/hub
+  # - ../../../kustomize/satellite
+  - crs/applications
+  - crs/dashboards
+  - crs/teams
+  - hub-gateway.yaml
+  - hub-virtualservice.yaml
   - kobs-ns.yaml
-  - kobs-virtualservice.yaml
-patchesStrategicMerge:
-  - kobs-cm.yaml

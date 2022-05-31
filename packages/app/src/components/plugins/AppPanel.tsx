@@ -1,7 +1,11 @@
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import React from 'react';
 
-import { ITimes, PluginPanel as SharedPluginPanel } from '@kobsio/shared';
+import { ITimes, PluginPanel } from '@kobsio/shared';
+import ApplicationsPanel from '../applications/ApplicationsPanel';
+import DashboardsPanel from '../dashboards/DashboardsPanel';
+import Markdown from '../markdown/Markdown';
+import ResourcesPanelWrapper from '../resources/ResourcesPanelWrapper';
 
 interface IAppPanelProps {
   title: string;
@@ -23,16 +27,44 @@ const AppPanel: React.FunctionComponent<IAppPanelProps> = ({
   times,
   setDetails,
 }: IAppPanelProps) => {
-  if (name === '') {
-    return null;
+  if (name === 'applications') {
+    return (
+      <PluginPanel title={title} description={description}>
+        <ApplicationsPanel options={options} setDetails={setDetails} />
+      </PluginPanel>
+    );
+  }
+
+  if (name === 'dashboards') {
+    return (
+      <PluginPanel title={title} description={description}>
+        <DashboardsPanel options={options} />
+      </PluginPanel>
+    );
+  }
+
+  if (name === 'markdown') {
+    return (
+      <PluginPanel title={title} description={description}>
+        <Markdown options={options} />
+      </PluginPanel>
+    );
+  }
+
+  if (name === 'resources') {
+    return (
+      <PluginPanel title={title} description={description}>
+        <ResourcesPanelWrapper options={options} times={times} setDetails={setDetails} />
+      </PluginPanel>
+    );
   }
 
   return (
-    <SharedPluginPanel title={title} description={description}>
+    <PluginPanel title={title} description={description}>
       <Alert isInline={true} variant={AlertVariant.danger} title="Invalid plugin name">
         The plugin name <b>{name}</b> is invalid for the plugin type <b>app</b>.
       </Alert>
-    </SharedPluginPanel>
+    </PluginPanel>
   );
 };
 

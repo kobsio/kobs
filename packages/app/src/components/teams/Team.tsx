@@ -2,9 +2,9 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  List,
-  ListItem,
-  ListVariant,
+  Flex,
+  FlexItem,
+  Label,
   Spinner,
   Text,
   TextContent,
@@ -12,8 +12,9 @@ import {
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
-import { ExternalLink, PageContentSection, PageHeaderSection } from '@kobsio/shared';
+import { PageContentSection, PageHeaderSection } from '@kobsio/shared';
 import { DashboardsWrapper } from '../dashboards/DashboardsWrapper';
 import { ITeam } from '../../crds/team';
 
@@ -79,21 +80,31 @@ const Team: React.FunctionComponent = () => {
     <React.Fragment>
       <PageHeaderSection
         component={
-          <React.Fragment>
-            <TextContent>
-              <Text component="h1">{data.group}</Text>
-              {data.description ? <Text component="p">{data.description}</Text> : <Text component="p"></Text>}
-            </TextContent>
-            {data.links && data.links.length > 0 ? (
-              <List variant={ListVariant.inline}>
-                {data.links.map((link, index) => (
-                  <ListItem key={index}>
-                    <ExternalLink title={link.title} link={link.link} />
-                  </ListItem>
-                ))}
-              </List>
-            ) : null}
-          </React.Fragment>
+          <Flex direction={{ default: 'column' }}>
+            <FlexItem>
+              <TextContent>
+                <Text component="h1">{data.group}</Text>
+                {data.description ? <Text component="p">{data.description}</Text> : <Text component="p"></Text>}
+              </TextContent>
+            </FlexItem>
+            {data.links && data.links.length > 0 && (
+              <Flex>
+                <FlexItem>
+                  {data.links.map((link, index) => (
+                    <Label
+                      key={index}
+                      className="pf-u-mr-sm"
+                      color="grey"
+                      icon={<ExternalLinkAltIcon />}
+                      href={link.link}
+                    >
+                      {link.title}
+                    </Label>
+                  ))}
+                </FlexItem>
+              </Flex>
+            )}
+          </Flex>
         }
       />
 

@@ -37,6 +37,7 @@ type DashboardSpec struct {
 	NamespaceID  string        `json:"namespaceID,omitempty"`
 	Title        string        `json:"title,omitempty"`
 	Description  string        `json:"description,omitempty"`
+	HideToolbar  bool          `json:"hideToolbar,omitempty"`
 	Placeholders []Placeholder `json:"placeholders,omitempty"`
 	Variables    []Variable    `json:"variables,omitempty"`
 	Rows         []Row         `json:"rows"`
@@ -88,6 +89,7 @@ type Reference struct {
 }
 
 type ReferenceInline struct {
-	Variables []Variable `json:"variables,omitempty"`
-	Rows      []Row      `json:"rows"`
+	HideToolbar bool       `json:"hideToolbar,omitempty"`
+	Variables   []Variable `json:"variables,omitempty"`
+	Rows        []Row      `json:"rows"`
 }

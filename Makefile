@@ -64,7 +64,7 @@ generate-crds:
 	@controller-gen "crd:crdVersions={v1}" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
 
 	@for crd in $(CRDS); do \
-		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
+		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/satellite/crds/kobs.io_$$crd\s.yaml; \
 	done
 
 .PHONY: generate-assets

@@ -33,6 +33,9 @@ var Cmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get our global flags for kobs and use them to setup our logging configuration. After our logging is
 		// configured we print the version information and build context of kobs.
+		debugUsername, _ := cmd.Flags().GetString("debug.username")
+		debugPassword, _ := cmd.Flags().GetString("debug.password")
+
 		logLevel, _ := cmd.Flags().GetString("log.level")
 		logFormat, _ := cmd.Flags().GetString("log.format")
 		log.Setup(logLevel, logFormat)
@@ -65,7 +68,7 @@ var Cmd = &cobra.Command{
 		// The satelliteServer handles all requests from a kobs hub and serves the configuration, so the hub knows which
 		// clusters and plugins are available via this satellite instance. The metrics server is used to serve the kobs
 		// metrics.
-		satelliteServer, err := satellite.New(satelliteAddress, satelliteToken, cfg.API, clustersClient, pluginsClient)
+		satelliteServer, err := satellite.New(debugUsername, debugPassword, satelliteAddress, satelliteToken, cfg.API, clustersClient, pluginsClient)
 		if err != nil {
 			log.Fatal(nil, "Could not create satellite server", zap.Error(err))
 		}

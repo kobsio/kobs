@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/log"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
@@ -56,6 +57,11 @@ func (s *server) Stop() {
 // localtion for the app.assets flag.
 func New(hubAddress, appAddress, appAssetsDir string) (Server, error) {
 	router := chi.NewRouter()
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+	}))
 
 	// Serve the React app, when a directory for all assets is defined. We can not just serve the assets via
 	// http.FileServer, because then the user would see an error, when he hits the reload button on another page then

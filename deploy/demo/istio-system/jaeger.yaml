@@ -1,4 +1,3 @@
-# https://raw.githubusercontent.com/istio/istio/release-1.10/samples/addons/jaeger.yaml
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,7 +21,7 @@ spec:
     spec:
       containers:
         - name: jaeger
-          image: "docker.io/jaegertracing/all-in-one:1.20"
+          image: "docker.io/jaegertracing/all-in-one:1.29"
           env:
             - name: BADGER_EPHEMERAL
               value: "false"
@@ -32,8 +31,8 @@ spec:
               value: "/badger/data"
             - name: BADGER_DIRECTORY_KEY
               value: "/badger/key"
-            - name: COLLECTOR_ZIPKIN_HTTP_PORT
-              value: "9411"
+            - name: COLLECTOR_ZIPKIN_HOST_PORT
+              value: ":9411"
             - name: MEMORY_MAX_TRACES
               value: "50000"
             - name: QUERY_BASE_PATH
@@ -71,10 +70,16 @@ spec:
       port: 80
       protocol: TCP
       targetPort: 16686
+    # Note: Change port name if you add '--query.grpc.tls.enabled=true'
+    - name: grpc-query
+      port: 16685
+      protocol: TCP
+      targetPort: 16685
   selector:
     app: jaeger
 
 ---
+# Jaeger implements the Zipkin API. To support swapping out the tracing backend, we use a Service named Zipkin.
 apiVersion: v1
 kind: Service
 metadata:
@@ -109,5 +114,8 @@ spec:
     port: 14250
     targetPort: 14250
     protocol: TCP
+  - port: 9411
+    targetPort: 9411
+    name: http-zipkin
   selector:
     app: jaeger

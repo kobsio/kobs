@@ -23,6 +23,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
@@ -68,9 +69,17 @@ func (s *server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(satelliteAddress, satelliteToken string, apiConfig api.Config, clustersClient clusters.Client, pluginsClient plugins.Client) (Server, error) {
+func New(debugUsername, debugPassword, satelliteAddress, satelliteToken string, apiConfig api.Config, clustersClient clusters.Client, pluginsClient plugins.Client) (Server, error) {
 	router := chi.NewRouter()
-	debug.MountRoutes(router)
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+	}))
+
+	if debugUsername != "" && debugPassword != "" {
+		router.Mount("/api/debug", debug.Mount(debugUsername, debugPassword))
+	}
 
 	router.Get("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, nil)

@@ -7,6 +7,7 @@ export interface IDashboard {
   name: string;
   title: string;
   description?: string;
+  hideToolbar?: boolean;
   placeholders?: IPlaceholder[];
   variables?: IVariable[];
   rows: IRow[];
@@ -63,6 +64,7 @@ export interface IPlaceholders {
 }
 
 export interface IReferenceInline {
+  hideToolbar?: boolean;
   variables?: IVariable[];
   rows: IRow[];
 }

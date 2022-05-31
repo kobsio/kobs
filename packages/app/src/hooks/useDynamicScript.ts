@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const loadedScripts: { [name: string]: Promise<void> } = {};
 
@@ -11,8 +11,8 @@ export const useDynamicScript = (
   const url =
     process.env.NODE_ENV === 'production' ? `/plugins/${name}/remoteEntry.js` : 'http://localhost:3001/remoteEntry.js';
 
-  const [ready, setReady] = React.useState(false);
-  const [failed, setFailed] = React.useState(false);
+  const [ready, setReady] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!name) {

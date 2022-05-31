@@ -7,6 +7,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@nivo/core": "^0.79.0",
+    "@nivo/tooltip": "^0.79.0",
     "@patternfly/patternfly": "^4.185.1",
     "@patternfly/react-core": "^4.202.16",
     "@patternfly/react-icons": "^4.53.16",

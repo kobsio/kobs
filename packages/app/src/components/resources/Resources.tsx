@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Card } from '@patternfly/react-core';
 
 import { PageContentSection, PageHeaderSection } from '@kobsio/shared';
 import { IOptions } from './utils/interfaces';
@@ -46,7 +47,9 @@ const Resources: React.FunctionComponent = () => {
         panelContent={details ? details : undefined}
       >
         {options && options.resourceIDs.length > 0 ? (
-          <ResourcesPanel options={options} setDetails={setDetails} />
+          <Card isCompact={true}>
+            <ResourcesPanel isInline={false} options={options} setDetails={setDetails} />
+          </Card>
         ) : (
           <div></div>
         )}

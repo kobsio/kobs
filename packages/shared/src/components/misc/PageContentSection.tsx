@@ -27,7 +27,9 @@ export const PageContentSection: React.FunctionComponent<IPageContentSectionProp
       <Drawer isExpanded={panelContent !== undefined}>
         {toolbarContent && (
           <DrawerSection>
-            <Toolbar usePageInsets={true}>{toolbarContent}</Toolbar>
+            <Toolbar usePageInsets={true} style={{ zIndex: 300 }}>
+              {toolbarContent}
+            </Toolbar>
             <Divider component="div" />
           </DrawerSection>
         )}

@@ -67,7 +67,7 @@ const ResourcesPanelTable: React.FunctionComponent<IResourcesPanelTableProps> = 
                   <EmptyStateBody>
                     {resourceResponse.errors
                       ? resourceResponse.errors.join('\n')
-                      : 'We could not found any resources for the selected filter criteria'}
+                      : 'We could not find any resources for the selected filter criteria'}
                   </EmptyStateBody>
                 </EmptyState>
               </Bullseye>

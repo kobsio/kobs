@@ -353,6 +353,87 @@ func TestGetApplication(t *testing.T) {
 	}
 }
 
+func TestGetApplicationsByTeam(t *testing.T) {
+	for _, tt := range []struct {
+		name               string
+		url                string
+		expectedStatusCode int
+		expectedBody       string
+		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
+		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
+	}{
+		{
+			name:               "no user context",
+			url:                "/team",
+			expectedStatusCode: http.StatusUnauthorized,
+			expectedBody:       "{\"error\":\"You are not authorized to access the applications: Unauthorized\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				router.getApplicationsByTeam(w, req)
+			},
+		},
+		{
+			name:               "get team applications fails, because user is not authorized",
+			url:                "/team?team=team1",
+			expectedStatusCode: http.StatusForbidden,
+			expectedBody:       "{\"error\":\"You are not allowed to view the applications of this team\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
+				router.getApplicationsByTeam(w, req)
+			},
+		},
+		{
+			name:               "get team applications fails",
+			url:                "/team?team=team1",
+			expectedStatusCode: http.StatusInternalServerError,
+			expectedBody:       "{\"error\":\"Could not get applications: could not get applications\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get applications"))
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
+				router.getApplicationsByTeam(w, req)
+			},
+		},
+		{
+			name:               "get all applications",
+			url:                "/team?team=team1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "null\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, nil)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
+				router.getApplicationsByTeam(w, req)
+			},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			mockStoreClient := &store.MockClient{}
+			tt.prepare(t, mockStoreClient)
+
+			router := Router{chi.NewRouter(), mockStoreClient}
+
+			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			rctx := chi.NewRouteContext()
+			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+			w := httptest.NewRecorder()
+			tt.do(router, w, req)
+
+			require.Equal(t, tt.expectedStatusCode, w.Code)
+			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
+			mockStoreClient.AssertExpectations(t)
+		})
+	}
+}
+
 func TestMount(t *testing.T) {
 	router := Mount(nil)
 	require.NotNil(t, router)

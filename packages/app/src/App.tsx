@@ -2,7 +2,7 @@ import '@patternfly/react-core/dist/styles/base.css';
 import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/patternfly/patternfly-addons.css';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Page } from '@patternfly/react-core';
 import React from 'react';
@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom/client';
 import Application from './components/applications/Application';
 import Applications from './components/applications/Applications';
 import { AuthContextProvider } from './context/AuthContext';
+import DashboardPage from './components/dashboards/DashboardPage';
 import Header from './components/header/Header';
 import PluginInstances from './components/plugins/PluginInstances';
 import PluginPage from './components/plugins/PluginPage';
@@ -45,8 +46,10 @@ const App: React.FunctionComponent = () => {
           <BrowserRouter>
             <Page isManagedSidebar={true} header={<Header />} sidebar={<Sidebar />}>
               <Routes>
-                <Route path="/" element={<Applications />} />
+                <Route path="/" element={<Navigate to="/applications" replace={true} />} />
+                <Route path="/applications" element={<Applications />} />
                 <Route path="/applications/:application" element={<Application />} />
+                <Route path="/dashboards/:dashboard" element={<DashboardPage />} />
                 <Route path="/teams" element={<Teams />} />
                 <Route path="/teams/:team" element={<Team />} />
                 <Route path="/resources" element={<Resources />} />

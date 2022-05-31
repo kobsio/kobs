@@ -34,6 +34,12 @@ func SetSatelliteForApplication(application applicationv1.ApplicationSpec, satel
 }
 
 func SetSatelliteForDashboard(dashboard dashboardv1.DashboardSpec, satellite string) dashboardv1.DashboardSpec {
+	for i := 0; i < len(dashboard.Variables); i++ {
+		if dashboard.Variables[i].Plugin.Satellite == "" {
+			dashboard.Variables[i].Plugin.Satellite = satellite
+		}
+	}
+
 	for i := 0; i < len(dashboard.Rows); i++ {
 		for j := 0; j < len(dashboard.Rows[i].Panels); j++ {
 			if dashboard.Rows[i].Panels[j].Plugin.Satellite == "" {

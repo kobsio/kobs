@@ -8,6 +8,7 @@ import { rowHeight, toGridSpans } from './utils/dashboards';
 import DashboardToolbar from './DashboardToolbar';
 import { ITimes } from '@kobsio/shared';
 import PluginPanel from '../plugins/PluginPanel';
+import { getVariableViaPlugin } from './utils/variables';
 import { interpolate } from './utils/interpolate';
 
 interface IDashboardProps {
@@ -40,7 +41,30 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
   const { isError, error, data, refetch } = useQuery<IVariableValues[] | null, Error>(
     ['dashboard/variables', dashboard, variables, times],
     async () => {
-      return [];
+      if (!variables) {
+        return [];
+      }
+
+      try {
+        const tmpVariables = [...variables];
+
+        for (let i = 0; i < tmpVariables.length; i++) {
+          if (tmpVariables[i].plugin.type === 'app') {
+            if (tmpVariables[i].plugin.name === 'static') {
+              if (tmpVariables[i].plugin.options && Array.isArray(tmpVariables[i].plugin.options)) {
+                tmpVariables[i].values = tmpVariables[i].plugin.options;
+                tmpVariables[i].value = tmpVariables[i].value || tmpVariables[i].plugin.options[0];
+              }
+            }
+          } else {
+            tmpVariables[i] = await getVariableViaPlugin(tmpVariables[i], tmpVariables, times);
+          }
+        }
+
+        return tmpVariables;
+      } catch (err) {
+        throw err;
+      }
     },
     { keepPreviousData: true },
   );
@@ -76,9 +100,12 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
 
   return (
     <React.Fragment>
-      <DashboardToolbar variables={data} setVariables={setVariables} times={times} setTimes={setTimes} />
-
-      <p>&nbsp;</p>
+      {dashboard.hideToolbar === true ? null : (
+        <React.Fragment>
+          <DashboardToolbar variables={data} setVariables={setVariables} times={times} setTimes={setTimes} />
+          <p>&nbsp;</p>
+        </React.Fragment>
+      )}
 
       <Grid hasGutter={true}>
         {rows.map((row, rowIndex) => (

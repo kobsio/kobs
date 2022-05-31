@@ -7,6 +7,7 @@
     "@kobsio/react-scripts": "5.0.1-1",
     "@nivo/bar": "^0.79.1",
     "@nivo/core": "^0.79.0",
+    "@nivo/line": "^0.79.1",
     "@patternfly/patternfly": "^4.194.4",
     "@patternfly/react-core": "^4.214.1",
     "@patternfly/react-icons": "^4.65.1",

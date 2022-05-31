@@ -2,13 +2,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - details-application.yaml
   - details.yaml
   - gateway.yaml
   - namespace.yaml
-  - productpage-application.yaml
   - productpage.yaml
-  - ratings-application.yaml
   - ratings.yaml
-  - reviews-application.yaml
   - reviews.yaml

@@ -7,41 +7,46 @@ import (
 	"net/http/pprof"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/middleware/basicauth"
+
 	"github.com/go-chi/chi/v5"
 )
 
-// MountRoutes mounts the debug endpoints to a chi router.
-func MountRoutes(router *chi.Mux) {
-	router.Route("/api/debug", func(r chi.Router) {
-		r.Get("/request/dump", func(w http.ResponseWriter, r *http.Request) {
-			dump, err := httputil.DumpRequest(r, true)
-			if err != nil {
-				http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-				return
-			}
+// Mount returns a chi router with the debug endpoints, which can be mounted in an existing router.
+func Mount(username, password string) chi.Router {
+	router := chi.NewRouter()
+	router.Use(basicauth.Handler("kobs-debug", username, password))
 
-			fmt.Fprintf(w, "%s", string(dump))
-		})
-		r.Get("/request/timeout", func(w http.ResponseWriter, r *http.Request) {
-			timeout := r.URL.Query().Get("timeout")
-			if parsedTimeout, err := time.ParseDuration(timeout); err == nil {
-				time.Sleep(parsedTimeout)
-			}
+	router.Get("/request/dump", func(w http.ResponseWriter, r *http.Request) {
+		dump, err := httputil.DumpRequest(r, true)
+		if err != nil {
+			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+			return
+		}
 
-			w.WriteHeader(http.StatusOK)
-		})
-
-		r.HandleFunc("/pprof/", pprof.Index)
-		r.HandleFunc("/pprof/cmdline", pprof.Cmdline)
-		r.HandleFunc("/pprof/profile", pprof.Profile)
-		r.HandleFunc("/pprof/symbol", pprof.Symbol)
-
-		r.Handle("/pprof/allocs", pprof.Handler("allocs"))
-		r.Handle("/pprof/block", pprof.Handler("block"))
-		r.Handle("/pprof/goroutine", pprof.Handler("goroutine"))
-		r.Handle("/pprof/heap", pprof.Handler("heap"))
-		r.Handle("/pprof/mutex", pprof.Handler("mutex"))
-		r.Handle("/pprof/threadcreate", pprof.Handler("threadcreate"))
-		r.Handle("/pprof/trace", pprof.Handler("trace"))
+		fmt.Fprintf(w, "%s", string(dump))
 	})
+	router.Get("/request/timeout", func(w http.ResponseWriter, r *http.Request) {
+		timeout := r.URL.Query().Get("timeout")
+		if parsedTimeout, err := time.ParseDuration(timeout); err == nil {
+			time.Sleep(parsedTimeout)
+		}
+
+		w.WriteHeader(http.StatusOK)
+	})
+
+	router.HandleFunc("/pprof/", pprof.Index)
+	router.HandleFunc("/pprof/cmdline", pprof.Cmdline)
+	router.HandleFunc("/pprof/profile", pprof.Profile)
+	router.HandleFunc("/pprof/symbol", pprof.Symbol)
+
+	router.Handle("/pprof/allocs", pprof.Handler("allocs"))
+	router.Handle("/pprof/block", pprof.Handler("block"))
+	router.Handle("/pprof/goroutine", pprof.Handler("goroutine"))
+	router.Handle("/pprof/heap", pprof.Handler("heap"))
+	router.Handle("/pprof/mutex", pprof.Handler("mutex"))
+	router.Handle("/pprof/threadcreate", pprof.Handler("threadcreate"))
+	router.Handle("/pprof/trace", pprof.Handler("trace"))
+
+	return router
 }

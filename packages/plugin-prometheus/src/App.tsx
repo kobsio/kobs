@@ -2,6 +2,7 @@ import '@patternfly/react-core/dist/styles/base.css';
 import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/patternfly/patternfly-addons.css';
 
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import {
   Masthead,
   MastheadBrand,
@@ -13,11 +14,12 @@ import {
   ToolbarItem,
 } from '@patternfly/react-core';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import Panel from './components/panel/Panel';
+import { IPluginInstance } from '@kobsio/shared';
+import PrometheusPage from './components/page/Page';
+import PrometheusPanel from './components/panel/Panel';
 
 import './assets/index.css';
 
@@ -33,6 +35,14 @@ const queryClient = new QueryClient({
   },
 });
 
+const instance: IPluginInstance = {
+  id: 'prometheus',
+  name: 'prometheus',
+  satellite: 'kobs',
+  type: 'prometheus',
+  updatedAt: 0,
+};
+
 export const App: React.FunctionComponent = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,15 +56,22 @@ export const App: React.FunctionComponent = () => {
               <MastheadContent>
                 <Toolbar id="header-toolbar" isFullHeight={true} isStatic={true}>
                   <ToolbarContent>
-                    <ToolbarItem>Page</ToolbarItem>
-                    <ToolbarItem>Panel</ToolbarItem>
+                    <ToolbarItem>
+                      <Link to="/">Page</Link>
+                    </ToolbarItem>
+                    <ToolbarItem>
+                      <Link to="/panels">Panel</Link>
+                    </ToolbarItem>
                   </ToolbarContent>
                 </Toolbar>
               </MastheadContent>
             </Masthead>
           }
         >
-          <Panel title="test" instance={{ id: '', name: 'name', satellite: '', type: 'prometheus', updatedAt: 0 }} />
+          <Routes>
+            <Route path="/" element={<PrometheusPage instance={instance} />} />
+            <Route path="/panels" element={<PrometheusPanel title="Test" instance={instance} />} />
+          </Routes>
         </Page>
       </BrowserRouter>
     </QueryClientProvider>

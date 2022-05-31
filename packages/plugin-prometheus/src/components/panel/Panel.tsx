@@ -1,20 +1,42 @@
 import React from 'react';
 
-import { IPluginPanelProps } from '@kobsio/shared';
+import { IPluginPanelProps, PluginPanelError } from '@kobsio/shared';
+import ChartWrapper from './ChartWrapper';
+import { IPanelOptions } from '../../utils/interfaces';
+import Sparkline from './Sparkline';
+import Table from './Table';
 
-const Panel: React.FunctionComponent<IPluginPanelProps> = ({
+interface IPrometheusPluginPanelProps extends IPluginPanelProps {
+  options?: IPanelOptions;
+}
+
+const Panel: React.FunctionComponent<IPrometheusPluginPanelProps> = ({
   title,
   description,
   options,
   instance,
   times,
-  setDetails,
-}: IPluginPanelProps) => {
+}: IPrometheusPluginPanelProps) => {
+  if (options && times) {
+    if (options.type === 'sparkline') {
+      return <Sparkline instance={instance} title={title} description={description} times={times} options={options} />;
+    } else if (options.type === 'table') {
+      return <Table instance={instance} title={title} description={description} times={times} options={options} />;
+    } else {
+      return (
+        <ChartWrapper instance={instance} title={title} description={description} times={times} options={options} />
+      );
+    }
+  }
+
   return (
-    <div>
-      {title} {description} {JSON.stringify(options)} {JSON.stringify(instance)} {JSON.stringify(times)}{' '}
-      {JSON.stringify(setDetails)}
-    </div>
+    <PluginPanelError
+      title={title}
+      description={description}
+      message="Options for Prometheus panel are missing or invalid"
+      details="The panel doesn't contain the required options to render the Prometheus chart or the provided options are invalid."
+      documentation="https://kobs.io/main/plugins/prometheus"
+    />
   );
 };
 
