@@ -73,12 +73,16 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceDat
           activeKey={activeTab}
           onSelect={(event, tabIndex): void => setActiveTab(tabIndex.toString())}
           className="pf-u-mt-md"
-          isFilled={true}
+          isFilled={false}
+          usePageInsets={true}
           mountOnEnter={true}
           unmountOnExit={true}
         >
           <Tab eventKey="overview" title={<TabTitleText>Overview</TabTitleText>}>
-            <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+            <div
+              className="kobsio-hide-scrollbar"
+              style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}
+            >
               <Overview resource={resource} resourceData={resourceData} />
             </div>
           </Tab>
@@ -92,7 +96,10 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceDat
           </Tab>
 
           <Tab eventKey="events" title={<TabTitleText>Events</TabTitleText>}>
-            <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+            <div
+              className="kobsio-hide-scrollbar"
+              style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}
+            >
               <Events
                 satellite={resourceData.satellite}
                 cluster={resourceData.cluster}
@@ -104,7 +111,10 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceDat
 
           {podSelector || resource.id === 'nodes' ? (
             <Tab eventKey="pods" title={<TabTitleText>Pods</TabTitleText>}>
-              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+              <div
+                className="kobsio-hide-scrollbar"
+                style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}
+              >
                 <Pods
                   satellite={resourceData.satellite}
                   cluster={resourceData.cluster}
@@ -118,7 +128,10 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceDat
 
           {resource.id === 'pods' ? (
             <Tab eventKey="logs" title={<TabTitleText>Logs</TabTitleText>}>
-              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+              <div
+                className="kobsio-hide-scrollbar"
+                style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}
+              >
                 <Logs resource={resource} resourceData={resourceData} />
               </div>
             </Tab>
@@ -126,7 +139,10 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceDat
 
           {resource.id === 'pods' ? (
             <Tab eventKey="terminal" title={<TabTitleText>Terminal</TabTitleText>}>
-              <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}>
+              <div
+                className="kobsio-hide-scrollbar"
+                style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}
+              >
                 <Terminal resource={resource} resourceData={resourceData} />
               </div>
             </Tab>

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hub.fullname" . }}
+  labels:
+    {{- include "hub.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+{{ tpl .Values.hub.config . | indent 4 }}

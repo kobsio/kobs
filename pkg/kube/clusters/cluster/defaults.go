@@ -13,7 +13,7 @@ func setApplicationDefaults(application applicationv1.ApplicationSpec, cluster, 
 	application.Name = name
 
 	if application.Topology.Type == "" {
-		application.Topology.Type = "application"
+		application.Topology.Type = "default"
 	}
 
 	for i := 0; i < len(application.Topology.Dependencies); i++ {

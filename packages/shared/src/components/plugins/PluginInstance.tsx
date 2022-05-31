@@ -45,6 +45,7 @@ export const PluginInstance: React.FunctionComponent<IPluginInstanceProps> = ({
           <EmptyStateIcon variant="container" component={Icon} />
           <Title headingLevel="h2" size="md">
             {name}
+            <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">({satellite})</span>
           </Title>
           <EmptyStateBody>{description}</EmptyStateBody>
         </EmptyState>

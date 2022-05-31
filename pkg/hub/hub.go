@@ -66,7 +66,7 @@ func (s *server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (Server, error) {
+func New(debugUsername, debugPassword, hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (Server, error) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -74,7 +74,9 @@ func New(hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, a
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
 	}))
 
-	debug.MountRoutes(router)
+	if debugUsername != "" && debugPassword != "" {
+		router.Mount("/api/debug", debug.Mount(debugUsername, debugPassword))
+	}
 
 	router.Get("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, nil)

@@ -41,7 +41,8 @@ func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http
 				Name:        "",
 				Title:       reference.Title,
 				Description: reference.Description,
-				Variables:   reference.Inline.Variables,
+				HideToolbar: reference.Inline.HideToolbar,
+				Variables:   addPlaceholdersAsVariables(reference.Inline.Variables, reference.Placeholders),
 				Rows:        reference.Inline.Rows,
 			})
 		} else {
@@ -53,12 +54,36 @@ func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http
 			}
 
 			dashboard.Title = reference.Title
+			dashboard.Variables = addPlaceholdersAsVariables(dashboard.Variables, reference.Placeholders)
 			dashboards = append(dashboards, dashboard)
 		}
 	}
 
 	log.Debug(r.Context(), "Get dashboards result", zap.Int("dashboardsCount", len(dashboards)))
 	render.JSON(w, r, dashboards)
+}
+
+func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+
+	var placeholders map[string]string
+	placeholders = make(map[string]string)
+
+	for key := range r.URL.Query() {
+		if key != "id" {
+			placeholders[key] = r.URL.Query().Get(key)
+		}
+	}
+
+	dashboard, err := router.storeClient.GetDashboardByID(r.Context(), id)
+	if err != nil {
+		log.Error(r.Context(), "Could not get dashboard", zap.Error(err), zap.String("dashboard", id))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get dashboard")
+		return
+	}
+
+	dashboard.Variables = addPlaceholdersAsVariables(dashboard.Variables, placeholders)
+	render.JSON(w, r, dashboard)
 }
 
 func Mount(storeClient store.Client) chi.Router {
@@ -68,6 +93,7 @@ func Mount(storeClient store.Client) chi.Router {
 	}
 
 	router.Post("/", router.getDashboardsFromReferences)
+	router.Get("/dashboard", router.getDashboard)
 
 	return router
 }

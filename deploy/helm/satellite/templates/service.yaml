@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "satellite.fullname" . }}
+  labels:
+    {{- include "satellite.labels" . | nindent 4 }}
+    {{- include "satellite.serviceLabels" . | nindent 4 }}
+  annotations:
+    {{- include "satellite.serviceAnnotations" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 15221
+      targetPort: http-api
+      protocol: TCP
+      name: http-api
+    - port: 15222
+      targetPort: http-metrics
+      protocol: TCP
+      name: http-metrics
+  selector:
+    {{- include "satellite.selectorLabels" . | nindent 4 }}

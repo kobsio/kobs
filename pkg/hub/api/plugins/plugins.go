@@ -48,6 +48,12 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !user.HasPluginAccess(satelliteName, pluginName) {
+		log.Warn(r.Context(), "The user is not allowed to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to access the plugin")
+		return
+	}
+
 	satellite := router.satellitesClient.GetSatellite(satelliteName)
 	if satellite == nil {
 		log.Error(r.Context(), "Satellite was not found", zap.String("satellite", satelliteName), zap.String("plugin", pluginName))
@@ -72,7 +78,7 @@ func Mount(satellitesClient satellites.Client, storeClient store.Client) chi.Rou
 	}
 
 	router.Get("/", router.getPlugins)
-	router.Get("/*", router.proxyPlugins)
+	router.HandleFunc("/*", router.proxyPlugins)
 
 	return router
 }

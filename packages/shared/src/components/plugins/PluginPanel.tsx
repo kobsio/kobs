@@ -32,7 +32,9 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
           )}
         </CardTitle>
       </CardHeader>
-      <CardBody>{children}</CardBody>
+      <CardBody className="kobsio-hide-scrollbar" style={{ overflow: 'auto' }}>
+        {children}
+      </CardBody>
     </Card>
   );
 };

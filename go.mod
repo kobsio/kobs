@@ -8,7 +8,10 @@ require (
 	github.com/go-chi/render v1.0.1
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/gorilla/websocket v1.4.2
+	github.com/mitchellh/mapstructure v1.4.1
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.12
 	github.com/prometheus/client_golang v1.12.0
+	github.com/prometheus/common v0.32.1
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
 	github.com/timshannon/bolthold v0.0.0-20210913165410-232392fc8a6a
@@ -34,6 +37,8 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
+	github.com/hashicorp/go-retryablehttp v0.5.1 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -44,8 +49,8 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
-	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect

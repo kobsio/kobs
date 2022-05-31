@@ -53,7 +53,7 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
     },
   );
 
-  // getInstance returns a single instance with the given type and name or undefined, when we could not found a instance
+  // getInstance returns a single instance with the given type and name or undefined, when we could not find a instance
   // with the provided type and name.
   const getInstance = (satellite: string, type: string, name: string): IPluginInstance | undefined => {
     const instances = data?.filter(

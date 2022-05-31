@@ -6,10 +6,12 @@ import (
 	goPlugin "plugin"
 
 	"github.com/kobsio/kobs/pkg/kube/clusters"
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"go.uber.org/zap"
 )
 
 // Client is the interface which must be implemented by a plugins client. The plugins client must only be export a
@@ -38,18 +40,18 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 	// passwords. Therefore we are just returning the name, description, type and address for a plugin instance.
 	router := chi.NewRouter()
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		var secureInstances []plugin.Instance
+		var frontendInstances []plugin.Instance
 
 		for _, instance := range instances {
-			secureInstances = append(secureInstances, plugin.Instance{
+			frontendInstances = append(frontendInstances, plugin.Instance{
 				Name:        instance.Name,
 				Description: instance.Description,
 				Type:        instance.Type,
-				Options:     instance.Options,
+				Options:     instance.FrontendOptions,
 			})
 		}
 
-		render.JSON(w, r, secureInstances)
+		render.JSON(w, r, frontendInstances)
 	})
 
 	// We are checking which plugin types are used in the configuration, so that we are just loading and mounting the
@@ -62,7 +64,7 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 	// In the last step we are looping though all the uses plugin types and we are trying to load the shared object for
 	// the plugin. Then we are trying to mount the plugin in the router of the plugins client. For that each plugin
 	// must export a "Mount" function of the type
-	// "func(instances []plugin.Instance, clustersClient clusters.Client) chi.Router".
+	// "func(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error)".
 	// If one of the steps to mount a plugin fails, we return an error. This error should be handled when calling the
 	// NewClient function and should abort the start process of the satellite.
 	for _, pluginType := range pluginTypes {
@@ -76,12 +78,17 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 			return nil, err
 		}
 
-		mountFunc, ok := mountSymbol.(func(instances []plugin.Instance, clustersClient clusters.Client) chi.Router)
+		mountFunc, ok := mountSymbol.(func(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error))
 		if !ok {
 			return nil, fmt.Errorf("mount function is not of type \"func(instances []plugin.Instance, clustersClient clusters.Client) chi.Router\" for plugin %s", pluginType)
 		}
 
-		router.Mount(fmt.Sprintf("/%s", pluginType), mountFunc(filterInstances(pluginType, instances), clustersClient))
+		pluginRouter, err := mountFunc(filterInstances(pluginType, instances), clustersClient)
+		if err != nil {
+			log.Fatal(nil, "Could not load plugin", zap.Error(err), zap.String("type", pluginType))
+		}
+
+		router.Mount(fmt.Sprintf("/%s", pluginType), pluginRouter)
 	}
 
 	return &client{

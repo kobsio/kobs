@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hub.fullname" . }}
+  labels:
+    {{- include "hub.labels" . | nindent 4 }}
+    {{- include "hub.serviceLabels" . | nindent 4 }}
+  annotations:
+    {{- include "hub.serviceAnnotations" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 15219
+      targetPort: http-web
+      protocol: TCP
+      name: http-web
+    - port: 15220
+      targetPort: http-api
+      protocol: TCP
+      name: http-api
+    - port: 15222
+      targetPort: http-metrics
+      protocol: TCP
+      name: http-metrics
+  selector:
+    {{- include "hub.selectorLabels" . | nindent 4 }}

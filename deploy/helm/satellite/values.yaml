@@ -1,0 +1,284 @@
+# Default values for hub.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+## The number of Pods, which are created by the Deployment.
+## See: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+##
+replicaCount: 1
+
+## Specify a list of image pull secrets, to avoid the DockerHub rate limit or to pull the kobs/enovy image from a
+## private registry.
+## See: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+imagePullSecrets: []
+  # - name: regcred
+
+## Set the image which should be used for kobs.
+##
+image:
+  repository: kobsio/kobs
+  tag: v0.8.0
+  pullPolicy: IfNotPresent
+
+## Specify security settings for the created Pods. To set the security settings for the kobs or envoy Container use the
+## corresponding "securityContext" field.
+## See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+##
+podSecurityContext: {}
+  # fsGroup: 2000
+
+## Specify security settings for the kobs Container. They override settings made at the Pod level via the
+## "podSecurityContext" when there is overlap.
+## See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+##
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+## We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This
+## also increases chances charts run on environments with little resources, such as Minikube. If you do want to
+## specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after
+## 'resources:'.
+##
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+## Specify a map of key-value pairs, to assign the Pods to a specific set of nodes.
+## See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+##
+nodeSelector: {}
+
+## Specify the tolerations for the kobs Pods.
+## See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+##
+tolerations: []
+
+## Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods.
+## See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+
+## Specify additional volumes for the kobs deployment.
+## See: https://kubernetes.io/docs/concepts/storage/volumes/
+##
+## For example this can be used to mount a kubeconfig from a ConfigMap, so that we can use the kubeconfig provider
+## within the Helm chart. A complete example can be found in the documentation at https://kobs.io/installation/helm/.
+##
+volumes: []
+  # - name: kubeconfig
+  #   configMap:
+  #     name: kubeconfig
+
+## Specify additional volumeMounts for the kobs container.
+## See: https://kubernetes.io/docs/concepts/storage/volumes/
+##
+volumeMounts: []
+  # - name: kubeconfig
+  #   mountPath: /kobs/kubeconfig.yaml
+  #   subPath: kubeconfig.yaml
+  #   readOnly: true
+
+## Specify additional environment variables for the kobs container.
+##
+env:
+  ## For example the following can be used to set the token to sign the JWT token when authentication for kobs is
+  ## enabled. In this example we are using the "KOBS_SATELLITE_TOKEN" key from a secret named "kobs" (must be created
+  ## manually) to set the "KOBS_SATELLITE_TOKEN" environment variable.
+  ##
+  - name: KOBS_SATELLITE_TOKEN
+    value: unsecuretoken
+  # - name: KOBS_SATELLITE_TOKEN
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: kobs
+  #       key: KOBS_SATELLITE_TOKEN
+
+## Specify additional labels and annotations for the created Pods.
+##
+podAnnotations: {}
+podLabels: {}
+
+satellite:
+  ## Specify some settings like log level, log format, etc. for kobs.
+  ##
+  settings:
+    logFormat: console
+    logLevel: info
+
+  ## Set the content of the config.yaml file, which is used by kobs. The configuration file is used to specify the
+  ## cluster providers and the configuration for the plugins.
+  ##
+  config: |
+    clusters:
+      providers:
+        - provider: incluster
+          incluster:
+            name: kobs
+
+## If you are using Istio you can create a VirtualService instead of an Ingress to expose kobs.
+##
+istio:
+  ## Create a VirtualService, with the correct routes for the gRPC API and the React UI for kobs. You can provide a list
+  ## of gateways and hosts for the VirtualService.
+  ##
+  virtualService:
+    enabled: false
+
+    gateways: []
+      # - gateway
+
+    hosts: []
+      # - chart-example.local
+
+    timeout: 300s
+
+    ## You can also add your own routes to the VirtualService. This can be used to add an oauth2-proxy to handle the
+    ## authentication for the dashboard.
+    ##
+    additionalRoutes: []
+
+## Set the type for the created service: ClusterIP, NodePort, LoadBalancer.
+## See: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+##
+service:
+  type: ClusterIP
+
+  annotations: {}
+  labels: {}
+
+## Specifies whether a service account should be created.
+## See: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##
+serviceAccount:
+  enabled: true
+
+  ## Annotations to add to the service account
+  ##
+  annotations: {}
+
+  ## The name of the service account to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  ##
+  name:
+
+## Specifies whether a cluster role and cluster role binding should be created.
+## The create cluster role and cluster role binding allows kobs read access to all resources.
+## See: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+##
+rbac:
+  enabled: true
+  ## The name of the cluster role and cluster role binding to use.
+  ## If not set and create is true, a name is generated using the fullname template.
+  ##
+  name:
+
+## Create a NetworkPolicy for kobs. To use network policies you must be using a networking solution which supports
+## NetworkPolicy.
+## See: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+##
+networkPolicy:
+  enabled: false
+  ## A list of ingress rules, to allow / deny traffic to kobs. By default all ingress traffic is allowed.
+  ##
+  ingressRules:
+    - {}
+    ## The following example allows only ingress traffic from the Istio Ingressgateway, which is running in the
+    ## istio-system namespace and from Prometheus which is running in the monitoring namespace.
+    ##
+    # - from:
+    #     - namespaceSelector:
+    #         matchLabels:
+    #           namespace: istio-system
+    #       podSelector:
+    #         matchLabels:
+    #           app: istio-ingressgateway
+    #   ports:
+    #     - protocol: TCP
+    #       port: 15221
+    # - from:
+    #     - namespaceSelector:
+    #         matchLabels:
+    #           namespace: monitoring
+    #       podSelector:
+    #         matchLabels:
+    #           app.kubernetes.io/name: prometheus
+    #   ports:
+    #     - protocol: TCP
+    #       port: 15222
+  ## A list of egress rules, to allow / deny traffic from kobs. By default all egress traffic is allowed.
+  ##
+  egressRules:
+    - {}
+
+## Create an Ingress to expose kobs.
+## See: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts: []
+    # - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+## Create a Service Monitor for the Prometheus Operator.
+## See: https://github.com/coreos/prometheus-operator
+##
+serviceMonitor:
+  enabled: false
+
+  ## Interval at which metrics should be scraped. Fallback to the Prometheus default unless specified.
+  ##
+  # interval: 10s
+
+  ## Timeout after which the scrape is ended. Fallback to the Prometheus default unless specified.
+  ##
+  # scrapeTimeout: 30s
+
+  ## Additional labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+  ## See: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  ##
+  labels: {}
+
+  ## HonorLabels chooses the metric's labels on collisions with target labels.
+  ##
+  honorLabels: true
+
+  ## MetricRelabelConfigs to apply to samples before ingestion.
+  ##
+  metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+  ## RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few
+  ## standard Kubernetes fields and replaces original scrape job name with __tmp_prometheus_job_name.
+  ##
+  relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace

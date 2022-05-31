@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Nav, NavItem, NavList, PageSidebar } from '@patternfly/react-core';
+import { Nav, NavGroup, NavItem, PageSidebar } from '@patternfly/react-core';
 import React from 'react';
 
 const Sidebar: React.FunctionComponent = () => {
@@ -7,9 +7,9 @@ const Sidebar: React.FunctionComponent = () => {
 
   const PageNav = (
     <Nav aria-label="Nav">
-      <NavList>
-        <NavItem isActive={location.pathname === '/' || location.pathname.startsWith('/applications')}>
-          <Link to="/">Applications</Link>
+      <NavGroup title="System">
+        <NavItem isActive={location.pathname.startsWith('/applications')}>
+          <Link to="/applications">Applications</Link>
         </NavItem>
         <NavItem isActive={location.pathname.startsWith('/teams')}>
           <Link to="/teams">Teams</Link>
@@ -20,7 +20,7 @@ const Sidebar: React.FunctionComponent = () => {
         <NavItem isActive={location.pathname.startsWith('/plugins')}>
           <Link to="/plugins">Plugins</Link>
         </NavItem>
-      </NavList>
+      </NavGroup>
     </Nav>
   );
 

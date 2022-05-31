@@ -1,11 +1,24 @@
+import React, { memo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import React from 'react';
 
 import { useDynamicScript } from '../../hooks/useDynamicScript';
+
+// wait can be used to simulate long loading times in the "loadComponent" function.
+// const wait = async (): Promise<void> => {
+//   await new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       resolve('done');
+//     }, 5000);
+//   });
+//   return;
+// };
 
 const loadComponent = (scope: string, module: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (): Promise<any> => {
+    // wait can be used to simulate long loading times
+    // await wait();
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await __webpack_init_sharing__('default');
@@ -90,4 +103,10 @@ const Module: React.FunctionComponent<IModuleProps> = ({
   );
 };
 
-export default Module;
+export default memo(Module, (prevProps, nextProps) => {
+  if (prevProps.module === nextProps.module && prevProps.name === nextProps.name) {
+    return true;
+  }
+
+  return false;
+});

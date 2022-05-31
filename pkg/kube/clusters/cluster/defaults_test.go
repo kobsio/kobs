@@ -20,7 +20,7 @@ func TestSetApplicationDefaults(t *testing.T) {
 			Name:      "application1",
 			Teams:     []string{"team1", "team2", "team3"},
 			Topology: applicationv1.Topology{
-				Type: "application",
+				Type: "default",
 				Dependencies: []applicationv1.Dependency{
 					{Cluster: "cluster1", Namespace: "namespace1", Name: "application2"},
 					{Cluster: "cluster2", Namespace: "namespace1", Name: "application3"},

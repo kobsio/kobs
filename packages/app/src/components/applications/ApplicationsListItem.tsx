@@ -64,8 +64,8 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
                       <FlexItem>
                         <Label color="grey" icon={<TopologyIcon />}>
                           {application.topology.dependencies.length === 1
-                            ? '1 Team'
-                            : `${application.topology.dependencies.length} Teams`}
+                            ? '1 Dependency'
+                            : `${application.topology.dependencies.length} Dependencies`}
                         </Label>
                       </FlexItem>
                     )}

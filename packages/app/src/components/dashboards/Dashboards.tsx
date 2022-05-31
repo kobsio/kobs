@@ -107,10 +107,12 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
 
   return (
     <Tabs
+      style={{ backgroundColor: '#ffffff' }}
       activeKey={options.dashboard}
-      isFilled={true}
+      isFilled={false}
+      usePageInsets={true}
       mountOnEnter={true}
-      unmountOnExit={true}
+      unmountOnExit={false}
       onSelect={(event, tabIndex): void =>
         setDetails
           ? changeOptions({ ...options, dashboard: tabIndex.toString() })
@@ -118,12 +120,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
       }
     >
       {data.map((dashboard) => (
-        <Tab
-          key={dashboard.title}
-          style={{ backgroundColor: '#ffffff' }}
-          eventKey={dashboard.title}
-          title={<TabTitleText>{dashboard.title}</TabTitleText>}
-        >
+        <Tab key={dashboard.title} eventKey={dashboard.title} title={<TabTitleText>{dashboard.title}</TabTitleText>}>
           <TabContentBody hasPadding={true}>
             <Dashboard dashboard={dashboard} forceDefaultSpan={forceDefaultSpan} setDetails={setDetails} />
           </TabContentBody>

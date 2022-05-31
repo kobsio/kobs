@@ -59,6 +59,45 @@ func TestGetDashboardsFromReferences(t *testing.T) {
 	}
 }
 
+func TestGetDashboard(t *testing.T) {
+	for _, tt := range []struct {
+		name               string
+		url                string
+		expectedStatusCode int
+		expectedBody       string
+	}{
+		{
+			name:               "get dashboard by id error",
+			url:                "/dashboard?id=/satellite/satellite1/cluster/cluster1/namespace/namespace1/name/name1",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not get dashboard: could not get dashboard\"}\n",
+		},
+		{
+			name:               "get dashboards",
+			url:                "/dashboard?id=/satellite/satellite2/cluster/cluster1/namespace/namespace1/name/name1&key1=value1",
+			expectedStatusCode: http.StatusOK,
+			expectedBody:       "{\"variables\":[{\"name\":\"key1\",\"label\":\"key1\",\"hide\":true,\"plugin\":{\"type\":\"app\",\"name\":\"static\",\"options\":[\"value1\"]}}],\"rows\":null}\n",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			mockStoreClient := &store.MockClient{}
+			mockStoreClient.On("GetDashboardByID", mock.Anything, "/satellite/satellite2/cluster/cluster1/namespace/namespace1/name/name1").Return(&dashboardv1.DashboardSpec{}, nil)
+			mockStoreClient.On("GetDashboardByID", mock.Anything, "/satellite/satellite1/cluster/cluster1/namespace/namespace1/name/name1").Return(nil, fmt.Errorf("could not get dashboard"))
+
+			router := Router{chi.NewRouter(), mockStoreClient}
+			router.Get("/dashboard", router.getDashboard)
+
+			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			w := httptest.NewRecorder()
+
+			router.getDashboard(w, req)
+
+			require.Equal(t, tt.expectedStatusCode, w.Code)
+			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
+		})
+	}
+}
+
 func TestMount(t *testing.T) {
 	router := Mount(nil)
 	require.NotNil(t, router)

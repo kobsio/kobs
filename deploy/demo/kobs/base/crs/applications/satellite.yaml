@@ -1,0 +1,95 @@
+---
+apiVersion: kobs.io/v1
+kind: Application
+metadata:
+  name: satellite
+  namespace: kobs
+spec:
+  description: Kubernetes Observability Platform
+  tags:
+    - observability
+    - kobs
+    - kobs-satellite
+  teams:
+    - dia@kobs.io
+  links:
+    - title: Website
+      link: https://kobs.io
+    - title: GitHub
+      link: https://github.com/kobsio/kobs
+    - title: Application CR
+      link: https://github.com/kobsio/kobs/blob/main/deploy/demo/kobs/crs/applications/satellite.yaml
+  topology:
+    dependencies:
+      - name: satellite
+        namespace: kobs
+  dashboards:
+    - title: Overview
+      inline:
+        rows:
+          - size: 1
+            panels:
+              - title: Desired Replicas
+                colSpan: 3
+                plugin:
+                  name: prometheus
+                  type: prometheus
+                  options:
+                    type: sparkline
+                    queries:
+                      - query: kube_deployment_spec_replicas{namespace="kobs", deployment="satellite"}
+              - title: Current Replicas
+                colSpan: 3
+                plugin:
+                  name: prometheus
+                  type: prometheus
+                  options:
+                    type: sparkline
+                    queries:
+                      - query: kube_deployment_status_replicas{namespace="kobs", deployment="satellite"}
+              - title: Updated Replicas
+                colSpan: 3
+                plugin:
+                  name: prometheus
+                  type: prometheus
+                  options:
+                    type: sparkline
+                    queries:
+                      - query: kube_deployment_status_replicas_updated{namespace="kobs", deployment="satellite"}
+              - title: Available Replicas
+                colSpan: 3
+                plugin:
+                  name: prometheus
+                  type: prometheus
+                  options:
+                    type: sparkline
+                    queries:
+                      - query: kube_deployment_status_replicas_available{namespace="kobs", deployment="satellite"}
+          - size: -1
+            panels:
+              - title: Workloads
+                plugin:
+                  name: resources
+                  type: app
+                  options:
+                    satellites:
+                      - kobs
+                    clusters:
+                      - kobs
+                    namespaces:
+                      - kobs
+                    resources:
+                      - pods
+                      - deployments
+                      - services
+                    selector: app.kubernetes.io/name=satellite
+          - size: -1
+            panels:
+              - title: Open Alerts
+                plugin:
+                  name: opsgenie
+                  type: opsgenie
+                  options:
+                    type: alerts
+                    query: 'status: open AND namespace: "kobs"'
+                    interval: 31536000

@@ -109,7 +109,7 @@ func TestGetApplications(t *testing.T) {
 		client := getClient()
 		applications, err := client.GetApplications(context.Background(), "default")
 		require.NoError(t, err)
-		require.Equal(t, []applicationv1.ApplicationSpec{{Cluster: "test", Namespace: "default", Name: "application1", Topology: applicationv1.Topology{Type: "service"}}, {Cluster: "test", Namespace: "default", Name: "application2", Topology: applicationv1.Topology{Type: "application"}}}, applications)
+		require.Equal(t, []applicationv1.ApplicationSpec{{Cluster: "test", Namespace: "default", Name: "application1", Topology: applicationv1.Topology{Type: "service"}}, {Cluster: "test", Namespace: "default", Name: "application2", Topology: applicationv1.Topology{Type: "default"}}}, applications)
 	})
 }
 
@@ -145,7 +145,7 @@ func TestGetApplication(t *testing.T) {
 		client := getClient()
 		applications, err := client.GetApplication(context.Background(), "default", "application1")
 		require.NoError(t, err)
-		require.Equal(t, &applicationv1.ApplicationSpec{Cluster: "test", Namespace: "default", Name: "application1", Topology: applicationv1.Topology{Type: "application"}}, applications)
+		require.Equal(t, &applicationv1.ApplicationSpec{Cluster: "test", Namespace: "default", Name: "application1", Topology: applicationv1.Topology{Type: "default"}}, applications)
 	})
 }
 

@@ -2,22 +2,19 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Button,
-  ButtonVariant,
+  Flex,
+  FlexItem,
   Label,
-  List,
-  ListItem,
-  ListVariant,
   Spinner,
   Text,
   TextContent,
 } from '@patternfly/react-core';
+import { ExternalLinkAltIcon, UsersIcon } from '@patternfly/react-icons';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
-import { UsersIcon } from '@patternfly/react-icons';
 
-import { ExternalLink, PageContentSection, PageHeaderSection } from '@kobsio/shared';
+import { PageContentSection, PageHeaderSection } from '@kobsio/shared';
 import { DashboardsWrapper } from '../dashboards/DashboardsWrapper';
 import { IApplication } from '../../crds/application';
 
@@ -82,52 +79,84 @@ const Application: React.FunctionComponent = () => {
     <React.Fragment>
       <PageHeaderSection
         component={
-          <React.Fragment>
-            <TextContent>
-              <Text component="h1">
-                {data.name}
-                <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
-                  {data.topology && data.topology.external === true ? '' : `(${data.namespace} / ${data.cluster})`}
-                </span>
+          <Flex direction={{ default: 'column' }}>
+            <FlexItem>
+              <TextContent>
+                <Text component="h1">
+                  {data.name}
+                  <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+                    {data.topology && data.topology.external === true ? '' : `(${data.namespace} / ${data.cluster})`}
+                  </span>
+                </Text>
+                {data.description ? <Text component="p">{data.description}</Text> : <Text component="p"></Text>}
+              </TextContent>
+            </FlexItem>
+
+            {(data.tags && data.tags.length > 0) ||
+            (data.teams && data.teams.length > 0) ||
+            (data.links && data.links.length > 0) ? (
+              <Flex>
                 {data.tags && data.tags.length > 0 && (
-                  <span
-                    className="pf-u-float-right"
-                    style={{ fontFamily: 'RedHatText, Overpass, overpass, helvetica, arial, sans-serif' }}
-                  >
+                  <FlexItem>
                     {data.tags.map((tag) => (
-                      <Label key={tag} className="pf-u-ml-sm" color="blue">
-                        {tag.toLowerCase()}
+                      <Label
+                        key={tag}
+                        className="pf-u-mr-sm"
+                        color="blue"
+                        render={({ className, content, componentRef }): React.ReactNode => (
+                          <Link
+                            to={`/applications?tag=${encodeURIComponent(tag)}`}
+                            className={className}
+                            ref={componentRef}
+                          >
+                            {content}
+                          </Link>
+                        )}
+                      >
+                        {tag}
                       </Label>
                     ))}
-                  </span>
+                  </FlexItem>
                 )}
-              </Text>
-              {data.description ? <Text component="p">{data.description}</Text> : <Text component="p"></Text>}
-            </TextContent>
-            {(data.teams && data.teams.length > 0) || (data.links && data.links.length > 0) ? (
-              <List variant={ListVariant.inline}>
-                {data.teams &&
-                  data.teams.length > 0 &&
-                  data.teams.map((team) => (
-                    <ListItem key={team}>
-                      <Link to={`/teams/${encodeURIComponent(team)}`}>
-                        <Button variant={ButtonVariant.link} isInline={true} icon={<UsersIcon />}>
-                          {team}
-                        </Button>
-                      </Link>
-                    </ListItem>
-                  ))}
 
-                {data.links &&
-                  data.links.length > 0 &&
-                  data.links.map((link, index) => (
-                    <ListItem key={index}>
-                      <ExternalLink title={link.title} link={link.link} />
-                    </ListItem>
-                  ))}
-              </List>
+                {data.teams && data.teams.length > 0 && (
+                  <FlexItem>
+                    {data.teams.map((team) => (
+                      <Label
+                        key={team}
+                        className="pf-u-mr-sm"
+                        color="grey"
+                        icon={<UsersIcon />}
+                        render={({ className, content, componentRef }): React.ReactNode => (
+                          <Link to={`/teams/${encodeURIComponent(team)}`} className={className} ref={componentRef}>
+                            {content}
+                          </Link>
+                        )}
+                      >
+                        {team}
+                      </Label>
+                    ))}
+                  </FlexItem>
+                )}
+
+                {data.links && data.links.length > 0 && (
+                  <FlexItem>
+                    {data.links.map((link, index) => (
+                      <Label
+                        key={index}
+                        className="pf-u-mr-sm"
+                        color="grey"
+                        icon={<ExternalLinkAltIcon />}
+                        href={link.link}
+                      >
+                        {link.title}
+                      </Label>
+                    ))}
+                  </FlexItem>
+                )}
+              </Flex>
             ) : null}
-          </React.Fragment>
+          </Flex>
         }
       />
 

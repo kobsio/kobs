@@ -102,7 +102,7 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ resource, resourceD
 
   return (
     <Card isCompact={true}>
-      <CardBody>
+      <CardBody className="kobsio-hide-scrollbar" style={{ maxWidth: '100%', overflowX: 'scroll' }}>
         <DescriptionList className="pf-u-text-break-word" isHorizontal={true}>
           {resourceData.name && (
             <DescriptionListGroup>

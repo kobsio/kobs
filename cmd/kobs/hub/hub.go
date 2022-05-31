@@ -48,6 +48,9 @@ var Cmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get our global flags for kobs and use them to setup our logging configuration. After our logging is
 		// configured we print the version information and build context of kobs.
+		debugUsername, _ := cmd.Flags().GetString("debug.username")
+		debugPassword, _ := cmd.Flags().GetString("debug.password")
+
 		logLevel, _ := cmd.Flags().GetString("log.level")
 		logFormat, _ := cmd.Flags().GetString("log.format")
 		log.Setup(logLevel, logFormat)
@@ -94,7 +97,7 @@ var Cmd = &cobra.Command{
 		var appServer app.Server
 
 		if hubMode == "default" || hubMode == "server" {
-			hubSever, err = hub.New(hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken, authSessionInterval, satellitesClient, storeClient)
+			hubSever, err = hub.New(debugUsername, debugPassword, hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken, authSessionInterval, satellitesClient, storeClient)
 			if err != nil {
 				log.Fatal(nil, "Could not create hub server", zap.Error(err))
 			}
