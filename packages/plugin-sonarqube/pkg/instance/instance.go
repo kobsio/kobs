@@ -10,7 +10,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
-// Config is the structure of the configuration for a single Opsgenie instance.
+// Config is the structure of the configuration for a single SonarQube instance.
 type Config struct {
 	Address      string   `json:"address"`
 	Username     string   `json:"username"`

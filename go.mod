@@ -3,11 +3,14 @@ module github.com/kobsio/kobs
 go 1.18
 
 require (
+	github.com/ClickHouse/clickhouse-go v1.5.4
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/cors v1.2.0
 	github.com/go-chi/render v1.0.1
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/gorilla/websocket v1.4.2
+	github.com/lib/pq v1.10.6
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/mmcdole/gofeed v1.1.3
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.12
@@ -31,6 +34,7 @@ require (
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/cloudflare/golz4 v0.0.0-20150217214814-ef862a3cdc58 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
 	github.com/go-logr/logr v1.2.2 // indirect

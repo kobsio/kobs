@@ -1,5 +1,7 @@
 // IOptions is the interface for the options on the SonarQube page.
 export interface IOptions {
+  page: number;
+  perPage: number;
   query: string;
 }
 
@@ -47,7 +49,7 @@ export interface IProjectMeasures {
 export interface IMeasure {
   metric: string;
   value: string;
-  bestValue: boolean;
+  bestValue?: boolean;
 }
 
 export interface IMetric {

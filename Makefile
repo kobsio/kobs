@@ -29,6 +29,7 @@ build-plugins:
 			fi \
 		done; \
 	else \
+		echo "Build '${PLUGIN}' plugin"; \
 		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./packages/plugin-${PLUGIN}/cmd; \
 	fi
 

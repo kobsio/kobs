@@ -48,10 +48,28 @@ const getFormattedValue = (measure: IMeasure, metric: IMetric): IFormattedValue 
   }
 
   if (metric.type === 'PERCENT') {
+    if (measure.bestValue === true) {
+      return { status: 'success', value: `${measure.value}%` };
+    }
+
+    if (parseInt(metric.bestValue) === 100) {
+      if (parseFloat(measure.value) > 90) {
+        return { status: 'success', value: `${measure.value}%` };
+      } else if (parseFloat(measure.value) > 75) {
+        return { status: 'warning', value: `${measure.value}%` };
+      } else {
+        return { status: 'danger', value: `${measure.value}%` };
+      }
+    }
+
     return { status: 'info', value: `${measure.value}%` };
   }
 
-  return { status: 'info', value: measure.value };
+  if (measure.bestValue === true) {
+    return { status: 'success', value: measure.value };
+  }
+
+  return { status: 'warning', value: measure.value };
 };
 
 interface IMeasureProps {
@@ -73,25 +91,27 @@ const Measure: React.FunctionComponent<IMeasureProps> = ({ measure, metrics }: I
 
   return (
     <FlexItem className="pf-u-m-lg" style={{ textAlign: 'center' }}>
-      <p>
-        <b>{formattedValue.value}</b>
-        <span className="pf-u-pl-sm">
-          {formattedValue.status === 'success' ? (
-            <CheckCircleIcon color="var(--pf-global--success-color--100)" />
-          ) : formattedValue.status === 'warning' ? (
-            <ExclamationTriangleIcon color="var(--pf-global--warning-color--100)" />
-          ) : formattedValue.status === 'danger' ? (
-            <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
-          ) : (
-            <InfoCircleIcon color="var(--pf-global--primary-color--100)" />
-          )}
+      <Tooltip position={TooltipPosition.right} content={<div>{metric.description}</div>}>
+        <span>
+          <p>
+            <b>{formattedValue.value}</b>
+            <span className="pf-u-pl-sm">
+              {formattedValue.status === 'success' ? (
+                <CheckCircleIcon color="var(--pf-global--success-color--100)" />
+              ) : formattedValue.status === 'warning' ? (
+                <ExclamationTriangleIcon color="var(--pf-global--warning-color--100)" />
+              ) : formattedValue.status === 'danger' ? (
+                <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+              ) : (
+                <InfoCircleIcon color="var(--pf-global--primary-color--100)" />
+              )}
+            </span>
+          </p>
+          <p>
+            <span>{metric.name}</span>
+          </p>
         </span>
-      </p>
-      <p>
-        <Tooltip position={TooltipPosition.right} content={<div>{metric.description}</div>}>
-          <span>{metric.name}</span>
-        </Tooltip>
-      </p>
+      </Tooltip>
     </FlexItem>
   );
 };
