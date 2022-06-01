@@ -18,8 +18,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { IPluginInstance } from '@kobsio/shared';
-import SonarqubePage from './components/page/Page';
-import SonarqubePanel from './components/panel/Panel';
+import SQLPage from './components/page/Page';
+import SQLPanel from './components/panel/Panel';
 
 import './assets/index.css';
 
@@ -36,10 +36,10 @@ const queryClient = new QueryClient({
 });
 
 const instance: IPluginInstance = {
-  id: 'sonarqube',
-  name: 'sonarqube',
+  id: 'sql',
+  name: 'sql',
   satellite: 'kobs',
-  type: 'sonarqube',
+  type: 'sql',
   updatedAt: 0,
 };
 
@@ -51,7 +51,7 @@ export const App: React.FunctionComponent = () => {
           header={
             <Masthead>
               <MastheadMain>
-                <MastheadBrand>SonarQube</MastheadBrand>
+                <MastheadBrand>SQL</MastheadBrand>
               </MastheadMain>
               <MastheadContent>
                 <Toolbar id="header-toolbar" isFullHeight={true} isStatic={true}>
@@ -69,8 +69,8 @@ export const App: React.FunctionComponent = () => {
           }
         >
           <Routes>
-            <Route path="/" element={<SonarqubePage instance={instance} />} />
-            <Route path="/panels" element={<SonarqubePanel title="Test" instance={instance} />} />
+            <Route path="/" element={<SQLPage instance={instance} />} />
+            <Route path="/panels" element={<SQLPanel title="Test" instance={instance} />} />
           </Routes>
         </Page>
       </BrowserRouter>

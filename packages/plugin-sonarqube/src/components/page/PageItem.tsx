@@ -5,12 +5,12 @@ import { IPluginInstance } from '@kobsio/shared';
 import { IProject } from '../../utils/interfaces';
 import Measures from '../panel/Measures';
 
-interface IProjectsItemProps {
+interface IPageItemProps {
   instance: IPluginInstance;
   project: IProject;
 }
 
-const ProjectsItem: React.FunctionComponent<IProjectsItemProps> = ({ instance, project }: IProjectsItemProps) => {
+const PageItem: React.FunctionComponent<IPageItemProps> = ({ instance, project }: IPageItemProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
@@ -38,4 +38,4 @@ const ProjectsItem: React.FunctionComponent<IProjectsItemProps> = ({ instance, p
   );
 };
 
-export default ProjectsItem;
+export default PageItem;

@@ -20,8 +20,8 @@ type Router struct {
 	instances []instance.Instance
 }
 
-// getInstance returns a rss instance by it's name. If we couldn't found an instance with the provided name and the
-// provided name is "default" we return the first instance from the list. The first instance in the list is also the
+// getInstance returns a SonarQube instance by it's name. If we couldn't found an instance with the provided name and
+// the provided name is "default" we return the first instance from the list. The first instance in the list is also the
 // first one configured by the user and can be used as default one.
 func (router *Router) getInstance(name string) instance.Instance {
 	for _, i := range router.instances {
