@@ -41,6 +41,12 @@ func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {
 func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 	satelliteName := r.Header.Get("x-kobs-satellite")
 	pluginName := r.Header.Get("x-kobs-plugin")
+
+	if satelliteName == "" && pluginName == "" {
+		satelliteName = r.URL.Query().Get("x-kobs-satellite")
+		pluginName = r.URL.Query().Get("x-kobs-plugin")
+	}
+
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
 		log.Warn(r.Context(), "The user is not authorized to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.Error(err))

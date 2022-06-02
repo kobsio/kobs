@@ -54,7 +54,7 @@ const App: React.FunctionComponent = () => {
                 <Route path="/teams/:team" element={<Team />} />
                 <Route path="/resources" element={<Resources />} />
                 <Route path="/plugins" element={<PluginInstances />} />
-                <Route path="/plugins/:satellite/:type/:name" element={<PluginPage />} />
+                <Route path="/plugins/:satellite/:type/:name/*" element={<PluginPage />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
               </Routes>
