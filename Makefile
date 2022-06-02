@@ -21,25 +21,25 @@ build:
 build-plugins:
 	@mkdir -p ./bin/plugins
 	@if [ "${PLUGIN}" = "" ]; then \
-		for plugin in packages/plugin-*/; do \
+		for plugin in plugins/plugin-*/; do \
 			if [ -d "$$plugin/cmd" ]; then \
-				plugin=`echo "$$plugin" | sed -e "s/^packages\/plugin-//" -e "s/\/$///"`; \
+				plugin=`echo "$$plugin" | sed -e "s/^plugins\/plugin-//" -e "s/\/$///"`; \
 				echo "Build '$$plugin' plugin"; \
-				go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./packages/plugin-$$plugin/cmd; \
+				go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./plugins/plugin-$$plugin/cmd; \
 			fi \
 		done; \
 	else \
 		echo "Build '${PLUGIN}' plugin"; \
-		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./packages/plugin-${PLUGIN}/cmd; \
+		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./plugins/plugin-${PLUGIN}/cmd; \
 	fi
 
 .PHONY: test
 test:
-	@go test ./cmd/... ./pkg/... ./packages/...
+	@go test ./cmd/... ./pkg/... ./plugins/...
 
 .PHONY: test-coverage
 test-coverage:
-	@go test -coverpkg ./cmd/...,./pkg/...,./packages/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./packages/...
+	@go test -coverpkg ./cmd/...,./pkg/...,./plugins/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/... ./plugins/...
 	@cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/kube/apis" | grep -v "github.com/kobsio/kobs/pkg/kube/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 	@go tool cover -html coverage.out -o coverage.html
 
@@ -74,13 +74,13 @@ generate-assets:
 	@mkdir -p ./bin
 	@rm -rf ./bin/app
 	@echo "Copy files for 'app'"
-	@cp -r ./packages/app/build ./bin/app
+	@cp -r ./plugins/app/build ./bin/app
 	@mkdir -p ./bin/app/plugins
-	@for plugin in packages/plugin-*/; do \
+	@for plugin in plugins/plugin-*/; do \
 		if [ -d "$$plugin/src" ]; then \
-			plugin=`echo "$$plugin" | sed -e "s/^packages\/plugin-//" -e "s/\/$///"`; \
+			plugin=`echo "$$plugin" | sed -e "s/^plugins\/plugin-//" -e "s/\/$///"`; \
 			echo "Copy files for '$$plugin' plugin"; \
-			cp -r ./packages/plugin-$$plugin/build ./bin/app/plugins/$$plugin; \
+			cp -r ./plugins/plugin-$$plugin/build ./bin/app/plugins/$$plugin; \
 		fi \
 	done;
 

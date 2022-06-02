@@ -4,8 +4,8 @@ bin
 deploy
 docs
 node_modules
-packages/*/build
-packages/*/node_modules
+plugins/*/build
+plugins/*/node_modules
 CHANGELOG.md
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md

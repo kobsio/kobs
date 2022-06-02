@@ -6,12 +6,12 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/**"
+    "plugins/**"
   ],
   "scripts": {
     "prebuild": "lerna run build:shared --stream",
     "build": "lerna run build --stream",
-    "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'"
+    "lint": "eslint 'plugins/*/src/**/*.{js,ts,tsx}'"
   },
   "eslintConfig": {
     "plugins": [

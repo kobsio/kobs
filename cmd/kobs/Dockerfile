@@ -1,7 +1,7 @@
 FROM --platform=linux/amd64 node:16.13.0 as app
 WORKDIR /kobs
 COPY lerna.json package.json yarn.lock Makefile /kobs/
-COPY packages /kobs/packages
+COPY plugins /kobs/plugins
 RUN yarn install --frozen-lockfile --network-timeout 3600000
 RUN make generate-assets
 

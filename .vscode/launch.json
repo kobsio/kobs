@@ -31,7 +31,7 @@
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/packages/app",
+      "webRoot": "${workspaceFolder}/plugins/app",
       "sourceMaps": true
     },
     {
@@ -39,7 +39,7 @@
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3001",
-      "webRoot": "${workspaceFolder}/packages",
+      "webRoot": "${workspaceFolder}/plugins",
       "sourceMaps": true
     }
 
