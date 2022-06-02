@@ -15,7 +15,7 @@ import (
 )
 
 // Router implements the router for the SQL plugin, which can be registered in the router for our rest api. It contains
-// the api routes for the rss plugin and it's configuration.
+// the api routes for the SQL plugin and it's configuration.
 type Router struct {
 	*chi.Mux
 	instances []instance.Instance
@@ -69,7 +69,7 @@ func (router *Router) getQueryResults(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
-// Mount mounts the rss plugin routes in the plugins router of a kobs satellite instance.
+// Mount mounts the SQL plugin routes in the plugins router of a kobs satellite instance.
 func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
 	var sqlInstances []instance.Instance
 
