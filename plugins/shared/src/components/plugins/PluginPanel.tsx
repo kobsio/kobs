@@ -6,6 +6,7 @@ interface IPluginPanelProps {
   description?: string;
   children: React.ReactElement | null;
   actions?: React.ReactElement;
+  footer?: React.ReactElement;
 }
 
 export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
@@ -13,6 +14,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
   description,
   children,
   actions,
+  footer,
 }: IPluginPanelProps) => {
   if (!title) {
     return children;
@@ -35,6 +37,7 @@ export const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
       <CardBody className="kobsio-hide-scrollbar" style={{ overflow: 'auto' }}>
         {children}
       </CardBody>
+      {footer || null}
     </Card>
   );
 };
