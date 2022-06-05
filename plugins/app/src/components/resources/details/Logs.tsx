@@ -114,7 +114,9 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ resourceData }: ILogsProps)
     ws.current?.close();
 
     try {
-      const host = window.location.host === 'localhost:' ? 'ws://localhost:15220' : `wss://${window.location.host}`;
+      const host = window.location.host.startsWith('localhost:')
+        ? 'ws://localhost:15220'
+        : `wss://${window.location.host}`;
 
       ws.current = new WebSocket(
         `${host}/api/resources/logs?satellite=${resourceData.satellite}&cluster=${resourceData.cluster}${
