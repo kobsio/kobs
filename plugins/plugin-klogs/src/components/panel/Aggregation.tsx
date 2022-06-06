@@ -1,5 +1,15 @@
-import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertActionLink,
+  AlertVariant,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  Spinner,
+  Title,
+} from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import React from 'react';
 
 import { IAggregationData, IAggregationOptions } from '../../utils/interfaces';
@@ -85,7 +95,17 @@ const Aggregation: React.FunctionComponent<IAggregationProps> = ({
         </Alert>
       ) : data && data.rows && data.columns ? (
         <AggregationChart minHeight={0} options={options} data={data} />
-      ) : null}
+      ) : (
+        <EmptyState>
+          <EmptyStateIcon variant="icon" icon={InfoCircleIcon} />
+          <Title headingLevel="h4" size="lg">
+            No logs found
+          </Title>
+          <EmptyStateBody>
+            We could not found any data for the provided query: <code>{options.query}</code>
+          </EmptyStateBody>
+        </EmptyState>
+      )}
     </PluginPanel>
   );
 };

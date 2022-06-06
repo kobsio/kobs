@@ -3,7 +3,7 @@ import React from 'react';
 import { IPluginPanelProps, PluginPanelError } from '@kobsio/shared';
 import Aggregation from './Aggregation';
 import { IPanelOptions } from '../../utils/interfaces';
-import Logs from './Logs';
+import LogsWrapper from './LogsWrapper';
 
 interface IKlogsPluginPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
@@ -18,7 +18,15 @@ const Panel: React.FunctionComponent<IKlogsPluginPanelProps> = ({
   setDetails,
 }: IKlogsPluginPanelProps) => {
   if (options && options.type === 'logs' && options.queries && times) {
-    return <Logs instance={instance} title={title} description={description} queries={options.queries} times={times} />;
+    return (
+      <LogsWrapper
+        instance={instance}
+        title={title}
+        description={description}
+        queries={options.queries}
+        times={times}
+      />
+    );
   }
 
   if (
