@@ -14,28 +14,23 @@ import React from 'react';
 
 import { ILogsData, IQuery } from '../../utils/interfaces';
 import { IPluginInstance, ITimes } from '@kobsio/shared';
-import LogsChart from './LogsChart';
+import LogsChart from '../panel/LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
 
 interface ILogsProps {
   instance: IPluginInstance;
   query: IQuery;
+  showChart: boolean;
   times: ITimes;
 }
 
-const Logs: React.FunctionComponent<ILogsProps> = ({ instance, query, times }: ILogsProps) => {
+const Logs: React.FunctionComponent<ILogsProps> = ({ instance, query, showChart, times }: ILogsProps) => {
   const { isError, isLoading, data, error, refetch } = useQuery<ILogsData, Error>(
-    ['klogs/logs', instance, query, times],
+    ['elasticsearch/logs', instance, query, times],
     async () => {
       try {
-        if (!query.query) {
-          throw new Error('Query is missing');
-        }
-
         const response = await fetch(
-          `/api/plugins/klogs/logs?query=${encodeURIComponent(query.query)}&order=${
-            query.order || ''
-          }&orderBy=${encodeURIComponent(query.orderBy || '')}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/elasticsearch/logs?query=${query.query}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -49,10 +44,6 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ instance, query, times }: I
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          if (json.error) {
-            throw new Error(json.error);
-          }
-
           return json;
         } else {
           if (json.error) {
@@ -97,7 +88,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ instance, query, times }: I
     );
   }
 
-  if (!data || !data.documents || data.documents.length === 0) {
+  if (!data || data.documents.length === 0) {
     return (
       <EmptyState>
         <EmptyStateIcon variant="icon" icon={InfoCircleIcon} />
@@ -113,10 +104,14 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ instance, query, times }: I
 
   return (
     <div>
-      <LogsChart buckets={data.buckets} />
-      <p>&nbsp;</p>
+      {showChart ? (
+        <div>
+          <LogsChart buckets={data.buckets} />
+          <p>&nbsp;</p>
+        </div>
+      ) : null}
 
-      <LogsDocuments documents={data.documents} fields={query.fields} order={query.order} orderBy={query.orderBy} />
+      <LogsDocuments documents={data.documents} fields={query.fields} />
     </div>
   );
 };

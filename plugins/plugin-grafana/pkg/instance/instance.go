@@ -61,7 +61,7 @@ func (i *instance) GetDashboard(ctx context.Context, uid string) (*Dashboard, er
 	}, nil
 }
 
-// New returns a new Elasticsearch instance for the given configuration.
+// New returns a new Grafana instance for the given configuration.
 func New(name string, options map[string]interface{}) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
