@@ -3,26 +3,28 @@ import { Tab, TabContentBody, TabTitleText, Tabs } from '@patternfly/react-core'
 
 import { IPluginInstance, ITimes, PluginPanel } from '@kobsio/shared';
 import { IQuery } from '../../utils/interfaces';
-import Logs from './Logs';
-import LogsActions from './LogsActions';
+import Traces from './Traces';
+import TracesActions from './TracesActions';
 
-interface ILogsWrapperProps {
+interface ITracesWrapperProps {
   instance: IPluginInstance;
   title: string;
   description?: string;
-  queries: IQuery[];
   showChart: boolean;
+  queries: IQuery[];
   times: ITimes;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
-const LogsWrapper: React.FunctionComponent<ILogsWrapperProps> = ({
+const TracesWrapper: React.FunctionComponent<ITracesWrapperProps> = ({
   instance,
   title,
   description,
-  queries,
-  showChart,
   times,
-}: ILogsWrapperProps) => {
+  setDetails,
+  showChart,
+  queries,
+}: ITracesWrapperProps) => {
   const [activeQuery, setActiveQuery] = useState<string>(queries[0].name || '');
 
   if (queries.length === 1) {
@@ -30,9 +32,9 @@ const LogsWrapper: React.FunctionComponent<ILogsWrapperProps> = ({
       <PluginPanel
         title={title}
         description={description}
-        actions={<LogsActions instance={instance} queries={queries} times={times} />}
+        actions={<TracesActions instance={instance} queries={queries} times={times} />}
       >
-        <Logs instance={instance} query={queries[0]} showChart={showChart} times={times} />
+        <Traces instance={instance} query={queries[0]} times={times} showChart={showChart} setDetails={setDetails} />
       </PluginPanel>
     );
   }
@@ -41,7 +43,7 @@ const LogsWrapper: React.FunctionComponent<ILogsWrapperProps> = ({
     <PluginPanel
       title={title}
       description={description}
-      actions={<LogsActions instance={instance} queries={queries} times={times} />}
+      actions={<TracesActions instance={instance} queries={queries} times={times} />}
     >
       <Tabs
         style={{ backgroundColor: '#ffffff' }}
@@ -55,7 +57,7 @@ const LogsWrapper: React.FunctionComponent<ILogsWrapperProps> = ({
         {queries.map((query) => (
           <Tab key={query.name} eventKey={query.name || ''} title={<TabTitleText>{query.name}</TabTitleText>}>
             <TabContentBody hasPadding={false}>
-              <Logs instance={instance} query={query} showChart={showChart} times={times} />
+              <Traces instance={instance} query={query} times={times} showChart={showChart} setDetails={setDetails} />
             </TabContentBody>
           </Tab>
         ))}
@@ -64,4 +66,4 @@ const LogsWrapper: React.FunctionComponent<ILogsWrapperProps> = ({
   );
 };
 
-export default LogsWrapper;
+export default TracesWrapper;

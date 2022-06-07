@@ -45,14 +45,14 @@ const LogsWrapper: React.FunctionComponent<ILogsWrapperProps> = ({
         style={{ backgroundColor: '#ffffff' }}
         activeKey={activeQuery}
         isFilled={false}
-        usePageInsets={true}
+        usePageInsets={false}
         mountOnEnter={true}
         unmountOnExit={true}
         onSelect={(event, tabIndex): void => setActiveQuery(tabIndex.toString())}
       >
         {queries.map((query) => (
           <Tab key={query.name} eventKey={query.name || ''} title={<TabTitleText>{query.name}</TabTitleText>}>
-            <TabContentBody hasPadding={true}>
+            <TabContentBody hasPadding={false}>
               <Logs instance={instance} query={query} times={times} />
             </TabContentBody>
           </Tab>

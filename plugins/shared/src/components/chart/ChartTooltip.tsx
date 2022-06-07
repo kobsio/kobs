@@ -28,8 +28,8 @@ export const ChartTooltip: React.FunctionComponent<IChartTooltipProps> = ({
           color: '#f0f0f0',
           fontFamily: '"RedHatText", "Overpass", overpass, helvetica, arial, sans-serif',
           fontSize: '14px',
-          maxWidth: '50vw',
-          minWidth: '50vw',
+          // maxWidth: '50vw',
+          // minWidth: '50vw',
           padding: '8px',
           whiteSpace: 'nowrap',
         }}

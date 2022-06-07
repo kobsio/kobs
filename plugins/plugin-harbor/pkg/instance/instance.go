@@ -123,7 +123,7 @@ func (i *instance) GetBuildHistory(ctx context.Context, projectName, repositoryN
 	return buildHistory, nil
 }
 
-// New returns a new Elasticsearch instance for the given configuration.
+// New returns a new Harbor instance for the given configuration.
 func New(name string, options map[string]interface{}) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
