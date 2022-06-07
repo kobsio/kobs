@@ -83,7 +83,7 @@ const AggregationOptionsFilters: React.FunctionComponent<IAggregationOptionsFilt
           <FormGroup label="Filter" fieldId="form-filter">
             <TextInput
               value={filter}
-              isRequired
+              isRequired={true}
               type="text"
               id="form-filter"
               aria-describedby="form-filter"

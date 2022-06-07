@@ -83,7 +83,7 @@ const AggregationOptionsFields: React.FunctionComponent<IAggregationOptionsField
           <FormGroup label="Field" fieldId="form-field">
             <TextInput
               value={field}
-              isRequired
+              isRequired={true}
               type="text"
               id="form-field"
               aria-describedby="form-field"
