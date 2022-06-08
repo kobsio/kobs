@@ -109,7 +109,7 @@ const ApplicationActions: React.FunctionComponent<IApplicationActionsProps> = ({
           <FormGroup label="Upstream Cluster" fieldId="form-tab-upstreamcluster">
             <TextInput
               value={internalFilters.upstreamCluster}
-              isRequired
+              isRequired={true}
               type="text"
               id="form-tab-upstreamcluster"
               aria-describedby="form-tab-upstreamcluster"
@@ -120,7 +120,7 @@ const ApplicationActions: React.FunctionComponent<IApplicationActionsProps> = ({
           <FormGroup label="Method" fieldId="form-tab-method">
             <TextInput
               value={internalFilters.method}
-              isRequired
+              isRequired={true}
               type="text"
               id="form-tab-method"
               aria-describedby="form-tab-method"
@@ -131,7 +131,7 @@ const ApplicationActions: React.FunctionComponent<IApplicationActionsProps> = ({
           <FormGroup label="Path" fieldId="form-tab-path">
             <TextInput
               value={internalFilters.path}
-              isRequired
+              isRequired={true}
               type="text"
               id="form-tab-path"
               aria-describedby="form-tab-path"
