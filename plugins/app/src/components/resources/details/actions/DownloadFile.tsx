@@ -130,7 +130,7 @@ const DownloadFile: React.FunctionComponent<IDownloadFileProps> = ({
         <FormGroup label="Source Path" fieldId="download-form-source-path">
           <TextInput
             value={sourcePath}
-            isRequired
+            isRequired={true}
             type="text"
             id="download-form-source-path"
             aria-describedby="download-form-source-path"

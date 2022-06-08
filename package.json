@@ -27,6 +27,7 @@
     ],
     "rules": {
       "react-hooks/exhaustive-deps": "error",
+      "react/jsx-boolean-value": ["error", "always"],
       "sort-imports": [
         "error",
         {

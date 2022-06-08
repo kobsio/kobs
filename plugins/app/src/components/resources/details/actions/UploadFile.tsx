@@ -155,7 +155,7 @@ const UploadFile: React.FunctionComponent<IUploadFileProps> = ({
         <FormGroup label="Destination Path" fieldId="upload-form-destination-path">
           <TextInput
             value={destinationPath}
-            isRequired
+            isRequired={true}
             type="text"
             id="upload-form-destination-path"
             aria-describedby="upload-form-destination-path"
