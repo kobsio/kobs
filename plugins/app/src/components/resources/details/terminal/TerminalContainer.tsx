@@ -1,15 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Terminal as xTerm } from 'xterm';
 import { FitAddon as xTermFitAddon } from 'xterm-addon-fit';
 
 interface ITerminalContainerProps {
-  term: xTerm;
+  terminal: xTerm;
 }
 
-const TerminalContainer: React.FunctionComponent<ITerminalContainerProps> = ({ term }: ITerminalContainerProps) => {
+const TerminalContainer: React.FunctionComponent<ITerminalContainerProps> = ({ terminal }: ITerminalContainerProps) => {
   const termRef = useRef<HTMLDivElement>(null);
+  const [term, setTerm] = useState<xTerm>();
+
   const fitAddon = new xTermFitAddon();
-  term.loadAddon(fitAddon);
+
+  useEffect(() => {
+    setTerm(terminal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     return (): void => {
