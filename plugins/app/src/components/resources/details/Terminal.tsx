@@ -204,7 +204,7 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ resourceData }: ITe
             </Toolbar>
           </FlexItem>
           <FlexItem>
-            <TerminalContainer term={term.current} />
+            <TerminalContainer terminal={term.current} />
           </FlexItem>
         </Flex>
       </CardBody>
