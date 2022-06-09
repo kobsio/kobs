@@ -6,9 +6,6 @@ import {
   CardBody,
   CardHeader,
   CardHeaderMain,
-  DrawerContentBody,
-  PageSection,
-  PageSectionVariants,
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -40,53 +37,47 @@ const ApplicationTop: React.FunctionComponent<IApplicationTopProps> = ({
 
   if (!instance.options?.klogs) {
     return (
-      <DrawerContentBody>
-        <PageSection variant={PageSectionVariants.default}>
-          <Alert
-            variant={AlertVariant.warning}
-            title="klogs plugin is not enabled"
-            actionLinks={
-              <React.Fragment>
-                <AlertActionLink onClick={(): void => navigate('/')}>Home</AlertActionLink>
-              </React.Fragment>
-            }
-          >
-            <p>You have to enable the klogs integration in the Istio plugin configuration.</p>
-          </Alert>
-        </PageSection>
-      </DrawerContentBody>
+      <Alert
+        variant={AlertVariant.warning}
+        title="klogs plugin is not enabled"
+        actionLinks={
+          <React.Fragment>
+            <AlertActionLink onClick={(): void => navigate('/')}>Home</AlertActionLink>
+          </React.Fragment>
+        }
+      >
+        <p>You have to enable the klogs integration in the Istio plugin configuration.</p>
+      </Alert>
     );
   }
 
   return (
-    <DrawerContentBody>
-      <PageSection variant={PageSectionVariants.default}>
-        <Card isCompact={true}>
-          <CardHeader>
-            <CardHeaderMain>
-              <span className="pf-u-font-weight-bold">Tap</span>
-            </CardHeaderMain>
-            <ApplicationActions
-              liveUpdate={liveUpdate}
-              filters={filters}
-              setLiveUpdate={setLiveUpdate}
-              setFilters={setFilters}
-            />
-          </CardHeader>
-          <CardBody>
-            <Top
-              instance={instance}
-              namespace={namespace}
-              application={application}
-              times={times}
-              liveUpdate={liveUpdate}
-              filters={filters}
-              setDetails={setDetails}
-            />
-          </CardBody>
-        </Card>
-      </PageSection>
-    </DrawerContentBody>
+    <React.Fragment>
+      <Card isCompact={true}>
+        <CardHeader>
+          <CardHeaderMain>
+            <span className="pf-u-font-weight-bold">Tap</span>
+          </CardHeaderMain>
+          <ApplicationActions
+            liveUpdate={liveUpdate}
+            filters={filters}
+            setLiveUpdate={setLiveUpdate}
+            setFilters={setFilters}
+          />
+        </CardHeader>
+        <CardBody>
+          <Top
+            instance={instance}
+            namespace={namespace}
+            application={application}
+            times={times}
+            liveUpdate={liveUpdate}
+            filters={filters}
+            setDetails={setDetails}
+          />
+        </CardBody>
+      </Card>
+    </React.Fragment>
   );
 };
 

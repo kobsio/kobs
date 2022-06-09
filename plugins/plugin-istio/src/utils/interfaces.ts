@@ -1,4 +1,4 @@
-import { IRowValues } from '@kobsio/plugin-prometheus';
+import { IRowValues } from './prometheus/interfaces';
 
 import { ITimes } from '@kobsio/shared';
 import { Serie } from '@nivo/line';

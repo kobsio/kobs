@@ -38,6 +38,10 @@ const queryClient = new QueryClient({
 const instance: IPluginInstance = {
   id: 'istio',
   name: 'istio',
+  options: {
+    klogs: true,
+    prometheus: true,
+  },
   satellite: 'kobs',
   type: 'istio',
   updatedAt: 0,
@@ -57,7 +61,7 @@ export const App: React.FunctionComponent = () => {
                 <Toolbar id="header-toolbar" isFullHeight={true} isStatic={true}>
                   <ToolbarContent>
                     <ToolbarItem>
-                      <Link to="/">Page</Link>
+                      <Link to="/plugins/kobs/istio/istio">Page</Link>
                     </ToolbarItem>
                     <ToolbarItem>
                       <Link to="/panels">Panel</Link>
@@ -69,7 +73,7 @@ export const App: React.FunctionComponent = () => {
           }
         >
           <Routes>
-            <Route path="/" element={<IstioPage instance={instance} />} />
+            <Route path="/plugins/:satellite/:type/:name/*" element={<IstioPage instance={instance} />} />
             <Route path="/panels" element={<IstioPanel title="Test" instance={instance} />} />
           </Routes>
         </Page>

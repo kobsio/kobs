@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 	klogsInstance "github.com/kobsio/kobs/plugins/plugin-klogs/pkg/instance"
 	prometheusInstance "github.com/kobsio/kobs/plugins/plugin-prometheus/pkg/instance"
 
@@ -15,10 +14,6 @@ import (
 
 // Config is the structure of the configuration for a single Harbor database instance.
 type Config struct {
-	Address    string           `json:"address"`
-	Username   string           `json:"username"`
-	Password   string           `json:"password"`
-	Token      string           `json:"token"`
 	Prometheus ConfigPrometheus `json:"prometheus"`
 	Klogs      ConfigKlogs      `json:"klogs"`
 }
@@ -27,7 +22,6 @@ type Config struct {
 // the Istio plugin.
 type ConfigPrometheus struct {
 	Enabled bool                   `json:"enabled"`
-	Name    string                 `json:"name"`
 	Options map[string]interface{} `json:"options"`
 }
 
@@ -35,7 +29,6 @@ type ConfigPrometheus struct {
 // plugin.
 type ConfigKlogs struct {
 	Enabled bool                   `json:"enabled"`
-	Name    string                 `json:"name"`
 	Options map[string]interface{} `json:"options"`
 }
 
@@ -421,33 +414,19 @@ func New(name string, options map[string]interface{}) (Instance, error) {
 		return nil, err
 	}
 
-	roundTripper := roundtripper.DefaultRoundTripper
-
-	if config.Username != "" && config.Password != "" {
-		roundTripper = roundtripper.BasicAuthTransport{
-			Transport: roundTripper,
-			Username:  config.Username,
-			Password:  config.Password,
-		}
+	prometheusInstance, err := prometheusInstance.New("prometheus", config.Prometheus.Options)
+	if err != nil {
+		return nil, err
 	}
 
-	if config.Token != "" {
-		roundTripper = roundtripper.TokenAuthTransporter{
-			Transport: roundTripper,
-			Token:     config.Token,
-		}
+	klogsInstance, err := klogsInstance.New("klogs", config.Klogs.Options)
+	if err != nil {
+		return nil, err
 	}
-
-	promInstance, _ := prometheusInstance.New(config.Prometheus.Name, config.Prometheus.Options)
-	klogsInstance, _ := klogsInstance.New(config.Klogs.Name, config.Klogs.Options)
 
 	return &instance{
 		name:       name,
-		address:    config.Address,
-		prometheus: promInstance,
+		prometheus: prometheusInstance,
 		klogs:      klogsInstance,
-		client: &http.Client{
-			Transport: roundTripper,
-		},
 	}, nil
 }

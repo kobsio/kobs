@@ -6,7 +6,7 @@ import { getInitialApplicationsOptions } from '../../utils/helpers';
 import { IPluginInstance, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { IApplicationsOptions } from '../../utils/interfaces';
-import { IRowValues } from '@kobsio/plugin-prometheus';
+import { IRowValues } from '../../utils/prometheus/interfaces';
 import MetricsTable from '../panel/MetricsTable';
 import { defaultDescription } from '@kobsio/plugin-opsgenie/src/utils/constants';
 

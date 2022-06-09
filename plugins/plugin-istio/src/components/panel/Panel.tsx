@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/shared';
 import { IPanelOptions } from '../../utils/interfaces';
-import { IRowValues } from '@kobsio/plugin-prometheus';
+import { IRowValues } from '../../utils/prometheus/interfaces';
 import MetricsTable from './MetricsTable';
 import PanelActions from './PanelActions';
 import Tap from './Tap';

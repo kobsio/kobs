@@ -2,14 +2,14 @@ import { Card, CardBody, CardTitle } from '@patternfly/react-core';
 import { ResponsiveLineCanvas, Serie } from '@nivo/line';
 import React from 'react';
 
-import { CHART_THEME, COLOR_SCALE, ChartTooltip, IPluginTimes } from '@kobsio/plugin-core';
-import { formatAxisBottom } from '@kobsio/plugin-prometheus';
+import { CHART_THEME, COLOR_SCALE, ChartTooltip, ITimes } from '@kobsio/shared';
+import { formatAxisBottom } from '../../../utils/prometheus/helpers';
 
 interface IDetailsTopChartProps {
   title: string;
   unit: string;
   series: Serie[];
-  times: IPluginTimes;
+  times: ITimes;
 }
 
 const DetailsTopChart: React.FunctionComponent<IDetailsTopChartProps> = ({

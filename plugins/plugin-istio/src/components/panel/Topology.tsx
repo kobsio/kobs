@@ -1,8 +1,7 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 
-import { IPluginInstance } from '@kobsio/shared';
-import { IPluginTimes } from '@kobsio/plugin-core';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import { ITopology } from '../../utils/interfaces';
 import React from 'react';
 import TopologyGraph from './TopologyGraph';
@@ -16,7 +15,7 @@ export interface ITopologyProps {
   instance: IPluginInstance;
   namespace: string;
   application: string;
-  times: IPluginTimes;
+  times: ITimes;
   setDetails?: (details: React.ReactNode) => void;
 }
 

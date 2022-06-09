@@ -15,11 +15,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MicroscopeIcon } from '@patternfly/react-icons';
 
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import { escapeRegExp, formatNumber, getDirection } from '../../utils/helpers';
 import DetailsTop from './details/DetailsTop';
 import { IFilters } from '../../utils/interfaces';
-import { IPluginInstance } from '@kobsio/shared';
-import { IPluginTimes } from '@kobsio/plugin-core';
 
 export interface ISort {
   direction: 'asc' | 'desc';
@@ -51,7 +50,7 @@ export interface ITopProps {
   instance: IPluginInstance;
   namespace: string;
   application: string;
-  times: IPluginTimes;
+  times: ITimes;
   liveUpdate: boolean;
   filters: IFilters;
   setDetails?: (details: React.ReactNode) => void;

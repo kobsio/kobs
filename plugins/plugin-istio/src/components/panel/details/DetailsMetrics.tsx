@@ -4,14 +4,14 @@ import {
   DrawerHead,
   DrawerPanelBody,
   DrawerPanelContent,
+  Title,
 } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginTimes, Title } from '@kobsio/plugin-core';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import DetailsMetricsMetric from './DetailsMetricsMetric';
 import DetailsMetricsPod from './DetailsMetricsPod';
-import { IPluginInstance } from '@kobsio/shared';
-import { IRowValues } from '@kobsio/plugin-prometheus';
+import { IRowValues } from '../../../utils/prometheus/interfaces';
 
 const getTitle = (row: IRowValues): string => {
   if (row.hasOwnProperty('destination_version')) {
@@ -32,7 +32,7 @@ interface IDetailsMetricsProps {
   namespace: string;
   application: string;
   row: IRowValues;
-  times: IPluginTimes;
+  times: ITimes;
   close: () => void;
 }
 
@@ -47,7 +47,12 @@ const DetailsMetrics: React.FunctionComponent<IDetailsMetricsProps> = ({
   return (
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
-        <Title title={getTitle(row)} subtitle={`${application} (${namespace})`} size="lg" />
+        <Title headingLevel="h2" size="xl">
+          {getTitle(row)}
+          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+            {application} ({namespace})
+          </span>
+        </Title>
         <DrawerActions style={{ padding: 0 }}>
           <DrawerCloseButton onClose={close} />
         </DrawerActions>

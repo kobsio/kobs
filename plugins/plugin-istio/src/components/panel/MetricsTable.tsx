@@ -3,10 +3,9 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 
-import { IRowValues, IRows } from '@kobsio/plugin-prometheus';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { IRowValues, IRows } from '../../utils/prometheus/interfaces';
 import DetailsMetrics from './details/DetailsMetrics';
-import { IPluginInstance } from '@kobsio/shared';
-import { IPluginTimes } from '@kobsio/plugin-core';
 import { formatNumber } from '../../utils/helpers';
 
 export interface IAdditionalColumns {
@@ -21,7 +20,7 @@ export interface IMetricsTableProps {
   label: string;
   groupBy: string;
   reporter: string;
-  times: IPluginTimes;
+  times: ITimes;
   additionalColumns?: IAdditionalColumns[];
   setDetails?: (details: React.ReactNode) => void;
   goTo?: (row: IRowValues) => void;

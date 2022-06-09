@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
 import cytoscape from 'cytoscape';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 
@@ -10,6 +9,8 @@ import { IEdge, INode, INodeData } from '../../utils/interfaces';
 import { IPluginInstance, ITimes } from '@kobsio/shared';
 import DetailsMetrics from './details/DetailsMetrics';
 import { formatNumber } from '../../utils/helpers';
+
+import '../../assets/topologygraph.css';
 
 cytoscape.use(dagre);
 nodeHtmlLabel(cytoscape);
@@ -36,7 +37,7 @@ const styleSheet: cytoscape.Stylesheet[] = [
       color: '#151515',
       'font-family': 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
       height: '300px',
-      label: 'data(label)',
+      label: 'data(id)',
       shape: 'roundrectangle',
       'text-halign': 'center',
       'text-opacity': 0,
@@ -58,6 +59,8 @@ const styleSheet: cytoscape.Stylesheet[] = [
 ];
 
 const nodeLabel = (node: INodeData): string => {
+  console.log(node);
+
   const application = node.metrics.hasOwnProperty('destination_app')
     ? node.metrics['destination_app']
     : node.metrics.hasOwnProperty('source_workload')

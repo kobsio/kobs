@@ -8,14 +8,14 @@ import {
   DrawerPanelBody,
   DrawerPanelContent,
   Spinner,
+  Title,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
-import { IPluginTimes, Title } from '@kobsio/plugin-core';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import { convertMetrics, getDirection } from '../../../utils/helpers';
 import DetailsTopChart from './DetailsTopChart';
-import { IPluginInstance } from '@kobsio/shared';
 import { ITopDetailsMetrics } from '../../../utils/interfaces';
 
 interface IDetailsTopProps {
@@ -23,7 +23,7 @@ interface IDetailsTopProps {
   namespace: string;
   application: string;
   row: string[];
-  times: IPluginTimes;
+  times: ITimes;
   close: () => void;
 }
 
@@ -84,11 +84,12 @@ const DetailsTop: React.FunctionComponent<IDetailsTopProps> = ({
   return (
     <DrawerPanelContent minSize="50%">
       <DrawerHead>
-        <Title
-          title={`${getDirection(row[0]) || '-'}: ${row[0] || '-'}`}
-          subtitle={`${row[1] || '-'}: ${row[2] || '-'}`}
-          size="lg"
-        />
+        <Title headingLevel="h2" size="xl">
+          {getDirection(row[0]) || '-'}: {row[0] || '-'}
+          <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
+            {row[1] || '-'}: {row[2] || '-'}
+          </span>
+        </Title>
         <DrawerActions style={{ padding: 0 }}>
           <DrawerCloseButton onClose={close} />
         </DrawerActions>

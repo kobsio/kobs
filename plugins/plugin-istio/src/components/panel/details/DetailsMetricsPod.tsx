@@ -2,8 +2,10 @@ import { Alert, AlertActionLink, AlertVariant, Card, CardBody, CardTitle, Spinne
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
-import { Chart, ISeries, convertMetrics } from '@kobsio/plugin-prometheus';
 import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { Chart } from '../../../utils/prometheus/Chart';
+import { ISeries } from '../../../utils/prometheus/interfaces';
+import { convertMetrics } from '../../../utils/prometheus/helpers';
 
 interface IDetailsMetricsPodProps {
   instance: IPluginInstance;

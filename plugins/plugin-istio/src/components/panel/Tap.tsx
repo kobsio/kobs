@@ -4,9 +4,8 @@ import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 
 import { IFilters, ILogLine } from '../../utils/interfaces';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import DetailsTap from './details/DetailsTap';
-import { IPluginInstance } from '@kobsio/shared';
-import { IPluginTimes } from '@kobsio/plugin-core';
 import { getDirection } from '../../utils/helpers';
 
 export interface IAdditionalColumns {
@@ -18,7 +17,7 @@ export interface ITapProps {
   instance: IPluginInstance;
   namespace: string;
   application: string;
-  times: IPluginTimes;
+  times: ITimes;
   liveUpdate: boolean;
   filters: IFilters;
   setDetails?: (details: React.ReactNode) => void;

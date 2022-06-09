@@ -4,7 +4,6 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@kobsio/plugin-prometheus": "^0.8.0",
     "@kobsio/react-scripts": "5.0.1-1",
     "@patternfly/patternfly": "^4.194.4",
     "@patternfly/react-core": "^4.214.1",
