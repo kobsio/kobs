@@ -4,7 +4,7 @@ import React from 'react';
 import { IIncident, IMessage } from '../../../../../utils/interfaces';
 import { IPluginInstance } from '@kobsio/shared';
 
-interface IAcknowledgeProps {
+interface IResolveProps {
   instance: IPluginInstance;
   incident: IIncident;
   refetch: () => void;
@@ -12,14 +12,14 @@ interface IAcknowledgeProps {
   setMessage: (message: IMessage) => void;
 }
 
-const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
+const Resolve: React.FunctionComponent<IResolveProps> = ({
   instance,
   incident,
   refetch,
   hideDropdown,
   setMessage,
-}: IAcknowledgeProps) => {
-  const acknowledge = async (): Promise<void> => {
+}: IResolveProps) => {
+  const resolve = async (): Promise<void> => {
     hideDropdown();
 
     try {
@@ -37,7 +37,7 @@ const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
       if (response.status >= 200 && response.status < 300) {
         refetch();
         setMessage({
-          title: `Incident ${incident.message} was acknowledge`,
+          title: `Incident ${incident.message} was resolved`,
           variant: AlertVariant.success,
         });
       } else {
@@ -52,7 +52,7 @@ const Acknowledge: React.FunctionComponent<IAcknowledgeProps> = ({
     }
   };
 
-  return <DropdownItem onClick={acknowledge}>Acknowledge</DropdownItem>;
+  return <DropdownItem onClick={resolve}>Resolve</DropdownItem>;
 };
 
-export default Acknowledge;
+export default Resolve;
