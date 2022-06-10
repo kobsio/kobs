@@ -30,7 +30,7 @@ func TestMount(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, router1)
 
-	router2, err := Mount([]plugin.Instance{{Name: "istio", Options: map[string]interface{}{"token": []string{"token"}}}}, nil)
+	router2, err := Mount([]plugin.Instance{{Name: "istio", Options: map[string]interface{}{"prometheus": map[string]interface{}{"enabled": "true"}}}}, nil)
 	require.Error(t, err)
 	require.Nil(t, router2)
 }
