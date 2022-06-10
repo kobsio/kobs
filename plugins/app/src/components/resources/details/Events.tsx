@@ -21,7 +21,7 @@ const Events: React.FunctionComponent<IEventsProps> = ({ satellite, cluster, nam
       const namespaceID = `/satellite/${satellite}/cluster/${cluster}${namespace ? `/namespace/${namespace}` : ''}`;
 
       const response = await fetch(
-        `/api/resources?namespaceID=${namespaceID}&resourceID=events&paramName=fieldSelector&param=involvedObject.name=${name}`,
+        `/api/resources/_?namespaceID=${namespaceID}&resourceID=events&paramName=fieldSelector&param=involvedObject.name=${name}`,
         { method: 'get' },
       );
       const json = await response.json();

@@ -4,7 +4,7 @@ import React from 'react';
 import { Title } from '@patternfly/react-core';
 import { useQuery } from 'react-query';
 
-import { IMetric, IMetricUsage, IResourceResponse } from '../../utils/interfaces';
+import { IMetric, IMetricUsage } from '../../utils/interfaces';
 import Conditions from './Conditions';
 import NodeChart from './NodeChart';
 import { formatResourceValue } from '../../utils/helpers';
@@ -111,56 +111,49 @@ const Node: React.FunctionComponent<INodeProps> = ({ satellite, cluster, namespa
   const { isError, data } = useQuery<INodeMetrics, Error>(
     ['app/resources/node/metrics', satellite, cluster, namespace, name],
     async () => {
-      const clusterID = `/satellite/${satellite}/cluster/${cluster}`;
+      try {
+        const responseNodeMetrics = await fetch(
+          `/api/resources?satellite=${satellite}&cluster=${cluster}&name=${name}&resource=nodes&path=/apis/metrics.k8s.io/v1beta1`,
+          { method: 'get' },
+        );
+        const jsonNodeMetrics = await responseNodeMetrics.json();
 
-      const responseNodes = await fetch(
-        `/api/resources?clusterID=${clusterID}&name=${name}&resourceID=nodes&path=/apis/metrics.k8s.io/v1beta1`,
-        { method: 'get' },
-      );
+        if (responseNodeMetrics.status >= 200 && responseNodeMetrics.status < 300) {
+          const metric = jsonNodeMetrics as IMetric;
 
-      const jsonNodes: IResourceResponse[] | { error: string } = await responseNodes.json();
-
-      if (responseNodes.status >= 200 && responseNodes.status < 300) {
-        if (jsonNodes && Array.isArray(jsonNodes) && jsonNodes.length === 1 && !jsonNodes[0].errors) {
-          const metric = jsonNodes[0].resourceLists as IMetric[];
-
-          if (metric && metric.length === 1 && metric[0].list && metric[0].list.usage) {
+          if (metric && metric.usage) {
             const responsePods = await fetch(
-              `/api/resources?clusterID=${clusterID}&resourceID=pods&path=/api/v1&paramName=fieldSelector&param=spec.nodeName=${name}`,
+              `/api/resources?satellite=${satellite}&cluster=${cluster}&resource=pods&path=/api/v1&paramName=fieldSelector&param=spec.nodeName=${name}`,
               { method: 'get' },
             );
-            const jsonPods: IResourceResponse[] | { error: string } = await responsePods.json();
+            const jsonPods = await responsePods.json();
+            console.log(jsonPods);
 
             if (responsePods.status >= 200 && responsePods.status < 300) {
-              if (jsonPods && Array.isArray(jsonPods) && jsonPods.length === 1 && !jsonPods[0].errors) {
-                if (
-                  jsonPods[0].resourceLists &&
-                  jsonPods[0].resourceLists.length === 1 &&
-                  jsonPods[0].resourceLists[0].list &&
-                  jsonPods[0].resourceLists[0].list.items
-                ) {
-                  return nodeMetrics(node, metric[0].list.usage, jsonPods[0].resourceLists[0].list.items);
-                }
+              if (jsonPods && jsonPods.items) {
+                return nodeMetrics(node, metric.usage, jsonPods.items);
               }
 
-              throw new Error('Could not get Pod metrics');
+              throw new Error('Could not get Pods');
             }
 
-            if (!Array.isArray(jsonPods) && jsonPods.error) {
+            if (jsonPods.error) {
               throw new Error(jsonPods.error);
             } else {
               throw new Error('An unknown error occured');
             }
           }
+
+          throw new Error('Could not get Node metrics');
         }
 
-        throw new Error('Could not get Node metrics');
-      }
-
-      if (!Array.isArray(jsonNodes) && jsonNodes.error) {
-        throw new Error(jsonNodes.error);
-      } else {
-        throw new Error('An unknown error occured');
+        if (jsonNodeMetrics.error) {
+          throw new Error(jsonNodeMetrics.error);
+        } else {
+          throw new Error('An unknown error occured');
+        }
+      } catch (err) {
+        throw err;
       }
     },
   );

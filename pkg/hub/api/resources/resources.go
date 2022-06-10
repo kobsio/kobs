@@ -171,7 +171,8 @@ func Mount(satellitesClient satellites.Client, storeClient store.Client) chi.Rou
 		storeClient,
 	}
 
-	router.Get("/", router.getResources)
+	router.Get("/_", router.getResources)
+	router.Get("/", router.proxyResources)
 	router.Delete("/", router.proxyResources)
 	router.Put("/", router.proxyResources)
 	router.Post("/", router.proxyResources)

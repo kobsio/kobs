@@ -42,12 +42,6 @@ export interface IAlert {
 
 // IMetric is the interface for the response for a metrics request.
 export interface IMetric {
-  satellite?: string;
-  namespace?: string;
-  list?: IMetricResources;
-}
-
-export interface IMetricResources {
   apiVersion?: string;
   containers?: IMetricContainer[];
   kind?: string;

@@ -22,7 +22,7 @@ const Pods: React.FunctionComponent<IPodsProps> = ({ satellite, cluster, namespa
       const namespaceID = `/satellite/${satellite}/cluster/${cluster}${namespace ? `/namespace/${namespace}` : ''}`;
 
       const response = await fetch(
-        `/api/resources?namespaceID=${namespaceID}&resourceID=pods&paramName=${paramName}&param=${param}`,
+        `/api/resources/_?namespaceID=${namespaceID}&resourceID=pods&paramName=${paramName}&param=${param}`,
         { method: 'get' },
       );
       const json = await response.json();

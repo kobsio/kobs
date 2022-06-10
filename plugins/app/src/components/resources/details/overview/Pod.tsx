@@ -47,30 +47,30 @@ const Pod: React.FunctionComponent<IPodProps> = ({ satellite, cluster, namespace
   const { isError, data } = useQuery<IMetricContainer[], Error>(
     ['app/resources/pod/metrics', satellite, cluster, namespace, name],
     async () => {
-      const namespaceID = `/satellite/${satellite}/cluster/${cluster}/namespace/${namespace}`;
+      try {
+        const response = await fetch(
+          `/api/resources?satellite=${satellite}&cluster=${cluster}&namespace=${namespace}&name=${name}&resource=pods&path=/apis/metrics.k8s.io/v1beta1`,
+          { method: 'get' },
+        );
+        const json = await response.json();
 
-      const response = await fetch(
-        `/api/resources?namespaceID=${namespaceID}&name=${name}&resourceID=pods&path=/apis/metrics.k8s.io/v1beta1`,
-        { method: 'get' },
-      );
-      const json = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          const metric = json as IMetric;
 
-      if (response.status >= 200 && response.status < 300) {
-        if (json && Array.isArray(json) && json.length === 1 && !json[0].errors) {
-          const metric = json[0].resourceLists as IMetric[];
-
-          if (metric && metric.length === 1 && metric[0].list && metric[0].list.containers) {
-            return metric[0].list.containers;
+          if (metric && metric.containers && metric.containers.length > 0) {
+            return metric.containers;
           }
+
+          throw new Error('Could not get Pod metrics');
         }
 
-        throw new Error('Could not get Pod metrics');
-      }
-
-      if (json.error) {
-        throw new Error(json.error);
-      } else {
-        throw new Error('An unknown error occured');
+        if (json.error) {
+          throw new Error(json.error);
+        } else {
+          throw new Error('An unknown error occured');
+        }
+      } catch (err) {
+        throw err;
       }
     },
   );

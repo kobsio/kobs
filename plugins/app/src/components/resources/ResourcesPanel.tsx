@@ -36,14 +36,14 @@ const ResourcesPanel: React.FunctionComponent<IResourcesPanelProps> = ({
   const [state, setState] = useState<{ activeKey: string; selectedRow: number }>({ activeKey: '', selectedRow: -1 });
 
   const { isError, isLoading, error, data, refetch } = useQuery<IResourceResponse[], Error>(
-    ['app/resources/resources', options],
+    ['app/resources/resources/_', options],
     async () => {
       const c = options.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
       const n = options.namespaceIDs.map((namespaceID) => `&namespaceID=${encodeURIComponent(namespaceID)}`);
       const r = options.resourceIDs.map((resourceID) => `&resourceID=${encodeURIComponent(resourceID)}`);
 
       const response = await fetch(
-        `/api/resources?paramName=${options.paramName}&param=${options.param}${c.length > 0 ? c.join('') : ''}${
+        `/api/resources/_?paramName=${options.paramName}&param=${options.param}${c.length > 0 ? c.join('') : ''}${
           n.length > 0 ? n.join('') : ''
         }${r.length > 0 ? r.join('') : ''}`,
         {
