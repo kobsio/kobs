@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginInstance, LinkWrapper } from '@kobsio/shared';
+import { IPluginInstance, LinkWrapper, pluginBasePath } from '@kobsio/shared';
 import { IRepository } from '../../utils/interfaces';
 import { formatTime } from '../../utils/helpers';
 
@@ -26,7 +26,7 @@ const RepositoriesListItem: React.FunctionComponent<IRepositoriesListItemProps> 
 }: IRepositoriesListItemProps) => {
   return (
     <LinkWrapper
-      to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${projectName}/${encodeURIComponent(
+      to={`${pluginBasePath(instance)}/${projectName}/${encodeURIComponent(
         repository.name.replace(`${projectName}/`, ''),
       )}`}
     >

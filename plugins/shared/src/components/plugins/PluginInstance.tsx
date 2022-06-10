@@ -10,6 +10,8 @@ import {
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { pluginBasePathAlt } from '../../utils/plugins';
+
 export interface IPluginInstanceProps {
   satellite: string;
   name: string;
@@ -33,13 +35,7 @@ export const PluginInstance: React.FunctionComponent<IPluginInstanceProps> = ({
   };
 
   return (
-    <Card
-      isHoverable={true}
-      isCompact={true}
-      onClick={(): void =>
-        navigate(`/plugins/${encodeURIComponent(satellite)}/${encodeURIComponent(type)}/${encodeURIComponent(name)}`)
-      }
-    >
+    <Card isHoverable={true} isCompact={true} onClick={(): void => navigate(pluginBasePathAlt(satellite, type, name))}>
       <Bullseye>
         <EmptyState variant={EmptyStateVariant.xs}>
           <EmptyStateIcon variant="container" component={Icon} />

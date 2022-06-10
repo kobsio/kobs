@@ -2,7 +2,7 @@ import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 
 interface IAggregationPageActionsProps {
   instance: IPluginInstance;
@@ -22,10 +22,7 @@ export const AggregationPageActions: React.FunctionComponent<IAggregationPageAct
         isPlain={true}
         position="right"
         dropdownItems={[
-          <DropdownItem
-            key={0}
-            component={<Link to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}`}>Logs</Link>}
-          />,
+          <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}`}>Logs</Link>} />,
           <DropdownItem
             key={1}
             component={

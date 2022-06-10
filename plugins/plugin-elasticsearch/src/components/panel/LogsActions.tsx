@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle } from '@patternfly/re
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { IPluginInstance, ITimes, pluginBasePath } from '@kobsio/shared';
 import { IQuery } from '../../utils/interfaces';
 
 interface IActionsProps {
@@ -26,11 +26,9 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({ instance, quer
             key={index}
             component={
               <Link
-                to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}?time=${times.time}&timeEnd=${
-                  times.timeEnd
-                }&timeStart=${times.timeStart}&query=${query.query}${
-                  query.fields ? query.fields.map((field) => `&field=${field}`).join('') : ''
-                }`}
+                to={`${pluginBasePath(instance)}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${
+                  times.timeStart
+                }&query=${query.query}${query.fields ? query.fields.map((field) => `&field=${field}`).join('') : ''}`}
               >
                 {query.name}
               </Link>

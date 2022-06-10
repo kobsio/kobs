@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginInstance, LinkWrapper } from '@kobsio/shared';
+import { IPluginInstance, LinkWrapper, pluginBasePath } from '@kobsio/shared';
 import { IProject } from '../../utils/interfaces';
 
 interface IProjectsListItemProps {
@@ -22,7 +22,7 @@ const ProjectsListItem: React.FunctionComponent<IProjectsListItemProps> = ({
   project,
 }: IProjectsListItemProps) => {
   return (
-    <LinkWrapper to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${project.name}`}>
+    <LinkWrapper to={`${pluginBasePath(instance)}/${project.name}`}>
       <DataListItem id={project.name} aria-labelledby={project.name}>
         <DataListItemRow>
           <DataListItemCells

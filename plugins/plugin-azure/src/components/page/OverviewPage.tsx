@@ -1,7 +1,14 @@
 import { Avatar, Card, CardBody, CardHeader, CardTitle, Gallery, GalleryItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginInstance, LinkWrapper, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
+import {
+  IPluginInstance,
+  LinkWrapper,
+  PageContentSection,
+  PageHeaderSection,
+  PluginPageTitle,
+  pluginBasePath,
+} from '@kobsio/shared';
 import { defaultDescription } from '../../utils/constants';
 import { services } from '../../utils/services';
 
@@ -26,7 +33,7 @@ const OverviewPage: React.FunctionComponent<IOverviewPageProps> = ({ instance }:
         <Gallery hasGutter={true}>
           {Object.keys(services).map((service) => (
             <GalleryItem key={service}>
-              <LinkWrapper to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${service}`}>
+              <LinkWrapper to={`${pluginBasePath(instance)}/${service}`}>
                 <Card style={{ cursor: 'pointer' }} isHoverable={true}>
                   <CardHeader>
                     <Avatar

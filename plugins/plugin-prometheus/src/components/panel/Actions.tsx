@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle, Spinner } from '@patt
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { IPluginInstance, ITimes, pluginBasePath } from '@kobsio/shared';
 import { IQuery } from '../../utils/interfaces';
 
 interface IActionsProps {
@@ -36,9 +36,9 @@ export const Actions: React.FunctionComponent<IActionsProps> = ({
               key={0}
               component={
                 <Link
-                  to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}?time=${times.time}&timeEnd=${
-                    times.timeEnd
-                  }&timeStart=${times.timeStart}${queryParams.length > 0 ? queryParams.join('') : ''}`}
+                  to={`${pluginBasePath(instance)}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${
+                    times.timeStart
+                  }${queryParams.length > 0 ? queryParams.join('') : ''}`}
                 >
                   Explore
                 </Link>

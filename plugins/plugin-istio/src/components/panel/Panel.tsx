@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/shared';
+import { IPluginPanelProps, PluginPanel, PluginPanelError, pluginBasePath } from '@kobsio/shared';
 import { IPanelOptions } from '../../utils/interfaces';
 import { IRowValues } from '../../utils/prometheus/interfaces';
 import MetricsTable from './MetricsTable';
@@ -40,7 +40,9 @@ export const Panel: React.FunctionComponent<IIstioPluginPanelProps> = ({
         description={description}
         actions={
           <PanelActions
-            link={`/plugins/${instance.satellite}/${instance.type}/${instance.name}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}${namespaceParams}`}
+            link={`${pluginBasePath(instance)}?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${
+              times.timeStart
+            }${namespaceParams}`}
           />
         }
       >
@@ -53,7 +55,9 @@ export const Panel: React.FunctionComponent<IIstioPluginPanelProps> = ({
           times={times}
           goTo={(row: IRowValues): void =>
             navigate({
-              pathname: `/plugins/${instance.satellite}/${instance.type}/${instance.name}/${row['destination_workload_namespace']}/${row['destination_app']}`,
+              pathname: `${pluginBasePath(instance)}/${row['destination_workload_namespace']}/${
+                row['destination_app']
+              }`,
             })
           }
         />
@@ -76,7 +80,9 @@ export const Panel: React.FunctionComponent<IIstioPluginPanelProps> = ({
         description={description}
         actions={
           <PanelActions
-            link={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=metrics`}
+            link={`${pluginBasePath(instance)}/${options.namespaces[0]}/${options.application}?timeEnd=${
+              times.timeEnd
+            }&timeStart=${times.timeStart}&view=metrics`}
           />
         }
       >
@@ -110,7 +116,9 @@ export const Panel: React.FunctionComponent<IIstioPluginPanelProps> = ({
         description={description}
         actions={
           <PanelActions
-            link={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=metrics`}
+            link={`${pluginBasePath(instance)}/${options.namespaces[0]}/${options.application}?timeEnd=${
+              times.timeEnd
+            }&timeStart=${times.timeStart}&view=metrics`}
           />
         }
       >
@@ -144,7 +152,9 @@ export const Panel: React.FunctionComponent<IIstioPluginPanelProps> = ({
         description={description}
         actions={
           <PanelActions
-            link={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${options.namespaces[0]}/${options.application}?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=metrics`}
+            link={`${pluginBasePath(instance)}/${options.namespaces[0]}/${options.application}?timeEnd=${
+              times.timeEnd
+            }&timeStart=${times.timeStart}&view=metrics`}
           />
         }
       >
@@ -180,9 +190,9 @@ export const Panel: React.FunctionComponent<IIstioPluginPanelProps> = ({
         description={description}
         actions={
           <PanelActions
-            link={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${options.namespaces[0]}/${
-              options.application
-            }?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=top&filterUpstreamCluster=${encodeURIComponent(
+            link={`${pluginBasePath(instance)}/${options.namespaces[0]}/${options.application}?timeEnd=${
+              times.timeEnd
+            }&timeStart=${times.timeStart}&view=top&filterUpstreamCluster=${encodeURIComponent(
               filters.upstreamCluster,
             )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(filters.path)}`}
           />
@@ -222,9 +232,9 @@ export const Panel: React.FunctionComponent<IIstioPluginPanelProps> = ({
         description={description}
         actions={
           <PanelActions
-            link={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${options.namespaces[0]}/${
-              options.application
-            }?timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&view=tap&filterUpstreamCluster=${encodeURIComponent(
+            link={`${pluginBasePath(instance)}/${options.namespaces[0]}/${options.application}?timeEnd=${
+              times.timeEnd
+            }&timeStart=${times.timeStart}&view=tap&filterUpstreamCluster=${encodeURIComponent(
               filters.upstreamCluster,
             )}&filterMethod=${encodeURIComponent(filters.method)}&filterPath=${encodeURIComponent(filters.path)}`}
           />

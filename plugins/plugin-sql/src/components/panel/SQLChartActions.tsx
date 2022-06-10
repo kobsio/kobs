@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle, Spinner } from '@patt
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 
 interface ISQLChartActionsProps {
   instance: IPluginInstance;
@@ -28,14 +28,7 @@ export const SQLChartActions: React.FunctionComponent<ISQLChartActionsProps> = (
           isPlain={true}
           position="right"
           dropdownItems={[
-            <DropdownItem
-              key={0}
-              component={
-                <Link to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}?query=${query}`}>
-                  Explore
-                </Link>
-              }
-            />,
+            <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}?query=${query}`}>Explore</Link>} />,
           ]}
         />
       )}

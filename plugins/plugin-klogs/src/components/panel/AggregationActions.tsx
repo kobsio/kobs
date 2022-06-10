@@ -2,8 +2,8 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle, Spinner } from '@patt
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 import { IAggregationOptions } from '../../utils/interfaces';
-import { IPluginInstance } from '@kobsio/shared';
 
 interface IAggregationActionsProps {
   instance: IPluginInstance;
@@ -33,11 +33,11 @@ export const AggregationActions: React.FunctionComponent<IAggregationActionsProp
               key={0}
               component={
                 <Link
-                  to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/aggregation?time=${
-                    options.times.time
-                  }&timeEnd=${options.times.timeEnd}&timeStart=${options.times.timeStart}&chart=${
-                    options.chart
-                  }&query=${options.query}&aggregation=${encodeURIComponent(JSON.stringify(options.options))}`}
+                  to={`${pluginBasePath(instance)}/aggregation?time=${options.times.time}&timeEnd=${
+                    options.times.timeEnd
+                  }&timeStart=${options.times.timeStart}&chart=${options.chart}&query=${
+                    options.query
+                  }&aggregation=${encodeURIComponent(JSON.stringify(options.options))}`}
                 >
                   Explore
                 </Link>

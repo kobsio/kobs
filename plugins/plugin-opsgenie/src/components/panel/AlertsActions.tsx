@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle } from '@patternfly/re
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { IPluginInstance, ITimes, pluginBasePath } from '@kobsio/shared';
 
 interface IAlertsActionsProps {
   instance: IPluginInstance;
@@ -37,11 +37,9 @@ export const AlertsActions: React.FunctionComponent<IAlertsActionsProps> = ({
             key={query}
             component={
               <Link
-                to={`/plugins/${instance.satellite}/${instance.type}/${
-                  instance.name
-                }?type=${type}&query=${encodeURIComponent(query)}&time=${adjustedTime.time}&timeEnd=${
-                  adjustedTime.timeEnd
-                }&timeStart=${adjustedTime.timeStart}`}
+                to={`${pluginBasePath(instance)}?type=${type}&query=${encodeURIComponent(query)}&time=${
+                  adjustedTime.time
+                }&timeEnd=${adjustedTime.timeEnd}&timeStart=${adjustedTime.timeStart}`}
               >
                 {query}
               </Link>

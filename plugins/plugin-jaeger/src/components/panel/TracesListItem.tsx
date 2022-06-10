@@ -12,7 +12,7 @@ import {
 import { ExclamationIcon } from '@patternfly/react-icons';
 import React from 'react';
 
-import { IPluginInstance, LinkWrapper } from '@kobsio/shared';
+import { IPluginInstance, LinkWrapper, pluginBasePath } from '@kobsio/shared';
 import { doesTraceContainsError, formatTraceTime } from '../../utils/helpers';
 import { ITrace } from '../../utils/interfaces';
 import { getColorForService } from '../../utils/colors';
@@ -82,11 +82,7 @@ const TracesListItem: React.FunctionComponent<ITracesListItemProps> = ({
   );
 
   if (!setDetails) {
-    return (
-      <LinkWrapper to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/trace/${trace.traceID}`}>
-        {item}
-      </LinkWrapper>
-    );
+    return <LinkWrapper to={`${pluginBasePath(instance)}/trace/${trace.traceID}`}>{item}</LinkWrapper>;
   }
 
   return item;

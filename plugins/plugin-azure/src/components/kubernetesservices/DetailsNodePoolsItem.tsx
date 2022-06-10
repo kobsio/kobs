@@ -10,8 +10,8 @@ import React, { useState } from 'react';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 import { INodePool } from './interfaces';
-import { IPluginInstance } from '@kobsio/shared';
 
 interface IDetailsNodePoolsItemProps {
   instance: IPluginInstance;
@@ -56,7 +56,7 @@ const DetailsNodePoolsItem: React.FunctionComponent<IDetailsNodePoolsItemProps> 
               component={(props): React.ReactElement => (
                 <Link
                   {...props}
-                  to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/virtualmachinescalesets?resourceGroup=${nodeResourceGroup}`}
+                  to={`${pluginBasePath(instance)}/virtualmachinescalesets?resourceGroup=${nodeResourceGroup}`}
                 />
               )}
             >

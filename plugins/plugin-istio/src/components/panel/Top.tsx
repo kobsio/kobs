@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MicroscopeIcon } from '@patternfly/react-icons';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { IPluginInstance, ITimes, pluginBasePath } from '@kobsio/shared';
 import { escapeRegExp, formatNumber, getDirection } from '../../utils/helpers';
 import DetailsTop from './details/DetailsTop';
 import { IFilters } from '../../utils/interfaces';
@@ -234,13 +234,11 @@ const Top: React.FunctionComponent<ITopProps> = ({
             </Td>
             <Td noPadding={true} style={{ padding: 0 }}>
               <Link
-                to={`/plugins/${instance.satellite}/${instance.type}/${
-                  instance.name
-                }/${namespace}/${application}?view=tap&timeStart=${times.timeStart}&timeEnd=${
-                  times.timeEnd
-                }&filterUpstreamCluster=${encodeURIComponent(row[0])}&filterMethod=${encodeURIComponent(
-                  row[1],
-                )}&filterPath=${encodeURIComponent(escapeRegExp(row[2]))}`}
+                to={`${pluginBasePath(instance)}/${namespace}/${application}?view=tap&timeStart=${
+                  times.timeStart
+                }&timeEnd=${times.timeEnd}&filterUpstreamCluster=${encodeURIComponent(
+                  row[0],
+                )}&filterMethod=${encodeURIComponent(row[1])}&filterPath=${encodeURIComponent(escapeRegExp(row[2]))}`}
               >
                 <Button variant={ButtonVariant.plain}>
                   <MicroscopeIcon />

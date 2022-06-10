@@ -1,7 +1,7 @@
 import { DataListCell, DataListItem, DataListItemCells, DataListItemRow, Flex, FlexItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IPluginInstance, LinkWrapper } from '@kobsio/shared';
+import { IPluginInstance, LinkWrapper, pluginBasePath } from '@kobsio/shared';
 import { IIndex } from '../../utils/interfaces';
 
 interface ITechDocsListItemProps {
@@ -14,7 +14,7 @@ const TechDocsListItem: React.FunctionComponent<ITechDocsListItemProps> = ({
   index,
 }: ITechDocsListItemProps) => {
   return (
-    <LinkWrapper to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${index.key}`}>
+    <LinkWrapper to={`${pluginBasePath(instance)}/${index.key}`}>
       <DataListItem id={index.key} aria-labelledby={index.key}>
         <DataListItemRow>
           <DataListItemCells

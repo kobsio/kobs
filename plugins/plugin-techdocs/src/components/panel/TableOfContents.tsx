@@ -2,8 +2,8 @@ import { TextContent, TextList, TextListItem } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 import { IPage } from '../../utils/interfaces';
-import { IPluginInstance } from '@kobsio/shared';
 
 const getTitle = (page: IPage): string => {
   const titles = Object.keys(page);
@@ -31,13 +31,7 @@ const renderPage = (key: string, instance: IPluginInstance, service: string, pag
 
   return (
     <TextListItem key={key}>
-      <Link
-        to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${service}/${encodeURIComponent(
-          page[title] as string,
-        )}`}
-      >
-        {title}
-      </Link>
+      <Link to={`${pluginBasePath(instance)}/${service}/${encodeURIComponent(page[title] as string)}`}>{title}</Link>
     </TextListItem>
   );
 };

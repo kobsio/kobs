@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle } from '@patternfly/re
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { IPluginInstance, ITimes, pluginBasePath } from '@kobsio/shared';
 import { IQuery } from '../../utils/interfaces';
 
 interface ITracesActionsProps {
@@ -30,13 +30,11 @@ export const TracesActions: React.FunctionComponent<ITracesActionsProps> = ({
             key={index}
             component={
               <Link
-                to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/?limit=${
-                  query.limit || '20'
-                }&maxDuration=${query.maxDuration || ''}&minDuration=${query.minDuration || ''}&operation=${
-                  query.operation || ''
-                }&service=${query.service || ''}&tags=${query.tags || ''}&time=${times.time}&timeEnd=${
-                  times.timeEnd
-                }&timeStart=${times.timeStart}`}
+                to={`${pluginBasePath(instance)}/?limit=${query.limit || '20'}&maxDuration=${
+                  query.maxDuration || ''
+                }&minDuration=${query.minDuration || ''}&operation=${query.operation || ''}&service=${
+                  query.service || ''
+                }&tags=${query.tags || ''}&time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}`}
               >
                 {query.name}
               </Link>

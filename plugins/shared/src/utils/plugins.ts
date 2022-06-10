@@ -40,3 +40,13 @@ export interface IPluginPanelProps {
   times?: ITimes;
   setDetails?: (details: React.ReactNode) => void;
 }
+
+export const pluginBasePath = (instance: IPluginInstance): string => {
+  return `/plugins/${encodeURIComponent(instance.satellite)}/${encodeURIComponent(instance.type)}/${encodeURIComponent(
+    instance.name,
+  )}`;
+};
+
+export const pluginBasePathAlt = (satellite: string, type: string, name: string): string => {
+  return `/plugins/${encodeURIComponent(satellite)}/${encodeURIComponent(type)}/${encodeURIComponent(name)}`;
+};

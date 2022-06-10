@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle, Spinner } from '@patt
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 import { IQuery } from '../../utils/interfaces';
 
 interface ISQLActionsProps {
@@ -31,11 +31,7 @@ export const SQLActions: React.FunctionComponent<ISQLActionsProps> = ({
           dropdownItems={queries.map((query, index) => (
             <DropdownItem
               key={index}
-              component={
-                <Link to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}?query=${query.query}`}>
-                  {query.name}
-                </Link>
-              }
+              component={<Link to={`${pluginBasePath(instance)}?query=${query.query}`}>{query.name}</Link>}
             />
           ))}
         />

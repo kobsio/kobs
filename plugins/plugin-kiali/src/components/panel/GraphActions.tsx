@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle } from '@patternfly/re
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { IPluginInstance, ITimes, pluginBasePath } from '@kobsio/shared';
 
 interface IGraphActionsProps {
   instance: IPluginInstance;
@@ -30,9 +30,9 @@ export const GraphActions: React.FunctionComponent<IGraphActionsProps> = ({
             key={0}
             component={
               <Link
-                to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}?time=${times.time}&timeStart=${
-                  times.timeStart
-                }&timeEnd${times.timeEnd}${namespaceParams.join('')}`}
+                to={`${pluginBasePath(instance)}?time=${times.time}&timeStart=${times.timeStart}&timeEnd${
+                  times.timeEnd
+                }${namespaceParams.join('')}`}
               >
                 Explore
               </Link>

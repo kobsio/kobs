@@ -13,7 +13,7 @@ import {
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 import { ITrace } from '../../../utils/interfaces';
 
 interface ITraceActionsProps {
@@ -33,9 +33,7 @@ const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ instance, t
 
   const copy = (): void => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(
-        `${window.location.host}/plugins/${instance.satellite}/${instance.type}/${instance.name}/trace/${trace.traceID}`,
-      );
+      navigator.clipboard.writeText(`${window.location.host}/${pluginBasePath(instance)}/trace/${trace.traceID}`);
     }
     setShowDropdown(false);
   };
@@ -43,11 +41,7 @@ const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ instance, t
   const dropdownItems = [
     <DropdownItem
       key={0}
-      component={
-        <Link to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/trace/${trace.traceID}`}>
-          Details
-        </Link>
-      }
+      component={<Link to={`/${pluginBasePath(instance)}/trace/${trace.traceID}`}>Details</Link>}
     />,
     <DropdownItem key={1} onClick={compare}>
       Compare
@@ -98,10 +92,7 @@ const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ instance, t
         isOpen={showModal}
         onClose={(): void => setShowModal(false)}
         actions={[
-          <Link
-            key="compare"
-            to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/trace/${trace.traceID}?compare=${compareTrace}`}
-          >
+          <Link key="compare" to={`/${pluginBasePath(instance)}/trace/${trace.traceID}?compare=${compareTrace}`}>
             <Button variant={ButtonVariant.primary}>Compare</Button>
           </Link>,
 

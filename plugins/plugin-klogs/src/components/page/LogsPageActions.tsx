@@ -2,7 +2,7 @@ import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 
 interface ILogsPageActionsProps {
   instance: IPluginInstance;
@@ -21,12 +21,7 @@ export const LogsPageActions: React.FunctionComponent<ILogsPageActionsProps> = (
       isPlain={true}
       position="right"
       dropdownItems={[
-        <DropdownItem
-          key={0}
-          component={
-            <Link to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/aggregation`}>Aggregation</Link>
-          }
-        />,
+        <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}/aggregation`}>Aggregation</Link>} />,
         <DropdownItem
           key={1}
           component={

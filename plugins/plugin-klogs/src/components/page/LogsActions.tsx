@@ -2,7 +2,7 @@ import { CardActions, Dropdown, DropdownItem, KebabToggle, Spinner } from '@patt
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance, ITimes, fileDownload } from '@kobsio/shared';
+import { IPluginInstance, ITimes, fileDownload, pluginBasePath } from '@kobsio/shared';
 import { IDocument } from '../../utils/interfaces';
 import { formatTime } from '../../utils/helpers';
 
@@ -76,9 +76,9 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
               key={0}
               component={
                 <Link
-                  to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/aggregation?time=${
-                    times.time
-                  }&timeEnd=${times.timeEnd}&timeStart=${times.timeStart}&query=${encodeURIComponent(query)}`}
+                  to={`${pluginBasePath(instance)}/aggregation?time=${times.time}&timeEnd=${times.timeEnd}&timeStart=${
+                    times.timeStart
+                  }&query=${encodeURIComponent(query)}`}
                 >
                   Aggregation
                 </Link>

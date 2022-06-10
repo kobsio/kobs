@@ -2,7 +2,7 @@ import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 
 interface ITracesActionsProps {
   instance: IPluginInstance;
@@ -19,12 +19,7 @@ export const TracesActions: React.FunctionComponent<ITracesActionsProps> = ({ in
       isPlain={true}
       position="right"
       dropdownItems={[
-        <DropdownItem
-          key={0}
-          component={
-            <Link to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/trace`}>Compare Traces</Link>
-          }
-        />,
+        <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}/trace`}>Compare Traces</Link>} />,
       ]}
     />
   );

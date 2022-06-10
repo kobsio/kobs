@@ -2,8 +2,8 @@ import { CodeBlock, CodeBlockCode } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 import { flatten, getPathWithoutFile } from './helpers';
-import { IPluginInstance } from '@kobsio/shared';
 import { normalizePath } from './path';
 
 // renderLink renders a link. If the link starts with "http://" or "https://" we assume that it is a link which do not
@@ -32,13 +32,7 @@ export const renderLink = (
   const normalizedPath = normalizePath(`${getPathWithoutFile(path)}/${href}`);
 
   return (
-    <Link
-      to={`/plugins/${instance.satellite}/${instance.type}/${instance.name}/${service}/${encodeURIComponent(
-        normalizedPath,
-      )}`}
-    >
-      {props.children}
-    </Link>
+    <Link to={`${pluginBasePath(instance)}/${service}/${encodeURIComponent(normalizedPath)}`}>{props.children}</Link>
   );
 };
 

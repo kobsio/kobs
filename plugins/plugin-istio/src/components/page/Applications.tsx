@@ -3,7 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getInitialApplicationsOptions } from '../../utils/helpers';
 
-import { IPluginInstance, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
+import {
+  IPluginInstance,
+  PageContentSection,
+  PageHeaderSection,
+  PluginPageTitle,
+  pluginBasePath,
+} from '@kobsio/shared';
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { IApplicationsOptions } from '../../utils/interfaces';
 import { IRowValues } from '../../utils/prometheus/interfaces';
@@ -80,7 +86,9 @@ const Applications: React.FunctionComponent<IApplicationsProps> = ({ instance }:
                 times={options.times}
                 goTo={(row: IRowValues): void =>
                   navigate({
-                    pathname: `/plugins/${instance.satellite}/${instance.type}/${instance.name}/${row['destination_workload_namespace']}/${row['destination_app']}`,
+                    pathname: `${pluginBasePath(instance)}/${row['destination_workload_namespace']}/${
+                      row['destination_app']
+                    }`,
                   })
                 }
               />

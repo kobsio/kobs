@@ -3,7 +3,13 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { IPluginInstance, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
+import {
+  IPluginInstance,
+  PageContentSection,
+  PageHeaderSection,
+  PluginPageTitle,
+  pluginBasePath,
+} from '@kobsio/shared';
 import { IIndex } from '../../utils/interfaces';
 import ServicePageWrapper from './ServicePageWrapper';
 
@@ -64,9 +70,7 @@ const ServicePage: React.FunctionComponent<IServicePageProps> = ({ instance }: I
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => navigate('/')}>Home</AlertActionLink>
-            <AlertActionLink
-              onClick={(): void => navigate(`/plugins/${instance.satellite}/${instance.type}/${instance.name}`)}
-            >
+            <AlertActionLink onClick={(): void => navigate(`${pluginBasePath(instance)}`)}>
               TechDocs Overview
             </AlertActionLink>
             <AlertActionLink onClick={(): Promise<QueryObserverResult<IIndex, Error>> => refetch()}>
