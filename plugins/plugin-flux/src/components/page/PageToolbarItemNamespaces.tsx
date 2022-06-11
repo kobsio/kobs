@@ -4,21 +4,23 @@ import { useQuery } from 'react-query';
 
 import { IPluginInstance } from '@kobsio/shared';
 
-interface IPageToolbarItemClustersProps {
+interface IResourcesToolbarNamespacesProps {
   instance: IPluginInstance;
-  selectedClusters: string[];
-  selectCluster: (cluster: string) => void;
+  selectedCluster: string;
+  selectedNamespace: string;
+  selectNamespace: (namespace: string) => void;
 }
 
-const PageToolbarItemClusters: React.FunctionComponent<IPageToolbarItemClustersProps> = ({
+const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNamespacesProps> = ({
   instance,
-  selectedClusters,
-  selectCluster,
-}: IPageToolbarItemClustersProps) => {
+  selectedCluster,
+  selectedNamespace,
+  selectNamespace,
+}: IResourcesToolbarNamespacesProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { data } = useQuery<string[], Error>(['helm/clusters', instance], async () => {
-    const response = await fetch(`/api/plugins/helm/clusters`, {
+  const { data } = useQuery<string[], Error>(['flux/namespaces', instance, selectedCluster], async () => {
+    const response = await fetch(`/api/plugins/flux/namespaces?&cluster=${encodeURIComponent(selectedCluster)}`, {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'x-kobs-plugin': instance.name,
@@ -42,24 +44,24 @@ const PageToolbarItemClusters: React.FunctionComponent<IPageToolbarItemClustersP
 
   return (
     <Select
-      variant={SelectVariant.checkbox}
-      aria-label="Select clusters input"
-      placeholderText="Clusters"
+      variant={SelectVariant.typeahead}
+      aria-label="Select namespace input"
+      placeholderText="Namespace"
       onToggle={(): void => setIsOpen(!isOpen)}
       onSelect={(
         event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
         value: string | SelectOptionObject,
-      ): void => selectCluster(value.toString())}
-      onClear={(): void => selectCluster('')}
-      selections={selectedClusters}
+      ): void => selectNamespace(value.toString())}
+      onClear={(): void => selectNamespace('')}
+      selections={selectedNamespace}
       isOpen={isOpen}
       hasInlineFilter={true}
       maxHeight="50vh"
     >
       {data && data.length > 0
-        ? data.map((cluster) => (
-            <SelectOption key={cluster} value={cluster}>
-              {cluster}
+        ? data.map((namespace) => (
+            <SelectOption key={namespace} value={namespace}>
+              {namespace}
             </SelectOption>
           ))
         : [<SelectOption key="noresultsfound" value="No results found" isDisabled={true} />]}
@@ -67,4 +69,4 @@ const PageToolbarItemClusters: React.FunctionComponent<IPageToolbarItemClustersP
   );
 };
 
-export default PageToolbarItemClusters;
+export default ResourcesToolbarNamespaces;

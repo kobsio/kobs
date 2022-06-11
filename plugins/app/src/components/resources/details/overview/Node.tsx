@@ -127,7 +127,6 @@ const Node: React.FunctionComponent<INodeProps> = ({ satellite, cluster, namespa
               { method: 'get' },
             );
             const jsonPods = await responsePods.json();
-            console.log(jsonPods);
 
             if (responsePods.status >= 200 && responsePods.status < 300) {
               if (jsonPods && jsonPods.items) {

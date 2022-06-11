@@ -15,6 +15,9 @@ require (
 	github.com/Azure/go-autorest/autorest/azure/auth v0.5.11
 	github.com/Azure/go-autorest/autorest/date v0.3.0
 	github.com/ClickHouse/clickhouse-go v1.5.4
+	github.com/fluxcd/helm-controller/api v0.13.0
+	github.com/fluxcd/kustomize-controller/api v0.18.0
+	github.com/fluxcd/pkg/apis/meta v0.10.1
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/cors v1.2.0
 	github.com/go-chi/render v1.0.1
@@ -62,6 +65,8 @@ require (
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
+	github.com/fluxcd/pkg/apis/kustomize v0.2.0 // indirect
+	github.com/fluxcd/pkg/runtime v0.12.2 // indirect
 	github.com/go-logr/logr v1.2.2 // indirect
 	github.com/gogo/googleapis v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -74,7 +79,7 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
-	github.com/hashicorp/go-retryablehttp v0.5.1 // indirect
+	github.com/hashicorp/go-retryablehttp v0.6.8 // indirect
 	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
