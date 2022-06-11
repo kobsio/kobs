@@ -6,19 +6,19 @@ import { IPluginInstance } from '@kobsio/shared';
 
 interface IPageToolbarItemClustersProps {
   instance: IPluginInstance;
-  selectedClusters: string[];
+  selectedCluster: string;
   selectCluster: (cluster: string) => void;
 }
 
 const PageToolbarItemClusters: React.FunctionComponent<IPageToolbarItemClustersProps> = ({
   instance,
-  selectedClusters,
+  selectedCluster,
   selectCluster,
 }: IPageToolbarItemClustersProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { data } = useQuery<string[], Error>(['helm/clusters', instance], async () => {
-    const response = await fetch(`/api/plugins/helm/clusters`, {
+  const { data } = useQuery<string[], Error>(['flux/clusters', instance], async () => {
+    const response = await fetch(`/api/plugins/flux/clusters`, {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'x-kobs-plugin': instance.name,
@@ -42,16 +42,16 @@ const PageToolbarItemClusters: React.FunctionComponent<IPageToolbarItemClustersP
 
   return (
     <Select
-      variant={SelectVariant.checkbox}
-      aria-label="Select clusters input"
-      placeholderText="Clusters"
+      variant={SelectVariant.typeahead}
+      aria-label="Select cluster input"
+      placeholderText="Cluster"
       onToggle={(): void => setIsOpen(!isOpen)}
       onSelect={(
         event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
         value: string | SelectOptionObject,
       ): void => selectCluster(value.toString())}
       onClear={(): void => selectCluster('')}
-      selections={selectedClusters}
+      selections={selectedCluster}
       isOpen={isOpen}
       hasInlineFilter={true}
       maxHeight="50vh"

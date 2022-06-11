@@ -57,7 +57,6 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
       onClear={(): void => selectNamespace('')}
       selections={selectedNamespaces}
       isOpen={isOpen}
-      isGrouped={true}
       hasInlineFilter={true}
       maxHeight="50vh"
     >
