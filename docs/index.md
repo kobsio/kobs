@@ -1,3 +1,9 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
 # kobs - Kubernetes Observability Platform
 
 **kobs** is an extensible observability platform for Kubernetes, which brings your metrics, logs, traces and Kubernetes resources into one place.

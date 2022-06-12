@@ -26,18 +26,21 @@ theme:
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
+  features:
+    - navigation.tabs
 
 nav:
-  - Introduction: index.md
-  - Installation:
-      - Helm: installation/helm.md
-      - Kustomize: installation/kustomize.md
-      - Demo: installation/demo.md
-  - Configuration:
-      - Getting Started: configuration/getting-started.md
-      - Clusters: configuration/clusters.md
-      - Plugins: configuration/plugins.md
-      - Authentication: configuration/authentication.md
+  - Home: index.md
+  - Getting Started:
+      - Installation:
+          - Helm: installation/helm.md
+          - Kustomize: installation/kustomize.md
+          - Demo: installation/demo.md
+      - Configuration:
+          - Getting Started: configuration/getting-started.md
+          - Clusters: configuration/clusters.md
+          - Plugins: configuration/plugins.md
+          - Authentication: configuration/authentication.md
   - Resources:
       - Resources: resources/resources.md
       - Applications: resources/applications.md
