@@ -83,7 +83,7 @@ const CreateJob: React.FunctionComponent<ICreateJobProps> = ({
       const response = await fetch(
         `/api/resources?satellite=${resourceData.satellite}&cluster=${resourceData.cluster}${
           resourceData.namespace ? `&namespace=${resourceData.namespace}` : ''
-        }&resource=${resource.resource}&path=${resource.path}`,
+        }&resource=jobs&path=/apis/batch/v1`,
         {
           body: JSON.stringify(job),
           method: 'post',
