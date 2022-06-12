@@ -8,9 +8,9 @@ on:
       - 'cmd/kobs/Dockerfile'
       - 'deploy/**'
       - 'docs/**'
+      - 'hack/**'
       - '.dockerignore'
       - '.editorconfig'
-      - '.gitattributes'
       - '.gitignore'
       - 'CHANGELOG.md'
       - 'CODE_OF_CONDUCT.md'
@@ -32,7 +32,7 @@ jobs:
       - name: Setup
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: 1.18
 
       - name: Cache
         uses: actions/cache@v2
@@ -51,7 +51,7 @@ jobs:
       - name: Test
         run: |
           make test-coverage
-          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/api/apis" | grep -v "github.com/kobsio/kobs/pkg/api/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
+          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/kube/apis" | grep -v "github.com/kobsio/kobs/pkg/kube/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v2
@@ -98,4 +98,4 @@ jobs:
 
       - name: Build
         run: |
-          yarn build
+          make generate-assets

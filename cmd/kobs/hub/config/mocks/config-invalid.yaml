@@ -1,0 +1,4 @@
+satellites:
+  name: dev-de1
+  address: http://localhost:15221
+  token: unsecuretoken

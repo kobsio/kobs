@@ -1,0 +1,43 @@
+---
+apiVersion: kobs.io/v1
+kind: Team
+metadata:
+  name: team-diablo
+  namespace: kobs
+spec:
+  group: dia@kobs.io
+  description: Productpage and Details
+  logo: https://kobs.io/main/installation/assets/team-diablo.png
+  links:
+    - title: Website
+      link: https://kobs.io
+    - title: GitHub
+      link: https://github.com/kobsio/kobs
+  dashboards:
+    - title: Applications
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: Applications
+                plugin:
+                  name: applications
+                  type: app
+                  options:
+                    team: dia@kobs.io
+    - title: Status of External Services
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: External Services
+                plugin:
+                  name: rss
+                  type: rss
+                  options:
+                    urls:
+                      - https://www.githubstatus.com/history.rss
+                      - https://status.aws.amazon.com/rss/route53.rss
+                      - https://azurestatuscdn.azureedge.net/de-de/status/feed/
+                      - https://www.cloudflarestatus.com/history.atom
+                    sortBy: updated

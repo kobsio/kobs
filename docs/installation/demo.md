@@ -52,7 +52,6 @@ kustomize build deploy/demo/istio-system | kubectl apply -f -
 When Istio is up and running, we can install Elasticsearch and Filebeat to collect the logs for the Bookinfo Application and kobs to have all our observability tools in one UI:
 
 ```sh
-kustomize build deploy/demo/elastic-system | kubectl apply -f -
 kustomize build deploy/demo/kobs/main | kubectl apply -f -
 ```
 

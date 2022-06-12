@@ -1,0 +1,4 @@
+satellites:
+  - name: kobs
+    address: http://kobs-satellite:15221
+    token: unsecuretoken

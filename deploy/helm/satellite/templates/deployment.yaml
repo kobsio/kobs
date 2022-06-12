@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "satellite.fullname" . }}
+  labels:
+    {{- include "satellite.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "satellite.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "satellite.selectorLabels" . | nindent 8 }}
+        {{- include "satellite.podLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- include "satellite.podAnnotations" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "satellite.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: satellite
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - satellite
+            - --log.format={{ .Values.satellite.settings.logFormat }}
+            - --log.level={{ .Values.satellite.settings.logLevel }}
+          {{- with .Values.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http-api
+              containerPort: 15221
+              protocol: TCP
+            - name: http-metrics
+              containerPort: 15222
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http-api
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http-api
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /kobs/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            {{- if .Values.volumeMounts }}
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            {{- end }}
+      terminationGracePeriodSeconds: 90
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "satellite.fullname" . }}
+        {{- if .Values.volumes }}
+        {{- toYaml .Values.volumes | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

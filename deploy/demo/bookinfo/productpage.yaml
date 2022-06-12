@@ -32,13 +32,6 @@ metadata:
   labels:
     app: productpage
     version: v1
-  annotations:
-    kobs.io/teams: |
-      [{"namespace": "kobs", "name": "team-diablo"},
-      {"namespace": "kobs", "name": "team-resident-evil"},
-      {"namespace": "kobs", "name": "team-call-of-duty"}]
-    kobs.io/applications: |
-      ["name": "productpage"}]
 spec:
   replicas: 1
   selector:
@@ -51,15 +44,27 @@ spec:
         app: productpage
         version: v1
       annotations:
-        kobs.io/teams: |
-          [{"namespace": "kobs", "name": "team-diablo"},
-          {"namespace": "kobs", "name": "team-resident-evil"},
-          {"namespace": "kobs", "name": "team-call-of-duty"}]
-        kobs.io/applications: |
-          [{"name": "productpage"}]
         kobs.io/dashboards: |
-          [{"namespace": "kobs", "name": "resource-usage", "title": "Resource Usage", "placeholders": {"namespace": "bookinfo", "pod": "$.metadata.name"}},
-          {"namespace": "kobs", "name": "pod-logs", "title": "Logs", "placeholders": {"namespace": "bookinfo", "name": "$.metadata.name"}}]
+          [
+            {
+              "name": "resource-usage",
+              "namespace": "kobs",
+              "title": "Resource Usage",
+              "placeholders": {
+                "namespace": "bookinfo",
+                "pod": "productpage-.*-.*-.*"
+              }
+            },
+            {
+              "name": "istio-http",
+              "namespace": "kobs",
+              "title": "Istio HTTP Metrics",
+              "placeholders": {
+                "namespace": "bookinfo",
+                "app": "productpage"
+              }
+            }
+          ]
     spec:
       serviceAccountName: bookinfo-productpage
       containers:

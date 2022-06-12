@@ -1,0 +1,198 @@
+package applications
+
+import (
+	"net/http"
+	"strconv"
+
+	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	"github.com/kobsio/kobs/pkg/hub/store"
+	"github.com/kobsio/kobs/pkg/log"
+	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
+	"go.uber.org/zap"
+)
+
+type Router struct {
+	*chi.Mux
+	storeClient store.Client
+}
+
+func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "The user is not authorized to access the applications", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the applications")
+		return
+	}
+
+	teams := user.Teams
+	all := r.URL.Query().Get("all")
+	clusterIDs := r.URL.Query()["clusterID"]
+	namespaceIDs := r.URL.Query()["namespaceID"]
+	tags := r.URL.Query()["tag"]
+	searchTerm := r.URL.Query().Get("searchTerm")
+	external := r.URL.Query().Get("external")
+	limit := r.URL.Query().Get("limit")
+	offset := r.URL.Query().Get("offset")
+
+	parsedLimit, err := strconv.Atoi(limit)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse limit parameter", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse limit parameter")
+		return
+	}
+
+	parsedOffset, err := strconv.Atoi(offset)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse offset parameter", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse offset parameter")
+		return
+	}
+
+	parsedAll, _ := strconv.ParseBool(all)
+	if parsedAll == true || (len(user.Teams) == 1 && user.Teams[0] == "*") {
+		if !user.HasApplicationAccess("", "", "", []string{""}) {
+			log.Warn(r.Context(), "The user is not authorized to view all applications", zap.Error(err))
+			errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view all applications")
+			return
+		}
+
+		teams = nil
+	}
+
+	applications, err := router.storeClient.GetApplicationsByFilter(r.Context(), teams, clusterIDs, namespaceIDs, tags, searchTerm, external, parsedLimit, parsedOffset)
+	if err != nil {
+		log.Error(r.Context(), "Could not get applications", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get applications")
+		return
+	}
+
+	render.JSON(w, r, applications)
+}
+
+func (router *Router) getApplicationsCount(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "The user is not authorized to access the applications", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the applications")
+		return
+	}
+
+	teams := user.Teams
+	all := r.URL.Query().Get("all")
+	clusterIDs := r.URL.Query()["clusterID"]
+	namespaceIDs := r.URL.Query()["namespaceID"]
+	tags := r.URL.Query()["tag"]
+	searchTerm := r.URL.Query().Get("searchTerm")
+	external := r.URL.Query().Get("external")
+
+	parsedAll, _ := strconv.ParseBool(all)
+	if parsedAll == true || (len(user.Teams) == 1 && user.Teams[0] == "*") {
+		if !user.HasApplicationAccess("", "", "", []string{""}) {
+			log.Warn(r.Context(), "The user is not authorized to view all applications", zap.Error(err))
+			errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view all applications")
+			return
+		}
+
+		teams = nil
+	}
+
+	count, err := router.storeClient.GetApplicationsByFilterCount(r.Context(), teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+	if err != nil {
+		log.Error(r.Context(), "Could not get applications count", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get applications count")
+		return
+	}
+
+	data := struct {
+		Count int `json:"count"`
+	}{count}
+
+	render.JSON(w, r, data)
+}
+
+func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
+	tags, err := router.storeClient.GetTags(r.Context())
+	if err != nil {
+		log.Error(r.Context(), "Could not get tags", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get tags")
+		return
+	}
+
+	render.JSON(w, r, tags)
+}
+
+func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "The user is not authorized to access the application", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the application")
+		return
+	}
+
+	id := r.URL.Query().Get("id")
+
+	application, err := router.storeClient.GetApplicationByID(r.Context(), id)
+	if err != nil {
+		log.Error(r.Context(), "Could not get application", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get application")
+		return
+	}
+
+	if application == nil {
+		log.Error(r.Context(), "Application was not found", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Application was not found")
+		return
+	}
+
+	if !user.HasApplicationAccess(application.Satellite, application.Cluster, application.Namespace, application.Teams) {
+		log.Warn(r.Context(), "The user is not authorized to view the application", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view the application")
+		return
+	}
+
+	render.JSON(w, r, application)
+}
+
+func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Request) {
+	user, err := authContext.GetUser(r.Context())
+	if err != nil {
+		log.Warn(r.Context(), "The user is not authorized to access the applications", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the applications")
+		return
+	}
+
+	team := r.URL.Query().Get("team")
+
+	if !user.HasTeamAccess(team) && !user.HasApplicationAccess("", "", "", []string{""}) {
+		log.Warn(r.Context(), "The user is not authorized to view the applications", zap.Error(err), zap.String("team", team))
+		errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view the applications of this team")
+		return
+	}
+
+	applications, err := router.storeClient.GetApplicationsByFilter(r.Context(), []string{team}, nil, nil, nil, "", "include", 0, 0)
+	if err != nil {
+		log.Error(r.Context(), "Could not get applications", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get applications")
+		return
+	}
+
+	render.JSON(w, r, applications)
+}
+
+func Mount(storeClient store.Client) chi.Router {
+	router := Router{
+		chi.NewRouter(),
+		storeClient,
+	}
+
+	router.Get("/", router.getApplications)
+	router.Get("/count", router.getApplicationsCount)
+	router.Get("/tags", router.getTags)
+	router.Get("/application", router.getApplication)
+	router.Get("/team", router.getApplicationsByTeam)
+
+	return router
+}

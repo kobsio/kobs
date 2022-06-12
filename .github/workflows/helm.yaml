@@ -3,31 +3,35 @@ name: Helm
 on:
   push:
     paths:
-      - 'deploy/helm/kobs/**'
+      - '.github/workflows/helm.yaml'
+      - 'deploy/helm/**'
 
 jobs:
   helm:
     name: Helm Chart
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart: [hub, satellite]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Lint
         run: |
-          helm lint deploy/helm/kobs
+          helm lint deploy/helm/${{ matrix.chart }}
 
       - name: Template
         run: |
-          helm template kobs -n observability deploy/helm/kobs
+          helm template kobs-${{ matrix.chart }} -n kobs deploy/helm/${{ matrix.chart }}
 
       - name: Install
         run: |
           kind create cluster
           sleep 60s
-          kubectl create namespace observability
+          kubectl create namespace kobs
           sleep 10s
-          helm install --namespace observability kobs deploy/helm/kobs
+          helm install --namespace kobs kobs${{ matrix.chart }} deploy/helm/${{ matrix.chart }}
 
       - name: Configure SSH
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -43,7 +47,7 @@ jobs:
       - name: Package Helm Chart
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          helm package ./deploy/helm/kobs
+          helm package ./deploy/helm/${{ matrix.chart }}
 
       - name: Clone Helm Repository
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -53,12 +57,12 @@ jobs:
       - name: Update Helm Repository
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          mv kobs* ./helm-repository/ && helm repo index helm-repository/ --url https://helm.kobs.io/
+          mv ${{ matrix.chart }}* ./helm-repository/ && helm repo index helm-repository/ --url https://helm.kobs.io/
 
       - name: Commit Changes
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          cd helm-repository/ && git add . && git commit -m "Add new release for kobs"
+          cd helm-repository/ && git add . && git commit -m "Add new release for kobs ${{ matrix.chart }}"
 
       - name: Push Changes
         if: ${{ github.ref == 'refs/heads/main' }}

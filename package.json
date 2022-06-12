@@ -1,29 +1,25 @@
 {
   "name": "kobs",
-  "version": "0.3.0",
+  "version": "0.0.0",
   "description": "Kubernetes Observability Platform",
   "repository": "git@github.com:kobsio/kobs.git",
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "app",
     "plugins/**"
   ],
   "scripts": {
-    "prebuild": "yarn plugin",
+    "prebuild": "lerna run build:shared --stream",
     "build": "lerna run build --stream",
-    "prestart": "yarn plugin",
-    "start": "lerna run start --stream",
-    "plugin": "lerna run plugin --stream",
-    "lint": "eslint 'app/src/**/*.{js,ts,tsx}' && eslint 'plugins/*/src/**/*.{js,ts,tsx}'"
+    "lint": "eslint 'plugins/*/src/**/*.{js,ts,tsx}'"
   },
   "eslintConfig": {
     "plugins": [
-      "jest",
       "react-hooks"
     ],
     "extends": [
       "react-app",
+      "react-app/jest",
       "prettier",
       "plugin:react/recommended",
       "plugin:@typescript-eslint/recommended",
@@ -31,6 +27,7 @@
     ],
     "rules": {
       "react-hooks/exhaustive-deps": "error",
+      "react/jsx-boolean-value": ["error", "always"],
       "sort-imports": [
         "error",
         {
@@ -137,7 +134,6 @@
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.16.5",
-    "@types/node": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.7.0",

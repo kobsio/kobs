@@ -1,4 +1,3 @@
-# istioctl profile dump default --dry-run
 ---
 apiVersion: v1
 kind: Namespace
@@ -26,26 +25,38 @@ spec:
       - name: istio-ingressgateway
         enabled: true
         k8s:
-          nodeSelector:
-            ingress-ready: "true"
+          # nodeSelector:
+          #   ingress-ready: "true"
+          # service:
+          #   type: NodePort
+          #   ports:
+          #     - name: status-port
+          #       port: 15021
+          #       protocol: TCP
+          #       targetPort: 15021
+          #       nodePort: 30002
+          #     - name: http2
+          #       port: 80
+          #       protocol: TCP
+          #       targetPort: 8080
+          #       nodePort: 30000
+          #     - name: https
+          #       port: 443
+          #       protocol: TCP
+          #       targetPort: 8443
+          #       nodePort: 30001
           service:
-            type: NodePort
             ports:
-              - name: status-port
-                port: 15021
-                protocol: TCP
-                targetPort: 15021
-                nodePort: 30002
               - name: http2
                 port: 80
                 protocol: TCP
                 targetPort: 8080
-                nodePort: 30000
+                nodePort: 32001
               - name: https
                 port: 443
                 protocol: TCP
                 targetPort: 8443
-                nodePort: 30001
+                nodePort: 32002
           overlays:
             - kind: PodDisruptionBudget
               name: istio-ingressgateway
@@ -64,6 +75,7 @@ spec:
               - path: spec.minAvailable
                 value: 0
   hub: docker.io/istio
+  # hub: ghcr.io/resf/istio
   meshConfig:
     defaultConfig:
       proxyMetadata: {}
@@ -71,11 +83,12 @@ spec:
     accessLogFile: /dev/stdout
     accessLogEncoding: JSON
   profile: default
-  tag: 1.10.1
+  tag: 1.13.4
   values:
     base:
       enableCRDTemplates: false
       validationURL: ""
+    defaultRevision: ""
     gateways:
       istio-egressgateway:
         autoscaleEnabled: true
@@ -89,7 +102,6 @@ spec:
             name: egressgateway-ca-certs
             secretName: istio-egressgateway-ca-certs
         type: ClusterIP
-        zvpn: {}
       istio-ingressgateway:
         autoscaleEnabled: true
         env: {}
@@ -102,7 +114,6 @@ spec:
             name: ingressgateway-ca-certs
             secretName: istio-ingressgateway-ca-certs
         type: LoadBalancer
-        zvpn: {}
     global:
       configValidation: true
       defaultNodeSelector: {}
@@ -191,6 +202,7 @@ spec:
       image: pilot
       keepaliveMaxServerConnectionAge: 30m
       nodeSelector: {}
+      podLabels: {}
       replicaCount: 1
       traceSampling: 1
     telemetry:

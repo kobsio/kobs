@@ -1,0 +1,18 @@
+/* #root
+ * The root element of the page is the parent div container of the React app. To make the page component take up the
+ * full height of the viewport, we have to add height: 100vh; to all ancestor elements of the page component. */
+html, body, #root {
+  height: 100vh;
+}
+
+/* kobsio-hide-scrollbar
+ * The kobsio-hide-scrollbar CSS class can be used to hide the scrollbar on every platform, without loosing the
+ * functionality to scroll in a container. */
+.kobsio-hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.kobsio-hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
