@@ -33,14 +33,14 @@ nav:
   - Home: index.md
   - Getting Started:
       - Installation:
-          - Helm: installation/helm.md
-          - Kustomize: installation/kustomize.md
-          - Demo: installation/demo.md
+          - Helm: getting-started/installation/helm.md
+          - Kustomize: getting-started/installation/kustomize.md
+          - Demo: getting-started/installation/demo.md
       - Configuration:
-          - Getting Started: configuration/getting-started.md
-          - Clusters: configuration/clusters.md
-          - Plugins: configuration/plugins.md
-          - Authentication: configuration/authentication.md
+          - Getting Started: getting-started/configuration/getting-started.md
+          - Clusters: getting-started/configuration/clusters.md
+          - Plugins: getting-started/configuration/plugins.md
+          - Authentication: getting-started/configuration/authentication.md
   - Resources:
       - Resources: resources/resources.md
       - Applications: resources/applications.md
@@ -79,8 +79,8 @@ nav:
       - Development using the Demo: contributing/development-using-the-demo.md
       - Using the kobsio/app: contributing/using-the-kobsio-app.md
       - Release: contributing/release.md
-  - Architecture Decision Records (ADR):
-      - ADR001 - Facilitate Centralized Instance: adr/001_facilitate_centralized_instance.md
+      - Architecture Decision Records (ADR):
+          - ADR001 - Facilitate Centralized Instance: contributing/adr/001_facilitate_centralized_instance.md
 
 plugins:
   - search
