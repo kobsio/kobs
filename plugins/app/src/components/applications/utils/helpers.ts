@@ -1,4 +1,6 @@
-import { IOptions } from './interfaces';
+import { Datum, Serie } from '@nivo/line';
+
+import { IDatum, IOptions } from './interfaces';
 
 export const getInitialOptions = (search: string): IOptions => {
   const params = new URLSearchParams(search);
@@ -21,4 +23,29 @@ export const getInitialOptions = (search: string): IOptions => {
     searchTerm: searchTerm || '',
     tags: tags,
   };
+};
+
+// getMappingValue returns the mapping for a given value.
+export const getMappingValue = (value: number, mappings: { [key: string]: string }): string => {
+  if (!value) {
+    return '';
+  }
+
+  return mappings[value.toString()];
+};
+
+// roundNumber rounds the given number to a specify number of decimals. The default number of decimals is 4 but can be
+// overwritten by the user.
+export const roundNumber = (value: number, dec = 4): number => {
+  return Math.round(value * Math.pow(10, dec)) / Math.pow(10, dec);
+};
+
+export const sparklineDataToSeries = (data: IDatum[]): Serie[] => {
+  const convertedData: Datum[] = [];
+
+  for (const datum of data) {
+    convertedData.push({ x: new Date(datum.x), y: datum.y });
+  }
+
+  return [{ data: convertedData, id: 'data' }];
 };

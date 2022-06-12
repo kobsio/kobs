@@ -167,6 +167,10 @@ spec:
               preview:
                 items:
                   properties:
+                    mappings:
+                      additionalProperties:
+                        type: string
+                      type: object
                     plugin:
                       properties:
                         name:
@@ -184,6 +188,8 @@ spec:
                     title:
                       type: string
                     type:
+                      type: string
+                    unit:
                       type: string
                   required:
                   - plugin

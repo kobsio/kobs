@@ -65,7 +65,9 @@ type Dependency struct {
 }
 
 type Preview struct {
-	Title  string             `json:"title"`
-	Type   string             `json:"type"`
-	Plugin dashboardv1.Plugin `json:"plugin"`
+	Title    string             `json:"title"`
+	Type     string             `json:"type"`
+	Unit     string             `json:"unit,omitempty"`
+	Mappings map[string]string  `json:"mappings,omitempty"`
+	Plugin   dashboardv1.Plugin `json:"plugin"`
 }

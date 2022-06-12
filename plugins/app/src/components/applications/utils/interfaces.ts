@@ -8,3 +8,8 @@ export interface IOptions {
   searchTerm: string;
   tags: string[];
 }
+
+export interface IDatum {
+  x: number;
+  y: number;
+}

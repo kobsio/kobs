@@ -21,7 +21,7 @@ spec:
       link: https://github.com/kobsio/kobs/blob/main/deploy/demo/kobs/crs/applications/satellite.yaml
   topology:
     dependencies:
-      - name: satellite
+      - name: hub
         namespace: kobs
   dashboards:
     - title: Overview

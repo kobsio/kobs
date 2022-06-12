@@ -4,17 +4,16 @@ import {
   AlertVariant,
   Flex,
   FlexItem,
-  Label,
   Spinner,
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon, UsersIcon } from '@patternfly/react-icons';
-import { Link, useNavigate, useParams } from 'react-router-dom';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { PageContentSection, PageHeaderSection } from '@kobsio/shared';
+import ApplicationDetailsLabels from './ApplicationDetailsLabels';
 import { DashboardsWrapper } from '../dashboards/DashboardsWrapper';
 import { IApplication } from '../../crds/application';
 
@@ -92,70 +91,7 @@ const Application: React.FunctionComponent = () => {
               </TextContent>
             </FlexItem>
 
-            {(data.tags && data.tags.length > 0) ||
-            (data.teams && data.teams.length > 0) ||
-            (data.links && data.links.length > 0) ? (
-              <Flex>
-                {data.tags && data.tags.length > 0 && (
-                  <FlexItem>
-                    {data.tags.map((tag) => (
-                      <Label
-                        key={tag}
-                        className="pf-u-mr-sm"
-                        color="blue"
-                        render={({ className, content, componentRef }): React.ReactNode => (
-                          <Link
-                            to={`/applications?tag=${encodeURIComponent(tag)}`}
-                            className={className}
-                            ref={componentRef}
-                          >
-                            {content}
-                          </Link>
-                        )}
-                      >
-                        {tag}
-                      </Label>
-                    ))}
-                  </FlexItem>
-                )}
-
-                {data.teams && data.teams.length > 0 && (
-                  <FlexItem>
-                    {data.teams.map((team) => (
-                      <Label
-                        key={team}
-                        className="pf-u-mr-sm"
-                        color="grey"
-                        icon={<UsersIcon />}
-                        render={({ className, content, componentRef }): React.ReactNode => (
-                          <Link to={`/teams/${encodeURIComponent(team)}`} className={className} ref={componentRef}>
-                            {content}
-                          </Link>
-                        )}
-                      >
-                        {team}
-                      </Label>
-                    ))}
-                  </FlexItem>
-                )}
-
-                {data.links && data.links.length > 0 && (
-                  <FlexItem>
-                    {data.links.map((link, index) => (
-                      <Label
-                        key={index}
-                        className="pf-u-mr-sm"
-                        color="grey"
-                        icon={<ExternalLinkAltIcon />}
-                        href={link.link}
-                      >
-                        {link.title}
-                      </Label>
-                    ))}
-                  </FlexItem>
-                )}
-              </Flex>
-            ) : null}
+            <ApplicationDetailsLabels application={data} />
           </Flex>
         }
       />

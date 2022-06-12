@@ -14,6 +14,12 @@ func SetSatelliteForApplication(application applicationv1.ApplicationSpec, satel
 		}
 	}
 
+	for i := 0; i < len(application.Preview); i++ {
+		if application.Preview[i].Plugin.Satellite == "" {
+			application.Preview[i].Plugin.Satellite = satellite
+		}
+	}
+
 	for i := 0; i < len(application.Dashboards); i++ {
 		if application.Dashboards[i].Satellite == "" {
 			application.Dashboards[i].Satellite = satellite

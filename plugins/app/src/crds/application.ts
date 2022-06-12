@@ -19,6 +19,8 @@ export interface IApplication {
 export interface IPreview {
   title: string;
   type: string;
+  unit?: string;
+  mappings?: { [key: string]: string };
   plugin: IPlugin;
 }
 

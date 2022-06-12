@@ -25,6 +25,23 @@ spec:
         description: Get book information.
       - name: reviews
         description: Get book reviews.
+  preview:
+    - title: Success Rate
+      type: sparkline
+      unit: "%"
+      plugin:
+        name: prometheus
+        type: prometheus
+        options:
+          query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])) * 100
+    - title: Healthy Replicas
+      type: sparkline
+      unit: "%"
+      plugin:
+        name: prometheus
+        type: prometheus
+        options:
+          query: kube_deployment_status_replicas{namespace="bookinfo", deployment=~"productpage.*"} / kube_deployment_spec_replicas{namespace="bookinfo", deployment=~"productpage.*"} * 100
   dashboards:
     - title: Overview
       inline:
