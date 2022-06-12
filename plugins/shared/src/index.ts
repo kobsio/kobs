@@ -1,6 +1,5 @@
 export * from './components/chart/ChartTooltip';
 export * from './components/misc/Editor';
-export * from './components/misc/ExternalLink';
 export * from './components/misc/LinkWrapper';
 export * from './components/misc/Options';
 export * from './components/misc/PageHeaderSection';
