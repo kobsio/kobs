@@ -105,7 +105,9 @@ const Module: React.FunctionComponent<IModuleProps> = ({
 
 export default memo(Module, (prevProps, nextProps) => {
   if (prevProps.module === nextProps.module && prevProps.name === nextProps.name) {
-    return true;
+    if (JSON.stringify(prevProps.props) === JSON.stringify(nextProps.props)) {
+      return true;
+    }
   }
 
   return false;

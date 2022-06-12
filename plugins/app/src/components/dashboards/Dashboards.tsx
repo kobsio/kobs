@@ -18,14 +18,18 @@ import { IDashboard, IReference } from '../../crds/dashboard';
 import Dashboard from './Dashboard';
 import { IOptions } from './utils/interfaces';
 import { getInitialOptions } from './utils/dashboards';
+import { interpolateJSONPath } from './utils/interpolate';
 
 interface IDashboardsProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  manifest: any;
   references: IReference[];
   setDetails?: (details: React.ReactNode) => void;
   forceDefaultSpan: boolean;
 }
 
 const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
+  manifest,
   references,
   forceDefaultSpan,
   setDetails,
@@ -53,6 +57,12 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
+          const dashboards: IDashboard[] | undefined = json;
+
+          if (dashboards && dashboards.length > 0) {
+            return JSON.parse(interpolateJSONPath(JSON.stringify(dashboards), manifest));
+          }
+
           return json;
         } else {
           if (json.error) {

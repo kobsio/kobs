@@ -97,7 +97,11 @@ const Application: React.FunctionComponent = () => {
       />
 
       <PageContentSection hasPadding={false} toolbarContent={undefined} panelContent={details}>
-        {data.dashboards ? <DashboardsWrapper references={data.dashboards} setDetails={setDetails} /> : <div></div>}
+        {data.dashboards ? (
+          <DashboardsWrapper manifest={data} references={data.dashboards} setDetails={setDetails} />
+        ) : (
+          <div></div>
+        )}
       </PageContentSection>
     </React.Fragment>
   );

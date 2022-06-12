@@ -14,6 +14,7 @@ import React, { useState } from 'react';
 import yaml from 'js-yaml';
 
 import Actions from './Actions';
+import Dashboards from './Dashboards';
 import { Editor } from '@kobsio/shared';
 import Events from './Events';
 import { IResource } from '../../../resources/clusters';
@@ -147,6 +148,15 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceDat
               </div>
             </Tab>
           ) : null}
+
+          <Tab eventKey="dashboards" title={<TabTitleText>Dashboards</TabTitleText>}>
+            <div
+              className="kobsio-hide-scrollbar"
+              style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}
+            >
+              <Dashboards resource={resource} resourceData={resourceData} />
+            </div>
+          </Tab>
         </Tabs>
       </DrawerPanelBody>
     </DrawerPanelContent>
