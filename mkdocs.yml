@@ -79,6 +79,8 @@ nav:
       - Development using the Demo: contributing/development-using-the-demo.md
       - Using the kobsio/app: contributing/using-the-kobsio-app.md
       - Release: contributing/release.md
+  - Architecture Decision Records (ADR):
+      - ADR001 - Facilitate Centralized Instance: adr/001_facilitate_centralized_instance.md
 
 plugins:
   - search
@@ -87,7 +89,11 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.highlight
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra:
   social:
