@@ -75,17 +75,20 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 
 		mountSymbol, err := p.Lookup("Mount")
 		if err != nil {
+			log.Error(nil, "Could not find mount symbol", zap.Error(err), zap.String("type", pluginType))
 			return nil, err
 		}
 
 		mountFunc, ok := mountSymbol.(func(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error))
 		if !ok {
+			log.Error(nil, "Mount function has wrong type", zap.Error(err), zap.String("type", pluginType))
 			return nil, fmt.Errorf("mount function is not of type \"func(instances []plugin.Instance, clustersClient clusters.Client) chi.Router\" for plugin %s", pluginType)
 		}
 
 		pluginRouter, err := mountFunc(filterInstances(pluginType, instances), clustersClient)
 		if err != nil {
-			log.Fatal(nil, "Could not load plugin", zap.Error(err), zap.String("type", pluginType))
+			log.Error(nil, "Could not load plugin", zap.Error(err), zap.String("type", pluginType))
+			return nil, err
 		}
 
 		router.Mount(fmt.Sprintf("/%s", pluginType), pluginRouter)

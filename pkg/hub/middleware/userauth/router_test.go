@@ -22,7 +22,7 @@ func TestUserAuthHandler(t *testing.T) {
 			name:               "get user",
 			user:               authContext.User{},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"\",\"teams\":null,\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"email\":\"\",\"teams\":null,\"permissions\":{}}\n",
 		},
 		{
 			name:               "could not get user",

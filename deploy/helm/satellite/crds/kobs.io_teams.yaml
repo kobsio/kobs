@@ -188,9 +188,6 @@ spec:
                         type:
                           type: string
                       required:
-                      - clusters
-                      - namespaces
-                      - satellites
                       - type
                       type: object
                     type: array
@@ -203,9 +200,12 @@ spec:
                           x-kubernetes-preserve-unknown-fields: true
                         satellite:
                           type: string
+                        type:
+                          type: string
                       required:
                       - name
                       - satellite
+                      - type
                       type: object
                     type: array
                   resources:
@@ -243,11 +243,6 @@ spec:
                     items:
                       type: string
                     type: array
-                required:
-                - applications
-                - plugins
-                - resources
-                - teams
                 type: object
               satellite:
                 type: string
