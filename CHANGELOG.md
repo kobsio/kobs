@@ -12,6 +12,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#349](https://github.com/kobsio/kobs/pull/#349): [app] Fix the creation of a VirtualService in the Helm chart when no `additionalRoutes` are set.
+
 ### Changed
 
 - [#346](https://github.com/kobsio/kobs/pull/346): [app] :warning: _Breaking change:_ :warning: Rework kobs architecture, by introducing a `hub` and a `satellite` component. This new architecture allows us to run the kobs `hub` component in a central cluster and access clusters / services (plugins) through the kobs `satellite` component. More information regarding the new kobs architecture can be found in the documentation at [kobs.io](https://kobs.io).
