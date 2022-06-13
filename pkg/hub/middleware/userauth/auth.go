@@ -113,6 +113,8 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 				http.SetCookie(w, &http.Cookie{
 					Name:     "kobs-auth",
 					Value:    token,
+					Path:     "/",
+					Expires:  time.Now().Add(a.sessionInterval),
 					Secure:   true,
 					HttpOnly: true,
 				})
@@ -144,6 +146,8 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 					http.SetCookie(w, &http.Cookie{
 						Name:     "kobs-auth",
 						Value:    token,
+						Path:     "/",
+						Expires:  time.Now().Add(a.sessionInterval),
 						Secure:   true,
 						HttpOnly: true,
 					})
@@ -162,7 +166,7 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 				Permissions: userv1.Permissions{
 					Applications: []userv1.ApplicationPermissions{{Type: "all"}},
 					Teams:        []string{"*"},
-					Plugins:      []userv1.Plugin{{Satellite: "*", Name: "*"}},
+					Plugins:      []userv1.Plugin{{Satellite: "*", Type: "*", Name: "*"}},
 					Resources:    []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
 				},
 			})

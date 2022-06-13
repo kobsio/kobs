@@ -77,11 +77,13 @@ func (u *User) HasTeamAccess(teamGroup string) bool {
 }
 
 // HasPluginAccess checks if the user has access to the given plugin.
-func (u *User) HasPluginAccess(satellite, plugin string) bool {
+func (u *User) HasPluginAccess(satellite, pluginType, pluginName string) bool {
 	for _, p := range u.Permissions.Plugins {
 		if p.Satellite == satellite || p.Satellite == "*" {
-			if p.Name == plugin || p.Name == "*" {
-				return true
+			if p.Type == pluginType || p.Type == "*" {
+				if p.Name == pluginName || p.Name == "*" {
+					return true
+				}
 			}
 		}
 	}

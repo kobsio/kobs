@@ -25,7 +25,7 @@ const Applications: React.FunctionComponent = () => {
     navigate(
       `${location.pathname}?all=${opts.all}&external=${opts.external}&searchTerm=${encodeURIComponent(
         opts.searchTerm,
-      )}&page=${opts.page}&=perPage=${opts.perPage}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}${
+      )}&page=${opts.page}&perPage=${opts.perPage}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}${
         t.length > 0 ? t.join('') : ''
       }`,
     );

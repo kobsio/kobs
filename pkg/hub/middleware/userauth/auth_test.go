@@ -86,7 +86,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth disabled",
 			auth:               Auth{enabled: false},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"\",\"teams\":[\"*\"],\"permissions\":{\"applications\":[{\"type\":\"all\",\"satellites\":null,\"clusters\":null,\"namespaces\":null}],\"teams\":[\"*\"],\"plugins\":[{\"satellite\":\"*\",\"name\":\"*\",\"permissions\":null}],\"resources\":[{\"satellites\":[\"*\"],\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}}\n",
+			expectedBody:       "{\"email\":\"\",\"teams\":[\"*\"],\"permissions\":{\"applications\":[{\"type\":\"all\"}],\"teams\":[\"*\"],\"plugins\":[{\"satellite\":\"*\",\"name\":\"*\",\"type\":\"*\",\"permissions\":null}],\"resources\":[{\"satellites\":[\"*\"],\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}}\n",
 			prepareRequest:     func(r *http.Request) {},
 			prepareStoreClient: func(mockStoreClient *store.MockClient) {},
 		},
@@ -145,7 +145,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth enabled, request without cookie, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{}}\n",
 			prepareRequest: func(r *http.Request) {
 				r.Header.Add("X-Auth-Request-Email", "user1@kobs.io")
 			},
@@ -189,7 +189,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth enabled, request with cookie, validate token error, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{}}\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{}, "sessionToken", 10*time.Second)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
@@ -204,7 +204,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth enabled, request with cookie, valid token, success",
 			auth:               Auth{enabled: true, headerUser: "X-Auth-Request-Email"},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}\n",
+			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{}}\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
 				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})

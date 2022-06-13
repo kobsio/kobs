@@ -88,7 +88,7 @@ func New(debugUsername, debugPassword, hubAddress string, authEnabled bool, auth
 		r.Use(middleware.URLFormat)
 		r.Use(metrics.Metrics)
 		r.Use(httplog.Logger)
-		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil))
+		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/auth", userauth.Mount(authLogoutRedirect))

@@ -17,14 +17,15 @@ export interface IPermissions {
 
 export interface IApplicationPermission {
   type: string;
-  satellites: string[];
-  clusters: string[];
-  namespaces: string[];
+  satellites?: string[];
+  clusters?: string[];
+  namespaces?: string[];
 }
 
 export interface IPluginPermission {
   satellite: string;
   name: string;
+  type: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
 }
@@ -38,12 +39,12 @@ export interface IResourcesPermission {
 // IAuthContext is the plugin context, is contains all plugins.
 export interface IAuthContext {
   user: IUser;
-  hasPluginAccess: (satellite: string, name: string) => boolean;
+  hasPluginAccess: (satellite: string, pluginType: string, pluginName: string) => boolean;
 }
 
 // AuthContext is the plugin context object.
 export const AuthContext = React.createContext<IAuthContext>({
-  hasPluginAccess: (satellite: string, name: string) => {
+  hasPluginAccess: (satellite: string, pluginType: string, pluginName: string) => {
     return false;
   },
   user: {
@@ -83,12 +84,13 @@ export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderPr
     }
   });
 
-  const hasPluginAccess = (satellite: string, name: string): boolean => {
+  const hasPluginAccess = (satellite: string, pluginType: string, pluginName: string): boolean => {
     if (data && data.permissions && data.permissions.plugins) {
       for (const plugin of data.permissions.plugins) {
         if (
           (plugin.satellite === satellite || plugin.satellite === '*') &&
-          (plugin.name === name || plugin.name === '*')
+          (plugin.type === pluginType || plugin.type === '*') &&
+          (plugin.name === pluginName || plugin.name === '*')
         ) {
           return true;
         }
