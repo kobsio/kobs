@@ -12,6 +12,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#349](https://github.com/kobsio/kobs/pull/#349): [app] Fix the creation of a VirtualService in the Helm chart when no `additionalRoutes` are set.
 
 ### Changed
 

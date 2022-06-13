@@ -8,7 +8,7 @@ fullnameOverride: ""
 ## The number of Pods, which are created by the Deployment.
 ## See: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 ##
-replicaCount: 1
+replicas: 1
 
 ## Specify a list of image pull secrets, to avoid the DockerHub rate limit or to pull the kobs/enovy image from a
 ## private registry.
@@ -110,8 +110,8 @@ env: []
 
 ## Specify additional labels and annotations for the created Pods.
 ##
-annotations: {}
-labels: {}
+podAnnotations: {}
+podLabels: {}
 
 hub:
   ## Specify some settings like log level, log format, etc. for kobs.

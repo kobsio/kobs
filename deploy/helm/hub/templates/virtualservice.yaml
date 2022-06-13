@@ -15,7 +15,9 @@ spec:
     {{- toYaml . | nindent 4 }}
 {{- end }}
   http:
-    {{- toYaml .Values.istio.virtualService.additionalRoutes | nindent 4 }}
+    {{- with .Values.istio.virtualService.additionalRoutes }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     - match:
         - uri:
             prefix: /api
