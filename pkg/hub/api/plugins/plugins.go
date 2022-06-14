@@ -2,7 +2,6 @@ package plugins
 
 import (
 	"net/http"
-	"strings"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
@@ -42,35 +41,31 @@ func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {
 func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 	satelliteName := r.Header.Get("x-kobs-satellite")
 	pluginName := r.Header.Get("x-kobs-plugin")
-	pluginType := strings.Split(r.URL.RawPath, "/")
-
-	if len(pluginType) < 4 {
-		log.Warn(r.Context(), "The user is not authorized to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.Strings("pluginTypes", pluginType))
-		errresponse.Render(w, r, nil, http.StatusUnauthorized, "You are not authorized to access the plugin")
-		return
-	}
+	pluginType := chi.URLParam(r, "type")
 
 	if satelliteName == "" && pluginName == "" {
 		satelliteName = r.URL.Query().Get("x-kobs-satellite")
 		pluginName = r.URL.Query().Get("x-kobs-plugin")
 	}
 
+	log.Debug(r.Context(), "Proxy plugin request", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType))
+
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "The user is not authorized to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType[3]), zap.Error(err))
+		log.Warn(r.Context(), "The user is not authorized to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType), zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the plugin")
 		return
 	}
 
-	if !user.HasPluginAccess(satelliteName, pluginType[3], pluginName) {
-		log.Warn(r.Context(), "The user is not allowed to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType[3]), zap.Error(err))
+	if !user.HasPluginAccess(satelliteName, pluginType, pluginName) {
+		log.Warn(r.Context(), "The user is not allowed to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType), zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to access the plugin")
 		return
 	}
 
 	satellite := router.satellitesClient.GetSatellite(satelliteName)
 	if satellite == nil {
-		log.Error(r.Context(), "Satellite was not found", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType[3]))
+		log.Error(r.Context(), "Satellite was not found", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType))
 		errresponse.Render(w, r, nil, http.StatusInternalServerError, "Satellite was not found")
 		return
 	}
@@ -92,7 +87,7 @@ func Mount(satellitesClient satellites.Client, storeClient store.Client) chi.Rou
 	}
 
 	router.Get("/", router.getPlugins)
-	router.HandleFunc("/*", router.proxyPlugins)
+	router.HandleFunc("/{type}/*", router.proxyPlugins)
 
 	return router
 }
