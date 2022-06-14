@@ -7,7 +7,8 @@ import { IPluginInstance } from '@kobsio/shared';
 // IPluginsContext is the plugin context, is contains all the instances of all configured plugins.
 export interface IPluginsContext {
   getInstance: (satellite: string, type: string, name: string) => IPluginInstance | undefined;
-  getInstances: (type: string, name: string) => IPluginInstance[];
+  getInstances: (satellite: string, type: string, name: string) => IPluginInstance[];
+  getPluginSatellites: () => string[];
   getPluginTypes: () => string[];
   instances: IPluginInstance[];
 }
@@ -16,6 +17,7 @@ export interface IPluginsContext {
 export const PluginsContext = React.createContext<IPluginsContext>({
   getInstance: () => undefined,
   getInstances: () => [],
+  getPluginSatellites: () => [],
   getPluginTypes: () => [],
   instances: [],
 });
@@ -69,11 +71,22 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
   // getInstances returns a list of instances, with the given type and name. The type filter is only applied if it is
   // not an empty string. The same counts for the name filter. This means when no type and name is provided all plugin
   // instances will be returned.
-  const getInstances = (type: string, name: string): IPluginInstance[] => {
-    const instancesFilteredByType = type ? data?.filter((instance) => instance.type === type) : data;
+  const getInstances = (satellite: string, type: string, name: string): IPluginInstance[] => {
+    const instancesFilteredBySatellite = satellite
+      ? data?.filter((instance) => instance.satellite === satellite)
+      : data;
+    const instancesFilteredByType = type
+      ? instancesFilteredBySatellite?.filter((instance) => instance.type === type)
+      : instancesFilteredBySatellite;
     const instancesFilteredByName = instancesFilteredByType?.filter((instance) => instance.name.includes(name));
 
     return instancesFilteredByName || [];
+  };
+
+  // getPluginSatellites returns a list of strings with the unique satellites of the plugin instances.
+  const getPluginSatellites = (): string[] => {
+    const satellites = data?.map((instance) => instance.satellite);
+    return satellites ? satellites.filter((value, index, self) => self.indexOf(value) === index).sort() : [];
   };
 
   // getPluginTypes returns a list of strings with the unique types of the plugin instances.
@@ -119,6 +132,7 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
       value={{
         getInstance: getInstance,
         getInstances: getInstances,
+        getPluginSatellites: getPluginSatellites,
         getPluginTypes: getPluginTypes,
         instances: data,
       }}

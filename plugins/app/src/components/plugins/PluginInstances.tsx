@@ -29,10 +29,20 @@ const PluginInstances: React.FunctionComponent = () => {
   const [state, setState] = useState<{
     page: number;
     perPage: number;
+    pluginSatellite: string;
+    pluginSatelliteIsOpen: boolean;
     pluginType: string;
     pluginTypeIsOpen: boolean;
     searchTerm: string;
-  }>({ page: 1, perPage: 10, pluginType: '', pluginTypeIsOpen: false, searchTerm: '' });
+  }>({
+    page: 1,
+    perPage: 10,
+    pluginSatellite: '',
+    pluginSatelliteIsOpen: false,
+    pluginType: '',
+    pluginTypeIsOpen: false,
+    searchTerm: '',
+  });
   const debouncedSearchTerm = useDebounce<string>(state.searchTerm, 500);
 
   return (
@@ -47,6 +57,27 @@ const PluginInstances: React.FunctionComponent = () => {
         toolbarContent={
           <ToolbarContent>
             <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
+              <ToolbarItem>
+                <Select
+                  variant={SelectVariant.single}
+                  aria-label="Select satellite input"
+                  placeholderText="Satellite"
+                  onToggle={(): void => setState({ ...state, pluginSatelliteIsOpen: !state.pluginSatelliteIsOpen })}
+                  onSelect={(
+                    event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                    value: string | SelectOptionObject,
+                  ): void =>
+                    setState({ ...state, page: 1, pluginSatellite: value.toString(), pluginSatelliteIsOpen: false })
+                  }
+                  onClear={(): void => setState({ ...state, page: 1, pluginSatellite: '' })}
+                  selections={state.pluginSatellite}
+                  isOpen={state.pluginSatelliteIsOpen}
+                >
+                  {pluginsContext.getPluginSatellites().map((option) => (
+                    <SelectOption key={option} value={option} />
+                  ))}
+                </Select>
+              </ToolbarItem>
               <ToolbarItem>
                 <Select
                   variant={SelectVariant.single}
@@ -81,11 +112,11 @@ const PluginInstances: React.FunctionComponent = () => {
       >
         <Gallery hasGutter={true}>
           {pluginsContext
-            .getInstances(state.pluginType, debouncedSearchTerm)
+            .getInstances(state.pluginSatellite, state.pluginType, debouncedSearchTerm)
             .slice((state.page - 1) * state.perPage, state.page * state.perPage)
             .map((instance) => (
               <Module
-                key={`${instance.type}-${instance.name}`}
+                key={instance.id}
                 name={instance.type}
                 module="./Instance"
                 props={instance}
@@ -103,7 +134,7 @@ const PluginInstances: React.FunctionComponent = () => {
         variant={PageSectionVariants.light}
       >
         <Pagination
-          itemCount={pluginsContext.getInstances(state.pluginType, debouncedSearchTerm).length}
+          itemCount={pluginsContext.getInstances(state.pluginSatellite, state.pluginType, debouncedSearchTerm).length}
           perPage={state.perPage}
           page={state.page}
           variant={PaginationVariant.bottom}
