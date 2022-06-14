@@ -15,6 +15,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#349](https://github.com/kobsio/kobs/pull/#349): [app] Fix the creation of a VirtualService in the Helm chart when no `additionalRoutes` are set.
 - [#350](https://github.com/kobsio/kobs/pull/#350): [app] Fix Docker image and request proxy.
 - [#351](https://github.com/kobsio/kobs/pull/#351): [jaeger] Fix links and colors in Jaeger plugin.
+- [#352](https://github.com/kobsio/kobs/pull/#352): [app] Fix plugin filter and allow filtering by the name of a satellite.
 
 ### Changed
 
