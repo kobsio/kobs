@@ -18,7 +18,10 @@ import { DashboardsWrapper } from '../dashboards/DashboardsWrapper';
 import { IApplication } from '../../crds/application';
 
 interface IApplicationParams extends Record<string, string | undefined> {
-  application?: string;
+  satellite?: string;
+  cluster?: string;
+  namespace?: string;
+  name?: string;
 }
 
 const Application: React.FunctionComponent = () => {
@@ -27,11 +30,16 @@ const Application: React.FunctionComponent = () => {
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IApplication, Error>(
-    ['app/applications/application', params.application],
+    ['app/applications/application', params.satellite, params.cluster, params.namespace, params.name],
     async () => {
-      const response = await fetch(`/api/applications/application?id=${encodeURIComponent(params.application || '')}`, {
-        method: 'get',
-      });
+      const response = await fetch(
+        `/api/applications/application?id=${encodeURIComponent(
+          `/satellite/${params.satellite}/cluster/${params.cluster}/namespace/${params.namespace}/name/${params.name}`,
+        )}`,
+        {
+          method: 'get',
+        },
+      );
       const json = await response.json();
 
       if (response.status >= 200 && response.status < 300) {

@@ -50,9 +50,7 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
           <Button
             style={{ paddingRight: 0 }}
             variant="plain"
-            component={(props): React.ReactElement => (
-              <Link {...props} to={`/applications/${encodeURIComponent(application.id)}`} />
-            )}
+            component={(props): React.ReactElement => <Link {...props} to={`/applications${application.id}`} />}
           >
             <ExternalLinkAltIcon />
           </Button>

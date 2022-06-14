@@ -23,7 +23,7 @@ const DashboardsPanel: React.FunctionComponent<IDashboardsPanelProps> = ({ optio
   const goToDashboard = (id: string): void => {
     const idParts = id.split('?');
 
-    navigate(`/dashboards/${encodeURIComponent(idParts[0])}?${idParts[1]}`);
+    navigate(`/dashboards${idParts[0]}?${idParts[1]}`);
   };
 
   if (options && Array.isArray(options)) {

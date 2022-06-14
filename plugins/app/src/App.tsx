@@ -48,8 +48,14 @@ const App: React.FunctionComponent = () => {
               <Routes>
                 <Route path="/" element={<Navigate to="/applications" replace={true} />} />
                 <Route path="/applications" element={<Applications />} />
-                <Route path="/applications/:application" element={<Application />} />
-                <Route path="/dashboards/:dashboard" element={<DashboardPage />} />
+                <Route
+                  path="/applications/satellite/:satellite/cluster/:cluster/namespace/:namespace/name/:name"
+                  element={<Application />}
+                />
+                <Route
+                  path="/dashboards/satellite/:satellite/cluster/:cluster/namespace/:namespace/name/:name"
+                  element={<DashboardPage />}
+                />
                 <Route path="/teams" element={<Teams />} />
                 <Route path="/teams/:team" element={<Team />} />
                 <Route path="/resources" element={<Resources />} />

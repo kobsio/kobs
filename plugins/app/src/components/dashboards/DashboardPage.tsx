@@ -17,7 +17,10 @@ import Dashboard from './Dashboard';
 import { IDashboard } from '../../crds/dashboard';
 
 interface IDashboardPageParams extends Record<string, string | undefined> {
-  dashboard?: string;
+  satellite?: string;
+  cluster?: string;
+  namespace?: string;
+  name?: string;
 }
 
 const DashboardPage: React.FunctionComponent = () => {
@@ -27,10 +30,12 @@ const DashboardPage: React.FunctionComponent = () => {
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IDashboard, Error>(
-    ['app/dashboards/dashboard', params.application, location.search],
+    ['app/dashboards/dashboard', params.satellite, params.cluster, params.namespace, params.name, location.search],
     async () => {
       const response = await fetch(
-        `/api/dashboards/dashboard?id=${encodeURIComponent(params.dashboard || '')}${location.search.substring(1)}`,
+        `/api/dashboards/dashboard?id=${encodeURIComponent(
+          `/satellite/${params.satellite}/cluster/${params.cluster}/namespace/${params.namespace}/name/${params.name}`,
+        )}${location.search.substring(1)}`,
         {
           method: 'get',
         },
