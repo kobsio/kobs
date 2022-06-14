@@ -20,13 +20,13 @@ func TestHandler(t *testing.T) {
 		{
 			name:               "authorization header missing",
 			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"You are not authorized to access the resource\"}\n",
+			expectedBody:       "{\"error\":\"You are not authorized to access the resource: authorization token is missing or invalid\"}\n",
 			prepareRequest:     func(r *http.Request) {},
 		},
 		{
 			name:               "authorization header invalid token",
 			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"You are not authorized to access the resource\"}\n",
+			expectedBody:       "{\"error\":\"You are not authorized to access the resource: authorization token is missing or invalid\"}\n",
 			prepareRequest: func(r *http.Request) {
 				r.Header.Add("Authorization", "Bearer faketoken")
 			},

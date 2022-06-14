@@ -95,8 +95,9 @@ func (c *client) Proxy(w http.ResponseWriter, r *http.Request) {
 	proxy.Director = func(req *http.Request) {
 		originalDirector(req)
 
-		req.Header.Add("Authorization", "Bearer "+c.config.Token)
-		req.Header.Add("x-kobs-satellite", c.config.Name)
+		req.Host = req.URL.Host
+		req.Header.Set("Authorization", "Bearer "+c.config.Token)
+		req.Header.Set("x-kobs-satellite", c.config.Name)
 	}
 
 	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {

@@ -87,7 +87,7 @@ func TestGetResourceGroups(t *testing.T) {
 			router.Get("/resourcegroups", router.getResourceGroups)
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
-			req.Header.Add("x-kobs-plugin", tt.pluginName)
+			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()
 			tt.do(router, w, req)
