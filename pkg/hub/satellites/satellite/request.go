@@ -20,11 +20,11 @@ func doRequest[T any](ctx context.Context, user *authContext.User, client *http.
 		return result, err
 	}
 
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	if user != nil {
-		req.Header.Add("x-kobs-user", user.ToString())
+		req.Header.Set("x-kobs-user", user.ToString())
 	} else {
-		req.Header.Add("x-kobs-user", "{\"email\": \"\"}")
+		req.Header.Set("x-kobs-user", "{\"email\": \"\"}")
 	}
 
 	resp, err := client.Do(req)

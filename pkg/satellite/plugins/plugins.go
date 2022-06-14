@@ -70,6 +70,7 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 	for _, pluginType := range pluginTypes {
 		p, err := goPlugin.Open(fmt.Sprintf("%s/%s.so", pluginDir, pluginType))
 		if err != nil {
+			log.Error(nil, "Could not open plugin", zap.Error(err), zap.String("dir", pluginDir), zap.String("type", pluginType))
 			return nil, err
 		}
 

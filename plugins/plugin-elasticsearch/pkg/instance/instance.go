@@ -56,7 +56,7 @@ func (i *instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := i.client.Do(req)
 	if err != nil {
