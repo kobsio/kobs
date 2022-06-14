@@ -8,39 +8,39 @@ name: "CodeQL"
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - '.github/**'
-      - '.vscode/**'
-      - 'deploy/**'
-      - 'cmd/kobs/Dockerfile'
-      - 'docs/**'
-      - '.dockerignore'
-      - '.editorconfig'
-      - '.gitignore'
-      - 'CHANGELOG.md'
-      - 'CODE_OF_CONDUCT.md'
-      - 'CONTRIBUTING.md'
-      - 'LICENSE'
-      - 'mkdocs.yml'
-      - 'README.md'
+    # paths-ignore:
+    #   - '.github/**'
+    #   - '.vscode/**'
+    #   - 'deploy/**'
+    #   - 'cmd/kobs/Dockerfile'
+    #   - 'docs/**'
+    #   - '.dockerignore'
+    #   - '.editorconfig'
+    #   - '.gitignore'
+    #   - 'CHANGELOG.md'
+    #   - 'CODE_OF_CONDUCT.md'
+    #   - 'CONTRIBUTING.md'
+    #   - 'LICENSE'
+    #   - 'mkdocs.yml'
+    #   - 'README.md'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [main]
-    paths-ignore:
-      - '.github/**'
-      - '.vscode/**'
-      - 'cmd/kobs/Dockerfile'
-      - 'deploy/**'
-      - 'docs/**'
-      - '.dockerignore'
-      - '.editorconfig'
-      - '.gitignore'
-      - 'CHANGELOG.md'
-      - 'CODE_OF_CONDUCT.md'
-      - 'CONTRIBUTING.md'
-      - 'LICENSE'
-      - 'mkdocs.yml'
-      - 'README.md'
+    # paths-ignore:
+    #   - '.github/**'
+    #   - '.vscode/**'
+    #   - 'cmd/kobs/Dockerfile'
+    #   - 'deploy/**'
+    #   - 'docs/**'
+    #   - '.dockerignore'
+    #   - '.editorconfig'
+    #   - '.gitignore'
+    #   - 'CHANGELOG.md'
+    #   - 'CODE_OF_CONDUCT.md'
+    #   - 'CONTRIBUTING.md'
+    #   - 'LICENSE'
+    #   - 'mkdocs.yml'
+    #   - 'README.md'
   schedule:
     - cron: '21 16 * * 3'
 
@@ -80,7 +80,14 @@ jobs:
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
+      if: ${{ matrix.language == 'javascript' }}
       uses: github/codeql-action/autobuild@v2
+
+    - name: Build
+      if: ${{ matrix.language == 'go' }}
+      run: |
+        make build
+        make build-plugins
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
