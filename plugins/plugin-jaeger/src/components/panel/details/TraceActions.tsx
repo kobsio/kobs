@@ -33,16 +33,13 @@ const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ instance, t
 
   const copy = (): void => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(`${window.location.host}/${pluginBasePath(instance)}/trace/${trace.traceID}`);
+      navigator.clipboard.writeText(`${window.location.host}${pluginBasePath(instance)}/trace/${trace.traceID}`);
     }
     setShowDropdown(false);
   };
 
   const dropdownItems = [
-    <DropdownItem
-      key={0}
-      component={<Link to={`/${pluginBasePath(instance)}/trace/${trace.traceID}`}>Details</Link>}
-    />,
+    <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}/trace/${trace.traceID}`}>Details</Link>} />,
     <DropdownItem key={1} onClick={compare}>
       Compare
     </DropdownItem>,
@@ -92,7 +89,7 @@ const TraceActions: React.FunctionComponent<ITraceActionsProps> = ({ instance, t
         isOpen={showModal}
         onClose={(): void => setShowModal(false)}
         actions={[
-          <Link key="compare" to={`/${pluginBasePath(instance)}/trace/${trace.traceID}?compare=${compareTrace}`}>
+          <Link key="compare" to={`${pluginBasePath(instance)}/trace/${trace.traceID}?compare=${compareTrace}`}>
             <Button variant={ButtonVariant.primary}>Compare</Button>
           </Link>,
 

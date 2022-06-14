@@ -56,7 +56,7 @@ export const getColorValue = (labelColor?: LabelProps['color']): string => {
     case 'purple':
       return 'var(--pf-global--palette--purple-300)';
     case 'red':
-      return 'var(--pf-global--palette--red-300)';
+      return 'var(--pf-global--palette--red-100)';
     default:
       return 'var(--pf-global--palette--blue-300)';
   }
