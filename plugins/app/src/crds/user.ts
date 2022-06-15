@@ -9,5 +9,5 @@ export interface IUser {
   namespace: string;
   name: string;
   email: string;
-  rows?: IReference[];
+  dashboards?: IReference[];
 }

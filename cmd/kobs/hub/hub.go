@@ -97,7 +97,7 @@ var Cmd = &cobra.Command{
 		var appServer app.Server
 
 		if hubMode == "default" || hubMode == "server" {
-			hubSever, err = hub.New(debugUsername, debugPassword, hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken, authSessionInterval, satellitesClient, storeClient)
+			hubSever, err = hub.New(cfg.API, debugUsername, debugPassword, hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken, authSessionInterval, satellitesClient, storeClient)
 			if err != nil {
 				log.Fatal(nil, "Could not create hub server", zap.Error(err))
 			}

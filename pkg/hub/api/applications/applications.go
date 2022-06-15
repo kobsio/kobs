@@ -6,6 +6,7 @@ import (
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/hub/store"
+	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
@@ -165,6 +166,22 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 	}
 
 	team := r.URL.Query().Get("team")
+	limit := r.URL.Query().Get("limit")
+	offset := r.URL.Query().Get("offset")
+
+	parsedLimit, err := strconv.Atoi(limit)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse limit parameter", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse limit parameter")
+		return
+	}
+
+	parsedOffset, err := strconv.Atoi(offset)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse offset parameter", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not parse offset parameter")
+		return
+	}
 
 	if !user.HasTeamAccess(team) && !user.HasApplicationAccess("", "", "", []string{""}) {
 		log.Warn(r.Context(), "The user is not authorized to view the applications", zap.Error(err), zap.String("team", team))
@@ -172,14 +189,29 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	applications, err := router.storeClient.GetApplicationsByFilter(r.Context(), []string{team}, nil, nil, nil, "", "include", 0, 0)
+	applications, err := router.storeClient.GetApplicationsByFilter(r.Context(), []string{team}, nil, nil, nil, "", "include", parsedLimit, parsedOffset)
 	if err != nil {
 		log.Error(r.Context(), "Could not get applications", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get applications")
 		return
 	}
 
-	render.JSON(w, r, applications)
+	count, err := router.storeClient.GetApplicationsByFilterCount(r.Context(), []string{team}, nil, nil, nil, "", "include")
+	if err != nil {
+		log.Error(r.Context(), "Could not get applications", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get applications")
+		return
+	}
+
+	data := struct {
+		Count        int                             `json:"count"`
+		Applications []applicationv1.ApplicationSpec `json:"applications"`
+	}{
+		count,
+		applications,
+	}
+
+	render.JSON(w, r, data)
 }
 
 func Mount(storeClient store.Client) chi.Router {
