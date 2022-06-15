@@ -6,6 +6,8 @@ import ApplicationsPanel from '../applications/ApplicationsPanel';
 import DashboardsPanel from '../dashboards/DashboardsPanel';
 import Markdown from '../markdown/Markdown';
 import ResourcesPanelWrapper from '../resources/ResourcesPanelWrapper';
+import UserApplications from '../profile/UserApplications';
+import UserTeams from '../profile/UserTeams';
 
 interface IAppPanelProps {
   title: string;
@@ -28,9 +30,17 @@ const AppPanel: React.FunctionComponent<IAppPanelProps> = ({
   setDetails,
 }: IAppPanelProps) => {
   if (name === 'applications') {
+    return <ApplicationsPanel title={title} description={description} options={options} setDetails={setDetails} />;
+  }
+
+  if (name === 'userapplications') {
+    return <UserApplications title={title} description={description} setDetails={setDetails} />;
+  }
+
+  if (name === 'userteams') {
     return (
       <PluginPanel title={title} description={description}>
-        <ApplicationsPanel options={options} setDetails={setDetails} />
+        <UserTeams setDetails={setDetails} />
       </PluginPanel>
     );
   }
