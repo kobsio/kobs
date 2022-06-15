@@ -50,12 +50,15 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
     if (value && data) {
-      return data
-        .filter((item) => item.toLowerCase().includes(value.toLowerCase()))
+      const filteredData = data.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
+      return filteredData
+        .slice(0, filteredData.length > 100 ? 100 : filteredData.length)
         .map((item, index) => <SelectOption key={index} value={item} />);
     } else {
       if (data) {
-        return data.map((item, index) => <SelectOption key={index} value={item} />);
+        return data
+          .slice(0, data.length > 100 ? 100 : data.length)
+          .map((item, index) => <SelectOption key={index} value={item} />);
       }
       return [];
     }
@@ -79,12 +82,13 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
       onSelect={(e, value): void => setService(value as string)}
       selections={service}
       isOpen={show}
+      maxHeight="50vh"
     >
       {isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get services.'} />]
         : data
         ? data
-            .slice(0, data.length > 50 ? 50 : data.length)
+            .slice(0, data.length > 100 ? 100 : data.length)
             .map((service, index) => <SelectOption key={index} value={service} />)
         : []}
     </Select>

@@ -68,6 +68,7 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
               .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
           : []
       }
+      maxHeight="50vh"
     >
       {isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]

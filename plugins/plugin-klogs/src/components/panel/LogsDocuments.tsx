@@ -54,6 +54,7 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
         <Tr>
           <Th />
           <Th
+            tooltip={null}
             sort={{
               columnIndex: -1,
               onSort: (
@@ -75,6 +76,7 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
             fields.map((field, index) => (
               <Th
                 key={index}
+                tooltip={null}
                 sort={{
                   columnIndex: index,
                   onSort: (

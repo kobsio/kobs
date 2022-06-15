@@ -72,6 +72,7 @@ const PluginInstances: React.FunctionComponent = () => {
                   onClear={(): void => setState({ ...state, page: 1, pluginSatellite: '' })}
                   selections={state.pluginSatellite}
                   isOpen={state.pluginSatelliteIsOpen}
+                  maxHeight="50vh"
                 >
                   {pluginsContext.getPluginSatellites().map((option) => (
                     <SelectOption key={option} value={option} />
@@ -91,6 +92,7 @@ const PluginInstances: React.FunctionComponent = () => {
                   onClear={(): void => setState({ ...state, page: 1, pluginType: '' })}
                   selections={state.pluginType}
                   isOpen={state.pluginTypeIsOpen}
+                  maxHeight="50vh"
                 >
                   {pluginsContext.getPluginTypes().map((option) => (
                     <SelectOption key={option} value={option} />
