@@ -90,6 +90,7 @@ const DetailsLogs: React.FunctionComponent<IDetailsLogsProps> = ({
         onSelect={(e, value): void => selectContainer(value as string)}
         selections={container}
         isOpen={showSelect}
+        maxHeight="50vh"
       >
         {containers.map((container, index) => (
           <SelectOption key={index} value={container} />

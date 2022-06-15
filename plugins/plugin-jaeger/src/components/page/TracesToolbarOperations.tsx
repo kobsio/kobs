@@ -56,12 +56,15 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
     if (value && data) {
-      return data
-        .filter((item) => item.toLowerCase().includes(value.toLowerCase()))
+      const filteredData = data.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
+      return filteredData
+        .slice(0, data.length > 100 ? 100 : data.length)
         .map((item, index) => <SelectOption key={index} value={item} />);
     } else {
       if (data) {
-        return data.map((item, index) => <SelectOption key={index} value={item} />);
+        return data
+          .slice(0, data.length > 100 ? 100 : data.length)
+          .map((item, index) => <SelectOption key={index} value={item} />);
       }
       return [];
     }
@@ -85,12 +88,13 @@ const TracesToolbarOperations: React.FunctionComponent<ITracesToolbarOperationsP
       onSelect={(e, value): void => setOperation(value as string)}
       selections={operation}
       isOpen={show}
+      maxHeight="50vh"
     >
       {isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get operations.'} />]
         : data
         ? data
-            .slice(0, data.length > 50 ? 50 : data.length)
+            .slice(0, data.length > 100 ? 100 : data.length)
             .map((operation, index) => <SelectOption key={index} value={operation} />)
         : []}
     </Select>

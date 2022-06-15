@@ -94,6 +94,7 @@ const SQL: React.FunctionComponent<ISQLProps> = ({ instance, title, description,
               onSelect={select}
               selections={queries[selectedQueryIndex].name}
               isOpen={showSelect}
+              maxHeight="50vh"
             >
               {queries.map((query, index) => (
                 <SelectOption key={index} value={query.name} description={query.query} />
