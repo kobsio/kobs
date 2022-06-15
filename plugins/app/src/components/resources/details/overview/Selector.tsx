@@ -17,7 +17,6 @@ const Selector: React.FunctionComponent<ISelectorProps> = ({
   selector,
 }: ISelectorProps) => {
   const clusterID = `/satellite/${satellite}/cluster/${cluster}`;
-  const namespaceID = `${clusterID}/namespace/${namespace}`;
 
   return (
     <DescriptionListGroup>
@@ -29,7 +28,7 @@ const Selector: React.FunctionComponent<ISelectorProps> = ({
               key={key}
               to={`/resources?paramName=labelSelector&param=${key}=${
                 selector.matchLabels ? selector.matchLabels[key] : ''
-              }&clusterID=${clusterID}&namespaceID=${encodeURIComponent(namespaceID)}&resourceID=pods`}
+              }&clusterID=${encodeURIComponent(clusterID)}&namespace=${namespace}&resourceID=pods`}
             >
               <div className="pf-c-chip pf-u-mr-md pf-u-mb-sm" style={{ maxWidth: '100%' }}>
                 <span className="pf-c-chip__text" style={{ maxWidth: '100%' }}>

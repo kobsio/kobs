@@ -38,14 +38,14 @@ const ResourcesToolbar: React.FunctionComponent<IResourcesToolbarProps> = ({
     }
   };
 
-  const selectNamespaceID = (namespaceID: string): void => {
-    if (namespaceID === '') {
-      setState({ ...state, namespaceIDs: [] });
+  const selectNamespace = (namespace: string): void => {
+    if (namespace === '') {
+      setState({ ...state, namespaces: [] });
     } else {
-      if (state.namespaceIDs.includes(namespaceID)) {
-        setState({ ...state, namespaceIDs: state.namespaceIDs.filter((item) => item !== namespaceID) });
+      if (state.namespaces.includes(namespace)) {
+        setState({ ...state, namespaces: state.namespaces.filter((item) => item !== namespace) });
       } else {
-        setState({ ...state, namespaceIDs: [...state.namespaceIDs, namespaceID] });
+        setState({ ...state, namespaces: [...state.namespaces, namespace] });
       }
     }
   };
@@ -86,8 +86,8 @@ const ResourcesToolbar: React.FunctionComponent<IResourcesToolbarProps> = ({
         <ToolbarItem>
           <ResourcesToolbarNamespaces
             selectedClusterIDs={state.clusterIDs}
-            selectedNamespaceIDs={state.namespaceIDs}
-            selectNamespaceID={selectNamespaceID}
+            selectedNamespaces={state.namespaces}
+            selectNamespace={selectNamespace}
           />
         </ToolbarItem>
         <ToolbarItem>

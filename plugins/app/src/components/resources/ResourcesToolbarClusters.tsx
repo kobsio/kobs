@@ -6,7 +6,7 @@ import { ICluster, IClusters } from '../../resources/clusters';
 
 interface IResourcesToolbarClustersProps {
   selectedClusterIDs: string[];
-  selectClusterID: (clusterIDs: string) => void;
+  selectClusterID: (clusterID: string) => void;
 }
 
 const ResourcesToolbarClusters: React.FunctionComponent<IResourcesToolbarClustersProps> = ({

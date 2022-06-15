@@ -7,7 +7,7 @@ export const getInitialOptions = (search: string): IOptions => {
   const all = params.get('all');
   const clusterIDs = params.getAll('clusterID');
   const external = params.get('external');
-  const namespaceIDs = params.getAll('namespaceID');
+  const namespaces = params.getAll('namespace');
   const page = params.get('page');
   const perPage = params.get('perPage');
   const searchTerm = params.get('searchTerm');
@@ -17,7 +17,7 @@ export const getInitialOptions = (search: string): IOptions => {
     all: all === 'true' ? true : false,
     clusterIDs: clusterIDs,
     external: external || 'include',
-    namespaceIDs: namespaceIDs,
+    namespaces: namespaces,
     page: page ? parseInt(page) : 1,
     perPage: perPage ? parseInt(perPage) : 10,
     searchTerm: searchTerm || '',

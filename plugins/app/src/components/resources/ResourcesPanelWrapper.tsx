@@ -20,11 +20,6 @@ const ResourcesPanelWrapper: React.FunctionComponent<IResourcesPanelWrapperProps
     const clusterIDs: string[] = options.satellites.map((satellite: string) =>
       options.clusters.map((cluster: string) => `/satellite/${satellite}/cluster/${cluster}`),
     );
-    const namespaceIDs = options.namespaces
-      ? clusterIDs.map((clusterID) =>
-          options.namespaces.map((namespace: string) => `${clusterID}/namespace/${namespace}`),
-        )
-      : [];
 
     return (
       <ResourcesPanel
@@ -32,7 +27,7 @@ const ResourcesPanelWrapper: React.FunctionComponent<IResourcesPanelWrapperProps
         options={{
           clusterIDs: clusterIDs,
           columns: options.columns,
-          namespaceIDs: namespaceIDs,
+          namespaces: options.namespaces || [],
           param: options.selector || '',
           paramName: options.selectorType === 'fieldSelector' ? 'fieldSelector' : 'labelSelector',
           resourceIDs: options.resources || [],

@@ -98,7 +98,7 @@ func TestGetNamespaces(t *testing.T) {
 			name:               "get namespaces",
 			url:                "/namespaces",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"dev-de1 (satellite1)\":[{\"id\":\"\",\"namespace\":\"default\",\"cluster\":\"dev-de1\",\"satellite\":\"satellite1\",\"clusterID\":\"\",\"updatedAt\":0},{\"id\":\"\",\"namespace\":\"kube-system\",\"cluster\":\"dev-de1\",\"satellite\":\"satellite1\",\"clusterID\":\"\",\"updatedAt\":0}],\"stage-de1 (satellite2)\":[{\"id\":\"\",\"namespace\":\"default\",\"cluster\":\"stage-de1\",\"satellite\":\"satellite2\",\"clusterID\":\"\",\"updatedAt\":0}]}\n",
+			expectedBody:       "[\"default\",\"kube-system\"]\n",
 			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetNamespacesByClusterIDs", mock.Anything, mock.Anything).Return([]shared.Namespace{
 					{Namespace: "default", Cluster: "dev-de1", Satellite: "satellite1"},
