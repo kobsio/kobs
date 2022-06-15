@@ -19,7 +19,7 @@ const Applications: React.FunctionComponent = () => {
 
   const changeOptions = (opts: IOptions): void => {
     const c = opts.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
-    const n = opts.namespaceIDs.map((namespaceID) => `&namespaceID=${encodeURIComponent(namespaceID)}`);
+    const n = opts.namespaces.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`);
     const t = opts.tags.map((tag) => `&tag=${encodeURIComponent(tag)}`);
 
     navigate(

@@ -25,6 +25,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#346](https://github.com/kobsio/kobs/pull/346): [app] :warning: _Breaking change:_ :warning: Rework kobs architecture, by introducing a `hub` and a `satellite` component. This new architecture allows us to run the kobs `hub` component in a central cluster and access clusters / services (plugins) through the kobs `satellite` component. More information regarding the new kobs architecture can be found in the documentation at [kobs.io](https://kobs.io).
 - [#348](https://github.com/kobsio/kobs/pull/348): [app] Update permission handling.
 - [#354](https://github.com/kobsio/kobs/pull/#354): [app] Change URLs for the details page of an Application and a Dashboard.
+- [#357](https://github.com/kobsio/kobs/pull/#357): [app] Adjust namespace handling in the frontend, so that it is not required anymore to select the namespaces from all selected clusters.
 
 ## [v0.8.0](https://github.com/kobsio/kobs/releases/tag/v0.8.0) (2022-03-24)
 

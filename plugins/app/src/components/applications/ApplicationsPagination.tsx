@@ -19,13 +19,17 @@ const Applications: React.FunctionComponent<IApplicationsPagination> = ({
       options.all,
       options.clusterIDs,
       options.external,
-      options.namespaceIDs,
+      options.namespaces,
       options.searchTerm,
       options.tags,
     ],
     async () => {
       const c = options.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
-      const n = options.namespaceIDs.map((namespaceID) => `&namespaceID=${encodeURIComponent(namespaceID)}`);
+      const n = options.clusterIDs.map((clusterID) =>
+        options.namespaces.map(
+          (namespace) => `&namespaceID=${encodeURIComponent(`${clusterID}/namespace/${namespace}`)}`,
+        ),
+      );
       const t = options.tags.map((tag) => `&tag=${encodeURIComponent(tag)}`);
 
       const response = await fetch(

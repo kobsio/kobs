@@ -6,14 +6,14 @@ import { getTimeParams } from '@kobsio/shared';
 export const getInitialOptions = (search: string, isInitial: boolean): IOptions => {
   const params = new URLSearchParams(search);
   const clusterIDs = params.getAll('clusterID');
-  const namespaceIDs = params.getAll('namespaceID');
+  const namespaces = params.getAll('namespace');
   const resourceIDs = params.getAll('resourceID');
   const param = params.get('param');
   const paramName = params.get('paramName');
 
   return {
     clusterIDs: clusterIDs,
-    namespaceIDs: namespaceIDs,
+    namespaces: namespaces,
     param: param || '',
     paramName: paramName || '',
     resourceIDs: resourceIDs,
