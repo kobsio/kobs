@@ -88,9 +88,9 @@ func New(config api.Config, debugUsername, debugPassword, hubAddress string, aut
 		r.Use(middleware.RequestID)
 		r.Use(middleware.Recoverer)
 		r.Use(middleware.URLFormat)
+		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient))
 		r.Use(metrics.Metrics)
 		r.Use(httplog.Logger)
-		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/auth", userauth.Mount(authLogoutRedirect))
