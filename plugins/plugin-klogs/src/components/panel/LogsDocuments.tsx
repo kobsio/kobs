@@ -128,23 +128,23 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
                 page={page.page}
                 variant={PaginationVariant.bottom}
                 onSetPage={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPage: number): void =>
-                  setPage({ page: newPage, perPage: page.perPage })
+                  setPage({ ...page, page: newPage })
                 }
                 onPerPageSelect={(
                   event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
                   newPerPage: number,
-                ): void => setPage({ page: page.page, perPage: newPerPage })}
+                ): void => setPage({ page: 1, perPage: newPerPage })}
                 onFirstClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-                  setPage({ page: newPage, perPage: page.perPage })
+                  setPage({ ...page, page: newPage })
                 }
                 onLastClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-                  setPage({ page: newPage, perPage: page.perPage })
+                  setPage({ ...page, page: newPage })
                 }
                 onNextClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-                  setPage({ page: newPage, perPage: page.perPage })
+                  setPage({ ...page, page: newPage })
                 }
                 onPreviousClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-                  setPage({ page: newPage, perPage: page.perPage })
+                  setPage({ ...page, page: newPage })
                 }
               />
             </Td>
