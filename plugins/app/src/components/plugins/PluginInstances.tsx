@@ -144,7 +144,7 @@ const PluginInstances: React.FunctionComponent = () => {
             setState({ ...state, page: newPage })
           }
           onPerPageSelect={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPerPage: number): void =>
-            setState({ ...state, perPage: newPerPage })
+            setState({ ...state, page: 1, perPage: newPerPage })
           }
           onFirstClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
             setState({ ...state, page: newPage })
