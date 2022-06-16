@@ -2,6 +2,7 @@ package clusters
 
 import (
 	"net/http"
+	"sort"
 
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/store/shared"
@@ -56,6 +57,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 		uniqueNamespaces = appendIfMissing(uniqueNamespaces, namespace.Namespace)
 	}
 
+	sort.Strings(uniqueNamespaces)
 	render.JSON(w, r, uniqueNamespaces)
 }
 

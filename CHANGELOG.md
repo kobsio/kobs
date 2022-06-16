@@ -19,6 +19,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#351](https://github.com/kobsio/kobs/pull/#351): [jaeger] Fix links and colors in Jaeger plugin.
 - [#352](https://github.com/kobsio/kobs/pull/#352): [app] Fix plugin filter and allow filtering by the name of a satellite.
 - [#356](https://github.com/kobsio/kobs/pull/#356): [app] Fix tooltip in documents table of the klogs plugin. Fix filtering of services and operations in the Jaeger plugin. Add max height to all select boxes.
+- [#358](https://github.com/kobsio/kobs/pull/#358): [app] Fix namespace handling, when multiple namespaces are selected.
 
 ### Changed
 
