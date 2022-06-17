@@ -16,10 +16,15 @@ import (
 
 	bh "github.com/timshannon/bolthold"
 	bolt "go.etcd.io/bbolt"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type client struct {
-	store *bh.Store
+	store  *bh.Store
+	tracer trace.Tracer
 }
 
 func NewClient(uri string) (*client, error) {
@@ -29,11 +34,17 @@ func NewClient(uri string) (*client, error) {
 	}
 
 	return &client{
-		store: store,
+		store:  store,
+		tracer: otel.Tracer("store"),
 	}, nil
 }
 
 func (c *client) SavePlugins(ctx context.Context, satellite string, plugins []plugin.Instance) error {
+	_, span := c.tracer.Start(ctx, "store.SavePlugins")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
 	updatedAt := time.Now().Unix()
 
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
@@ -51,10 +62,21 @@ func (c *client) SavePlugins(ctx context.Context, satellite string, plugins []pl
 		return c.store.TxDeleteMatching(tx, &plugin.Instance{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveClusters(ctx context.Context, satellite string, clusters []string) error {
+	_, span := c.tracer.Start(ctx, "store.SaveClusters")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
 	updatedAt := time.Now().Unix()
 
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
@@ -75,10 +97,21 @@ func (c *client) SaveClusters(ctx context.Context, satellite string, clusters []
 		return c.store.TxDeleteMatching(tx, &shared.Cluster{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveNamespaces(ctx context.Context, satellite string, namespaces map[string][]string) error {
+	_, span := c.tracer.Start(ctx, "store.SaveNamespaces")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
 	updatedAt := time.Now().Unix()
 
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
@@ -103,10 +136,20 @@ func (c *client) SaveNamespaces(ctx context.Context, satellite string, namespace
 		return c.store.TxDeleteMatching(tx, &shared.Namespace{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveCRDs(ctx context.Context, crds []cluster.CRD) error {
+	_, span := c.tracer.Start(ctx, "store.SaveCRDs")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	updatedAtTime := time.Now()
 	updatedAt := updatedAtTime.Unix()
 
@@ -123,10 +166,21 @@ func (c *client) SaveCRDs(ctx context.Context, crds []cluster.CRD) error {
 		return c.store.TxDeleteMatching(tx, &cluster.CRD{}, bh.Where("UpdatedAt").Lt(updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix()))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveApplications(ctx context.Context, satellite string, applications []applicationv1.ApplicationSpec) error {
+	_, span := c.tracer.Start(ctx, "store.SaveApplications")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
 	updatedAt := time.Now().Unix()
 
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
@@ -146,10 +200,21 @@ func (c *client) SaveApplications(ctx context.Context, satellite string, applica
 		return c.store.TxDeleteMatching(tx, &applicationv1.ApplicationSpec{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveDashboards(ctx context.Context, satellite string, dashboards []dashboardv1.DashboardSpec) error {
+	_, span := c.tracer.Start(ctx, "store.SaveDashboards")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
 	updatedAt := time.Now().Unix()
 
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
@@ -169,10 +234,21 @@ func (c *client) SaveDashboards(ctx context.Context, satellite string, dashboard
 		return c.store.TxDeleteMatching(tx, &dashboardv1.DashboardSpec{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveTeams(ctx context.Context, satellite string, teams []teamv1.TeamSpec) error {
+	_, span := c.tracer.Start(ctx, "store.SaveTeams")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
 	updatedAt := time.Now().Unix()
 
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
@@ -192,10 +268,21 @@ func (c *client) SaveTeams(ctx context.Context, satellite string, teams []teamv1
 		return c.store.TxDeleteMatching(tx, &teamv1.TeamSpec{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveUsers(ctx context.Context, satellite string, users []userv1.UserSpec) error {
+	_, span := c.tracer.Start(ctx, "store.SaveUsers")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
 	updatedAt := time.Now().Unix()
 
 	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
@@ -215,10 +302,20 @@ func (c *client) SaveUsers(ctx context.Context, satellite string, users []userv1
 		return c.store.TxDeleteMatching(tx, &userv1.UserSpec{}, bh.Where("Satellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SaveTags(ctx context.Context, applications []applicationv1.ApplicationSpec) error {
+	_, span := c.tracer.Start(ctx, "store.SaveTags")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	updatedAtTime := time.Now()
 	updatedAt := updatedAtTime.Unix()
 
@@ -241,15 +338,27 @@ func (c *client) SaveTags(ctx context.Context, applications []applicationv1.Appl
 		return c.store.TxDeleteMatching(tx, &shared.Tag{}, bh.Where("UpdatedAt").Lt(updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix()))
 	})
 
-	return err
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
+	_, span := c.tracer.Start(ctx, "store.GetPlugins")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var plugins []plugin.Instance
 	query := &bh.Query{}
 
 	err := c.store.Find(&plugins, query.SortBy("ID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -257,11 +366,17 @@ func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 }
 
 func (c *client) GetClusters(ctx context.Context) ([]shared.Cluster, error) {
+	_, span := c.tracer.Start(ctx, "store.GetClusters")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var clusters []shared.Cluster
 	query := &bh.Query{}
 
 	err := c.store.Find(&clusters, query.SortBy("ID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -269,11 +384,17 @@ func (c *client) GetClusters(ctx context.Context) ([]shared.Cluster, error) {
 }
 
 func (c *client) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) {
+	_, span := c.tracer.Start(ctx, "store.GetNamespaces")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var namespaces []shared.Namespace
 	query := &bh.Query{}
 
 	err := c.store.Find(&namespaces, query.SortBy("ID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -281,11 +402,17 @@ func (c *client) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) 
 }
 
 func (c *client) GetCRDs(ctx context.Context) ([]cluster.CRD, error) {
+	_, span := c.tracer.Start(ctx, "store.GetCRDs")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var crds []cluster.CRD
 	query := &bh.Query{}
 
 	err := c.store.Find(&crds, query.SortBy("ID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -293,10 +420,17 @@ func (c *client) GetCRDs(ctx context.Context) ([]cluster.CRD, error) {
 }
 
 func (c *client) GetCRDByID(ctx context.Context, id string) (*cluster.CRD, error) {
+	_, span := c.tracer.Start(ctx, "store.GetCRDByID")
+	span.SetAttributes(attribute.Key("id").String(id))
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var crd cluster.CRD
 
 	err := c.store.Get(id, &crd)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -304,6 +438,11 @@ func (c *client) GetCRDByID(ctx context.Context, id string) (*cluster.CRD, error
 }
 
 func (c *client) GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []string) ([]shared.Namespace, error) {
+	_, span := c.tracer.Start(ctx, "store.GetNamespacesByClusterIDs")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("clusterIDs").StringSlice(clusterIDs))
+	defer span.End()
+
 	if len(clusterIDs) == 0 {
 		return nil, nil
 	}
@@ -312,6 +451,8 @@ func (c *client) GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []str
 
 	err := c.store.Find(&namespaces, bh.Where("ClusterID").In(bh.Slice(clusterIDs)...).SortBy("ID").Index("ClusterID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -319,11 +460,17 @@ func (c *client) GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []str
 }
 
 func (c *client) GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetApplications")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var applications []applicationv1.ApplicationSpec
 	query := &bh.Query{}
 
 	err := c.store.Find(&applications, query.SortBy("ID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -331,8 +478,22 @@ func (c *client) GetApplications(ctx context.Context) ([]applicationv1.Applicati
 }
 
 func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetApplicationsByFilter")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
+	span.SetAttributes(attribute.Key("clusterIDs").StringSlice(clusterIDs))
+	span.SetAttributes(attribute.Key("namespaceIDs").StringSlice(namespaceIDs))
+	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
+	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
+	span.SetAttributes(attribute.Key("external").String(external))
+	span.SetAttributes(attribute.Key("limit").Int(limit))
+	span.SetAttributes(attribute.Key("offset").Int(offset))
+	defer span.End()
+
 	searchTermRegexp, err := regexp.Compile(searchTerm)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -364,6 +525,8 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusterIDs,
 
 	err = c.store.Find(&applications, query.SortBy("Name").Limit(limit).Skip(offset))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -371,8 +534,20 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusterIDs,
 }
 
 func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, clusterIDs, namespaceIDs, tags []string, searchTerm, external string) (int, error) {
+	_, span := c.tracer.Start(ctx, "store.GetApplicationsByFilterCount")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
+	span.SetAttributes(attribute.Key("clusterIDs").StringSlice(clusterIDs))
+	span.SetAttributes(attribute.Key("namespaceIDs").StringSlice(namespaceIDs))
+	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
+	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
+	span.SetAttributes(attribute.Key("external").String(external))
+	defer span.End()
+
 	searchTermRegexp, err := regexp.Compile(searchTerm)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return 0, err
 	}
 
@@ -402,6 +577,8 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 
 	count, err := c.store.Count(&applicationv1.ApplicationSpec{}, query)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return 0, err
 	}
 
@@ -409,10 +586,17 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 }
 
 func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicationv1.ApplicationSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetApplicationByID")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("id").String(id))
+	defer span.End()
+
 	var application applicationv1.ApplicationSpec
 
 	err := c.store.Get(id, &application)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -420,11 +604,17 @@ func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicatio
 }
 
 func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetDashboards")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var dashboards []dashboardv1.DashboardSpec
 	query := &bh.Query{}
 
 	err := c.store.Find(&dashboards, query.SortBy("ID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -432,10 +622,17 @@ func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec
 }
 
 func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.DashboardSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetDashboardByID")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("id").String(id))
+	defer span.End()
+
 	var dashboard dashboardv1.DashboardSpec
 
 	err := c.store.Get(id, &dashboard)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -443,11 +640,17 @@ func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.
 }
 
 func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetTeams")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var teams []teamv1.TeamSpec
 	query := &bh.Query{}
 
 	err := c.store.Find(&teams, query.SortBy("Group"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -455,6 +658,11 @@ func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
 }
 
 func (c *client) GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv1.TeamSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetTeamsByGroups")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("groups").StringSlice(groups))
+	defer span.End()
+
 	if len(groups) == 0 {
 		return nil, nil
 	}
@@ -463,6 +671,8 @@ func (c *client) GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv
 
 	err := c.store.Find(&teams, bh.Where("Group").In(bh.Slice(groups)...).SortBy("Group").Index("Group"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -470,14 +680,23 @@ func (c *client) GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv
 }
 
 func (c *client) GetTeamByGroup(ctx context.Context, group string) (*teamv1.TeamSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetTeamByGroup")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("group").String(group))
+	defer span.End()
+
 	var teams []teamv1.TeamSpec
 
 	err := c.store.Find(&teams, bh.Where("Group").Eq(group).Index("Group"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
 	if len(teams) == 0 {
+		span.RecordError(fmt.Errorf("team was not found"))
+		span.SetStatus(codes.Error, "team was not found")
 		return nil, fmt.Errorf("team was not found")
 	}
 
@@ -494,11 +713,17 @@ func (c *client) GetTeamByGroup(ctx context.Context, group string) (*teamv1.Team
 }
 
 func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetUsers")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var users []userv1.UserSpec
 	query := &bh.Query{}
 
 	err := c.store.Find(&users, query.SortBy("ID"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -506,10 +731,17 @@ func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
 }
 
 func (c *client) GetUsersByEmail(ctx context.Context, email string) ([]userv1.UserSpec, error) {
+	_, span := c.tracer.Start(ctx, "store.GetUsersByEmail")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("email").String(email))
+	defer span.End()
+
 	var users []userv1.UserSpec
 
 	err := c.store.Find(&users, bh.Where("Email").Eq(email).Index("Email"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -517,10 +749,16 @@ func (c *client) GetUsersByEmail(ctx context.Context, email string) ([]userv1.Us
 }
 
 func (c *client) GetTags(ctx context.Context) ([]shared.Tag, error) {
+	_, span := c.tracer.Start(ctx, "store.GetTags")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	defer span.End()
+
 	var tags []shared.Tag
 
 	err := c.store.Find(&tags, bh.Where("Tag").Ne("").SortBy("Tag"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 

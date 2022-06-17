@@ -9,6 +9,7 @@ import (
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/debug"
 	"github.com/kobsio/kobs/pkg/middleware/httplog"
+	"github.com/kobsio/kobs/pkg/middleware/httptracer"
 	"github.com/kobsio/kobs/pkg/middleware/metrics"
 	"github.com/kobsio/kobs/pkg/satellite/api"
 	"github.com/kobsio/kobs/pkg/satellite/api/applications"
@@ -91,6 +92,7 @@ func New(debugUsername, debugPassword, satelliteAddress, satelliteToken string, 
 		r.Use(middleware.URLFormat)
 		r.Use(tokenauth.Handler(satelliteToken))
 		r.Use(user.Handler())
+		r.Use(httptracer.Handler("satellite"))
 		r.Use(metrics.Metrics)
 		r.Use(httplog.Logger)
 		r.Use(render.SetContentType(render.ContentTypeJSON))

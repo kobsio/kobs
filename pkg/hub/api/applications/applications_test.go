@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/store"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"go.opentelemetry.io/otel"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/mock"
@@ -108,7 +109,7 @@ func TestGetApplications(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -189,7 +190,7 @@ func TestGetApplicationsCount(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -243,7 +244,7 @@ func TestGetTags(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -337,7 +338,7 @@ func TestGetApplication(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -464,7 +465,7 @@ func TestGetApplicationsByTeam(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()

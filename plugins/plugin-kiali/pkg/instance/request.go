@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
@@ -16,6 +19,8 @@ func doRequest[T any](ctx context.Context, client *http.Client, url string) (T, 
 	if err != nil {
 		return result, err
 	}
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 
 	resp, err := client.Do(req)
 	if err != nil {

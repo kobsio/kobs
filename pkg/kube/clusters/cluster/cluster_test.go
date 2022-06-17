@@ -17,6 +17,7 @@ import (
 	teamfake "github.com/kobsio/kobs/pkg/kube/clients/team/clientset/versioned/typed/team/v1/fake"
 	userfakeclient "github.com/kobsio/kobs/pkg/kube/clients/user/clientset/versioned/fake"
 	userfake "github.com/kobsio/kobs/pkg/kube/clients/user/clientset/versioned/typed/user/v1/fake"
+	"go.opentelemetry.io/otel"
 
 	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"
@@ -49,6 +50,7 @@ func TestGetNamespaces(t *testing.T) {
 					Name: "kube-system",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -91,6 +93,7 @@ func TestGetApplications(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -128,6 +131,7 @@ func TestGetApplication(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -164,6 +168,7 @@ func TestGetTeams(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -201,6 +206,7 @@ func TestGetTeam(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -237,6 +243,7 @@ func TestGetDashboards(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -274,6 +281,7 @@ func TestGetDashboard(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -310,6 +318,7 @@ func TestGetUsers(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -347,6 +356,7 @@ func TestGetUser(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 

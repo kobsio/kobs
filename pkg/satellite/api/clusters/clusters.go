@@ -23,7 +23,7 @@ type Router struct {
 
 func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 	var clusters []string
-	for _, c := range router.clustersClient.GetClusters() {
+	for _, c := range router.clustersClient.GetClusters(r.Context()) {
 		clusters = append(clusters, c.GetName())
 	}
 
@@ -34,7 +34,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	var namespaces map[string][]string
 	namespaces = make(map[string][]string)
 
-	for _, c := range router.clustersClient.GetClusters() {
+	for _, c := range router.clustersClient.GetClusters(r.Context()) {
 		clusterNamespaces, err := c.GetNamespaces(r.Context())
 		if err != nil {
 			log.Error(r.Context(), "Could not get namespaces", zap.Error(err))
@@ -51,7 +51,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
 	var crds []cluster.CRD
 
-	for _, c := range router.clustersClient.GetClusters() {
+	for _, c := range router.clustersClient.GetClusters(r.Context()) {
 		crds = append(crds, c.GetCRDs()...)
 	}
 

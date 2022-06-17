@@ -9,6 +9,7 @@ import (
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 
 	"github.com/mitchellh/mapstructure"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 // Config is the structure of the configuration for a single Grafana instance.
@@ -91,7 +92,7 @@ func New(name string, options map[string]interface{}) (Instance, error) {
 		address: config.Address,
 		client: &http.Client{
 			Timeout:   30 * time.Second,
-			Transport: roundTripper,
+			Transport: otelhttp.NewTransport(roundTripper),
 		},
 	}, nil
 }

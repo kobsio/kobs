@@ -11,6 +11,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Added
 
 - [#355](https://github.com/kobsio/kobs/pull/#355): [app] Add profile page for authenticated users, which can be customized via dashboards.
+- [#361](https://github.com/kobsio/kobs/pull/#361): [app] Add tracing support for kobs via Jaeger or Zipkin.
 
 ### Fixed
 

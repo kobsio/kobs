@@ -8,6 +8,9 @@ import (
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
@@ -19,6 +22,8 @@ func doRequest[T any](ctx context.Context, user *authContext.User, client *http.
 	if err != nil {
 		return result, err
 	}
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	if user != nil {

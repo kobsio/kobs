@@ -34,7 +34,7 @@ func appendIfMissing(items []string, item string) []string {
 }
 
 func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
-	clusters := router.clustersClient.GetClusters()
+	clusters := router.clustersClient.GetClusters(r.Context())
 
 	var clusterNames []string
 	for _, cluster := range clusters {
@@ -49,7 +49,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	clusterNames := r.URL.Query()["cluster"]
 
 	for _, clusterName := range clusterNames {
-		tmpNamespaces, err := router.clustersClient.GetCluster(clusterName).GetNamespaces(r.Context())
+		tmpNamespaces, err := router.clustersClient.GetCluster(r.Context(), clusterName).GetNamespaces(r.Context())
 		if err != nil {
 			log.Error(r.Context(), "Could not get namespaces", zap.Error(err), zap.String("cluster", clusterName))
 			errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get namespaces")
@@ -72,7 +72,7 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Sync resource", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource))
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")

@@ -39,6 +39,21 @@ func init() {
 		defaultLogLevel = os.Getenv("KOBS_LOG_LEVEL")
 	}
 
+	defaultTraceServiceName := "kobs"
+	if os.Getenv("KOBS_TRACE_SERVICE_NAME") != "" {
+		defaultTraceServiceName = os.Getenv("KOBS_TRACE_SERVICE_NAME")
+	}
+
+	defaultTraceProvider := "jaeger"
+	if os.Getenv("KOBS_TRACE_PROVIDER") != "" {
+		defaultTraceProvider = os.Getenv("KOBS_TRACE_PROVIDER")
+	}
+
+	defaultTraceAddress := "http://localhost:14268/api/traces"
+	if os.Getenv("KOBS_TRACE_ADDRESS") != "" {
+		defaultTraceAddress = os.Getenv("KOBS_TRACE_ADDRESS")
+	}
+
 	rootCmd.AddCommand(hub.Cmd)
 	rootCmd.AddCommand(satellite.Cmd)
 	rootCmd.AddCommand(version.Cmd)
@@ -47,6 +62,10 @@ func init() {
 	rootCmd.PersistentFlags().String("debug.password", defaultDebugPassword, "The password for the debug endpoints. The endpoints are only available when a password is provided.")
 	rootCmd.PersistentFlags().String("log.format", defaultLogFormat, "Set the output format of the logs. Must be \"console\" or \"json\".")
 	rootCmd.PersistentFlags().String("log.level", defaultLogLevel, "Set the log level. Must be \"debug\", \"info\", \"warn\", \"error\", \"fatal\" or \"panic\".")
+	rootCmd.PersistentFlags().Bool("trace.enabled", false, "Enable / disable tracing.")
+	rootCmd.PersistentFlags().String("trace.service-name", defaultTraceServiceName, "The service name which should be used for tracing.")
+	rootCmd.PersistentFlags().String("trace.provider", defaultTraceProvider, "Set the trace exporter which should be used. Must be \"jaeger\" or \"zipkin\".")
+	rootCmd.PersistentFlags().String("trace.address", defaultTraceAddress, "Set the address of the Jaeger or Zipkin instance.")
 }
 
 func main() {

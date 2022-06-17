@@ -1,6 +1,7 @@
 package satellite
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -26,7 +27,7 @@ func TestGetPlugins(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	plugins, err := client.GetPlugins(nil)
+	plugins, err := client.GetPlugins(context.Background())
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }
@@ -37,7 +38,7 @@ func TestGetClusters(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	plugins, err := client.GetClusters(nil)
+	plugins, err := client.GetClusters(context.Background())
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }
@@ -48,7 +49,7 @@ func TestGetNamespaces(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	namespaces, err := client.GetNamespaces(nil)
+	namespaces, err := client.GetNamespaces(context.Background())
 	require.Error(t, err)
 	require.Empty(t, namespaces)
 }
@@ -59,7 +60,7 @@ func TestGetCRDs(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	crds, err := client.GetCRDs(nil)
+	crds, err := client.GetCRDs(context.Background())
 	require.Error(t, err)
 	require.Empty(t, crds)
 }
@@ -70,7 +71,7 @@ func TestGetApplications(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	plugins, err := client.GetApplications(nil)
+	plugins, err := client.GetApplications(context.Background())
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }
@@ -81,7 +82,7 @@ func TestGetDashboards(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	plugins, err := client.GetDashboards(nil)
+	plugins, err := client.GetDashboards(context.Background())
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }
@@ -92,7 +93,7 @@ func TestGetTeams(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	plugins, err := client.GetTeams(nil)
+	plugins, err := client.GetTeams(context.Background())
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }
@@ -103,7 +104,7 @@ func TestGetUsers(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	plugins, err := client.GetUsers(nil)
+	plugins, err := client.GetUsers(context.Background())
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }
@@ -114,7 +115,7 @@ func TestGetResources(t *testing.T) {
 
 	client, _ := NewClient(Config{Address: ts.URL})
 
-	plugins, err := client.GetResources(nil, nil, "", "", "", "", "", "", "")
+	plugins, err := client.GetResources(context.Background(), nil, "", "", "", "", "", "", "")
 	require.Error(t, err)
 	require.Empty(t, plugins)
 }

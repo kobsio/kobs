@@ -119,6 +119,12 @@ hub:
   settings:
     logFormat: console
     logLevel: info
+
+    traceEnabled: false
+    traceServiceName: hub
+    traceProvider: jaeger
+    traceAddress: http://localhost:14268/api/traces
+
     mode: default
     store:
       driver: bolt
