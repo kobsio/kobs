@@ -87,7 +87,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get resources parameters", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource), zap.String("path", path), zap.String("paramName", paramName), zap.String("param", param))
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -159,7 +159,7 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -220,7 +220,7 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -277,7 +277,7 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -318,7 +318,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get logs parameters", zap.String("cluster", clusterName), zap.String("namespace", namespace), zap.String("name", name), zap.String("container", container), zap.String("regex", regex), zap.String("since", since), zap.String("previous", previous), zap.String("follow", follow))
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -522,7 +522,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		msg, _ := json.Marshal(terminal.Message{
@@ -533,7 +533,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cluster.GetTerminal(c, namespace, name, container, shell)
+	err = cluster.GetTerminal(r.Context(), c, namespace, name, container, shell)
 	if err != nil {
 		log.Error(r.Context(), "Could not create terminal", zap.Error(err))
 		msg, _ := json.Marshal(terminal.Message{
@@ -579,14 +579,14 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
 		return
 	}
 
-	err = cluster.CopyFileFromPod(w, namespace, name, container, srcPath)
+	err = cluster.CopyFileFromPod(r.Context(), w, namespace, name, container, srcPath)
 	if err != nil {
 		log.Error(r.Context(), "Could not copy file", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not copy file")
@@ -633,7 +633,7 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cluster := router.clustersClient.GetCluster(clusterName)
+	cluster := router.clustersClient.GetCluster(r.Context(), clusterName)
 	if cluster == nil {
 		log.Error(r.Context(), "Invalid cluster name", zap.String("cluster", clusterName))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid cluster name")
@@ -642,7 +642,7 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 
 	destPath = destPath + "/" + h.Filename
 
-	err = cluster.CopyFileToPod(namespace, name, container, f, destPath)
+	err = cluster.CopyFileToPod(r.Context(), namespace, name, container, f, destPath)
 	if err != nil {
 		log.Error(r.Context(), "Could not copy file", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not copy file")

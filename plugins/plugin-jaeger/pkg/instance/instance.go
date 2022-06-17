@@ -8,7 +8,11 @@ import (
 	"net/url"
 
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
+
 	"github.com/mitchellh/mapstructure"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 // Config is the structure of the configuration for a single Jaeger database instance.
@@ -53,6 +57,8 @@ func (i *instance) doRequest(ctx context.Context, url string) (map[string]interf
 	if err != nil {
 		return nil, err
 	}
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 
 	resp, err := i.client.Do(req)
 	if err != nil {
@@ -131,7 +137,7 @@ func New(name string, options map[string]interface{}) (Instance, error) {
 		name:    name,
 		address: config.Address,
 		client: &http.Client{
-			Transport: roundTripper,
+			Transport: otelhttp.NewTransport(roundTripper),
 		},
 	}, nil
 }

@@ -7,9 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kiali/kiali/models"
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
+
+	"github.com/kiali/kiali/models"
 	"github.com/mitchellh/mapstructure"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 // Config is the structure of the configuration for a single Harbor database instance.
@@ -189,7 +191,7 @@ func New(name string, options map[string]interface{}) (Instance, error) {
 		name:    name,
 		address: config.Address,
 		client: &http.Client{
-			Transport: roundTripper,
+			Transport: otelhttp.NewTransport(roundTripper),
 		},
 	}, nil
 }

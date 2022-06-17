@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
@@ -18,6 +21,7 @@ func doRequest[T any](ctx context.Context, client *http.Client, url string) (T, 
 		return result, 0, err
 	}
 
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 	req.Header.Set("X-Accept-Vulnerabilities", "application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0")
 
 	resp, err := client.Do(req)

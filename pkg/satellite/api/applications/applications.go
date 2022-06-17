@@ -26,7 +26,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 
 	log.Debug(r.Context(), "Get applications")
 
-	for _, cluster := range router.clustersClient.GetClusters() {
+	for _, cluster := range router.clustersClient.GetClusters(r.Context()) {
 		application, err := cluster.GetApplications(r.Context(), "")
 		if err != nil {
 			log.Error(r.Context(), "Could not get applications", zap.Error(err))

@@ -34,6 +34,10 @@ spec:
             - hub
             - --log.format={{ .Values.hub.settings.logFormat }}
             - --log.level={{ .Values.hub.settings.logLevel }}
+            - --trace.enabled={{ .Values.hub.settings.traceEnabled }}
+            - --trace.service-name={{ .Values.hub.settings.traceServiceName }}
+            - --trace.provider={{ .Values.hub.settings.traceProvider }}
+            - --trace.address={{ .Values.hub.settings.traceAddress }}
             - --hub.mode={{ .Values.hub.settings.mode }}
             - --hub.store.driver={{ .Values.hub.settings.store.driver }}
             - --hub.store.uri={{ .Values.hub.settings.store.uri }}

@@ -48,9 +48,9 @@ func TestGetApplications(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
-			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
-			mockClustersClient.On("GetCluster", "cluster2").Return(nil)
+			mockClustersClient.On("GetClusters", mock.Anything).Return([]cluster.Client{mockClusterClient})
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster1").Return(mockClusterClient)
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster2").Return(nil)
 
 			tt.prepare(mockClusterClient)
 

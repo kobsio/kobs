@@ -86,7 +86,7 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ resourceData }: ITe
   const ws = useRef<WebSocket | null>(null);
   const term = useRef<xTerm>(new xTerm(TERMINAL_OPTIONS));
   const containers = getContainers(resourceData.props);
-  const shells = ['bash', 'sh', 'powershell', 'cmd'];
+  const shells = ['bash', 'sh', 'pwsh', 'cmd'];
 
   const [options, setOptions] = useState<{
     container: string;

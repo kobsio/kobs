@@ -15,6 +15,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/watcher"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/metrics"
+	"github.com/kobsio/kobs/pkg/tracer"
 	"github.com/kobsio/kobs/pkg/version"
 
 	"github.com/spf13/cobra"
@@ -57,6 +58,18 @@ var Cmd = &cobra.Command{
 
 		log.Info(nil, "Version information", version.Info()...)
 		log.Info(nil, "Build context", version.BuildContext()...)
+
+		traceEnabled, _ := cmd.Flags().GetBool("trace.enabled")
+		traceServiceName, _ := cmd.Flags().GetString("trace.service-name")
+		traceProvider, _ := cmd.Flags().GetString("trace.provider")
+		traceAddress, _ := cmd.Flags().GetString("trace.address")
+
+		if traceEnabled {
+			err := tracer.Setup(traceServiceName, traceProvider, traceAddress)
+			if err != nil {
+				log.Fatal(nil, "Could not setup tracing", zap.Error(err), zap.String("provider", traceProvider), zap.String("address", traceAddress))
+			}
+		}
 
 		// Load the configuration for the satellite from the provided configuration file.
 		cfg, err := config.Load(hubConfigFile)

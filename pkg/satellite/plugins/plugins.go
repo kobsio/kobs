@@ -39,6 +39,7 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 	// plugins as they are provided by the user, because they can contain sensible information like usernames and
 	// passwords. Therefore we are just returning the name, description, type and address for a plugin instance.
 	router := chi.NewRouter()
+
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		var frontendInstances []plugin.Instance
 

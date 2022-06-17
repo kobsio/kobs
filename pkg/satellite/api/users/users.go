@@ -26,7 +26,7 @@ func (router *Router) getUsers(w http.ResponseWriter, r *http.Request) {
 
 	var users []userv1.UserSpec
 
-	for _, cluster := range router.clustersClient.GetClusters() {
+	for _, cluster := range router.clustersClient.GetClusters(r.Context()) {
 		user, err := cluster.GetUsers(r.Context(), "")
 		if err != nil {
 			log.Error(r.Context(), "Could not get users")

@@ -17,7 +17,6 @@ import (
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	httpClient       *http.Client
 	satellitesClient satellites.Client
 	storeClient      store.Client
 }
@@ -81,7 +80,6 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 func Mount(satellitesClient satellites.Client, storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		&http.Client{},
 		satellitesClient,
 		storeClient,
 	}

@@ -45,7 +45,7 @@ func TestGetTeams(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
+			mockClustersClient.On("GetClusters", mock.Anything).Return([]cluster.Client{mockClusterClient})
 
 			tt.prepare(mockClusterClient)
 
