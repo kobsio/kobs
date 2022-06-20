@@ -146,25 +146,7 @@ spec:
                 type: string
               id:
                 type: string
-              links:
-                items:
-                  properties:
-                    link:
-                      type: string
-                    title:
-                      type: string
-                  required:
-                  - link
-                  - title
-                  type: object
-                type: array
-              name:
-                type: string
-              namespace:
-                type: string
-              namespaceID:
-                type: string
-              preview:
+              insights:
                 items:
                   properties:
                     mappings:
@@ -197,6 +179,24 @@ spec:
                   - type
                   type: object
                 type: array
+              links:
+                items:
+                  properties:
+                    link:
+                      type: string
+                    title:
+                      type: string
+                  required:
+                  - link
+                  - title
+                  type: object
+                type: array
+              name:
+                type: string
+              namespace:
+                type: string
+              namespaceID:
+                type: string
               satellite:
                 type: string
               tags:
