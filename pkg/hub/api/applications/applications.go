@@ -307,6 +307,8 @@ func Mount(storeClient store.Client) chi.Router {
 	router.Get("/tags", router.getTags)
 	router.Get("/application", router.getApplication)
 	router.Get("/team", router.getApplicationsByTeam)
+	router.Get("/topology", router.getApplicationsTopology)
+	router.Get("/topology/application", router.getApplicationTopology)
 
 	return router
 }

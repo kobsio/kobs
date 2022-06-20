@@ -195,6 +195,12 @@ func (c *client) watch() {
 					return
 				}
 
+				err = c.storeClient.SaveTopology(ctx, s.GetName(), applications)
+				if err != nil {
+					instrument(ctx, s.GetName(), "tags", err, len(applications), startTime)
+					return
+				}
+
 				instrument(ctx, s.GetName(), "applications", nil, len(applications), startTime)
 			}))
 		}(s)

@@ -347,6 +347,61 @@ func (c *client) SaveTags(ctx context.Context, applications []applicationv1.Appl
 	return nil
 }
 
+func (c *client) SaveTopology(ctx context.Context, satellite string, applications []applicationv1.ApplicationSpec) error {
+	_, span := c.tracer.Start(ctx, "store.SaveTopology")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("satellite").String(satellite))
+	defer span.End()
+
+	updatedAt := time.Now().Unix()
+
+	err := c.store.Bolt().Update(func(tx *bolt.Tx) error {
+		for _, a := range applications {
+			for _, dependency := range a.Topology.Dependencies {
+				dependencySatellite := dependency.Satellite
+				if dependencySatellite == "" {
+					dependencySatellite = satellite
+				}
+
+				sourceID := fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s/name/%s", satellite, a.Cluster, a.Namespace, a.Name)
+				targetID := fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s/name/%s", dependencySatellite, dependency.Cluster, dependency.Namespace, dependency.Name)
+
+				t := shared.Topology{
+					ID:                  fmt.Sprintf("%s---%s", sourceID, targetID),
+					SourceID:            sourceID,
+					SourceSatellite:     satellite,
+					SourceCluster:       a.Cluster,
+					SourceNamespace:     a.Namespace,
+					SourceName:          a.Name,
+					TargetID:            targetID,
+					TargetSatellite:     dependencySatellite,
+					TargetCluster:       dependency.Cluster,
+					TargetNamespace:     dependency.Namespace,
+					TargetName:          dependency.Name,
+					TopologyExternal:    a.Topology.External,
+					TopologyDescription: dependency.Description,
+					UpdatedAt:           updatedAt,
+				}
+
+				err := c.store.TxUpsert(tx, t.ID, t)
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		return c.store.TxDeleteMatching(tx, &shared.Topology{}, bh.Where("SourceSatellite").Eq(satellite).And("UpdatedAt").Lt(updatedAt))
+	})
+
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 	_, span := c.tracer.Start(ctx, "store.GetPlugins")
 	span.SetAttributes(attribute.Key("store").String("bolt"))
@@ -763,4 +818,23 @@ func (c *client) GetTags(ctx context.Context) ([]shared.Tag, error) {
 	}
 
 	return tags, nil
+}
+
+func (c *client) GetTopologyByIDs(ctx context.Context, field string, ids []string) ([]shared.Topology, error) {
+	_, span := c.tracer.Start(ctx, "store.GetTopologyByTargetIDs")
+	span.SetAttributes(attribute.Key("store").String("bolt"))
+	span.SetAttributes(attribute.Key("field").String(field))
+	span.SetAttributes(attribute.Key("ids").StringSlice(ids))
+	defer span.End()
+
+	var topology []shared.Topology
+
+	err := c.store.Find(&topology, bh.Where(field).In(bh.Slice(ids)...))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	return topology, nil
 }

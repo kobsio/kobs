@@ -30,7 +30,6 @@ export interface ILink {
 }
 
 export interface ITopology {
-  type?: string;
   external?: boolean;
   dependencies?: IDependency[];
 }

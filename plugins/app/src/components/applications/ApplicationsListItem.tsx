@@ -76,13 +76,6 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
                       </Label>
                     </FlexItem>
                   )}
-                  {application.topology && application.topology.type && (
-                    <FlexItem>
-                      <Label color="grey" icon={<TopologyIcon />}>
-                        {application.topology.type}
-                      </Label>
-                    </FlexItem>
-                  )}
                 </Flex>
               </Flex>
             </DataListCell>,
