@@ -30,9 +30,9 @@ type getVariableRequest struct {
 	Type  string `json:"type"`
 }
 
-// getPreviewRequest is the format of the request body for the getPreview request. The endpoint can be used to use
-// Prometheus as source for an application preview.
-type getPreviewRequest struct {
+// getInsightRequest is the format of the request body for the getInsight request. The endpoint can be used to use
+// Prometheus as source for an application insight.
+type getInsightRequest struct {
 	Query string `json:"query"`
 }
 
@@ -115,14 +115,14 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, values)
 }
 
-// getPreview returns the datapoints to render a preview chart for an application using the specified Prometheus
+// getInsight returns the datapoints to render a insight chart for an application using the specified Prometheus
 // instance and query.
-func (router *Router) getPreview(w http.ResponseWriter, r *http.Request) {
+func (router *Router) getInsight(w http.ResponseWriter, r *http.Request) {
 	name := r.Header.Get("x-kobs-plugin")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.Debug(r.Context(), "Get preview parameters", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
+	log.Debug(r.Context(), "Get insight parameters", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -145,7 +145,7 @@ func (router *Router) getPreview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data getPreviewRequest
+	var data getInsightRequest
 
 	err = json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
@@ -156,18 +156,18 @@ func (router *Router) getPreview(w http.ResponseWriter, r *http.Request) {
 
 	values, err := i.GetMetrics(r.Context(), []instance.Query{{Label: "", Query: data.Query}}, "", parsedTimeStart, parsedTimeEnd)
 	if err != nil {
-		log.Error(r.Context(), "Could not get preview data", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get preview data")
+		log.Error(r.Context(), "Could not get insight data", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get insight data")
 		return
 	}
 
 	if len(values.Metrics) != 1 {
-		log.Error(r.Context(), "Could not get preview data", zap.Error(err), zap.Int("metricsCount", len(values.Metrics)))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get preview data")
+		log.Error(r.Context(), "Could not get insight data", zap.Error(err), zap.Int("metricsCount", len(values.Metrics)))
+		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get insight data")
 		return
 	}
 
-	log.Debug(r.Context(), "Get preview result", zap.Int("dataCount", len(values.Metrics[0].Data)))
+	log.Debug(r.Context(), "Get insight result", zap.Int("dataCount", len(values.Metrics[0].Data)))
 	render.JSON(w, r, values.Metrics[0].Data)
 }
 
@@ -286,7 +286,7 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 	}
 
 	router.Post("/variable", router.getVariable)
-	router.Post("/preview", router.getPreview)
+	router.Post("/insight", router.getInsight)
 	router.Post("/metrics", router.getMetrics)
 	router.Post("/table", router.getTable)
 	router.Get("/labels", router.getLabels)

@@ -12,11 +12,11 @@ export interface IApplication {
   links?: ILink[];
   teams?: string[];
   topology?: ITopology;
-  preview?: IPreview[];
+  insights?: IInsight[];
   dashboards?: IReference[];
 }
 
-export interface IPreview {
+export interface IInsight {
   title: string;
   type: string;
   unit?: string;

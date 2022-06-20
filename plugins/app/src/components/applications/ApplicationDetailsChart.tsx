@@ -4,31 +4,31 @@ import { useQuery } from 'react-query';
 
 import ApplicationDetailsChartSparkline from './ApplicationDetailsChartSparkline';
 import { IDatum } from './utils/interfaces';
-import { IPreview } from '../../crds/application';
+import { IInsight } from '../../crds/application';
 import { ITimes } from '@kobsio/shared';
 
 interface IApplicationDetailsChartProps {
-  preview: IPreview;
+  insight: IInsight;
   times: ITimes;
 }
 
 const ApplicationDetailsChart: React.FunctionComponent<IApplicationDetailsChartProps> = ({
-  preview,
+  insight,
   times,
 }: IApplicationDetailsChartProps) => {
   const { isError, isLoading, error, data } = useQuery<IDatum[], Error>(
-    ['app/applications/preview', preview, times],
+    ['app/applications/insight', insight, times],
     async () => {
       try {
         const response = await fetch(
-          `/api/plugins/${preview.plugin.type}/preview?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/${insight.plugin.type}/insight?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
-            body: JSON.stringify(preview.plugin.options),
+            body: JSON.stringify(insight.plugin.options),
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              'x-kobs-plugin': preview.plugin.name,
+              'x-kobs-plugin': insight.plugin.name,
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              'x-kobs-satellite': preview.plugin.satellite,
+              'x-kobs-satellite': insight.plugin.satellite,
             },
             method: 'post',
           },
@@ -66,27 +66,27 @@ const ApplicationDetailsChart: React.FunctionComponent<IApplicationDetailsChartP
     return <Alert variant={AlertVariant.warning} isInline={true} title="No data found" />;
   }
 
-  if (preview.type === 'sparkline') {
+  if (insight.type === 'sparkline') {
     return (
       <ApplicationDetailsChartSparkline
-        title={preview.title}
+        title={insight.title}
         data={data}
-        unit={preview.unit}
-        mappings={preview.mappings}
+        unit={insight.unit}
+        mappings={insight.mappings}
         times={times}
       />
     );
   }
 
-  if (preview.type === 'sparkline') {
+  if (insight.type === 'sparkline') {
     return (
       <Card isCompact={true}>
         <CardBody>
           <ApplicationDetailsChartSparkline
-            title={preview.title}
+            title={insight.title}
             data={data}
-            unit={preview.unit}
-            mappings={preview.mappings}
+            unit={insight.unit}
+            mappings={insight.mappings}
             times={times}
           />
         </CardBody>
@@ -94,7 +94,7 @@ const ApplicationDetailsChart: React.FunctionComponent<IApplicationDetailsChartP
     );
   }
 
-  return <Alert variant={AlertVariant.danger} isInline={true} title="Invalid preview type" />;
+  return <Alert variant={AlertVariant.danger} isInline={true} title="Invalid insight type" />;
 };
 
 export default ApplicationDetailsChart;
