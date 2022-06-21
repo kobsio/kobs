@@ -43,7 +43,7 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
           <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
             {application.topology && application.topology.external === true
               ? ''
-              : `(${application.namespace} / ${application.cluster})`}
+              : `${application.namespace} / ${application.cluster} (${application.satellite})`}
           </span>
         </Title>
         <DrawerActions>

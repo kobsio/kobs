@@ -25,6 +25,7 @@ type Client interface {
 	SaveTeams(ctx context.Context, satellite string, teams []teamv1.TeamSpec) error
 	SaveUsers(ctx context.Context, satellite string, users []userv1.UserSpec) error
 	SaveTags(ctx context.Context, applications []applicationv1.ApplicationSpec) error
+	SaveTopology(ctx context.Context, satellite string, applications []applicationv1.ApplicationSpec) error
 	GetPlugins(ctx context.Context) ([]plugin.Instance, error)
 	GetClusters(ctx context.Context) ([]shared.Cluster, error)
 	GetNamespaces(ctx context.Context) ([]shared.Namespace, error)
@@ -43,6 +44,7 @@ type Client interface {
 	GetUsers(ctx context.Context) ([]userv1.UserSpec, error)
 	GetUsersByEmail(ctx context.Context, email string) ([]userv1.UserSpec, error)
 	GetTags(ctx context.Context) ([]shared.Tag, error)
+	GetTopologyByIDs(ctx context.Context, field string, ids []string) ([]shared.Topology, error)
 }
 
 func NewClient(driver, uri string) (Client, error) {

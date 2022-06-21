@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom/client';
 
 import Application from './components/applications/Application';
 import Applications from './components/applications/Applications';
+import ApplicationsTopology from './components/topology/Applications';
 import { AuthContextProvider } from './context/AuthContext';
 import DashboardPage from './components/dashboards/DashboardPage';
 import Header from './components/header/Header';
@@ -56,6 +57,7 @@ const App: React.FunctionComponent = () => {
                   path="/dashboards/satellite/:satellite/cluster/:cluster/namespace/:namespace/name/:name"
                   element={<DashboardPage />}
                 />
+                <Route path="/topology" element={<ApplicationsTopology />} />
                 <Route path="/teams" element={<Teams />} />
                 <Route path="/teams/:team" element={<Team />} />
                 <Route path="/resources" element={<Resources />} />
