@@ -169,19 +169,21 @@ const TopologyGraph: React.FunctionComponent<ITopologyGraphProps> = ({
   );
 
   useEffect(() => {
-    if (graph.current) {
-      if (layout.current) {
-        layout.current.stop();
+    setTimeout(() => {
+      if (graph.current) {
+        if (layout.current) {
+          layout.current.stop();
+        }
+
+        graph.current.add({
+          edges: edges,
+          nodes: nodes,
+        });
+
+        layout.current = graph.current.elements().makeLayout(dagreLayout);
+        layout.current.run();
       }
-
-      graph.current.add({
-        edges: edges,
-        nodes: nodes,
-      });
-
-      layout.current = graph.current.elements().makeLayout(dagreLayout);
-      layout.current.run();
-    }
+    }, 100);
   }, [edges, nodes, size]);
 
   useEffect(() => {
@@ -196,10 +198,6 @@ const TopologyGraph: React.FunctionComponent<ITopologyGraphProps> = ({
 
         graph.current = cytoscape({
           container: container.current,
-          elements: {
-            edges: edges,
-            nodes: nodes,
-          },
           style: styleSheet,
         });
         graph.current.on('tap', onTap);
