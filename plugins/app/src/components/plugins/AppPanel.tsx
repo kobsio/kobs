@@ -2,6 +2,7 @@ import { Alert, AlertVariant } from '@patternfly/react-core';
 import React from 'react';
 
 import { ITimes, PluginPanel } from '@kobsio/shared';
+import ApplicationTopologyPanel from '../topology/ApplicationTopologyPanel';
 import ApplicationsPanel from '../applications/ApplicationsPanel';
 import DashboardsPanel from '../dashboards/DashboardsPanel';
 import Markdown from '../markdown/Markdown';
@@ -31,6 +32,12 @@ const AppPanel: React.FunctionComponent<IAppPanelProps> = ({
 }: IAppPanelProps) => {
   if (name === 'applications') {
     return <ApplicationsPanel title={title} description={description} options={options} setDetails={setDetails} />;
+  }
+
+  if (name === 'topology') {
+    return (
+      <ApplicationTopologyPanel title={title} description={description} options={options} setDetails={setDetails} />
+    );
   }
 
   if (name === 'userapplications') {

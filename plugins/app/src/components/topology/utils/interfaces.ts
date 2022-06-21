@@ -1,5 +1,12 @@
 import cytoscape from 'cytoscape';
 
+export interface IPanelOptions {
+  satellite?: string;
+  cluster?: string;
+  namespace?: string;
+  name?: string;
+}
+
 export interface ITopology {
   edges: IEdge[];
   nodes: INode[];
