@@ -12,6 +12,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#355](https://github.com/kobsio/kobs/pull/#355): [app] Add profile page for authenticated users, which can be customized via dashboards.
 - [#361](https://github.com/kobsio/kobs/pull/#361): [app] Add tracing support for kobs via Jaeger or Zipkin.
+- [#363](https://github.com/kobsio/kobs/pull/#363): [app] Re-add topology chart, which is generated based on the dependencies of an Application.
 
 ### Fixed
 
@@ -30,6 +31,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#348](https://github.com/kobsio/kobs/pull/348): [app] Update permission handling.
 - [#354](https://github.com/kobsio/kobs/pull/#354): [app] Change URLs for the details page of an Application and a Dashboard.
 - [#357](https://github.com/kobsio/kobs/pull/#357): [app] Adjust namespace handling in the frontend, so that it is not required anymore to select the namespaces from all selected clusters.
+- [#362](https://github.com/kobsio/kobs/pull/#362): [app] :warning: _Breaking change:_ :warning: Rename `preview` field to `insights` in Application CRD.
 
 ## [v0.8.0](https://github.com/kobsio/kobs/releases/tag/v0.8.0) (2022-03-24)
 
