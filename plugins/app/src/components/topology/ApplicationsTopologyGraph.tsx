@@ -5,6 +5,7 @@ import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 
 import { IEdge, INode, INodeData } from './utils/interfaces';
+import ApplicationDetailsWrapper from './ApplicationDetailsWrapper';
 import { useDimensions } from '@kobsio/shared';
 
 import '../../assets/topologygraph.css';
@@ -121,8 +122,16 @@ const TopologyGraph: React.FunctionComponent<ITopologyGraphProps> = ({
       const node = event.target;
       const data: INodeData = node.data();
 
-      if (data.id && setDetails) {
-        setDetails(undefined);
+      if (data.id && data.cluster && data.namespace && data.name && setDetails) {
+        setDetails(
+          <ApplicationDetailsWrapper
+            id={data.id}
+            cluster={data.cluster}
+            namespace={data.namespace}
+            name={data.name}
+            close={(): void => setDetails(undefined)}
+          />,
+        );
       }
     },
     [setDetails],

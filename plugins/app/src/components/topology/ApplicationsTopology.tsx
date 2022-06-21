@@ -8,10 +8,12 @@ import { ITopology } from './utils/interfaces';
 
 export interface IApplicationsTopologyProps {
   options: IOptions;
+  setDetails?: (details: React.ReactNode) => void;
 }
 
 const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> = ({
   options,
+  setDetails,
 }: IApplicationsTopologyProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<ITopology, Error>(
     ['app/applications/applications/topology', options],
@@ -80,7 +82,7 @@ const ApplicationsTopology: React.FunctionComponent<IApplicationsTopologyProps> 
     return null;
   }
 
-  return <ApplicationsTopologyGraph edges={data.edges} nodes={data.nodes} />;
+  return <ApplicationsTopologyGraph edges={data.edges} nodes={data.nodes} setDetails={setDetails} />;
 };
 
 export default ApplicationsTopology;

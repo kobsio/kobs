@@ -12,6 +12,7 @@ const Applications: React.FunctionComponent = () => {
   const location = useLocation();
 
   const [options, setOptions] = useState<IOptions>();
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const changeOptions = (opts: IOptions): void => {
     const c = opts.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
@@ -28,22 +29,23 @@ const Applications: React.FunctionComponent = () => {
   };
 
   useEffect(() => {
+    setDetails(undefined);
     setOptions(getInitialOptions(location.search));
   }, [location.search]);
 
   return (
     <React.Fragment>
       <PageHeaderSection
-        title="Applications"
-        description="A list of your / all applications. You can search for applications or filter them by clusters, namespaces or tags. It is also possible to include or exclude external applications or only view them."
+        title="Topology"
+        description="A topology graph of your / all applications. You can filter the graph by clusters, namespaces or tags. It is also possible to include or exclude external applications or only view them."
       />
 
       <PageContentSection
         hasPadding={true}
         toolbarContent={options ? <ApplicationsToolbar options={options} setOptions={changeOptions} /> : undefined}
-        panelContent={undefined}
+        panelContent={details}
       >
-        {options ? <ApplicationsTopology options={options} /> : <div></div>}
+        {options ? <ApplicationsTopology options={options} setDetails={setDetails} /> : <div></div>}
       </PageContentSection>
     </React.Fragment>
   );
