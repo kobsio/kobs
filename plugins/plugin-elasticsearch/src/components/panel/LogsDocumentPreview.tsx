@@ -3,6 +3,8 @@ import React from 'react';
 import { IDocument } from '../../utils/interfaces';
 import { getKeyValues } from '../../utils/helpers';
 
+import '../../assets/logsdocumentpreview.css';
+
 export interface ILogsDocumentPreviewProps {
   document: IDocument;
 }

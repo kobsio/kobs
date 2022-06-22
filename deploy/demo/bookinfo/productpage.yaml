@@ -32,6 +32,19 @@ metadata:
   labels:
     app: productpage
     version: v1
+  annotations:
+    kobs.io/dashboards: |
+      [
+        {
+          "name": "istio-http",
+          "namespace": "kobs",
+          "title": "Istio HTTP Metrics",
+          "placeholders": {
+            "namespace": "<% $.metadata.namespace %>",
+            "app": "productpage"
+          }
+        }
+      ]
 spec:
   replicas: 1
   selector:
@@ -51,17 +64,8 @@ spec:
               "namespace": "kobs",
               "title": "Resource Usage",
               "placeholders": {
-                "namespace": "bookinfo",
-                "pod": "productpage-.*-.*-.*"
-              }
-            },
-            {
-              "name": "istio-http",
-              "namespace": "kobs",
-              "title": "Istio HTTP Metrics",
-              "placeholders": {
-                "namespace": "bookinfo",
-                "app": "productpage"
+                "namespace": "<% $.metadata.namespace %>",
+                "pod": "<% $.metadata.name %>"
               }
             }
           ]

@@ -8,3 +8,11 @@ To install kobs using Kustomize your can run the following command:
 kubectl create namespace kobs
 kustomize build github.com/kobsio/kobs/deploy/kustomize | kubectl apply -f -
 ```
+
+You can also use the following commands to install all the required components:
+
+```sh
+kustomize build github.com/kobsio/kobs/deploy/kustomize/crds | kubectl apply -f -
+kustomize build github.com/kobsio/kobs/deploy/kustomize/hub | kubectl apply -f -
+kustomize build github.com/kobsio/kobs/deploy/kustomize/satellite | kubectl apply -f -
+```

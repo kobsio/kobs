@@ -4,15 +4,18 @@ kobs hasn't any built in authentication mechanism. We recommend to run kobs behi
 
 ## Permissions
 
-If the authentication / authorization middleware for kobs is enabled via the `--api.auth.enabled` flag, we use the value from the `--api.auth.header.user` and `--api.auth.header.teams` header to authorize the user to access a plugin or Kubernetes resource. These headers should be set by a service like the OAuth2 Proxy like it is shown in the following examples.
+If the authentication / authorization middleware for kobs is enabled via the `--auth.enabled` flag, we use the value from the `--auth.header.user` and `--auth.header.teams` header to authorize the user to access a plugin or Kubernetes resource. These headers should be set by a service like the OAuth2 Proxy like it is shown in the following examples.
 
-The values from the headers are then used to get a [User CR](../resources/users.md) or a [Team CR](../resources/teams.md). If the user is part of multiple teams or when the permissions are set via the User CR and the Team CR, we merge all the permissions, so that the user can access all plugins and resources which are allowed for the user / teams.
+The values from the headers are then used to get a [User CR](../../resources/users.md) or a [Team CR](../../resources/teams.md). If the user is part of multiple teams or when the permissions are set via the User CR and the Team CR, we merge all the permissions, so that the user can access all plugins and resources which are allowed for the user / teams.
 
 ## Examples
 
 The following two examples show how you can setup kobs with an OAuth2 Proxy infront using the [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/) or [Istio](https://istio.io). Before you are looking into the examples, make sure you have setup your prefered [OAuth Provider](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider). We will use Google as our OAuth Provider in the following, which requires a Client ID and a Client Secret.
 
-We are installing kobs into a namespace named `kobs` using the provided [Helm Chart](../installation/helm.md). It will be available at [demo.kobs.io](https://demo.kobs.io), so keep in mind that you have to adjust the domain for your setup.
+We are installing the kobs hub component into a namespace named `kobs` using the provided [Helm Chart](../installation/helm.md). It will be available at [demo.kobs.io](https://demo.kobs.io), so keep in mind that you have to adjust the domain for your setup.
+
+!!! note
+    In the following example we are only looking at the hub component, because authorization is only handled within this component. An example deployment for the satellite component can be found in the [demo](../demo/demo.md).
 
 ### NGINX Ingress Controller
 
@@ -131,7 +134,7 @@ ingress:
 When you save the values from above in a file called `values.yaml`, you can run the following command to install kobs:
 
 ```sh
-helm upgrade --install kobs kobs/kobs -f values.yaml
+helm upgrade --install hub kobs/hub -f values.yaml
 ```
 
 ### Istio
@@ -224,12 +227,12 @@ The external authorizer is now ready to be used by the authorization policy.
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: kobs
+  name: kobs-hub
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/instance: kobs
-      app.kubernetes.io/name: kobs
+      app.kubernetes.io/instance: hub
+      app.kubernetes.io/name: hub
   action: CUSTOM
   provider:
     name: oauth2-proxy
@@ -268,5 +271,5 @@ istio:
 When you save the values from above in a file called `values.yaml`, you can run the following command to install kobs:
 
 ```sh
-helm upgrade --install kobs kobs/kobs -f values.yaml
+helm upgrade --install hub kobs/hub -f values.yaml
 ```

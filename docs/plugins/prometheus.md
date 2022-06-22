@@ -8,28 +8,44 @@ The Prometheus plugin can be used to retrieve metrics from a configured Promethe
 
 ## Configuration
 
-The following configuration can be used to access a Prometheus instance, which is running in the same cluster as kobs.
-
-```yaml
-plugins:
-  prometheus:
-    - name: Prometheus
-      description: Prometheus can be used for the metrics of your application.
-      address: http://prometheus.istio-system.svc.cluster.local:9090
-```
+To use the Prometheus plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | Name of the Prometheus instance. | Yes |
-| displayName | string | Name of the Prometheus as it is shown in the UI. | Yes |
-| description | string | Description of the Prometheus instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| address | string | Address of the Prometheus instance. | Yes |
-| username | string | Username to access a Prometheus instance via basic authentication. | No |
-| password | string | Password to access a Prometheus instance via basic authentication. | No |
-| token | string | Token to access a Prometheus instance via token based authentication. | No |
+| name | string | The name of the Prometheus plugin instance. | Yes |
+| type | `prometheus` | The type for the Prometheus plugin. | Yes |
+| options.address | string | Address of the Prometheus instance. | Yes |
+| options.username | string | Username to access a Prometheus instance via basic authentication. | No |
+| options.password | string | Password to access a Prometheus instance via basic authentication. | No |
+| options.token | string | Token to access a Prometheus instance via token based authentication. | No |
 
-## Options
+```yaml
+plugins:
+  - name: prometheus
+    type: prometheus
+    options:
+      address:
+      username:
+      password:
+      token:
+```
+
+## Insight Options
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| query | string | The PromQL query. | Yes |
+
+## Variable Options
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The query type to get the values for the variable. At the moment this must be `labelValues` | Yes |
+| label | string | The Prometheus label which should be used to get the values for the variable. | Yes |
+| query | string | The PromQL query. | Yes |
+| allowAll | boolean | If this is set to `true` an additional option for the variable will be added, which contains all other values. | No |
+
+## Panel Options
 
 The following options can be used for a panel with the Prometheus plugin:
 
@@ -45,8 +61,6 @@ The following options can be used for a panel with the Prometheus plugin:
 | columns | [[]Column](#column) | A list of columns, which **must** be provided, when the type of the chart is `table` | No |
 
 ### yAxis
-
-The y axis can be customized for line and area charts. It is possible to use the min/max value of all returned time series or you can set a custom value. By default the scale of the y axis will be automatically determined.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -72,18 +86,7 @@ The y axis can be customized for line and area charts. It is possible to use the
 | unit | string | An optional unit for the column values. | No |
 | mappings | map<string, string> | Specify value mappings for the column. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 
-## Variables
-
-If the Prometheus plugin is used to set variables in a dashboard, the following options can be used.
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| type | string | The query type to get the values for the variable. At the moment this must be `labelValues` | Yes |
-| label | string | The Prometheus label which should be used to get the values for the variable. | Yes |
-| query | string | The PromQL query. | Yes |
-| allowAll | boolean | If this is set to `true` an additional option for the variable will be added, which contains all other values. | No |
-
-## Example
+## Usage
 
 The following dashboard, shows the CPU and Memory usage of a selected Pod. When this dashboard is used in via a team or application, it is possible to set the namespace and a regular expression to pre select all the Pods. These values are then used to get the names of all Pods and a user can then select the name of a Pod via the `var_pod` variable.
 
@@ -93,6 +96,9 @@ The dashboard only uses the Prometheus plugin to show the CPU Usage, Memory Usag
 ---
 apiVersion: kobs.io/v1
 kind: Dashboard
+metadata:
+  name: resource-usage
+  namespace: kobs
 spec:
   description: Resources Usage of Pods
   placeholders:
@@ -105,6 +111,7 @@ spec:
       label: Pod
       plugin:
         name: prometheus
+        type: prometheus
         options:
           type: labelValues
           label: pod
@@ -117,6 +124,7 @@ spec:
           colSpan: 4
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: sparkline
               unit: Cores
@@ -126,6 +134,7 @@ spec:
           colSpan: 4
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: sparkline
               unit: MiB
@@ -135,6 +144,7 @@ spec:
           colSpan: 4
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: sparkline
               queries:
@@ -145,6 +155,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: line
               unit: Cores
@@ -160,6 +171,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: line
               unit: MiB
@@ -178,6 +190,7 @@ spec:
           colSpan: 12
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: area
               unit: bytes/s
@@ -190,6 +203,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: area
               unit: bytes/s
@@ -202,6 +216,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: area
               unit: bytes/s
@@ -215,6 +230,7 @@ spec:
         - title: Table
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: table
               queries:
@@ -252,3 +268,5 @@ spec:
                   title: Memory Limits
                   unit: MiB
 ```
+
+![Dashboard](assets/prometheus-dashboard.png)

@@ -23,6 +23,23 @@ spec:
     dependencies:
       - name: satellite
         namespace: kobs
+  insights:
+    - title: Success Rate
+      type: sparkline
+      unit: "%"
+      plugin:
+        name: prometheus
+        type: prometheus
+        options:
+          query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"kobs",destination_workload=~"kobs-hub",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"kobs",destination_workload=~"kobs-hub"}[5m])) * 100
+    - title: Healthy Replicas
+      type: sparkline
+      unit: "%"
+      plugin:
+        name: prometheus
+        type: prometheus
+        options:
+          query: (sum(kube_deployment_status_replicas{namespace="kobs", deployment=~"hub"}) / sum(kube_deployment_spec_replicas{namespace="kobs", deployment=~"hub"})) * 100
   dashboards:
     - title: Overview
       inline:
@@ -83,13 +100,94 @@ spec:
                       - deployments
                       - services
                     selector: app.kubernetes.io/name=hub
-          - size: -1
+          - size: 2
             panels:
               - title: Open Alerts
+                colSpan: 6
                 plugin:
                   name: opsgenie
                   type: opsgenie
                   options:
                     type: alerts
-                    query: 'status: open AND namespace: "kobs"'
+                    queries:
+                      - 'status: open AND namespace: "kobs"'
+                      - 'status: closed AND namespace: "kobs"'
                     interval: 31536000
+              - title: Topology
+                colSpan: 6
+                plugin:
+                  name: topology
+                  type: app
+                  options:
+                    satellite: "<% $.satellite %>"
+                    cluster: "<% $.cluster %>"
+                    namespace: "<% $.namespace %>"
+                    name: "<% $.name %>"
+
+    - name: resource-usage
+      namespace: kobs
+      title: Resource Usage
+      placeholders:
+        namespace: kobs
+        pod: "hub-.*-.*"
+
+    - name: istio-http
+      namespace: kobs
+      title: Istio HTTP Metrics
+      placeholders:
+        namespace: kobs
+        app: kobs-hub
+
+    - title: Logs
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: Logs
+                colSpan: 12
+                plugin:
+                  name: elasticsearch
+                  type: elasticsearch
+                  options:
+                    showChart: true
+                    queries:
+                      - name: Pod Logs
+                        query: "kubernetes.namespace: kobs AND kubernetes.labels.app: kobs-hub"
+                        fields:
+                          - "kubernetes.container.name"
+                          - "message"
+                      - name: Istio Logs
+                        query: "kubernetes.namespace: kobs AND kubernetes.labels.app: kobs-hub AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
+                        fields:
+                          - "kubernetes.pod.name"
+                          - "content.authority"
+                          - "content.route_name"
+                          - "content.protocol"
+                          - "content.method"
+                          - "content.path"
+                          - "content.response_code"
+                          - "content.upstream_service_time"
+                          - "content.bytes_received"
+                          - "content.bytes_sent"
+
+    - title: Traces
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: Traces
+                colSpan: 12
+                plugin:
+                  name: jaeger
+                  type: jaeger
+                  options:
+                    showChart: true
+                    queries:
+                      - name: All Requests
+                        service: hub
+                      - name: Slow Requests
+                        service: hub
+                        minDuration: 100ms
+                      - name: Errors
+                        service: hub
+                        tags: error=true

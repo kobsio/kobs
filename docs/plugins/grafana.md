@@ -6,30 +6,42 @@ The Grafana plugin can be used to search through all your Grafana dashboards and
 
 ## Configuration
 
-The following config can be used to grant kobs access to a Grafana instance running on `grafana.kobs.io`.
-
-```yaml
-plugins:
-  grafana:
-    - name: Grafana
-      description: Query, visualize, alert on, and understand your data no matter where it’s stored. With Grafana you can create, explore and share all of your data through beautiful, flexible dashboards.
-      internalAddress: http://grafana.monitoring.svc.cluster.local:3000
-      publicAddress: https://grafana.kobs.io
-```
+To use the Grafana plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | Name of the Grafana instance. | Yes |
-| displayName | string | Name of the Grafana as it is shown in the UI. | Yes |
-| description | string | Description of the Grafana instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| internalAddress | string | The cluster internal address of the Grafana instance. | Yes |
-| publicAddress | string | The public address of the Grafana instance. | Yes |
-| username | string | Username to access an Grafana instance via basic authentication. | No |
-| password | string | Password to access an Grafana instance via basic authentication. | No |
-| token | string | Token to access an Grafana instance via token based authentication. | No |
+| name | string | The name of the Grafana plugin instance. | Yes |
+| type | `grafana` | The type for the Grafana plugin. | Yes |
+| options.address | string | Address of the Grafana instance. | Yes |
+| options.username | string | Username to access an Grafana instance via basic authentication. | No |
+| options.password | string | Password to access an Grafana instance via basic authentication. | No |
+| options.token | string | Token to access an Grafana instance via token based authentication. | No |
+| frontendOptions.address | string | The address of the Grafana instance, which can be accessed by the user. | No |
 
-## Options
+```yaml
+plugins:
+  - name: grafana
+    type: grafana
+    options:
+      address:
+      username:
+      password:
+      token:
+    frontendOptions:
+      address:
+```
+
+## Insight Options
+
+!!! note
+    The Grafana plugin can not be used within the insights section of an application.
+
+## Variable Options
+
+!!! note
+    The Grafana plugin can not be used to get a list of variable values.
+
+## Panel Options
 
 The following options can be used for a panel with the Grafana plugin:
 
@@ -47,7 +59,7 @@ The following options can be used for a panel with the Grafana plugin:
 | panelID | string | The id of the panel. | Yes |
 | variables | map<string, string> | A map of variables, with the name of the variable as key and the value of the variable as value. | No |
 
-## Example
+## Usage
 
 The following dashboards shows some panels from a Grafana plugin and a list of dashboards from this instance. The dashboard also uses some variables, which are then passed to the panels from Grafana.
 

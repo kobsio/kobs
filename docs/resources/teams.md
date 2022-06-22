@@ -1,10 +1,10 @@
 # Teams
 
-Teams are an extension of kobs via the [Team Custom Resource Definition](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/crds/kobs.io_teams.yaml). Teams can be used to define the ownership for resources and applications.
+Teams are defined via the [Team Custom Resource Definition](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/crds/kobs.io_teams.yaml). Teams can be used to define the ownership for applications and to grant users access to several resources.
 
-You can access all teams via the **Teams** item on the home page of kobs.
+You can access all teams / the teams you are allowed to see via the teams page.
 
-![Home](assets/home.png)
+![Teams](assets/teams.png)
 
 ## Specification
 
@@ -12,12 +12,12 @@ In the following you can found the specification for the Team CRD.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| id | string | A unique id for the team. The id must be unique across all clusters and namespace. If authentication and authorization is enabled this should be the value passed in the configured teams header (`--api.auth.header.teams`). | Yes |
+| group | string | The group name of the team. This is used to connect the authenticated user (from the header specified via the `--auth.header.teams` flag) with this CR. | Yes |
 | description | string | A description for the team. | No |
-| logo | string | The logo for the team. Must be a path to an image file. | No |
 | links | [[]Link](#link) | A list of links (e.g. a link to the teams Slack channel, Confluence page, etc.) | No |
-| permissions | [Permissions](users.md#permissions) | Permissions for the team when the authentication / authorization middleware is enabled. | Yes |
-| dashboards | [[]Dashboard](#dashboard) | No |
+| logo | string | The logo for the team. Must be a path to an image file. | No |
+| permissions | [Permissions](./users.md#permissions) | Permissions for the team when the authentication / authorization middleware is enabled. | No |
+| dashboards | [[]Dashboard](./applications.md#dashboard) | A list of dashboards which will be shown on the team page. | No |
 
 ### Link
 
@@ -26,30 +26,11 @@ In the following you can found the specification for the Team CRD.
 | title | string | Title for the link. | Yes |
 | link | string | The actuall link. | Yes |
 
-### Dashboard
-
-Define the dashboards, which should be used for the team.
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| cluster | string | Cluster of the dashboard. If this field is omitted kobs will look in the same cluster as the application was created in. | No |
-| namespace | string | Namespace of the dashboard. If this field is omitted kobs will look in the same namespace as the application was created in. | No |
-| name | string | Name of the dashboard. **Note:** You have not to provide a name, if you use the **inline** property. | Yes |
-| title | string | Title for the dashboard | Yes |
-| description | string | The description can be used to explain the content of the dashboard. | No |
-| placeholders | map<string, string> | A map of placeholders, whith the name as key and the value for the placeholder as value. More information for placeholders can be found in the documentation for [Dashboards](./dashboards.md). | No |
-| inline | [Inline](#inline) | Specify a complete dashboard within the reference. This can be used if you just use the dashboard within one team. | No |
-
-### Inline
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| variables | [[]Variable](./dashboards.md#Variable) | A list of variables, where the values are loaded by the specified plugin. | No |
-| rows | [[]Row](./dashboards.md#row) | A list of rows for the dashboard. | Yes |
-
 ## Example
 
-The following Team CR will add a new team called `team-diablo`. The team page will display all the applications from the `bookinfo` namespace and the resource usage of the Pods in this namespace.
+The following CR creates a team with the group `dia@kobs.io`. The details page for the team contains two dashboards, one to display the applications owned by the team and a seconde one to display the status of external services via the RSS plugin.
+
+In the CR we also define that every member of the team can view all applications and teams. Every member can also view the Helm charts in the `bookinfo` and `kobs` namespace and can use the Opsgenie plugin. Besides that every member can also list, edit and delete all resources in the `bookinfo` and `kobs` namespace.
 
 ```yaml
 ---
@@ -59,47 +40,78 @@ metadata:
   name: team-diablo
   namespace: kobs
 spec:
+  group: dia@kobs.io
   description: Productpage and Details
-  logo: https://kobs.io/installation/assets/team-diablo.png
+  logo: https://kobs.io/main/installation/assets/team-diablo.png
   links:
     - title: Website
-      link: https://istio.io/latest/docs/examples/bookinfo/
+      link: https://kobs.io
     - title: GitHub
-      link: https://github.com/istio/istio/tree/master/samples/bookinfo
+      link: https://github.com/kobsio/kobs
   dashboards:
-    - name: resources
-      namespace: kobs
-      title: Resources in the bookinfo namespace
-      placeholders:
-        namespace: bookinfo
-    - name: resource-usage
-      namespace: kobs
-      title: Resource Usage
-      placeholders:
-        namespace: bookinfo
-        pod: ".*"
-```
-
-The following Team CR allows all members of `team-diablo` access to all plugins and resources, when authentication and authorization is enabled.
-
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Team
-metadata:
-  name: team-diablo
-  namespace: kobs
-spec:
+    - title: Applications
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: Applications
+                plugin:
+                  name: applications
+                  type: app
+                  options:
+                    team: dia@kobs.io
+    - title: Status of External Services
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: External Services
+                plugin:
+                  name: rss
+                  type: rss
+                  options:
+                    urls:
+                      - https://www.githubstatus.com/history.rss
+                      - https://status.aws.amazon.com/rss/route53.rss
+                      - https://azurestatuscdn.azureedge.net/de-de/status/feed/
+                      - https://www.cloudflarestatus.com/history.atom
+                    sortBy: updated
   permissions:
+    applications:
+      - type: all
+    teams:
+      - "*"
     plugins:
-      - name: "*"
+      - satellite: "*"
+        name: helm
+        type: helm
+        permissions:
+          - clusters:
+              - "*"
+            namespaces:
+              - "bookinfo"
+              - "kobs"
+            names:
+              - "*"
+      - satellite: "*"
+        name: opsgenie
+        type: opsgenie
+        permissions:
+          - acknowledgeAlert
+          - snoozeAlert
+          - closeAlert
     resources:
-      - clusters:
+      - satellites:
+          - "*"
+        clusters:
           - "*"
         namespaces:
-          - "*"
+          - "bookinfo"
+          - "kobs"
         resources:
           - "*"
         verbs:
           - "*"
 ```
+
+![Team Details](assets/teams-details.png)

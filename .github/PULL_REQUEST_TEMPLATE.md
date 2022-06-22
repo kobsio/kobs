@@ -1,5 +1,5 @@
 <!--
-  Keep PR title verbose enough and add prefix telling about what plugin it touches e.g "[prometheus]" or "[core]"
+  Keep PR title verbose enough and add prefix telling about what plugin it touches e.g "[prometheus]" or "[app]"
 -->
 
 <!--

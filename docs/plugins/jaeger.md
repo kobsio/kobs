@@ -10,30 +10,42 @@ The Jaeger plugin can be used to retrieve traces from a configured Jaeger instan
 
 ## Configuration
 
-The following configuration can be used to access a Jaeger instances running on `jaeger.kobs.io` and is protected using token based authentication. The token is loaded from the `JAEGER_TOKEN` environment variable.
-
-```yaml
-plugins:
-  jaeger:
-    - name: Jaeger
-      description: Jaeger can be used for the traces of your application.
-      address: https://jaeger.kobs.io
-      token: ${JAEGER_TOKEN}
-```
+To use the Jaeger plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | Name of the Jaeger instance. | Yes |
-| displayName | string | Name of the Jaeger as it is shown in the UI. | Yes |
-| description | string | Description of the Jaeger instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| address | string | Address of the Jaeger instance. | Yes |
-| username | string | Username to access a Jaeger instance via basic authentication. | No |
-| password | string | Password to access a Jaeger instance via basic authentication. | No |
-| token | string | Token to access a Jaeger instance via token based authentication. | No |
-| publicAddress | string | The public accessible address of the Jaeger instance. | No |
+| name | string | The name of the Jaeger plugin instance. | Yes |
+| type | `jaeger` | The type for the Jaeger plugin. | Yes |
+| options.address | string | Address of the Jaeger instance. | Yes |
+| options.username | string | Username to access a Jaeger instance via basic authentication. | No |
+| options.password | string | Password to access a Jaeger instance via basic authentication. | No |
+| options.token | string | Token to access a Jaeger instance via token based authentication. | No |
+| frontendOptions.address | string | The address of the Jaeger instance, which can be accessed by the user. | No |
 
-## Options
+```yaml
+plugins:
+  - name: jaeger
+    type: jaeger
+    options:
+      address:
+      username:
+      password:
+      token:
+    frontendOptions:
+      address:
+```
+
+## Insight Options
+
+!!! note
+    The Jaeger plugin can not be used within the insights section of an application.
+
+## Variable Options
+
+!!! note
+    The Jaeger plugin can not be used to get a list of variable values.
+
+## Panel Options
 
 The following options can be used for a panel with the Jaeger plugin:
 
@@ -54,29 +66,39 @@ The following options can be used for a panel with the Jaeger plugin:
 | operation | string | An optional operation to retrieve traces for. | No |
 | tags | string | Tags, which the traces must be contain. | No |
 
-For example the following dashboard shows all requests and all slow requests from Jaeger for the specified service (e.g. `reviews.bookinfo`).
+## Usage
 
 ```yaml
 ---
 apiVersion: kobs.io/v1
-kind: Dashboard
+kind: Application
+metadata:
+  name: example-application
+  namespace: kobs
 spec:
-  placeholders:
-    - name: service
-      description: The service name
-  rows:
-    - size: -1
-      panels:
-        - title: Traces
-          colSpan: 12
-          plugin:
-            name: jaeger
-            options:
-              showChart: true
-              queries:
-                - name: "{% .service %} requests"
-                  service: "{% .service %}"
-                - name: "{% .service %} slow requests"
-                  service: "{% .service %}"
-                  minDuration: 1000ms
+  dashboards:
+    - title: Traces
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: Traces
+                colSpan: 12
+                plugin:
+                  name: jaeger
+                  type: jaeger
+                  options:
+                    showChart: true
+                    queries:
+                      - name: All Requests
+                        service: productpage.bookinfo
+                      - name: Slow Requests
+                        service: productpage.bookinfo
+                        minDuration: 100ms
+                      - name: Errors
+                        service: productpage.bookinfo
+                        tags: error=true
+
 ```
+
+![Dashboard](assets/jaeger-dashboard.png)

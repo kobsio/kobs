@@ -1,33 +1,18 @@
 # Dashboards
 
-Dashboards are an extension of kobs via the [Dashboard Custom Resource Definition](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/crds/kobs.io_dashboards.yaml). Dashboards are used to add additional information for teams and applications via all the configured plugins.
-
-You can access all dashboards via the **Dashboards** item on the home page of kobs.
-
-![Home](assets/home.png)
-
-On the dashboards page it will show all dashboards from all clusters and namespaces. When you click on one of the dashboards an modal will be shown, where you can provide the default cluster and namespace and placeholders
-
-![Dashboards](assets/dashboards.png)
-
-The dashboards page is only there to explore all the available dashboards, but for your daily work you should add the dashboards as reference in your [Team](./teams#dashboard) and [Applications](./applications#dashboard).
+Dashboards are defined via the [Dashboard Custom Resource Definition](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/crds/kobs.io_dashboards.yaml). Dashboards are used to add additional information for applications, users and teams via all the configured plugins.
 
 ## Specification
-
-In the following you can found the specification for the Dashboard CRD. On the bottom of this page you also have a complete example for a Dashboard CR.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | description | string | Provide a descriptions for the dashboard with additional details. | No |
+| hideToolbar | boolean | If this is `true` the toolbar will be hidden in the dashboard. | No |
 | placeholders | [[]Placeholder](#placeholder) | A list of placeholders, which can be directly set by the user. | No |
 | variables | [[]Variable](#Variable) | A list of variables, where the values are loaded by the specified plugin. | No |
 | rows | [[]Row](#row) | A list of rows for the dashboard. | Yes |
 
 ### Placeholder
-
-Placeholders are similar to variables with the difference that they must be set when the dashboard is referenced in a [Team](./teams#dashboard) or an [Applications](./applications#dashboard).
-
-The value of a placeholder can be used via the following templating string: `{% .<placeholder-name> %}`. This string is then replaced with the provided value when the dashboard is loaded.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -36,78 +21,20 @@ The value of a placeholder can be used via the following templating string: `{% 
 
 ### Variable
 
-Variables can be used to select between different values in the dashboard. To use the variable in the dashboard, the following templating string can be used: `{% .<variable-name> %}`.
-
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | name | string | The name of the variable, which can be used in the dashboard via `{% .<variable-name> %}`. | Yes |
 | label | string | An optional label, which is shown in the UI instead of the variable name. | No |
 | hide | boolean | Hide the variable in the UI. | No |
-| plugin | [Variable Plugin](#variable-plugin) | The plugin, which should be used to get the values for the variable. | Yes |
+| plugin | [Plugin](../plugins/getting-started.md#specification) | The plugin, which should be used to get the values for the variable. | Yes |
 
 !!! note
     Dashboards are also supporting some special variables, which always can be used and must not be defined by a users. These variables are:
 
-    - `__cluster`: The cluster from the Application / Team were the dashboard is used. This variable can be used via `{% .__cluster %}` in a dashboard.
-    - `__namespace`: The cluster from the Application / Team were the dashboard is used. This variable can be used via `{% .__namespace %}` in a dashboard.
     - `__timeStart`: The start time of the selected time range in seconds. This variable can be used via `{% .__timeStart %}` in a dashboard.
     - `__timeEnd`: The end time of the selected time range in seconds. This variable can be used via `{% .__timeEnd %}` in a dashboard.
 
-### Variable Plugin
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| name | string | The name of the plugin, this must be `core` or the name of an configured Plugin which supports variables (e.g. Prometheus). | Yes |
-| options | [Variable Plugin Options](#variable-plugin-options) | Plugin specific options to retrieve the values for the variable. | Yes |
-
-### Variable Plugin Options
-
-If the `core` plugin is used to get the values for a variable the options from the following table can be used. The `clusters` type let you select a cluster from all the loaded cluster, the `plugins` type let you select the name of all configured plugins and the `static` type let you specify a list of static values.
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| type | string | The type for the `core` plugin. This must be `clusters`, `plugins` or `static`. | Yes |
-| items | []string | A list of static values for the `static` type. | Yes |
-
-??? note "Example"
-
-    ```yaml
-    ---
-    apiVersion: kobs.io/v1
-    kind: Dashboard
-    spec:
-      variables:
-        - name: cluster
-          label: Cluster
-          plugin:
-            name: core
-            options:
-              type: clusters
-        - name: plugin
-          label: Plugins
-          plugin:
-            name: core
-            options:
-              type: plugins
-        - name: mystaticvalues
-          label: My Static Values
-          plugin:
-            name: core
-            options:
-              type: static
-              items:
-                - myvalue1
-                - myvalue2
-                - myvalue3
-    ```
-
-It is also possible to use other plugins, to get a list of variable values. These plugins are:
-
-- [Prometheus](../plugins/prometheus.md#variables)
-
 ### Row
-
-A row can be used to create logical groups in the dashboard.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -116,9 +43,7 @@ A row can be used to create logical groups in the dashboard.
 | size | number | The size of the row. This must be a value between `1` and `12`. The default value is `2`. You can also use the special value `-1` to not limit the height of the row. **Note:** When a dashboard makes use of the `-1` value the Intersection Observer API is disabled, so that all dashboard panels are loaded at once. | No |
 | panels | [[]Panel](#panel) | A list of panels for the row. | Yes |
 
-### Panel
-
-All specified panels are rendered in a 12 column grid and they are containing the plugin specification.
+#### Panel
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -130,9 +55,7 @@ All specified panels are rendered in a 12 column grid and they are containing th
 
 ## Example
 
-The following dashboard, shows the CPU and Memory usage of a selected Pod. When this dashboard is used in via a team or application, it is possible to set the namespace and a regular expression to pre select all the Pods. These values are then used to get the names of all Pods and a user can then select the name of a Pod via the `var_pod` variable.
-
-The dashboard only uses the Prometheus plugin to show the CPU Usage, Memory Usage, the Network Usage and some other information via different charts and tables.
+The following dashboard can be used to display the resource usage of the containers in a pod. It can be used within an application and can be customized via the `namespace` and `pod` placeholders.
 
 ```yaml
 ---
@@ -153,6 +76,7 @@ spec:
       label: Pod
       plugin:
         name: prometheus
+        type: prometheus
         options:
           type: labelValues
           label: pod
@@ -165,6 +89,7 @@ spec:
           colSpan: 4
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: sparkline
               unit: Cores
@@ -174,6 +99,7 @@ spec:
           colSpan: 4
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: sparkline
               unit: MiB
@@ -183,6 +109,7 @@ spec:
           colSpan: 4
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: sparkline
               queries:
@@ -193,6 +120,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: line
               unit: Cores
@@ -208,6 +136,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: line
               unit: MiB
@@ -226,6 +155,7 @@ spec:
           colSpan: 12
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: area
               unit: bytes/s
@@ -238,6 +168,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: area
               unit: bytes/s
@@ -250,6 +181,7 @@ spec:
           colSpan: 6
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: area
               unit: bytes/s
@@ -263,6 +195,7 @@ spec:
         - title: Table
           plugin:
             name: prometheus
+            type: prometheus
             options:
               type: table
               queries:
@@ -301,4 +234,4 @@ spec:
                   unit: MiB
 ```
 
-![Dashboard](assets/dashboard.png)
+![Dashboard - Resource Usage](assets/dashboards-resource-usage.png)
