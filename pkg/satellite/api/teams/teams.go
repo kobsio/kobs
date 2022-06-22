@@ -26,7 +26,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 
 	var teams []teamv1.TeamSpec
 
-	for _, cluster := range router.clustersClient.GetClusters() {
+	for _, cluster := range router.clustersClient.GetClusters(r.Context()) {
 		team, err := cluster.GetTeams(r.Context(), "")
 		if err != nil {
 			log.Error(r.Context(), "Could not get teams", zap.Error(err))

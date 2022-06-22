@@ -12,10 +12,6 @@ func setApplicationDefaults(application applicationv1.ApplicationSpec, cluster, 
 	application.Namespace = namespace
 	application.Name = name
 
-	if application.Topology.Type == "" {
-		application.Topology.Type = "default"
-	}
-
 	for i := 0; i < len(application.Topology.Dependencies); i++ {
 		if application.Topology.Dependencies[i].Cluster == "" {
 			application.Topology.Dependencies[i].Cluster = application.Cluster

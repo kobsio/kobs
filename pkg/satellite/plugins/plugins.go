@@ -39,6 +39,7 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 	// plugins as they are provided by the user, because they can contain sensible information like usernames and
 	// passwords. Therefore we are just returning the name, description, type and address for a plugin instance.
 	router := chi.NewRouter()
+
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		var frontendInstances []plugin.Instance
 
@@ -70,22 +71,26 @@ func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clu
 	for _, pluginType := range pluginTypes {
 		p, err := goPlugin.Open(fmt.Sprintf("%s/%s.so", pluginDir, pluginType))
 		if err != nil {
+			log.Error(nil, "Could not open plugin", zap.Error(err), zap.String("dir", pluginDir), zap.String("type", pluginType))
 			return nil, err
 		}
 
 		mountSymbol, err := p.Lookup("Mount")
 		if err != nil {
+			log.Error(nil, "Could not find mount symbol", zap.Error(err), zap.String("type", pluginType))
 			return nil, err
 		}
 
 		mountFunc, ok := mountSymbol.(func(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error))
 		if !ok {
+			log.Error(nil, "Mount function has wrong type", zap.Error(err), zap.String("type", pluginType))
 			return nil, fmt.Errorf("mount function is not of type \"func(instances []plugin.Instance, clustersClient clusters.Client) chi.Router\" for plugin %s", pluginType)
 		}
 
 		pluginRouter, err := mountFunc(filterInstances(pluginType, instances), clustersClient)
 		if err != nil {
-			log.Fatal(nil, "Could not load plugin", zap.Error(err), zap.String("type", pluginType))
+			log.Error(nil, "Could not load plugin", zap.Error(err), zap.String("type", pluginType))
+			return nil, err
 		}
 
 		router.Mount(fmt.Sprintf("/%s", pluginType), pluginRouter)

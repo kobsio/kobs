@@ -17,7 +17,6 @@ import (
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
-	httpClient       *http.Client
 	satellitesClient satellites.Client
 	storeClient      store.Client
 }
@@ -41,28 +40,31 @@ func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {
 func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 	satelliteName := r.Header.Get("x-kobs-satellite")
 	pluginName := r.Header.Get("x-kobs-plugin")
+	pluginType := chi.URLParam(r, "type")
 
 	if satelliteName == "" && pluginName == "" {
 		satelliteName = r.URL.Query().Get("x-kobs-satellite")
 		pluginName = r.URL.Query().Get("x-kobs-plugin")
 	}
 
+	log.Debug(r.Context(), "Proxy plugin request", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType))
+
 	user, err := authContext.GetUser(r.Context())
 	if err != nil {
-		log.Warn(r.Context(), "The user is not authorized to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.Error(err))
+		log.Warn(r.Context(), "The user is not authorized to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType), zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the plugin")
 		return
 	}
 
-	if !user.HasPluginAccess(satelliteName, pluginName) {
-		log.Warn(r.Context(), "The user is not allowed to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.Error(err))
+	if !user.HasPluginAccess(satelliteName, pluginType, pluginName) {
+		log.Warn(r.Context(), "The user is not allowed to access the plugin", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType), zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusForbidden, "You are not allowed to access the plugin")
 		return
 	}
 
 	satellite := router.satellitesClient.GetSatellite(satelliteName)
 	if satellite == nil {
-		log.Error(r.Context(), "Satellite was not found", zap.String("satellite", satelliteName), zap.String("plugin", pluginName))
+		log.Error(r.Context(), "Satellite was not found", zap.String("satellite", satelliteName), zap.String("plugin", pluginName), zap.String("pluginType", pluginType))
 		errresponse.Render(w, r, nil, http.StatusInternalServerError, "Satellite was not found")
 		return
 	}
@@ -78,13 +80,12 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 func Mount(satellitesClient satellites.Client, storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		&http.Client{},
 		satellitesClient,
 		storeClient,
 	}
 
 	router.Get("/", router.getPlugins)
-	router.HandleFunc("/*", router.proxyPlugins)
+	router.HandleFunc("/{type}/*", router.proxyPlugins)
 
 	return router
 }

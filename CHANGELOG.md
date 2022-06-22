@@ -10,11 +10,29 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+- [#355](https://github.com/kobsio/kobs/pull/#355): [app] Add profile page for authenticated users, which can be customized via dashboards.
+- [#361](https://github.com/kobsio/kobs/pull/#361): [app] Add tracing support for kobs via Jaeger or Zipkin.
+- [#363](https://github.com/kobsio/kobs/pull/#363): [app] Re-add topology chart, which is generated based on the dependencies of an Application.
+
 ### Fixed
+
+- [#349](https://github.com/kobsio/kobs/pull/#349): [app] Fix the creation of a VirtualService in the Helm chart when no `additionalRoutes` are set.
+- [#350](https://github.com/kobsio/kobs/pull/#350): [app] Fix Docker image and request proxy.
+- [#351](https://github.com/kobsio/kobs/pull/#351): [jaeger] Fix links and colors in Jaeger plugin.
+- [#352](https://github.com/kobsio/kobs/pull/#352): [app] Fix plugin filter and allow filtering by the name of a satellite.
+- [#356](https://github.com/kobsio/kobs/pull/#356): [app] Fix tooltip in documents table of the klogs plugin. Fix filtering of services and operations in the Jaeger plugin. Add max height to all select boxes.
+- [#358](https://github.com/kobsio/kobs/pull/#358): [app] Fix namespace handling, when multiple namespaces are selected.
+- [#359](https://github.com/kobsio/kobs/pull/#359): [app] Fix pagination, when the number of items per page is changed.
+- [#360](https://github.com/kobsio/kobs/pull/#360): [app] Fix static file handling, when url contains a dot (`.`).
+- [#364](https://github.com/kobsio/kobs/pull/#364): [app] Fix usage of cytoscape in the topology graph. The fix was also applied for the `istio` and `kiali` plugin.
 
 ### Changed
 
 - [#346](https://github.com/kobsio/kobs/pull/346): [app] :warning: _Breaking change:_ :warning: Rework kobs architecture, by introducing a `hub` and a `satellite` component. This new architecture allows us to run the kobs `hub` component in a central cluster and access clusters / services (plugins) through the kobs `satellite` component. More information regarding the new kobs architecture can be found in the documentation at [kobs.io](https://kobs.io).
+- [#348](https://github.com/kobsio/kobs/pull/348): [app] Update permission handling.
+- [#354](https://github.com/kobsio/kobs/pull/#354): [app] Change URLs for the details page of an Application and a Dashboard.
+- [#357](https://github.com/kobsio/kobs/pull/#357): [app] Adjust namespace handling in the frontend, so that it is not required anymore to select the namespaces from all selected clusters.
+- [#362](https://github.com/kobsio/kobs/pull/#362): [app] :warning: _Breaking change:_ :warning: Rename `preview` field to `insights` in Application CRD.
 
 ## [v0.8.0](https://github.com/kobsio/kobs/releases/tag/v0.8.0) (2022-03-24)
 

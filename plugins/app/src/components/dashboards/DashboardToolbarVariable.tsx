@@ -68,6 +68,7 @@ const DashboardToolbarVariable: React.FunctionComponent<IDashboardToolbarVariabl
       isOpen={show}
       isGrouped={true}
       width={250}
+      maxHeight="50vh"
     >
       {group}
     </Select>

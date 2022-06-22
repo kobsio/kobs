@@ -43,16 +43,14 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
           <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">
             {application.topology && application.topology.external === true
               ? ''
-              : `(${application.namespace} / ${application.cluster})`}
+              : `${application.namespace} / ${application.cluster} (${application.satellite})`}
           </span>
         </Title>
         <DrawerActions>
           <Button
             style={{ paddingRight: 0 }}
             variant="plain"
-            component={(props): React.ReactElement => (
-              <Link {...props} to={`/applications/${encodeURIComponent(application.id)}`} />
-            )}
+            component={(props): React.ReactElement => <Link {...props} to={`/applications${application.id}`} />}
           >
             <ExternalLinkAltIcon />
           </Button>
@@ -67,12 +65,12 @@ const ApplicationDetails: React.FunctionComponent<IApplicationDetailsProps> = ({
           </FlexItem>
           <ApplicationDetailsLabels application={application} />
 
-          {application.preview && application.preview.length > 0 && (
+          {application.insights && application.insights.length > 0 && (
             <Card isCompact={true}>
               <CardBody>
-                {application.preview.map((preview, index) => (
-                  <FlexItem key={preview.title} style={index !== 0 ? { marginTop: '16px' } : undefined}>
-                    <ApplicationDetailsChart preview={preview} times={times} />
+                {application.insights.map((insight, index) => (
+                  <FlexItem key={insight.title} style={index !== 0 ? { marginTop: '16px' } : undefined}>
+                    <ApplicationDetailsChart insight={insight} times={times} />
                   </FlexItem>
                 ))}
               </CardBody>

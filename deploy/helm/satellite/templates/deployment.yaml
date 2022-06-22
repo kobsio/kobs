@@ -35,6 +35,10 @@ spec:
             - satellite
             - --log.format={{ .Values.satellite.settings.logFormat }}
             - --log.level={{ .Values.satellite.settings.logLevel }}
+            - --trace.enabled={{ .Values.satellite.settings.traceEnabled }}
+            - --trace.service-name={{ .Values.satellite.settings.traceServiceName }}
+            - --trace.provider={{ .Values.satellite.settings.traceProvider }}
+            - --trace.address={{ .Values.satellite.settings.traceAddress }}
           {{- with .Values.env }}
           env:
             {{- toYaml . | nindent 12 }}

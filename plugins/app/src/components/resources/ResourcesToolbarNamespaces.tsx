@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-import { Select, SelectGroup, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { useQuery } from 'react-query';
-
-import { INamespace, INamespaces } from '../../resources/clusters';
 
 interface IResourcesToolbarNamespacesProps {
   selectedClusterIDs: string[];
-  selectedNamespaceIDs: string[];
-  selectNamespaceID: (clusterIDs: string) => void;
+  selectedNamespaces: string[];
+  selectNamespace: (namespace: string) => void;
 }
 
 const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNamespacesProps> = ({
   selectedClusterIDs,
-  selectedNamespaceIDs,
-  selectNamespaceID,
+  selectedNamespaces,
+  selectNamespace,
 }: IResourcesToolbarNamespacesProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { data } = useQuery<INamespaces, Error>(['app/clusters/namespaces', selectedClusterIDs], async () => {
+  const { data } = useQuery<string[], Error>(['app/clusters/namespaces', selectedClusterIDs], async () => {
     const c = selectedClusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
 
     const response = await fetch(`/api/clusters/namespaces?${c.length > 0 ? c.join('') : ''}`, {
@@ -45,23 +43,18 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
       onSelect={(
         event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
         value: string | SelectOptionObject,
-      ): void => selectNamespaceID(value.toString())}
-      onClear={(): void => selectNamespaceID('')}
-      selections={selectedNamespaceIDs}
+      ): void => selectNamespace(value.toString())}
+      onClear={(): void => selectNamespace('')}
+      selections={selectedNamespaces}
       isOpen={isOpen}
-      isGrouped={true}
       hasInlineFilter={true}
       maxHeight="50vh"
     >
-      {data && Object.keys(data).length > 0
-        ? Object.keys(data).map((cluster) => (
-            <SelectGroup label={cluster} key={cluster}>
-              {data[cluster].map((namespace: INamespace) => (
-                <SelectOption key={namespace.id} value={namespace.id}>
-                  {namespace.namespace}
-                </SelectOption>
-              ))}
-            </SelectGroup>
+      {data && data.length > 0
+        ? data.map((namespace) => (
+            <SelectOption key={namespace} value={namespace}>
+              {namespace}
+            </SelectOption>
           ))
         : [<SelectOption key="noresultsfound" value="No results found" isDisabled={true} />]}
     </Select>

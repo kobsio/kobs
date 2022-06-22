@@ -23,6 +23,7 @@ const CostManagementToolbarItemTimeframe: React.FunctionComponent<ICostManagemen
       onSelect={(e, value): void => setTimeframe(value as number)}
       selections={timeframe}
       isOpen={showSelect}
+      maxHeight="50vh"
     >
       {options.map((tf, index) => (
         <SelectOption key={index} value={tf.value} description="days" />

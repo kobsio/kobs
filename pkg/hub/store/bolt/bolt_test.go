@@ -331,15 +331,39 @@ func TestSaveAndGetTags(t *testing.T) {
 	storedTags1, err := c.GetTags(context.Background())
 	require.NoError(t, err)
 	require.Equal(t, 5, len(storedTags1))
+}
 
-	time.Sleep(2 * time.Second)
+func TestSaveAndGetTopology(t *testing.T) {
+	applications := []applicationv1.ApplicationSpec{{
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "application1",
+		Topology: applicationv1.Topology{
+			Dependencies: []applicationv1.Dependency{{
+				Cluster:   "dev-de1",
+				Namespace: "default",
+				Name:      "application2",
+			}},
+		},
+	}, {
+		Cluster:   "dev-de1",
+		Namespace: "default",
+		Name:      "application2",
+	}}
 
-	err = c.SaveApplications(context.Background(), "test-satellite", applications[0:1])
+	c, _ := NewClient("/tmp/kobs-test.db")
+	defer os.Remove("/tmp/kobs-test.db")
+
+	err := c.SaveTopology(context.Background(), "test-satellite", applications)
 	require.NoError(t, err)
 
-	storedTags2, err := c.GetTags(context.Background())
+	storedTopology1, err := c.GetTopologyByIDs(context.Background(), "TargetID", []string{"/satellite/test-satellite/cluster/dev-de1/namespace/default/name/application2"})
 	require.NoError(t, err)
-	require.Equal(t, 5, len(storedTags2))
+	require.Equal(t, 1, len(storedTopology1))
+
+	storedTopology2, err := c.GetTopologyByIDs(context.Background(), "SourceID", []string{"/satellite/test-satellite/cluster/dev-de1/namespace/default/name/application1"})
+	require.NoError(t, err)
+	require.Equal(t, 1, len(storedTopology2))
 }
 
 func TestGetNamespacesByClusterIDs(t *testing.T) {

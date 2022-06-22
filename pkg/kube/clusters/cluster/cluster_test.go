@@ -17,6 +17,7 @@ import (
 	teamfake "github.com/kobsio/kobs/pkg/kube/clients/team/clientset/versioned/typed/team/v1/fake"
 	userfakeclient "github.com/kobsio/kobs/pkg/kube/clients/user/clientset/versioned/fake"
 	userfake "github.com/kobsio/kobs/pkg/kube/clients/user/clientset/versioned/typed/user/v1/fake"
+	"go.opentelemetry.io/otel"
 
 	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"
@@ -49,6 +50,7 @@ func TestGetNamespaces(t *testing.T) {
 					Name: "kube-system",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -81,9 +83,7 @@ func TestGetApplications(t *testing.T) {
 					Namespace: "default",
 				},
 				Spec: applicationv1.ApplicationSpec{
-					Topology: applicationv1.Topology{
-						Type: "service",
-					},
+					Teams: []string{"team1"},
 				},
 			}, &applicationv1.Application{
 				ObjectMeta: metav1.ObjectMeta{
@@ -91,6 +91,7 @@ func TestGetApplications(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -109,7 +110,7 @@ func TestGetApplications(t *testing.T) {
 		client := getClient()
 		applications, err := client.GetApplications(context.Background(), "default")
 		require.NoError(t, err)
-		require.Equal(t, []applicationv1.ApplicationSpec{{Cluster: "test", Namespace: "default", Name: "application1", Topology: applicationv1.Topology{Type: "service"}}, {Cluster: "test", Namespace: "default", Name: "application2", Topology: applicationv1.Topology{Type: "default"}}}, applications)
+		require.Equal(t, []applicationv1.ApplicationSpec{{Cluster: "test", Namespace: "default", Name: "application1", Teams: []string{"team1"}}, {Cluster: "test", Namespace: "default", Name: "application2"}}, applications)
 	})
 }
 
@@ -128,6 +129,7 @@ func TestGetApplication(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -145,7 +147,7 @@ func TestGetApplication(t *testing.T) {
 		client := getClient()
 		applications, err := client.GetApplication(context.Background(), "default", "application1")
 		require.NoError(t, err)
-		require.Equal(t, &applicationv1.ApplicationSpec{Cluster: "test", Namespace: "default", Name: "application1", Topology: applicationv1.Topology{Type: "default"}}, applications)
+		require.Equal(t, &applicationv1.ApplicationSpec{Cluster: "test", Namespace: "default", Name: "application1"}, applications)
 	})
 }
 
@@ -164,6 +166,7 @@ func TestGetTeams(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -201,6 +204,7 @@ func TestGetTeam(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -237,6 +241,7 @@ func TestGetDashboards(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -274,6 +279,7 @@ func TestGetDashboard(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -310,6 +316,7 @@ func TestGetUsers(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 
@@ -347,6 +354,7 @@ func TestGetUser(t *testing.T) {
 					Namespace: "default",
 				},
 			}),
+			tracer: otel.Tracer("cluster"),
 		}
 	}
 

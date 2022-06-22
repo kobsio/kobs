@@ -35,7 +35,7 @@ func TestGetClusters(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
+			mockClustersClient.On("GetClusters", mock.Anything).Return([]cluster.Client{mockClusterClient})
 
 			router := Router{chi.NewRouter(), Config{}, mockClustersClient}
 			router.Get("/clusters", router.getClusters)
@@ -82,7 +82,7 @@ func TestGetNamespaces(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
+			mockClustersClient.On("GetClusters", mock.Anything).Return([]cluster.Client{mockClusterClient})
 
 			tt.prepare(mockClusterClient)
 
@@ -112,7 +112,7 @@ func TestGetCRDs(t *testing.T) {
 
 	mockClustersClient := &clusters.MockClient{}
 	mockClustersClient.AssertExpectations(t)
-	mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
+	mockClustersClient.On("GetClusters", mock.Anything).Return([]cluster.Client{mockClusterClient})
 
 	router := Router{
 		Mux:            chi.NewRouter(),

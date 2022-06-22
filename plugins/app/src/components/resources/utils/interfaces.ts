@@ -5,7 +5,7 @@ import { ITimes } from '@kobsio/shared';
 
 export interface IOptions {
   clusterIDs: string[];
-  namespaceIDs: string[];
+  namespaces: string[];
   resourceIDs: string[];
   param: string;
   paramName: string;

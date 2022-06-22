@@ -41,7 +41,7 @@ type ApplicationSpec struct {
 	Links       []Link                  `json:"links,omitempty"`
 	Teams       []string                `json:"teams,omitempty"`
 	Topology    Topology                `json:"topology,omitempty"`
-	Preview     []Preview               `json:"preview,omitempty"`
+	Insights    []Insight               `json:"insights,omitempty"`
 	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
 
@@ -51,7 +51,6 @@ type Link struct {
 }
 
 type Topology struct {
-	Type         string       `json:"type,omitempty"`
 	External     bool         `json:"external,omitempty"`
 	Dependencies []Dependency `json:"dependencies,omitempty"`
 }
@@ -64,7 +63,7 @@ type Dependency struct {
 	Description string `json:"description,omitempty"`
 }
 
-type Preview struct {
+type Insight struct {
 	Title    string             `json:"title"`
 	Type     string             `json:"type"`
 	Unit     string             `json:"unit,omitempty"`

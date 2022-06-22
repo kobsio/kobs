@@ -231,19 +231,21 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ instance, times, edges, n
   );
 
   useEffect(() => {
-    if (graph.current) {
-      if (layout.current) {
-        layout.current.stop();
+    setTimeout(() => {
+      if (graph.current) {
+        if (layout.current) {
+          layout.current.stop();
+        }
+
+        graph.current.add({
+          edges: edges as cytoscape.EdgeDefinition[],
+          nodes: nodes as cytoscape.NodeDefinition[],
+        });
+
+        layout.current = graph.current.elements().makeLayout(dagreLayout);
+        layout.current.run();
       }
-
-      graph.current.add({
-        edges: edges as cytoscape.EdgeDefinition[],
-        nodes: nodes as cytoscape.NodeDefinition[],
-      });
-
-      layout.current = graph.current.elements().makeLayout(dagreLayout);
-      layout.current.run();
-    }
+    }, 100);
   }, [edges, nodes, size]);
 
   useEffect(() => {
@@ -258,10 +260,6 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ instance, times, edges, n
 
         graph.current = cytoscape({
           container: container.current,
-          elements: {
-            edges: edges as cytoscape.EdgeDefinition[],
-            nodes: nodes as cytoscape.NodeDefinition[],
-          },
           style: styleSheet,
         });
         graph.current.on('tap', onTap);

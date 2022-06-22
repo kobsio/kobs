@@ -11,6 +11,9 @@ const Sidebar: React.FunctionComponent = () => {
         <NavItem isActive={location.pathname.startsWith('/applications')}>
           <Link to="/applications">Applications</Link>
         </NavItem>
+        <NavItem isActive={location.pathname.startsWith('/topology')}>
+          <Link to="/topology">Topology</Link>
+        </NavItem>
         <NavItem isActive={location.pathname.startsWith('/teams')}>
           <Link to="/teams">Teams</Link>
         </NavItem>

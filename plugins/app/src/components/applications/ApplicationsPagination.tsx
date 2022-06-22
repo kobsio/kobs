@@ -19,13 +19,19 @@ const Applications: React.FunctionComponent<IApplicationsPagination> = ({
       options.all,
       options.clusterIDs,
       options.external,
-      options.namespaceIDs,
+      options.namespaces,
       options.searchTerm,
       options.tags,
     ],
     async () => {
       const c = options.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
-      const n = options.namespaceIDs.map((namespaceID) => `&namespaceID=${encodeURIComponent(namespaceID)}`);
+      const n = options.clusterIDs
+        .map((clusterID) =>
+          options.namespaces.map(
+            (namespace) => `&namespaceID=${encodeURIComponent(`${clusterID}/namespace/${namespace}`)}`,
+          ),
+        )
+        .flat();
       const t = options.tags.map((tag) => `&tag=${encodeURIComponent(tag)}`);
 
       const response = await fetch(
@@ -66,7 +72,7 @@ const Applications: React.FunctionComponent<IApplicationsPagination> = ({
           setOptions({ ...options, page: newPage })
         }
         onPerPageSelect={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPerPage: number): void =>
-          setOptions({ ...options, perPage: newPerPage })
+          setOptions({ ...options, page: 1, perPage: newPerPage })
         }
         onFirstClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
           setOptions({ ...options, page: newPage })

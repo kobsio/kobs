@@ -15,6 +15,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/mmcdole/gofeed"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/zap"
 )
 
@@ -92,7 +93,10 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 	var rssInstances []instance.Instance
 
 	for _, i := range instances {
-		rssInstance := instance.New(i.Name, &http.Client{Timeout: 30 * time.Second})
+		rssInstance := instance.New(i.Name, &http.Client{
+			Transport: otelhttp.NewTransport(http.DefaultTransport),
+			Timeout:   30 * time.Second,
+		})
 		rssInstances = append(rssInstances, rssInstance)
 	}
 

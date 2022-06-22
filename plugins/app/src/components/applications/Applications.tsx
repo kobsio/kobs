@@ -19,13 +19,13 @@ const Applications: React.FunctionComponent = () => {
 
   const changeOptions = (opts: IOptions): void => {
     const c = opts.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
-    const n = opts.namespaceIDs.map((namespaceID) => `&namespaceID=${encodeURIComponent(namespaceID)}`);
+    const n = opts.namespaces.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`);
     const t = opts.tags.map((tag) => `&tag=${encodeURIComponent(tag)}`);
 
     navigate(
       `${location.pathname}?all=${opts.all}&external=${opts.external}&searchTerm=${encodeURIComponent(
         opts.searchTerm,
-      )}&page=${opts.page}&=perPage=${opts.perPage}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}${
+      )}&page=${opts.page}&perPage=${opts.perPage}${c.length > 0 ? c.join('') : ''}${n.length > 0 ? n.join('') : ''}${
         t.length > 0 ? t.join('') : ''
       }`,
     );

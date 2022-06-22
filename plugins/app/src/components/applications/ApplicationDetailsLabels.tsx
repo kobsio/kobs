@@ -61,9 +61,7 @@ const ApplicationDetailsLabels: React.FunctionComponent<IApplicationDetailsLabel
               icon={<TopologyIcon />}
               render={({ className, content, componentRef }): React.ReactNode => (
                 <Link
-                  to={`/applications/${encodeURIComponent(
-                    `/satellite/${dependency.satellite}/cluster/${dependency.cluster}/namespace/${dependency.namespace}/name/${dependency.name}`,
-                  )}`}
+                  to={`/applications/satellite/${dependency.satellite}/cluster/${dependency.cluster}/namespace/${dependency.namespace}/name/${dependency.name}`}
                   className={className}
                   ref={componentRef}
                 >

@@ -10,6 +10,9 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/watcher/worker"
 	"github.com/kobsio/kobs/pkg/log"
 
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -34,6 +37,7 @@ type client struct {
 	workerPool       worker.Pool
 	satellitesClient satellites.Client
 	storeClient      store.Client
+	tracer           trace.Tracer
 }
 
 // Watch triggers the internal watch function in the specified interval. This should be called in a new go routine.
@@ -60,10 +64,17 @@ func (c *client) watch() {
 	startTime := time.Now()
 	ss := c.satellitesClient.GetSatellites()
 
+	ctx, span := c.tracer.Start(context.Background(), "watcher")
+	defer span.End()
+
 	for _, s := range ss {
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.plugins")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				plugins, err := s.GetPlugins(ctx)
@@ -84,7 +95,11 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.clusters")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				clusters, err := s.GetClusters(ctx)
@@ -105,7 +120,11 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.namespaces")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				namespaces, err := s.GetNamespaces(ctx)
@@ -126,7 +145,11 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.crds")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				crds, err := s.GetCRDs(ctx)
@@ -147,7 +170,11 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.applications")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				applications, err := s.GetApplications(ctx)
@@ -168,13 +195,23 @@ func (c *client) watch() {
 					return
 				}
 
+				err = c.storeClient.SaveTopology(ctx, s.GetName(), applications)
+				if err != nil {
+					instrument(ctx, s.GetName(), "tags", err, len(applications), startTime)
+					return
+				}
+
 				instrument(ctx, s.GetName(), "applications", nil, len(applications), startTime)
 			}))
 		}(s)
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.dashboards")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				dashboards, err := s.GetDashboards(ctx)
@@ -195,7 +232,11 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.teams")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				teams, err := s.GetTeams(ctx)
@@ -216,7 +257,11 @@ func (c *client) watch() {
 
 		go func(s satellite.Client) {
 			c.workerPool.RunTask(task(func() {
-				ctx, cancel := context.WithTimeout(log.ContextWithValue(context.Background(), zap.Time("startTime", startTime)), 30*time.Second)
+				ctx, span := c.tracer.Start(ctx, "watcher.users")
+				span.SetAttributes(attribute.Key("satellite").String(s.GetName()))
+				defer span.End()
+
+				ctx, cancel := context.WithTimeout(log.ContextWithValue(ctx, zap.Time("startTime", startTime)), 30*time.Second)
 				defer cancel()
 
 				users, err := s.GetUsers(ctx)
@@ -250,6 +295,7 @@ func NewClient(interval time.Duration, numberOfWorker int64, satellitesClient sa
 		workerPool:       workerPool,
 		satellitesClient: satellitesClient,
 		storeClient:      storeClient,
+		tracer:           otel.Tracer("watcher"),
 	}
 
 	go client.watch()

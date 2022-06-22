@@ -5,15 +5,16 @@ COPY plugins /kobs/plugins
 RUN yarn install --frozen-lockfile --network-timeout 3600000
 RUN make generate-assets
 
-FROM golang:1.18.2 as api
+FROM golang:1.18.3 as api
 WORKDIR /kobs
 COPY go.mod go.sum /kobs/
 RUN go mod download
 COPY . .
-RUN export CGO_ENABLED=0 && make build && make build-plugins
+RUN export CGO_ENABLED=1 && make build && make build-plugins
 
-FROM alpine:3.14.2
-RUN apk update && apk add --no-cache ca-certificates
+FROM debian:stable-20220527
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
+RUN update-ca-certificates
 RUN mkdir /kobs
 COPY --from=api /kobs/bin/kobs /kobs
 COPY --from=api /kobs/bin/plugins /kobs/plugins

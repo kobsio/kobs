@@ -50,6 +50,7 @@ const DetailsMetricsVirtualMachineToolbar: React.FunctionComponent<IDetailsMetri
               onSelect={(e, value): void => changeSelectedVirtualMachine(value as string)}
               selections={selectedVirtualMachine}
               isOpen={show}
+              maxHeight="50vh"
             >
               {virtualMachines.map((virtualMachine) => (
                 <SelectOption key={virtualMachine} value={virtualMachine}>

@@ -1,8 +1,8 @@
 package clusters
 
 import (
-	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/store/shared"
@@ -51,20 +51,14 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var groupedNamespaces map[string][]shared.Namespace
-	groupedNamespaces = make(map[string][]shared.Namespace)
+	var uniqueNamespaces []string
 
 	for _, namespace := range namespaces {
-		key := fmt.Sprintf("%s (%s)", namespace.Cluster, namespace.Satellite)
-
-		if _, ok := groupedNamespaces[key]; ok {
-			groupedNamespaces[key] = append(groupedNamespaces[key], namespace)
-		} else {
-			groupedNamespaces[key] = []shared.Namespace{namespace}
-		}
+		uniqueNamespaces = appendIfMissing(uniqueNamespaces, namespace.Namespace)
 	}
 
-	render.JSON(w, r, groupedNamespaces)
+	sort.Strings(uniqueNamespaces)
+	render.JSON(w, r, uniqueNamespaces)
 }
 
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {

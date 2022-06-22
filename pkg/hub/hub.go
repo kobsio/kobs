@@ -5,18 +5,21 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/hub/api"
 	"github.com/kobsio/kobs/pkg/hub/api/applications"
 	"github.com/kobsio/kobs/pkg/hub/api/clusters"
 	"github.com/kobsio/kobs/pkg/hub/api/dashboards"
 	"github.com/kobsio/kobs/pkg/hub/api/plugins"
 	"github.com/kobsio/kobs/pkg/hub/api/resources"
 	"github.com/kobsio/kobs/pkg/hub/api/teams"
+	"github.com/kobsio/kobs/pkg/hub/api/users"
 	"github.com/kobsio/kobs/pkg/hub/middleware/userauth"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/debug"
 	"github.com/kobsio/kobs/pkg/middleware/httplog"
+	"github.com/kobsio/kobs/pkg/middleware/httptracer"
 	"github.com/kobsio/kobs/pkg/middleware/metrics"
 
 	"github.com/go-chi/chi/v5"
@@ -66,7 +69,7 @@ func (s *server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(debugUsername, debugPassword, hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (Server, error) {
+func New(config api.Config, debugUsername, debugPassword, hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (Server, error) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -86,15 +89,17 @@ func New(debugUsername, debugPassword, hubAddress string, authEnabled bool, auth
 		r.Use(middleware.RequestID)
 		r.Use(middleware.Recoverer)
 		r.Use(middleware.URLFormat)
+		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient))
+		r.Use(httptracer.Handler("hub"))
 		r.Use(metrics.Metrics)
 		r.Use(httplog.Logger)
-		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, nil))
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/auth", userauth.Mount(authLogoutRedirect))
 		r.Mount("/clusters", clusters.Mount(storeClient))
 		r.Mount("/applications", applications.Mount(storeClient))
 		r.Mount("/teams", teams.Mount(storeClient))
+		r.Mount("/users", users.Mount(config.Users, storeClient))
 		r.Mount("/dashboards", dashboards.Mount(storeClient))
 		r.Mount("/resources", resources.Mount(satellitesClient, storeClient))
 		r.Mount("/plugins", plugins.Mount(satellitesClient, storeClient))

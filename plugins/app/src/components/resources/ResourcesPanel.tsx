@@ -39,7 +39,13 @@ const ResourcesPanel: React.FunctionComponent<IResourcesPanelProps> = ({
     ['app/resources/resources/_', options],
     async () => {
       const c = options.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
-      const n = options.namespaceIDs.map((namespaceID) => `&namespaceID=${encodeURIComponent(namespaceID)}`);
+      const n = options.clusterIDs
+        .map((clusterID) =>
+          options.namespaces.map(
+            (namespace) => `&namespaceID=${encodeURIComponent(`${clusterID}/namespace/${namespace}`)}`,
+          ),
+        )
+        .flat();
       const r = options.resourceIDs.map((resourceID) => `&resourceID=${encodeURIComponent(resourceID)}`);
 
       const response = await fetch(

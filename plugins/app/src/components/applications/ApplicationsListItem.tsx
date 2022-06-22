@@ -76,13 +76,6 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
                       </Label>
                     </FlexItem>
                   )}
-                  {application.topology && application.topology.type && (
-                    <FlexItem>
-                      <Label color="grey" icon={<TopologyIcon />}>
-                        {application.topology.type}
-                      </Label>
-                    </FlexItem>
-                  )}
                 </Flex>
               </Flex>
             </DataListCell>,
@@ -91,9 +84,7 @@ const ApplicationsListItem: React.FunctionComponent<IApplicationsListItemProps> 
         <DataListAction aria-labelledby={application.id} id={application.id} aria-label="Actions">
           <Button
             variant={ButtonVariant.link}
-            component={(props): React.ReactElement => (
-              <Link {...props} to={`/applications/${encodeURIComponent(application.id)}`} />
-            )}
+            component={(props): React.ReactElement => <Link {...props} to={`/applications${application.id}`} />}
           >
             View Details
           </Button>

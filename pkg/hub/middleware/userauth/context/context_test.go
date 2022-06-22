@@ -11,7 +11,7 @@ import (
 
 func TestToString(t *testing.T) {
 	u := User{Email: "test1"}
-	require.Equal(t, "{\"email\":\"test1\",\"teams\":null,\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}", u.ToString())
+	require.Equal(t, "{\"email\":\"test1\",\"teams\":null,\"permissions\":{}}", u.ToString())
 }
 
 func TestHasApplicationAccess(t *testing.T) {
@@ -60,16 +60,18 @@ func TestHasPluginAccess(t *testing.T) {
 		user              User
 		expectedHasAccess bool
 	}{
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Name: "*"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user2@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Name: "plugin1"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user3@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Name: "plugin1"}, {Satellite: "*", Name: "plugin2"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user4@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Name: "plugin2"}}}}, expectedHasAccess: false},
-		{user: User{Email: "user5@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Name: "plugin2"}, {Satellite: "*", Name: "*"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user6@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "test-satellite1", Name: "*"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user7@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "test-satellite2", Name: "*"}}}}, expectedHasAccess: false},
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
+		{user: User{Email: "user2@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin1"}}}}, expectedHasAccess: true},
+		{user: User{Email: "user3@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin1"}, {Satellite: "*", Type: "prometheus", Name: "plugin2"}}}}, expectedHasAccess: true},
+		{user: User{Email: "user4@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin2"}}}}, expectedHasAccess: false},
+		{user: User{Email: "user5@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin2"}, {Satellite: "*", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
+		{user: User{Email: "user6@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "test-satellite1", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
+		{user: User{Email: "user7@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "test-satellite2", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: false},
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "klogs", Name: "*"}}}}, expectedHasAccess: false},
+		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "*", Name: "*"}}}}, expectedHasAccess: true},
 	} {
 		t.Run(tt.user.Email, func(t *testing.T) {
-			actualHasAccess := tt.user.HasPluginAccess("test-satellite1", "plugin1")
+			actualHasAccess := tt.user.HasPluginAccess("test-satellite1", "prometheus", "plugin1")
 			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
 		})
 	}

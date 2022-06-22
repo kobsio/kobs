@@ -95,6 +95,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
               onClear={(): void => setSelectedNamespaces([])}
               selections={selectedNamespaces}
               isOpen={showNamespaces}
+              maxHeight="50vh"
             >
               {isError || !data
                 ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]

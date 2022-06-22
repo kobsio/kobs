@@ -17,7 +17,7 @@ const Resources: React.FunctionComponent = () => {
 
   const changeOptions = (opts: IOptions): void => {
     const c = opts.clusterIDs.map((clusterID) => `&clusterID=${encodeURIComponent(clusterID)}`);
-    const n = opts.namespaceIDs.map((namespaceID) => `&namespaceID=${encodeURIComponent(namespaceID)}`);
+    const n = opts.namespaces.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`);
     const r = opts.resourceIDs.map((resourceID) => `&resourceID=${encodeURIComponent(resourceID)}`);
 
     navigate(

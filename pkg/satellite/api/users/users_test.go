@@ -32,7 +32,7 @@ func TestGetUsers(t *testing.T) {
 		{
 			name:               "get users",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"email\":\"user1@kobs.io\",\"permissions\":{\"applications\":null,\"teams\":null,\"plugins\":null,\"resources\":null}}]\n",
+			expectedBody:       "[{\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"name\":\"name1\",\"email\":\"user1@kobs.io\",\"permissions\":{}}]\n",
 			prepare: func(mockClusterClient *cluster.MockClient) {
 				mockClusterClient.On("GetUsers", mock.Anything, "").Return([]userv1.UserSpec{{Cluster: "cluster1", Namespace: "namespace1", Name: "name1", Email: "user1@kobs.io"}}, nil)
 			},
@@ -44,7 +44,7 @@ func TestGetUsers(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetClusters").Return([]cluster.Client{mockClusterClient})
+			mockClustersClient.On("GetClusters", mock.Anything).Return([]cluster.Client{mockClusterClient})
 
 			tt.prepare(mockClusterClient)
 

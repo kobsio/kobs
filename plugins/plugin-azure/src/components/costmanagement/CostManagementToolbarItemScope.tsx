@@ -27,6 +27,7 @@ const CostManagementToolbarItemScope: React.FunctionComponent<ICostManagementToo
       onSelect={(e, value): void => setScope(value as string)}
       selections={scope}
       isOpen={showSelect}
+      maxHeight="50vh"
     >
       {options}
     </Select>

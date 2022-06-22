@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/store"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"go.opentelemetry.io/otel"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/mock"
@@ -108,7 +109,7 @@ func TestGetApplications(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -189,7 +190,7 @@ func TestGetApplicationsCount(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -243,7 +244,7 @@ func TestGetTags(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -337,7 +338,7 @@ func TestGetApplication(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
@@ -369,18 +370,48 @@ func TestGetApplicationsByTeam(t *testing.T) {
 			expectedBody:       "{\"error\":\"You are not authorized to access the applications: Unauthorized\"}\n",
 			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
 				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
 			},
 			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
 				router.getApplicationsByTeam(w, req)
 			},
 		},
 		{
+			name:               "parse limit fails",
+			url:                "/team",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not parse limit parameter: strconv.Atoi: parsing \\\"\\\": invalid syntax\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
+				router.getApplicationsByTeam(w, req)
+			},
+		},
+		{
+			name:               "parse offset fails",
+			url:                "/team?limit=10",
+			expectedStatusCode: http.StatusBadRequest,
+			expectedBody:       "{\"error\":\"Could not parse offset parameter: strconv.Atoi: parsing \\\"\\\": invalid syntax\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
+				router.getApplicationsByTeam(w, req)
+			},
+		},
+		{
 			name:               "get team applications fails, because user is not authorized",
-			url:                "/team?team=team1",
+			url:                "/team?team=team1&limit=10&offset=0",
 			expectedStatusCode: http.StatusForbidden,
 			expectedBody:       "{\"error\":\"You are not allowed to view the applications of this team\"}\n",
 			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
 				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
 			},
 			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
 				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
@@ -389,11 +420,26 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		},
 		{
 			name:               "get team applications fails",
-			url:                "/team?team=team1",
+			url:                "/team?team=team1&limit=10&offset=0",
 			expectedStatusCode: http.StatusInternalServerError,
 			expectedBody:       "{\"error\":\"Could not get applications: could not get applications\"}\n",
 			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get applications"))
+				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
+			},
+			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
+				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
+				router.getApplicationsByTeam(w, req)
+			},
+		},
+		{
+			name:               "get all applications count fails",
+			url:                "/team?team=team1&limit=10&offset=0",
+			expectedStatusCode: http.StatusInternalServerError,
+			expectedBody:       "{\"error\":\"Could not get applications: could not get applications count\"}\n",
+			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
+				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, nil)
+				mockStoreClient.On("GetApplicationsByFilterCount", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(0, fmt.Errorf("could not get applications count"))
 			},
 			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
 				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
@@ -402,11 +448,12 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		},
 		{
 			name:               "get all applications",
-			url:                "/team?team=team1",
+			url:                "/team?team=team1&limit=10&offset=0",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "null\n",
+			expectedBody:       "{\"count\":0,\"applications\":null}\n",
 			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, nil)
+				mockStoreClient.On("GetApplicationsByFilterCount", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(0, nil)
 			},
 			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
 				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
@@ -418,7 +465,7 @@ func TestGetApplicationsByTeam(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
 			tt.prepare(t, mockStoreClient)
 
-			router := Router{chi.NewRouter(), mockStoreClient}
+			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
 			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()

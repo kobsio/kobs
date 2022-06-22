@@ -43,22 +43,23 @@ type UserSpec struct {
 }
 
 type Permissions struct {
-	Applications []ApplicationPermissions `json:"applications"`
-	Teams        []string                 `json:"teams"`
-	Plugins      []Plugin                 `json:"plugins"`
-	Resources    []Resources              `json:"resources"`
+	Applications []ApplicationPermissions `json:"applications,omitempty"`
+	Teams        []string                 `json:"teams,omitempty"`
+	Plugins      []Plugin                 `json:"plugins,omitempty"`
+	Resources    []Resources              `json:"resources,omitempty"`
 }
 
 type ApplicationPermissions struct {
 	Type       string   `json:"type"`
-	Satellites []string `json:"satellites"`
-	Clusters   []string `json:"clusters"`
-	Namespaces []string `json:"namespaces"`
+	Satellites []string `json:"satellites,omitempty"`
+	Clusters   []string `json:"clusters,omitempty"`
+	Namespaces []string `json:"namespaces,omitempty"`
 }
 
 type Plugin struct {
 	Satellite   string               `json:"satellite"`
 	Name        string               `json:"name"`
+	Type        string               `json:"type"`
 	Permissions apiextensionsv1.JSON `json:"permissions,omitempty"`
 }
 

@@ -139,7 +139,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
             setOptions({ ...options, page: newPage })
           }
           onPerPageSelect={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPerPage: number): void =>
-            setOptions({ ...options, perPage: newPerPage })
+            setOptions({ ...options, page: 1, perPage: newPerPage })
           }
           onFirstClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
             setOptions({ ...options, page: newPage })

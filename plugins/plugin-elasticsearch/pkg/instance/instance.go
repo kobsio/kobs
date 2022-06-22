@@ -12,6 +12,9 @@ import (
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 
 	"github.com/mitchellh/mapstructure"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"go.uber.org/zap"
 )
 
@@ -56,7 +59,9 @@ func (i *instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Content-Type", "application/json")
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := i.client.Do(req)
 	if err != nil {
@@ -133,7 +138,7 @@ func New(name string, options map[string]interface{}) (Instance, error) {
 		name:    name,
 		address: config.Address,
 		client: &http.Client{
-			Transport: roundTripper,
+			Transport: otelhttp.NewTransport(roundTripper),
 		},
 	}, nil
 }

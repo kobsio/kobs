@@ -130,8 +130,8 @@ func TestGetReleases(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
-			mockClustersClient.On("GetCluster", "cluster2").Return(nil)
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster1").Return(mockClusterClient)
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster2").Return(nil)
 
 			mockHelmClient := &client.MockClient{}
 			mockHelmClient.AssertExpectations(t)
@@ -237,8 +237,8 @@ func TestGetRelease(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
-			mockClustersClient.On("GetCluster", "cluster2").Return(nil)
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster1").Return(mockClusterClient)
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster2").Return(nil)
 
 			mockHelmClient := &client.MockClient{}
 			mockHelmClient.AssertExpectations(t)
@@ -335,8 +335,8 @@ func TestGetReleaseHistory(t *testing.T) {
 
 			mockClustersClient := &clusters.MockClient{}
 			mockClustersClient.AssertExpectations(t)
-			mockClustersClient.On("GetCluster", "cluster1").Return(mockClusterClient)
-			mockClustersClient.On("GetCluster", "cluster2").Return(nil)
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster1").Return(mockClusterClient)
+			mockClustersClient.On("GetCluster", mock.Anything, "cluster2").Return(nil)
 
 			mockHelmClient := &client.MockClient{}
 			mockHelmClient.AssertExpectations(t)

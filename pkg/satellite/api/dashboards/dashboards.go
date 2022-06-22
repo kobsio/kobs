@@ -26,7 +26,7 @@ func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
 
 	var dashboards []v1dashboards.DashboardSpec
 
-	for _, cluster := range router.clustersClient.GetClusters() {
+	for _, cluster := range router.clustersClient.GetClusters(r.Context()) {
 		dashboard, err := cluster.GetDashboards(r.Context(), "")
 		if err != nil {
 			log.Error(r.Context(), "Could not get dashboards", zap.Error(err))
