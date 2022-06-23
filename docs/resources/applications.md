@@ -51,10 +51,10 @@ You can also use the topology page to view the topology graph of your applicatio
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | title | string | The title for the defined insight metric. | Yes |
-| type | string | The type which should be used to display the insight metric. | Yes |
+| type | string | The type which should be used to display the insight metric. Currently the only valid value is `sparkline`. | Yes |
 | unit | string | An optional unit for the metric. | No |
 | mappings | map<string, string> | A map of mappings, which should be displayed instead of the current metric value. | No |
-| plugin | [Plugin](../plugins/getting-started.md#specification) | The plugin, which should be used for the preview. | Yes |
+| plugin | [Plugin](../plugins/index.md#specification) | The plugin, which should be used for the preview. | Yes |
 
 ![Applications Insights](assets/applications-insights.png)
 

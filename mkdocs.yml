@@ -49,7 +49,7 @@ nav:
       - Teams: resources/teams.md
       - Dashboards: resources/dashboards.md
   - Plugins:
-      - plugins/getting-started.md
+      - plugins/index.md
       - Azure: plugins/azure.md
       - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md
@@ -67,9 +67,9 @@ nav:
       - SQL: plugins/sql.md
       - TechDocs: plugins/techdocs.md
   - Community Plugins:
-      - Getting Started: community-plugins/getting-started.md
+      - community-plugins/index.md
   - Contributing:
-      - Getting Started: contributing/getting-started.md
+      - contributing/index.md
       - Develop a Plugin: contributing/develop-a-plugin.md
       - Development using the Demo: contributing/development-using-the-demo.md
       - Using the kobsio/app: contributing/using-the-kobsio-app.md

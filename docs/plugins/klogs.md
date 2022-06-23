@@ -144,6 +144,7 @@ spec:
           colSpan: 12
           plugin:
             name: klogs
+            type: klogs
             options:
               type: logs
               queries:
@@ -181,6 +182,7 @@ spec:
           colSpan: 6
           plugin:
             name: klogs
+            type: klogs
             options:
               type: aggregation
               aggregation:
@@ -196,6 +198,7 @@ spec:
           colSpan: 6
           plugin:
             name: klogs
+            type: klogs
             options:
               type: aggregation
               aggregation:
@@ -210,6 +213,7 @@ spec:
           colSpan: 12
           plugin:
             name: klogs
+            type: klogs
             options:
               type: aggregation
               aggregation:
