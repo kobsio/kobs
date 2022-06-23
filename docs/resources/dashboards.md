@@ -26,7 +26,7 @@ Dashboards are defined via the [Dashboard Custom Resource Definition](https://gi
 | name | string | The name of the variable, which can be used in the dashboard via `{% .<variable-name> %}`. | Yes |
 | label | string | An optional label, which is shown in the UI instead of the variable name. | No |
 | hide | boolean | Hide the variable in the UI. | No |
-| plugin | [Plugin](../plugins/getting-started.md#specification) | The plugin, which should be used to get the values for the variable. | Yes |
+| plugin | [Plugin](../plugins/index.md#specification) | The plugin, which should be used to get the values for the variable. | Yes |
 
 !!! note
     Dashboards are also supporting some special variables, which always can be used and must not be defined by a users. These variables are:
@@ -51,7 +51,7 @@ Dashboards are defined via the [Dashboard Custom Resource Definition](https://gi
 | description | string | An optional description with additional information about the panel. | No |
 | colSpan | number | The number of columns, which should be used by the panel. This must be a number between `1` and `12`. The default value is `12`. | No |
 | rowSpan | number | The number of rows, which should be used by the panel. This must be a number between `1` and `12`. The default value is `1`. | No |
-| plugin | [Plugin](../plugins/getting-started.md#specification) | The plugin which should be displayed in the panel. | Yes |
+| plugin | [Plugin](../plugins/index.md#specification) | The plugin which should be displayed in the panel. | Yes |
 
 ## Example
 

@@ -1,4 +1,4 @@
-# Getting Started
+# satellite
 
 The satellite can be configured using a configuration file in yaml format, command-line arguments and environment variables. The configuration file is mainly used to provide the cluster and plugin configuration. The command-line arguments and environment variables are used to customize the log behavior, tracing, etc.
 

@@ -1,6 +1,6 @@
 # Using the kobsio/app
 
-The [kobsio/app](https://github.com/kobsio/app) can be used to build your own version of kobs. This is required if you want to use one of the [community plugins](../plugins/getting-started.md#community-plugins) or if you want to build your own private plugins for kobs.
+The [kobsio/app](https://github.com/kobsio/app) can be used to build your own version of kobs. This is required if you want to use one of the [community plugins](../plugins/index.md#community-plugins) or if you want to build your own private plugins for kobs.
 
 To use the kobsio/app repository you can use the **Use this template** button from the repository to create your own version of kobs.
 

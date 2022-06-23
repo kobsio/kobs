@@ -26,6 +26,12 @@ func SetSatelliteForApplication(application applicationv1.ApplicationSpec, satel
 		}
 
 		if application.Dashboards[i].Inline != nil {
+			for j := 0; j < len(application.Dashboards[i].Inline.Variables); j++ {
+				if application.Dashboards[i].Inline.Variables[j].Plugin.Satellite == "" {
+					application.Dashboards[i].Inline.Variables[j].Plugin.Satellite = satellite
+				}
+			}
+
 			for j := 0; j < len(application.Dashboards[i].Inline.Rows); j++ {
 				for k := 0; k < len(application.Dashboards[i].Inline.Rows[j].Panels); k++ {
 					if application.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Satellite == "" {
@@ -52,7 +58,6 @@ func SetSatelliteForDashboard(dashboard dashboardv1.DashboardSpec, satellite str
 				dashboard.Rows[i].Panels[j].Plugin.Satellite = satellite
 			}
 		}
-
 	}
 
 	return dashboard
@@ -65,6 +70,12 @@ func SetSatelliteForTeam(team teamv1.TeamSpec, satellite string) teamv1.TeamSpec
 		}
 
 		if team.Dashboards[i].Inline != nil {
+			for j := 0; j < len(team.Dashboards[i].Inline.Variables); j++ {
+				if team.Dashboards[i].Inline.Variables[j].Plugin.Satellite == "" {
+					team.Dashboards[i].Inline.Variables[j].Plugin.Satellite = satellite
+				}
+			}
+
 			for j := 0; j < len(team.Dashboards[i].Inline.Rows); j++ {
 				for k := 0; k < len(team.Dashboards[i].Inline.Rows[j].Panels); k++ {
 					if team.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Satellite == "" {
@@ -85,6 +96,12 @@ func SetSatelliteForUser(user userv1.UserSpec, satellite string) userv1.UserSpec
 		}
 
 		if user.Dashboards[i].Inline != nil {
+			for j := 0; j < len(user.Dashboards[i].Inline.Variables); j++ {
+				if user.Dashboards[i].Inline.Variables[j].Plugin.Satellite == "" {
+					user.Dashboards[i].Inline.Variables[j].Plugin.Satellite = satellite
+				}
+			}
+
 			for j := 0; j < len(user.Dashboards[i].Inline.Rows); j++ {
 				for k := 0; k < len(user.Dashboards[i].Inline.Rows[j].Panels); k++ {
 					if user.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Satellite == "" {

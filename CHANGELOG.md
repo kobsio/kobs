@@ -25,6 +25,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#359](https://github.com/kobsio/kobs/pull/#359): [app] Fix pagination, when the number of items per page is changed.
 - [#360](https://github.com/kobsio/kobs/pull/#360): [app] Fix static file handling, when url contains a dot (`.`).
 - [#364](https://github.com/kobsio/kobs/pull/#364): [app] Fix usage of cytoscape in the topology graph. The fix was also applied for the `istio` and `kiali` plugin.
+- [#365](https://github.com/kobsio/kobs/pull/#365): [app] Fix satellite replacement for variables in inline dashboards.
 
 ### Changed
 
