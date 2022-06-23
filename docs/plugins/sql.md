@@ -4,27 +4,35 @@ The SQL plugin can be used to get run queries against a SQL database. Currently 
 
 ## Configuration
 
-The following config can be used to grant kobs access to a ClickHouse database running at `clickhouse-clickhouse.logging.svc.cluster.local:9000`. To access ClickHouse the user `admin` with the password provided via the `CLICKHOUSE_PASSWORD` environment variable is used.
-
-```yaml
-plugins:
-  sql:
-    - name: sql
-      displayName: SQL
-      connection: tcp://clickhouse-clickhouse.logging.svc.cluster.local:9000?username=admin&password=${CLICKHOUSE_PASSWORD}&database=logs
-      driver: clickhouse
-```
+To use the SQL plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | Name of the ClickHouse instance. | Yes |
-| displayName | string | Name of the ClickHouse as it is shown in the UI. | Yes |
-| description | string | Description of the ClickHouse instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| connection | string | The connection string, to connect to a SQL database. | Yes |
-| driver | string | The driver which should be used for the database instance. This must be `clickhouse`, `postgres` or `mysql`. | Yes |
+| name | string | The name of the SQL plugin instance. | Yes |
+| type | `sql` | The type for the SQL plugin. | Yes |
+| options.connection | string | The connection string, to connect to a SQL database. | Yes |
+| options.driver | string | The driver which should be used for the database instance. This must be `clickhouse`, `postgres` or `mysql`. | Yes |
 
-## Options
+```yaml
+plugins:
+  - name: sql
+    type: sql
+    options:
+      connection:
+      driver:
+```
+
+## Insight Options
+
+!!! note
+    The SQL plugin can not be used within the insights section of an application.
+
+## Variable Options
+
+!!! note
+    The SQL plugin can not be used to get a list of variable values.
+
+## Panel Options
 
 The following options can be used for a panel with the SQL plugin:
 
@@ -42,7 +50,7 @@ The following options can be used for a panel with the SQL plugin:
 | query | string | The query which should be run against the configured SQL database. | Yes |
 | columns | map<string, [Column](#column)> | A map of columns to format the returned data for a query. The key must match the returned column name. | No |
 
-### Column
+#### Column
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -65,205 +73,200 @@ The following options can be used for a panel with the SQL plugin:
 | yAxisStacked | boolean | When this is `true` the values of the y axis are stacked. | No |
 | legend | map<string, string> | A map of string pairs, to set the displayed title for a column in the legend. The key is the column name as returned by the query and the value is the shown title. | No |
 
-## Examples
+## Usage
 
-The following example uses a configured SQL which access the data from a [klogs](klogs.md) ClickHouse instance to show the difference between the duration and upstream service time from the Istio access logs.
-
-??? note "Dashboard"
+??? note "Application"
 
     ```yaml
     ---
     apiVersion: kobs.io/v1
-    kind: Dashboard
+    kind: Application
     metadata:
-      name: latency
+      name: example-application
       namespace: kobs
     spec:
-      rows:
-        - size: 3
-          panels:
-            - title: Raw Data
-              colSpan: 6
-              rowSpan: 2
-              plugin:
-                name: sql-klogs-clickhouse
-                options:
-                  type: table
-                  queries:
-                    - name: Duration and Upstream Service Time
-                      query: |
-                        SELECT
-                          toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
-                          avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
-                          avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust,
-                          avg_duration - avg_ust as avg_diff
-                        FROM
-                          logs.logs
-                        WHERE
-                          timestamp >= FROM_UNIXTIME({% .__timeStart %})
-                          AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
-                          AND namespace='myservice'
-                          AND app='myservice'
-                          AND container_name='istio-proxy'
-                          AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
-                        GROUP BY
-                          time
-                        ORDER BY
-                          time
-                      columns:
-                        time:
-                          title: Time
-                          unit: time
-                        avg_duration:
-                          title: Duration
-                          unit: ms
-                        avg_ust:
-                          title: Upstream Service Time
-                          unit: ms
-                        avg_diff:
-                          title: Difference
-                          unit: ms
+        dashboards:
+          - title: Latency
+            inline:
+              rows:
+                - size: 3
+                  panels:
+                    - title: Raw Data
+                      colSpan: 6
+                      rowSpan: 2
+                      plugin:
+                        name: sql
+                        type: sql
+                        options:
+                          type: table
+                          queries:
+                            - name: Duration and Upstream Service Time
+                              query: |
+                                SELECT
+                                  toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
+                                  avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
+                                  avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust,
+                                  avg_duration - avg_ust as avg_diff
+                                FROM
+                                  logs.logs
+                                WHERE
+                                  timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                                  AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                                  AND namespace='myservice'
+                                  AND app='myservice'
+                                  AND container_name='istio-proxy'
+                                  AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                                GROUP BY
+                                  time
+                                ORDER BY
+                                  time
+                              columns:
+                                time:
+                                  title: Time
+                                  unit: time
+                                avg_duration:
+                                  title: Duration
+                                  unit: ms
+                                avg_ust:
+                                  title: Upstream Service Time
+                                  unit: ms
+                                avg_diff:
+                                  title: Difference
+                                  unit: ms
 
-            - title: Difference
-              colSpan: 6
-              plugin:
-                name: sql-klogs-clickhouse
-                options:
-                  type: chart
-                  chart:
-                    type: line
-                    query: |
-                      SELECT
-                        toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
-                        avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) - avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_diff
-                      FROM
-                        logs.logs
-                      WHERE
-                        timestamp >= FROM_UNIXTIME({% .__timeStart %})
-                        AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
-                        AND namespace='myservice'
-                        AND app='myservice'
-                        AND container_name='istio-proxy'
-                        AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
-                      GROUP BY
-                        time
-                      ORDER BY
-                        time
-                    xAxisColumn: time
-                    xAxisType: time
-                    yAxisColumns:
-                      - avg_diff
-                    yAxisUnit: ms
-                    yAxisStacked: false
-                    legend:
-                      avg_diff: Difference
+                    - title: Difference
+                      colSpan: 6
+                      plugin:
+                        name: sql
+                        type: sql
+                        options:
+                          type: chart
+                          chart:
+                            type: line
+                            query: |
+                              SELECT
+                                toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
+                                avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) - avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_diff
+                              FROM
+                                logs.logs
+                              WHERE
+                                timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                                AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                                AND namespace='myservice'
+                                AND app='myservice'
+                                AND container_name='istio-proxy'
+                                AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                              GROUP BY
+                                time
+                              ORDER BY
+                                time
+                            xAxisColumn: time
+                            xAxisType: time
+                            yAxisColumns:
+                              - avg_diff
+                            yAxisUnit: ms
+                            yAxisStacked: false
+                            legend:
+                              avg_diff: Difference
 
-            - title: Duration vs Upstream Service Time
-              colSpan: 6
-              plugin:
-                name: sql-klogs-clickhouse
-                options:
-                  type: chart
-                  chart:
-                    type: line
-                    query: |
-                      SELECT
-                        toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
-                        avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
-                        avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust
-                      FROM
-                        logs.logs
-                      WHERE
-                        timestamp >= FROM_UNIXTIME({% .__timeStart %})
-                        AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
-                        AND namespace='myservice'
-                        AND app='myservice'
-                        AND container_name='istio-proxy'
-                        AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
-                      GROUP BY
-                        time
-                      ORDER BY
-                        time
-                    xAxisColumn: time
-                    xAxisType: time
-                    yAxisColumns:
-                      - avg_duration
-                      - avg_ust
-                    yAxisUnit: ms
-                    yAxisStacked: false
-                    legend:
-                      avg_duration: Duration
-                      avg_ust: Upstream Service Time
+                    - title: Duration vs Upstream Service Time
+                      colSpan: 6
+                      plugin:
+                        name: sql
+                        type: sql
+                        options:
+                          type: chart
+                          chart:
+                            type: line
+                            query: |
+                              SELECT
+                                toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
+                                avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
+                                avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust
+                              FROM
+                                logs.logs
+                              WHERE
+                                timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                                AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                                AND namespace='myservice'
+                                AND app='myservice'
+                                AND container_name='istio-proxy'
+                                AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                              GROUP BY
+                                time
+                              ORDER BY
+                                time
+                            xAxisColumn: time
+                            xAxisType: time
+                            yAxisColumns:
+                              - avg_duration
+                              - avg_ust
+                            yAxisUnit: ms
+                            yAxisStacked: false
+                            legend:
+                              avg_duration: Duration
+                              avg_ust: Upstream Service Time
+
+          - title: Log Levels
+            inline:
+              rows:
+                - size: 3
+                  panels:
+                    - title: Raw Data
+                      colSpan: 6
+                      plugin:
+                        name: sql
+                        type: sql
+                        options:
+                          type: table
+                          queries:
+                            - name: Log Levels
+                              query: |
+                                SELECT
+                                  content.level,
+                                  count(content.level) as count_data
+                                FROM
+                                  logs.logs
+                                WHERE
+                                  timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                                  AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                                  AND namespace='myservice'
+                                  AND app='myservice'
+                                  AND container_name='myservice'
+                                GROUP BY
+                                  content.level
+                              columns:
+                                content.level:
+                                  title: Level
+                                count_data:
+                                  title: Count
+                    - title: Log Level Distribution
+                      colSpan: 6
+                      plugin:
+                        name: sql
+                        type: sql
+                        options:
+                          type: chart
+                          chart:
+                            type: pie
+                            query: |
+                              SELECT
+                                content.level,
+                                count(content.level) as count_data
+                              FROM
+                                logs.logs
+                              WHERE
+                                timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                                AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                                AND namespace='myservice'
+                                AND app='myservice'
+                                AND container_name='myservice'
+                              GROUP BY
+                                content.level
+                            pieLabelColumn: content.level
+                            pieValueColumn: count_data
     ```
 
-![SQL Example](assets/sql-example-1.png)
+![SQL Example 1](assets/sql-example-1.png)
 
-In the next example we are visualizing the distribution of log levels from the same SQL instance via a Pie chart.
-
-??? note "Dashboard"
-
-    ```yaml
-    ---
-    apiVersion: kobs.io/v1
-    kind: Dashboard
-    metadata:
-      name: log-levels
-      namespace: kobs
-    spec:
-      rows:
-        - size: 3
-          panels:
-            - title: Raw Data
-              colSpan: 6
-              plugin:
-                name: sql-clickhouse-logging
-                options:
-                  type: table
-                  queries:
-                    - name: Log Levels
-                      query: |
-                        SELECT
-                          content.level,
-                          count(content.level) as count_data
-                        FROM
-                          logs.logs
-                        WHERE
-                          timestamp >= FROM_UNIXTIME({% .__timeStart %})
-                          AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
-                          AND namespace='myservice'
-                          AND app='myservice'
-                          AND container_name='myservice'
-                        GROUP BY
-                          content.level
-                      columns:
-                        content.level:
-                          title: Level
-                        count_data:
-                          title: Count
-            - title: Log Level Distribution
-              colSpan: 6
-              plugin:
-                name: sql-clickhouse-logging
-                options:
-                  type: chart
-                  chart:
-                    type: pie
-                    query: |
-                      SELECT
-                        content.level,
-                        count(content.level) as count_data
-                      FROM
-                        logs.logs
-                      WHERE
-                        timestamp >= FROM_UNIXTIME({% .__timeStart %})
-                        AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
-                        AND namespace='myservice'
-                        AND app='myservice'
-                        AND container_name='myservice'
-                      GROUP BY
-                        content.level
-                    pieLabelColumn: content.level
-                    pieValueColumn: count_data
-    ```
-
-![SQL Example](assets/sql-example-2.png)
+![SQL Example 2](assets/sql-example-2.png)

@@ -32,6 +32,19 @@ metadata:
   labels:
     app: ratings
     version: v1
+  annotations:
+    kobs.io/dashboards: |
+      [
+        {
+          "name": "istio-http",
+          "namespace": "kobs",
+          "title": "Istio HTTP Metrics",
+          "placeholders": {
+            "namespace": "<% $.metadata.namespace %>",
+            "app": "ratings"
+          }
+        }
+      ]
 spec:
   replicas: 1
   selector:
@@ -43,6 +56,19 @@ spec:
       labels:
         app: ratings
         version: v1
+      annotations:
+        kobs.io/dashboards: |
+          [
+            {
+              "name": "resource-usage",
+              "namespace": "kobs",
+              "title": "Resource Usage",
+              "placeholders": {
+                "namespace": "<% $.metadata.namespace %>",
+                "pod": "<% $.metadata.name %>"
+              }
+            }
+          ]
     spec:
       serviceAccountName: bookinfo-ratings
       containers:

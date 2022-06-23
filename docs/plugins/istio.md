@@ -22,34 +22,56 @@ The tap view can be used to live tail all requests. You can filter the view by t
 
 ## Configuration
 
-The following configuration can be used to access a Istio instances using a Prometheus plugin named `prometheus` and an klogs plugin named `klogs`.
-
-```yaml
-plugins:
-  istio:
-    - name: istio
-      displayName: Istio
-      description: Simplify observability, traffic management, security, and policy with the leading service mesh.
-      prometheus:
-        enabled: true
-        name: prometheus
-      klogs:
-        enabled: true
-        name: klogs
-```
+To use the Istio plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | Name of the Istio instance. | Yes |
-| displayName | string | Name of the Istio as it is shown in the UI. | Yes |
-| description | string | Description of the Istio instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| prometheus.enabled | boolean | Enabled the Prometheus integration for Istio. | No |
-| prometheus.name | string | The name of the Prometheus instance which should be used for the Istio instance. | No |
-| klogs.enabled | boolean | Enabled the klogs integration for Istio. | No |
-| klogs.name | string | The name of the klogs instance which should be used for the Istio instance. | No |
+| name | string | The name of the Istio plugin instance. | Yes |
+| type | `istio` | The type for the Istio plugin. | Yes |
+| options.prometheus.enabled | boolean | Enable the Prometheus integration for the Istio plugin. | Yes |
+| options.prometheus.options | | The same as the options for the [prometheus plugin](./prometheus.md#configuration). | Yes |
+| options.klogs.enabled | boolean | Enable the klogs integration for the Istio plugin. | Yes |
+| options.klogs.options | | The same as the options for the [klogs plugin](./klogs.md#configuration). | Yes |
+| frontendOptions.prometheus | boolean | Enable the Prometheus integration for the Istio plugin. | Yes |
+| frontendOptions.klogs | boolean | Enable the klogs integration for the Istio plugin. | Yes |
 
-## Options
+```yaml
+plugins:
+  - name: istio
+    type: istio
+    options:
+      prometheus:
+        enabled: true
+        options:
+          address:
+          username:
+          password:
+          token:
+      klogs:
+        enabled: true
+        options:
+          address:
+          database:
+          writeTimeout:
+          readTimeout:
+          username:
+          password:
+    frontendOptions:
+      prometheus: true
+      klogs: true
+```
+
+## Insight Options
+
+!!! note
+    The Istio plugin can not be used within the insights section of an application.
+
+## Variable Options
+
+!!! note
+    The Istio plugin can not be used to get a list of variable values.
+
+## Panel Options
 
 The following options can be used for a panel with the Istio plugin:
 
@@ -68,7 +90,7 @@ The following options can be used for a panel with the Istio plugin:
 | method | string | Filter the top / tap results by the specified method. | No |
 | path | string | Filter the top / tap results by the specified path. | No |
 
-## Example
+## Usage
 
 The following Application contains three dashboards to get the metrics, top and tab view for the `productpage` Application in the `bookinfo` namespace.
 

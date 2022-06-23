@@ -22,3 +22,7 @@ spec:
             - --log.level=debug
             - --log.format=json
             - --hub.watcher.interval=60s
+            - --trace.enabled
+            - --trace.service-name=hub
+            - --trace.provider=jaeger
+            - --trace.address=http://jaeger-collector.istio-system.svc.cluster.local:14268/api/traces

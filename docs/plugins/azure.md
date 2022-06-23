@@ -8,40 +8,41 @@ The Azure plugin can be used to view your Azure resources like Container Instanc
 
 ## Configuration
 
-The following configuration can be used to access Azure.
+To use the Azure plugin the following configuration is needed in the satellites configuration file:
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name | string | The name of the Azure plugin instance. | Yes |
+| type | `azure` | The type for the Azure plugin. | Yes |
+| options.credentials.subscriptionID | string | The id of your Azure subscription. | Yes |
+| options.credentials.tenantID | string | The tenant id. | Yes |
+| options.credentials.clientID | string | The client id. | Yes |
+| options.credentials.clientSecret | string | The client secret. | Yes |
+| options.permissionsEnabled | boolean | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 
 ```yaml
 plugins:
-  azure:
-    - name: azure
-      displayName: Azure
-      description: The innovate-anywhere, create-anything cloud.
+  - name: azure
+    type: azure
+    options:
       credentials:
-        subscriptionID: ${AZURE_SUBSCRIPTION_ID}
-        tenantID: ${AZURE_TENANT_ID}
-        clientID: ${AZURE_CLIENT_ID}
-        clientSecret: ${AZURE_CLIENT_SECRET}
+        subscriptionID:
+        tenantID:
+        clientID:
+        clientSecret:
 ```
 
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| name | string | Name of the Azure instance. | Yes |
-| displayName | string | Name of the Azure instance as it is shown in the UI. | Yes |
-| description | string | Description of the Azure instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| permissionsEnabled | boolean | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
-| credentials | [Credentials](#credentials) | The credentials to access the Azure API. | Yes |
+## Insight Options
 
-### Credentials
+!!! note
+    The Azure plugin can not be used within the insights section of an application.
 
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| subscriptionID | string | The id of your Azure subscription. | Yes |
-| tenantID | string | The tenant id. | Yes |
-| clientID | string | The client id. | Yes |
-| clientSecret | string | The client secret. | Yes |
+## Variable Options
 
-## Options
+!!! note
+    The Azure plugin can not be used to get a list of variable values.
+
+## Panel Options
 
 The following options can be used for a panel with the Azure plugin:
 
@@ -114,11 +115,15 @@ In the following example each member of `team1@kobs.io` will get access to all A
     metadata:
       name: team1
     spec:
-      id: team1@kobs.io
+      group: team1@kobs.io
       permissions:
         plugins:
-          - name: "*"
-          - name: azure
+          - satellite: "*"
+            name: "*"
+            type: "*"
+          - satellite: "*"
+            name: "azure"
+            type: "azure"
             permissions:
               - resources:
                   - "*"
@@ -126,15 +131,6 @@ In the following example each member of `team1@kobs.io` will get access to all A
                   - "*"
                 verbs:
                   - "*"
-        resources:
-          - clusters:
-              - "*"
-            namespaces:
-              - "*"
-            resources:
-              - "*"
-            verbs:
-              - "*"
     ```
 
 ??? note "team2"
@@ -146,11 +142,15 @@ In the following example each member of `team1@kobs.io` will get access to all A
     metadata:
       name: team2
     spec:
-      id: team1@kobs.io
+      group: team1@kobs.io
       permissions:
         plugins:
-          - name: "*"
-          - name: azure
+          - satellite: "*"
+            name: "*"
+            type: "*"
+          - satellite: "*"
+            name: "azure"
+            type: "azure"
             permissions:
               - resources:
                   - "containerinstances"
@@ -158,15 +158,6 @@ In the following example each member of `team1@kobs.io` will get access to all A
                   - "development"
                 verbs:
                   - "*"
-        resources:
-          - clusters:
-              - "*"
-            namespaces:
-              - "*"
-            resources:
-              - "*"
-            verbs:
-              - "*"
     ```
 
 The `*` value is a special value, which allows access to all resources, resource groups and action. The following values can also be used for resources and verbs:
@@ -175,7 +166,7 @@ The `*` value is a special value, which allows access to all resources, resource
 - `verbs`: `delete`, `get`, `post` and `put`
 
 !!! note
-    You have to set the `permissionsEnabled` property in the configuration to `true` and you must enable [authentication](../configuration/authentication.md) for kobs to use this feature.
+    You have to set the `permissionsEnabled` property in the configuration to `true` and you must enable [authentication](../getting-started/configuration/authentication.md) for kobs to use this feature.
 
 ### Metrics
 
@@ -188,9 +179,9 @@ kobs supports all Azure metrics for the supported services. To get a list of all
 
 In the returned JSON array you can check the `name.value` fields for the metric names and the `supportedAggregationTypes` for all the supported aggregation types of a metric.
 
-## Examples
+### Examples
 
-### Container Instances Dashboard
+#### Container Instances Dashboard
 
 The following dashboards displays a list of container instances and the details for one container instance, which can be selected via a variable.
 
@@ -221,6 +212,7 @@ spec:
           colSpan: 12
           plugin:
             name: azure
+            type: azure
             options:
               type: containerinstances
               containerinstances:
@@ -233,6 +225,7 @@ spec:
           rowSpan: 2
           plugin:
             name: azure
+            type: azure
             options:
               type: containerinstances
               containerinstances:
@@ -244,6 +237,7 @@ spec:
           rowSpan: 1
           plugin:
             name: azure
+            type: azure
             options:
               type: containerinstances
               containerinstances:
@@ -257,6 +251,7 @@ spec:
           rowSpan: 1
           plugin:
             name: azure
+            type: azure
             options:
               type: containerinstances
               containerinstances:
@@ -272,6 +267,7 @@ spec:
           colSpan: 12
           plugin:
             name: azure
+            type: azure
             options:
               type: containerinstances
               containerinstances:

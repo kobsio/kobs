@@ -32,26 +32,25 @@ theme:
 nav:
   - Home: index.md
   - Getting Started:
+      - getting-started/index.md
       - Installation:
-          - Helm: installation/helm.md
-          - Kustomize: installation/kustomize.md
-          - Demo: installation/demo.md
+          - Helm: getting-started/installation/helm.md
+          - Kustomize: getting-started/installation/kustomize.md
       - Configuration:
-          - Getting Started: configuration/getting-started.md
-          - Clusters: configuration/clusters.md
-          - Plugins: configuration/plugins.md
-          - Authentication: configuration/authentication.md
+          - hub: getting-started/configuration/hub.md
+          - satellite: getting-started/configuration/satellite.md
+          - Authentication: getting-started/configuration/authentication.md
+      - Demo: getting-started/demo/demo.md
   - Resources:
-      - Resources: resources/resources.md
+      - resources/index.md
+      - Kubernetes Resources: resources/kubernetes-resources.md
       - Applications: resources/applications.md
-      - Teams: resources/teams.md
       - Users: resources/users.md
+      - Teams: resources/teams.md
       - Dashboards: resources/dashboards.md
   - Plugins:
-      - Getting Started: plugins/getting-started.md
-      - Applications: plugins/applications.md
+      - plugins/getting-started.md
       - Azure: plugins/azure.md
-      - Dashboards: plugins/dashboards.md
       - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md
       - Grafana: plugins/grafana.md
@@ -61,16 +60,12 @@ nav:
       - Jaeger: plugins/jaeger.md
       - Kiali: plugins/kiali.md
       - klogs: plugins/klogs.md
-      - Markdown: plugins/markdown.md
       - Opsgenie: plugins/opsgenie.md
       - Prometheus: plugins/prometheus.md
-      - Resources: plugins/resources.md
       - RSS: plugins/rss.md
       - SonarQube: plugins/sonarqube.md
       - SQL: plugins/sql.md
-      - Teams: plugins/teams.md
       - TechDocs: plugins/techdocs.md
-      - Users: plugins/users.md
   - Community Plugins:
       - Getting Started: community-plugins/getting-started.md
   - Contributing:
@@ -79,16 +74,24 @@ nav:
       - Development using the Demo: contributing/development-using-the-demo.md
       - Using the kobsio/app: contributing/using-the-kobsio-app.md
       - Release: contributing/release.md
-  - Architecture Decision Records (ADR):
-      - ADR001 - Facilitate Centralized Instance: adr/001_facilitate_centralized_instance.md
+      - Architecture Decision Records (ADR):
+          - ADR001 - Facilitate Centralized Instance: contributing/adr/001_facilitate_centralized_instance.md
 
 plugins:
   - search
 
 markdown_extensions:
   - admonition
+  - attr_list
+  - md_in_html
   - pymdownx.details
   - pymdownx.highlight
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      options:
+        custom_icons:
+          - docs/overrides/.icons
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

@@ -8,22 +8,35 @@ The Helm plugin can be used to manage Helm releases within kobs.
 
 ## Configuration
 
-The following configuration can be used for the Helm plugin.
-
-```yaml
-plugins:
-  helm:
-    permissionsEnabled: true
-```
+To use the Istio plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| permissionsEnabled | boolean | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
+| name | string | The name of the Istio plugin instance. | Yes |
+| type | `istio` | The type for the Istio plugin. | Yes |
+| options.permissionsEnabled | string | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 
-## Options
+```yaml
+plugins:
+  - name: istio
+    type: istio
+    options:
+      permissionsEnabled: true
+```
 
-The following options can be used for a panel with the Helm plugin:
+## Insight Options
+
+!!! note
+    The Istio plugin can not be used within the insights section of an application.
+
+## Variable Options
+
+!!! note
+    The Istio plugin can not be used to get a list of variable values.
+
+## Panel Options
+
+The following options can be used for a panel with the Istio plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -49,11 +62,15 @@ In the following example each member of `team1@kobs.io` will get access to all H
     metadata:
       name: team1
     spec:
-      id: team1@kobs.io
+      group: team1@kobs.io
       permissions:
         plugins:
-          - name: "*"
-          - name: helm
+          - satellite: "*"
+            name: "*"
+            type: "*"
+          - satellite: "*"
+            name: helm
+            type: helm
             permissions:
               - clusters:
                   - "*"
@@ -72,11 +89,15 @@ In the following example each member of `team1@kobs.io` will get access to all H
     metadata:
       name: team2
     spec:
-      id: team2@kobs.io
+      group: team2@kobs.io
       permissions:
         plugins:
-          - name: "*"
-          - name: helm
+          - satellite: "*"
+            name: "*"
+            type: "*"
+          - satellite: "*"
+            name: helm
+            type: helm
             permissions:
               - clusters:
                   - "kobs-demo"
@@ -92,7 +113,7 @@ In the following example each member of `team1@kobs.io` will get access to all H
                   - "prometheus"
     ```
 
-## Example
+### Example Dashboard
 
 The following dashboards shows all Helm releases from the `kobs` and `monitoring` namespace and the history of the `kobs` and `prometheus-operator` releases.
 
@@ -106,10 +127,11 @@ spec:
         - title: Helm Releases
           plugin:
             name: helm
+            type: helm
             options:
               type: releases
               clusters:
-                - "{% .__cluster %}"
+                - "<% .cluster %>"
               namespaces:
                 - kobs
                 - cert-manager
@@ -120,10 +142,11 @@ spec:
           colSpan: 4
           plugin:
             name: helm
+            type: helm
             options:
               type: releasehistory
               clusters:
-                - "{% .__cluster %}"
+                - "<% .cluster %>"
               namespaces:
                 - kobs
               name: kobs
@@ -131,10 +154,11 @@ spec:
           colSpan: 4
           plugin:
             name: helm
+            type: helm
             options:
               type: releasehistory
               clusters:
-                - "{% .__cluster %}"
+                - "<% .cluster %>"
               namespaces:
                 - cert-manager
               name: cert-manager
@@ -142,10 +166,11 @@ spec:
           colSpan: 4
           plugin:
             name: helm
+            type: helm
             options:
               type: releasehistory
               clusters:
-                - "{% .__cluster %}"
+                - "<% .cluster %>"
               namespaces:
                 - monitoring
               name: prometheus-operator

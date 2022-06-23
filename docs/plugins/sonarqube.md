@@ -1,35 +1,47 @@
 # SonarQube
 
-The SonarQube plugin can be used to view all projects with the measures from a SonarQube instance.
-
-![SonarQube](assets/sonarqube.png)
+The SonarQube plugin can be used to view all projects with the measures from a SonarQube instance or [SonarCloud](https://sonarcloud.io).
 
 ## Configuration
 
-The following configuration can be used to access a SonarQube instance, which is running at `https://sonarqube.kobs.io` and a token from the `SONARQUBE_TOKEN` environment variable.
-
-```yaml
-plugins:
-  sonarqube:
-    - name: SonarQube
-      description: SonarQube empowers all developers to write cleaner and safer code.
-      address: https://sonarqube.kobs.io
-      username: ${SONARQUBE_TOKEN}
-      password:
-```
+To use the SonarQube plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | Name of the SonarQube instance. | Yes |
-| displayName | string | Name of the SonarQube as it is shown in the UI. | Yes |
-| description | string | Description of the SonarQube instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| address | string | Address of the SonarQube instance. | Yes |
-| username | string | Username to access a SonarQube instance via basic authentication. | No |
-| password | string | Password to access a SonarQube instance via basic authentication. | No |
-| metricKeys | []string | An optional list of metric keys which should be displayed for all projects. If this value is not provided the following list will be used: `alert_status`, `bugs`, `reliability_rating`, `vulnerabilities`, `security_rating`, `security_hotspots_reviewed`, `security_review_rating`, `code_smells`, `sqale_rating`, `coverage`, `duplicated_lines_density`. | No |
+| name | string | The name of the SonarQube plugin instance. | Yes |
+| type | `sonarqube` | The type for the SonarQube plugin. | Yes |
+| options.address | string | Address of the SonarQube instance. | Yes |
+| options.username | string | Username to access a SonarQube instance via basic authentication. | No |
+| options.password | string | Password to access a SonarQube instance via basic authentication. | No |
+| options.organization | string | The name of the organization for which the projects should be shown. | No |
+| options.metricKeys | []string | An optional list of metric keys which should be displayed for all projects. If this value is not provided the following list will be used: `alert_status`, `bugs`, `reliability_rating`, `vulnerabilities`, `security_rating`, `security_hotspots_reviewed`, `security_review_rating`, `code_smells`, `sqale_rating`, `coverage`, `duplicated_lines_density`. | No |
+| frontendOptions.address | string | The address of the SonarQube instance, which can be accessed by the user. | No |
 
-## Options
+```yaml
+plugins:
+  - name: sonarqube
+    type: sonarqube
+    options:
+      address:
+      username:
+      password:
+      organization:
+      metricKeys:
+    frontendOptions:
+      address:
+```
+
+## Insight Options
+
+!!! note
+    The SonarQube plugin can not be used within the insights section of an application.
+
+## Variable Options
+
+!!! note
+    The SonarQube plugin can not be used to get a list of variable values.
+
+## Panel Options
 
 The following options can be used for a panel with the SonarQube plugin:
 
@@ -38,25 +50,44 @@ The following options can be used for a panel with the SonarQube plugin:
 | project | string | The key of the SonarQube project. | Yes |
 | metricKeys | []string | An optional list of metric keys, which should be displayed for the project. If this value is not provided the globally configured default value will be used. A list of all available metrics can be retrieved from the `/api/metrics/search` API endpoint of a SonarQube instance. | No |
 
-## Example
-
-The following dashboard shows a single panel with the measures for the SonarQube project with the key `details`.
+## Usage
 
 ```yaml
 ---
 apiVersion: kobs.io/v1
-kind: Dashboard
+kind: Application
 metadata:
-  name: sonarqube
+  name: example-application
   namespace: kobs
 spec:
-  title: SonarQube
-  rows:
-    - size: 3
-      panels:
-        - title: Details
-          plugin:
-            name: sonarqube
-            options:
-              project: details
+  dashboards:
+    - title: SonarQube
+      inline:
+        rows:
+          - size: -1
+            panels:
+              - title: details
+                plugin:
+                  name: sonarqube
+                  type: sonarqube
+                  options:
+                    project: details
+          - size: -1
+            panels:
+              - title: reviews
+                colSpan: 6
+                plugin:
+                  name: sonarqube
+                  type: sonarqube
+                  options:
+                    project: reviews
+              - title: ratings
+                colSpan: 6
+                plugin:
+                  name: sonarqube
+                  type: sonarqube
+                  options:
+                    project: ratings
 ```
+
+![SonarQube](assets/sonarqube.png)

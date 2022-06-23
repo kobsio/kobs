@@ -10,30 +10,39 @@ The Elasticsearch plugin can be used to retrieve logs from a configured Elastics
 
 ## Configuration
 
-The following config can be used to grant kobs access to a Elasticsearch instance running on `elasticsearch.kobs.io` and is protected with basic authentication. The credentials will be provided by the environment variables `ES_USERANME` and `ES_PASSWORD`.
-
-```yaml
-plugins:
-  elasticsearch:
-    - name: Elasticsearch
-      description: Elasticsearch can be used for the logs of your application.
-      address: https://elasticsearch.kobs.io
-      username: ${ES_USERNAME}
-      password: ${ES_PASSWORD}
-```
+To use the Elasticsearch plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | Name of the Elasticsearch instance. | Yes |
-| displayName | string | Name of the Elasticsearch as it is shown in the UI. | Yes |
-| description | string | Description of the Elasticsearch instance. | No |
-| home | boolean | When this is `true` the plugin will be added to the home page. | No |
-| address | string | Address of the Elasticsearch instance. | Yes |
-| username | string | Username to access an Elasticsearch instance via basic authentication. | No |
-| password | string | Password to access an Elasticsearch instance via basic authentication. | No |
-| token | string | Token to access an Elasticsearch instance via token based authentication. | No |
+| name | string | The name of the Elasticsearch plugin instance. | Yes |
+| type | `elasticsearch` | The type for the Elasticsearch plugin. | Yes |
+| options.address | string | Address of the Elasticsearch instance. | Yes |
+| options.username | string | Username to access an Elasticsearch instance via basic authentication. | No |
+| options.password | string | Password to access an Elasticsearch instance via basic authentication. | No |
+| options.token | string | Token to access an Elasticsearch instance via token based authentication. | No |
 
-## Options
+```yaml
+plugins:
+  - name: elasticsearch
+    type: elasticsearch
+    options:
+      address:
+      username:
+      password:
+      token:
+```
+
+## Insight Options
+
+!!! note
+    The Elasticsearch plugin can not be used within the insights section of an application.
+
+## Variable Options
+
+!!! note
+    The Elasticsearch plugin can not be used to get a list of variable values.
+
+## Panel Options
 
 The following options can be used for a panel with the Elasticsearch plugin:
 
@@ -50,46 +59,13 @@ The following options can be used for a panel with the Elasticsearch plugin:
 | query | string | The Elasticsearch query. We are using the [Query String Syntax](#query-string-syntax) for Elasticsearch. | Yes |
 | fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. | No |
 
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Dashboard
-spec:
-  placeholders:
-    - name: namespace
-      description: The workload namespace
-    - name: app
-      description: The workloads app label
-  rows:
-    - size: -1
-      panels:
-        - title: Istio Logs
-          colSpan: 12
-          plugin:
-            name: elasticsearch
-            options:
-              showChart: true
-              queries:
-                - name: Istio Logs
-                  query: "kubernetes.namespace: {% .namespace %} AND kubernetes.labels.app: {% .app %} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
-                  fields:
-                    - "kubernetes.pod.name"
-                    - "content.authority"
-                    - "content.route_name"
-                    - "content.protocol"
-                    - "content.method"
-                    - "content.path"
-                    - "content.response_code"
-                    - "content.upstream_service_time"
-                    - "content.bytes_received"
-                    - "content.bytes_sent"
-```
+## Usage
 
-## Query String Syntax
+### Query String Syntax
 
 The Elasticsearch plugins uses the [query string syntax](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-syntax) for filtering log lines.
 
-### Field Names
+#### Field Names
 
 You can specify fields to search in the query syntax:
 
@@ -129,7 +105,7 @@ book.\*:(quick OR brown)
 _exists_:title
 ```
 
-### Wildcards
+#### Wildcards
 
 Wildcard searches can be run on individual terms, using `?` to replace a single character, and `*` to replace zero or more characters:
 
@@ -137,7 +113,7 @@ Wildcard searches can be run on individual terms, using `?` to replace a single 
 qu?ck bro*
 ```
 
-### Regular Expressions
+#### Regular Expressions
 
 [Regular expression](https://www.elastic.co/guide/en/elasticsearch/reference/current/regexp-syntax.html) patterns can be embedded in the query string by wrapping them in forward-slashes (`"/"`):
 
@@ -145,7 +121,7 @@ qu?ck bro*
 name:/joh?n(ath[oa]n)/
 ```
 
-### Fuzziness
+#### Fuzziness
 
 We can search for terms that are similar to, but not exactly like our search terms, using the "fuzzy" operator:
 
@@ -153,7 +129,7 @@ We can search for terms that are similar to, but not exactly like our search ter
 quikc~ brwn~ foks~
 ```
 
-### Ranges
+#### Ranges
 
 Ranges can be specified for date, numeric or string fields. Inclusive ranges are specified with square brackets `[min TO max]` and exclusive ranges with curly brackets `{min TO max}`.
 
@@ -187,7 +163,7 @@ count:[10 TO *]
 date:{* TO 2012-01-01}
 ```
 
-### Boolean operators
+#### Boolean operators
 
 By default, all terms are optional, as long as one term matches.  A search for `foo bar baz` will find any document that contains one or more of `foo` or `bar` or `baz`.  We have already discussed the `default_operator` above which allows you to force all terms to be required, but there are also boolean operators which can be used in the query string itself
 to provide more control.
@@ -198,10 +174,48 @@ The preferred operators are `+` (this term *must* be present) and `-` (this term
 quick brown +fox -news
 ```
 
-### Grouping
+#### Grouping
 
 Multiple terms or clauses can be grouped together with parentheses, to form sub-queries:
 
 ```txt
 (quick OR brown) AND fox
+```
+
+### Example Dashboard
+
+```yaml
+---
+apiVersion: kobs.io/v1
+kind: Dashboard
+spec:
+  placeholders:
+    - name: namespace
+      description: The workload namespace
+    - name: app
+      description: The workloads app label
+  rows:
+    - size: -1
+      panels:
+        - title: Istio Logs
+          colSpan: 12
+          plugin:
+            name: elasticsearch
+            type: elasticsearch
+            options:
+              showChart: true
+              queries:
+                - name: Istio Logs
+                  query: "kubernetes.namespace: {% .namespace %} AND kubernetes.labels.app: {% .app %} AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
+                  fields:
+                    - "kubernetes.pod.name"
+                    - "content.authority"
+                    - "content.route_name"
+                    - "content.protocol"
+                    - "content.method"
+                    - "content.path"
+                    - "content.response_code"
+                    - "content.upstream_service_time"
+                    - "content.bytes_received"
+                    - "content.bytes_sent"
 ```
