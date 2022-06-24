@@ -56,11 +56,15 @@ func NewClient(pluginMounts map[string]plugin.MountFn, instances []plugin.Instan
 	// router. If an error is returned from one of the calls we return this error, to stop the starting process of the
 	// satellite.
 	for pluginType, pluginMount := range pluginMounts {
-		pluginRouter, err := pluginMount(filterInstances(pluginType, instances), clustersClient)
-		if err != nil {
-			return nil, err
+		filteredInstances := filterInstances(pluginType, instances)
+
+		if len(filteredInstances) > 0 {
+			pluginRouter, err := pluginMount(filterInstances(pluginType, instances), clustersClient)
+			if err != nil {
+				return nil, err
+			}
+			router.Mount(fmt.Sprintf("/%s", pluginType), pluginRouter)
 		}
-		router.Mount(fmt.Sprintf("/%s", pluginType), pluginRouter)
 	}
 
 	return &client{
