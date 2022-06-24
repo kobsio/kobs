@@ -1,75 +1,52 @@
 package main
 
 import (
-	"os"
-
-	"github.com/kobsio/kobs/cmd/kobs/hub"
-	"github.com/kobsio/kobs/cmd/kobs/satellite"
-	"github.com/kobsio/kobs/cmd/kobs/version"
+	"github.com/kobsio/kobs/cmd/kobs/root"
 	"github.com/kobsio/kobs/pkg/log"
+	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
-	"github.com/spf13/cobra"
+	azure "github.com/kobsio/kobs/plugins/plugin-azure/cmd"
+	elasticsearch "github.com/kobsio/kobs/plugins/plugin-elasticsearch/cmd"
+	flux "github.com/kobsio/kobs/plugins/plugin-flux/cmd"
+	grafana "github.com/kobsio/kobs/plugins/plugin-grafana/cmd"
+	harbor "github.com/kobsio/kobs/plugins/plugin-harbor/cmd"
+	helm "github.com/kobsio/kobs/plugins/plugin-helm/cmd"
+	istio "github.com/kobsio/kobs/plugins/plugin-istio/cmd"
+	jaeger "github.com/kobsio/kobs/plugins/plugin-jaeger/cmd"
+	kiali "github.com/kobsio/kobs/plugins/plugin-kiali/cmd"
+	klogs "github.com/kobsio/kobs/plugins/plugin-klogs/cmd"
+	opsgenie "github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd"
+	prometheus "github.com/kobsio/kobs/plugins/plugin-prometheus/cmd"
+	rss "github.com/kobsio/kobs/plugins/plugin-rss/cmd"
+	sonarqube "github.com/kobsio/kobs/plugins/plugin-sonarqube/cmd"
+	sql "github.com/kobsio/kobs/plugins/plugin-sql/cmd"
+	techdocs "github.com/kobsio/kobs/plugins/plugin-techdocs/cmd"
+
 	"go.uber.org/zap"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "kobs",
-	Short: "kobs - Kubernetes Observability Platform.",
-	Long:  "kobs - Kubernetes Observability Platform.",
-}
-
-func init() {
-	defaultDebugUsername := ""
-	if os.Getenv("KOBS_DEBUG_USERNAME") != "" {
-		defaultDebugUsername = os.Getenv("KOBS_DEBUG_USERNAME")
-	}
-
-	defaultDebugPassword := ""
-	if os.Getenv("KOBS_DEBUG_PASSWORD") != "" {
-		defaultDebugPassword = os.Getenv("KOBS_DEBUG_PASSWORD")
-	}
-
-	defaultLogFormat := "console"
-	if os.Getenv("KOBS_LOG_FORMAT") != "" {
-		defaultLogFormat = os.Getenv("KOBS_LOG_FORMAT")
-	}
-
-	defaultLogLevel := "info"
-	if os.Getenv("KOBS_LOG_LEVEL") != "" {
-		defaultLogLevel = os.Getenv("KOBS_LOG_LEVEL")
-	}
-
-	defaultTraceServiceName := "kobs"
-	if os.Getenv("KOBS_TRACE_SERVICE_NAME") != "" {
-		defaultTraceServiceName = os.Getenv("KOBS_TRACE_SERVICE_NAME")
-	}
-
-	defaultTraceProvider := "jaeger"
-	if os.Getenv("KOBS_TRACE_PROVIDER") != "" {
-		defaultTraceProvider = os.Getenv("KOBS_TRACE_PROVIDER")
-	}
-
-	defaultTraceAddress := "http://localhost:14268/api/traces"
-	if os.Getenv("KOBS_TRACE_ADDRESS") != "" {
-		defaultTraceAddress = os.Getenv("KOBS_TRACE_ADDRESS")
-	}
-
-	rootCmd.AddCommand(hub.Cmd)
-	rootCmd.AddCommand(satellite.Cmd)
-	rootCmd.AddCommand(version.Cmd)
-
-	rootCmd.PersistentFlags().String("debug.username", defaultDebugUsername, "The username for the debug endpoints. The endpoints are only available when a username is provided.")
-	rootCmd.PersistentFlags().String("debug.password", defaultDebugPassword, "The password for the debug endpoints. The endpoints are only available when a password is provided.")
-	rootCmd.PersistentFlags().String("log.format", defaultLogFormat, "Set the output format of the logs. Must be \"console\" or \"json\".")
-	rootCmd.PersistentFlags().String("log.level", defaultLogLevel, "Set the log level. Must be \"debug\", \"info\", \"warn\", \"error\", \"fatal\" or \"panic\".")
-	rootCmd.PersistentFlags().Bool("trace.enabled", false, "Enable / disable tracing.")
-	rootCmd.PersistentFlags().String("trace.service-name", defaultTraceServiceName, "The service name which should be used for tracing.")
-	rootCmd.PersistentFlags().String("trace.provider", defaultTraceProvider, "Set the trace exporter which should be used. Must be \"jaeger\" or \"zipkin\".")
-	rootCmd.PersistentFlags().String("trace.address", defaultTraceAddress, "Set the address of the Jaeger or Zipkin instance.")
-}
-
 func main() {
-	if err := rootCmd.Execute(); err != nil {
+	var pluginMounts map[string]plugin.MountFn
+	pluginMounts = make(map[string]plugin.MountFn)
+
+	pluginMounts[azure.PluginType] = azure.Mount
+	pluginMounts[elasticsearch.PluginType] = elasticsearch.Mount
+	pluginMounts[flux.PluginType] = flux.Mount
+	pluginMounts[grafana.PluginType] = grafana.Mount
+	pluginMounts[harbor.PluginType] = harbor.Mount
+	pluginMounts[helm.PluginType] = helm.Mount
+	pluginMounts[istio.PluginType] = istio.Mount
+	pluginMounts[jaeger.PluginType] = jaeger.Mount
+	pluginMounts[kiali.PluginType] = kiali.Mount
+	pluginMounts[klogs.PluginType] = klogs.Mount
+	pluginMounts[opsgenie.PluginType] = opsgenie.Mount
+	pluginMounts[prometheus.PluginType] = prometheus.Mount
+	pluginMounts[rss.PluginType] = rss.Mount
+	pluginMounts[sonarqube.PluginType] = sonarqube.Mount
+	pluginMounts[sql.PluginType] = sql.Mount
+	pluginMounts[techdocs.PluginType] = techdocs.Mount
+
+	if err := root.Command(pluginMounts).Execute(); err != nil {
 		log.Fatal(nil, "Failed to initialize kobs", zap.Error(err))
 	}
 }

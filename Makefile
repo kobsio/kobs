@@ -17,22 +17,6 @@ build:
 		-X ${REPO}/pkg/version.BuildDate=${BUILDTIME}" \
 		-o ./bin/kobs ./cmd/kobs;
 
-.PHONY: build-plugins
-build-plugins:
-	@mkdir -p ./bin/plugins
-	@if [ "${PLUGIN}" = "" ]; then \
-		for plugin in plugins/plugin-*/; do \
-			if [ -d "$$plugin/cmd" ]; then \
-				plugin=`echo "$$plugin" | sed -e "s/^plugins\/plugin-//" -e "s/\/$///"`; \
-				echo "Build '$$plugin' plugin"; \
-				go build -buildmode=plugin -o ./bin/plugins/$$plugin.so ./plugins/plugin-$$plugin/cmd; \
-			fi \
-		done; \
-	else \
-		echo "Build '${PLUGIN}' plugin"; \
-		go build -buildmode=plugin -o ./bin/plugins/${PLUGIN}.so ./plugins/plugin-${PLUGIN}/cmd; \
-	fi
-
 .PHONY: test
 test:
 	@go test ./cmd/... ./pkg/... ./plugins/...

@@ -1,4 +1,4 @@
-package main
+package kiali
 
 import (
 	"net/http"
@@ -14,6 +14,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 )
+
+// PluginType is the type which must be used for the Kiali plugin.
+const PluginType = "kiali"
 
 // Router implements the router for the Kiali plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the Kiali plugin and it's configuration.

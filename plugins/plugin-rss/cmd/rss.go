@@ -1,4 +1,4 @@
-package main
+package rss
 
 import (
 	"net/http"
@@ -18,6 +18,9 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the RSS plugin.
+const PluginType = "rss"
 
 // Router implements the router for the rss plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the rss plugin and it's configuration.

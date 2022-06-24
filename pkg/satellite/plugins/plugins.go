@@ -3,15 +3,12 @@ package plugins
 import (
 	"fmt"
 	"net/http"
-	goPlugin "plugin"
 
 	"github.com/kobsio/kobs/pkg/kube/clusters"
-	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"go.uber.org/zap"
 )
 
 // Client is the interface which must be implemented by a plugins client. The plugins client must only be export a
@@ -34,65 +31,35 @@ func (c *client) Mount() chi.Router {
 
 // NewClient creates a new plugins client. The client contains all the user provided plugin instances and a router. The
 // router contains all the routes for all plugins.
-func NewClient(pluginDir string, instances []plugin.Instance, clustersClient clusters.Client) (Client, error) {
-	// Create a new router and serve all the configured plugin instances at "/". We can not simply return all the
-	// plugins as they are provided by the user, because they can contain sensible information like usernames and
-	// passwords. Therefore we are just returning the name, description, type and address for a plugin instance.
+func NewClient(pluginMounts map[string]plugin.MountFn, instances []plugin.Instance, clustersClient clusters.Client) (Client, error) {
+	// To not pass some confidential data to the frontend we are converting the provided plugin instances to so called
+	// "frontendInstances". These instances only containing the "frontendOptions" from the configuration.
+	var frontendInstances []plugin.Instance
+	for _, instance := range instances {
+		frontendInstances = append(frontendInstances, plugin.Instance{
+			Name:        instance.Name,
+			Description: instance.Description,
+			Type:        instance.Type,
+			Options:     instance.FrontendOptions,
+		})
+	}
+
+	// Create a new router and serve all the configured plugin instances at "/". Here we are just returning the
+	// converted "frontendInstances" to not leak confidential data (like passwords and access tokens) to the user.
 	router := chi.NewRouter()
-
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		var frontendInstances []plugin.Instance
-
-		for _, instance := range instances {
-			frontendInstances = append(frontendInstances, plugin.Instance{
-				Name:        instance.Name,
-				Description: instance.Description,
-				Type:        instance.Type,
-				Options:     instance.FrontendOptions,
-			})
-		}
-
 		render.JSON(w, r, frontendInstances)
 	})
 
-	// We are checking which plugin types are used in the configuration, so that we are just loading and mounting the
-	// plugins which are needed.
-	var pluginTypes []string
-	for _, instance := range instances {
-		pluginTypes = appendIfMissing(pluginTypes, instance.Type)
-	}
-
-	// In the last step we are looping though all the uses plugin types and we are trying to load the shared object for
-	// the plugin. Then we are trying to mount the plugin in the router of the plugins client. For that each plugin
-	// must export a "Mount" function of the type
-	// "func(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error)".
-	// If one of the steps to mount a plugin fails, we return an error. This error should be handled when calling the
-	// NewClient function and should abort the start process of the satellite.
-	for _, pluginType := range pluginTypes {
-		p, err := goPlugin.Open(fmt.Sprintf("%s/%s.so", pluginDir, pluginType))
+	// In the last step we are using the user defined "pluginMounts" to mount the plugin routes at the formerly
+	// created router. For that we are looping over the defined mount functions, call them and mount the returned
+	// router. If an error is returned from one of the calls we return this error, to stop the starting process of the
+	// satellite.
+	for pluginType, pluginMount := range pluginMounts {
+		pluginRouter, err := pluginMount(filterInstances(pluginType, instances), clustersClient)
 		if err != nil {
-			log.Error(nil, "Could not open plugin", zap.Error(err), zap.String("dir", pluginDir), zap.String("type", pluginType))
 			return nil, err
 		}
-
-		mountSymbol, err := p.Lookup("Mount")
-		if err != nil {
-			log.Error(nil, "Could not find mount symbol", zap.Error(err), zap.String("type", pluginType))
-			return nil, err
-		}
-
-		mountFunc, ok := mountSymbol.(func(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error))
-		if !ok {
-			log.Error(nil, "Mount function has wrong type", zap.Error(err), zap.String("type", pluginType))
-			return nil, fmt.Errorf("mount function is not of type \"func(instances []plugin.Instance, clustersClient clusters.Client) chi.Router\" for plugin %s", pluginType)
-		}
-
-		pluginRouter, err := mountFunc(filterInstances(pluginType, instances), clustersClient)
-		if err != nil {
-			log.Error(nil, "Could not load plugin", zap.Error(err), zap.String("type", pluginType))
-			return nil, err
-		}
-
 		router.Mount(fmt.Sprintf("/%s", pluginType), pluginRouter)
 	}
 

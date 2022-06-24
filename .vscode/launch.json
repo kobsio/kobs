@@ -9,7 +9,7 @@
       "program": "${workspaceFolder}/cmd/kobs",
       "args": [
         "--log.level=debug",
-        "--hub.config=../../deploy/docker/kobs/config.yaml",
+        "--hub.config=../../deploy/docker/kobs/hub.yaml",
         "--app.assets=''"
       ]
     },
@@ -21,8 +21,7 @@
       "program": "${workspaceFolder}/cmd/kobs",
       "args": [
         "--log.level=debug",
-        "--satellite.config=../../deploy/docker/kobs/config.yaml",
-        "--satellite.plugins=../../bin/plugins",
+        "--satellite.config=../../deploy/docker/kobs/satellite.yaml",
         "--satellite.token=unsecuretoken"
       ]
     },

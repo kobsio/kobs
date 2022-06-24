@@ -1,4 +1,4 @@
-package main
+package opsgenie
 
 import (
 	"net/http"
@@ -15,6 +15,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the Opsgenie plugin.
+const PluginType = "opsgenie"
 
 // Router implements the router for the Opsgenie plugin, which can be registered in the router for our rest api.
 type Router struct {

@@ -1,4 +1,4 @@
-package main
+package rss
 
 import (
 	"net/http"

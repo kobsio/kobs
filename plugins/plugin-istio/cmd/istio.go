@@ -1,9 +1,10 @@
-package main
+package istio
 
 import (
-	"go.uber.org/zap"
 	"net/http"
 	"strconv"
+
+	"go.uber.org/zap"
 
 	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/log"
@@ -14,6 +15,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 )
+
+// PluginType is the type which must be used for the Istio plugin.
+const PluginType = "istio"
 
 // Router implements the router for the Istio plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the Istio plugin and it's configuration.

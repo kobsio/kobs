@@ -1,4 +1,4 @@
-package main
+package harbor
 
 import (
 	"net/http"
@@ -13,6 +13,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the Harbor plugin.
+const PluginType = "harbor"
 
 // Router implements the router for the Harbor plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the Harbor plugin and it's configuration.
