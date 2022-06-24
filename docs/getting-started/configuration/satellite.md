@@ -18,7 +18,6 @@ The following command-line arguments and environment variables are available.
 | `--trace.address` | `KOBS_TRACE_ADDRESS` | The service name which should be used for tracing.  | `http://localhost:14268/api/traces` |
 | `--satellite.address` | `KOBS_SATELLITE_ADDRESS` | The address, where the satellite is listen on. | `:15221` |
 | `--satellite.config` | `KOBS_SATELLITE_CONFIG` | Path to the configuration file for the hub. | `config.yaml` |
-| `--satellite.plugins` | `KOBS_SATELLITE_PLUGINS` |The directory which contains the plugin files. | `plugins` |
 | `--satellite.token` | `KOBS_SATELLITE_TOKEN` | A token to protect the kobs satellite. | |
 | `--metrics.address` | `KOBS_METRICS_ADDRESS` | The address, where the Prometheus metrics are served. | `:15221` |
 

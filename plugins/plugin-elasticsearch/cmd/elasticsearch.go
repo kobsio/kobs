@@ -1,4 +1,4 @@
-package main
+package elasticsearch
 
 import (
 	"net/http"
@@ -14,6 +14,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the Elasticsearch plugin.
+const PluginType = "elasticsearch"
 
 // Router implements the router for the Elasticsearch plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the Elasticsearch plugin and it's configuration.

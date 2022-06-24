@@ -1,4 +1,4 @@
-package main
+package flux
 
 import (
 	"fmt"
@@ -14,6 +14,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the Flux plugin.
+const PluginType = "flux"
 
 // Router implements the router for the Helm plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the Helm plugin and it's configuration.

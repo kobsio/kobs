@@ -1,4 +1,4 @@
-package main
+package techdocs
 
 import (
 	"mime"
@@ -15,6 +15,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the TechDocs plugin.
+const PluginType = "techdocs"
 
 // Router implements the router for the TechDocs plugin, which can be registered in the router for our rest api.
 type Router struct {

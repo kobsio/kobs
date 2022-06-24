@@ -1,4 +1,4 @@
-package main
+package azure
 
 import (
 	"github.com/kobsio/kobs/pkg/kube/clusters"
@@ -7,6 +7,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 )
+
+// PluginType is the type which must be used for the Azure plugin.
+const PluginType = "azure"
 
 // Router implements the router for the Azure plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the Azure plugin and it's configuration.

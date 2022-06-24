@@ -10,14 +10,12 @@ WORKDIR /kobs
 COPY go.mod go.sum /kobs/
 RUN go mod download
 COPY . .
-RUN export CGO_ENABLED=1 && make build && make build-plugins
+RUN export CGO_ENABLED=0 && make build
 
-FROM debian:stable-20220527
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
-RUN update-ca-certificates
+FROM alpine:3.16.0
+RUN apk update && apk add --no-cache ca-certificates
 RUN mkdir /kobs
 COPY --from=api /kobs/bin/kobs /kobs
-COPY --from=api /kobs/bin/plugins /kobs/plugins
 COPY --from=app /kobs/bin/app /kobs/app
 WORKDIR /kobs
 USER nobody

@@ -1,4 +1,4 @@
-package main
+package techdocs
 
 import (
 	"testing"

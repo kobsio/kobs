@@ -1,4 +1,4 @@
-package main
+package sql
 
 import (
 	"net/http"
@@ -13,6 +13,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the SQL plugin.
+const PluginType = "sql"
 
 // Router implements the router for the SQL plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the SQL plugin and it's configuration.

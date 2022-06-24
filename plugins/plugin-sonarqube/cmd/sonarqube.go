@@ -1,4 +1,4 @@
-package main
+package sonarqube
 
 import (
 	"net/http"
@@ -13,6 +13,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the SonarQube plugin.
+const PluginType = "sonarqube"
 
 // Router implements the router for the SonarQube plugin, which can be registered in the router for our rest api.
 type Router struct {

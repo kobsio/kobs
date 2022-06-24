@@ -1,4 +1,4 @@
-package main
+package klogs
 
 import (
 	"encoding/json"
@@ -16,6 +16,9 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
+
+// PluginType is the type which must be used for the klogs plugin.
+const PluginType = "klogs"
 
 // Router implements the router for the klogs plugin, which can be registered in the router for our rest api. It contains
 // the api routes for the klogs plugin and it's configuration.
