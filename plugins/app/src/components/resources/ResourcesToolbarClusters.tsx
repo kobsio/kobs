@@ -32,6 +32,46 @@ const ResourcesToolbarClusters: React.FunctionComponent<IResourcesToolbarCluster
     }
   });
 
+  const filter = (
+    e: React.ChangeEvent<HTMLInputElement> | null,
+    value: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): React.ReactElement<any, string | React.JSXElementConstructor<any>>[] => {
+    if (data && Object.keys(data).length > 0 && value) {
+      const clusters: React.ReactElement[] = [];
+      const satellites = Object.keys(data);
+
+      for (const satellite of satellites) {
+        const filteredClusters = data[satellite].filter((cluster) => cluster.cluster.includes(value));
+        if (filteredClusters.length > 0) {
+          clusters.push(
+            <SelectGroup label={satellite} key={satellite}>
+              {filteredClusters.map((cluster: ICluster) => (
+                <SelectOption key={cluster.id} value={cluster.id}>
+                  {cluster.cluster}
+                </SelectOption>
+              ))}
+            </SelectGroup>,
+          );
+        }
+      }
+
+      return clusters;
+    } else if (data && Object.keys(data).length > 0) {
+      return Object.keys(data).map((satellite) => (
+        <SelectGroup label={satellite} key={satellite}>
+          {data[satellite].map((cluster: ICluster) => (
+            <SelectOption key={cluster.id} value={cluster.id}>
+              {cluster.cluster}
+            </SelectOption>
+          ))}
+        </SelectGroup>
+      ));
+    } else {
+      return [<SelectOption key="noresultsfound" value="No results found" isDisabled={true} />];
+    }
+  };
+
   return (
     <Select
       variant={SelectVariant.checkbox}
@@ -43,6 +83,7 @@ const ResourcesToolbarClusters: React.FunctionComponent<IResourcesToolbarCluster
         value: string | SelectOptionObject,
       ): void => selectClusterID(value.toString())}
       onClear={(): void => selectClusterID('')}
+      onFilter={filter}
       selections={selectedClusterIDs}
       isOpen={isOpen}
       isGrouped={true}

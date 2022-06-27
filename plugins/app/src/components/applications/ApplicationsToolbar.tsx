@@ -69,6 +69,15 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
     setOptions({ ...state, page: 1, perPage: 10 });
   };
 
+  // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we are calling the setOptions
+  // function to trigger the search.
+  // use "SHIFT" + "ENTER".
+  const onEnter = (e: React.KeyboardEvent<HTMLDivElement> | undefined): void => {
+    if (e?.key === 'Enter' && !e.shiftKey) {
+      setOptions({ ...state, page: 1, perPage: 10 });
+    }
+  };
+
   return (
     <ToolbarContent>
       <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
@@ -93,6 +102,7 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
           value={state.searchTerm}
           onChange={(value: string): void => setState({ ...state, searchTerm: value })}
           onClear={(): void => setState({ ...state, searchTerm: '' })}
+          onKeyDown={onEnter}
         />
       </ToolbarItem>
       <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>

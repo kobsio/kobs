@@ -1,3 +1,4 @@
+import { Alert, AlertVariant } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -45,7 +46,13 @@ const Applications: React.FunctionComponent = () => {
         toolbarContent={options ? <ApplicationsToolbar options={options} setOptions={changeOptions} /> : undefined}
         panelContent={details}
       >
-        {options ? <ApplicationsTopology options={options} setDetails={setDetails} /> : <div></div>}
+        {options && options.clusterIDs.length > 0 ? (
+          <ApplicationsTopology options={options} setDetails={setDetails} />
+        ) : (
+          <Alert variant={AlertVariant.info} isInline={false} title="Options required">
+            <p>Select at least one cluster in the toolbar above to render the topology chart.</p>
+          </Alert>
+        )}
       </PageContentSection>
     </React.Fragment>
   );

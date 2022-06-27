@@ -51,6 +51,17 @@ const PageToolbarItemClusters: React.FunctionComponent<IPageToolbarItemClustersP
         value: string | SelectOptionObject,
       ): void => selectCluster(value.toString())}
       onClear={(): void => selectCluster('')}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        data
+          ? data
+              .filter((cluster) => !value || cluster.includes(value))
+              .map((cluster: string) => (
+                <SelectOption key={cluster} value={cluster}>
+                  {cluster}
+                </SelectOption>
+              ))
+          : []
+      }
       selections={selectedCluster}
       isOpen={isOpen}
       hasInlineFilter={true}

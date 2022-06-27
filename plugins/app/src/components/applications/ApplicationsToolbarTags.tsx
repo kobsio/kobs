@@ -43,9 +43,15 @@ const ApplicationsToolbarTags: React.FunctionComponent<IApplicationsToolbarTagsP
         value: string | SelectOptionObject,
       ): void => selectTag(value.toString())}
       onClear={(): void => selectTag('')}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        data
+          ? data
+              .filter((tag) => !value || tag.tag.includes(value))
+              .map((tag: ITag) => <SelectOption key={tag.tag} value={tag.tag} />)
+          : []
+      }
       selections={selectedTags}
       isOpen={isOpen}
-      isGrouped={true}
       hasInlineFilter={true}
       maxHeight="50vh"
     >

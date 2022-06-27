@@ -35,6 +35,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#357](https://github.com/kobsio/kobs/pull/#357): [app] Adjust namespace handling in the frontend, so that it is not required anymore to select the namespaces from all selected clusters.
 - [#362](https://github.com/kobsio/kobs/pull/#362): [app] :warning: _Breaking change:_ :warning: Rename `preview` field to `insights` in Application CRD.
 - [#366](https://github.com/kobsio/kobs/pull/#366): [app] :warning: _Breaking change:_ :warning: Rework Go plugin architecture, to not uses Go's `plugin` mode.
+- [#367](https://github.com/kobsio/kobs/pull/#367): [app] Change filtering for select components, by using `item.includes(value)`.
 
 ## [v0.8.0](https://github.com/kobsio/kobs/releases/tag/v0.8.0) (2022-03-24)
 

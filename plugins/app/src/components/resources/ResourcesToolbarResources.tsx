@@ -43,6 +43,21 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
         value: string | SelectOptionObject,
       ): void => selectResourceID(value.toString())}
       onClear={(): void => selectResourceID('')}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        data
+          ? data
+              .filter((resource) => !value || resource.title.includes(value))
+              .map((resource: IResource) => (
+                <SelectOption
+                  key={resource.id}
+                  value={resource.id}
+                  description={resource.isCRD ? resource.id : undefined}
+                >
+                  {resource.title}
+                </SelectOption>
+              ))
+          : []
+      }
       selections={selectedResourcesIDs}
       isOpen={isOpen}
       hasInlineFilter={true}

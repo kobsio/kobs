@@ -53,6 +53,17 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
         value: string | SelectOptionObject,
       ): void => selectNamespace(value.toString())}
       onClear={(): void => selectNamespace('')}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        data
+          ? data
+              .filter((namespace) => !value || namespace.includes(value))
+              .map((namespace: string) => (
+                <SelectOption key={namespace} value={namespace}>
+                  {namespace}
+                </SelectOption>
+              ))
+          : []
+      }
       selections={selectedNamespace}
       isOpen={isOpen}
       hasInlineFilter={true}
