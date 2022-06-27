@@ -3,8 +3,10 @@ package metrics
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -32,8 +34,12 @@ func Metrics(next http.Handler) http.Handler {
 		wrw := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 		next.ServeHTTP(wrw, r)
 
-		reqMetric.WithLabelValues(strconv.Itoa(wrw.Status()), r.Method, r.URL.Path).Inc()
-		sumMetric.WithLabelValues(strconv.Itoa(wrw.Status()), r.Method, r.URL.Path).Observe(float64(time.Since(start).Nanoseconds()) / 1000000)
+		// In go-chi/chi, full route pattern could only be extracted once the request is executed
+		// See: https://github.com/go-chi/chi/issues/150#issuecomment-278850733
+		routeStr := strings.Join(chi.RouteContext(r.Context()).RoutePatterns, "")
+
+		reqMetric.WithLabelValues(strconv.Itoa(wrw.Status()), r.Method, routeStr).Inc()
+		sumMetric.WithLabelValues(strconv.Itoa(wrw.Status()), r.Method, routeStr).Observe(float64(time.Since(start).Nanoseconds()) / 1000000)
 	}
 
 	return http.HandlerFunc(fn)
