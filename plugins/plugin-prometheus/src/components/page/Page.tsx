@@ -16,7 +16,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
   // options in the current url.
   const changeOptions = (opts: IOptions): void => {
-    const queries = opts.queries ? opts.queries.map((query) => `&query=${query}`) : [];
+    const queries = opts.queries ? opts.queries.map((query) => `&query=${encodeURIComponent(query)}`) : [];
 
     navigate(
       `${location.pathname}?time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${
