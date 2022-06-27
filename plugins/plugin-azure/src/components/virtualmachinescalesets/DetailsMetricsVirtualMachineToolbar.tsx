@@ -48,6 +48,15 @@ const DetailsMetricsVirtualMachineToolbar: React.FunctionComponent<IDetailsMetri
               placeholderText="Virtual Machine"
               onToggle={(): void => setShow(!show)}
               onSelect={(e, value): void => changeSelectedVirtualMachine(value as string)}
+              onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+                virtualMachines
+                  .filter((virtualMachine) => !value || virtualMachine.includes(value))
+                  .map((virtualMachine: string) => (
+                    <SelectOption key={virtualMachine} value={virtualMachine}>
+                      {virtualMachine}
+                    </SelectOption>
+                  ))
+              }
               selections={selectedVirtualMachine}
               isOpen={show}
               maxHeight="50vh"

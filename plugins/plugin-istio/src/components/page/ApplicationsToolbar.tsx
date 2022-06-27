@@ -93,13 +93,20 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
               onToggle={(): void => setShowNamespaces(!showNamespaces)}
               onSelect={(e, value): void => selectNamespace(value as string)}
               onClear={(): void => setSelectedNamespaces([])}
+              onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+                data
+                  ? data
+                      .filter((namespace) => !value || namespace.includes(value))
+                      .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
+                  : []
+              }
               selections={selectedNamespaces}
               isOpen={showNamespaces}
               maxHeight="50vh"
             >
               {isError || !data
                 ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
-                : data.map((namespace, index) => <SelectOption key={index} value={namespace} />)}
+                : data.map((namespace) => <SelectOption key={namespace} value={namespace} />)}
             </Select>
           )}
         </ToolbarItem>

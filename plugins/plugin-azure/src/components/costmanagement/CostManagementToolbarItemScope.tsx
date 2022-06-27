@@ -20,11 +20,16 @@ const CostManagementToolbarItemScope: React.FunctionComponent<ICostManagementToo
 
   return (
     <Select
-      variant={SelectVariant.single}
+      variant={SelectVariant.typeahead}
       typeAheadAriaLabel="Select scope"
       placeholderText="Select scope"
       onToggle={(): void => setShowSelect(!showSelect)}
       onSelect={(e, value): void => setScope(value as string)}
+      onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+        resourceGroups
+          .filter((resourceGroup) => !value || resourceGroup.includes(value))
+          .map((resourceGroup: string) => <SelectOption key={resourceGroup} value={resourceGroup} />)
+      }
       selections={scope}
       isOpen={showSelect}
       maxHeight="50vh"
