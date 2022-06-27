@@ -31,7 +31,7 @@ const AggregationToolbar: React.FunctionComponent<IAggregationToolbarProps> = ({
           <TextInput aria-label="Query" type="text" value={options.query} onChange={changeQuery} />
         </ToolbarItem>
 
-        <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
+        <Options times={options.times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
       </ToolbarGroup>
     </ToolbarContent>
   );
