@@ -59,6 +59,87 @@ plugin:
     name: "<% $.name %>"
 ```
 
+### `insights`
+
+The `insights` plugin can be used to display the insights of an application within a dashboard. The plugin requires the following options:
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| satellite | string | The satellite of the application. | Yes |
+| cluster | string | The cluster of the application. | Yes |
+| namespace | string | The namespace of the application. | Yes |
+| name | string | The name of the application | Yes |
+
+```yaml
+plugin:
+  name: insights
+  type: app
+  options:
+    satellite: "<% $.satellite %>"
+    cluster: "<% $.cluster %>"
+    namespace: "<% $.namespace %>"
+    name: "<% $.name %>"
+```
+
+??? note "Example"
+
+    ```yaml
+    apiVersion: kobs.io/v1
+    kind: Application
+    metadata:
+      name: example-application
+      namespace: kobs
+    spec:
+      dashboards:
+        - title: Inisghts
+          inline:
+            rows:
+              - size: -1
+                panels:
+                  - title: thanos-compactor
+                    colSpan: 3
+                    plugin:
+                      name: insights
+                      type: app
+                      options:
+                        satellite: "<% $.satellite %>"
+                        cluster: "<% $.cluster %>"
+                        namespace: "monitoring"
+                        name: "thanos-compactor"
+                  - title: thanos-querier
+                    colSpan: 3
+                    plugin:
+                      name: insights
+                      type: app
+                      options:
+                        satellite: "<% $.satellite %>"
+                        cluster: "<% $.cluster %>"
+                        namespace: "monitoring"
+                        name: "thanos-querier"
+                  - title: thanos-ruler
+                    colSpan: 3
+                    plugin:
+                      name: insights
+                      type: app
+                      options:
+                        satellite: "<% $.satellite %>"
+                        cluster: "<% $.cluster %>"
+                        namespace: "monitoring"
+                        name: "thanos-ruler"
+                  - title: thanos-store
+                    colSpan: 3
+                    plugin:
+                      name: insights
+                      type: app
+                      options:
+                        satellite: "<% $.satellite %>"
+                        cluster: "<% $.cluster %>"
+                        namespace: "monitoring"
+                        name: "thanos-store"
+    ```
+
+![Insights](assets/plugins-insights.png)
+
 ### `userapplications`
 
 The `userapplications` plugin can be used to display the applications which are owned by the teams a user is a member of. This plugin doesn't require any options and is inteded to be used within a User CR to customize a users profile page.
