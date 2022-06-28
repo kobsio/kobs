@@ -1,7 +1,10 @@
 import React from 'react';
 
-import { IPluginPanelProps, PluginPanelError } from '@kobsio/shared';
-import { IPanelOptions } from '../../utils/interfaces';
+import { IPanelOptions, TType } from '../../utils/interfaces';
+import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/shared';
+import PanelItem from './PanelItem';
+import PanelList from './PanelList';
+import { resources } from '../../utils/constants';
 
 interface IFluxPluginPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
@@ -15,6 +18,43 @@ const Panel: React.FunctionComponent<IFluxPluginPanelProps> = ({
   times,
   setDetails,
 }: IFluxPluginPanelProps) => {
+  if (
+    options &&
+    options.type &&
+    options.cluster !== undefined &&
+    options.namespace !== undefined &&
+    options.type in resources
+  ) {
+    if (options.name) {
+      return (
+        <PluginPanel title={title} description={description}>
+          <PanelItem
+            instance={instance}
+            type={options.type as TType}
+            cluster={options.cluster}
+            namespace={options.namespace}
+            name={options.name}
+            times={times}
+          />
+        </PluginPanel>
+      );
+    }
+
+    return (
+      <PluginPanel title={title} description={description}>
+        <PanelList
+          instance={instance}
+          type={options.type as TType}
+          cluster={options.cluster}
+          namespace={options.namespace}
+          selector={options.selector}
+          times={times}
+          setDetails={setDetails}
+        />
+      </PluginPanel>
+    );
+  }
+
   return (
     <PluginPanelError
       title={title}

@@ -3,18 +3,19 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import Details from './details/Details';
-import { IPluginInstance } from '@kobsio/shared';
 import { TType } from '../../utils/interfaces';
 import { getValue } from '../../utils/helpers';
 import { resources } from '../../utils/constants';
 
 interface IPanelListProps {
   instance: IPluginInstance;
+  type: TType;
   cluster: string;
   namespace: string;
   selector?: string;
-  type: TType;
+  times?: ITimes;
   setDetails?: (details: React.ReactNode) => void;
 }
 
@@ -24,6 +25,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
   cluster,
   namespace,
   selector,
+  times,
   setDetails,
 }: IPanelListProps) => {
   const resource = resources[type];
@@ -31,7 +33,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { isError, isLoading, error, data, refetch } = useQuery<any[], Error>(
-    ['flux/list', instance, cluster, type, namespace, selector],
+    ['flux/list', instance, cluster, type, namespace, selector, times],
     async () => {
       try {
         const response = await fetch(
@@ -98,7 +100,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
       <Alert
         variant={AlertVariant.danger}
         isInline={true}
-        title="Could not get artifacts"
+        title={`Could not get ${resource.title}`}
         actionLinks={
           <React.Fragment>
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
