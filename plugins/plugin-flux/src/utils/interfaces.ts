@@ -7,6 +7,7 @@ export interface IPanelOptions {
   cluster?: string;
   namespace?: string;
   selector?: string;
+  name?: string;
 }
 
 // IOptions is the interface for the options which can be set by a user in the Page component for a plugin.

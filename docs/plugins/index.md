@@ -155,6 +155,16 @@ The `resources` plugin can be used to display Kubernetes resources within a dash
 | namespaces | []string | A list of namespaces for which the resources should be shown. | Yes |
 | resources | []string | A list of resources for which the resources should be shown. The following strings can be used as resource: `cronjobs`, `daemonsets`, `deployments`, `jobs`, `pods`, `replicasets`, `statefulsets`, `endpoints`, `horizontalpodautoscalers`, `ingresses`, `networkpolicies`, `services`, `configmaps`, `persistentvolumeclaims`, `persistentvolumes`, `poddisruptionbudgets`, `secrets`, `serviceaccounts`, `storageclasses`, `clusterrolebindings`, `clusterroles`, `rolebindings`, `roles`, `events`, `nodes`, `podsecuritypolicies`. A Custom Resource can be used as follows `<name>.<group>/<version>` (e.g. `vaultsecrets.ricoberger.de/v1alpha1`). | Yes |
 | selector | string | A label selector for the resources. | No |
+| columns | [[]Column](#column) | An optional list of columns to customize the shown fields for a resource. | No |
+
+#### Column
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| title | string | A title for the column. | Yes |
+| resource | string | The name of the resource for which the column should be used. | Yes |
+| jsonPath | string | The [JSONPath](https://goessner.net/articles/JsonPath/) which should be used to select the value from the resource manifest file. | Yes |
+| type | string | An optional type for formatting the column values. Currently only `date` is supported as special formatter. | No |
 
 ```yaml
 plugin:
@@ -192,6 +202,70 @@ plugin:
           - pods
           - deployments
         selector: app.kubernetes.io/name="<% $.name %>"
+    ```
+
+??? note "Example 1 with Custom Columns"
+
+    ```yaml
+    plugin:
+      name: resources
+      type: app
+      options:
+        satellites:
+          - "<% $.satellite %>"
+        clusters:
+          - "<% $.cluster %>"
+        namespaces:
+          - bookinfo
+        resources:
+          - pods
+          - deployments
+        selector: app=reviews
+        columns:
+          - title: Image
+            resource: pods
+            jsonPath: "$.spec.containers[?(@.name==='bookinfo')].image"
+          - title: Creation Time
+            resource: pods
+            jsonPath: "$.metadata.creationTimestamp"
+            type: date
+          - title: Image
+            resource: deployments
+            jsonPath: "$.spec.template.spec.containers[*].image"
+    ```
+
+??? note "Example 2 with Custom Columns"
+
+    ```yaml
+    plugin:
+      name: resources
+      type: app
+      options:
+        satellites:
+          - "<% $.satellite %>"
+        clusters:
+          - "<% $.cluster %>"
+        namespaces:
+          - bookinfo
+        resources:
+          - vaultsecrets.ricoberger.de/v1alpha1
+        columns:
+          - title: Status
+            resource: vaultsecrets.ricoberger.de/v1alpha1
+            jsonPath: "$.status.conditions[*].status"
+          - title: Reason
+            resource: vaultsecrets.ricoberger.de/v1alpha1
+            jsonPath: "$.status.conditions[*].reason"
+          - title: Type
+            resource: vaultsecrets.ricoberger.de/v1alpha1
+            jsonPath: "$.status.conditions[*].type"
+          - title: Message
+            resource: vaultsecrets.ricoberger.de/v1alpha1
+            jsonPath: "$.status.conditions[*].message"
+          - title: Last Transition Time
+            resource: vaultsecrets.ricoberger.de/v1alpha1
+            jsonPath: "$.status.conditions[*].lastTransitionTime"
+            type: date
     ```
 
 ### `static`

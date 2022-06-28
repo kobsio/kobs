@@ -136,7 +136,7 @@ const ResourcesPanel: React.FunctionComponent<IResourcesPanelProps> = ({
         >
           <ResourcesPanelTable
             resourceResponse={resourceResponse}
-            columns={options.columns}
+            columns={options.columns?.filter((column) => column.resource === resourceResponse.resource.id)}
             selectedRow={state.selectedRow}
             selectRow={
               setDetails
