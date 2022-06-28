@@ -5,6 +5,7 @@ import { ITimes, PluginPanel } from '@kobsio/shared';
 import ApplicationTopologyPanel from '../topology/ApplicationTopologyPanel';
 import ApplicationsPanel from '../applications/ApplicationsPanel';
 import DashboardsPanel from '../dashboards/DashboardsPanel';
+import InsightsPanel from '../applications/InsightsPanel';
 import Markdown from '../markdown/Markdown';
 import ResourcesPanelWrapper from '../resources/ResourcesPanelWrapper';
 import UserApplications from '../profile/UserApplications';
@@ -38,6 +39,10 @@ const AppPanel: React.FunctionComponent<IAppPanelProps> = ({
     return (
       <ApplicationTopologyPanel title={title} description={description} options={options} setDetails={setDetails} />
     );
+  }
+
+  if (name === 'insights') {
+    return <InsightsPanel title={title} description={description} options={options} times={times} />;
   }
 
   if (name === 'userapplications') {
