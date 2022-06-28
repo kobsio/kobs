@@ -1535,7 +1535,6 @@ export const customResourceDefinitionTableData = (crd: IResource): ITableDatum =
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rowWithCustomColumns = (resourceList: IResourceList, manifest: any, columns: IColumn[]): IResourceRow => {
-  console.log(resourceList);
   const cells: React.ReactNode[] = [
     manifest.metadata?.name || '',
     manifest.metadata?.namespace || '',

@@ -67,11 +67,15 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var resourceResponses []ResourceResponse
+
+	muResources := &sync.Mutex{}
 	var wgResources sync.WaitGroup
 	wgResources.Add(len(resourceIDs))
 
 	for _, resourceID := range resourceIDs {
 		go func(resourceID string) {
+			defer wgResources.Done()
+
 			var resource shared.Resource
 			resource = shared.GetResourceByID(resourceID)
 			if resource.ID == "" {
@@ -88,53 +92,62 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 			var resourceLists []ResourceList
 			var errors []string
 
+			muNamespaces := &sync.Mutex{}
 			var wgNamespaces sync.WaitGroup
 			wgNamespaces.Add(len(ids))
 
 			for _, id := range ids {
 				go func(id string) {
+					defer wgNamespaces.Done()
+
 					satelliteName, cluster, namespace, err := shared.ParseNamespaceID(id)
 					if err != nil {
 						log.Error(r.Context(), "Could not parse namespace / cluster id", zap.Error(err))
+						muNamespaces.Lock()
 						errors = append(errors, err.Error())
-					} else {
-						satellite := router.satellitesClient.GetSatellite(satelliteName)
-						if satellite == nil {
-							log.Error(r.Context(), "Satellite not found", zap.Error(err))
-							errors = append(errors, "satellite not found")
-						} else {
-							ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-							defer cancel()
-
-							if resource.Scope == "Cluster" {
-								namespace = ""
-							}
-
-							if path != "" {
-								resource.Path = path
-							}
-
-							list, err := satellite.GetResources(ctx, user, cluster, namespace, name, resource.Resource, resource.Path, paramName, param)
-							if err != nil {
-								log.Error(r.Context(), "Request failed", zap.Error(err))
-								errors = append(errors, err.Error())
-							} else {
-								resourceLists = append(resourceLists, ResourceList{
-									Satellite: satelliteName,
-									Cluster:   cluster,
-									List:      list,
-								})
-							}
-						}
+						muNamespaces.Unlock()
+						return
 					}
 
-					wgNamespaces.Done()
+					satellite := router.satellitesClient.GetSatellite(satelliteName)
+					if satellite == nil {
+						log.Error(r.Context(), "Satellite not found", zap.Error(err))
+						muNamespaces.Lock()
+						errors = append(errors, "satellite not found")
+						muNamespaces.Unlock()
+						return
+					}
+
+					ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+					defer cancel()
+
+					if resource.Scope == "Cluster" {
+						namespace = ""
+					}
+
+					if path != "" {
+						resource.Path = path
+					}
+
+					list, err := satellite.GetResources(ctx, user, cluster, namespace, name, resource.Resource, resource.Path, paramName, param)
+					if err != nil {
+						log.Error(r.Context(), "Request failed", zap.Error(err))
+						muNamespaces.Lock()
+						errors = append(errors, err.Error())
+						muNamespaces.Unlock()
+						return
+					}
+
+					muNamespaces.Lock()
+					resourceLists = append(resourceLists, ResourceList{Satellite: satelliteName, Cluster: cluster, List: list})
+					muNamespaces.Unlock()
 				}(id)
 			}
 
 			wgNamespaces.Wait()
+			muResources.Lock()
 			resourceResponses = append(resourceResponses, ResourceResponse{Resource: resource, ResourceLists: resourceLists, Errors: errors})
-			wgResources.Done()
+			muResources.Unlock()
 		}(resourceID)
 	}
 

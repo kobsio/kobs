@@ -64,11 +64,14 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var feeds []*gofeed.Feed
+
+	mu := &sync.Mutex{}
 	var wg sync.WaitGroup
 	wg.Add(len(urls))
 
 	for _, url := range urls {
 		go func(url string) {
+			defer wg.Done()
 			feed, err := i.GetFeed(url)
 
 			if err != nil {
@@ -76,10 +79,10 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if feed != nil {
+				mu.Lock()
 				feeds = append(feeds, feed)
+				mu.Unlock()
 			}
-
-			wg.Done()
 		}(url)
 	}
 
