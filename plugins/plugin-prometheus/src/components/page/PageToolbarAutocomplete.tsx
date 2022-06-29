@@ -21,7 +21,7 @@ const PageToolbarAutocomplete: React.FunctionComponent<IPageToolbarAutocomplete>
   onEnter,
 }: IPageToolbarAutocomplete) => {
   const debouncedQuery = useDebounce(query, 500);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [inputFocused, setInputFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [hoveringMetricNamesList, setHovering] = useState(false);
