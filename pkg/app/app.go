@@ -4,6 +4,8 @@ import (
 	"context"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"path"
 	"strings"
 	"time"
@@ -59,14 +61,19 @@ func New(hubAddress, appAddress, appAssetsDir string) (Server, error) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+		AllowedMethods: []string{"DELETE", "GET", "HEAD", "OPTIONS", "POST", "PUT"},
+		AllowedHeaders: []string{"*"},
 	}))
 
 	// Serve the React app, when a directory for all assets is defined. We can not just serve the assets via
 	// http.FileServer, because then the user would see an error, when he hits the reload button on another page then
 	// the root page ("/").
 	if appAssetsDir != "" {
+		proxyURL, err := url.Parse("http://localhost" + hubAddress)
+		if err != nil {
+			return nil, err
+		}
+
 		reactApp, err := ioutil.ReadFile(path.Join(appAssetsDir, "index.html"))
 		if err != nil {
 			return nil, err
@@ -74,11 +81,13 @@ func New(hubAddress, appAddress, appAssetsDir string) (Server, error) {
 
 		staticHandler := http.StripPrefix("/", http.FileServer(http.Dir(appAssetsDir)))
 		router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
-			// We redirect requests to the "/api" path to port where the hub is running on. We have to return 307 as
-			// status code, to preserve the used http method. This can be used to test the production build of the React
-			// app locally without the need of another proxy, which handles the redirect.
+			// We redirect requests to the "/api" path to port where the hub is running on. For that we are using the
+			// httputil.ReverseProxy.  This can be used to test the production build of the React app locally without
+			// the need of another proxy, which handles the redirect.
 			if strings.HasPrefix(r.URL.Path, "/api") {
-				http.Redirect(w, r, "http://localhost"+hubAddress+r.URL.Path+"?"+r.URL.RawQuery, http.StatusTemporaryRedirect)
+				proxy := httputil.NewSingleHostReverseProxy(proxyURL)
+				proxy.FlushInterval = -1
+				proxy.ServeHTTP(w, r)
 				return
 			}
 

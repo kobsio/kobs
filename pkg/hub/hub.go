@@ -73,8 +73,8 @@ func New(config api.Config, debugUsername, debugPassword, hubAddress string, aut
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+		AllowedMethods: []string{"DELETE", "GET", "HEAD", "OPTIONS", "POST", "PUT"},
+		AllowedHeaders: []string{"*"},
 	}))
 
 	if debugUsername != "" && debugPassword != "" {
