@@ -8,13 +8,13 @@ interface IDashboardsWrapperProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   manifest: any;
   references: IReference[];
-  setDetails?: (details: React.ReactNode) => void;
+  useDrawer: boolean;
 }
 
 export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps> = ({
   manifest,
   references,
-  setDetails,
+  useDrawer,
 }: IDashboardsWrapperProps) => {
   const refTabs = useRef<HTMLDivElement>(null);
   const tabsSize = useDimensions(refTabs);
@@ -25,7 +25,7 @@ export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps>
         manifest={manifest}
         references={references}
         forceDefaultSpan={tabsSize.width < 1200}
-        setDetails={setDetails}
+        useDrawer={useDrawer}
       />
     </div>
   );

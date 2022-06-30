@@ -152,6 +152,15 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
         },
         additionalFields,
       );
+    } else {
+      setOptions(
+        {
+          time: times.time,
+          timeEnd: times.timeEnd,
+          timeStart: times.timeStart,
+        },
+        additionalFields,
+      );
     }
   };
 

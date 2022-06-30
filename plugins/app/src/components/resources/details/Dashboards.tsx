@@ -71,7 +71,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ resource, resou
     );
   }
 
-  return <DashboardsWrapper manifest={resourceData.props} references={references} />;
+  return <DashboardsWrapper manifest={resourceData.props} references={references} useDrawer={false} />;
 };
 
 export default Dashboards;

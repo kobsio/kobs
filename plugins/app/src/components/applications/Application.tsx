@@ -9,8 +9,8 @@ import {
   TextContent,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
 
 import { PageContentSection, PageHeaderSection } from '@kobsio/shared';
 import ApplicationDetailsLabels from './ApplicationDetailsLabels';
@@ -27,7 +27,6 @@ interface IApplicationParams extends Record<string, string | undefined> {
 const Application: React.FunctionComponent = () => {
   const navigate = useNavigate();
   const params = useParams<IApplicationParams>();
-  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IApplication, Error>(
     ['app/applications/application', params.satellite, params.cluster, params.namespace, params.name],
@@ -104,9 +103,14 @@ const Application: React.FunctionComponent = () => {
         }
       />
 
-      <PageContentSection hasPadding={false} hasDivider={false} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection
+        hasPadding={false}
+        hasDivider={data.dashboards ? false : true}
+        toolbarContent={undefined}
+        panelContent={undefined}
+      >
         {data.dashboards ? (
-          <DashboardsWrapper manifest={data} references={data.dashboards} setDetails={setDetails} />
+          <DashboardsWrapper manifest={data} references={data.dashboards} useDrawer={true} />
         ) : (
           <div></div>
         )}

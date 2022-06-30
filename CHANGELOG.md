@@ -40,6 +40,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#369](https://github.com/kobsio/kobs/pull/#369): [app] Add `insights` panel, to display the insights of an application within a dashboard.
 - [#371](https://github.com/kobsio/kobs/pull/#371): [app] Change toolbar handling by replacing the Patternfly `Toolbar` and `ToolbarItem` components with a custom `Toolbar` and `ToolbarItem` component.
 - [#372](https://github.com/kobsio/kobs/pull/#372): [app] Change `hasDivider` property to `PageContentSection` component to explicit enable / disable the diver.
+- [#373](https://github.com/kobsio/kobs/pull/#373): [app] Change behaviour of drawer panels on pages with dashboards.
 
 ## [v0.8.0](https://github.com/kobsio/kobs/releases/tag/v0.8.0) (2022-03-24)
 
