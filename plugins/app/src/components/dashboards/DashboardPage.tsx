@@ -97,7 +97,7 @@ const DashboardPage: React.FunctionComponent = () => {
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={details}>
         <Dashboard dashboard={data} forceDefaultSpan={false} setDetails={setDetails} />
       </PageContentSection>
     </React.Fragment>

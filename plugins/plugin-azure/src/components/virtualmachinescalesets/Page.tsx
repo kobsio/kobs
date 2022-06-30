@@ -29,7 +29,7 @@ const VirtualMachineScaleSetsPage: React.FunctionComponent<IVirtualMachineScaleS
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={details}>
         <VirtualMachineScaleSets instance={instance} resourceGroups={resourceGroups} setDetails={setDetails} />
       </PageContentSection>
     </React.Fragment>

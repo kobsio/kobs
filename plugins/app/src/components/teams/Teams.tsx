@@ -57,6 +57,7 @@ const Teams: React.FunctionComponent = () => {
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={
           <Toolbar usePageInsets={true}>
             <ToolbarItem>

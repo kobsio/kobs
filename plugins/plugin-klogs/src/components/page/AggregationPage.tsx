@@ -60,6 +60,7 @@ const AggregationPage: React.FunctionComponent<IAggregationPageProps> = ({ insta
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={<AggregationToolbar options={tmpOptions} setOptions={setTmpOptions} />}
         panelContent={undefined}
       >

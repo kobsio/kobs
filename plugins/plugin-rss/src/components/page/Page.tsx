@@ -16,7 +16,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={undefined}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={undefined}>
         <div></div>
       </PageContentSection>
     </React.Fragment>

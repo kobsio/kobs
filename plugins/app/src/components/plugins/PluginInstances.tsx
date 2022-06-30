@@ -49,6 +49,7 @@ const PluginInstances: React.FunctionComponent = () => {
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={
           <Toolbar usePageInsets={true}>
             <ToolbarItem width="200px">

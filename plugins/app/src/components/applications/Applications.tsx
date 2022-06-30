@@ -45,6 +45,7 @@ const Applications: React.FunctionComponent = () => {
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={options ? <ApplicationsToolbar options={options} setOptions={changeOptions} /> : undefined}
         panelContent={
           selectedApplication ? (

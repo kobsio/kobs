@@ -39,6 +39,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#367](https://github.com/kobsio/kobs/pull/#367): [app] Change filtering for select components, by using `item.includes(value)`.
 - [#369](https://github.com/kobsio/kobs/pull/#369): [app] Add `insights` panel, to display the insights of an application within a dashboard.
 - [#370](https://github.com/kobsio/kobs/pull/#370): [app] Change toolbar handling by replacing the Patternfly `Toolbar` and `ToolbarItem` components with a custom `Toolbar` and `ToolbarItem` component.
+- [#371](https://github.com/kobsio/kobs/pull/#371): [app] Change `hasDivider` property to `PageContentSection` component to explicit enable / disable the diver.
 
 ## [v0.8.0](https://github.com/kobsio/kobs/releases/tag/v0.8.0) (2022-03-24)
 

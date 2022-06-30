@@ -23,7 +23,7 @@ const Profile: React.FunctionComponent = () => {
     <React.Fragment>
       <PageHeaderSection title={authContext.user.email} description="" />
 
-      <PageContentSection hasPadding={false} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection hasPadding={false} hasDivider={false} toolbarContent={undefined} panelContent={details}>
         <ProfileWrapper email={authContext.user.email} setDetails={setDetails} />
       </PageContentSection>
     </React.Fragment>

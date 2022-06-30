@@ -52,6 +52,7 @@ const CostManagementPage: React.FunctionComponent<ICostManagementPageProps> = ({
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={
           <CostManagementToolbar resourceGroups={resourceGroups} options={options} setOptions={changeOptions} />
         }

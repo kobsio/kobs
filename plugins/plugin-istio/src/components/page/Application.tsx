@@ -74,6 +74,7 @@ const Application: React.FunctionComponent<IApplicationProps> = ({ instance }: I
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={<ApplicationToolbar options={options} setOptions={changeOptions} />}
         panelContent={details}
       >
