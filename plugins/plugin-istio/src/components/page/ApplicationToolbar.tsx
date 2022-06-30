@@ -1,7 +1,7 @@
-import { ToggleGroup, ToggleGroupItem, ToolbarContent, ToolbarGroup, ToolbarItem } from '@patternfly/react-core';
+import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 import React from 'react';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IApplicationOptions } from '../../utils/interfaces';
 
 interface IApplicationToolbarProps {
@@ -22,22 +22,21 @@ const ApplicationToolbar: React.FunctionComponent<IApplicationToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          <ToggleGroup aria-label="View">
-            <ToggleGroupItem
-              text="Metrics"
-              isSelected={options.view === 'metrics'}
-              onChange={(): void => setView('metrics')}
-            />
-            <ToggleGroupItem text="Top" isSelected={options.view === 'top'} onChange={(): void => setView('top')} />
-            <ToggleGroupItem text="Tap" isSelected={options.view === 'tap'} onChange={(): void => setView('tap')} />
-          </ToggleGroup>
-        </ToolbarItem>
-        <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
-      </ToolbarGroup>
-    </ToolbarContent>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem>
+        <ToggleGroup aria-label="View">
+          <ToggleGroupItem
+            text="Metrics"
+            isSelected={options.view === 'metrics'}
+            onChange={(): void => setView('metrics')}
+          />
+          <ToggleGroupItem text="Top" isSelected={options.view === 'top'} onChange={(): void => setView('top')} />
+          <ToggleGroupItem text="Tap" isSelected={options.view === 'tap'} onChange={(): void => setView('tap')} />
+        </ToggleGroup>
+      </ToolbarItem>
+
+      <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
+    </Toolbar>
   );
 };
 

@@ -12,12 +12,12 @@ import {
   SimpleList,
   SimpleListItem,
   TextInput,
-  ToolbarItem,
 } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { RedoIcon, SearchIcon } from '@patternfly/react-icons';
 
 import { ITimes, TTime, formatTime, timeOptions } from '../../utils/times';
+import { ToolbarItem } from './ToolbarItem';
 
 export type TOptionsAdditionalFields = 'text' | 'select';
 
@@ -163,9 +163,9 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   }, [times, additionalFields]);
 
   return (
-    <React.Fragment>
+    <ToolbarItem alignRight={true}>
       {showOptions && (
-        <ToolbarItem alignment={{ default: 'alignRight' }}>
+        <React.Fragment>
           <Button variant={ButtonVariant.control} onClick={(): void => setShow(true)}>
             {times.time === 'custom'
               ? `${formatTime(times.timeStart)} to ${formatTime(times.timeEnd)}`
@@ -322,15 +322,18 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
               ) : null}
             </Level>
           </Modal>
-        </ToolbarItem>
+        </React.Fragment>
       )}
       {showSearchButton && (
-        <ToolbarItem>
-          <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={refreshTimes}>
-            Search
-          </Button>
-        </ToolbarItem>
+        <Button
+          className={showOptions ? 'pf-u-ml-md' : ''}
+          variant={ButtonVariant.primary}
+          icon={<SearchIcon />}
+          onClick={refreshTimes}
+        >
+          Search
+        </Button>
       )}
-    </React.Fragment>
+    </ToolbarItem>
   );
 };

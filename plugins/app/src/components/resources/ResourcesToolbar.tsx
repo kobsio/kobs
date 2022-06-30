@@ -1,14 +1,8 @@
-import {
-  Button,
-  ButtonVariant,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarGroupVariant,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { SearchIcon } from '@patternfly/react-icons';
 
+import { Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from './utils/interfaces';
 import ResourcesToolbarClusters from './ResourcesToolbarClusters';
 import ResourcesToolbarFilter from './ResourcesToolbarFilter';
@@ -78,34 +72,36 @@ const ResourcesToolbar: React.FunctionComponent<IResourcesToolbarProps> = ({
   }, [options]);
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-        <ToolbarItem>
-          <ResourcesToolbarClusters selectedClusterIDs={state.clusterIDs} selectClusterID={selectClusterID} />
-        </ToolbarItem>
-        <ToolbarItem>
-          <ResourcesToolbarNamespaces
-            selectedClusterIDs={state.clusterIDs}
-            selectedNamespaces={state.namespaces}
-            selectNamespace={selectNamespace}
-          />
-        </ToolbarItem>
-        <ToolbarItem>
-          <ResourcesToolbarResources selectedResourcesIDs={state.resourceIDs} selectResourceID={selectResourceID} />
-        </ToolbarItem>
-      </ToolbarGroup>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <ResourcesToolbarClusters selectedClusterIDs={state.clusterIDs} selectClusterID={selectClusterID} />
+      </ToolbarItem>
+
+      <ToolbarItem grow={true}>
+        <ResourcesToolbarNamespaces
+          selectedClusterIDs={state.clusterIDs}
+          selectedNamespaces={state.namespaces}
+          selectNamespace={selectNamespace}
+        />
+      </ToolbarItem>
+
+      <ToolbarItem grow={true}>
+        <ResourcesToolbarResources selectedResourcesIDs={state.resourceIDs} selectResourceID={selectResourceID} />
+      </ToolbarItem>
+
       <ResourcesToolbarFilter
         paramName={state.paramName}
         param={state.param}
         setParamName={(value: string): void => setState({ ...state, paramName: value })}
         setParam={(value: string): void => setState({ ...state, param: value })}
       />
-      <ToolbarItem>
+
+      <ToolbarItem alignRight={true}>
         <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={changeOptions}>
           Search
         </Button>
       </ToolbarItem>
-    </ToolbarContent>
+    </Toolbar>
   );
 };
 

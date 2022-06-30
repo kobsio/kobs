@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { ToolbarContent, ToolbarGroup, ToolbarItem } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import CostManagementToolbarItemScope from './CostManagementToolbarItemScope';
 import { IOptions } from './interfaces';
 
@@ -26,16 +25,14 @@ const CostManagementToolbar: React.FunctionComponent<ICostManagementToolbarProps
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem variant="label">Scope</ToolbarItem>
-        <ToolbarItem style={{ width: '100%' }}>
-          <CostManagementToolbarItemScope scope={scope} setScope={setScope} resourceGroups={resourceGroups} />
-        </ToolbarItem>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem isLabel={true}>Scope</ToolbarItem>
+      <ToolbarItem grow={true}>
+        <CostManagementToolbarItemScope scope={scope} setScope={setScope} resourceGroups={resourceGroups} />
+      </ToolbarItem>
 
-        <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
-      </ToolbarGroup>
-    </ToolbarContent>
+      <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
+    </Toolbar>
   );
 };
 

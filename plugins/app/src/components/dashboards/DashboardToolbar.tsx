@@ -1,7 +1,7 @@
-import { Card, Toolbar, ToolbarContent, ToolbarGroup, ToolbarGroupVariant, ToolbarItem } from '@patternfly/react-core';
+import { Card } from '@patternfly/react-core';
 import React from 'react';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import DashboardToolbarVariable from './DashboardToolbarVariable';
 import { IVariableValues } from '../../crds/dashboard';
 
@@ -30,22 +30,21 @@ const DashboardToolbar: React.FunctionComponent<IDashboardToolbarProps> = ({
 
   return (
     <Card style={{ maxWidth: '100%' }}>
-      <Toolbar>
-        <ToolbarContent>
-          <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-            {variables.map((variable, index) =>
-              variable.hide ? null : (
-                <ToolbarItem key={variable.name}>
-                  <DashboardToolbarVariable
-                    variable={variable}
-                    selectValue={(value: string): void => selectValue(index, value)}
-                  />
-                </ToolbarItem>
-              ),
-            )}
-          </ToolbarGroup>
-          <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
-        </ToolbarContent>
+      <Toolbar usePageInsets={true}>
+        <React.Fragment>
+          {variables.map((variable, index) =>
+            variable.hide ? null : (
+              <ToolbarItem key={variable.name} width="250px">
+                <DashboardToolbarVariable
+                  variable={variable}
+                  selectValue={(value: string): void => selectValue(index, value)}
+                />
+              </ToolbarItem>
+            ),
+          )}
+        </React.Fragment>
+
+        <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
       </Toolbar>
     </Card>
   );

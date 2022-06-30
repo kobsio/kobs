@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-  TextInput,
-  ToolbarGroup,
-  ToolbarGroupVariant,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Select, SelectOption, SelectOptionObject, SelectVariant, TextInput } from '@patternfly/react-core';
+
+import { ToolbarItem } from '@kobsio/shared';
 
 interface IResourcesToolbarFilterProps {
   paramName: string;
@@ -26,8 +19,8 @@ const ResourcesToolbarFilter: React.FunctionComponent<IResourcesToolbarFilterPro
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-      <ToolbarItem>
+    <React.Fragment>
+      <ToolbarItem width="100px">
         <Select
           variant={SelectVariant.single}
           aria-label="Select filter type input"
@@ -50,10 +43,16 @@ const ResourcesToolbarFilter: React.FunctionComponent<IResourcesToolbarFilterPro
           </SelectOption>
         </Select>
       </ToolbarItem>
-      <ToolbarItem>
-        <TextInput aria-label="Filter input" value={param} onChange={(value: string): void => setParam(value)} />
+
+      <ToolbarItem width="150px">
+        <TextInput
+          aria-label="Filter input"
+          placeholder="Filter value"
+          value={param}
+          onChange={(value: string): void => setParam(value)}
+        />
       </ToolbarItem>
-    </ToolbarGroup>
+    </React.Fragment>
   );
 };
 

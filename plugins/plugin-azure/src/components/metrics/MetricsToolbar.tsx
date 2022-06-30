@@ -1,7 +1,7 @@
-import { Card, Toolbar, ToolbarContent } from '@patternfly/react-core';
+import { Card } from '@patternfly/react-core';
 import React from 'react';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar } from '@kobsio/shared';
 
 interface IMetricsToolbarProps {
   times: ITimes;
@@ -15,10 +15,8 @@ const MetricsToolbar: React.FunctionComponent<IMetricsToolbarProps> = ({ times, 
 
   return (
     <Card style={{ maxWidth: '100%' }}>
-      <Toolbar>
-        <ToolbarContent>
-          <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
-        </ToolbarContent>
+      <Toolbar usePageInsets={true}>
+        <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
       </Toolbar>
     </Card>
   );

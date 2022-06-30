@@ -1,15 +1,7 @@
-import {
-  Card,
-  Select,
-  SelectOption,
-  SelectVariant,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Card, Select, SelectOption, SelectVariant } from '@patternfly/react-core';
 import React, { useState } from 'react';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 
 interface IDetailsMetricsVirtualMachineToolbarProps {
   virtualMachines: string[];
@@ -39,37 +31,36 @@ const DetailsMetricsVirtualMachineToolbar: React.FunctionComponent<IDetailsMetri
 
   return (
     <Card style={{ maxWidth: '100%' }}>
-      <Toolbar>
-        <ToolbarContent>
-          <ToolbarItem>
-            <Select
-              variant={SelectVariant.typeahead}
-              typeAheadAriaLabel="Virtual Machine"
-              placeholderText="Virtual Machine"
-              onToggle={(): void => setShow(!show)}
-              onSelect={(e, value): void => changeSelectedVirtualMachine(value as string)}
-              onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
-                virtualMachines
-                  .filter((virtualMachine) => !value || virtualMachine.includes(value))
-                  .map((virtualMachine: string) => (
-                    <SelectOption key={virtualMachine} value={virtualMachine}>
-                      {virtualMachine}
-                    </SelectOption>
-                  ))
-              }
-              selections={selectedVirtualMachine}
-              isOpen={show}
-              maxHeight="50vh"
-            >
-              {virtualMachines.map((virtualMachine) => (
-                <SelectOption key={virtualMachine} value={virtualMachine}>
-                  {virtualMachine}
-                </SelectOption>
-              ))}
-            </Select>
-          </ToolbarItem>
-          <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
-        </ToolbarContent>
+      <Toolbar usePageInsets={true}>
+        <ToolbarItem width="250px">
+          <Select
+            variant={SelectVariant.typeahead}
+            typeAheadAriaLabel="Virtual Machine"
+            placeholderText="Virtual Machine"
+            onToggle={(): void => setShow(!show)}
+            onSelect={(e, value): void => changeSelectedVirtualMachine(value as string)}
+            onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+              virtualMachines
+                .filter((virtualMachine) => !value || virtualMachine.includes(value))
+                .map((virtualMachine: string) => (
+                  <SelectOption key={virtualMachine} value={virtualMachine}>
+                    {virtualMachine}
+                  </SelectOption>
+                ))
+            }
+            selections={selectedVirtualMachine}
+            isOpen={show}
+            maxHeight="50vh"
+          >
+            {virtualMachines.map((virtualMachine) => (
+              <SelectOption key={virtualMachine} value={virtualMachine}>
+                {virtualMachine}
+              </SelectOption>
+            ))}
+          </Select>
+        </ToolbarItem>
+
+        <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
       </Toolbar>
     </Card>
   );

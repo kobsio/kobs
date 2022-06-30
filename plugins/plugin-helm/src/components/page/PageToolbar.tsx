@@ -1,16 +1,9 @@
-import {
-  Button,
-  ButtonVariant,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarGroupVariant,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { SearchIcon } from '@patternfly/react-icons';
 
+import { IPluginInstance, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
-import { IPluginInstance } from '@kobsio/shared';
 import PageToolbarItemClusters from './PageToolbarItemClusters';
 import PageToolbarItemNamespaces from './PageToolbarItemNamespaces';
 
@@ -56,30 +49,24 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-        <ToolbarItem>
-          <PageToolbarItemClusters
-            instance={instance}
-            selectedClusters={state.clusters}
-            selectCluster={selectCluster}
-          />
-        </ToolbarItem>
-        <ToolbarItem>
-          <PageToolbarItemNamespaces
-            instance={instance}
-            selectedClusters={state.clusters}
-            selectedNamespaces={state.namespaces}
-            selectNamespace={selectNamespace}
-          />
-        </ToolbarItem>
-      </ToolbarGroup>
-      <ToolbarItem>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <PageToolbarItemClusters instance={instance} selectedClusters={state.clusters} selectCluster={selectCluster} />
+      </ToolbarItem>
+      <ToolbarItem grow={true}>
+        <PageToolbarItemNamespaces
+          instance={instance}
+          selectedClusters={state.clusters}
+          selectedNamespaces={state.namespaces}
+          selectNamespace={selectNamespace}
+        />
+      </ToolbarItem>
+      <ToolbarItem alignRight={true}>
         <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={changeOptions}>
           Search
         </Button>
       </ToolbarItem>
-    </ToolbarContent>
+    </Toolbar>
   );
 };
 
