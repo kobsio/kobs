@@ -8,10 +8,9 @@ import { IUser } from '../../crds/user';
 
 interface IProfileWrapperProps {
   email: string;
-  setDetails?: (details: React.ReactNode) => void;
 }
 
-const ProfileWrapper: React.FunctionComponent<IProfileWrapperProps> = ({ email, setDetails }: IProfileWrapperProps) => {
+const ProfileWrapper: React.FunctionComponent<IProfileWrapperProps> = ({ email }: IProfileWrapperProps) => {
   const navigate = useNavigate();
 
   const { isError, isLoading, error, data, refetch } = useQuery<IUser, Error>(['app/users/user', email], async () => {
@@ -59,7 +58,7 @@ const ProfileWrapper: React.FunctionComponent<IProfileWrapperProps> = ({ email, 
     return null;
   }
 
-  return <DashboardsWrapper manifest={data} references={data.dashboards} setDetails={setDetails} />;
+  return <DashboardsWrapper manifest={data} references={data.dashboards} useDrawer={true} />;
 };
 
 export default ProfileWrapper;

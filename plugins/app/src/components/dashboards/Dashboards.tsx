@@ -2,6 +2,9 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -24,27 +27,28 @@ interface IDashboardsProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   manifest: any;
   references: IReference[];
-  setDetails?: (details: React.ReactNode) => void;
+  useDrawer: boolean;
   forceDefaultSpan: boolean;
 }
 
 const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   manifest,
   references,
+  useDrawer,
   forceDefaultSpan,
-  setDetails,
 }: IDashboardsProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [options, setOptions] = useState<IOptions>();
+  const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const changeOptions = (opts: IOptions): void => {
     navigate(`${location.pathname}?dashboard=${opts.dashboard}`);
   };
 
   useEffect(() => {
-    setOptions(getInitialOptions(location.search, references, setDetails !== undefined));
-  }, [location.search, references, setDetails]);
+    setOptions(getInitialOptions(location.search, references, useDrawer));
+  }, [location.search, references, useDrawer]);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IDashboard[], Error>(
     ['app/dashboards/dashboards', references],
@@ -124,15 +128,21 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
       mountOnEnter={true}
       unmountOnExit={false}
       onSelect={(event, tabIndex): void =>
-        setDetails
+        useDrawer
           ? changeOptions({ ...options, dashboard: tabIndex.toString() })
           : setOptions({ ...options, dashboard: tabIndex.toString() })
       }
     >
       {data.map((dashboard) => (
         <Tab key={dashboard.title} eventKey={dashboard.title} title={<TabTitleText>{dashboard.title}</TabTitleText>}>
-          <TabContentBody hasPadding={true}>
-            <Dashboard dashboard={dashboard} forceDefaultSpan={forceDefaultSpan} setDetails={setDetails} />
+          <TabContentBody hasPadding={false}>
+            <Drawer isExpanded={details !== undefined}>
+              <DrawerContent className="pf-m-no-background" panelContent={details}>
+                <DrawerContentBody hasPadding={true}>
+                  <Dashboard dashboard={dashboard} forceDefaultSpan={forceDefaultSpan} setDetails={setDetails} />
+                </DrawerContentBody>
+              </DrawerContent>
+            </Drawer>
           </TabContentBody>
         </Tab>
       ))}

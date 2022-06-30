@@ -1,12 +1,11 @@
 import { Alert, AlertVariant, PageSection } from '@patternfly/react-core';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
 import { AuthContext, IAuthContext } from '../../context/AuthContext';
 import { PageContentSection, PageHeaderSection } from '@kobsio/shared';
 import ProfileWrapper from './ProfileWrapper';
 
 const Profile: React.FunctionComponent = () => {
-  const [details, setDetails] = useState<React.ReactNode>(undefined);
   const authContext = useContext<IAuthContext>(AuthContext);
 
   if (authContext.user.email === '') {
@@ -23,8 +22,8 @@ const Profile: React.FunctionComponent = () => {
     <React.Fragment>
       <PageHeaderSection title={authContext.user.email} description="" />
 
-      <PageContentSection hasPadding={false} hasDivider={false} toolbarContent={undefined} panelContent={details}>
-        <ProfileWrapper email={authContext.user.email} setDetails={setDetails} />
+      <PageContentSection hasPadding={false} hasDivider={false} toolbarContent={undefined} panelContent={undefined}>
+        <ProfileWrapper email={authContext.user.email} />
       </PageContentSection>
     </React.Fragment>
   );
