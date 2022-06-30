@@ -104,7 +104,7 @@ const Application: React.FunctionComponent = () => {
         }
       />
 
-      <PageContentSection hasPadding={false} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection hasPadding={false} hasDivider={false} toolbarContent={undefined} panelContent={details}>
         {data.dashboards ? (
           <DashboardsWrapper manifest={data} references={data.dashboards} setDetails={setDetails} />
         ) : (

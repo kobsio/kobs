@@ -99,6 +99,7 @@ const ArtifactsPage: React.FunctionComponent<IArtifactsPageProps> = ({ instance 
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={<PageToolbar options={options} setOptions={changeOptions} />}
         panelContent={details}
       >

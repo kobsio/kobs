@@ -106,6 +106,7 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ instance }: ILogsPa
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={<LogsToolbar options={options} setOptions={changeOptions} />}
         panelContent={undefined}
       >

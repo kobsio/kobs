@@ -94,7 +94,7 @@ const ServicePage: React.FunctionComponent<IServicePageProps> = ({ instance }: I
         component={<PluginPageTitle satellite={data.key} name={data.name} description={data.description} />}
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={details}>
         <ServicePageWrapper
           instance={instance}
           index={data}

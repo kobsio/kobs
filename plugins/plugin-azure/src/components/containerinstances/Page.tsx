@@ -29,7 +29,7 @@ const ContainerInstancesPage: React.FunctionComponent<IContainerInstancesPagePro
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={details}>
         <ContainerGroups instance={instance} resourceGroups={resourceGroups} setDetails={setDetails} />
       </PageContentSection>
     </React.Fragment>

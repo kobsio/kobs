@@ -22,7 +22,7 @@ const TechDocsPage: React.FunctionComponent<ITechDocsPageProps> = ({ instance }:
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={undefined}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={undefined}>
         <Card>
           <TechDocsList instance={instance} />
         </Card>

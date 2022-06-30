@@ -29,7 +29,7 @@ const KubernetesServicesPage: React.FunctionComponent<IKubernetesServicesPagePro
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={details}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={details}>
         <KubernetesServices instance={instance} resourceGroups={resourceGroups} setDetails={setDetails} />
       </PageContentSection>
     </React.Fragment>

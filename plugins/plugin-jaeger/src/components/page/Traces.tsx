@@ -54,6 +54,7 @@ const Traces: React.FunctionComponent<ITracesProps> = ({ instance }: ITracesProp
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={<TracesToolbar instance={instance} options={options} setOptions={changeOptions} />}
         panelContent={details}
       >

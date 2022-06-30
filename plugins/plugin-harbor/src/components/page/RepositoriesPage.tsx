@@ -97,6 +97,7 @@ const RepositoriesPage: React.FunctionComponent<IRepositoriesPageProps> = ({ ins
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={<PageToolbar options={options} setOptions={changeOptions} />}
         panelContent={undefined}
       >

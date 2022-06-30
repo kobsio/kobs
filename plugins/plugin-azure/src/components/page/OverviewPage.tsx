@@ -29,7 +29,7 @@ const OverviewPage: React.FunctionComponent<IOverviewPageProps> = ({ instance }:
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={undefined}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={undefined}>
         <Gallery hasGutter={true}>
           {Object.keys(services).map((service) => (
             <GalleryItem key={service}>

@@ -89,7 +89,7 @@ const ProjectsPage: React.FunctionComponent<IProjectsPageProps> = ({ instance }:
         }
       />
 
-      <PageContentSection hasPadding={true} toolbarContent={undefined} panelContent={undefined}>
+      <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={undefined}>
         {isLoading ? (
           <div className="pf-u-text-align-center">
             <Spinner />

@@ -47,6 +47,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
 
       <PageContentSection
         hasPadding={true}
+        hasDivider={true}
         toolbarContent={<PageToolbar instance={instance} options={options} setOptions={changeOptions} />}
         panelContent={undefined}
       >
