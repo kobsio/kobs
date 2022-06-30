@@ -11,16 +11,11 @@ import {
   Spinner,
   ToggleGroup,
   ToggleGroupItem,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarGroupVariant,
-  ToolbarItem,
-  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 
-import { PageContentSection, PageHeaderSection, useDebounce } from '@kobsio/shared';
+import { PageContentSection, PageHeaderSection, Toolbar, ToolbarItem, useDebounce } from '@kobsio/shared';
 import { ITeam } from '../../crds/team';
 import TeamsItem from './TeamsItem';
 
@@ -63,24 +58,22 @@ const Teams: React.FunctionComponent = () => {
       <PageContentSection
         hasPadding={true}
         toolbarContent={
-          <ToolbarContent>
-            <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-              <ToolbarItem>
-                <ToggleGroup aria-label="Select owned or all teams">
-                  <ToggleGroupItem
-                    text="Owned"
-                    isSelected={state.all === false}
-                    onChange={(): void => setState({ ...state, all: false, page: 1 })}
-                  />
-                  <ToggleGroupItem
-                    text="All"
-                    isSelected={state.all === true}
-                    onChange={(): void => setState({ ...state, all: true, page: 1 })}
-                  />
-                </ToggleGroup>
-              </ToolbarItem>
-            </ToolbarGroup>
-            <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
+          <Toolbar usePageInsets={true}>
+            <ToolbarItem>
+              <ToggleGroup aria-label="Select owned or all teams">
+                <ToggleGroupItem
+                  text="Owned"
+                  isSelected={state.all === false}
+                  onChange={(): void => setState({ ...state, all: false, page: 1 })}
+                />
+                <ToggleGroupItem
+                  text="All"
+                  isSelected={state.all === true}
+                  onChange={(): void => setState({ ...state, all: true, page: 1 })}
+                />
+              </ToggleGroup>
+            </ToolbarItem>
+            <ToolbarItem grow={true}>
               <SearchInput
                 aria-label="Search team input"
                 onChange={(value: string): void => setState({ ...state, page: 1, searchTerm: value })}
@@ -88,7 +81,7 @@ const Teams: React.FunctionComponent = () => {
                 onClear={(): void => setState({ ...state, page: 1, searchTerm: '' })}
               />
             </ToolbarItem>
-          </ToolbarContent>
+          </Toolbar>
         }
         panelContent={undefined}
       >

@@ -9,16 +9,11 @@ import {
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarGroupVariant,
-  ToolbarItem,
-  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
 
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
-import { PageContentSection, PageHeaderSection, useDebounce } from '@kobsio/shared';
+import { PageContentSection, PageHeaderSection, Toolbar, ToolbarItem, useDebounce } from '@kobsio/shared';
 import Module from '../module/Module';
 import PluginInstancesError from './PluginInstancesError';
 import PluginInstancesLoading from './PluginInstancesLoading';
@@ -55,52 +50,52 @@ const PluginInstances: React.FunctionComponent = () => {
       <PageContentSection
         hasPadding={true}
         toolbarContent={
-          <ToolbarContent>
-            <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-              <ToolbarItem>
-                <Select
-                  variant={SelectVariant.single}
-                  aria-label="Select satellite input"
-                  placeholderText="Satellite"
-                  onToggle={(): void => setState({ ...state, pluginSatelliteIsOpen: !state.pluginSatelliteIsOpen })}
-                  onSelect={(
-                    event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                    value: string | SelectOptionObject,
-                  ): void =>
-                    setState({ ...state, page: 1, pluginSatellite: value.toString(), pluginSatelliteIsOpen: false })
-                  }
-                  onClear={(): void => setState({ ...state, page: 1, pluginSatellite: '' })}
-                  selections={state.pluginSatellite}
-                  isOpen={state.pluginSatelliteIsOpen}
-                  maxHeight="50vh"
-                >
-                  {pluginsContext.getPluginSatellites().map((option) => (
-                    <SelectOption key={option} value={option} />
-                  ))}
-                </Select>
-              </ToolbarItem>
-              <ToolbarItem>
-                <Select
-                  variant={SelectVariant.single}
-                  aria-label="Select plugin type input"
-                  placeholderText="Plugin Type"
-                  onToggle={(): void => setState({ ...state, pluginTypeIsOpen: !state.pluginTypeIsOpen })}
-                  onSelect={(
-                    event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                    value: string | SelectOptionObject,
-                  ): void => setState({ ...state, page: 1, pluginType: value.toString(), pluginTypeIsOpen: false })}
-                  onClear={(): void => setState({ ...state, page: 1, pluginType: '' })}
-                  selections={state.pluginType}
-                  isOpen={state.pluginTypeIsOpen}
-                  maxHeight="50vh"
-                >
-                  {pluginsContext.getPluginTypes().map((option) => (
-                    <SelectOption key={option} value={option} />
-                  ))}
-                </Select>
-              </ToolbarItem>
-            </ToolbarGroup>
-            <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
+          <Toolbar usePageInsets={true}>
+            <ToolbarItem width="200px">
+              <Select
+                variant={SelectVariant.single}
+                aria-label="Select satellite input"
+                placeholderText="Satellite"
+                onToggle={(): void => setState({ ...state, pluginSatelliteIsOpen: !state.pluginSatelliteIsOpen })}
+                onSelect={(
+                  event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                  value: string | SelectOptionObject,
+                ): void =>
+                  setState({ ...state, page: 1, pluginSatellite: value.toString(), pluginSatelliteIsOpen: false })
+                }
+                onClear={(): void => setState({ ...state, page: 1, pluginSatellite: '' })}
+                selections={state.pluginSatellite}
+                isOpen={state.pluginSatelliteIsOpen}
+                maxHeight="50vh"
+              >
+                {pluginsContext.getPluginSatellites().map((option) => (
+                  <SelectOption key={option} value={option} />
+                ))}
+              </Select>
+            </ToolbarItem>
+
+            <ToolbarItem width="200px">
+              <Select
+                variant={SelectVariant.single}
+                aria-label="Select plugin type input"
+                placeholderText="Plugin Type"
+                onToggle={(): void => setState({ ...state, pluginTypeIsOpen: !state.pluginTypeIsOpen })}
+                onSelect={(
+                  event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                  value: string | SelectOptionObject,
+                ): void => setState({ ...state, page: 1, pluginType: value.toString(), pluginTypeIsOpen: false })}
+                onClear={(): void => setState({ ...state, page: 1, pluginType: '' })}
+                selections={state.pluginType}
+                isOpen={state.pluginTypeIsOpen}
+                maxHeight="50vh"
+              >
+                {pluginsContext.getPluginTypes().map((option) => (
+                  <SelectOption key={option} value={option} />
+                ))}
+              </Select>
+            </ToolbarItem>
+
+            <ToolbarItem grow={true}>
               <SearchInput
                 aria-label="Search plugin input"
                 onChange={(value: string): void => setState({ ...state, page: 1, searchTerm: value })}
@@ -108,7 +103,7 @@ const PluginInstances: React.FunctionComponent = () => {
                 onClear={(): void => setState({ ...state, page: 1, searchTerm: '' })}
               />
             </ToolbarItem>
-          </ToolbarContent>
+          </Toolbar>
         }
         panelContent={undefined}
       >

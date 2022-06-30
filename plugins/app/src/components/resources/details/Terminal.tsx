@@ -8,14 +8,12 @@ import {
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
 } from '@patternfly/react-core';
 import { ITerminalOptions, Terminal as xTerm } from 'xterm';
 import React, { useEffect, useRef, useState } from 'react';
 import { V1Pod } from '@kubernetes/client-node';
 
+import { Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IResource } from '../../../resources/clusters';
 import { IResourceRow } from '../utils/tabledata';
 import TerminalContainer from './terminal/TerminalContainer';
@@ -156,51 +154,49 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ resourceData }: ITe
         <Flex direction={{ default: 'column' }}>
           <FlexItem>
             <Toolbar>
-              <ToolbarContent>
-                <ToolbarItem>
-                  <Select
-                    variant={SelectVariant.single}
-                    aria-label="Select container input"
-                    placeholderText="Container"
-                    onToggle={(): void => setOptions({ ...options, showContainers: !options.showContainers })}
-                    onSelect={(
-                      event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                      value: string | SelectOptionObject,
-                    ): void => setOptions({ ...options, container: value.toString() })}
-                    selections={options.container}
-                    isOpen={options.showContainers}
-                    maxHeight="50vh"
-                  >
-                    {containers.map((container) => (
-                      <SelectOption key={container} value={container} />
-                    ))}
-                  </Select>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Select
-                    variant={SelectVariant.single}
-                    aria-label="Select shell input"
-                    placeholderText="Shell"
-                    onToggle={(): void => setOptions({ ...options, showShells: !options.showShells })}
-                    onSelect={(
-                      event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                      value: string | SelectOptionObject,
-                    ): void => setOptions({ ...options, shell: value.toString() })}
-                    selections={options.shell}
-                    isOpen={options.showShells}
-                    maxHeight="50vh"
-                  >
-                    {shells.map((shell) => (
-                      <SelectOption key={shell} value={shell} />
-                    ))}
-                  </Select>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Button onClick={(): Promise<void> => getTerminal()} variant="primary">
-                    Connect
-                  </Button>
-                </ToolbarItem>
-              </ToolbarContent>
+              <ToolbarItem grow={true}>
+                <Select
+                  variant={SelectVariant.single}
+                  aria-label="Select container input"
+                  placeholderText="Container"
+                  onToggle={(): void => setOptions({ ...options, showContainers: !options.showContainers })}
+                  onSelect={(
+                    event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                    value: string | SelectOptionObject,
+                  ): void => setOptions({ ...options, container: value.toString() })}
+                  selections={options.container}
+                  isOpen={options.showContainers}
+                  maxHeight="50vh"
+                >
+                  {containers.map((container) => (
+                    <SelectOption key={container} value={container} />
+                  ))}
+                </Select>
+              </ToolbarItem>
+              <ToolbarItem width="100px">
+                <Select
+                  variant={SelectVariant.single}
+                  aria-label="Select shell input"
+                  placeholderText="Shell"
+                  onToggle={(): void => setOptions({ ...options, showShells: !options.showShells })}
+                  onSelect={(
+                    event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                    value: string | SelectOptionObject,
+                  ): void => setOptions({ ...options, shell: value.toString() })}
+                  selections={options.shell}
+                  isOpen={options.showShells}
+                  maxHeight="50vh"
+                >
+                  {shells.map((shell) => (
+                    <SelectOption key={shell} value={shell} />
+                  ))}
+                </Select>
+              </ToolbarItem>
+              <ToolbarItem alignRight={true}>
+                <Button onClick={(): Promise<void> => getTerminal()} variant="primary">
+                  Connect
+                </Button>
+              </ToolbarItem>
             </Toolbar>
           </FlexItem>
           <FlexItem>

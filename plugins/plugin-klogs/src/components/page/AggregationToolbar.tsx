@@ -1,7 +1,7 @@
-import { TextInput, ToolbarContent, ToolbarGroup, ToolbarItem } from '@patternfly/react-core';
 import React from 'react';
+import { TextInput } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IAggregationOptions } from '../../utils/interfaces';
 
 interface IAggregationToolbarProps {
@@ -25,15 +25,13 @@ const AggregationToolbar: React.FunctionComponent<IAggregationToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          <TextInput aria-label="Query" type="text" value={options.query} onChange={changeQuery} />
-        </ToolbarItem>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <TextInput aria-label="Query" type="text" value={options.query} onChange={changeQuery} />
+      </ToolbarItem>
 
-        <Options times={options.times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
-      </ToolbarGroup>
-    </ToolbarContent>
+      <Options times={options.times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
+    </Toolbar>
   );
 };
 

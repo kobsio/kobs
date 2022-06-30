@@ -1,18 +1,8 @@
-import {
-  Button,
-  ButtonVariant,
-  SearchInput,
-  ToggleGroup,
-  ToggleGroupItem,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarGroupVariant,
-  ToolbarItem,
-  ToolbarItemVariant,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, SearchInput, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { SearchIcon } from '@patternfly/react-icons';
 
+import { Toolbar, ToolbarItem } from '@kobsio/shared';
 import ApplicationsToolbarTags from './ApplicationsToolbarTags';
 import { IOptions } from './utils/interfaces';
 import ResourcesToolbarClusters from '../resources/ResourcesToolbarClusters';
@@ -79,24 +69,23 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-        <ToolbarItem>
-          <ToggleGroup aria-label="Select owned or all teams">
-            <ToggleGroupItem
-              text="Owned"
-              isSelected={state.all === false}
-              onChange={(): void => setState({ ...state, all: false })}
-            />
-            <ToggleGroupItem
-              text="All"
-              isSelected={state.all === true}
-              onChange={(): void => setState({ ...state, all: true })}
-            />
-          </ToggleGroup>
-        </ToolbarItem>
-      </ToolbarGroup>
-      <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem>
+        <ToggleGroup aria-label="Select owned or all teams">
+          <ToggleGroupItem
+            text="Owned"
+            isSelected={state.all === false}
+            onChange={(): void => setState({ ...state, all: false })}
+          />
+          <ToggleGroupItem
+            text="All"
+            isSelected={state.all === true}
+            onChange={(): void => setState({ ...state, all: true })}
+          />
+        </ToggleGroup>
+      </ToolbarItem>
+
+      <ToolbarItem grow={true}>
         <SearchInput
           aria-label="Search team input"
           value={state.searchTerm}
@@ -105,51 +94,51 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
           onKeyDown={onEnter}
         />
       </ToolbarItem>
-      <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-        <ToolbarItem>
-          <ResourcesToolbarClusters selectedClusterIDs={state.clusterIDs} selectClusterID={selectClusterID} />
-        </ToolbarItem>
-        <ToolbarItem>
-          <ResourcesToolbarNamespaces
-            selectedClusterIDs={state.clusterIDs}
-            selectedNamespaces={state.namespaces}
-            selectNamespace={selectNamespace}
-          />
-        </ToolbarItem>
-        <ToolbarItem>
-          <ApplicationsToolbarTags selectedTags={state.tags} selectTag={selectTag} />
-        </ToolbarItem>
-      </ToolbarGroup>
-      <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-        <ToolbarItem variant={ToolbarItemVariant.label} id="external-applications">
-          External Applications
-        </ToolbarItem>
-        <ToolbarItem>
-          <ToggleGroup aria-label="Select how to handle external applications" aria-labelledby="external-applications">
-            <ToggleGroupItem
-              text="Include"
-              isSelected={state.external === 'include'}
-              onChange={(): void => setState({ ...state, external: 'include' })}
-            />
-            <ToggleGroupItem
-              text="Exclude"
-              isSelected={state.external === 'exclude'}
-              onChange={(): void => setState({ ...state, external: 'exclude' })}
-            />
-            <ToggleGroupItem
-              text="Only"
-              isSelected={state.external === 'only'}
-              onChange={(): void => setState({ ...state, external: 'only' })}
-            />
-          </ToggleGroup>
-        </ToolbarItem>
-      </ToolbarGroup>
+
+      <ToolbarItem width="200px">
+        <ResourcesToolbarClusters selectedClusterIDs={state.clusterIDs} selectClusterID={selectClusterID} />
+      </ToolbarItem>
+
+      <ToolbarItem width="200px">
+        <ResourcesToolbarNamespaces
+          selectedClusterIDs={state.clusterIDs}
+          selectedNamespaces={state.namespaces}
+          selectNamespace={selectNamespace}
+        />
+      </ToolbarItem>
+
+      <ToolbarItem width="200px">
+        <ApplicationsToolbarTags selectedTags={state.tags} selectTag={selectTag} />
+      </ToolbarItem>
+
+      <ToolbarItem isLabel={true}>External Applications</ToolbarItem>
+
       <ToolbarItem>
+        <ToggleGroup aria-label="Select how to handle external applications" aria-labelledby="external-applications">
+          <ToggleGroupItem
+            text="Include"
+            isSelected={state.external === 'include'}
+            onChange={(): void => setState({ ...state, external: 'include' })}
+          />
+          <ToggleGroupItem
+            text="Exclude"
+            isSelected={state.external === 'exclude'}
+            onChange={(): void => setState({ ...state, external: 'exclude' })}
+          />
+          <ToggleGroupItem
+            text="Only"
+            isSelected={state.external === 'only'}
+            onChange={(): void => setState({ ...state, external: 'only' })}
+          />
+        </ToggleGroup>
+      </ToolbarItem>
+
+      <ToolbarItem alignRight={true}>
         <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={changeOptions}>
           Search
         </Button>
       </ToolbarItem>
-    </ToolbarContent>
+    </Toolbar>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Select, SelectOption, SelectVariant, Spinner } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core';
 import { IPluginInstance } from '@kobsio/shared';
 import { useQuery } from 'react-query';
 
@@ -43,24 +43,14 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
     }
   });
 
-  if (isLoading) {
-    return (
-      <div className="pf-u-text-align-center">
-        <Spinner size="md" />
-      </div>
-    );
-  }
-
   return (
     <Select
-      variant={SelectVariant.typeaheadMulti}
-      typeAheadAriaLabel="Namespaces"
+      variant={SelectVariant.checkbox}
+      aria-label="Select namespaces input"
       placeholderText="Namespaces"
       onToggle={(): void => setShow(!show)}
       onSelect={(e, value): void => selectNamespace(value as string)}
       onClear={(): void => selectNamespace('')}
-      selections={namespaces}
-      isOpen={show}
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         data
           ? data
@@ -68,9 +58,14 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
               .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
           : []
       }
+      selections={namespaces}
+      isOpen={show}
+      hasInlineFilter={true}
       maxHeight="50vh"
     >
-      {isError
+      {isLoading
+        ? [<SelectOption key="loading" isDisabled={true} value="Loading ..." />]
+        : isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
         : data
         ? data.map((namespace) => <SelectOption key={namespace} value={namespace} />)

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { TextInput, ToolbarContent, ToolbarGroup, ToolbarGroupVariant, ToolbarItem } from '@patternfly/react-core';
+import { TextInput } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
 import TracesToolbarOperations from './TracesToolbarOperations';
 import TracesToolbarServices from './TracesToolbarServices';
@@ -36,66 +36,59 @@ const TracesToolbar: React.FunctionComponent<ITracesToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-          <ToolbarItem>
-            <TracesToolbarServices
-              instance={instance}
-              service={service}
-              setService={(value): void => setService(value)}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            {service ? (
-              <TracesToolbarOperations
-                instance={instance}
-                service={service}
-                operation={operation}
-                setOperation={(value): void => setOperation(value)}
-              />
-            ) : null}
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarItem variant="label">Tags</ToolbarItem>
-        <ToolbarItem style={{ width: '100%' }}>
-          <TextInput
-            aria-label="Tags"
-            placeholder="http.status_code=200 error=true"
-            type="text"
-            value={tags}
-            onChange={(value: string): void => setTags(value)}
-          />
-        </ToolbarItem>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <TracesToolbarServices instance={instance} service={service} setService={(value): void => setService(value)} />
+      </ToolbarItem>
 
-        <Options
-          additionalFields={[
-            {
-              label: 'Limit',
-              name: 'limit',
-              placeholder: '20',
-              value: options.limit,
-            },
-            {
-              label: 'Max Duration',
-              name: 'maxDuration',
-              placeholder: '100ms',
-              value: options.maxDuration,
-            },
-            {
-              label: 'Min Duration',
-              name: 'minDuration',
-              placeholder: '100ms',
-              value: options.minDuration,
-            },
-          ]}
-          times={options.times}
-          showOptions={true}
-          showSearchButton={true}
-          setOptions={changeOptions}
+      <ToolbarItem grow={true}>
+        <TracesToolbarOperations
+          instance={instance}
+          service={service}
+          operation={operation}
+          setOperation={(value): void => setOperation(value)}
         />
-      </ToolbarGroup>
-    </ToolbarContent>
+      </ToolbarItem>
+
+      <ToolbarItem isLabel={true}>Tags</ToolbarItem>
+
+      <ToolbarItem grow={true}>
+        <TextInput
+          aria-label="Tags"
+          placeholder="http.status_code=200 error=true"
+          type="text"
+          value={tags}
+          onChange={(value: string): void => setTags(value)}
+        />
+      </ToolbarItem>
+
+      <Options
+        additionalFields={[
+          {
+            label: 'Limit',
+            name: 'limit',
+            placeholder: '20',
+            value: options.limit,
+          },
+          {
+            label: 'Max Duration',
+            name: 'maxDuration',
+            placeholder: '100ms',
+            value: options.maxDuration,
+          },
+          {
+            label: 'Min Duration',
+            name: 'minDuration',
+            placeholder: '100ms',
+            value: options.minDuration,
+          },
+        ]}
+        times={options.times}
+        showOptions={true}
+        showSearchButton={true}
+        setOptions={changeOptions}
+      />
+    </Toolbar>
   );
 };
 

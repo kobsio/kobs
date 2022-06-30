@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { ToolbarContent, ToolbarGroup, ToolbarItem } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
 import PageToolbarNamespaces from './PageToolbarNamespaces';
 
@@ -41,14 +40,12 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          <PageToolbarNamespaces instance={instance} namespaces={namespaces || []} selectNamespace={selectNamespace} />
-        </ToolbarItem>
-        <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
-      </ToolbarGroup>
-    </ToolbarContent>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <PageToolbarNamespaces instance={instance} namespaces={namespaces || []} selectNamespace={selectNamespace} />
+      </ToolbarItem>
+      <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
+    </Toolbar>
   );
 };
 

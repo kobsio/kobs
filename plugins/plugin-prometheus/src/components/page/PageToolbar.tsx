@@ -1,17 +1,8 @@
-import {
-  Button,
-  ButtonVariant,
-  Flex,
-  FlexItem,
-  InputGroup,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Flex, FlexItem, InputGroup } from '@patternfly/react-core';
 import { MinusIcon, PlusIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 
-import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
 import PageToolbarAutocomplete from './PageToolbarAutocomplete';
 
@@ -70,50 +61,48 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ alignItems: 'flex-start', width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          <Flex style={{ width: '100%' }} direction={{ default: 'column' }} grow={{ default: 'grow' }}>
-            {queries.map((query, index) => (
-              <FlexItem key={index}>
-                <InputGroup>
-                  <PageToolbarAutocomplete
-                    instance={instance}
-                    query={query}
-                    setQuery={(value): void => changeQuery(index, value)}
-                    onEnter={onEnter}
-                  />
-                  {index === 0 ? (
-                    <Button variant={ButtonVariant.control} onClick={addQuery}>
-                      <PlusIcon />
-                    </Button>
-                  ) : (
-                    <Button variant={ButtonVariant.control} onClick={(): void => removeQuery(index)}>
-                      <MinusIcon />
-                    </Button>
-                  )}
-                </InputGroup>
-              </FlexItem>
-            ))}
-          </Flex>
-        </ToolbarItem>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <Flex style={{ width: '100%' }} direction={{ default: 'column' }} grow={{ default: 'grow' }}>
+          {queries.map((query, index) => (
+            <FlexItem key={index}>
+              <InputGroup>
+                <PageToolbarAutocomplete
+                  instance={instance}
+                  query={query}
+                  setQuery={(value): void => changeQuery(index, value)}
+                  onEnter={onEnter}
+                />
+                {index === 0 ? (
+                  <Button variant={ButtonVariant.control} onClick={addQuery}>
+                    <PlusIcon />
+                  </Button>
+                ) : (
+                  <Button variant={ButtonVariant.control} onClick={(): void => removeQuery(index)}>
+                    <MinusIcon />
+                  </Button>
+                )}
+              </InputGroup>
+            </FlexItem>
+          ))}
+        </Flex>
+      </ToolbarItem>
 
-        <Options
-          times={options.times}
-          additionalFields={[
-            {
-              label: 'Resolution',
-              name: 'resolution',
-              placeholder: '1m',
-              value: options.resolution,
-            },
-          ]}
-          showOptions={true}
-          showSearchButton={true}
-          setOptions={changeOptions}
-        />
-      </ToolbarGroup>
-    </ToolbarContent>
+      <Options
+        times={options.times}
+        additionalFields={[
+          {
+            label: 'Resolution',
+            name: 'resolution',
+            placeholder: '1m',
+            value: options.resolution,
+          },
+        ]}
+        showOptions={true}
+        showSearchButton={true}
+        setOptions={changeOptions}
+      />
+    </Toolbar>
   );
 };
 

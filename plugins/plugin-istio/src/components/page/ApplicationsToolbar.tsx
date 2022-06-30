@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
-import {
-  Select,
-  SelectOption,
-  SelectVariant,
-  Spinner,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core';
 import { useQuery } from 'react-query';
 
-import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IApplicationsOptions } from '../../utils/interfaces';
 
 interface IPageToolbarProps {
@@ -78,42 +70,37 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          {isLoading ? (
-            <div className="pf-u-text-align-center">
-              <Spinner size="md" />
-            </div>
-          ) : (
-            <Select
-              variant={SelectVariant.typeaheadMulti}
-              typeAheadAriaLabel="Select namespaces"
-              placeholderText="Select namespaces"
-              onToggle={(): void => setShowNamespaces(!showNamespaces)}
-              onSelect={(e, value): void => selectNamespace(value as string)}
-              onClear={(): void => setSelectedNamespaces([])}
-              onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
-                data
-                  ? data
-                      .filter((namespace) => !value || namespace.includes(value))
-                      .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
-                  : []
-              }
-              selections={selectedNamespaces}
-              isOpen={showNamespaces}
-              maxHeight="50vh"
-            >
-              {isError || !data
-                ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
-                : data.map((namespace) => <SelectOption key={namespace} value={namespace} />)}
-            </Select>
-          )}
-        </ToolbarItem>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <Select
+          variant={SelectVariant.checkbox}
+          aria-label="Select namespaces input"
+          placeholderText="Namespaces"
+          onToggle={(): void => setShowNamespaces(!showNamespaces)}
+          onSelect={(e, value): void => selectNamespace(value as string)}
+          onClear={(): void => setSelectedNamespaces([])}
+          onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
+            data
+              ? data
+                  .filter((namespace) => !value || namespace.includes(value))
+                  .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
+              : []
+          }
+          selections={selectedNamespaces}
+          isOpen={showNamespaces}
+          hasInlineFilter={true}
+          maxHeight="50vh"
+        >
+          {isLoading
+            ? [<SelectOption key="loading" isDisabled={true} value="Loading..." />]
+            : isError || !data
+            ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get namespaces.'} />]
+            : data.map((namespace) => <SelectOption key={namespace} value={namespace} />)}
+        </Select>
+      </ToolbarItem>
 
-        <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
-      </ToolbarGroup>
-    </ToolbarContent>
+      <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
+    </Toolbar>
   );
 };
 

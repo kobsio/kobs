@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, ToolbarContent, ToolbarGroup, ToolbarItem } from '@patternfly/react-core';
+import { TextInput } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
 
 interface ILogsToolbarProps {
@@ -40,42 +40,40 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({ options, setO
   }, [options.query]);
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          <TextInput
-            aria-label="Query"
-            type="text"
-            value={query}
-            onChange={(value: string): void => setQuery(value)}
-            onKeyDown={onEnter}
-          />
-        </ToolbarItem>
-
-        <Options
-          times={options.times}
-          additionalFields={[
-            {
-              label: 'Order By',
-              name: 'orderBy',
-              placeholder: 'timestamp',
-              value: options.orderBy,
-            },
-            {
-              label: 'Order',
-              name: 'order',
-              placeholder: '',
-              type: 'select',
-              value: options.order,
-              values: ['ascending', 'descending'],
-            },
-          ]}
-          showOptions={true}
-          showSearchButton={true}
-          setOptions={changeOptions}
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <TextInput
+          aria-label="Query"
+          type="text"
+          value={query}
+          onChange={(value: string): void => setQuery(value)}
+          onKeyDown={onEnter}
         />
-      </ToolbarGroup>
-    </ToolbarContent>
+      </ToolbarItem>
+
+      <Options
+        times={options.times}
+        additionalFields={[
+          {
+            label: 'Order By',
+            name: 'orderBy',
+            placeholder: 'timestamp',
+            value: options.orderBy,
+          },
+          {
+            label: 'Order',
+            name: 'order',
+            placeholder: '',
+            type: 'select',
+            value: options.order,
+            values: ['ascending', 'descending'],
+          },
+        ]}
+        showOptions={true}
+        showSearchButton={true}
+        setOptions={changeOptions}
+      />
+    </Toolbar>
   );
 };
 

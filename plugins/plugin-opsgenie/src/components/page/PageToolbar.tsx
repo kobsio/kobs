@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
-import {
-  TextInput,
-  ToggleGroup,
-  ToggleGroupItem,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { TextInput, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 
-import { IOptionsAdditionalFields, ITimes, Options } from '@kobsio/shared';
+import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
 
 interface IPageToolbarProps {
@@ -36,32 +29,30 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ options, setO
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          <TextInput
-            aria-label="Query"
-            type="text"
-            value={query}
-            onChange={(value: string): void => setQuery(value)}
-            onKeyDown={onEnter}
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <TextInput
+          aria-label="Query"
+          type="text"
+          value={query}
+          onChange={(value: string): void => setQuery(value)}
+          onKeyDown={onEnter}
+        />
+      </ToolbarItem>
+
+      <ToolbarItem>
+        <ToggleGroup aria-label="View">
+          <ToggleGroupItem text="Alerts" isSelected={type === 'alerts'} onChange={(): void => setType('alerts')} />
+          <ToggleGroupItem
+            text="Incidents"
+            isSelected={type === 'incidents'}
+            onChange={(): void => setType('incidents')}
           />
-        </ToolbarItem>
+        </ToggleGroup>
+      </ToolbarItem>
 
-        <ToolbarItem>
-          <ToggleGroup aria-label="View">
-            <ToggleGroupItem text="Alerts" isSelected={type === 'alerts'} onChange={(): void => setType('alerts')} />
-            <ToggleGroupItem
-              text="Incidents"
-              isSelected={type === 'incidents'}
-              onChange={(): void => setType('incidents')}
-            />
-          </ToggleGroup>
-        </ToolbarItem>
-
-        <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
-      </ToolbarGroup>
-    </ToolbarContent>
+      <Options times={options.times} showOptions={true} showSearchButton={true} setOptions={changeOptions} />
+    </Toolbar>
   );
 };
 

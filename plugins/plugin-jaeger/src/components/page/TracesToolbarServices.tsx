@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Select, SelectOption, SelectVariant, Spinner } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core';
 import { useQuery } from 'react-query';
 
 import { IPluginInstance } from '@kobsio/shared';
@@ -64,14 +64,6 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="pf-u-text-align-center">
-        <Spinner size="md" />
-      </div>
-    );
-  }
-
   return (
     <Select
       variant={SelectVariant.typeahead}
@@ -84,7 +76,9 @@ const TracesToolbarServices: React.FunctionComponent<ITracesToolbarServicesProps
       isOpen={show}
       maxHeight="50vh"
     >
-      {isError
+      {isLoading
+        ? [<SelectOption key="loading" isDisabled={true} value="Loading ..." />]
+        : isError
         ? [<SelectOption key="error" isDisabled={true} value={error?.message || 'Could not get services.'} />]
         : data
         ? data

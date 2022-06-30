@@ -1,18 +1,9 @@
-import {
-  Button,
-  ButtonVariant,
-  ToggleGroup,
-  ToggleGroupItem,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarGroupVariant,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { SearchIcon } from '@patternfly/react-icons';
 
 import { IOptions, TType } from '../../utils/interfaces';
-import { IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, Toolbar, ToolbarItem } from '@kobsio/shared';
 import PageToolbarItemClusters from './PageToolbarItemClusters';
 import PageToolbarItemNamespaces from './PageToolbarItemNamespaces';
 import { resources } from '../../utils/constants';
@@ -47,20 +38,20 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup variant={ToolbarGroupVariant['filter-group']}>
-        <ToolbarItem>
-          <PageToolbarItemClusters instance={instance} selectedCluster={state.cluster} selectCluster={selectCluster} />
-        </ToolbarItem>
-        <ToolbarItem>
-          <PageToolbarItemNamespaces
-            instance={instance}
-            selectedCluster={state.cluster}
-            selectedNamespace={state.namespace}
-            selectNamespace={selectNamespace}
-          />
-        </ToolbarItem>
-      </ToolbarGroup>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <PageToolbarItemClusters instance={instance} selectedCluster={state.cluster} selectCluster={selectCluster} />
+      </ToolbarItem>
+
+      <ToolbarItem grow={true}>
+        <PageToolbarItemNamespaces
+          instance={instance}
+          selectedCluster={state.cluster}
+          selectedNamespace={state.namespace}
+          selectNamespace={selectNamespace}
+        />
+      </ToolbarItem>
+
       <ToolbarItem>
         <ToggleGroup aria-label="Type">
           <ToggleGroupItem
@@ -95,12 +86,13 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
           />
         </ToggleGroup>
       </ToolbarItem>
-      <ToolbarItem>
+
+      <ToolbarItem alignRight={true}>
         <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={changeOptions}>
           Search
         </Button>
       </ToolbarItem>
-    </ToolbarContent>
+    </Toolbar>
   );
 };
 

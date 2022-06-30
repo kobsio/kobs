@@ -1,7 +1,8 @@
-import { Button, ButtonVariant, TextInput, ToolbarContent, ToolbarGroup, ToolbarItem } from '@patternfly/react-core';
+import { Button, ButtonVariant, TextInput } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { SearchIcon } from '@patternfly/react-icons';
 
+import { Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
 
 interface IPageToolbarProps {
@@ -27,18 +28,16 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ options, setO
   };
 
   return (
-    <ToolbarContent>
-      <ToolbarGroup style={{ width: '100%' }}>
-        <ToolbarItem style={{ width: '100%' }}>
-          <TextInput aria-label="Query" type="text" value={data.query} onChange={changeQuery} onKeyDown={onEnter} />
-        </ToolbarItem>
-        <ToolbarItem>
-          <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setOptions(data)}>
-            Search
-          </Button>
-        </ToolbarItem>
-      </ToolbarGroup>
-    </ToolbarContent>
+    <Toolbar usePageInsets={true}>
+      <ToolbarItem grow={true}>
+        <TextInput aria-label="Query" type="text" value={data.query} onChange={changeQuery} onKeyDown={onEnter} />
+      </ToolbarItem>
+      <ToolbarItem alignRight={true}>
+        <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={(): void => setOptions(data)}>
+          Search
+        </Button>
+      </ToolbarItem>
+    </Toolbar>
   );
 };
 

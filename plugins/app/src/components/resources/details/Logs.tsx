@@ -11,14 +11,12 @@ import {
   SelectVariant,
   Spinner,
   TextInput,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
 } from '@patternfly/react-core';
 import React, { useEffect, useRef, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { V1Pod } from '@kubernetes/client-node';
 
+import { Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IResource } from '../../../resources/clusters';
 import { IResourceRow } from '../utils/tabledata';
 
@@ -153,107 +151,105 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ resourceData }: ILogsProps)
                 isTextWrapped={false}
                 toolbar={
                   <Toolbar>
-                    <ToolbarContent>
-                      <ToolbarItem>
-                        <Select
-                          variant={SelectVariant.single}
-                          aria-label="Select container input"
-                          placeholderText="Container"
-                          onToggle={(): void => setOptions({ ...options, showContainers: !options.showContainers })}
-                          onSelect={(
-                            event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                            value: string | SelectOptionObject,
-                          ): void => setOptions({ ...options, container: value.toString() })}
-                          selections={options.container}
-                          isOpen={options.showContainers}
-                          maxHeight="50vh"
-                        >
-                          {containers.map((container) => (
-                            <SelectOption key={container} value={container} />
-                          ))}
-                        </Select>
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <TextInput
-                          aria-label="Regex filter"
-                          placeholder="Filter"
-                          value={options.regex}
-                          onChange={(value: string): void => setOptions({ ...options, regex: value })}
-                        />
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <Select
-                          variant={SelectVariant.single}
-                          aria-label="Select since input"
-                          placeholderText="Since"
-                          onToggle={(): void => setOptions({ ...options, showSince: !options.showSince })}
-                          onSelect={(
-                            event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                            value: string | SelectOptionObject,
-                          ): void => setOptions({ ...options, since: parseInt(value.toString()) })}
-                          selections={options.since}
-                          isOpen={options.showSince}
-                          maxHeight="50vh"
-                        >
-                          <SelectOption key={300} value={300}>
-                            5 Minutes
-                          </SelectOption>
-                          <SelectOption key={900} value={900}>
-                            15 Minutes
-                          </SelectOption>
-                          <SelectOption key={1800} value={1800}>
-                            30 Minutes
-                          </SelectOption>
-                          <SelectOption key={3600} value={3600}>
-                            1 Hour
-                          </SelectOption>
-                          <SelectOption key={10800} value={10800}>
-                            3 Hours
-                          </SelectOption>
-                          <SelectOption key={21600} value={21600}>
-                            6 Hours
-                          </SelectOption>
-                          <SelectOption key={43200} value={43200}>
-                            12 Hours
-                          </SelectOption>
-                          <SelectOption key={86400} value={86400}>
-                            1 Day
-                          </SelectOption>
-                          <SelectOption key={172800} value={172800}>
-                            2 Days
-                          </SelectOption>
-                          <SelectOption key={604800} value={604800}>
-                            7 Days
-                          </SelectOption>
-                        </Select>
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <Checkbox
-                          aria-label="Previous logs"
-                          id="previous"
-                          label="Previous"
-                          isChecked={options.previous}
-                          onChange={(value: boolean): void => setOptions({ ...options, previous: value })}
-                        />
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <Checkbox
-                          aria-label="Follow logs"
-                          id="follow"
-                          label="Follow"
-                          isChecked={options.follow}
-                          onChange={(value: boolean): void => setOptions({ ...options, follow: value })}
-                        />
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <Button
-                          onClick={(): Promise<void> => (options.follow ? streamLogs() : getLogs())}
-                          variant="primary"
-                        >
-                          Search
-                        </Button>
-                      </ToolbarItem>
-                    </ToolbarContent>
+                    <ToolbarItem width="200px">
+                      <Select
+                        variant={SelectVariant.single}
+                        aria-label="Select container input"
+                        placeholderText="Container"
+                        onToggle={(): void => setOptions({ ...options, showContainers: !options.showContainers })}
+                        onSelect={(
+                          event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                          value: string | SelectOptionObject,
+                        ): void => setOptions({ ...options, container: value.toString() })}
+                        selections={options.container}
+                        isOpen={options.showContainers}
+                        maxHeight="50vh"
+                      >
+                        {containers.map((container) => (
+                          <SelectOption key={container} value={container} />
+                        ))}
+                      </Select>
+                    </ToolbarItem>
+                    <ToolbarItem grow={true}>
+                      <TextInput
+                        aria-label="Regex filter"
+                        placeholder="Filter"
+                        value={options.regex}
+                        onChange={(value: string): void => setOptions({ ...options, regex: value })}
+                      />
+                    </ToolbarItem>
+                    <ToolbarItem width="150px">
+                      <Select
+                        variant={SelectVariant.single}
+                        aria-label="Select since input"
+                        placeholderText="Since"
+                        onToggle={(): void => setOptions({ ...options, showSince: !options.showSince })}
+                        onSelect={(
+                          event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                          value: string | SelectOptionObject,
+                        ): void => setOptions({ ...options, since: parseInt(value.toString()) })}
+                        selections={options.since}
+                        isOpen={options.showSince}
+                        maxHeight="50vh"
+                      >
+                        <SelectOption key={300} value={300}>
+                          5 Minutes
+                        </SelectOption>
+                        <SelectOption key={900} value={900}>
+                          15 Minutes
+                        </SelectOption>
+                        <SelectOption key={1800} value={1800}>
+                          30 Minutes
+                        </SelectOption>
+                        <SelectOption key={3600} value={3600}>
+                          1 Hour
+                        </SelectOption>
+                        <SelectOption key={10800} value={10800}>
+                          3 Hours
+                        </SelectOption>
+                        <SelectOption key={21600} value={21600}>
+                          6 Hours
+                        </SelectOption>
+                        <SelectOption key={43200} value={43200}>
+                          12 Hours
+                        </SelectOption>
+                        <SelectOption key={86400} value={86400}>
+                          1 Day
+                        </SelectOption>
+                        <SelectOption key={172800} value={172800}>
+                          2 Days
+                        </SelectOption>
+                        <SelectOption key={604800} value={604800}>
+                          7 Days
+                        </SelectOption>
+                      </Select>
+                    </ToolbarItem>
+                    <ToolbarItem>
+                      <Checkbox
+                        aria-label="Previous logs"
+                        id="previous"
+                        label="Previous"
+                        isChecked={options.previous}
+                        onChange={(value: boolean): void => setOptions({ ...options, previous: value })}
+                      />
+                    </ToolbarItem>
+                    <ToolbarItem>
+                      <Checkbox
+                        aria-label="Follow logs"
+                        id="follow"
+                        label="Follow"
+                        isChecked={options.follow}
+                        onChange={(value: boolean): void => setOptions({ ...options, follow: value })}
+                      />
+                    </ToolbarItem>
+                    <ToolbarItem alignRight={true}>
+                      <Button
+                        onClick={(): Promise<void> => (options.follow ? streamLogs() : getLogs())}
+                        variant="primary"
+                      >
+                        Search
+                      </Button>
+                    </ToolbarItem>
                   </Toolbar>
                 }
               />

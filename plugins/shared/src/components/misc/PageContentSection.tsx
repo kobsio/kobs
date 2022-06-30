@@ -1,12 +1,4 @@
-import {
-  Divider,
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerSection,
-  PageSection,
-  Toolbar,
-} from '@patternfly/react-core';
+import { Divider, Drawer, DrawerContent, DrawerContentBody, DrawerSection, PageSection } from '@patternfly/react-core';
 import React from 'react';
 
 interface IPageContentSectionProps {
@@ -27,9 +19,7 @@ export const PageContentSection: React.FunctionComponent<IPageContentSectionProp
       <Drawer isExpanded={panelContent !== undefined}>
         {toolbarContent && (
           <DrawerSection>
-            <Toolbar usePageInsets={true} style={{ zIndex: 300 }}>
-              {toolbarContent}
-            </Toolbar>
+            {toolbarContent}
             <Divider component="div" />
           </DrawerSection>
         )}
