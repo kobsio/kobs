@@ -37,10 +37,10 @@ const CostPieChartLegend: React.FunctionComponent<ICostPieChartLegendProps> = ({
       <Tbody>
         {tableData.map((row, index) => (
           <Tr key={index}>
-            <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Min">
+            <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Scope">
               <SquareIcon color={getColor(index)} /> {row.label}
             </Td>
-            <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Max">
+            <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Value">
               {roundNumber(row.value)} {getCurrency(data, row.label.toString())}
             </Td>
           </Tr>

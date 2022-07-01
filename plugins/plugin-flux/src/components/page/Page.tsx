@@ -60,6 +60,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
               type={options.type}
               cluster={options.cluster}
               namespace={options.namespace}
+              times={options.times}
               setDetails={setDetails}
             />
           )}

@@ -45,16 +45,14 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
           <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{item.metadata.namespace}</span>
         </Title>
         <DrawerActions style={{ padding: 0 }}>
-          {type === 'kustomizations' || type === 'helmreleases' ? (
-            <Actions instance={instance} cluster={cluster} type={type} item={item} refetch={refetch} />
-          ) : null}
+          <Actions instance={instance} cluster={cluster} type={type} item={item} refetch={refetch} />
           <DrawerCloseButton onClose={close} />
         </DrawerActions>
       </DrawerHead>
 
       <DrawerPanelBody>
         {type === 'gitrepositories' || type === 'buckets' || type === 'helmrepositories' ? (
-          <SourceInfo type={type} url={item?.spec?.url} timeout={item?.spec?.timeout} />
+          <SourceInfo type={type} url={item?.spec?.url} timeout={item?.spec?.timeout} suspend={item?.spec?.suspend} />
         ) : null}
         {type === 'kustomizations' ? (
           <KustomizationInfo
@@ -65,6 +63,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
             path={item?.spec?.path}
             interval={item?.spec?.interval}
             prune={item?.spec?.prune}
+            suspend={item?.spec?.suspend}
             appliedRevision={item?.status?.lastAppliedRevision}
           />
         ) : null}
@@ -73,6 +72,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({
             interval={item?.spec?.interval}
             chart={item?.spec?.chart?.spec?.chart}
             version={item?.spec?.chart?.spec?.version}
+            suspend={item?.spec?.suspend}
           />
         ) : null}
         {type === 'helmreleases' &&

@@ -15,9 +15,10 @@ interface ISourceInfoProps {
   type: TType;
   url?: string;
   timeout?: string;
+  suspend?: boolean;
 }
 
-const SourceInfo: React.FunctionComponent<ISourceInfoProps> = ({ type, url, timeout }: ISourceInfoProps) => {
+const SourceInfo: React.FunctionComponent<ISourceInfoProps> = ({ type, url, timeout, suspend }: ISourceInfoProps) => {
   return (
     <Card className="pf-u-mb-lg" isCompact={true}>
       <CardTitle>Info</CardTitle>
@@ -42,6 +43,10 @@ const SourceInfo: React.FunctionComponent<ISourceInfoProps> = ({ type, url, time
           <DescriptionListGroup>
             <DescriptionListTerm>Timeout</DescriptionListTerm>
             <DescriptionListDescription>{timeout ? timeout : '-'}</DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Suspended</DescriptionListTerm>
+            <DescriptionListDescription>{suspend ? 'True' : 'False'}</DescriptionListDescription>
           </DescriptionListGroup>
         </DescriptionList>
       </CardBody>
