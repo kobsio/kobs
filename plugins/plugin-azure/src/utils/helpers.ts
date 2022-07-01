@@ -149,3 +149,9 @@ export const formatMetrics = (metrics: IMetric[], aggregationType: string): IMet
 
   return formattedMetrics;
 };
+
+// roundNumber rounds the given number to a specify number of decimals. The default number of decimals is 4 but can be
+// overwritten by the user.
+export const roundNumber = (value: number, dec = 2): number => {
+  return Math.round(value * Math.pow(10, dec)) / Math.pow(10, dec);
+};

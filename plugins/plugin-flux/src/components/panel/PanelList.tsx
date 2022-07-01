@@ -116,7 +116,7 @@ const PanelList: React.FunctionComponent<IPanelListProps> = ({
   }
 
   return (
-    <TableComposable aria-label={resource.title} variant={TableVariant.compact} borders={false}>
+    <TableComposable aria-label={resource.title} variant={TableVariant.compact} borders={true}>
       <Thead>
         <Tr>
           <Th>Name</Th>

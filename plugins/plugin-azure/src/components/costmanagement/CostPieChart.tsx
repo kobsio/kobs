@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponsivePie } from '@nivo/pie';
+import { ResponsivePieCanvas } from '@nivo/pie';
 
 import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/shared';
 import { IQueryResult } from './interfaces';
@@ -11,7 +11,7 @@ interface ICostPieChartProps {
 
 export const CostPieChart: React.FunctionComponent<ICostPieChartProps> = ({ data }: ICostPieChartProps) => {
   return (
-    <ResponsivePie
+    <ResponsivePieCanvas
       activeOuterRadiusOffset={8}
       arcLinkLabelsSkipAngle={5}
       arcLinkLabelsTextColor="#333333"
@@ -25,22 +25,8 @@ export const CostPieChart: React.FunctionComponent<ICostPieChartProps> = ({ data
       cornerRadius={3}
       data={convertQueryResult(data)}
       innerRadius={0.5}
-      legends={[
-        {
-          anchor: 'right',
-          direction: 'column',
-          itemDirection: 'left-to-right',
-          itemHeight: 20,
-          itemWidth: 250,
-          itemsSpacing: 5,
-          justify: false,
-          symbolSize: 20,
-          translateX: -200,
-          translateY: 0,
-        },
-      ]}
+      isInteractive={false}
       margin={{ bottom: 80, left: 80, right: 80, top: 40 }}
-      motionConfig="gentle"
       padAngle={0.7}
       theme={CHART_THEME}
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

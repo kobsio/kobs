@@ -60,7 +60,7 @@ const CostManagementPage: React.FunctionComponent<ICostManagementPageProps> = ({
       >
         <Card isCompact={true}>
           <CardBody>
-            <div style={{ height: '500px' }}>
+            <div style={{ height: '750px' }}>
               <ActualCosts instance={instance} scope={options.scope} times={options.times} />
             </div>
           </CardBody>

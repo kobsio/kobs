@@ -4,6 +4,7 @@ import React from 'react';
 
 import { IPluginInstance, ITimes } from '@kobsio/shared';
 import { CostPieChart } from './CostPieChart';
+import CostPieChartLegend from './CostPieChartLegend';
 import { IQueryResult } from './interfaces';
 
 interface IActualCostsProps {
@@ -95,7 +96,12 @@ const ActualCosts: React.FunctionComponent<IActualCostsProps> = ({ instance, sco
 
   return (
     <div style={{ height: '100%' }}>
-      <CostPieChart data={data} />;
+      <div style={{ height: '75%' }}>
+        <CostPieChart data={data} />
+      </div>
+      <div style={{ height: '25%', overflowX: 'scroll' }}>
+        <CostPieChartLegend data={data} />
+      </div>
     </div>
   );
 };
