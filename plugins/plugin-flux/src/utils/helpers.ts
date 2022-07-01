@@ -26,7 +26,10 @@ export const getInitialOptions = (search: string, isInitial: boolean): IOptions 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getValue = (manifest: any, jsonPath: string, type: string): string => {
   const value = JSONPath<string | string[]>({ json: manifest, path: jsonPath })[0];
-  if (!value) {
+
+  if (type === 'boolean') {
+    return (value as unknown as boolean) === true ? 'True' : 'False';
+  } else if (!value) {
     return '';
   } else if (type === 'date') {
     return timeDifference(new Date().getTime(), new Date(value).getTime());

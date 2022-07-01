@@ -22,6 +22,7 @@ interface IKustomizationInfoProps {
   path?: string;
   interval?: string;
   prune?: string;
+  suspend?: boolean;
   appliedRevision?: string;
 }
 
@@ -33,6 +34,7 @@ const KustomizationInfo: React.FunctionComponent<IKustomizationInfoProps> = ({
   path,
   interval,
   prune,
+  suspend,
   appliedRevision,
 }: IKustomizationInfoProps) => {
   return (
@@ -71,8 +73,12 @@ const KustomizationInfo: React.FunctionComponent<IKustomizationInfoProps> = ({
           <DescriptionListGroup>
             <DescriptionListTerm>Prune</DescriptionListTerm>
             <DescriptionListDescription>
-              {prune !== undefined ? (prune ? 'true' : 'false') : '-'}
+              {prune !== undefined ? (prune ? 'True' : 'False') : '-'}
             </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Suspended</DescriptionListTerm>
+            <DescriptionListDescription>{suspend ? 'True' : 'False'}</DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
             <DescriptionListTerm>Applied Revision</DescriptionListTerm>

@@ -1,9 +1,8 @@
-import { Button, ButtonVariant, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
+import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 
 import { IOptions, TType } from '../../utils/interfaces';
-import { IPluginInstance, Toolbar, ToolbarItem } from '@kobsio/shared';
+import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import PageToolbarItemClusters from './PageToolbarItemClusters';
 import PageToolbarItemNamespaces from './PageToolbarItemNamespaces';
 import { resources } from '../../utils/constants';
@@ -33,8 +32,8 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
     setState({ ...state, type: type });
   };
 
-  const changeOptions = (): void => {
-    setOptions(state);
+  const changeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setOptions({ ...state, times: times });
   };
 
   return (
@@ -87,11 +86,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
         </ToggleGroup>
       </ToolbarItem>
 
-      <ToolbarItem alignRight={true}>
-        <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={changeOptions}>
-          Search
-        </Button>
-      </ToolbarItem>
+      <Options times={options.times} showOptions={false} showSearchButton={true} setOptions={changeOptions} />
     </Toolbar>
   );
 };

@@ -13,9 +13,10 @@ interface IHelmInfoProps {
   interval?: string;
   chart?: string;
   version?: string;
+  suspend?: boolean;
 }
 
-const HelmInfo: React.FunctionComponent<IHelmInfoProps> = ({ interval, chart, version }: IHelmInfoProps) => {
+const HelmInfo: React.FunctionComponent<IHelmInfoProps> = ({ interval, chart, version, suspend }: IHelmInfoProps) => {
   return (
     <Card className="pf-u-mb-lg" isCompact={true}>
       <CardTitle>Info</CardTitle>
@@ -32,6 +33,10 @@ const HelmInfo: React.FunctionComponent<IHelmInfoProps> = ({ interval, chart, ve
           <DescriptionListGroup>
             <DescriptionListTerm>Version</DescriptionListTerm>
             <DescriptionListDescription>{version ? version : '-'}</DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Suspended</DescriptionListTerm>
+            <DescriptionListDescription>{suspend ? 'True' : 'False'}</DescriptionListDescription>
           </DescriptionListGroup>
         </DescriptionList>
       </CardBody>

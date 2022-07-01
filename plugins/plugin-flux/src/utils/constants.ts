@@ -17,6 +17,11 @@ export const resources: TResource = {
         type: 'string',
       },
       {
+        jsonPath: '$.spec.suspend',
+        title: 'Suspended',
+        type: 'boolean',
+      },
+      {
         jsonPath: '$.status.conditions[?(@.type=="Ready")].message',
         title: 'Status',
         type: 'string',
@@ -44,6 +49,11 @@ export const resources: TResource = {
         type: 'string',
       },
       {
+        jsonPath: '$.spec.suspend',
+        title: 'Suspended',
+        type: 'boolean',
+      },
+      {
         jsonPath: '$.status.conditions[?(@.type=="Ready")].message',
         title: 'Status',
         type: 'string',
@@ -64,6 +74,11 @@ export const resources: TResource = {
         jsonPath: '$.status.conditions[?(@.type=="Ready")].status',
         title: 'Ready',
         type: 'string',
+      },
+      {
+        jsonPath: '$.spec.suspend',
+        title: 'Suspended',
+        type: 'boolean',
       },
       {
         jsonPath: '$.status.conditions[?(@.type=="Ready")].message',
@@ -93,6 +108,11 @@ export const resources: TResource = {
         type: 'string',
       },
       {
+        jsonPath: '$.spec.suspend',
+        title: 'Suspended',
+        type: 'boolean',
+      },
+      {
         jsonPath: '$.status.conditions[?(@.type=="Ready")].message',
         title: 'Status',
         type: 'string',
@@ -114,6 +134,11 @@ export const resources: TResource = {
         jsonPath: '$.status.conditions[?(@.type=="Ready")].status',
         title: 'Ready',
         type: 'string',
+      },
+      {
+        jsonPath: '$.spec.suspend',
+        title: 'Suspended',
+        type: 'boolean',
       },
       {
         jsonPath: '$.status.conditions[?(@.type=="Ready")].message',
