@@ -42,6 +42,7 @@ declare function errorContentRenderer(props: {
 }): React.ReactElement<unknown, string | React.FunctionComponent | typeof React.Component> | null;
 
 export interface IModuleProps {
+  version: string;
   name: string;
   module: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,13 +52,14 @@ export interface IModuleProps {
 }
 
 const Module: React.FunctionComponent<IModuleProps> = ({
+  version,
   name,
   module,
   props,
   errorContent,
   loadingContent,
 }: IModuleProps) => {
-  const { ready, failed } = useDynamicScript(name);
+  const { ready, failed } = useDynamicScript(name, version);
 
   const ErrorContent = errorContent;
   const LoadingContent = loadingContent;

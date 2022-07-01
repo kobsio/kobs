@@ -115,6 +115,7 @@ const PluginInstances: React.FunctionComponent = () => {
             .map((instance) => (
               <Module
                 key={instance.id}
+                version={pluginsContext.version}
                 name={instance.type}
                 module="./Instance"
                 props={instance}

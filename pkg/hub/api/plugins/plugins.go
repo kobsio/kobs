@@ -8,6 +8,8 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/version"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -30,8 +32,16 @@ func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Debug(r.Context(), "Return plugins from store", zap.Int("pluginsCount", len(plugins)))
-	render.JSON(w, r, plugins)
+	data := struct {
+		Plugins []plugin.Instance `json:"plugins"`
+		Version string            `json:"version"`
+	}{
+		plugins,
+		"2",
+	}
+
+	log.Debug(r.Context(), "Return plugins from store", zap.Int("pluginsCount", len(plugins)), zap.String("version", version.Version))
+	render.JSON(w, r, data)
 }
 
 // proxyPlugins proxies all plugin related requests to the satellite, where the plugin was registered. To determine the

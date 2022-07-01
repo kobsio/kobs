@@ -23,6 +23,7 @@ const PluginPage: React.FunctionComponent = () => {
 
   return (
     <Module
+      version={pluginsContext.version}
       name={instance.type}
       module="./Page"
       props={{ instance: instance }}
