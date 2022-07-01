@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import React from 'react';
 
 import { PageContentSection, PageHeaderSection } from '@kobsio/shared';

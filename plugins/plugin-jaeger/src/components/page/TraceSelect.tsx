@@ -12,7 +12,7 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { SearchIcon } from '@patternfly/react-icons';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 import { useDropzone } from 'react-dropzone';
 
 import { ITrace } from '../../utils/interfaces';

@@ -10,9 +10,10 @@ import {
   FlexItem,
   Label,
 } from '@patternfly/react-core';
-import { TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import TopologyIcon from '@patternfly/react-icons/dist/esm/icons/topology-icon';
+import UsersIcon from '@patternfly/react-icons/dist/esm/icons/users-icon';
 
 import { IApplication } from '../../crds/application';
 

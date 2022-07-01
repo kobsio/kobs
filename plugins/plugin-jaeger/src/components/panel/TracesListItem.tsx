@@ -9,7 +9,7 @@ import {
   Label,
   LabelProps,
 } from '@patternfly/react-core';
-import { ExclamationIcon } from '@patternfly/react-icons';
+import ExclamationIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-icon';
 import React from 'react';
 
 import { IPluginInstance, LinkWrapper, pluginBasePath } from '@kobsio/shared';

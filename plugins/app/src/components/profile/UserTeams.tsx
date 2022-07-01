@@ -14,10 +14,10 @@ import {
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
+import UserIcon from '@patternfly/react-icons/dist/esm/icons/user-icon';
 
 import { ITeam } from '../../crds/team';
 import { LinkWrapper } from '@kobsio/shared';
-import { UserIcon } from '@patternfly/react-icons';
 
 export interface IUserTeamsProps {
   setDetails?: (details: React.ReactNode) => void;

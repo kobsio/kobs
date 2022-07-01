@@ -1,7 +1,10 @@
 import { Button, Tooltip } from '@patternfly/react-core';
-import { ColumnsIcon, SearchIcon, SearchMinusIcon, SearchPlusIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 import { Td, Tr } from '@patternfly/react-table';
+import ColumnsIcon from '@patternfly/react-icons/dist/esm/icons/columns-icon';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
+import SearchMinusIcon from '@patternfly/react-icons/dist/esm/icons/search-minus-icon';
+import SearchPlusIcon from '@patternfly/react-icons/dist/esm/icons/search-plus-icon';
 
 export interface ILogsDocumentDetailsRowProps {
   documentKey: string;

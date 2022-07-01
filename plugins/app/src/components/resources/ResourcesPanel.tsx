@@ -14,7 +14,7 @@ import {
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useEffect, useState } from 'react';
-import { SearchIcon } from '@patternfly/react-icons';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { IOptions, IResourceResponse } from './utils/interfaces';
 import Details from './details/Details';

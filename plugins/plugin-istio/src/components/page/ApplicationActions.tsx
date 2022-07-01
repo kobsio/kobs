@@ -13,8 +13,9 @@ import {
   Switch,
   TextInput,
 } from '@patternfly/react-core';
-import { FilterIcon, TimesIcon } from '@patternfly/react-icons';
 import React, { useEffect, useState } from 'react';
+import FilterIcon from '@patternfly/react-icons/dist/esm/icons/filter-icon';
+import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon';
 
 import { IFilters } from '../../utils/interfaces';
 

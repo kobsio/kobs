@@ -7,7 +7,7 @@ import {
   MastheadToggle,
   PageToggleButton,
 } from '@patternfly/react-core';
-import { BarsIcon } from '@patternfly/react-icons';
+import BarsIcon from '@patternfly/react-icons/dist/esm/icons/bars-icon';
 import React from 'react';
 
 import HeaderToolbar from './HeaderToolbar';

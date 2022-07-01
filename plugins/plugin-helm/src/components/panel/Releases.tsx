@@ -13,7 +13,7 @@ import {
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { SearchIcon } from '@patternfly/react-icons';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { IPluginInstance, ITimes } from '@kobsio/shared';
 import Details from './details/Details';

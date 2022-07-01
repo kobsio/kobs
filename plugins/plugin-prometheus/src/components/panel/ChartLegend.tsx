@@ -1,8 +1,9 @@
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { EyeSlashIcon, SquareIcon } from '@patternfly/react-icons';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import EyeSlashIcon from '@patternfly/react-icons/dist/esm/icons/eye-slash-icon';
 import React from 'react';
 import { Serie } from '@nivo/line';
+import SquareIcon from '@patternfly/react-icons/dist/esm/icons/square-icon';
 
 import { getColor } from '@kobsio/shared';
 import { roundNumber } from '../../utils/helpers';

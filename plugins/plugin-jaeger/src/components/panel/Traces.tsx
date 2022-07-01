@@ -9,7 +9,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-icon';
 import React from 'react';
 
 import { IPluginInstance, ITimes } from '@kobsio/shared';

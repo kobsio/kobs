@@ -1,6 +1,6 @@
 import { Button, ButtonVariant, TextArea } from '@patternfly/react-core';
 import React, { useRef, useState } from 'react';
-import { TimesIcon } from '@patternfly/react-icons';
+import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon';
 import { useQuery } from 'react-query';
 
 import { IPluginInstance, useDebounce } from '@kobsio/shared';

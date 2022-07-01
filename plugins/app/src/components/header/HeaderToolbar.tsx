@@ -13,9 +13,10 @@ import {
   ToolbarGroupVariant,
   ToolbarItem,
 } from '@patternfly/react-core';
-import { CogIcon, QuestionCircleIcon } from '@patternfly/react-icons';
 import React, { useContext, useState } from 'react';
+import CogIcon from '@patternfly/react-icons/dist/esm/icons/cog-icon';
 import { Link } from 'react-router-dom';
+import { QuestionCircleIcon } from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 import md5 from 'md5';
 
 import { AuthContext, IAuthContext } from '../../context/AuthContext';

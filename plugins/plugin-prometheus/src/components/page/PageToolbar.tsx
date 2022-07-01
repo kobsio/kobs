@@ -1,6 +1,7 @@
 import { Button, ButtonVariant, Flex, FlexItem, InputGroup } from '@patternfly/react-core';
-import { MinusIcon, PlusIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
+import MinusIcon from '@patternfly/react-icons/dist/esm/icons/minus-icon';
+import PlusIcon from '@patternfly/react-icons/dist/esm/icons/plus-icon';
 
 import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';

@@ -29,7 +29,7 @@ import {
 } from '@kubernetes/client-node';
 import { JSONPath } from 'jsonpath-plus';
 import React from 'react';
-import { SquareIcon } from '@patternfly/react-icons';
+import SquareIcon from '@patternfly/react-icons/dist/esm/icons/square-icon';
 
 import { IColumn, IResourceList, IResourceResponse } from './interfaces';
 import { formatTime, timeDifference } from '@kobsio/shared';
