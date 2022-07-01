@@ -4,12 +4,15 @@ const loadedScripts: { [name: string]: Promise<void> } = {};
 
 export const useDynamicScript = (
   name: string,
+  version: string,
 ): {
   failed: boolean;
   ready: boolean;
 } => {
   const url =
-    process.env.NODE_ENV === 'production' ? `/plugins/${name}/remoteEntry.js` : 'http://localhost:3001/remoteEntry.js';
+    process.env.NODE_ENV === 'production'
+      ? `/plugins/${name}/remoteEntry.js?version=${version}`
+      : `http://localhost:3001/remoteEntry.js?version=${version}`;
 
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);

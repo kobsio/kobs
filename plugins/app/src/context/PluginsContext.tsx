@@ -4,6 +4,11 @@ import React from 'react';
 
 import { IPluginInstance } from '@kobsio/shared';
 
+interface IData {
+  plugins: IPluginInstance[];
+  version: string;
+}
+
 // IPluginsContext is the plugin context, is contains all the instances of all configured plugins.
 export interface IPluginsContext {
   getInstance: (satellite: string, type: string, name: string) => IPluginInstance | undefined;
@@ -11,6 +16,7 @@ export interface IPluginsContext {
   getPluginSatellites: () => string[];
   getPluginTypes: () => string[];
   instances: IPluginInstance[];
+  version: string;
 }
 
 // PluginsContext is the plugin context object.
@@ -20,6 +26,7 @@ export const PluginsContext = React.createContext<IPluginsContext>({
   getPluginSatellites: () => [],
   getPluginTypes: () => [],
   instances: [],
+  version: '',
 });
 
 // PluginsContextConsumer is a React component that subscribes to context changes. This lets you subscribe to a context
@@ -37,28 +44,25 @@ interface IPluginsContextProviderProps {
 export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProviderProps> = ({
   children,
 }: IPluginsContextProviderProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<IPluginInstance[], Error>(
-    ['app/pluginscontext'],
-    async () => {
-      const response = await fetch('/api/plugins', { method: 'get' });
-      const json = await response.json();
+  const { isError, isLoading, error, data, refetch } = useQuery<IData, Error>(['app/pluginscontext'], async () => {
+    const response = await fetch('/api/plugins', { method: 'get' });
+    const json = await response.json();
 
-      if (response.status >= 200 && response.status < 300) {
-        return json ? json : [];
+    if (response.status >= 200 && response.status < 300) {
+      return json ? json : [];
+    } else {
+      if (json.error) {
+        throw new Error(json.error);
       } else {
-        if (json.error) {
-          throw new Error(json.error);
-        } else {
-          throw new Error('An unknown error occured');
-        }
+        throw new Error('An unknown error occured');
       }
-    },
-  );
+    }
+  });
 
   // getInstance returns a single instance with the given type and name or undefined, when we could not find a instance
   // with the provided type and name.
   const getInstance = (satellite: string, type: string, name: string): IPluginInstance | undefined => {
-    const instances = data?.filter(
+    const instances = data?.plugins.filter(
       (instance) => instance.satellite === satellite && instance.name === name && instance.type === type,
     );
     if (instances?.length === 1) {
@@ -73,8 +77,8 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
   // instances will be returned.
   const getInstances = (satellite: string, type: string, name: string): IPluginInstance[] => {
     const instancesFilteredBySatellite = satellite
-      ? data?.filter((instance) => instance.satellite === satellite)
-      : data;
+      ? data?.plugins.filter((instance) => instance.satellite === satellite)
+      : data?.plugins;
     const instancesFilteredByType = type
       ? instancesFilteredBySatellite?.filter((instance) => instance.type === type)
       : instancesFilteredBySatellite;
@@ -85,13 +89,13 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
 
   // getPluginSatellites returns a list of strings with the unique satellites of the plugin instances.
   const getPluginSatellites = (): string[] => {
-    const satellites = data?.map((instance) => instance.satellite);
+    const satellites = data?.plugins.map((instance) => instance.satellite);
     return satellites ? satellites.filter((value, index, self) => self.indexOf(value) === index).sort() : [];
   };
 
   // getPluginTypes returns a list of strings with the unique types of the plugin instances.
   const getPluginTypes = (): string[] => {
-    const types = data?.map((instance) => instance.type);
+    const types = data?.plugins.map((instance) => instance.type);
     return types ? types.filter((value, index, self) => self.indexOf(value) === index).sort() : [];
   };
 
@@ -110,7 +114,7 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
         title="Could not initialize plugins context"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IPluginInstance[], Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IData, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -121,7 +125,7 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
     );
   }
 
-  if (!data) {
+  if (!data || !data.plugins || !data.version) {
     return null;
   }
 
@@ -134,7 +138,8 @@ export const PluginsContextProvider: React.FunctionComponent<IPluginsContextProv
         getInstances: getInstances,
         getPluginSatellites: getPluginSatellites,
         getPluginTypes: getPluginTypes,
-        instances: data,
+        instances: data.plugins,
+        version: data.version,
       }}
     >
       {children}

@@ -85,6 +85,7 @@ const PluginPanel: React.FunctionComponent<IPluginPanelProps> = ({
 
   return (
     <Module
+      version={pluginsContext.version}
       name={instance.type}
       module="./Panel"
       props={{
