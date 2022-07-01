@@ -16,7 +16,7 @@ import {
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { CopyIcon } from '@patternfly/react-icons';
+import CopyIcon from '@patternfly/react-icons/dist/esm/icons/copy-icon';
 
 import BuildHistory from './BuildHistory';
 import { IArtifact } from '../../../utils/interfaces';

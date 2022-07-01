@@ -1,7 +1,9 @@
-import { ExternalLinkAltIcon, TopologyIcon, UsersIcon } from '@patternfly/react-icons';
 import { Flex, FlexItem, Label } from '@patternfly/react-core';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import TopologyIcon from '@patternfly/react-icons/dist/esm/icons/topology-icon';
+import UsersIcon from '@patternfly/react-icons/dist/esm/icons/users-icon';
 
 import { IApplication } from '../../crds/application';
 

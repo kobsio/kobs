@@ -11,7 +11,7 @@ import {
   FlexItem,
   Title,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import { Link } from 'react-router-dom';
 import React from 'react';
 

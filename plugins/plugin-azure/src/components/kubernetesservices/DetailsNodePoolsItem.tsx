@@ -7,7 +7,7 @@ import {
 } from '@patternfly/react-core';
 import { ExpandableRowContent, Tbody, Td, Tr } from '@patternfly/react-table';
 import React, { useState } from 'react';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import { Link } from 'react-router-dom';
 
 import { IPluginInstance, pluginBasePath } from '@kobsio/shared';

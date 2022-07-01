@@ -1,16 +1,22 @@
+import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import React from 'react';
+import { Spinner } from '@patternfly/react-core';
 
-import AggregationPage from './AggregationPage';
 import { IPluginPageProps } from '@kobsio/shared';
-import LogsPage from './LogsPage';
+
+const AggregationPage = lazy(() => import('./AggregationPage'));
+const LogsPage = lazy(() => import('./LogsPage'));
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPageProps) => {
   return (
-    <Routes>
-      <Route path="/" element={<LogsPage instance={instance} />} />
-      <Route path="/aggregation" element={<AggregationPage instance={instance} />} />
-    </Routes>
+    <Suspense
+      fallback={<Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />}
+    >
+      <Routes>
+        <Route path="/" element={<LogsPage instance={instance} />} />
+        <Route path="/aggregation" element={<AggregationPage instance={instance} />} />
+      </Routes>
+    </Suspense>
   );
 };
 

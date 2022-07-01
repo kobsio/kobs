@@ -1,6 +1,6 @@
 import { Button, ButtonVariant, SearchInput, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { SearchIcon } from '@patternfly/react-icons';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { Toolbar, ToolbarItem } from '@kobsio/shared';
 import ApplicationsToolbarTags from './ApplicationsToolbarTags';

@@ -13,7 +13,7 @@ import {
 import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MicroscopeIcon } from '@patternfly/react-icons';
+import MicroscopeIcon from '@patternfly/react-icons/dist/esm/icons/microscope-icon';
 
 import { IPluginInstance, ITimes, pluginBasePath } from '@kobsio/shared';
 import { escapeRegExp, formatNumber, getDirection } from '../../utils/helpers';

@@ -1,6 +1,6 @@
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
-import { SearchIcon } from '@patternfly/react-icons';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from './utils/interfaces';

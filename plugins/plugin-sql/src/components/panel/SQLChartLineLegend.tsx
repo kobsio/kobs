@@ -1,7 +1,7 @@
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
-import { SquareIcon } from '@patternfly/react-icons';
+import SquareIcon from '@patternfly/react-icons/dist/esm/icons/square-icon';
 
 import { ILegend, ISQLData, ISQLDataRow } from '../../utils/interfaces';
 import { getColor } from '@kobsio/shared';

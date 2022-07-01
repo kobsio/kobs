@@ -1,14 +1,15 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from 'react-query';
+import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import React from 'react';
 
-import ContainerInstancesPage from '../containerinstances/Page';
-import CostManagementPage from '../costmanagement/Page';
 import { IPluginPageProps } from '@kobsio/shared';
-import KubernetesServicesPage from '../kubernetesservices/Page';
-import OverviewPage from './OverviewPage';
-import VirtualMachineScaleSetsPage from '../virtualmachinescalesets/Page';
+
+const ContainerInstancesPage = lazy(() => import('../containerinstances/Page'));
+const CostManagementPage = lazy(() => import('../costmanagement/Page'));
+const KubernetesServicesPage = lazy(() => import('../kubernetesservices/Page'));
+const OverviewPage = lazy(() => import('./OverviewPage'));
+const VirtualMachineScaleSetsPage = lazy(() => import('../virtualmachinescalesets/Page'));
 
 // IResourceGroup is the interface for a resource group returned by the Azure API. This interface is only required for
 // the returned data, because we are only passing the name of the resource group to the other components.
@@ -79,22 +80,26 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<OverviewPage instance={instance} />} />
-      <Route
-        path="/containerinstances"
-        element={<ContainerInstancesPage instance={instance} resourceGroups={data} />}
-      />
-      <Route path="/costmanagement" element={<CostManagementPage instance={instance} resourceGroups={data} />} />
-      <Route
-        path="/kubernetesservices"
-        element={<KubernetesServicesPage instance={instance} resourceGroups={data} />}
-      />
-      <Route
-        path="/virtualmachinescalesets"
-        element={<VirtualMachineScaleSetsPage instance={instance} resourceGroups={data} />}
-      />
-    </Routes>
+    <Suspense
+      fallback={<Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />}
+    >
+      <Routes>
+        <Route path="/" element={<OverviewPage instance={instance} />} />
+        <Route
+          path="/containerinstances"
+          element={<ContainerInstancesPage instance={instance} resourceGroups={data} />}
+        />
+        <Route path="/costmanagement" element={<CostManagementPage instance={instance} resourceGroups={data} />} />
+        <Route
+          path="/kubernetesservices"
+          element={<KubernetesServicesPage instance={instance} resourceGroups={data} />}
+        />
+        <Route
+          path="/virtualmachinescalesets"
+          element={<VirtualMachineScaleSetsPage instance={instance} resourceGroups={data} />}
+        />
+      </Routes>
+    </Suspense>
   );
 };
 

@@ -1,6 +1,9 @@
 import { Button, ButtonVariant, SimpleListItem, Tooltip } from '@patternfly/react-core';
-import { CopyIcon, LongArrowAltDownIcon, LongArrowAltUpIcon, TrashIcon } from '@patternfly/react-icons';
 import React, { useState } from 'react';
+import CopyIcon from '@patternfly/react-icons/dist/esm/icons/copy-icon';
+import LongArrowAltDownIcon from '@patternfly/react-icons/dist/esm/icons/long-arrow-alt-down-icon';
+import LongArrowAltUpIcon from '@patternfly/react-icons/dist/esm/icons/long-arrow-alt-up-icon';
+import TrashIcon from '@patternfly/react-icons/dist/esm/icons/trash-icon';
 
 export interface ILogsFieldsItemProps {
   index: number;

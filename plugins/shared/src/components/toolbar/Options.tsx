@@ -14,7 +14,8 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
-import { RedoIcon, SearchIcon } from '@patternfly/react-icons';
+import RedoIcon from '@patternfly/react-icons/dist/esm/icons/redo-icon';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { ITimes, TTime, formatTime, timeOptions } from '../../utils/times';
 import { ToolbarItem } from './ToolbarItem';

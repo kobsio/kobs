@@ -8,7 +8,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import React from 'react';
-import { UsersIcon } from '@patternfly/react-icons';
+import UsersIcon from '@patternfly/react-icons/dist/esm/icons/users-icon';
 import { useNavigate } from 'react-router-dom';
 
 import { ITeam } from '../../crds/team';

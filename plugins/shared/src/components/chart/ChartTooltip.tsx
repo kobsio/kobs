@@ -1,6 +1,6 @@
 import { TooltipAnchor, TooltipWrapper } from '@nivo/tooltip';
 import React from 'react';
-import { SquareIcon } from '@patternfly/react-icons';
+import SquareIcon from '@patternfly/react-icons/dist/esm/icons/square-icon';
 
 interface IChartTooltipProps {
   anchor?: TooltipAnchor;

@@ -1,5 +1,5 @@
 import { EmptyState, EmptyStateBody, EmptyStateIcon, Title } from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-icon';
 import React from 'react';
 
 export interface IIncidentProps {

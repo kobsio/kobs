@@ -1,7 +1,7 @@
 import { Bullseye, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
-import { SearchIcon } from '@patternfly/react-icons';
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { IColumn, IResourceResponse } from './utils/interfaces';
 import { IResourceRow, customResourceDefinitionTableData, resourcesTableData } from './utils/tabledata';
