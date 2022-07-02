@@ -97,7 +97,6 @@ func New(hubAddress, appAddress, appAssetsDir string) (Server, error) {
 			// find . -type f -name '*.*' | sed 's|.*\.||' | sort -u
 			if strings.Contains(r.URL.Path, "/static/") ||
 				strings.HasSuffix(r.URL.Path, ".css") ||
-				strings.HasSuffix(r.URL.Path, ".html") ||
 				strings.HasSuffix(r.URL.Path, ".ico") ||
 				strings.HasSuffix(r.URL.Path, ".jpg") ||
 				strings.HasSuffix(r.URL.Path, ".js") ||
@@ -107,7 +106,8 @@ func New(hubAddress, appAddress, appAssetsDir string) (Server, error) {
 				strings.HasSuffix(r.URL.Path, ".svg") ||
 				strings.HasSuffix(r.URL.Path, ".txt") ||
 				strings.HasSuffix(r.URL.Path, ".woff") ||
-				strings.HasSuffix(r.URL.Path, ".woff2") {
+				strings.HasSuffix(r.URL.Path, ".woff2") ||
+				strings.HasSuffix(r.URL.Path, ".xml") {
 				staticHandler.ServeHTTP(w, r)
 				return
 			}

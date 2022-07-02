@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "favicons": "mkdir -p files && mkdir -p icons && node favicons.js"
+  },
+  "dependencies": {
+    "favicons": "^7.0.0-beta.4"
+  }
+}

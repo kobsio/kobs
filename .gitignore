@@ -35,3 +35,7 @@ yarn-error.log*
 /config*.yaml
 /test.yaml
 /values.yaml
+
+# favicons
+/hack/favicons/icons
+/hack/favicons/files
