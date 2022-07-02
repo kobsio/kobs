@@ -46,7 +46,7 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         data
           ? data
-              .filter((resource) => !value || resource.title.includes(value))
+              .filter((resource) => !value || resource.id.toLowerCase().includes(value.toLowerCase()))
               .map((resource: IResource) => (
                 <SelectOption
                   key={resource.id}

@@ -31,7 +31,7 @@ const DashboardToolbarVariable: React.FunctionComponent<IDashboardToolbarVariabl
       return [
         <SelectGroup label={variable.label || variable.name} key="variable">
           {variable.values
-            .filter((item) => item.includes(value))
+            .filter((item) => item.toLowerCase().includes(value.toLowerCase()))
             .map((item, index) => (
               <SelectOption key={index} value={item} />
             ))}

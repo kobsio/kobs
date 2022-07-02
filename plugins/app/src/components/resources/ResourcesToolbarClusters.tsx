@@ -42,7 +42,9 @@ const ResourcesToolbarClusters: React.FunctionComponent<IResourcesToolbarCluster
       const satellites = Object.keys(data);
 
       for (const satellite of satellites) {
-        const filteredClusters = data[satellite].filter((cluster) => cluster.cluster.includes(value));
+        const filteredClusters = data[satellite].filter((cluster) =>
+          cluster.cluster.toLowerCase().includes(value.toLowerCase()),
+        );
         if (filteredClusters.length > 0) {
           clusters.push(
             <SelectGroup label={satellite} key={satellite}>

@@ -54,7 +54,7 @@ const PageToolbarNamespaces: React.FunctionComponent<IPageToolbarNamespacesProps
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         data
           ? data
-              .filter((ns) => !value || ns.includes(value))
+              .filter((ns) => !value || ns.toLowerCase().includes(value.toLowerCase()))
               .map((namespace: string) => <SelectOption key={namespace} value={namespace} />)
           : []
       }

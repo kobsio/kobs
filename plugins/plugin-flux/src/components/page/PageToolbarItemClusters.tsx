@@ -54,7 +54,7 @@ const PageToolbarItemClusters: React.FunctionComponent<IPageToolbarItemClustersP
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         data
           ? data
-              .filter((cluster) => !value || cluster.includes(value))
+              .filter((cluster) => !value || cluster.toLowerCase().includes(value.toLowerCase()))
               .map((cluster: string) => (
                 <SelectOption key={cluster} value={cluster}>
                   {cluster}

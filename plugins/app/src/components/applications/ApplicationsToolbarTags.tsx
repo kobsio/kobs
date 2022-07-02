@@ -46,7 +46,7 @@ const ApplicationsToolbarTags: React.FunctionComponent<IApplicationsToolbarTagsP
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         data
           ? data
-              .filter((tag) => !value || tag.tag.includes(value))
+              .filter((tag) => !value || tag.tag.toLowerCase().includes(value.toLowerCase()))
               .map((tag: ITag) => <SelectOption key={tag.tag} value={tag.tag} />)
           : []
       }

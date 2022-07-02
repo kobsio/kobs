@@ -41,7 +41,7 @@ const DetailsMetricsVirtualMachineToolbar: React.FunctionComponent<IDetailsMetri
             onSelect={(e, value): void => changeSelectedVirtualMachine(value as string)}
             onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
               virtualMachines
-                .filter((virtualMachine) => !value || virtualMachine.includes(value))
+                .filter((virtualMachine) => !value || virtualMachine.toLowerCase().includes(value.toLowerCase()))
                 .map((virtualMachine: string) => (
                   <SelectOption key={virtualMachine} value={virtualMachine}>
                     {virtualMachine}
