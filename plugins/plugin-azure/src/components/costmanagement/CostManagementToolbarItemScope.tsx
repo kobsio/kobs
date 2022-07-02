@@ -27,7 +27,7 @@ const CostManagementToolbarItemScope: React.FunctionComponent<ICostManagementToo
       onSelect={(e, value): void => setScope(value as string)}
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         resourceGroups
-          .filter((resourceGroup) => !value || resourceGroup.includes(value))
+          .filter((resourceGroup) => !value || resourceGroup.toLowerCase().includes(value.toLowerCase()))
           .map((resourceGroup: string) => <SelectOption key={resourceGroup} value={resourceGroup} />)
       }
       selections={scope}

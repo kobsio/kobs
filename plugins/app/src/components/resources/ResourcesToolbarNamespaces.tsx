@@ -48,7 +48,7 @@ const ResourcesToolbarNamespaces: React.FunctionComponent<IResourcesToolbarNames
       onFilter={(e: React.ChangeEvent<HTMLInputElement> | null, value: string): React.ReactElement[] =>
         data
           ? data
-              .filter((namespace) => !value || namespace.includes(value))
+              .filter((namespace) => !value || namespace.toLowerCase().includes(value.toLowerCase()))
               .map((namespace: string) => (
                 <SelectOption key={namespace} value={namespace}>
                   {namespace}
