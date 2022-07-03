@@ -24,10 +24,10 @@ var configuration = {
   manifestMaskable: true,
   icons: {
     android: { offset: 20, background: '#000000' },
-    appleIcon: { offset: 10, background: '#000000' },
-    appleStartup: { offset: 10, background: '#000000' },
-    favicons: { offset: 10, background: '#000000' },
-    windows: { offset: 10, background: '#000000' },
+    appleIcon: { offset: 15, background: '#000000' },
+    appleStartup: { offset: 15, background: '#000000' },
+    favicons: { offset: 15, background: '#000000' },
+    windows: { offset: 15, background: '#000000' },
     yandex: false,
   },
   shortcuts: [
