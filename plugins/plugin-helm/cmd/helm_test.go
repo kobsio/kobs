@@ -364,7 +364,7 @@ func TestGetReleaseHistory(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router1, err := Mount([]plugin.Instance{{Name: "helm", Options: map[string]interface{}{"permissionsEnabled": true}}}, nil)
+	router1, err := Mount([]plugin.Instance{{Name: "helm", Options: map[string]any{"permissionsEnabled": true}}}, nil)
 	require.NoError(t, err)
 	require.NotNil(t, router1)
 

@@ -273,7 +273,7 @@ func buildAggregationQuery(chart string, options AggregationOptions, materialize
 // GetAggregation returns the data for the given aggregation. To get the data we have to build the aggregation query.
 // Then we can reuse the parseLogsQuery function from getting the logs, to build the WHERE statement. Finally we are
 // running the query and parsing all rows into a map with the column names as keys and the value of each row.
-func (i *instance) GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]interface{}, []string, error) {
+func (i *instance) GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]any, []string, error) {
 	log.Debug(ctx, "Aggregation data", zap.String("aggregation", fmt.Sprintf("%#v", aggregation)))
 
 	// Build the SELECT, GROUP BY, ORDER BY and LIMIT statement for the SQL query. When the function returns an error
@@ -320,11 +320,11 @@ func (i *instance) GetAggregation(ctx context.Context, aggregation Aggregation) 
 		return nil, nil, err
 	}
 
-	var result []map[string]interface{}
+	var result []map[string]any
 
 	for rows.Next() {
-		values := make([]interface{}, len(columns))
-		pointers := make([]interface{}, len(columns))
+		values := make([]any, len(columns))
+		pointers := make([]any, len(columns))
 
 		for i := range values {
 			pointers[i] = &values[i]
@@ -336,7 +336,7 @@ func (i *instance) GetAggregation(ctx context.Context, aggregation Aggregation) 
 
 		// When we assign the correct value to an row, we also have to check if the returned value is of type float and
 		// if the value is NaN or Inf, because then the json encoding would fail if we add the value.
-		resultMap := make(map[string]interface{})
+		resultMap := make(map[string]any)
 		for i, val := range values {
 			switch v := val.(type) {
 			case float64:

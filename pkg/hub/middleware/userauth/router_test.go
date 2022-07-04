@@ -14,7 +14,7 @@ import (
 func TestUserAuthHandler(t *testing.T) {
 	for _, tt := range []struct {
 		name               string
-		user               interface{}
+		user               any
 		expectedStatusCode int
 		expectedBody       string
 	}{

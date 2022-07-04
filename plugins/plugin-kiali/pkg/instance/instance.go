@@ -26,7 +26,7 @@ type Instance interface {
 	GetName() string
 	GetNamespaces(ctx context.Context) ([]models.Namespace, error)
 	GetGraph(ctx context.Context, duration int64, graphType, groupBy string, injectServiceNodes bool, appenders, namespaces []string) (*Graph, error)
-	GetMetrics(ctx context.Context, url string) (*map[string]interface{}, error)
+	GetMetrics(ctx context.Context, url string) (*map[string]any, error)
 }
 
 type instance struct {
@@ -153,8 +153,8 @@ func (i *instance) GetGraph(ctx context.Context, duration int64, graphType, grou
 }
 
 // GetMetrics returns the metrics for an edge or node in the Kiali topology graph.
-func (i *instance) GetMetrics(ctx context.Context, url string) (*map[string]interface{}, error) {
-	metrics, err := doRequest[map[string]interface{}](ctx, i.client, i.address+url)
+func (i *instance) GetMetrics(ctx context.Context, url string) (*map[string]any, error) {
+	metrics, err := doRequest[map[string]any](ctx, i.client, i.address+url)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +163,7 @@ func (i *instance) GetMetrics(ctx context.Context, url string) (*map[string]inte
 }
 
 // New returns a new Kiali instance for the given configuration.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

@@ -138,11 +138,11 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Documents []map[string]interface{} `json:"documents"`
-		Fields    []string                 `json:"fields"`
-		Count     int64                    `json:"count"`
-		Took      int64                    `json:"took"`
-		Buckets   []instance.Bucket        `json:"buckets"`
+		Documents []map[string]any  `json:"documents"`
+		Fields    []string          `json:"fields"`
+		Count     int64             `json:"count"`
+		Took      int64             `json:"took"`
+		Buckets   []instance.Bucket `json:"buckets"`
 	}{
 		documents,
 		fields,
@@ -209,8 +209,8 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Rows    []map[string]interface{} `json:"rows"`
-		Columns []string                 `json:"columns"`
+		Rows    []map[string]any `json:"rows"`
+		Columns []string         `json:"columns"`
 	}{
 		rows,
 		columns,

@@ -62,8 +62,8 @@ func (router *Router) getQueryResults(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Rows    []map[string]interface{} `json:"rows"`
-		Columns []string                 `json:"columns"`
+		Rows    []map[string]any `json:"rows"`
+		Columns []string         `json:"columns"`
 	}{
 		rows,
 		columns,

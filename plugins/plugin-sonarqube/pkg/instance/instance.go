@@ -65,7 +65,7 @@ func (i *instance) GetProjectMeasures(ctx context.Context, project string, metri
 }
 
 // New returns a new Elasticsearch instance for the given configuration.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

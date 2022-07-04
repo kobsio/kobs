@@ -133,11 +133,11 @@ func TestGetDashboards(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router1, err := Mount([]plugin.Instance{{Name: "grafana", Options: map[string]interface{}{}}}, nil)
+	router1, err := Mount([]plugin.Instance{{Name: "grafana", Options: map[string]any{}}}, nil)
 	require.NoError(t, err)
 	require.NotNil(t, router1)
 
-	router2, err := Mount([]plugin.Instance{{Name: "grafana", Options: map[string]interface{}{"token": []string{"token"}}}}, nil)
+	router2, err := Mount([]plugin.Instance{{Name: "grafana", Options: map[string]any{"token": []string{"token"}}}}, nil)
 	require.Error(t, err)
 	require.Nil(t, router2)
 }

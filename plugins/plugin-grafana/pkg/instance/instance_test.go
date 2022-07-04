@@ -149,27 +149,27 @@ func TestGetDashboard(t *testing.T) {
 func TestNew(t *testing.T) {
 	for _, tt := range []struct {
 		name    string
-		options map[string]interface{}
+		options map[string]any
 		isError bool
 	}{
 		{
 			name:    "instance without auth",
-			options: map[string]interface{}{},
+			options: map[string]any{},
 			isError: false,
 		},
 		{
 			name:    "instance with basic auth",
-			options: map[string]interface{}{"username": "admin", "password": "admin"},
+			options: map[string]any{"username": "admin", "password": "admin"},
 			isError: false,
 		},
 		{
 			name:    "instance with token auth",
-			options: map[string]interface{}{"token": "token"},
+			options: map[string]any{"token": "token"},
 			isError: false,
 		},
 		{
 			name:    "fail to parse options",
-			options: map[string]interface{}{"token": []string{"token"}},
+			options: map[string]any{"token": []string{"token"}},
 			isError: true,
 		},
 	} {

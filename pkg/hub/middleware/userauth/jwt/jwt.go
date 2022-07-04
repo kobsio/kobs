@@ -17,7 +17,7 @@ type CustomClaims struct {
 
 // ValidateToken validates a given jwt token and returns the user from the claims or an error when the validation fails.
 func ValidateToken(tokenString, sessionToken string) (*authContext.User, error) {
-	token, err := goJWT.ParseWithClaims(tokenString, &CustomClaims{}, func(token *goJWT.Token) (interface{}, error) {
+	token, err := goJWT.ParseWithClaims(tokenString, &CustomClaims{}, func(token *goJWT.Token) (any, error) {
 		if _, ok := token.Method.(*goJWT.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
