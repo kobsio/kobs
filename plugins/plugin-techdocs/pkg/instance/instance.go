@@ -63,7 +63,7 @@ func (i *instance) GetFile(ctx context.Context, service, path string) ([]byte, e
 }
 
 // New returns a new TechDocs instance for the given configuration.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

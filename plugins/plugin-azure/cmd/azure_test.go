@@ -26,7 +26,7 @@ func TestGetInstance(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router1, err := Mount([]plugin.Instance{{Name: "azure", Options: map[string]interface{}{}}}, nil)
+	router1, err := Mount([]plugin.Instance{{Name: "azure", Options: map[string]any{}}}, nil)
 	require.Error(t, err)
 	require.Nil(t, router1)
 }

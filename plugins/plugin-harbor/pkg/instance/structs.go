@@ -67,13 +67,13 @@ type Artifact struct {
 		Architecture string `json:"architecture"`
 		Author       string `json:"author"`
 		Config       struct {
-			Cmd          []string               `json:"Cmd"`
-			Entrypoint   []string               `json:"Entrypoint"`
-			Env          []string               `json:"Env"`
-			ExposedPorts map[string]interface{} `json:"ExposedPorts"`
-			Labels       map[string]string      `json:"Labels"`
-			User         string                 `json:"User"`
-			WorkingDir   string                 `json:"WorkingDir"`
+			Cmd          []string          `json:"Cmd"`
+			Entrypoint   []string          `json:"Entrypoint"`
+			Env          []string          `json:"Env"`
+			ExposedPorts map[string]any    `json:"ExposedPorts"`
+			Labels       map[string]string `json:"Labels"`
+			User         string            `json:"User"`
+			WorkingDir   string            `json:"WorkingDir"`
 		} `json:"config"`
 		Created time.Time `json:"created"`
 		Os      string    `json:"os"`

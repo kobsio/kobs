@@ -9,12 +9,12 @@ import (
 func TestNew(t *testing.T) {
 	for _, tt := range []struct {
 		name    string
-		options map[string]interface{}
+		options map[string]any
 		isError bool
 	}{
 		{
 			name:    "instance without credentials",
-			options: map[string]interface{}{},
+			options: map[string]any{},
 			isError: true,
 		},
 	} {

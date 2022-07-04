@@ -21,15 +21,15 @@ type Config struct {
 // ConfigPrometheus is the structure of the configuration, which is required to enabled the Prometheus integration for
 // the Istio plugin.
 type ConfigPrometheus struct {
-	Enabled bool                   `json:"enabled"`
-	Options map[string]interface{} `json:"options"`
+	Enabled bool           `json:"enabled"`
+	Options map[string]any `json:"options"`
 }
 
 // ConfigKlogs is the structure of the configuration, which is required to enabled the klogs integration for the Istio
 // plugin.
 type ConfigKlogs struct {
-	Enabled bool                   `json:"enabled"`
-	Options map[string]interface{} `json:"options"`
+	Enabled bool           `json:"enabled"`
+	Options map[string]any `json:"options"`
 }
 
 type Instance interface {
@@ -39,9 +39,9 @@ type Instance interface {
 	GetMetricsDetails(ctx context.Context, metric, reporter, destinationWorkload, destinationWorkloadNamespace, destinationVersion, destinationService, sourceWorkload, sourceWorkloadNamespace, pod string, timeStart int64, timeEnd int64) (*prometheusInstance.Metrics, error)
 	GetMetricsPod(ctx context.Context, metric, namespace, pod string, timeStart int64, timeEnd int64) (*prometheusInstance.Metrics, error)
 	GetTopology(ctx context.Context, namespace, application string, timeStart int64, timeEnd int64) ([]Edge, []Node, error)
-	Tap(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath string, timeStart int64, timeEnd int64) ([]map[string]interface{}, error)
-	Top(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection string, timeStart int64, timeEnd int64) ([][]interface{}, error)
-	TopDetails(ctx context.Context, namespace, application, upstreamCluster, method, path string, timeStart int64, timeEnd int64) ([][]interface{}, error)
+	Tap(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath string, timeStart int64, timeEnd int64) ([]map[string]any, error)
+	Top(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection string, timeStart int64, timeEnd int64) ([][]any, error)
+	TopDetails(ctx context.Context, namespace, application, upstreamCluster, method, path string, timeStart int64, timeEnd int64) ([][]any, error)
 }
 
 type instance struct {
@@ -312,7 +312,7 @@ func (i *instance) GetTopology(ctx context.Context, namespace, application strin
 }
 
 // Tap returns the logs for the specified Istio application.
-func (i *instance) Tap(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath string, timeStart int64, timeEnd int64) ([]map[string]interface{}, error) {
+func (i *instance) Tap(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath string, timeStart int64, timeEnd int64) ([]map[string]any, error) {
 	var filters string
 	if filterUpstreamCluster != "" {
 		filters = filters + fmt.Sprintf(" _and_ content.upstream_cluster~'%s'", filterUpstreamCluster)
@@ -333,7 +333,7 @@ func (i *instance) Tap(ctx context.Context, namespace, application, filterUpstre
 }
 
 // Top returns the aggregated logs for the specified Istio application.
-func (i *instance) Top(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection string, timeStart int64, timeEnd int64) ([][]interface{}, error) {
+func (i *instance) Top(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection string, timeStart int64, timeEnd int64) ([][]any, error) {
 	var filters string
 	if filterUpstreamCluster != "" {
 		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '%s')", filterUpstreamCluster)
@@ -372,7 +372,7 @@ SETTINGS skip_unavailable_shards = 1`, timeStart, timeEnd, namespace, applicatio
 }
 
 // TopDetails returns the success rate and latency for the specified upstream cluster, method and path.
-func (i *instance) TopDetails(ctx context.Context, namespace, application, upstreamCluster, method, path string, timeStart int64, timeEnd int64) ([][]interface{}, error) {
+func (i *instance) TopDetails(ctx context.Context, namespace, application, upstreamCluster, method, path string, timeStart int64, timeEnd int64) ([][]any, error) {
 	interval := (timeEnd - timeStart) / 30
 	filters := fmt.Sprintf(" AND namespace = '%s' AND app = '%s' AND container_name = 'istio-proxy'", namespace, application)
 
@@ -407,7 +407,7 @@ SETTINGS skip_unavailable_shards = 1`, interval, timeStart, timeEnd, filters, ti
 }
 
 // New returns a new Elasticsearch instance for the given configuration.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

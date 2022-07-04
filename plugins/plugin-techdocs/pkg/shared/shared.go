@@ -14,11 +14,11 @@ var (
 
 // Index is the structure of the index file required in the root directory for each TechDoc.
 type Index struct {
-	Key         string                   `json:"key"`
-	Name        string                   `json:"name"`
-	Description string                   `json:"description"`
-	Home        string                   `json:"home"`
-	TOC         []map[string]interface{} `json:"toc"`
+	Key         string           `json:"key"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Home        string           `json:"home"`
+	TOC         []map[string]any `json:"toc"`
 }
 
 // Markdown is the structure for returning a markdown file.

@@ -16,7 +16,7 @@ type Response struct {
 			Value    int64  `json:"value"`
 			Relation string `json:"relation"`
 		} `json:"total"`
-		Hits []map[string]interface{} `json:"hits"`
+		Hits []map[string]any `json:"hits"`
 	} `json:"hits"`
 	Aggregations struct {
 		LogCount struct {
@@ -52,8 +52,8 @@ type ResponseError struct {
 // Data is the transformed Response result, which is passed to the React UI. It contains only the important fields, like
 // the time a request took, the number of hits, the documents and the buckets.
 type Data struct {
-	Took      int64                    `json:"took"`
-	Hits      int64                    `json:"hits"`
-	Documents []map[string]interface{} `json:"documents"`
-	Buckets   []Bucket                 `json:"buckets"`
+	Took      int64            `json:"took"`
+	Hits      int64            `json:"hits"`
+	Documents []map[string]any `json:"documents"`
+	Buckets   []Bucket         `json:"buckets"`
 }

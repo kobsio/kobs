@@ -68,7 +68,7 @@ func TestGetLogs(t *testing.T) {
 				w.Write([]byte(`{"took": 100, "hits": {"total": {"value": 1000}, "hits": [{"test": "test"}]}, "aggregations": {"logcount": {"buckets": [{"key_as_string": "123", "key": 123, "doc_count": 1000}]}}}`))
 			},
 			expectedError: false,
-			expectedData:  &Data{Took: 100, Hits: 1000, Documents: []map[string]interface{}{{"test": "test"}}, Buckets: []Bucket{{KeyAsString: "123", Key: 123, DocCount: 1000}}},
+			expectedData:  &Data{Took: 100, Hits: 1000, Documents: []map[string]any{{"test": "test"}}, Buckets: []Bucket{{KeyAsString: "123", Key: 123, DocCount: 1000}}},
 		},
 		{
 			name: "success request with invalid json data",
@@ -109,27 +109,27 @@ func TestGetLogs(t *testing.T) {
 func TestNew(t *testing.T) {
 	for _, tt := range []struct {
 		name    string
-		options map[string]interface{}
+		options map[string]any
 		isError bool
 	}{
 		{
 			name:    "instance without auth",
-			options: map[string]interface{}{},
+			options: map[string]any{},
 			isError: false,
 		},
 		{
 			name:    "instance with basic auth",
-			options: map[string]interface{}{"username": "admin", "password": "admin"},
+			options: map[string]any{"username": "admin", "password": "admin"},
 			isError: false,
 		},
 		{
 			name:    "instance with token auth",
-			options: map[string]interface{}{"token": "token"},
+			options: map[string]any{"token": "token"},
 			isError: false,
 		},
 		{
 			name:    "fail to parse options",
-			options: map[string]interface{}{"token": []string{"token"}},
+			options: map[string]any{"token": []string{"token"}},
 			isError: true,
 		},
 	} {

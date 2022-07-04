@@ -20,7 +20,7 @@ type Config struct {
 
 type Instance interface {
 	GetName() string
-	GetQueryResults(ctx context.Context, query string) ([]map[string]interface{}, []string, error)
+	GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error)
 }
 
 type instance struct {
@@ -33,7 +33,7 @@ func (i *instance) GetName() string {
 }
 
 // GetQueryResults returns all rows for the user provided SQL query.
-func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[string]interface{}, []string, error) {
+func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error) {
 	rows, err := i.client.QueryContext(ctx, query)
 	if err != nil {
 		return nil, nil, err
@@ -45,11 +45,11 @@ func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[str
 		return nil, nil, err
 	}
 
-	var result []map[string]interface{}
+	var result []map[string]any
 
 	for rows.Next() {
-		values := make([]interface{}, len(columns))
-		pointers := make([]interface{}, len(columns))
+		values := make([]any, len(columns))
+		pointers := make([]any, len(columns))
 
 		for i := range values {
 			pointers[i] = &values[i]
@@ -61,7 +61,7 @@ func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[str
 
 		// When we assign the correct value to an row, we also have to check if the returned value is of type float and
 		// if the value is NaN or Inf, because then the json encoding would fail if we add the value.
-		resultMap := make(map[string]interface{})
+		resultMap := make(map[string]any)
 		for i, val := range values {
 			switch v := val.(type) {
 			case float64:
@@ -84,7 +84,7 @@ func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[str
 }
 
 // New returns a new Elasticsearch instance for the given configuration.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

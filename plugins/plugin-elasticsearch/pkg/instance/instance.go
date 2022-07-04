@@ -110,7 +110,7 @@ func (i *instance) GetLogs(ctx context.Context, query string, timeStart, timeEnd
 // New returns a new Elasticsearch instance for the given configuration. If the configuration contains a username and
 // password we will add a basic auth header to each request against the Elasticsearch api. If the config contains a
 // token we are adding an authentication header with the token.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

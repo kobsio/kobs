@@ -26,11 +26,11 @@ func TestGetInstance(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router1, err := Mount([]plugin.Instance{{Name: "techdocs", Options: map[string]interface{}{"provider": map[string]interface{}{"type": "local"}}}}, nil)
+	router1, err := Mount([]plugin.Instance{{Name: "techdocs", Options: map[string]any{"provider": map[string]any{"type": "local"}}}}, nil)
 	require.NoError(t, err)
 	require.NotNil(t, router1)
 
-	router2, err := Mount([]plugin.Instance{{Name: "techdocs", Options: map[string]interface{}{"provider": map[string]interface{}{"type": "fake"}}}}, nil)
+	router2, err := Mount([]plugin.Instance{{Name: "techdocs", Options: map[string]any{"provider": map[string]any{"type": "fake"}}}}, nil)
 	require.Error(t, err)
 	require.Nil(t, router2)
 }

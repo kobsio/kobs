@@ -33,11 +33,11 @@ type ResponseError struct {
 
 type Instance interface {
 	GetName() string
-	doRequest(ctx context.Context, url string) (map[string]interface{}, error)
-	GetServices(ctx context.Context) (map[string]interface{}, error)
-	GetOperations(ctx context.Context, service string) (map[string]interface{}, error)
-	GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]interface{}, error)
-	GetTrace(ctx context.Context, traceID string) (map[string]interface{}, error)
+	doRequest(ctx context.Context, url string) (map[string]any, error)
+	GetServices(ctx context.Context) (map[string]any, error)
+	GetOperations(ctx context.Context, service string) (map[string]any, error)
+	GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]any, error)
+	GetTrace(ctx context.Context, traceID string) (map[string]any, error)
 }
 
 type instance struct {
@@ -52,7 +52,7 @@ func (i *instance) GetName() string {
 
 // doRequest is a helper function to run a request against a Jaeger instance for the given path. It returns the body or
 // if the request failed the error message.
-func (i *instance) doRequest(ctx context.Context, url string) (map[string]interface{}, error) {
+func (i *instance) doRequest(ctx context.Context, url string) (map[string]any, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s%s", i.address, url), nil)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (i *instance) doRequest(ctx context.Context, url string) (map[string]interf
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-		var data map[string]interface{}
+		var data map[string]any
 
 		err = json.NewDecoder(resp.Body).Decode(&data)
 		if err != nil {
@@ -92,24 +92,24 @@ func (i *instance) doRequest(ctx context.Context, url string) (map[string]interf
 	return nil, fmt.Errorf("%v", res)
 }
 
-func (i *instance) GetServices(ctx context.Context) (map[string]interface{}, error) {
+func (i *instance) GetServices(ctx context.Context) (map[string]any, error) {
 	return i.doRequest(ctx, "/api/services")
 }
 
-func (i *instance) GetOperations(ctx context.Context, service string) (map[string]interface{}, error) {
+func (i *instance) GetOperations(ctx context.Context, service string) (map[string]any, error) {
 	return i.doRequest(ctx, fmt.Sprintf("/api/operations?service=%s", url.QueryEscape(service)))
 }
 
-func (i *instance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]interface{}, error) {
+func (i *instance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]any, error) {
 	return i.doRequest(ctx, fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d&tags=%s", timeEnd*1000000, limit, maxDuration, minDuration, url.QueryEscape(operation), url.QueryEscape(service), timeStart*1000000, tags))
 }
 
-func (i *instance) GetTrace(ctx context.Context, traceID string) (map[string]interface{}, error) {
+func (i *instance) GetTrace(ctx context.Context, traceID string) (map[string]any, error) {
 	return i.doRequest(ctx, fmt.Sprintf("/api/traces/%s", traceID))
 }
 
 // New returns a new Jaeger instance for the given configuration.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

@@ -31,9 +31,9 @@ type Instance interface {
 	getFields(ctx context.Context) (Fields, error)
 	refreshCachedFields() []string
 	GetFields(filter string, fieldType string) []string
-	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, error)
-	GetRawQueryResults(ctx context.Context, query string) ([][]interface{}, []string, error)
-	GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]interface{}, []string, error)
+	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error)
+	GetRawQueryResults(ctx context.Context, query string) ([][]any, []string, error)
+	GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]any, []string, error)
 }
 
 // Instance represents a single klogs instance, which can be added via the configuration file.
@@ -150,10 +150,10 @@ func (i *instance) GetFields(filter string, fieldType string) []string {
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]interface{}, []string, int64, int64, []Bucket, error) {
+func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error) {
 	var count int64
 	var buckets []Bucket
-	var documents []map[string]interface{}
+	var documents []map[string]any
 	var timeConditions string
 	var interval int64
 
@@ -307,8 +307,8 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 			return nil, nil, 0, 0, nil, err
 		}
 
-		var document map[string]interface{}
-		document = make(map[string]interface{})
+		var document map[string]any
+		document = make(map[string]any)
 		document["timestamp"] = r.Timestamp
 		document["cluster"] = r.Cluster
 		document["namespace"] = r.Namespace
@@ -344,7 +344,7 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 // GetRawQueryResults returns all rows for the user provided SQL query. This function should only be used by other
 // plugins. If users should be able to directly access a Clickhouse instance you can expose the instance using the SQL
 // plugin.
-func (i *instance) GetRawQueryResults(ctx context.Context, query string) ([][]interface{}, []string, error) {
+func (i *instance) GetRawQueryResults(ctx context.Context, query string) ([][]any, []string, error) {
 	log.Debug(ctx, "Raw SQL query", zap.String("query", query))
 
 	rows, err := i.client.QueryContext(ctx, query)
@@ -360,14 +360,14 @@ func (i *instance) GetRawQueryResults(ctx context.Context, query string) ([][]in
 	}
 	columnsLen := len(columns)
 
-	var result [][]interface{}
+	var result [][]any
 
 	for rows.Next() {
-		var r []interface{}
-		r = make([]interface{}, columnsLen)
+		var r []any
+		r = make([]any, columnsLen)
 
 		for i := 0; i < columnsLen; i++ {
-			r[i] = new(interface{})
+			r[i] = new(any)
 		}
 
 		if err := rows.Scan(r...); err != nil {
@@ -381,7 +381,7 @@ func (i *instance) GetRawQueryResults(ctx context.Context, query string) ([][]in
 }
 
 // New returns a new klogs instance for the given configuration.
-func New(name string, options map[string]interface{}) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {

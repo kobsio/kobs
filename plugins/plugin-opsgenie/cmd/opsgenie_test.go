@@ -804,7 +804,7 @@ func TestMount(t *testing.T) {
 		{
 			Name:        "opsgenie",
 			Description: "On-call and alert management to keep services always on.",
-			Options: map[string]interface{}{
+			Options: map[string]any{
 				"apiKey": "test",
 				"apiUrl": "api.eu.opsgenie.com",
 			},
@@ -817,7 +817,7 @@ func TestMount(t *testing.T) {
 		{
 			Name:        "opsgenie",
 			Description: "On-call and alert management to keep services always on.",
-			Options: map[string]interface{}{
+			Options: map[string]any{
 				"apiKey": "",
 				"apiUrl": "api.eu.opsgenie.com",
 			},

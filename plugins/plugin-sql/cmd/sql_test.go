@@ -26,11 +26,11 @@ func TestGetInstance(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router1, err := Mount([]plugin.Instance{{Name: "sql", Options: map[string]interface{}{"driver": "mysql"}}}, nil)
+	router1, err := Mount([]plugin.Instance{{Name: "sql", Options: map[string]any{"driver": "mysql"}}}, nil)
 	require.NoError(t, err)
 	require.NotNil(t, router1)
 
-	router2, err := Mount([]plugin.Instance{{Name: "sql", Options: map[string]interface{}{"driver": "bigquery"}}}, nil)
+	router2, err := Mount([]plugin.Instance{{Name: "sql", Options: map[string]any{"driver": "bigquery"}}}, nil)
 	require.Error(t, err)
 	require.Nil(t, router2)
 }
