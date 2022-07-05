@@ -1,0 +1,294 @@
+<!-- Custom HTML site displayed as the Home chapter -->
+
+{% extends "main.html" %}
+{% block tabs %}
+{{ super() }}
+<style>
+.md-main {
+  flex-grow: 0;
+}
+
+.md-main__inner {
+  display: flex;
+  height: 100%;
+}
+
+.kobsio-container {
+  padding-top: 0rem;
+  background: #0066cc;
+}
+
+.kobsio-hero {
+  margin: 32px 2.8rem;
+  color: var(--md-primary-bg-color);
+  justify-content: center;
+}
+
+.kobsio-hero h1 {
+    margin-bottom: 1rem;
+    color: #ffffff;
+    font-weight: 700
+}
+
+.kobsio-hero__content {
+  padding-bottom: 1rem;
+  margin: 0 auto;
+}
+
+.kobsio-hero__image {
+  width: 17rem;
+  height: 17rem;
+  order: 1;
+  padding-right: 2.5rem;
+}
+
+.kobsio-hero .md-button,
+.kobsio-hero .md-button:focus,
+.kobsio-hero .md-button:hover {
+  background-color: var(--md-primary-fg-color);
+  border-color: var(--md-primary-bg-color);
+  color: var(--md-primary-bg-color);
+  margin-right: .5rem;
+  margin-top: .5rem;
+}
+
+.kobsio-hero .md-button--primary,
+.kobsio-hero .md-button--primary:focus,
+.kobsio-hero .md-button--primary:hover {
+  background-color: var(--md-primary-bg-color);
+  border-color: var(--md-primary-bg-color);
+  color: var(--md-primary-fg-color);
+}
+
+.kobsio-features {
+  margin-top: 42px;
+  margin-bottom: 42px;
+}
+
+.kobsio-feature-item h2 svg {
+  height: 30px;
+  float: left;
+  margin-right: 10px;
+  transform: translateY(10%);
+  fill: var(--md-typeset-color);
+}
+
+.kobsio-feature-item {
+  font-weight: 300;
+  box-sizing: border-box;
+  padding: 0 15px;
+  word-break: break-word
+}
+
+.kobsio-feature-item h2 {
+  color: var(--md-typeset-color);
+  font-weight: 300;
+  font-size: 25px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: normal;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.kobsio-feature-item p {
+  font-size: 16px;
+  line-height: 1.8em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  color: var(--md-typeset-color);
+  margin: 0 0 10px;
+  display: block;
+}
+
+.kobsio-feature-item img {
+  max-width: 100%;
+}
+
+.kobsio-sponsors {
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.8em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  color: var(--md-typeset-color);
+  margin: 0 0 10px;
+  display: block;
+}
+
+.kobsio-sponsors b {
+  font-size: 24px;
+}
+
+.kobsio-sponsors img {
+  margin-right: 16px;
+}
+
+.kobsio-sponsors a {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 30em) {
+  .kobsio-hero h1 {
+      font-size: 1.4rem;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  .md-sidebar--secondary {
+      display: none;
+  }
+
+  .kobsio-hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  .kobsio-hero__content {
+      max-width: 22rem;
+      margin-top: 3.5rem;
+      margin-bottom: 3.5rem;
+      margin-left: 1.0rem;
+      margin-right: 4.0rem;
+      align-items: center;
+  }
+}
+
+@media screen and (min-width:76.25em) {
+  .kobsio-features {
+      width: 100%;
+      display: flex;
+      max-width: 61rem;
+      margin-right: auto;
+      margin-left: auto;
+      padding: 0 .2rem;
+  }
+
+  .kobsio-feature-item {
+    flex: 1;
+    min-width: 0;
+  }
+}
+</style>
+
+<section class="kobsio-container">
+  <div class="md-grid md-typeset">
+    <div class="kobsio-hero">
+      <div class="kobsio-hero__image">
+        <img src="assets/header.png" draggable="false">
+      </div>
+      <div class="kobsio-hero__content">
+        <h1>Kubernetes Observability Platform</h1>
+        <p>kobs is an <b>application-centric</b> observability platform for your <b>Kubernetes and Cloud</b> workloads, based on Custom Resource Definitions.</p>
+        <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | striptags }}" class="md-button md-button--primary">
+          Get started
+        </a>
+        <a href="{{ config.repo_url }}" title="{{ lang.t('source.link.title') }}" class="md-button">
+          Go to GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="kobsio-features">
+  <div class="kobsio-feature-item">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.95 13.5h-.23c-.18.11-.26.32-.18.5l.86 2.11c.83-.53 1.46-1.32 1.79-2.25l-2.23-.36h-.01m-3.45.29a.415.415 0 0 0-.38-.29h-.08l-2.22.37c.33.92.96 1.7 1.79 2.23l.85-2.07V14c.04-.05.04-.14.04-.21m1.83.81a.378.378 0 0 0-.51-.15c-.07.05-.12.08-.15.15h-.01l-1.09 1.97c.78.26 1.62.31 2.43.12.14-.03.29-.07.43-.12l-1.09-1.97h-.01m3.45-4.57L14.1 11.5l.01.03a.37.37 0 0 0-.04.53c.05.06.11.1.18.12l.01.01 2.17.62c.07-.97-.14-1.95-.65-2.78m-3.11.16c.01.21.18.37.39.36.08 0 .15-.02.21-.05h.01l1.83-1.31a4.45 4.45 0 0 0-2.57-1.24l.13 2.24m-1.94.31c.17.11.4.08.52-.09.05-.06.07-.13.08-.21h.01l.12-2.25c-.15.02-.3.05-.46.08-.8.18-1.54.58-2.12 1.16l1.84 1.31h.01m-.99 1.69c.2-.05.32-.26.26-.46 0-.08-.05-.14-.11-.19v-.01L8.21 10c-.52.86-.74 1.84-.63 2.82l2.16-.62v-.01m1.64.66.62.3.62-.3.15-.67-.43-.53h-.69l-.43.53.16.67m10.89 1.32L20.5 6.5c-.09-.42-.37-.76-.74-.94l-7.17-3.43c-.37-.17-.81-.17-1.19 0L4.24 5.56c-.37.18-.65.52-.74.94l-1.77 7.67c-.05.2-.05.4 0 .59.01.06.03.12.05.18.03.09.08.19.13.27.03.04.05.08.09.11l4.95 6.18c.02 0 .05.04.05.06.1.09.19.16.28.22.12.08.26.14.4.17.11.05.23.05.32.05h8.12c.07 0 .14-.03.2-.05.05-.01.1-.03.14-.04.04-.02.07-.03.11-.05.05-.02.1-.05.15-.08.12-.08.23-.18.33-.28l.15-.2 4.8-5.98c.1-.12.17-.25.22-.38.02-.06.04-.12.05-.18.05-.19.05-.4 0-.59m-7.43 2.99c.02.06.04.12.07.17-.04.08-.06.17-.03.26.12.24.23.46.38.68.08.11.16.23.24.34 0 .03.03.08.04.12.12.2.06.46-.15.59s-.47.05-.59-.15c-.01-.03-.02-.05-.03-.08-.02-.03-.04-.09-.06-.09-.05-.15-.09-.28-.12-.41-.09-.25-.17-.49-.3-.72a.375.375 0 0 0-.21-.14l-.08-.16c-1.29.48-2.7.48-3.97-.01l-.1.18c-.07.01-.14.04-.19.09-.14.24-.24.49-.33.77-.03.13-.07.26-.12.4-.02 0-.04.07-.06.1a.43.43 0 0 1-.81-.29c.01-.03.03-.05.04-.08.04-.03.04-.08.04-.11.09-.12.16-.23.24-.35.16-.21.29-.45.39-.69a.54.54 0 0 0-.03-.25l.07-.18a5.611 5.611 0 0 1-2.47-3.09l-.2.03a.388.388 0 0 0-.23-.09c-.27.05-.51.13-.77.22-.11.06-.24.11-.37.15-.03.01-.07.02-.13.03a.438.438 0 0 1-.54-.27c-.07-.23.04-.47.28-.55.02 0 .05-.01.08-.01v-.01h.01l.11-.02c.14-.04.28-.04.41-.04.26 0 .52-.06.77-.12.08-.05.14-.11.19-.19l.19-.05c-.21-1.36.1-2.73.86-3.87l-.14-.12c0-.09-.03-.18-.08-.25-.2-.17-.41-.32-.64-.45-.12-.06-.24-.13-.36-.21-.02-.02-.06-.05-.08-.07l-.01-.01c-.2-.16-.25-.42-.11-.63.09-.1.21-.15.35-.15.11.01.21.05.3.12l.09.07c.1.09.19.2.28.3.18.19.37.37.58.52.08.04.17.05.26.03l.15.11c.75-.8 1.73-1.36 2.8-1.6.25-.06.52-.1.78-.12l.01-.18a.45.45 0 0 0 .14-.23c.01-.26-.01-.52-.05-.77-.03-.13-.05-.27-.06-.41V5.1c-.02-.24.15-.45.39-.48s.44.15.47.38v.22c-.01.14-.03.28-.06.41-.04.25-.06.51-.05.77.02.1.07.17.14.22l.01.19c1.36.12 2.62.73 3.56 1.72l.16-.12c.09.02.18.01.26-.03.21-.15.41-.33.58-.52.09-.1.18-.2.28-.3.03-.02.07-.06.1-.06.17-.18.44-.18.59 0 .19.16.18.43 0 .6 0 .02-.03.04-.06.06a2.495 2.495 0 0 1-.44.28c-.23.13-.45.28-.64.45-.06.07-.09.15-.08.24l-.16.14a5.44 5.44 0 0 1 .88 3.86l.19.05c.04.08.11.14.19.18.25.07.51.11.77.14h.41c.03.03.08.04.12.05.24.03.4.25.37.49-.05.23-.24.4-.48.37-.03-.01-.07-.01-.07-.02v-.01c-.06 0-.1-.01-.14-.02-.13-.04-.25-.09-.36-.15-.26-.1-.5-.17-.77-.21-.09 0-.17 0-.23.08-.07-.01-.13-.02-.19-.03-.41 1.31-1.31 2.41-2.47 3.11Z"></path></svg>
+      Kubernetes Resources
+    </h2>
+    <p>View and edit all Kubernetes objects like Pods, Deployments, StatefulSets and Custom Resources.</p>
+  </div>
+  <div class="kobsio-feature-item">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1088 1024"><path d="M877.8,0 C797.1,0 731.5,65.6 731.5,146.3 C731.5,175.1 739.7,201.8 754.1,224.5 L670,310.5 C626.5,276.4 571.7,256 512,256 C477.8,256 445.1,262.7 415.3,274.9 L388.6,239.6 C375.1,221.3 350.9,216.1 334.9,228.2 C318.7,240.1 316.4,264.8 329.6,283.1 L351.9,312.3 C293.4,359.2 256,431.2 256,512 C256,534.7 259,556.7 264.5,577.7 L239,590.9 C219.8,600.3 210.7,622.9 218.4,641.2 C226.1,659.5 248.3,666.8 267.3,657.7 L292.9,644.4 C329.1,704.2 389.1,748 459.8,762.6 L453.8,835.6 C413.5,847.1 384,884.1 384,928 C384,981 427,1024 480,1024 C533,1024 576,981 576,928 C576,888.3 551.9,854.3 517.6,839.7 L523.5,767.8 C605.3,764.2 677.2,722.1 721.4,659.2 L789.8,705.8 C808.1,718.4 832.1,714.9 842.8,698 C853.5,680.9 847.3,656.9 828.8,644.6 L754.6,594.1 C763.3,568.3 768,540.7 768,512 C768,456.6 750.4,405.3 720.5,363.5 L807.4,274.8 C828.2,286.2 852.2,292.9 877.8,292.9 C958.5,292.9 1024.1,227.3 1024.1,146.6 C1024.1,65.9 958.5,0 877.8,0 Z M528,928 C528,954.5 506.5,976 480,976 C453.5,976 432,954.5 432,928 C432,901.5 453.5,880 480,880 C506.5,880 528,901.5 528,928 Z M512,640 C441.3,640 384,582.7 384,512 C384,441.3 441.3,384 512,384 C582.7,384 640,441.3 640,512 C640,582.7 582.8,640 512,640 Z M877.8,224 C834.8,224 800.1,189.3 800.1,146.3 C800.1,103.3 834.8,68.6 877.8,68.6 C920.8,68.6 955.5,103.3 955.5,146.3 C955.5,189.3 920.8,224 877.8,224 Z M900.8,712.3 C943.6,669.5 1013.1,669.5 1055.9,712.3 C1077.3,733.7 1088,761.8 1088,789.9 C1088,818 1077.3,846 1055.9,867.5 C1013.1,910.3 943.6,910.3 900.8,867.5 C858,824.6 858,755.2 900.8,712.3 M256,2.3 C316.6,2.3 365.7,51.4 365.7,112 C365.7,172.6 316.6,221.7 256,221.7 C195.4,221.7 146.3,172.6 146.3,112 C146.3,51.4 195.4,2.3 256,2.3 M96,608 C149,608 192,651 192,704 C192,757 149,800 96,800 C43,800 0,757 0,704 C0,651 43,608 96,608"></path></svg>
+      Applications
+    </h2>
+    <p>Applications can be used to improve the observability of your Kubernetes and Cloud workloads.</p>
+  </div>
+  <div class="kobsio-feature-item">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3v10Z"></path></svg>
+      Dashboards
+    </h2>
+    <p>Dashboards are used to add metrics, logs and traces to an application. They can be customized via plugins.</p>
+  </div>
+</div>
+
+<section class="kobsio-container">
+  <div class="md-grid md-typeset">
+    <div class="kobsio-hero">
+      <div class="kobsio-hero__image">
+        <img src="assets/plugins.png" draggable="false">
+      </div>
+      <div class="kobsio-hero__content">
+        <h1>Extensible via Plugins</h1>
+        <p>kobs can be extended via plugins. kobs is shipped with a wide range of built-in plugins like, e.g. Prometheus, Elasticsearch, Jaeger and Opsgenie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="kobsio-features">
+  <div class="kobsio-feature-item" style="text-align: center;">
+    <h2>Applications</h2>
+    <p>Applications can be used to improve the observability of your Kubernetes and Cloud workloads. Connect your Kubernetes / Cloud workloads with the corresponding metrics, logs and traces.</p>
+    <img src="assets/applications-overview.png" draggable="false">
+  </div>
+</div>
+
+<div class="kobsio-features">
+  <div class="kobsio-feature-item">
+    <h2>Metrics</h2>
+    <p>Explore your applications metrics via the built-in Prometheus plugin.</p>
+    <img src="assets/applications-metrics.png" draggable="false">
+  </div>
+  <div class="kobsio-feature-item">
+    <h2>Logs</h2>
+    <p>View and filter the logs of your applications via the Elasticsearch or klogs plugins.</p>
+    <img src="assets/applications-logs.png" draggable="false">
+  </div>
+  <div class="kobsio-feature-item">
+    <h2>Traces</h2>
+    <p>Access and compare the traces of your applications, via the Jaeger plugin.</p>
+    <img src="assets/applications-traces.png" draggable="false">
+  </div>
+</div>
+
+<section class="kobsio-container">
+  <div class="kobsio-features">
+    <div class="kobsio-feature-item" style="text-align: center;">
+      <h2 style="color: #ffffff;">Kubernetes Resources</h2>
+      <p style="color: #ffffff;">View, edit or delete all default Kubernetes resources or Custom Resources. Scale your Deployments or trigger your CronJobs. View the logs of your Pods or get a shell into them.</p>
+      <img src="assets/resources.png" draggable="false">
+    </div>
+  </div>
+</section>
+
+<div class="kobsio-features">
+  <div class="kobsio-feature-item" style="text-align: center;">
+    <h2>Sponsors</h2>
+  </div>
+</div>
+
+<div class="kobsio-features">
+  <table class="kobsio-sponsors">
+    <tr>
+      <td>
+        <img src="assets/images/sponsors/staffbase.png" alt="Staffbase GmbH" width="96" />
+      </td>
+      <td>
+        <b>Staffbase GmbH</b>
+        <br />Staffbase is an internal communications platform built to revolutionize the way you work and unite your company. Staffbase is hiring: <a href="https://jobs.staffbase.com" target="_blank" rel="noreferrer">jobs.staffbase.com</a>
+        <br /><a href="https://github.com/Staffbase" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://staffbase.com/" target="_blank" rel="noreferrer">Website</a> | <a href="https://jobs.staffbase.com" target="_blank" rel="noreferrer">Jobs</a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}{% endblock %}
