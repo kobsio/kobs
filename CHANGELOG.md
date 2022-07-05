@@ -10,6 +10,14 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+### Fixed
+
+### Changed
+
+## [v0.9.0](https://github.com/kobsio/kobs/releases/tag/v0.9.0) (2022-07-05)
+
+### Added
+
 - [#355](https://github.com/kobsio/kobs/pull/#355): [app] Add profile page for authenticated users, which can be customized via dashboards.
 - [#361](https://github.com/kobsio/kobs/pull/#361): [app] Add tracing support for kobs via Jaeger or Zipkin.
 - [#363](https://github.com/kobsio/kobs/pull/#363): [app] Re-add topology chart, which is generated based on the dependencies of an Application.

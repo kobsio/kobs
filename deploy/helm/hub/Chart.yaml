@@ -4,5 +4,5 @@ description: Kubernetes Observability Platform
 type: application
 home: https://kobs.io
 icon: https://kobs.io/assets/images/logo.svg
-version: 0.15.2
-appVersion: v0.8.0
+version: 0.16.0
+appVersion: v0.9.0

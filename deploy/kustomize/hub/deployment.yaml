@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: hub
-          image: "kobsio/kobs:v0.8.0"
+          image: "kobsio/kobs:v0.9.0"
           imagePullPolicy: IfNotPresent
           args:
             - hub

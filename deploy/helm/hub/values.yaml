@@ -21,7 +21,7 @@ imagePullSecrets: []
 ##
 image:
   repository: kobsio/kobs
-  tag: v0.8.0
+  tag: v0.9.0
   pullPolicy: IfNotPresent
 
 ## Specify security settings for the created Pods. To set the security settings for the kobs or envoy Container use the
