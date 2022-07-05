@@ -5,11 +5,13 @@
 - [Development](#development)
   - [Repository Structure](#repository-structure)
   - [Prerequisites](#prerequisites)
-  - [Components](#components)
-    - [React UI](#react-ui)
-    - [Server](#server)
+  - [Backend](#backend)
     - [Plugins](#plugins)
-  - [Run kobs](#run-kobs)
+  - [Frontend](#frontend)
+    - [Plugins](#plugins-1)
+    - [Generate all Assets](#generate-all-assets)
+  - [Add a new Plugin](#add-a-new-plugin)
+  - [Docker / Kubernetes](#docker---kubernetes)
 - [Documentation](#documentation)
 
 Every contribution to kobs is welcome, whether it is reporting a bug, submitting a fix, proposing new features or becoming a maintainer. To make contributing to kubenav as easy as possible you will find more details for the development flow in this documentation.
@@ -39,40 +41,51 @@ Most of the kobs functions are implemented via plugins, which can be found in th
 
 ```txt
 .
-├── app                         # The React UI, with all first party plugins
-│   ├── public                  # Static files for the React UI, like the kobs logo and favicon
-│   └── src                     # The source files for the React UI, the index.tsx is used to register all plugins
+├── Makefile                     # The Makefile is used to build the kobs binary ("make build"), the CRDs ("make generate-crds") and to generate all frontend assets ("make generate-assets")
 ├── cmd
-│   └── kobs                    # The main package for kobs
-├── deploy                      # Contains the Kustomize files, the Helm chart, the Docker Compose file and the demo application
-├── docs                        # The MkDocs files for the documentation, the build of this folder is deployed to http://kobs.io
+│   └── kobs                     # The main package for kobs, it is used to implement the hub, satellite and version command
+├── deploy                       # The deploy directory contains the Helm charts for the hub and satellite, as well as the Kustomize files and the demo
+├── docs                         # The documentation for kobs, which is available via kobs.io
 ├── pkg
-│   ├── api                     # The api package contains the HTTP API which is served at 15220
-│   │   ├── apis
-│   │   │   ├── application     # The Applications Custom Resource Definition
-│   │   │   ├── dashboard       # The Dashboards Custom Resource Definition
-│   │   │   └── team            # The Teams Custom Resource Definition
-│   │   ├── clients             # The generated code of the clients for our Custom Resource Definitions
-│   │   ├── clusters            # The clusters package is used to load all clusters from the provided configuration file
-│   │   └── plugins             # The plugin package is used to register the plugins at the API server
-│   ├── app                     # The app package is used to serve the build of the React UI
-│   ├── config
-│   ├── metrics
-│   └── version
-└── plugins                     # The implementation for all first party plugins
-    ├── applications
-    ├── core
-    ├── dashboards
-    ├── resources
-    ├── teams
-    └── ...
+│   ├── app                      # The app server, which is responsible for serving the React UI via the hub
+│   ├── hub                      # The hub server
+│   │   ├── api                  # The API routes for the hub server
+│   │   ├── middleware           # Middleware functions which are only used for the hub (e.g. authentication middleware)
+│   │   ├── satellites           # The satellites package is used to interact with the configured satellites from the started hub instance
+│   │   ├── store                # The store is used to save the collected resources from the configured satellites in a database
+│   │   └── watcher              # The watcher is used to synchronise the resources from all configured satellites with the store on a regular basis
+│   ├── kube                     #
+│   │   ├── apis                 # The API definition for our Custom Resources
+│   │   ├── clients              # The generated Kubernetes clients for our Custom Resource Definitions
+│   │   └── clusters             # The clusters package can be used to interact with the Kubernetes API
+│   ├── log
+│   ├── metrics                  # The metrics server is responsible to serve the Prometheus metrics for the hub and satellite component
+│   ├── middleware               # Middleware packages for the hub and satellite (e.g. http logging, tracing, etc.)
+│   ├── satellite                # The satellite server
+│   │   ├── api                  # The API routes for the satellite server
+│   │   ├── middleware           # Middleware function which are only used for the satellite (e.g. token based authentication)
+│   │   └── plugins              # The plugins package handles the registration and mounting of the plugin API endpoints
+│   ├── tracer
+│   └── version
+└── plugins                      # The plugins directory contains the React UI and all plugins for kobs
+    ├── app                      # The app directory contains our React UI for kobs
+    ├── plugin-<PLUGIN-NAME>
+    │   ├── cmd                  # Each plugin should contain a cmd directory which contains the entry point for a plugin ("type MountFn func(instances []Instance, clustersClient clusters.Client) (chi.Router, error)")
+    │   ├── pkg                  # Each plugin can contain other sub packages which are used by the entry point package
+    │   └── src                  # The React UI for each plugin
+    │       ├── assets           # Static assets like an icon or css files for the plugin
+    │       └── components
+    │           ├── instance     # Each plugin must expose a "Instance" module
+    │           ├── page         # Each plugin must expose a "Page" module
+    │           └── panel        # Each plugin must expose a "Panel" module
+    └── shared                   # The shared package contains components and functions which can be used across plugins
 ```
 
 ### Prerequisites
 
 - It is strongly recommended that you use macOS or Linux distributions for development.
-- You have Go 1.16.0 or newer installed.
-- You have Node.js 14.0.0 or newer installed.
+- You have Go 1.18.0 or newer installed.
+- You have Node.js 16.0.0 or newer installed.
 - For the React UI, you will need a working NodeJS environment and the Yarn package manager to compile the Web UI assets.
 
 If you adjust the Custom Resource Definitions for kobs, you must install the Kubernetes [code-generator](https://github.com/kubernetes/code-generator) into your `GOPATH`:
@@ -82,105 +95,138 @@ go install k8s.io/code-generator/...@v0.23.6
 go install sigs.k8s.io/controller-tools/...@v0.8.0
 ```
 
-### Components
+### Backend
 
-kobs consists of three components:
-
-- The React UI, which is the frontend component of kobs.
-- The server, which serves the React UI and the API.
-- The plugins, which contains the frontend and backend code for several functions of kobs.
-
-#### React UI
-
-The React UI lives in the `app` folder. The following commands are available for development:
-
-- `yarn install`: Installs all dependencies.
-- `yarn start`: Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-- `yarn build`: Builds the app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance.
-
-We are using [ESLint](https://eslint.org) and [Prettier](https://prettier.io) for linting and automatic code formation. When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the React UI.
-
-#### Server
-
-The kobs server is written in Go. To build and run the server you can run the following command:
+The backend is written in Go and can be build using the following command:
 
 ```sh
-make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml
+# The "make generate-crds" command is only needed if you made changes to the Custom Resource Definitions ("pkg/kube/apis" folder)
+make generate-crds
+
+make build
 ```
 
-When you run the kobs binary, it will use the following ports:
+This will create a binary named `kobs` in the `bin` folder. This binary can be used to start the `satellite` and `hub`:
+
+```sh
+./bin/kobs satellite --log.level=debug --satellite.config=deploy/docker/kobs/satellite.yaml --satellite.token=unsecuretoken
+./bin/kobs hub --log.level=debug --hub.config=deploy/docker/kobs/hub.yaml --app.assets=""
+```
+
+When you run these two services, they will use the follwing ports:
 
 | Port | Description | Command-Line Flag |
 | ---- | ----------- | ----------------- |
 | `15219` | Serves the React UI. This requires that you have built the React UI once via `yarn build`. If you haven't built the React UI, you can skip serving the fronend by setting `--app.assets=""`. | `--app.address` |
-| `15220` | Serve the HTTP API. | `--api.address` |
-| `15221` | Serves kobs internal metrics. | `--metrics.address` |
+| `15220` | Serves the `hub` API. | `--hub.address` |
+| `15221` | Serves the `satellite` API. | `--satellite.address` |
 
-When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the kobs server. You can also adjust the log level to `trace` via the `--log.level` flag, for more useful output during development.
+When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the `hub` and `satellite` server. You can also adjust the log level to `debug` via the `--log.level` flag, for more verbose output during development.
 
 When you are adding a new package and want to output some log line your can use the `github.com/kobsio/kobs/pkg/log` package. The package is a wrapper around `go.uber.org/zap`, which we are using for logging and adds an option to add additional fields to a log line via a `context.Context`.
 
 The Go code is formatted using [`gofmt`](https://golang.org/cmd/gofmt/).
 
-For testing we are using [testify](https://github.com/stretchr/testify) and to generate the mocks we are using [mockery](https://github.com/vektra/mockery). The mocks should be placed in a seperate file within the same package and the file should include a `_mock.go`  prefix. for example if you want to generate the mocks for the `Instance` interface in the Grafana plugin, the following command can be used:
+For testing we are using [testify](https://github.com/stretchr/testify) and to generate the mocks we are using [mockery](https://github.com/vektra/mockery). The mocks should be placed in a seperate file within the same package and the file should include a `_mock.go`  prefix. for example if you want to generate the mocks for the `Store` interface in the `pkg/hub/store` package, the following command can be used:
 
 ```sh
-mockery --name Instance --dir plugins/grafana/pkg/instance --inpackage --filename instance_mock.go
+mockery --name Client --dir pkg/hub/store --inpackage --filename store_mock.go
 ```
 
 #### Plugins
 
-We are using [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) to manage the plugins. All first party plugins for kobs are available in the `plugins` directory. They are build when you run `yarn start` or `yarn build`. If you just want to build the plugins you can run `yarn plugin`.
+The backend code for each plugin must expose a `Mount` function with the following type: `type MountFn func(instances []Instance, clustersClient clusters.Client) (chi.Router, error)` and a `PluginType` constant of type `string`.
 
-To build / rebuild a single plugin you can run `yarn workspace <plugin-name> plugin` (e.g. `yarn workspace @kobsio/plugin-prometheus plugin`). Each of the plugins has a similar structure, which can be found in the following:
+The `Mount` function and `PluginType` can then be used to register the plugin in the [main.go](./cmd/kobs/main.go) file:
+
+```go
+package main
+
+import (
+    <PLUGIN-NAME> "github.com/kobsio/kobs/plugins/plugin-<PLUGIN-NAME>/cmd"
+)
+
+func main() {
+    var pluginMounts map[string]plugin.MountFn
+    pluginMounts = make(map[string]plugin.MountFn)
+
+    pluginMounts[<PLUGIN-NAME>.PluginType] = <PLUGIN-NAME>.Mount
+}
+```
+
+### Frontend
+
+The frontend of kobs is developed using TypeScript and React (via [Create React App](https://github.com/kobsio/create-react-app/tree/add-support-for-module-federation)). We are also using [lerna](https://lerna.js.org) and [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) to manage all dependencies.
+
+The frontend lives in the [`plugins/app`](./plugins/app) folder. The shared React components can be found in the [`plugins/shared`](./plugins/shared) folder. To build and start the React UI, you have to build the shared components first. For this the following commands are available:
+
+- `yarn`: Install all dependencies.
+- `yarn workspace @kobsio/shared build:shared`: Build the shared components, so that they can be used within the app or a plugin.
+- `yarn workspace @kobsio/app build`: Build the React UI.
+- `yarn workspace @kobsio/app start`: Start development server for the React UI. The development server is served on port `3000`.
+
+We are using [ESLint](https://eslint.org) and [Prettier](https://prettier.io) for linting and automatic code formation. When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the React UI.
+
+#### Plugins
+
+The frontend code for all plugins lives in the corresponding plugin directory: `plugins/plugin-<PLUGIN-NAME>`. To build a plugin or to start the development server for a plugin the following two commands can be used:
+
+- `yarn workspace @kobsio/plugin-<PLUGIN-NAME> build` (e.g. `yarn workspace @kobsio/plugin-prometheus build`): Build the React UI and modules for the plugin.
+- `yarn workspace @kobsio/plugin-<PLUGIN-NAME> start` (e.g. `yarn workspace @kobsio/plugin-prometheus start`): Start the development server for the plugin. The plugin is then available on port `3001` or can be used within the development server of the React UI (`yarn workspace @kobsio/app start`).
+
+#### Generate all Assets
+
+To generate all frontend assets with the correct directory structure, so that the frontend can be served via the `kobs hub` command on port `15219` the `make generate-assets` command can be used.
+
+This command will build the shared components, the app and all plugins. It will also place all the plugin in the `bin` folder with the following directory structure:
 
 ```txt
-plugins/prometheus
-├── pkg                 # Additional Go packages for the plugin
-├── prometheus.go       # The entry point for the backend implementation of the plugin
-└── src                 # The TypeScript code for the plugin
-    ├── assets          # Static assets like images and CSS files
-    ├── components      #
-    │   ├── page        # The page implementation for the plugin
-    │   ├── panel       # The panel implementation for the plugin
-    │   └── preview     # The preview implementation for the plugin
-    ├── index.ts        # Export for the plugin, so that it can be added to the app in the app/src/index.tsx file
-    └── utils           # Additional functions for the TypeScript code
+bin
+└── app                            # In the app folder all generated frontend assets can be found
+    ├── plugins                    # In the plugins folder all generated frontend assets for all plugins can be found
+    │   └── <PLUGIN-NAME>
+    │       ├── remoteEntry.js     # The "remoteEntry.js" file is used to expose the modules for all plugins
+    │       └── static             # The static css, js and font files for a plugin
+    │           ├── css
+    │           ├── js
+    │           └── media
+    └── static                     # The static css, js and font files for our React UI (app)
+        ├── css
+        ├── js
+        └── media
 ```
 
-If you want to add a new plugin, please read the [Add a Plugin](https://kobs.io/contributing/add-a-plugin/) guide from the documentation.
-
-### Run kobs
-
-To run kobs you can use the following two commands, which should be run in two separate terminal windows. This will start the a kobs server and it will serve the development version of the React UI, which will be available via [http://localhost:3000](http://localhost:3000):
+The hub can then be started with the `--app.assets=./bin/app` argument to access the frontend via port `15219`:
 
 ```sh
-yarn start
-make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml --app.assets=""
+./bin/kobs hub --log.level=debug --hub.config=deploy/docker/kobs/hub.yaml --app.assets=./bin/app
 ```
 
-If you want to test the production build of kobs, you can build the React UI via `yarn build` and then start the server with the `--development` flag. The `--development` flag will then redirect all the API requests to port `15220` from the frontend which is available at [http://localhost:15222](http://localhost:15222):
+### Add a new Plugin
+
+If you want to add a new plugin, please read the [Develop a Plugin](https://kobs.io/main/contributing/develop-a-plugin/) guide from the documentation.
+
+### Docker / Kubernetes
+
+To build and run kobs via Docker the following command can be used:
 
 ```sh
-yarn build
-make build && ./bin/kobs --config=deploy/docker/kobs/config.yaml --development
-```
-
-If you do not have Go and Node.js installed on your system and you want to use Docker instead. You can run kobs via Docker with the following commands:
-
-```sh
-# With Docker Compose
-cd deploy/docker && docker-compose up
-
-# Without Docker Compose
 docker build -f ./cmd/kobs/Dockerfile -t kobsio/kobs:dev .
-docker run -it --rm --name kobs -p 15219:15219 -p 15220:15220 -p 15221:15221 -v $(pwd)/deploy/docker/kobs/config.yaml:/kobs/config.yaml -v $HOME/.kube/config:/.kube/config kobsio/kobs:dev --development
+
+docker run -it --rm --name kobs-hub -p 15219:15219 -p 15220:15220 -v $(pwd)/deploy/docker/kobs/hub.yaml:/kobs/hub.yaml kobsio/kobs:dev --config=hub.yaml
+docker run -it --rm --name kobs-satellite -p 15221:15221 -v $(pwd)/deploy/docker/kobs/satellite.yaml:/kobs/satellite.yaml -v $HOME/.kube/config:/.kube/config kobsio/kobs:dev --config=satellite.yaml
 ```
 
-When you want to run kobs inside your Kubernetes cluster, please checkout the Documentation at [kobs.io](https://kobs.io).
+You can also use Docker Compose to build and run kobs:
 
-**Using the demo application:** If you want to test your changes against the demo application take a look at [https://kobs.io/installation/demo/#development-using-the-demo](https://kobs.io/installation/demo/#development-using-the-demo).
+```sh
+cd deploy/docker && docker-compose up
+```
+
+When you want to run kobs inside your Kubernetes cluster, please checkout the getting started guide at [kobs.io](https://kobs.io/main/getting-started/).
+
+**Using the demo application:** If you want to test your changes against the demo application take a look at [https://kobs.io/main/contributing/development-using-the-demo/](https://kobs.io/main/contributing/development-using-the-demo/).
 
 ## Documentation
 
-More information, for example how to use the demo in you development workflow or how to submit a new plugin can be found in the documentation at [https://kobs.io/contributing/getting-started/](https://kobs.io/contributing/getting-started/).
+More information, for example how to use the demo in you development workflow or how to submit a new plugin can be found in the documentation at [https://kobs.io/main/contributing/](https://kobs.io/main/contributing/).

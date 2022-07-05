@@ -2,9 +2,9 @@
   <img src="docs/assets/images/logo-blue.png" width="200" />
   <br><br>
 
-  **kobs** is an extensible observability platform for Kubernetes, which brings your metrics, logs, traces and Kubernetes resources into one place.
+  kobs is an **application-centric** observability platform for your **Kubernetes and Cloud** workloads, based on Custom Resource Definitions.
 
-  <img src="docs/assets/images/screenshot.png" width="100%" />
+  <img src="docs/overrides/assets/applications-overview.png" width="100%" />
 </div>
 
 kobs brings your metrics, logs, traces and Kubernetes into one place, to provide a better observability for your applications running in your clusters. kobs provides various Custom Resource Definition with which you can describe and group your applications across multiple clusters. You can extend kobs via plugin, to customize it for your needs or you can use one of the available plugins to improve your developer experience.
@@ -22,26 +22,6 @@ kobs brings your metrics, logs, traces and Kubernetes into one place, to provide
 - **Elasticsearch and Jaeger:** View the logs from Elasticsearch and traces from Jaeger, where it matters.
 - **Istio:** Get the topology graph from Kiali for your Istio service mesh directly in kobs.
 - **Authentication and Authorization:** Manage the access to kobs via [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) and provide your developers the permissions they need via Teams and Users CRs.
-
-## Usage
-
-kobs can be installed via Helm or Kustomize, just run the following commands to install kobs via Helm:
-
-```sh
-helm repo add kobs https://helm.kobs.io
-helm install kobs kobs/kobs
-```
-
-Or to install kobs via Kustomize run the following:
-
-```sh
-kubectl create namespace kobs
-kustomize build github.com/kobsio/kobs/deploy/kustomize | kubectl apply -f -
-```
-
-More information regarding the [installation](https://kobs.io/installation/helm/) and [configuration](https://kobs.io/main/configuration/getting-started/) of kobs can be found in the documentation at [kobs.io](https://kobs.io).
-
-You can also try the provided [demo](https://kobs.io/installation/demo/) to have a first look at kobs. After your kobs instance is up and running your can start with creating **[Applications](https://kobs.io/resources/applications/)** and **[Dashboards](https://kobs.io/resources/dashboards/)** for your running services.
 
 ## Contributing
 
