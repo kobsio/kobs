@@ -25,38 +25,38 @@ spec:
       - name: istio-ingressgateway
         enabled: true
         k8s:
-          # nodeSelector:
-          #   ingress-ready: "true"
-          # service:
-          #   type: NodePort
-          #   ports:
-          #     - name: status-port
-          #       port: 15021
-          #       protocol: TCP
-          #       targetPort: 15021
-          #       nodePort: 30002
-          #     - name: http2
-          #       port: 80
-          #       protocol: TCP
-          #       targetPort: 8080
-          #       nodePort: 30000
-          #     - name: https
-          #       port: 443
-          #       protocol: TCP
-          #       targetPort: 8443
-          #       nodePort: 30001
+          nodeSelector:
+            ingress-ready: "true"
           service:
+            type: NodePort
             ports:
+              - name: status-port
+                port: 15021
+                protocol: TCP
+                targetPort: 15021
+                nodePort: 30002
               - name: http2
                 port: 80
                 protocol: TCP
                 targetPort: 8080
-                nodePort: 32001
+                nodePort: 30000
               - name: https
                 port: 443
                 protocol: TCP
                 targetPort: 8443
-                nodePort: 32002
+                nodePort: 30001
+          # service:
+          #   ports:
+          #     - name: http2
+          #       port: 80
+          #       protocol: TCP
+          #       targetPort: 8080
+          #       nodePort: 32001
+          #     - name: https
+          #       port: 443
+          #       protocol: TCP
+          #       targetPort: 8443
+          #       nodePort: 32002
           overlays:
             - kind: PodDisruptionBudget
               name: istio-ingressgateway

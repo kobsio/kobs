@@ -10,7 +10,7 @@
   - [Frontend](#frontend)
     - [Plugins](#plugins-1)
     - [Generate all Assets](#generate-all-assets)
-  - [Add a new Plugin](#add-a-new-plugin)
+  - [Create and use Plugins](#create-and-use-plugins)
   - [Docker / Kubernetes](#docker---kubernetes)
 - [Documentation](#documentation)
 
@@ -202,9 +202,11 @@ The hub can then be started with the `--app.assets=./bin/app` argument to access
 ./bin/kobs hub --log.level=debug --hub.config=deploy/docker/kobs/hub.yaml --app.assets=./bin/app
 ```
 
-### Add a new Plugin
+### Create and use Plugins
 
-If you want to add a new plugin, please read the [Develop a Plugin](https://kobs.io/main/contributing/develop-a-plugin/) guide from the documentation.
+If you want to create a new plugin, please read the [Create a Plugin](https://kobs.io/main/contributing/create-a-plugin/) guide from the documentation.
+
+If you created a custom plugin or when you want to use a community plugins, please read the [Use Custom Plugins](https://kobs.io/main/contributing/use-custom-plugins/) guide from the documentation.
 
 ### Docker / Kubernetes
 
