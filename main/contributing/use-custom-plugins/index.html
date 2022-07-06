@@ -15,7 +15,7 @@
     
     
       
-        <title>Using the kobsio/app - kobs</title>
+        <title>Use Custom Plugins - kobs</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#using-the-kobsioapp" class="md-skip">
+        <a href="#using-custom-plugins" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Using the kobsio/app
+              Use Custom Plugins
             
           </span>
         </div>
@@ -1035,22 +1035,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../develop-a-plugin/" class="md-nav__link">
-        Develop a Plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../development-using-the-demo/" class="md-nav__link">
-        Development using the Demo
+      <a href="../create-a-plugin/" class="md-nav__link">
+        Create a Plugin
       </a>
     </li>
   
@@ -1073,12 +1059,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Using the kobsio/app
+          Use Custom Plugins
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Using the kobsio/app
+        Use Custom Plugins
       </a>
       
         
@@ -1097,23 +1083,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#add-a-new-plugin" class="md-nav__link">
-    Add a new Plugin
+  <a href="#add-a-plugin" class="md-nav__link">
+    Add a Plugin
+  </a>
+  
+    <nav class="md-nav" aria-label="Add a Plugin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maingo" class="md-nav__link">
+    main.go
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#build" class="md-nav__link">
-    Build
+        
+          <li class="md-nav__item">
+  <a href="#dockerfile" class="md-nav__link">
+    Dockerfile
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#develop-a-private-plugin" class="md-nav__link">
-    Develop a private Plugin
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1121,6 +1113,20 @@
   
 </nav>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-using-the-demo/" class="md-nav__link">
+        Development using the Demo
+      </a>
     </li>
   
 
@@ -1220,23 +1226,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#add-a-new-plugin" class="md-nav__link">
-    Add a new Plugin
+  <a href="#add-a-plugin" class="md-nav__link">
+    Add a Plugin
+  </a>
+  
+    <nav class="md-nav" aria-label="Add a Plugin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maingo" class="md-nav__link">
+    main.go
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#build" class="md-nav__link">
-    Build
+        
+          <li class="md-nav__item">
+  <a href="#dockerfile" class="md-nav__link">
+    Dockerfile
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#develop-a-private-plugin" class="md-nav__link">
-    Develop a private Plugin
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1252,112 +1264,100 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/kobsio/kobs/edit/main/docs/contributing/using-the-kobsio-app.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/kobsio/kobs/edit/main/docs/contributing/use-custom-plugins.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="using-the-kobsioapp">Using the kobsio/app</h1>
-<p>The <a href="https://github.com/kobsio/app">kobsio/app</a> can be used to build your own version of kobs. This is required if you want to use one of the <a href="../../plugins/#community-plugins">community plugins</a> or if you want to build your own private plugins for kobs.</p>
-<p>To use the kobsio/app repository you can use the <strong>Use this template</strong> button from the repository to create your own version of kobs.</p>
-<h2 id="add-a-new-plugin">Add a new Plugin</h2>
-<p>To add a new plugin you have to adjust two files: The <code>app/src/index.tsx</code> file for the React UI of the plugin and the <code>cmd/kobs/plugins/plugins.go</code> file to register the API routes for your plugin.</p>
-<p>To add the React UI for the plugin you have to import <code>IPluginComponents</code> object from the Node module:</p>
-<div class="highlight"><pre><span></span><code><span class="w">import React from &#39;react&#39;;</span>
-<span class="w">import ReactDOM from &#39;react-dom&#39;;</span>
-
-<span class="w">import &#39;./index.css&#39;;</span>
-
-<span class="w">import { App } from &#39;@kobsio/plugin-core&#39;;</span>
-<span class="w">import resourcesPlugin from &#39;@kobsio/plugin-resources&#39;;</span>
-<span class="w">import helloWorldPlugin from &#39;./plugins/helloworld&#39;;</span>
-<span class="gi">+import myNewPlugin  from  &#39;my-new-plugin&#39;;</span><span class="w"></span>
-
-<span class="w">ReactDOM.render(</span>
-<span class="w"> </span> &lt;React.StrictMode&gt;<span class="w"></span>
-<span class="w"> </span>   &lt;App plugins={{<span class="w"></span>
-<span class="w"> </span>     ...resourcesPlugin,<span class="w"></span>
-<span class="gi">+      ...myNewPlugin,</span><span class="w"></span>
-<span class="w"> </span>   }} /&gt;<span class="w"></span>
-<span class="w"> </span> &lt;/React.StrictMode&gt;,<span class="w"></span>
-<span class="w"> </span> document.getElementById(&#39;root&#39;)<span class="w"></span>
-<span class="w">);</span>
-</code></pre></div>
-<p>To register the API routes for the plugin you have to add the <code>Config</code> for the plugin to the plugins configuration and you have to <code>Register</code> the chi router for the plugin:</p>
-<div class="highlight"><pre><span></span><code><span class="w">package plugins</span>
+<h1 id="using-custom-plugins">Using custom Plugins</h1>
+<p>When you want to use custom plugins, e.g. a <a href="../../plugins/#community-plugins">community plugins</a> or a private plugin, you have to build your own Docker image for kobs. For this we are providing a template repository which can be found at <a href="https://github.com/kobsio/app-template">https://github.com/kobsio/app-template</a>.</p>
+<p>To use this template you can use the <strong>Use this template</strong> button from the repository to create your own version of kobs.</p>
+<h2 id="add-a-plugin">Add a Plugin</h2>
+<p>To add a plugin to your version of kobs your have to adjust the <a href="https://github.com/kobsio/app-template/blob/main/main.go"><code>main.go</code></a> and the <a href="https://github.com/kobsio/app-template/blob/main/Dockerfile"><code>Dockerfile</code></a>.</p>
+<h3 id="maingo"><code>main.go</code></h3>
+<p>The <code>main.go</code> file is used to register the plugin in the backend code. To do this you just have to import the Go package of the plugin and add it to the <code>pluginMounts</code> map. You can also remove once of the plugins which are comming with kobs if you do not need them. In the following example we are adding the <code>helloworld</code> plugin from the <a href="https://github.com/kobsio/plugin-template">kobsio/plugin-template</a> repository and removing the <code>rss</code> plugin, because we do not want to use it:</p>
+<div class="highlight"><pre><span></span><code><span class="w">package main</span>
 
 <span class="w">import (</span>
-<span class="w"> </span>       &quot;net/http&quot;<span class="w"></span>
+<span class="w"> </span>   &quot;github.com/kobsio/kobs/cmd/kobs/root&quot;<span class="w"></span>
+<span class="w"> </span>   &quot;github.com/kobsio/kobs/pkg/log&quot;<span class="w"></span>
+<span class="w"> </span>   &quot;github.com/kobsio/kobs/pkg/satellite/plugins/plugin&quot;<span class="w"></span>
 
-<span class="w"> </span>       &quot;github.com/kobsio/kobs/pkg/api/clusters&quot;<span class="w"></span>
-<span class="w"> </span>       &quot;github.com/kobsio/kobs/pkg/api/plugins/plugin&quot;<span class="w"></span>
+<span class="w"> </span>   azure &quot;github.com/kobsio/kobs/plugins/plugin-azure/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   elasticsearch &quot;github.com/kobsio/kobs/plugins/plugin-elasticsearch/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   flux &quot;github.com/kobsio/kobs/plugins/plugin-flux/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   grafana &quot;github.com/kobsio/kobs/plugins/plugin-grafana/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   harbor &quot;github.com/kobsio/kobs/plugins/plugin-harbor/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   helm &quot;github.com/kobsio/kobs/plugins/plugin-helm/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   istio &quot;github.com/kobsio/kobs/plugins/plugin-istio/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   jaeger &quot;github.com/kobsio/kobs/plugins/plugin-jaeger/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   kiali &quot;github.com/kobsio/kobs/plugins/plugin-kiali/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   klogs &quot;github.com/kobsio/kobs/plugins/plugin-klogs/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   opsgenie &quot;github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   prometheus &quot;github.com/kobsio/kobs/plugins/plugin-prometheus/cmd&quot;<span class="w"></span>
+<span class="gd">-    rss &quot;github.com/kobsio/kobs/plugins/plugin-rss/cmd&quot;</span><span class="w"></span>
+<span class="w"> </span>   sonarqube &quot;github.com/kobsio/kobs/plugins/plugin-sonarqube/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   sql &quot;github.com/kobsio/kobs/plugins/plugin-sql/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   techdocs &quot;github.com/kobsio/kobs/plugins/plugin-techdocs/cmd&quot;<span class="w"></span>
 
-<span class="w"> </span>       &quot;github.com/go-chi/chi/v5&quot;<span class="w"></span>
-<span class="w"> </span>       &quot;github.com/go-chi/render&quot;<span class="w"></span>
+<span class="gi">+    helloworld &quot;github.com/kobsio/plugin-template/cmd&quot;</span><span class="w"></span>
 
-<span class="w"> </span>       // Import all plugins, which should be used with the kobs instance. By default this are all first party plugins from<span class="w"></span>
-<span class="w"> </span>       // the plugins folder.<span class="w"></span>
-<span class="w"> </span>       &quot;github.com/kobsio/app/pkg/plugins/helloworld&quot;<span class="w"></span>
-<span class="gi">+        &quot;github.com/my-new-plugin/my-new-plugin&quot;</span><span class="w"></span>
-<span class="w"> </span>       &quot;github.com/kobsio/kobs/plugins/resources&quot;<span class="w"></span>
+<span class="w"> </span>   &quot;go.uber.org/zap&quot;<span class="w"></span>
 <span class="w">)</span>
 
-<span class="w">// Config holds the configuration for all plugins. We have to add the configuration for all the imported plugins.</span>
-<span class="w">type Config struct {</span>
-<span class="w"> </span>       Resources     resources.Config     `json:&quot;resources&quot;`<span class="w"></span>
-<span class="w"> </span>       HelloWorld    helloworld.Config    `json:&quot;helloworld&quot;`<span class="w"></span>
-<span class="gi">+        MyNewPlugin      mynewplugin.Config      `json:&quot;myNewPlugin&quot;`</span><span class="w"></span>
-<span class="w">}</span>
+<span class="w">func main() {</span>
+<span class="w"> </span>   var pluginMounts map[string]plugin.MountFn<span class="w"></span>
+<span class="w"> </span>   pluginMounts = make(map[string]plugin.MountFn)<span class="w"></span>
 
-<span class="w">// Router implements the router for the plugins package. This only registeres one route which is used to return all the</span>
-<span class="w">// configured plugins.</span>
-<span class="w">type Router struct {</span>
-<span class="w"> </span>       *chi.Mux<span class="w"></span>
-<span class="w"> </span>       plugins *plugin.Plugins<span class="w"></span>
-<span class="w">}</span>
+<span class="w"> </span>   pluginMounts[azure.PluginType] = azure.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[elasticsearch.PluginType] = elasticsearch.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[flux.PluginType] = flux.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[grafana.PluginType] = grafana.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[harbor.PluginType] = harbor.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[helm.PluginType] = helm.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[istio.PluginType] = istio.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[jaeger.PluginType] = jaeger.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[kiali.PluginType] = kiali.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[klogs.PluginType] = klogs.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[opsgenie.PluginType] = opsgenie.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[prometheus.PluginType] = prometheus.Mount<span class="w"></span>
+<span class="gd">-    pluginMounts[rss.PluginType] = rss.Mount</span><span class="w"></span>
+<span class="w"> </span>   pluginMounts[sonarqube.PluginType] = sonarqube.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[sql.PluginType] = sql.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[techdocs.PluginType] = techdocs.Mount<span class="w"></span>
 
-<span class="w">// getPlugins returns all registered plugin instances.</span>
-<span class="w">func (router *Router) getPlugins(w http.ResponseWriter, r *http.Request) {</span>
-<span class="w"> </span>       render.JSON(w, r, router.plugins)<span class="w"></span>
-<span class="w">}</span>
+<span class="gi">+    pluginMounts[helloworld.PluginType] = helloworld.Mount</span><span class="w"></span>
 
-<span class="w">// Register is used to register all api routes for plugins.</span>
-<span class="w">func Register(clustersClient clusters.Client, config Config) chi.Router {</span>
-<span class="w"> </span>       router := Router{<span class="w"></span>
-<span class="w"> </span>               chi.NewRouter(),<span class="w"></span>
-<span class="w"> </span>               &amp;plugin.Plugins{},<span class="w"></span>
-<span class="w"> </span>       }<span class="w"></span>
-
-<span class="w"> </span>       router.Get(&quot;/&quot;, router.getPlugins)<span class="w"></span>
-
-<span class="w"> </span>       // Register all plugins<span class="w"></span>
-<span class="w"> </span>       router.Mount(resources.Route, resources.Register(clustersClient, router.plugins, config.Resources))<span class="w"></span>
-<span class="w"> </span>       router.Mount(helloworld.Route, helloworld.Register(clustersClient, router.plugins, config.HelloWorld))<span class="w"></span>
-<span class="gi">+        router.Mount(mynewplugin.Route, mynewplugin.Register(clusters, router.plugins, config.MyNewPlugin))</span><span class="w"></span>
-
-<span class="w"> </span>       return router<span class="w"></span>
+<span class="w"> </span>   if err := root.Command(pluginMounts).Execute(); err != nil {<span class="w"></span>
+<span class="w"> </span>       log.Fatal(nil, &quot;Failed to initialize kobs&quot;, zap.Error(err))<span class="w"></span>
+<span class="w"> </span>   }<span class="w"></span>
 <span class="w">}</span>
 </code></pre></div>
-<h2 id="build">Build</h2>
-<p>To build your own version of kobs you have to build the React you first. For that switch into the <code>app</code> folder and run <code>yarn build</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span> app
-yarn build
+<p>When you have adjusted the <code>main.go</code> file run <code>go mod tidy</code> to add it to your <code>go.mod</code> file.</p>
+<h3 id="dockerfile"><code>Dockerfile</code></h3>
+<p>The <code>Dockerfile</code> is used to build your own version of kobs and to copy the frontend files for your plugin. We are using again the <code>helloworld</code> plugin from the <a href="https://github.com/kobsio/plugin-template">kobsio/plugin-template</a> in the following example:</p>
+<div class="highlight"><pre><span></span><code><span class="w">FROM kobsio/kobs:v0.9.0 as app</span>
+<span class="gi">+FROM kobsio/plugin:main as plugin-helloworld</span><span class="w"></span>
+
+<span class="w">FROM golang:1.18.3 as api</span>
+<span class="w">WORKDIR /kobs</span>
+<span class="w">COPY go.mod go.sum /kobs/</span>
+<span class="w">RUN go mod download</span>
+<span class="w">COPY . .</span>
+<span class="w">RUN export CGO_ENABLED=0 &amp;&amp; make build</span>
+
+<span class="w">FROM alpine:3.16.0</span>
+<span class="w">RUN apk update &amp;&amp; apk add --no-cache ca-certificates</span>
+<span class="w">RUN mkdir /kobs</span>
+<span class="w">COPY --from=api /kobs/bin/kobs /kobs</span>
+<span class="w">COPY --from=app /kobs/app /kobs/app</span>
+<span class="gi">+COPY --from=plugin-helloworld /kobs/helloworld /kobs/app/plugins/helloworld</span><span class="w"></span>
+<span class="w">WORKDIR /kobs</span>
+<span class="w">USER nobody</span>
+<span class="w">ENTRYPOINT  [ &quot;/kobs/kobs&quot; ]</span>
 </code></pre></div>
-<p>Then you can go back to the root folder of the repository and build the Go application:</p>
-<div class="highlight"><pre><span></span><code>make build
-</code></pre></div>
-<p>The above command puts the binary into a folder called <code>bin</code>. To start kobs you can use the following command:</p>
-<div class="highlight"><pre><span></span><code>./bin/kobs --config<span class="o">=</span>config.yaml --development
-</code></pre></div>
-<p>To build the Docker image for kobs you can use the Dockerfile from the <code>cmd/kobs</code> folder:</p>
-<div class="highlight"><pre><span></span><code>docker build -f ./cmd/kobs/Dockerfile -t kobsio/kobs:dev .
-docker run -it --rm --name kobs -p <span class="m">15219</span>:15219 -p <span class="m">15220</span>:15220 -p <span class="m">15221</span>:15221 -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/config.yaml:/kobs/config.yaml -v <span class="nv">$HOME</span>/.kube/config:/.kube/config kobsio/kobs:dev --development
-</code></pre></div>
-<h2 id="develop-a-private-plugin">Develop a private Plugin</h2>
-<p>If you want to develop your own private plugins within your version of the <a href="https://github.com/kobsio/app">kobsio/app</a> repository, we recommend that you create a new folder for each plugin. The frontend code for your plugin should go into the <code>app/src/plugins</code> folder and the backend code into the <code>pkg/plugins</code> folder.</p>
-<p>To get a better idea for the structure of your plugin you can take a look at the <code>helloworld</code> plugin in the <code>app/src/plugins/helloworld</code> and <code>pkg/plugins/helloworld</code> folders.</p>
-<p>More information on the development of a plugin can be found in the documentation: <a href="../develop-a-plugin/">Develop a Plugin</a>.</p>
+<p>The created Docker image can then be used within the <a href="../../getting-started/installation/helm/">Helm chart</a> or <a href="../../getting-started/installation/kustomize/">Kustomize</a> files from the documentation.</p>
 
               
             </article>
@@ -1373,7 +1373,7 @@ docker run -it --rm --name kobs -p <span class="m">15219</span>:15219 -p <span c
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../development-using-the-demo/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Development using the Demo" rel="prev">
+        <a href="../create-a-plugin/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Create a Plugin" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1382,20 +1382,20 @@ docker run -it --rm --name kobs -p <span class="m">15219</span>:15219 -p <span c
               <span class="md-footer__direction">
                 Previous
               </span>
-              Development using the Demo
+              Create a Plugin
             </div>
           </div>
         </a>
       
       
         
-        <a href="../release/" class="md-footer__link md-footer__link--next" aria-label="Next: Release" rel="next">
+        <a href="../development-using-the-demo/" class="md-footer__link md-footer__link--next" aria-label="Next: Development using the Demo" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Release
+              Development using the Demo
             </div>
           </div>
           <div class="md-footer__button md-icon">
