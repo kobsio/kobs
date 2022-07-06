@@ -71,9 +71,9 @@ nav:
       - community-plugins/index.md
   - Contributing:
       - contributing/index.md
-      - Develop a Plugin: contributing/develop-a-plugin.md
+      - Create a Plugin: contributing/create-a-plugin.md
+      - Use Custom Plugins: contributing/use-custom-plugins.md
       - Development using the Demo: contributing/development-using-the-demo.md
-      - Using the kobsio/app: contributing/using-the-kobsio-app.md
       - Release: contributing/release.md
       - Architecture Decision Records (ADR):
           - ADR001 - Facilitate Centralized Instance: contributing/adr/001_facilitate_centralized_instance.md
