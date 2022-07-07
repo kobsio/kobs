@@ -1,6 +1,8 @@
 package tracer
 
 import (
+	"context"
+
 	"github.com/kobsio/kobs/pkg/version"
 
 	"go.opentelemetry.io/contrib/propagators/b3"
@@ -32,13 +34,33 @@ func newProvider(service string, providerType string, url string) (*tracesdk.Tra
 		}
 	}
 
-	return tracesdk.NewTracerProvider(
-		tracesdk.WithBatcher(exp),
-		tracesdk.WithResource(resource.NewWithAttributes(
-			semconv.SchemaURL,
+	defaultResource, err := resource.New(
+		context.Background(),
+		resource.WithAttributes(
 			semconv.ServiceNameKey.String(service),
 			semconv.ServiceVersionKey.String(version.Version),
-		)),
+		),
+		resource.WithContainer(),
+		resource.WithContainerID(),
+		resource.WithHost(),
+		resource.WithOS(),
+		resource.WithProcessExecutableName(),
+		resource.WithProcessExecutablePath(),
+		resource.WithProcessOwner(),
+		resource.WithProcessPID(),
+		resource.WithProcessRuntimeDescription(),
+		resource.WithProcessRuntimeName(),
+		resource.WithProcessRuntimeVersion(),
+		resource.WithSchemaURL(semconv.SchemaURL),
+		resource.WithTelemetrySDK(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return tracesdk.NewTracerProvider(
+		tracesdk.WithBatcher(exp),
+		tracesdk.WithResource(defaultResource),
 	), nil
 }
 
