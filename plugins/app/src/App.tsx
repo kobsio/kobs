@@ -9,7 +9,6 @@ import React, { Suspense, lazy } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactDOM from 'react-dom/client';
 
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { AuthContextProvider } from './context/AuthContext';
 import Header from './components/header/Header';
 import { PluginsContextProvider } from './context/PluginsContext';
@@ -102,5 +101,3 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <App />
   </React.StrictMode>,
 );
-
-serviceWorkerRegistration.register();
