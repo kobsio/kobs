@@ -12,6 +12,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#382](https://github.com/kobsio/kobs/pull/#382): [app] Remove ServiceWorker.
+
 ### Changed
 
 ## [v0.9.0](https://github.com/kobsio/kobs/releases/tag/v0.9.0) (2022-07-05)
