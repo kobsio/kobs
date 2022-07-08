@@ -8,7 +8,6 @@
     "@azure/arm-containerinstance": "^8.1.0",
     "@azure/arm-containerservice": "^16.1.0",
     "@kobsio/react-scripts": "5.0.1-1",
-    "@nivo/core": "^0.79.0",
     "@nivo/line": "^0.79.1",
     "@nivo/pie": "^0.79.1",
     "@patternfly/patternfly": "^4.194.4",
