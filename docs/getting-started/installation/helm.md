@@ -43,7 +43,7 @@ helm upgrade --install satellite kobs/satellite
 | `replicas` | Number of replicas for the kobs Deployment. | `1` |
 | `imagePullSecrets` | Specify a list of image pull secrets, to avoid the DockerHub rate limit or to pull the kobs/enovy image from a private registry. | `[]` |
 | `image.repository` | The repository for the Docker image. | `kobsio/kobs` |
-| `image.tag` | The tag of the Docker image which should be used. | `v0.9.0` |
+| `image.tag` | The tag of the Docker image which should be used. | `v0.9.1` |
 | `image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
 | `podSecurityContext` | Specify security settings for the created Pods. To set the security settings for the kobs or envoy Container use the corresponding `securityContext` field. | `{}` |
 | `securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
@@ -105,7 +105,7 @@ helm upgrade --install satellite kobs/satellite
 | `replicas` | Number of replicas for the kobs Deployment. | `1` |
 | `imagePullSecrets` | Specify a list of image pull secrets, to avoid the DockerHub rate limit or to pull the kobs/enovy image from a private registry. | `[]` |
 | `image.repository` | The repository for the Docker image. | `kobsio/kobs` |
-| `image.tag` | The tag of the Docker image which should be used. | `v0.9.0` |
+| `image.tag` | The tag of the Docker image which should be used. | `v0.9.1` |
 | `image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
 | `podSecurityContext` | Specify security settings for the created Pods. To set the security settings for the kobs or envoy Container use the corresponding `securityContext` field. | `{}` |
 | `securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |

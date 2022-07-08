@@ -12,10 +12,14 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+### Changed
+
+## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
+
+### Fixed
+
 - [#382](https://github.com/kobsio/kobs/pull/#382): [app] Remove ServiceWorker.
 - [#383](https://github.com/kobsio/kobs/pull/#383): [app] Fix tooltip in charts.
-
-### Changed
 
 ## [v0.9.0](https://github.com/kobsio/kobs/releases/tag/v0.9.0) (2022-07-05)
 

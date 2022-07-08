@@ -22,7 +22,7 @@ spec:
       serviceAccountName: satellite
       containers:
         - name: satellite
-          image: "kobsio/kobs:v0.9.0"
+          image: "kobsio/kobs:v0.9.1"
           imagePullPolicy: IfNotPresent
           args:
             - satellite
