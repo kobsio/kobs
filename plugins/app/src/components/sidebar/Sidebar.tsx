@@ -2,6 +2,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Nav, NavGroup, NavItem, PageSidebar } from '@patternfly/react-core';
 import React from 'react';
 
+import CustomNavigation from './CustomNavigation';
+
 const Sidebar: React.FunctionComponent = () => {
   const location = useLocation();
 
@@ -24,6 +26,8 @@ const Sidebar: React.FunctionComponent = () => {
           <Link to="/plugins">Plugins</Link>
         </NavItem>
       </NavGroup>
+
+      <CustomNavigation />
     </Nav>
   );
 
