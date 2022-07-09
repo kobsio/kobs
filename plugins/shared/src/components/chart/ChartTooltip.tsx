@@ -22,26 +22,23 @@ export const ChartTooltip: React.FunctionComponent<IChartTooltipProps> = ({
 
   return (
     <TooltipWrapper anchor={anchorDefault} position={positionDefault}>
-      <div style={{ minWidth: '25vw' }}>
-        <div
-          style={{
-            background: '#151515',
-            color: '#f0f0f0',
-            fontFamily: '"RedHatText", "Overpass", overpass, helvetica, arial, sans-serif',
-            fontSize: '14px',
-            padding: '8px',
-            whiteSpace: 'nowrap',
-            width: 'fit-content',
-          }}
-        >
-          {title && (
-            <div>
-              <b>{title}</b>
-            </div>
-          )}
-          <div className="pf-u-text-break-word pf-u-text-wrap">
-            <SquareIcon color={color} /> {label}
+      <div
+        style={{
+          background: '#151515',
+          color: '#f0f0f0',
+          fontFamily: '"RedHatText", "Overpass", overpass, helvetica, arial, sans-serif',
+          fontSize: '14px',
+          padding: '8px',
+          width: '25vw',
+        }}
+      >
+        {title && (
+          <div>
+            <b>{title}</b>
           </div>
+        )}
+        <div className="pf-u-text-break-word pf-u-text-wrap">
+          <SquareIcon color={color} /> {label}
         </div>
       </div>
     </TooltipWrapper>

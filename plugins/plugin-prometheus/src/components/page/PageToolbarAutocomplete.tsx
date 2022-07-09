@@ -126,7 +126,7 @@ const PageToolbarAutocomplete: React.FunctionComponent<IPageToolbarAutocomplete>
         {inputFocused && data && data.length > 0 && !(data.length === 1 && data[0] === query) && (
           <div
             className="pf-c-search-input__menu"
-            style={{ height: '50vh', overflowX: 'auto' }}
+            style={{ maxHeight: '50vh', overflowX: 'auto' }}
             onMouseEnter={(): void => setHovering(true)}
             onMouseLeave={(): void => setHovering(false)}
           >

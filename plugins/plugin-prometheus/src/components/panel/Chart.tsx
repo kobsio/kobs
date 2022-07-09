@@ -66,7 +66,6 @@ export const Chart: React.FunctionComponent<IChartProps> = ({
       enableGridX={false}
       enableGridY={true}
       enablePoints={false}
-      xFormat="time:%Y-%m-%d %H:%M:%S"
       lineWidth={1}
       margin={{ bottom: 25, left: 50, right: 0, top: 0 }}
       theme={CHART_THEME}
@@ -86,9 +85,10 @@ export const Chart: React.FunctionComponent<IChartProps> = ({
           />
         );
       }}
+      xFormat="time:%Y-%m-%d %H:%M:%S"
       xScale={{ max: new Date(endTime), min: new Date(startTime), type: 'time' }}
-      yScale={getYScale(options.yAxis, options.stacked, min, max)}
       yFormat=" >-.4f"
+      yScale={getYScale(options.yAxis, options.stacked, min, max)}
     />
   );
 };
