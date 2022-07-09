@@ -41,6 +41,7 @@ nav:
           - hub: getting-started/configuration/hub.md
           - satellite: getting-started/configuration/satellite.md
           - Authentication: getting-started/configuration/authentication.md
+          - Navigation: getting-started/configuration/navigation.md
       - Demo: getting-started/demo/demo.md
   - Resources:
       - resources/index.md

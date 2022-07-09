@@ -10,6 +10,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
+- [#388](https://github.com/kobsio/kobs/pull/#388): [app] Customize navigation sidebar.
+
 ### Fixed
 
 - [#387](https://github.com/kobsio/kobs/pull/#387): [app] Fix tooltip in charts.

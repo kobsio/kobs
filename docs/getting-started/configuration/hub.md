@@ -78,6 +78,8 @@ api:
       #             plugin:
       #               type: app
       #               name: userapplications
+    # It is possible to customize the navigation sidebar of kobs. More details can be found on the "Navigation" page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).
+    navigation:
 ```
 
 You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: `${NAME_OF_THE_ENVIRONMENT_VARIABLE}`. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.
