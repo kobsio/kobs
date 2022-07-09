@@ -12,6 +12,8 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Fixed
 
+- [#387](https://github.com/kobsio/kobs/pull/#387): [app] Fix tooltip in charts.
+
 ### Changed
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
