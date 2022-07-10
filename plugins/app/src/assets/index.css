@@ -16,3 +16,16 @@ html, body, #root {
 .kobsio-hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* .pf-c-drawer > .pf-c-drawer__main > .pf-c-drawer__content > .pf-c-drawer__body
+ * This is a hack to get the drawer component inside the PageSectionComponent from the @kobsio/shared package working.
+ * When we are using the notification drawer component the drawer inside the PageSectionComponent doesn't use the full
+ * height anymore. With the following snippet this is fixed and the drawer is using the full height again.
+ * See also https://github.com/patternfly/patternfly-react/issues/7423 */
+.pf-c-drawer > .pf-c-drawer__main > .pf-c-drawer__content > .pf-c-drawer__body {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 0%;
+  flex-grow: 1;
+  flex-shrink: 1;
+}

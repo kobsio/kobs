@@ -3,6 +3,7 @@ package httptracer
 import (
 	"fmt"
 	"net/http"
+	"runtime/debug"
 	"strings"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
@@ -43,30 +44,49 @@ func (tw traceware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx, span := tw.tracer.Start(ctx, "http.request", oteltrace.WithSpanKind(oteltrace.SpanKindServer))
 	defer span.End()
 
+	defer func() {
+		// In go-chi/chi, full route pattern could only be extracted once the request is executed
+		// See: https://github.com/go-chi/chi/issues/150#issuecomment-278850733
+		routeStr := strings.Join(chi.RouteContext(r.Context()).RoutePatterns, "")
+		span.SetAttributes(semconv.HTTPServerAttributesFromHTTPRequest(tw.serverName, routeStr, r)...)
+		span.SetAttributes(semconv.NetAttributesFromHTTPRequest("tcp", r)...)
+		span.SetAttributes(semconv.EndUserAttributesFromHTTPRequest(r)...)
+		span.SetAttributes(otelhttp.ReadBytesKey.Int64(r.ContentLength))
+
+		if requestID := middleware.GetReqID(ctx); requestID != "" {
+			span.SetAttributes(attribute.Key("request.id").String(requestID))
+		}
+
+		if user, _ := authContext.GetUser(ctx); user != nil {
+			span.SetAttributes(attribute.Key("user.email").String(user.Email))
+		}
+
+		span.SetName(fmt.Sprintf("%s:%s", r.Method, routeStr))
+
+		if err := recover(); err != nil {
+			span.SetAttributes(semconv.HTTPAttributesFromHTTPStatusCode(500)...)
+			span.SetStatus(semconv.SpanStatusFromHTTPStatusCode(500))
+			span.AddEvent("panic", oteltrace.WithAttributes(
+				attribute.String("kind", "panic"),
+				attribute.String("message", fmt.Sprintf("%v", err)),
+				attribute.String("stack", string(debug.Stack())),
+			))
+			span.End()
+
+			panic(err)
+		}
+	}()
+
 	r = r.WithContext(ctx)
 	wrw := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 	tw.handler.ServeHTTP(wrw, r)
 
-	// In go-chi/chi, full route pattern could only be extracted once the request is executed
-	// See: https://github.com/go-chi/chi/issues/150#issuecomment-278850733
-	routeStr := strings.Join(chi.RouteContext(r.Context()).RoutePatterns, "")
-	attrs := semconv.HTTPAttributesFromHTTPStatusCode(wrw.Status())
-	attrs = append(attrs, semconv.NetAttributesFromHTTPRequest("tcp", r)...)
-	attrs = append(attrs, semconv.EndUserAttributesFromHTTPRequest(r)...)
-	attrs = append(attrs, semconv.HTTPServerAttributesFromHTTPRequest(tw.serverName, routeStr, r)...)
-	attrs = append(attrs, otelhttp.WroteBytesKey.Int(wrw.BytesWritten()))
-	attrs = append(attrs, otelhttp.ReadBytesKey.Int64(r.ContentLength))
-
-	if requestID := middleware.GetReqID(ctx); requestID != "" {
-		attrs = append(attrs, attribute.Key("request.id").String(requestID))
-	}
-	if user, _ := authContext.GetUser(ctx); user != nil {
-		attrs = append(attrs, attribute.Key("user.email").String(user.Email))
+	status := wrw.Status()
+	if status == 0 {
+		status = http.StatusOK
 	}
 
-	span.SetAttributes(attrs...)
-	span.SetName(fmt.Sprintf("%s:%s", r.Method, routeStr))
-
-	spanStatus, spanMessage := semconv.SpanStatusFromHTTPStatusCode(wrw.Status())
-	span.SetStatus(spanStatus, spanMessage)
+	span.SetAttributes(otelhttp.WroteBytesKey.Int(wrw.BytesWritten()))
+	span.SetAttributes(semconv.HTTPAttributesFromHTTPStatusCode(status)...)
+	span.SetStatus(semconv.SpanStatusFromHTTPStatusCode(status))
 }

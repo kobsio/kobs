@@ -21,8 +21,8 @@ import (
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/debug"
 	"github.com/kobsio/kobs/pkg/middleware/httplog"
+	"github.com/kobsio/kobs/pkg/middleware/httpmetrics"
 	"github.com/kobsio/kobs/pkg/middleware/httptracer"
-	"github.com/kobsio/kobs/pkg/middleware/metrics"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -93,8 +93,8 @@ func New(config api.Config, debugUsername, debugPassword, hubAddress string, aut
 		r.Use(middleware.URLFormat)
 		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient))
 		r.Use(httptracer.Handler("hub"))
-		r.Use(metrics.Metrics)
-		r.Use(httplog.Logger)
+		r.Use(httpmetrics.Handler)
+		r.Use(httplog.Handler)
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/auth", userauth.Mount(authLogoutRedirect))

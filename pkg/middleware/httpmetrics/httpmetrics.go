@@ -1,4 +1,4 @@
-package metrics
+package httpmetrics
 
 import (
 	"net/http"
@@ -27,8 +27,8 @@ var (
 	}, []string{"response_code", "request_method", "request_path"})
 )
 
-// Metrics is a middleware that handles the Prometheus metrics for kobs and chi.
-func Metrics(next http.Handler) http.Handler {
+// Handler is a middleware that handles the Prometheus metrics for kobs and chi.
+func Handler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		wrw := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
