@@ -42,6 +42,7 @@ nav:
           - satellite: getting-started/configuration/satellite.md
           - Authentication: getting-started/configuration/authentication.md
           - Navigation: getting-started/configuration/navigation.md
+          - Notifications: getting-started/configuration/notifications.md
       - Demo: getting-started/demo/demo.md
   - Resources:
       - resources/index.md

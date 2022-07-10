@@ -14,7 +14,15 @@ import HeaderToolbar from './HeaderToolbar';
 
 import logo from '../../assets/logo.png';
 
-const Header: React.FunctionComponent = () => {
+interface IHeaderProps {
+  isNotificationDrawerExpanded: boolean;
+  setIsNotificationDrawerExpanded: (value: boolean) => void;
+}
+
+const Header: React.FunctionComponent<IHeaderProps> = ({
+  isNotificationDrawerExpanded,
+  setIsNotificationDrawerExpanded,
+}: IHeaderProps) => {
   return (
     <Masthead>
       <MastheadToggle>
@@ -28,7 +36,10 @@ const Header: React.FunctionComponent = () => {
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>
-        <HeaderToolbar />
+        <HeaderToolbar
+          isNotificationDrawerExpanded={isNotificationDrawerExpanded}
+          setIsNotificationDrawerExpanded={setIsNotificationDrawerExpanded}
+        />
       </MastheadContent>
     </Masthead>
   );

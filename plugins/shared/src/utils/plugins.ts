@@ -41,6 +41,14 @@ export interface IPluginPanelProps {
   setDetails?: (details: React.ReactNode) => void;
 }
 
+export interface IPluginNotificationsProps {
+  title: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options?: any;
+  instance: IPluginInstance;
+  times: ITimes;
+}
+
 export const pluginBasePath = (instance: IPluginInstance): string => {
   return `/plugins/${encodeURIComponent(instance.satellite)}/${encodeURIComponent(instance.type)}/${encodeURIComponent(
     instance.name,
