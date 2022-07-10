@@ -10,6 +10,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/api/clusters"
 	"github.com/kobsio/kobs/pkg/hub/api/dashboards"
 	"github.com/kobsio/kobs/pkg/hub/api/navigation"
+	"github.com/kobsio/kobs/pkg/hub/api/notifications"
 	"github.com/kobsio/kobs/pkg/hub/api/plugins"
 	"github.com/kobsio/kobs/pkg/hub/api/resources"
 	"github.com/kobsio/kobs/pkg/hub/api/teams"
@@ -98,6 +99,7 @@ func New(config api.Config, debugUsername, debugPassword, hubAddress string, aut
 
 		r.Mount("/auth", userauth.Mount(authLogoutRedirect))
 		r.Mount("/navigation", navigation.Mount(config.Navigation))
+		r.Mount("/notifications", notifications.Mount(config.Notifications))
 		r.Mount("/clusters", clusters.Mount(storeClient))
 		r.Mount("/applications", applications.Mount(storeClient))
 		r.Mount("/teams", teams.Mount(storeClient))
