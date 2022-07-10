@@ -9,8 +9,8 @@ import (
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/debug"
 	"github.com/kobsio/kobs/pkg/middleware/httplog"
+	"github.com/kobsio/kobs/pkg/middleware/httpmetrics"
 	"github.com/kobsio/kobs/pkg/middleware/httptracer"
-	"github.com/kobsio/kobs/pkg/middleware/metrics"
 	"github.com/kobsio/kobs/pkg/satellite/api"
 	"github.com/kobsio/kobs/pkg/satellite/api/applications"
 	apiClusters "github.com/kobsio/kobs/pkg/satellite/api/clusters"
@@ -93,8 +93,8 @@ func New(debugUsername, debugPassword, satelliteAddress, satelliteToken string, 
 		r.Use(tokenauth.Handler(satelliteToken))
 		r.Use(user.Handler())
 		r.Use(httptracer.Handler("satellite"))
-		r.Use(metrics.Metrics)
-		r.Use(httplog.Logger)
+		r.Use(httpmetrics.Handler)
+		r.Use(httplog.Handler)
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
 		r.Mount("/clusters", apiClusters.Mount(apiConfig.Clusters, clustersClient))

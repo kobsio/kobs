@@ -13,16 +13,41 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// Logger is a middleware that handles the request logging for chi via zap.
-func Logger(next http.Handler) http.Handler {
+// Handler is a middleware that handles the request logging for chi via zap.
+func Handler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		wrw := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
-		next.ServeHTTP(wrw, r)
 
 		scheme := "http"
 		if r.TLS != nil {
 			scheme = "https"
+		}
+
+		defer func() {
+			if err := recover(); err != nil {
+				fields := []zapcore.Field{
+					zap.String("requestScheme", scheme),
+					zap.String("requestProto", r.Proto),
+					zap.String("requestMethod", r.Method),
+					zap.String("requestAddr", r.RemoteAddr),
+					zap.String("requestUserAgent", r.UserAgent()),
+					zap.String("requestURI", fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)),
+					zap.Int("responseStatus", 500),
+					zap.Float64("requestLatency", float64(time.Since(start).Nanoseconds())/1000000),
+					zap.String("error", fmt.Sprintf("%v", err)),
+				}
+
+				log.Panic(r.Context(), "Request completed", fields...)
+				panic(err)
+			}
+		}()
+
+		wrw := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+		next.ServeHTTP(wrw, r)
+
+		status := wrw.Status()
+		if status == 0 {
+			status = http.StatusOK
 		}
 
 		fields := []zapcore.Field{
@@ -32,12 +57,16 @@ func Logger(next http.Handler) http.Handler {
 			zap.String("requestAddr", r.RemoteAddr),
 			zap.String("requestUserAgent", r.UserAgent()),
 			zap.String("requestURI", fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)),
-			zap.Int("responseStatus", wrw.Status()),
+			zap.Int("responseStatus", status),
 			zap.Int("responseBytes", wrw.BytesWritten()),
 			zap.Float64("requestLatency", float64(time.Since(start).Nanoseconds())/1000000),
 		}
 
-		log.Info(r.Context(), "Request completed", fields...)
+		if status >= 500 {
+			log.Error(r.Context(), "Request completed", fields...)
+		} else {
+			log.Info(r.Context(), "Request completed", fields...)
+		}
 	}
 
 	return http.HandlerFunc(fn)
