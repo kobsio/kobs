@@ -586,6 +586,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notifications/" class="md-nav__link">
+        Notifications
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1462,8 +1476,12 @@
 <span class="w">      </span><span class="c1">#             plugin:</span><span class="w"></span>
 <span class="w">      </span><span class="c1">#               type: app</span><span class="w"></span>
 <span class="w">      </span><span class="c1">#               name: userapplications</span><span class="w"></span>
+
 <span class="w">    </span><span class="c1"># It is possible to customize the navigation sidebar of kobs. More details can be found on the &quot;Navigation&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).</span><span class="w"></span>
 <span class="w">    </span><span class="nt">navigation</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1"># It is possible to show notifications within kobs from a configured plugin. More details can be found on the &quot;Notifications&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).</span><span class="w"></span>
+<span class="w">    </span><span class="nt">notifications</span><span class="p">:</span><span class="w"></span>
 </code></pre></div>
 <p>You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: <code>${NAME_OF_THE_ENVIRONMENT_VARIABLE}</code>. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.</p>
 
