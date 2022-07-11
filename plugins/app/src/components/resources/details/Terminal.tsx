@@ -8,6 +8,7 @@ import {
   SelectOption,
   SelectOptionObject,
   SelectVariant,
+  Spinner,
 } from '@patternfly/react-core';
 import { ITerminalOptions, Terminal as xTerm } from 'xterm';
 import React, { useEffect, useRef, useState } from 'react';
@@ -82,7 +83,7 @@ interface ITerminalProps {
 
 const Terminal: React.FunctionComponent<ITerminalProps> = ({ resourceData }: ITerminalProps) => {
   const ws = useRef<WebSocket | null>(null);
-  const term = useRef<xTerm>(new xTerm(TERMINAL_OPTIONS));
+  const [state, setState] = useState<{ isLoading: boolean; term?: xTerm }>({ isLoading: false, term: undefined });
   const containers = getContainers(resourceData.props);
   const shells = ['bash', 'sh', 'pwsh', 'cmd'];
 
@@ -99,51 +100,58 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ resourceData }: ITe
   });
 
   const getTerminal = async (): Promise<void> => {
-    ws.current?.close();
+    setState({ isLoading: true, term: undefined });
 
-    try {
-      const host = window.location.host.startsWith('localhost:')
-        ? 'ws://localhost:15220'
-        : `wss://${window.location.host}`;
+    setTimeout(() => {
+      const tmpTerm = new xTerm(TERMINAL_OPTIONS);
+      ws.current?.close();
 
-      ws.current = new WebSocket(
-        `${host}/api/resources/terminal?satellite=${resourceData.satellite}&cluster=${resourceData.cluster}${
-          resourceData.namespace ? `&namespace=${resourceData.namespace}` : ''
-        }&name=${resourceData.name}&container=${options.container}&shell=${options.shell}`,
-      );
+      try {
+        const host = window.location.host.startsWith('localhost:')
+          ? 'ws://localhost:15220'
+          : `wss://${window.location.host}`;
 
-      term.current.reset();
-
-      term.current.onData((str) => {
-        ws.current?.send(
-          JSON.stringify({
-            Cols: term.current.cols,
-            Data: str,
-            Op: 'stdin',
-            Rows: term.current.rows,
-          }),
+        ws.current = new WebSocket(
+          `${host}/api/resources/terminal?satellite=${resourceData.satellite}&cluster=${resourceData.cluster}${
+            resourceData.namespace ? `&namespace=${resourceData.namespace}` : ''
+          }&name=${resourceData.name}&container=${options.container}&shell=${options.shell}`,
         );
-      });
 
-      term.current.onResize(() => {
-        ws.current?.send(
-          JSON.stringify({
-            Cols: term.current.cols,
-            Op: 'resize',
-            Rows: term.current.rows,
-          }),
-        );
-      });
+        tmpTerm.reset();
 
-      ws.current.onmessage = (event): void => {
-        const msg = JSON.parse(event.data);
-        if (msg.Op === 'stdout') {
-          term.current.write(msg.Data);
-        }
-      };
-    } catch (err) {
-      term.current.write(`${err.message}\n\r`);
-    }
+        tmpTerm.onData((str) => {
+          ws.current?.send(
+            JSON.stringify({
+              Cols: tmpTerm.cols,
+              Data: str,
+              Op: 'stdin',
+              Rows: tmpTerm.rows,
+            }),
+          );
+        });
+
+        tmpTerm.onResize(() => {
+          ws.current?.send(
+            JSON.stringify({
+              Cols: tmpTerm.cols,
+              Op: 'resize',
+              Rows: tmpTerm.rows,
+            }),
+          );
+        });
+
+        ws.current.onmessage = (event): void => {
+          const msg = JSON.parse(event.data);
+          if (msg.Op === 'stdout') {
+            tmpTerm.write(msg.Data);
+          }
+        };
+      } catch (err) {
+        tmpTerm.write(`${err.message}\n\r`);
+      }
+
+      setState({ isLoading: false, term: tmpTerm });
+    }, 1000);
   };
 
   useEffect(() => () => ws.current?.close(), []);
@@ -200,7 +208,15 @@ const Terminal: React.FunctionComponent<ITerminalProps> = ({ resourceData }: ITe
             </Toolbar>
           </FlexItem>
           <FlexItem>
-            <TerminalContainer terminal={term.current} />
+            {state.isLoading ? (
+              <div className="pf-u-text-align-center">
+                <Spinner />
+              </div>
+            ) : state.term ? (
+              <TerminalContainer terminal={state.term} />
+            ) : (
+              <div style={{ height: '500px' }}></div>
+            )}
           </FlexItem>
         </Flex>
       </CardBody>

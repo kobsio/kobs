@@ -17,6 +17,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Fixed
 
 - [#387](https://github.com/kobsio/kobs/pull/#387): [app] Fix tooltip in charts.
+- [#391](https://github.com/kobsio/kobs/pull/#391): [app] Fix terminal for Kubernetes Pods.
 
 ### Changed
 
