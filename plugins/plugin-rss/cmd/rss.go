@@ -80,6 +80,7 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 
 			if feed != nil {
 				mu.Lock()
+				feed.FeedLink = url
 				feeds = append(feeds, feed)
 				mu.Unlock()
 			}

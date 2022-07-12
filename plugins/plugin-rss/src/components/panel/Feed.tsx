@@ -12,20 +12,21 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-icon';
 import React from 'react';
 
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import FeedList from './FeedList';
 import { IItem } from '../../utils/interfaces';
-import { IPluginInstance } from '@kobsio/shared';
 
 interface IFeedProps {
   instance: IPluginInstance;
   urls: string[];
   sortBy: string;
+  times?: ITimes;
   setDetails?: (details: React.ReactNode) => void;
 }
 
-const Feed: React.FunctionComponent<IFeedProps> = ({ instance, urls, sortBy, setDetails }: IFeedProps) => {
+const Feed: React.FunctionComponent<IFeedProps> = ({ instance, urls, sortBy, times, setDetails }: IFeedProps) => {
   const { isError, isLoading, error, data, refetch } = useQuery<IItem[], Error>(
-    ['rss/feed', instance, urls, sortBy],
+    ['rss/feed', instance, urls, sortBy, times],
     async () => {
       try {
         const urlParams = urls.map((url) => `&url=${url}`).join('');

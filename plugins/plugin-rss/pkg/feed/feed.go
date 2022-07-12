@@ -11,6 +11,7 @@ import (
 type Item struct {
 	FeedTitle string `json:"feedTitle,omitempty"`
 	FeedImage string `json:"feedImage,omitempty"`
+	FeedLink  string `json:"feedLink,omitempty"`
 
 	Title       string            `json:"title,omitempty"`
 	Description string            `json:"description,omitempty"`
@@ -55,6 +56,7 @@ func Transform(feeds []*gofeed.Feed, sortBy string) []Item {
 			items = append(items, Item{
 				FeedTitle: feed.Title,
 				FeedImage: feedImage,
+				FeedLink:  feed.FeedLink,
 
 				Title:       item.Title,
 				Description: item.Description,
