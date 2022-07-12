@@ -592,6 +592,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#rss" class="md-nav__link">
+    RSS
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1263,6 +1270,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#rss" class="md-nav__link">
+    RSS
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1288,7 +1302,7 @@
 
 <h1 id="notifications">Notifications</h1>
 <p>It is possible to show notifications within kobs. Notifications are configured in the <a href="../hub/"><code>hub configuration file</code></a>. They can be retrieved via supported <a href="#plugins">plugins</a>. When notifications are configured a new <strong>notification bell</strong> icon will be displayed in the header. When a user clicks on this icon a drawer with the configured notifications will be shown.</p>
-<p>The following example uses the Opsgenie plugin to show all open alerts and incidents.</p>
+<p>The following example uses the Opsgenie plugin to show all open alerts and incidents and the RSS plugin to show the status of GitHub.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">api</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">notifications</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">groups</span><span class="p">:</span><span class="w"></span>
@@ -1308,6 +1322,14 @@
 <span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alerts</span><span class="w"></span>
 <span class="w">            </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;status:</span><span class="nv"> </span><span class="s">open&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Status</span><span class="w"></span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rss</span><span class="w"></span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rss</span><span class="w"></span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">urls</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://www.githubstatus.com/history.rss</span><span class="w"></span>
 </code></pre></div>
 <p><img alt="Opsgenie" src="../assets/notifications-opsgenie.png" /></p>
 <h2 id="plugins">Plugins</h2>
@@ -1339,6 +1361,31 @@
 <td>interval</td>
 <td>number</td>
 <td>An optional interval in seconds, which should be used instead of the default interval of 90 days to get the alerts / incidents for.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rss">RSS</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>urls</td>
+<td>[]string</td>
+<td>A list of RSS feed URLs.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>sortBy</td>
+<td>string</td>
+<td>Set the field by which the retrieved feed items should be sorted. This can be <code>feed</code>, <code>title</code>, <code>updated</code> or <code>published</code>. The default value is <code>published</code>.</td>
 <td>No</td>
 </tr>
 </tbody>
