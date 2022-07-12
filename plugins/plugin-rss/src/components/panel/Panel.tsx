@@ -13,12 +13,19 @@ const Panel: React.FunctionComponent<IRSSPluginPanelProps> = ({
   description,
   options,
   instance,
+  times,
   setDetails,
 }: IRSSPluginPanelProps) => {
   if (options && options.urls && Array.isArray(options.urls) && options.urls.length > 0) {
     return (
       <PluginPanel title={title} description={description}>
-        <Feed instance={instance} urls={options.urls} sortBy={options.sortBy || 'published'} setDetails={setDetails} />
+        <Feed
+          instance={instance}
+          urls={options.urls}
+          sortBy={options.sortBy || 'published'}
+          times={times}
+          setDetails={setDetails}
+        />
       </PluginPanel>
     );
   }

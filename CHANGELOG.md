@@ -13,6 +13,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#388](https://github.com/kobsio/kobs/pull/#388): [app] Customize navigation sidebar.
 - [#389](https://github.com/kobsio/kobs/pull/#389): [app] Add notifications. In the first step notifications are only supported by the Opsgenie plugin.
 - [#390](https://github.com/kobsio/kobs/pull/#390): [app] Improve instrumentation middleware.
+- [#392](https://github.com/kobsio/kobs/pull/#392): [rss] Display RSS feeds within the notifications.
 
 ### Fixed
 
