@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
+import AppNotifications from './AppNotifications';
 import { IGroup } from '../../context/NotificationsContext';
 import { ITimes } from '@kobsio/shared';
 import Module from '../module/Module';
@@ -17,6 +18,12 @@ const NotificationsGroup: React.FunctionComponent<INotificationsGroupProps> = ({
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
   const instance = pluginsContext.getInstance(group.plugin.satellite, group.plugin.type, group.plugin.name);
 
+  if (!instance || group.plugin.type === 'app') {
+    return (
+      <AppNotifications name={group.plugin.name} title={group.title} options={group.plugin.options} times={times} />
+    );
+  }
+
   const loadingContent = (): React.ReactElement => {
     return <div></div>;
   };
@@ -24,10 +31,6 @@ const NotificationsGroup: React.FunctionComponent<INotificationsGroupProps> = ({
   const errorContent = (props: { title: string; children: React.ReactElement }): React.ReactElement => {
     return <div></div>;
   };
-
-  if (!instance) {
-    return <div></div>;
-  }
 
   return (
     <Module

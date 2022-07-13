@@ -10,6 +10,7 @@ import { IResource } from '../../resources/clusters';
 interface IResourcesPanelTableProps {
   resourceResponse: IResourceResponse;
   columns?: IColumn[];
+  filter?: string;
   selectedRow: number;
   selectRow?: (rowIndex: number, resource: IResource, resourceData: IResourceRow) => void;
 }
@@ -17,6 +18,7 @@ interface IResourcesPanelTableProps {
 const ResourcesPanelTable: React.FunctionComponent<IResourcesPanelTableProps> = ({
   resourceResponse,
   columns,
+  filter,
   selectedRow,
   selectRow,
 }: IResourcesPanelTableProps) => {
@@ -74,7 +76,7 @@ const ResourcesPanelTable: React.FunctionComponent<IResourcesPanelTableProps> = 
             </Td>
           </Tr>
         ) : (
-          tableData.rows(resourceResponse, columns).map((row, rowIndex) => (
+          tableData.rows(resourceResponse, columns, filter).map((row, rowIndex) => (
             <Tr
               key={rowIndex}
               isHoverable={selectRow ? true : false}

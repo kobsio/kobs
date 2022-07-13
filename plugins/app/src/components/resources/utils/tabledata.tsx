@@ -51,7 +51,11 @@ export interface ITableData {
 
 export interface ITableDatum {
   columns: string[];
-  rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined) => IResourceRow[];
+  rows: (
+    resourceResponse: IResourceResponse,
+    columns: IColumn[] | undefined,
+    filter: string | undefined,
+  ) => IResourceRow[];
 }
 
 export interface IResourceRow {
@@ -71,12 +75,20 @@ export const resourcesTableData: ITableData = {
   // eslint-disable-next-line sort-keys
   cronjobs: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Schedule', 'Suspend', 'Active', 'Last Schedule', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const cronJobsList: V1beta1CronJobList = resourceList.list;
         for (const cronJob of cronJobsList.items) {
+          if (!filterByJSONPath(cronJob, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, cronJob, columns);
             rows.push(row);
@@ -134,12 +146,20 @@ export const resourcesTableData: ITableData = {
       'Age',
       '',
     ],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const daemonSetList: V1DaemonSetList = resourceList.list;
         for (const daemonSet of daemonSetList.items) {
+          if (!filterByJSONPath(daemonSet, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, daemonSet, columns);
             rows.push(row);
@@ -202,12 +222,20 @@ export const resourcesTableData: ITableData = {
   },
   deployments: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Ready', 'Up to date', 'Available', 'Age', ''],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const deploymentList: V1DeploymentList = resourceList.list;
         for (const deployment of deploymentList.items) {
+          if (!filterByJSONPath(deployment, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, deployment, columns);
             rows.push(row);
@@ -259,12 +287,20 @@ export const resourcesTableData: ITableData = {
   },
   jobs: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Completions', 'Duration', 'Age', ''],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const jobList: V1JobList = resourceList.list;
         for (const job of jobList.items) {
+          if (!filterByJSONPath(job, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, job, columns);
             rows.push(row);
@@ -315,12 +351,20 @@ export const resourcesTableData: ITableData = {
   },
   pods: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Ready', 'Status', 'Restarts', 'Age', ''],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const podList: V1PodList = resourceList.list;
         for (const pod of podList.items) {
+          if (!filterByJSONPath(pod, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, pod, columns);
             rows.push(row);
@@ -330,10 +374,25 @@ export const resourcesTableData: ITableData = {
               pod.metadata && pod.metadata.creationTimestamp
                 ? timeDifference(new Date().getTime(), new Date(pod.metadata.creationTimestamp.toString()).getTime())
                 : '-';
+            let initReason = '';
             let reason = pod.status && pod.status.reason ? pod.status.reason : '';
             let shouldReady = 0;
             let isReady = 0;
             let restarts = 0;
+
+            if (pod.status && pod.status.initContainerStatuses) {
+              for (const container of pod.status.initContainerStatuses) {
+                if (container.ready === false && container.state && container.state.waiting) {
+                  initReason = container.state.waiting.reason ? container.state.waiting.reason : '';
+                  break;
+                }
+
+                if (container.ready === false && container.state && container.state.terminated) {
+                  initReason = container.state.terminated.reason ? container.state.terminated.reason : '';
+                  break;
+                }
+              }
+            }
 
             if (pod.status && pod.status.containerStatuses) {
               for (const container of pod.status.containerStatuses) {
@@ -362,7 +421,7 @@ export const resourcesTableData: ITableData = {
                 pod.metadata?.namespace || '',
                 renderCluster(resourceList),
                 `${isReady}/${shouldReady}`,
-                reason ? reason : phase,
+                initReason ? initReason : reason ? reason : phase,
                 restarts,
                 age,
                 <span key="status">
@@ -392,12 +451,20 @@ export const resourcesTableData: ITableData = {
   },
   replicasets: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Desired', 'Current', 'Ready', 'Age', ''],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const replicaSetList: V1ReplicaSetList = resourceList.list;
         for (const replicaSet of replicaSetList.items) {
+          if (!filterByJSONPath(replicaSet, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, replicaSet, columns);
             rows.push(row);
@@ -446,12 +513,20 @@ export const resourcesTableData: ITableData = {
   },
   statefulsets: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Ready', 'Up to date', 'Age', ''],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const statefulSetList: V1StatefulSetList = resourceList.list;
         for (const statefulSet of statefulSetList.items) {
+          if (!filterByJSONPath(statefulSet, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, statefulSet, columns);
             rows.push(row);
@@ -502,12 +577,20 @@ export const resourcesTableData: ITableData = {
   // eslint-disable-next-line sort-keys
   endpoints: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Endpoints', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const enpointList: V1EndpointsList = resourceList.list;
         for (const endpoint of enpointList.items) {
+          if (!filterByJSONPath(endpoint, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, endpoint, columns);
             rows.push(row);
@@ -552,12 +635,20 @@ export const resourcesTableData: ITableData = {
   },
   horizontalpodautoscalers: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Reference', 'Min. Pods', 'Max. Pods', 'Replicas', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const hpaList: V2beta1HorizontalPodAutoscalerList = resourceList.list;
         for (const hpa of hpaList.items) {
+          if (!filterByJSONPath(hpa, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, hpa, columns);
             rows.push(row);
@@ -603,12 +694,20 @@ export const resourcesTableData: ITableData = {
   },
   ingresses: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Hosts', 'Adress', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const ingressList: V1IngressList = resourceList.list;
         for (const ingress of ingressList.items) {
+          if (!filterByJSONPath(ingress, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, ingress, columns);
             rows.push(row);
@@ -654,12 +753,20 @@ export const resourcesTableData: ITableData = {
   },
   networkpolicies: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Pod Selector', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const networkPolicyList: V1NetworkPolicyList = resourceList.list;
         for (const networkPolicy of networkPolicyList.items) {
+          if (!filterByJSONPath(networkPolicy, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, networkPolicy, columns);
             rows.push(row);
@@ -696,12 +803,20 @@ export const resourcesTableData: ITableData = {
   },
   services: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Type', 'Cluster IP', 'External IP', 'Port(s)', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const serviceList: V1ServiceList = resourceList.list;
         for (const service of serviceList.items) {
+          if (!filterByJSONPath(service, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, service, columns);
             rows.push(row);
@@ -758,12 +873,20 @@ export const resourcesTableData: ITableData = {
   // eslint-disable-next-line sort-keys
   configmaps: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Data', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const configMapList: V1ConfigMapList = resourceList.list;
         for (const configMap of configMapList.items) {
+          if (!filterByJSONPath(configMap, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, configMap, columns);
             rows.push(row);
@@ -809,12 +932,20 @@ export const resourcesTableData: ITableData = {
       'Storage Class',
       'Age',
     ],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const pvcList: V1PersistentVolumeClaimList = resourceList.list;
         for (const pvc of pvcList.items) {
+          if (!filterByJSONPath(pvc, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, pvc, columns);
             rows.push(row);
@@ -868,12 +999,20 @@ export const resourcesTableData: ITableData = {
       'Reason',
       'Age',
     ],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const persistentVolumeList: V1PersistentVolumeList = resourceList.list;
         for (const persistentVolume of persistentVolumeList.items) {
+          if (!filterByJSONPath(persistentVolume, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, persistentVolume, columns);
             rows.push(row);
@@ -947,12 +1086,20 @@ export const resourcesTableData: ITableData = {
       'Age',
       '',
     ],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const pdbList: V1beta1PodDisruptionBudgetList = resourceList.list;
         for (const pdb of pdbList.items) {
+          if (!filterByJSONPath(pdb, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, pdb, columns);
             rows.push(row);
@@ -1003,12 +1150,20 @@ export const resourcesTableData: ITableData = {
   },
   secrets: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Type', 'Data', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const secretList: V1SecretList = resourceList.list;
         for (const secret of secretList.items) {
+          if (!filterByJSONPath(secret, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, secret, columns);
             rows.push(row);
@@ -1044,12 +1199,20 @@ export const resourcesTableData: ITableData = {
   },
   serviceaccounts: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Secrets', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const serviceAccountList: V1ServiceAccountList = resourceList.list;
         for (const serviceAccount of serviceAccountList.items) {
+          if (!filterByJSONPath(serviceAccount, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, serviceAccount, columns);
             rows.push(row);
@@ -1094,12 +1257,20 @@ export const resourcesTableData: ITableData = {
       'Allow Volume Expansion',
       'Age',
     ],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const storageClassList: V1StorageClassList = resourceList.list;
         for (const storageClass of storageClassList.items) {
+          if (!filterByJSONPath(storageClass, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, storageClass, columns);
             rows.push(row);
@@ -1142,12 +1313,20 @@ export const resourcesTableData: ITableData = {
   // eslint-disable-next-line sort-keys
   clusterrolebindings: {
     columns: ['Name', 'Cluster (Satellite)', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const clusterRoleBindingsList: V1ClusterRoleBindingList = resourceList.list;
         for (const clusterRoleBinding of clusterRoleBindingsList.items) {
+          if (!filterByJSONPath(clusterRoleBinding, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, clusterRoleBinding, columns);
             rows.push(row);
@@ -1177,12 +1356,20 @@ export const resourcesTableData: ITableData = {
   },
   clusterroles: {
     columns: ['Name', 'Cluster (Satellite)', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const clusterRoleList: V1ClusterRoleList = resourceList.list;
         for (const clusterRole of clusterRoleList.items) {
+          if (!filterByJSONPath(clusterRole, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, clusterRole, columns);
             rows.push(row);
@@ -1212,12 +1399,20 @@ export const resourcesTableData: ITableData = {
   },
   rolebindings: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const roleBindingList: V1RoleBindingList = resourceList.list;
         for (const roleBinding of roleBindingList.items) {
+          if (!filterByJSONPath(roleBinding, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, roleBinding, columns);
             rows.push(row);
@@ -1252,12 +1447,20 @@ export const resourcesTableData: ITableData = {
   },
   roles: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const roleList: V1RoleList = resourceList.list;
         for (const role of roleList.items) {
+          if (!filterByJSONPath(role, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, role, columns);
             rows.push(row);
@@ -1285,12 +1488,20 @@ export const resourcesTableData: ITableData = {
   // eslint-disable-next-line sort-keys
   events: {
     columns: ['Name', 'Namespace', 'Cluster (Satellite)', 'Last Seen', 'Type', 'Reason', 'Object', 'Message'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const eventList: CoreV1EventList = resourceList.list;
         for (const event of eventList.items) {
+          if (!filterByJSONPath(event, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, event, columns);
             rows.push(row);
@@ -1323,12 +1534,20 @@ export const resourcesTableData: ITableData = {
   },
   namespaces: {
     columns: ['Name', 'Cluster (Satellite)', 'Status', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const namespaceList: V1NamespaceList = resourceList.list;
         for (const namespace of namespaceList.items) {
+          if (!filterByJSONPath(namespace, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, namespace, columns);
             rows.push(row);
@@ -1359,12 +1578,20 @@ export const resourcesTableData: ITableData = {
   },
   nodes: {
     columns: ['Name', 'Cluster (Satellite)', 'Status', 'Version', 'Age'],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const nodeList: V1NodeList = resourceList.list;
         for (const node of nodeList.items) {
+          if (!filterByJSONPath(node, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, node, columns);
             rows.push(row);
@@ -1416,12 +1643,20 @@ export const resourcesTableData: ITableData = {
       'Volumes',
       'Age',
     ],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
         const pspList: V1beta1PodSecurityPolicyList = resourceList.list;
         for (const psp of pspList.items) {
+          if (!filterByJSONPath(psp, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, psp, columns);
             rows.push(row);
@@ -1482,7 +1717,11 @@ export const customResourceDefinitionTableData = (crd: IResource): ITableDatum =
 
   return {
     columns: [...defaultColumns, ...crdColumns],
-    rows: (resourceResponse: IResourceResponse, columns: IColumn[] | undefined): IResourceRow[] => {
+    rows: (
+      resourceResponse: IResourceResponse,
+      columns: IColumn[] | undefined,
+      filter: string | undefined,
+    ): IResourceRow[] => {
       const rows: IResourceRow[] = [];
 
       for (const resourceList of resourceResponse.resourceLists) {
@@ -1490,6 +1729,10 @@ export const customResourceDefinitionTableData = (crd: IResource): ITableDatum =
         const crList: any = resourceList.list;
 
         for (const cr of crList.items) {
+          if (!filterByJSONPath(cr, filter)) {
+            continue;
+          }
+
           if (columns && Array.isArray(columns) && columns.length > 0) {
             const row = rowWithCustomColumns(resourceList, cr, columns);
             rows.push(row);
@@ -1574,4 +1817,18 @@ const renderCluster = (resourceList: IResourceList): React.ReactNode => {
       <span className="pf-u-pl-sm pf-u-color-400">({resourceList.satellite})</span>
     </span>
   );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const filterByJSONPath = (manifest: any, jsonPath: string | undefined): boolean => {
+  if (!jsonPath) {
+    return true;
+  }
+
+  const values = JSONPath<string[]>({ json: manifest, path: jsonPath });
+  if (values.length > 0) {
+    return true;
+  }
+
+  return false;
 };

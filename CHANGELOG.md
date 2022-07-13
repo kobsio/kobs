@@ -14,6 +14,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#389](https://github.com/kobsio/kobs/pull/#389): [app] Add notifications. In the first step notifications are only supported by the Opsgenie plugin.
 - [#390](https://github.com/kobsio/kobs/pull/#390): [app] Improve instrumentation middleware.
 - [#392](https://github.com/kobsio/kobs/pull/#392): [rss] Display RSS feeds within the notifications.
+- [#393](https://github.com/kobsio/kobs/pull/#393): [app] Display Kubernetes Resources within notifications.
 
 ### Fixed
 
