@@ -86,6 +86,12 @@ func SetSatelliteForTeam(team teamv1.TeamSpec, satellite string) teamv1.TeamSpec
 		}
 	}
 
+	for i := 0; i < len(team.Notifications.Groups); i++ {
+		if team.Notifications.Groups[i].Plugin.Satellite == "" {
+			team.Notifications.Groups[i].Plugin.Satellite = satellite
+		}
+	}
+
 	return team
 }
 
@@ -109,6 +115,12 @@ func SetSatelliteForUser(user userv1.UserSpec, satellite string) userv1.UserSpec
 					}
 				}
 			}
+		}
+	}
+
+	for i := 0; i < len(user.Notifications.Groups); i++ {
+		if user.Notifications.Groups[i].Plugin.Satellite == "" {
+			user.Notifications.Groups[i].Plugin.Satellite = satellite
 		}
 	}
 

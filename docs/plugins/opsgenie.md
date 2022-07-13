@@ -52,6 +52,14 @@ The following options can be used for a panel with the Opsgenie plugin:
 | queries | []string | The Opsgenie queries. This can be used instead of the `query` field to display multiple queries within one panel. | No |
 | interval | number | An optional interval in seconds, which should be used instead of the selected time range in the Dashboard to get the alerts / incidents for. | No |
 
+## Notification Options
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | Specify if you want to show `alerts` or `incidents`. | Yes |
+| query | string | The Opsgenie query. The documentation for the query language can be found in the [Opsgenie Documentation](https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/). | Yes |
+| interval | number | An optional interval in seconds, which should be used instead of the default interval of 90 days to get the alerts / incidents for. | No |
+
 ## Usage
 
 ### Example Dashboard

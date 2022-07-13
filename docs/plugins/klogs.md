@@ -88,6 +88,11 @@ The following options can be used for a panel with the klogs plugin:
 | breakDownByFields | []string | A list of field names, which should be used to break down the data. | No |
 | breakDownByFilters | []string | A list of filters, which should be used to break down the data. | No |
 
+## Notification Options
+
+!!! note
+    The klogs plugin can not be used to get a list of notifications.
+
 ## Usage
 
 ### Query Syntax

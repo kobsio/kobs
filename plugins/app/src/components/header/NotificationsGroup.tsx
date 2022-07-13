@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
 import AppNotifications from './AppNotifications';
-import { IGroup } from '../../context/NotificationsContext';
+import { IGroup } from '../../crds/user';
 import { ITimes } from '@kobsio/shared';
 import Module from '../module/Module';
 

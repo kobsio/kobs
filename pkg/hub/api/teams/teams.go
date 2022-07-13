@@ -32,7 +32,7 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 	all := r.URL.Query().Get("all")
 
 	parsedAll, _ := strconv.ParseBool(all)
-	if parsedAll == true || (len(user.Teams) == 1 && user.Teams[0] == "*") {
+	if parsedAll == true || (len(user.Permissions.Teams) == 1 && user.Permissions.Teams[0] == "*") {
 		if !user.HasTeamAccess("*") {
 			log.Warn(r.Context(), "The user is not authorized to view all teams", zap.Error(err))
 			errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view all teams")

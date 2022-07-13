@@ -73,6 +73,11 @@ The following options can be used for a panel with the SQL plugin:
 | yAxisStacked | boolean | When this is `true` the values of the y axis are stacked. | No |
 | legend | map<string, string> | A map of string pairs, to set the displayed title for a column in the legend. The key is the column name as returned by the query and the value is the shown title. | No |
 
+## Notification Options
+
+!!! note
+    The SQL plugin can not be used to get a list of notifications.
+
 ## Usage
 
 ??? note "Application"

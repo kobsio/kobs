@@ -59,6 +59,11 @@ The following options can be used for a panel with the Grafana plugin:
 | panelID | string | The id of the panel. | Yes |
 | variables | map<string, string> | A map of variables, with the name of the variable as key and the value of the variable as value. | No |
 
+## Notification Options
+
+!!! note
+    The Grafana plugin can not be used to get a list of notifications.
+
 ## Usage
 
 The following dashboards shows some panels from a Grafana plugin and a list of dashboards from this instance. The dashboard also uses some variables, which are then passed to the panels from Grafana.

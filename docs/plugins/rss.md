@@ -36,6 +36,13 @@ The following options can be used for a panel with the RSS plugin:
 | urls | []string | A list of RSS feed URLs. | Yes |
 | sortBy | string | Set the field by which the retrieved feed items should be sorted. This can be `feed`, `title`, `updated` or `published`. The default value is `published`. | No |
 
+## Notification Options
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| urls | []string | A list of RSS feed URLs. | Yes |
+| sortBy | string | Set the field by which the retrieved feed items should be sorted. This can be `feed`, `title`, `updated` or `published`. The default value is `published`. | No |
+
 ## Usage
 
 ```yaml

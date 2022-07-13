@@ -57,6 +57,11 @@ The following options can be used for a panel with the TechDocs plugin:
 | type | string | Specify if you want to show a `list` of TechDocs or the table of contents (`toc`) for a specific service. | Yes |
 | service | string | The name of the service for which the table of contents should be shown when the type is `toc`. | No |
 
+## Notification Options
+
+!!! note
+    The TechDocs plugin can not be used to get a list of notifications.
+
 ## Usage
 
 The TechDocs plugin renders the markdown files for your service. For that you have to provide the files for kobs via S3 or via a file system which kobs can access.

@@ -86,7 +86,7 @@ func TestAuthHandler(t *testing.T) {
 			name:               "auth disabled",
 			auth:               Auth{enabled: false},
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"\",\"teams\":[\"*\"],\"permissions\":{\"applications\":[{\"type\":\"all\"}],\"teams\":[\"*\"],\"plugins\":[{\"satellite\":\"*\",\"name\":\"*\",\"type\":\"*\",\"permissions\":null}],\"resources\":[{\"satellites\":[\"*\"],\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}}\n",
+			expectedBody:       "{\"email\":\"\",\"teams\":null,\"permissions\":{\"applications\":[{\"type\":\"all\"}],\"teams\":[\"*\"],\"plugins\":[{\"satellite\":\"*\",\"name\":\"*\",\"type\":\"*\",\"permissions\":null}],\"resources\":[{\"satellites\":[\"*\"],\"clusters\":[\"*\"],\"namespaces\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}}\n",
 			prepareRequest:     func(r *http.Request) {},
 			prepareStoreClient: func(mockStoreClient *store.MockClient) {},
 		},

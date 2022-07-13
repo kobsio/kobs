@@ -59,6 +59,11 @@ The following options can be used for a panel with the Elasticsearch plugin:
 | query | string | The Elasticsearch query. We are using the [Query String Syntax](#query-string-syntax) for Elasticsearch. | Yes |
 | fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. | No |
 
+## Notification Options
+
+!!! note
+    The Elasticsearch plugin can not be used to get a list of notifications.
+
 ## Usage
 
 ### Query String Syntax

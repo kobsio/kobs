@@ -68,6 +68,11 @@ The following options can be used for a panel with the Harbor plugin:
 | repositoryName | string | The name of the repository in the project, for which the artifacts should be displayed. | Yes |
 | query | string | An optional query to filter the artifacts by their tags. | No |
 
+## Notification Options
+
+!!! note
+    The Harbor plugin can not be used to get a list of notifications.
+
 ## Usage
 
 The following dashboard shows all projects, all repositories from the `public` project and all artifacts from the `kobs` repository in the `public` project, where the tag contains `dev`.

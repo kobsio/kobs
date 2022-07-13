@@ -50,6 +50,11 @@ The following options can be used for a panel with the SonarQube plugin:
 | project | string | The key of the SonarQube project. | Yes |
 | metricKeys | []string | An optional list of metric keys, which should be displayed for the project. If this value is not provided the globally configured default value will be used. A list of all available metrics can be retrieved from the `/api/metrics/search` API endpoint of a SonarQube instance. | No |
 
+## Notification Options
+
+!!! note
+    The SonarQube plugin can not be used to get a list of notifications.
+
 ## Usage
 
 ```yaml

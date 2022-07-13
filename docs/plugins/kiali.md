@@ -55,6 +55,11 @@ The following options can be used for a panel with the Kiali plugin:
 | ----- | ---- | ----------- | -------- |
 | namespaces | []string | A list of namespaces for which the topology graph should be shown. | Yes |
 
+## Notification Options
+
+!!! note
+    The Kiali plugin can not be used to get a list of notifications.
+
 ## Usage
 
 The following example renders the Kiali topology graph for the `bookinfo` namespace on a Kiali dashboard in the example application.

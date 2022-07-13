@@ -227,7 +227,9 @@ plugin:
 
 ### `resources`
 
-The `resources` plugin can be used to display Kubernetes resources within a dashboard. The plugin requires the following options:
+The `resources` plugin can be used to display Kubernetes resources within a dashboard. The plugin can be used in the notifications or in a panel within a dashboard.
+
+#### Panel Options
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -239,7 +241,7 @@ The `resources` plugin can be used to display Kubernetes resources within a dash
 | columns | [[]Column](#column) | An optional list of columns to customize the shown fields for a resource. | No |
 | filter | string | An optional filter using [JSONPath](https://goessner.net/articles/JsonPath/) to filter the list of resources. | No |
 
-#### Column
+##### Column
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -247,6 +249,18 @@ The `resources` plugin can be used to display Kubernetes resources within a dash
 | resource | string | The name of the resource for which the column should be used. | Yes |
 | jsonPath | string | The [JSONPath](https://goessner.net/articles/JsonPath/) which should be used to select the value from the resource manifest file. | Yes |
 | type | string | An optional type for formatting the column values. Currently only `date` is supported as special formatter. | No |
+
+#### Notification Options
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| satellites | []string | A list of satellites for which the resources should be shown. | Yes |
+| clusters | []string | A list of clusters for which the resources should be shown. | Yes |
+| namespaces | []string | A list of namespaces for which the resources should be shown. | Yes |
+| resources | []string | A list of resources for which the resources should be shown. The following strings can be used as resource: `cronjobs`, `daemonsets`, `deployments`, `jobs`, `pods`, `replicasets`, `statefulsets`, `endpoints`, `horizontalpodautoscalers`, `ingresses`, `networkpolicies`, `services`, `configmaps`, `persistentvolumeclaims`, `persistentvolumes`, `poddisruptionbudgets`, `secrets`, `serviceaccounts`, `storageclasses`, `clusterrolebindings`, `clusterroles`, `rolebindings`, `roles`, `events`, `nodes`, `podsecuritypolicies`. A Custom Resource can be used as follows `<name>.<group>/<version>` (e.g. `vaultsecrets.ricoberger.de/v1alpha1`). | Yes |
+| selector | string | A label selector for the resources. | No |
+| columns | [[]Column](#column) | An optional list of columns to customize the shown fields for a resource. | No |
+| filter | string | An optional filter using [JSONPath](https://goessner.net/articles/JsonPath/) to filter the list of resources. | No |
 
 ```yaml
 plugin:

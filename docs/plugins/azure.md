@@ -98,6 +98,11 @@ The following options can be used for a panel with the Azure plugin:
 | metricNames | string | The name of the metric for which the data should be displayed. Supported values are `Percentage CPU`, `Available Memory Bytes`, `Network In Total`, `Network Out Total`, `Disk Read Bytes`, `Disk Write Bytes`, `Disk Read Operations/Sec` and `Disk Write Operations/Sec`. This is only required if the type is `metrics`. | No |
 | aggregationType | string | The aggregation type for the metric. Supported values are `Average`, `Minimum`, `Maximum`, `Total` and `Count`. This is only required if the type is `metrics`. | No |
 
+## Notification Options
+
+!!! note
+    The Azure plugin can not be used to get a list of notifications.
+
 ## Usage
 
 ### Permissions

@@ -29,17 +29,18 @@ type UserList struct {
 }
 
 type UserSpec struct {
-	ID          string                  `json:"id,omitempty" boltholdUnique:"UniqueID"`
-	Satellite   string                  `json:"satellite,omitempty"`
-	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
-	Cluster     string                  `json:"cluster,omitempty"`
-	Namespace   string                  `json:"namespace,omitempty"`
-	Name        string                  `json:"name,omitempty"`
-	ClusterID   string                  `json:"clusterID,omitempty"`
-	NamespaceID string                  `json:"namespaceID,omitempty"`
-	Email       string                  `json:"email" boltholdIndex:"Email"`
-	Permissions Permissions             `json:"permissions,omitempty"`
-	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
+	ID            string                  `json:"id,omitempty" boltholdUnique:"UniqueID"`
+	Satellite     string                  `json:"satellite,omitempty"`
+	UpdatedAt     int64                   `json:"updatedAt,omitempty"`
+	Cluster       string                  `json:"cluster,omitempty"`
+	Namespace     string                  `json:"namespace,omitempty"`
+	Name          string                  `json:"name,omitempty"`
+	ClusterID     string                  `json:"clusterID,omitempty"`
+	NamespaceID   string                  `json:"namespaceID,omitempty"`
+	Email         string                  `json:"email" boltholdIndex:"Email"`
+	Permissions   Permissions             `json:"permissions,omitempty"`
+	Dashboards    []dashboardv1.Reference `json:"dashboards,omitempty"`
+	Notifications Notifications           `json:"notifications,omitempty"`
 }
 
 type Permissions struct {
@@ -69,4 +70,13 @@ type Resources struct {
 	Namespaces []string `json:"namespaces"`
 	Resources  []string `json:"resources"`
 	Verbs      []string `json:"verbs"`
+}
+
+type Notifications struct {
+	Groups []NotificationsGroup `json:"groups"`
+}
+
+type NotificationsGroup struct {
+	Title  string             `json:"title"`
+	Plugin dashboardv1.Plugin `json:"plugin"`
 }
