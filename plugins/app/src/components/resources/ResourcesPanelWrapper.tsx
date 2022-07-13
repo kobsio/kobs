@@ -27,6 +27,7 @@ const ResourcesPanelWrapper: React.FunctionComponent<IResourcesPanelWrapperProps
         options={{
           clusterIDs: clusterIDs,
           columns: options.columns,
+          filter: options.filter,
           namespaces: options.namespaces || [],
           param: options.selector || '',
           paramName: options.selectorType === 'fieldSelector' ? 'fieldSelector' : 'labelSelector',

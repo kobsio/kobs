@@ -10,6 +10,7 @@ export interface IOptions {
   param: string;
   paramName: string;
   columns?: IColumn[];
+  filter?: string;
   times: ITimes;
 }
 
