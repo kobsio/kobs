@@ -1,3 +1,4 @@
+import { INotifications } from './user';
 import { IReference } from './dashboard';
 
 // The ITeam interface implements the Team CRD.
@@ -13,6 +14,7 @@ export interface ITeam {
   links?: ILink[];
   logo?: string;
   dashboards?: IReference[];
+  notifications?: INotifications;
 }
 
 export interface ILink {

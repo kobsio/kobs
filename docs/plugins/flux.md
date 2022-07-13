@@ -41,6 +41,11 @@ The following options can be used for a panel with the Flux plugin:
 | selector | string | An optional selector for the selection of Flux resources. | No |
 | name | string | The name of the Flux resource. This field can be used to show a single resource instead of a list of resources. | No |
 
+## Notification Options
+
+!!! note
+    The Flux plugin can not be used to get a list of notifications.
+
 ## Usage
 
 For example the following dashboard shows all Kustomizations, Helm Releases, Git Repositories and Helm Repositories from the cluster and namespace, where the application is used:

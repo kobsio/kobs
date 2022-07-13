@@ -45,6 +45,11 @@ The following options can be used for a panel with the Istio plugin:
 | namespaces |[]string | A list of namespaces for which the Helm releases should be shown. | Yes |
 | name | string | The name of the Helm release for whih the history should be shown, when the type is `releasehistory`. | No |
 
+## Notification Options
+
+!!! note
+    The Harbor plugin can not be used to get a list of notifications.
+
 ## Usage
 
 ### Permissions

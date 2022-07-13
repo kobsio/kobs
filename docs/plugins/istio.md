@@ -90,6 +90,11 @@ The following options can be used for a panel with the Istio plugin:
 | method | string | Filter the top / tap results by the specified method. | No |
 | path | string | Filter the top / tap results by the specified path. | No |
 
+## Notification Options
+
+!!! note
+    The Istio plugin can not be used to get a list of notifications.
+
 ## Usage
 
 The following Application contains three dashboards to get the metrics, top and tab view for the `productpage` Application in the `bookinfo` namespace.

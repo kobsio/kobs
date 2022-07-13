@@ -2,12 +2,7 @@ import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react
 import { QueryObserverResult, useQuery } from 'react-query';
 import React from 'react';
 
-import { IPlugin } from '../crds/dashboard';
-
-export interface IGroup {
-  title: string;
-  plugin: IPlugin;
-}
+import { IGroup } from '../crds/user';
 
 // INotificationsContext is the plugin context, is contains all plugins.
 export interface INotificationsContext {

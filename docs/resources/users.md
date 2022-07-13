@@ -13,6 +13,7 @@ In the following you can found the specification for the User CRD.
 | email | string | The email address of the authenticated user. This is used to connect the authenticated user (from the header specified via the `--auth.header.user` flag) with this CR. | Yes |
 | permissions | [Permissions](#permissions) | Permissions for the user when the authentication / authorization middleware is enabled. | No |
 | dashboards | [[]Dashboard](./applications.md#dashboard) | A list of dashboards which will be shown on the users profile page. | No |
+| notifications | [Notifications](#notifications) | Overwrite the global notification settings for this user. | No |
 
 ### Permissions
 
@@ -41,7 +42,7 @@ In the following you can found the specification for the User CRD.
 | type | string | The type of the plugin instance as it is defined in the configuration. The special character `*` can be used to include all types. | Yes |
 | permissions | any | The permissions, which should be grant to a user. The format of this property is different for each plugin. You can find an example for each plugin on the corresponding plugin page in the documentation. | No |
 
-### Resources
+#### Resources
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -57,6 +58,19 @@ In the following you can found the specification for the User CRD.
     The special terms `pods/log` and `pods/exec` can be used to allow users to get the logs or a terminal for a Pod. To download / upload a file from / to a Pod a user also needs the `pods/exec` resource. The `pods/log` and `pods/exec` permission can only be set together with the `*` value for the `verbs` parameter.
 
     A Custom Resource can be specified in the following form `<name>.<group>/<version>` (e.g. `vaultsecrets.ricoberger.de/v1alpha1`).
+
+### Notifications
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| groups | [[]Group](#groups) | A list of notification groups, which should be used for this user. | No |
+
+#### Groups
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| title | string | The title for the notification group. | Yes |
+| plugin | [Plugin](../plugins/index.md#specification) | The plugin configuration for the notification group. | Yes |
 
 ## Example
 

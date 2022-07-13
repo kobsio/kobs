@@ -66,6 +66,11 @@ The following options can be used for a panel with the Jaeger plugin:
 | operation | string | An optional operation to retrieve traces for. | No |
 | tags | string | Tags, which the traces must be contain. | No |
 
+## Notification Options
+
+!!! note
+    The Jaeger plugin can not be used to get a list of notifications.
+
 ## Usage
 
 ```yaml

@@ -4,7 +4,7 @@ import React from 'react';
 
 export interface IUser {
   email: string;
-  teams: string[];
+  teams?: string[];
   permissions?: IPermissions;
 }
 

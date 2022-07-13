@@ -162,7 +162,7 @@ func (a *Auth) Handler(next http.Handler) http.Handler {
 			// a valid user object which can be used by the plugins to simplify the authorization logic there.
 			ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{
 				Email: userEmail,
-				Teams: []string{"*"},
+				Teams: teamGroups,
 				Permissions: userv1.Permissions{
 					Applications: []userv1.ApplicationPermissions{{Type: "all"}},
 					Teams:        []string{"*"},

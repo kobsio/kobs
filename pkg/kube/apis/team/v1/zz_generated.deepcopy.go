@@ -102,6 +102,7 @@ func (in *TeamSpec) DeepCopyInto(out *TeamSpec) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	in.Notifications.DeepCopyInto(&out.Notifications)
 	return
 }
 

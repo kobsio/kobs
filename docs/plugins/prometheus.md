@@ -86,6 +86,11 @@ The following options can be used for a panel with the Prometheus plugin:
 | unit | string | An optional unit for the column values. | No |
 | mappings | map<string, string> | Specify value mappings for the column. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 
+## Notification Options
+
+!!! note
+    The Prometheus plugin can not be used to get a list of notifications.
+
 ## Usage
 
 The following dashboard, shows the CPU and Memory usage of a selected Pod. When this dashboard is used in via a team or application, it is possible to set the namespace and a regular expression to pre select all the Pods. These values are then used to get the names of all Pods and a user can then select the name of a Pod via the `var_pod` variable.

@@ -18,6 +18,7 @@ In the following you can found the specification for the Team CRD.
 | logo | string | The logo for the team. Must be a path to an image file. | No |
 | permissions | [Permissions](./users.md#permissions) | Permissions for the team when the authentication / authorization middleware is enabled. | No |
 | dashboards | [[]Dashboard](./applications.md#dashboard) | A list of dashboards which will be shown on the team page. | No |
+| notifications | [Notifications](./users.md#notifications) | Overwrite the global notification settings for this team. | No |
 
 ### Link
 

@@ -1,4 +1,4 @@
-import { IReference } from './dashboard';
+import { IPlugin, IReference } from './dashboard';
 
 // The IUser interface implements the User CRD.
 export interface IUser {
@@ -10,4 +10,14 @@ export interface IUser {
   name: string;
   email: string;
   dashboards?: IReference[];
+  notifications?: INotifications;
+}
+
+export interface INotifications {
+  groups?: IGroup[];
+}
+
+export interface IGroup {
+  title: string;
+  plugin: IPlugin;
 }

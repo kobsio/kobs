@@ -99,7 +99,7 @@ func New(config api.Config, debugUsername, debugPassword, hubAddress string, aut
 
 		r.Mount("/auth", userauth.Mount(authLogoutRedirect))
 		r.Mount("/navigation", navigation.Mount(config.Navigation))
-		r.Mount("/notifications", notifications.Mount(config.Notifications))
+		r.Mount("/notifications", notifications.Mount(config.Notifications, storeClient))
 		r.Mount("/clusters", clusters.Mount(storeClient))
 		r.Mount("/applications", applications.Mount(storeClient))
 		r.Mount("/teams", teams.Mount(storeClient))

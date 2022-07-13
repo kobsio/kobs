@@ -76,7 +76,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parsedAll, _ := strconv.ParseBool(all)
-	if parsedAll == true || (len(user.Teams) == 1 && user.Teams[0] == "*") {
+	if parsedAll == true || (len(user.Permissions.Teams) == 1 && user.Permissions.Teams[0] == "*") {
 		if !user.HasApplicationAccess("", "", "", []string{""}) {
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
@@ -130,7 +130,7 @@ func (router *Router) getApplicationsCount(w http.ResponseWriter, r *http.Reques
 	span.SetAttributes(attribute.Key("external").String(external))
 
 	parsedAll, _ := strconv.ParseBool(all)
-	if parsedAll == true || (len(user.Teams) == 1 && user.Teams[0] == "*") {
+	if parsedAll == true || (len(user.Permissions.Teams) == 1 && user.Permissions.Teams[0] == "*") {
 		if !user.HasApplicationAccess("", "", "", []string{""}) {
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))

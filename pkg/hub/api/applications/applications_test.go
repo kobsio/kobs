@@ -11,11 +11,11 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/store"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
-	"go.opentelemetry.io/otel"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel"
 )
 
 func TestGetApplications(t *testing.T) {
