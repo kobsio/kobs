@@ -945,6 +945,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notification-options" class="md-nav__link">
+    Notification Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
@@ -1310,6 +1317,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notification-options" class="md-nav__link">
+    Notification Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
@@ -1462,6 +1476,37 @@
 <td>interval</td>
 <td>number</td>
 <td>An optional interval in seconds, which should be used instead of the selected time range in the Dashboard to get the alerts / incidents for.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notification-options">Notification Options</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>Specify if you want to show <code>alerts</code> or <code>incidents</code>.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>query</td>
+<td>string</td>
+<td>The Opsgenie query. The documentation for the query language can be found in the <a href="https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/">Opsgenie Documentation</a>.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>interval</td>
+<td>number</td>
+<td>An optional interval in seconds, which should be used instead of the default interval of 90 days to get the alerts / incidents for.</td>
 <td>No</td>
 </tr>
 </tbody>

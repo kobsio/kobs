@@ -716,15 +716,35 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    Resources
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
+  <a href="#notifications" class="md-nav__link">
+    Notifications
   </a>
+  
+    <nav class="md-nav" aria-label="Notifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1310,15 +1330,35 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    Resources
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
+  <a href="#notifications" class="md-nav__link">
+    Notifications
   </a>
+  
+    <nav class="md-nav" aria-label="Notifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1383,6 +1423,12 @@
 <td>dashboards</td>
 <td><a href="../applications/#dashboard">[]Dashboard</a></td>
 <td>A list of dashboards which will be shown on the users profile page.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>notifications</td>
+<td><a href="#notifications">Notifications</a></td>
+<td>Overwrite the global notification settings for this user.</td>
 <td>No</td>
 </tr>
 </tbody>
@@ -1498,7 +1544,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="resources">Resources</h3>
+<h4 id="resources">Resources</h4>
 <table>
 <thead>
 <tr>
@@ -1547,6 +1593,50 @@
 <p>The special terms <code>pods/log</code> and <code>pods/exec</code> can be used to allow users to get the logs or a terminal for a Pod. To download / upload a file from / to a Pod a user also needs the <code>pods/exec</code> resource. The <code>pods/log</code> and <code>pods/exec</code> permission can only be set together with the <code>*</code> value for the <code>verbs</code> parameter.</p>
 <p>A Custom Resource can be specified in the following form <code>&lt;name&gt;.&lt;group&gt;/&lt;version&gt;</code> (e.g. <code>vaultsecrets.ricoberger.de/v1alpha1</code>).</p>
 </div>
+<h3 id="notifications">Notifications</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>groups</td>
+<td><a href="#groups">[]Group</a></td>
+<td>A list of notification groups, which should be used for this user.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h4 id="groups">Groups</h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>The title for the notification group.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>plugin</td>
+<td><a href="../../plugins/#specification">Plugin</a></td>
+<td>The plugin configuration for the notification group.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
 <h2 id="example">Example</h2>
 <p>In the CR defines that the user with the email <code>rico@kobs.io</code> can view all applications and teams. He can also view the Helm charts in the <code>bookinfo</code> and <code>kobs</code> namespace and can use the Opsgenie plugin. Besides that he can also list, edit and delete all resources in the <code>bookinfo</code> and <code>kobs</code> namespace.</p>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>

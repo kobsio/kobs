@@ -553,67 +553,9 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Notifications
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         Notifications
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#plugins" class="md-nav__link">
-    Plugins
-  </a>
-  
-    <nav class="md-nav" aria-label="Plugins">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#opsgenie" class="md-nav__link">
-    Opsgenie
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rss" class="md-nav__link">
-    RSS
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1256,48 +1198,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#plugins" class="md-nav__link">
-    Plugins
-  </a>
-  
-    <nav class="md-nav" aria-label="Plugins">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#opsgenie" class="md-nav__link">
-    Opsgenie
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rss" class="md-nav__link">
-    RSS
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1316,6 +1216,8 @@
 
 <h1 id="notifications">Notifications</h1>
 <p>It is possible to show notifications within kobs. Notifications are configured in the <a href="../hub/"><code>hub configuration file</code></a>. They can be retrieved via supported <a href="#plugins">plugins</a>. When notifications are configured a new <strong>notification bell</strong> icon will be displayed in the header. When a user clicks on this icon a drawer with the configured notifications will be shown.</p>
+<p>The global notification settings can be overwritten via a <a href="../../../resources/users/">User CR</a> or <a href="../../../resources/teams/">Team CR</a>. The ranking of the used notifications is as follow: If a user has a CR with a list of defined notification groups, these groups are used. If a user does not have any specific notification groups, the groups of the teams he is part of will be used. If none of these conditions match the global notification groups from the configuration file are used.</p>
+<p><img alt="Opsgenie" src="../assets/notifications-opsgenie.png" /></p>
 <p>The following example uses the Opsgenie plugin to show all open alerts and incidents and the RSS plugin to show the status of GitHub.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">api</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">notifications</span><span class="p">:</span><span class="w"></span>
@@ -1359,120 +1261,7 @@
 <span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
 <span class="w">            </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$.status.containerStatuses[?(@.state.waiting || @.state.terminated &amp;&amp; @.state.terminated.reason!=&#39;Completed&#39;)]</span><span class="w"></span>
 </code></pre></div>
-<p><img alt="Opsgenie" src="../assets/notifications-opsgenie.png" /></p>
-<h2 id="plugins">Plugins</h2>
-<p>Notifications are configured via plugins. To identify a plugin you have to specify the <code>satellite</code>, plugin <code>name</code> and plugin <code>type</code>. The each plugin can be customized using <code>options</code>. These options can be found in the following.</p>
-<h3 id="resources">Resources</h3>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>satellites</td>
-<td>[]string</td>
-<td>A list of satellites for which the resources should be shown.</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>clusters</td>
-<td>[]string</td>
-<td>A list of clusters for which the resources should be shown.</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>namespaces</td>
-<td>[]string</td>
-<td>A list of namespaces for which the resources should be shown.</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>resources</td>
-<td>[]string</td>
-<td>A list of resources for which the resources should be shown. The following strings can be used as resource: <code>cronjobs</code>, <code>daemonsets</code>, <code>deployments</code>, <code>jobs</code>, <code>pods</code>, <code>replicasets</code>, <code>statefulsets</code>, <code>endpoints</code>, <code>horizontalpodautoscalers</code>, <code>ingresses</code>, <code>networkpolicies</code>, <code>services</code>, <code>configmaps</code>, <code>persistentvolumeclaims</code>, <code>persistentvolumes</code>, <code>poddisruptionbudgets</code>, <code>secrets</code>, <code>serviceaccounts</code>, <code>storageclasses</code>, <code>clusterrolebindings</code>, <code>clusterroles</code>, <code>rolebindings</code>, <code>roles</code>, <code>events</code>, <code>nodes</code>, <code>podsecuritypolicies</code>. A Custom Resource can be used as follows <code>&lt;name&gt;.&lt;group&gt;/&lt;version&gt;</code> (e.g. <code>vaultsecrets.ricoberger.de/v1alpha1</code>).</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>selector</td>
-<td>string</td>
-<td>A label selector for the resources.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>columns</td>
-<td><a href="#column">[]Column</a></td>
-<td>An optional list of columns to customize the shown fields for a resource.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>filter</td>
-<td>string</td>
-<td>An optional filter using <a href="https://goessner.net/articles/JsonPath/">JSONPath</a> to filter the list of resources.</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h3 id="opsgenie">Opsgenie</h3>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>type</td>
-<td>string</td>
-<td>Specify if you want to show <code>alerts</code> or <code>incidents</code>.</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>query</td>
-<td>string</td>
-<td>The Opsgenie query. The documentation for the query language can be found in the <a href="https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/">Opsgenie Documentation</a>.</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>interval</td>
-<td>number</td>
-<td>An optional interval in seconds, which should be used instead of the default interval of 90 days to get the alerts / incidents for.</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h3 id="rss">RSS</h3>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>urls</td>
-<td>[]string</td>
-<td>A list of RSS feed URLs.</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>sortBy</td>
-<td>string</td>
-<td>Set the field by which the retrieved feed items should be sorted. This can be <code>feed</code>, <code>title</code>, <code>updated</code> or <code>published</code>. The default value is <code>published</code>.</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
+<p>Each plugin is identified by a <code>satellite</code>, <code>name</code> and <code>type</code>. The options for each plugin can be found in the <strong>Notification Options</strong> section of the corresponding plugin documentation.</p>
 
               
             </article>

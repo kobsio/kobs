@@ -973,6 +973,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notification-options" class="md-nav__link">
+    Notification Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
@@ -1290,6 +1297,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notification-options" class="md-nav__link">
+    Notification Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
@@ -1358,6 +1372,31 @@
 </div>
 <h2 id="panel-options">Panel Options</h2>
 <p>The following options can be used for a panel with the RSS plugin:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>urls</td>
+<td>[]string</td>
+<td>A list of RSS feed URLs.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>sortBy</td>
+<td>string</td>
+<td>Set the field by which the retrieved feed items should be sorted. This can be <code>feed</code>, <code>title</code>, <code>updated</code> or <code>published</code>. The default value is <code>published</code>.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notification-options">Notification Options</h2>
 <table>
 <thead>
 <tr>
