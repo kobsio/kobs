@@ -147,11 +147,9 @@ func Command() *cobra.Command {
 			traceProvider, _ := cmd.Flags().GetString("trace.provider")
 			traceAddress, _ := cmd.Flags().GetString("trace.address")
 
-			if traceEnabled {
-				err := tracer.Setup(traceServiceName, traceProvider, traceAddress)
-				if err != nil {
-					log.Fatal(nil, "Could not setup tracing", zap.Error(err), zap.String("provider", traceProvider), zap.String("address", traceAddress))
-				}
+			tracerClient, err := tracer.Setup(traceEnabled, traceServiceName, traceProvider, traceAddress)
+			if err != nil {
+				log.Fatal(nil, "Could not setup tracing", zap.Error(err), zap.String("provider", traceProvider), zap.String("address", traceAddress))
 			}
 
 			// Load the configuration for the satellite from the provided configuration file.
@@ -231,6 +229,10 @@ func Command() *cobra.Command {
 			if hubMode == "default" || hubMode == "server" {
 				appServer.Stop()
 				hubSever.Stop()
+			}
+
+			if tracerClient != nil {
+				tracerClient.Shutdown()
 			}
 
 			log.Info(nil, "Shutdown is done")

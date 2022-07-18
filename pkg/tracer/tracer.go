@@ -2,7 +2,10 @@ package tracer
 
 import (
 	"context"
+	"fmt"
+	"time"
 
+	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/version"
 
 	"go.opentelemetry.io/contrib/propagators/b3"
@@ -13,7 +16,54 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
+	"go.uber.org/zap"
 )
+
+// Client is the interface for our tracer. It contains the underlying tracer provider and a Shutdown method to perform a
+// clean shutdown.
+type Client interface {
+	Shutdown()
+}
+
+type client struct {
+	tracerProvider *tracesdk.TracerProvider
+}
+
+// Shutdown is used to gracefully shutdown the tracer provider, created during the setup. The gracefull shutdown can
+// take at the maximum 10 seconds.
+func (c *client) Shutdown() {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err := c.tracerProvider.Shutdown(ctx)
+	if err != nil {
+		log.Error(nil, "Graceful shutdown of the tracer provider failed", zap.Error(err))
+	}
+}
+
+// Setup is used to setup tracing for kobs. For that we are creating a new TracerProvider and register it as the global
+// so any imported instrumentation will default to using it. If tracing is disabled the setup function returns nil.
+//
+// During the shutdown process of kobs the "Shutdown" method of the returned client must be called.
+func Setup(enabled bool, service string, providerType string, url string) (Client, error) {
+	if !enabled {
+		return nil, nil
+	}
+
+	tp, err := newProvider(service, providerType, url)
+	if err != nil {
+		return nil, err
+	}
+
+	otel.SetTracerProvider(tp)
+
+	b3 := b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader | b3.B3SingleHeader))
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, b3))
+
+	return &client{
+		tracerProvider: tp,
+	}, nil
+}
 
 // newProvider returns an OpenTelemetry TracerProvider configured to use the Jaeger or Zipkin exporter that will send
 // spans to the provided url. The returned TracerProvider will also use a Resource configured with all the information
@@ -21,6 +71,10 @@ import (
 func newProvider(service string, providerType string, url string) (*tracesdk.TracerProvider, error) {
 	var exp tracesdk.SpanExporter
 	var err error
+
+	if service == "" || url == "" {
+		return nil, fmt.Errorf("service and provider url are required")
+	}
 
 	if providerType == "zipkin" {
 		exp, err = zipkin.New(url)
@@ -62,20 +116,4 @@ func newProvider(service string, providerType string, url string) (*tracesdk.Tra
 		tracesdk.WithBatcher(exp),
 		tracesdk.WithResource(defaultResource),
 	), nil
-}
-
-// Setup is used to setup tracing for kobs. For that we are creating a new TracerProvider and register it as the global
-// so any imported instrumentation will default to using it.
-func Setup(service string, providerType string, url string) error {
-	tp, err := newProvider(service, providerType, url)
-	if err != nil {
-		return err
-	}
-
-	otel.SetTracerProvider(tp)
-
-	b3 := b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader | b3.B3SingleHeader))
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, b3))
-
-	return nil
 }

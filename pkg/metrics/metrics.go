@@ -39,7 +39,7 @@ func (s *server) Start() {
 func (s *server) Stop() {
 	log.Debug(nil, "Start shutdown of the metrics server")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	err := s.Shutdown(ctx)
