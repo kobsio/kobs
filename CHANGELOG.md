@@ -11,7 +11,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Added
 
 - [#388](https://github.com/kobsio/kobs/pull/#388): [app] Customize navigation sidebar.
-- [#389](https://github.com/kobsio/kobs/pull/#389): [app] Add notifications. In the first step notifications are only supported by the Opsgenie plugin.
+- [#389](https://github.com/kobsio/kobs/pull/#389): [app] Add notifications. In the first iteration notifications are only supported by the Opsgenie plugin.
 - [#390](https://github.com/kobsio/kobs/pull/#390): [app] Improve instrumentation middleware.
 - [#392](https://github.com/kobsio/kobs/pull/#392): [rss] Display RSS feeds within the notifications.
 - [#393](https://github.com/kobsio/kobs/pull/#393): [app] Display Kubernetes Resources within notifications.
@@ -21,6 +21,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 - [#387](https://github.com/kobsio/kobs/pull/#387): [app] Fix tooltip in charts.
 - [#391](https://github.com/kobsio/kobs/pull/#391): [app] Fix terminal for Kubernetes Pods.
+- [#395](https://github.com/kobsio/kobs/pull/#395): [app] Fix permission handling for applications and teams.
 
 ### Changed
 
