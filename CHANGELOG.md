@@ -22,6 +22,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#387](https://github.com/kobsio/kobs/pull/#387): [app] Fix tooltip in charts.
 - [#391](https://github.com/kobsio/kobs/pull/#391): [app] Fix terminal for Kubernetes Pods.
 - [#395](https://github.com/kobsio/kobs/pull/#395): [app] Fix permission handling for applications and teams.
+- [#396](https://github.com/kobsio/kobs/pull/#396): [app] Fix shutdown logic.
 
 ### Changed
 
