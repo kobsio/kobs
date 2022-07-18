@@ -8,6 +8,7 @@ import (
 	azure "github.com/kobsio/kobs/plugins/plugin-azure/cmd"
 	elasticsearch "github.com/kobsio/kobs/plugins/plugin-elasticsearch/cmd"
 	flux "github.com/kobsio/kobs/plugins/plugin-flux/cmd"
+	github "github.com/kobsio/kobs/plugins/plugin-github/cmd"
 	grafana "github.com/kobsio/kobs/plugins/plugin-grafana/cmd"
 	harbor "github.com/kobsio/kobs/plugins/plugin-harbor/cmd"
 	helm "github.com/kobsio/kobs/plugins/plugin-helm/cmd"
@@ -32,6 +33,7 @@ func main() {
 	pluginMounts[azure.PluginType] = azure.Mount
 	pluginMounts[elasticsearch.PluginType] = elasticsearch.Mount
 	pluginMounts[flux.PluginType] = flux.Mount
+	pluginMounts[github.PluginType] = github.Mount
 	pluginMounts[grafana.PluginType] = grafana.Mount
 	pluginMounts[harbor.PluginType] = harbor.Mount
 	pluginMounts[helm.PluginType] = helm.Mount

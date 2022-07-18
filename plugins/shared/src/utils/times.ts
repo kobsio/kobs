@@ -73,7 +73,7 @@ export const timeOptions: {
 
 // timeDifference calculates the difference of two given timestamps and returns a human readable string for the
 // difference. It is used to get the same style for the age of resources like it is displayed by kubectl.
-export const timeDifference = (current: number, previous: number): string => {
+export const timeDifference = (current: number, previous: number, long?: boolean): string => {
   const msPerMinute = 60 * 1000;
   const msPerHour = msPerMinute * 60;
   const msPerDay = msPerHour * 24;
@@ -82,15 +82,15 @@ export const timeDifference = (current: number, previous: number): string => {
   const elapsed = current - previous;
 
   if (elapsed < msPerMinute) {
-    return Math.round(elapsed / 1000) + 's';
+    return Math.round(elapsed / 1000) + (long ? ' seconds' : 's');
   } else if (elapsed < msPerHour) {
-    return Math.round(elapsed / msPerMinute) + 'm';
+    return Math.round(elapsed / msPerMinute) + (long ? ' minutes' : 'm');
   } else if (elapsed < msPerDay) {
-    return Math.round(elapsed / msPerHour) + 'h';
+    return Math.round(elapsed / msPerHour) + (long ? ' hours' : 'h');
   } else if (elapsed < msPerYear) {
-    return Math.round(elapsed / msPerDay) + 'd';
+    return Math.round(elapsed / msPerDay) + (long ? ' days' : 'd');
   } else {
-    return Math.round(elapsed / msPerYear) + 'y';
+    return Math.round(elapsed / msPerYear) + (long ? ' years' : 'y');
   }
 };
 
