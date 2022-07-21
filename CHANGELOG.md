@@ -16,6 +16,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#392](https://github.com/kobsio/kobs/pull/#392): [rss] Display RSS feeds within the notifications.
 - [#393](https://github.com/kobsio/kobs/pull/#393): [app] Display Kubernetes Resources within notifications.
 - [#394](https://github.com/kobsio/kobs/pull/#394): [app] Allow users and teams to customize their notification settings.
+- [#398](https://github.com/kobsio/kobs/pull/#398): [github] Add GitHub plugin to access issues, pull requests, teams and members of an organization.
 
 ### Fixed
 
