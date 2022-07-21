@@ -23,6 +23,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#391](https://github.com/kobsio/kobs/pull/#391): [app] Fix terminal for Kubernetes Pods.
 - [#395](https://github.com/kobsio/kobs/pull/#395): [app] Fix permission handling for applications and teams.
 - [#396](https://github.com/kobsio/kobs/pull/#396): [app] Fix shutdown logic.
+- [#397](https://github.com/kobsio/kobs/pull/#397): [demo] Update elastic setup version to work with recent kubernetes api.
 
 ### Changed
 
