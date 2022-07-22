@@ -1464,6 +1464,27 @@
 
 <span class="c1"># The api configuration is optional.</span><span class="w"></span>
 <span class="nt">api</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># It is possible to customize the navigation sidebar of kobs. More details can be found on the &quot;Navigation&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).</span><span class="w"></span>
+<span class="w">  </span><span class="nt">navigation</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1"># It is possible to show notifications within kobs from a configured plugin. More details can be found on the &quot;Notifications&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).</span><span class="w"></span>
+<span class="w">  </span><span class="nt">notifications</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1"># The resources configuration section can be used to add integrations for Kubernetes Resources. Currently it is possible to add a set of default dashboards for each Kubernetes Resource via the integrations.</span><span class="w"></span>
+<span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">integrations</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="c1"># In the following example we are adding a dashboard &quot;resource-usage&quot; from the &quot;kobs&quot; namespace to each Pod.</span><span class="w"></span>
+<span class="w">        </span><span class="c1"># The configuration uses the same syntax as it is used in the &quot;kobs.io/dashboards&quot; annotation for resources. See https://kobs.io/main/resources/kubernetes-resources/#dashboards for more information.</span><span class="w"></span>
+<span class="w">        </span><span class="c1"># - resource: pods</span><span class="w"></span>
+<span class="w">        </span><span class="c1">#   dashboard:</span><span class="w"></span>
+<span class="w">        </span><span class="c1">#     name: resource-usage</span><span class="w"></span>
+<span class="w">        </span><span class="c1">#     namespace: kobs</span><span class="w"></span>
+<span class="w">        </span><span class="c1">#     title: Resource Usage</span><span class="w"></span>
+<span class="w">        </span><span class="c1">#     placeholders:</span><span class="w"></span>
+<span class="w">        </span><span class="c1">#       namespace: &quot;&lt;% $.metadata.namespace %&gt;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="c1">#       pod: &quot;&lt;% $.metadata.name %&gt;&quot;</span><span class="w"></span>
+
 <span class="w">  </span><span class="c1"># The users configuration section can be used to show a list of default dashboards on the users profile page, when the user has not configured his profile page.</span><span class="w"></span>
 <span class="w">  </span><span class="nt">users</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">defaultDashboards</span><span class="p">:</span><span class="w"></span>
@@ -1490,12 +1511,6 @@
 <span class="w">      </span><span class="c1">#             plugin:</span><span class="w"></span>
 <span class="w">      </span><span class="c1">#               type: app</span><span class="w"></span>
 <span class="w">      </span><span class="c1">#               name: userapplications</span><span class="w"></span>
-
-<span class="w">    </span><span class="c1"># It is possible to customize the navigation sidebar of kobs. More details can be found on the &quot;Navigation&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).</span><span class="w"></span>
-<span class="w">    </span><span class="nt">navigation</span><span class="p">:</span><span class="w"></span>
-
-<span class="w">    </span><span class="c1"># It is possible to show notifications within kobs from a configured plugin. More details can be found on the &quot;Notifications&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).</span><span class="w"></span>
-<span class="w">    </span><span class="nt">notifications</span><span class="p">:</span><span class="w"></span>
 </code></pre></div>
 <p>You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: <code>${NAME_OF_THE_ENVIRONMENT_VARIABLE}</code>. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.</p>
 
