@@ -1,6 +1,7 @@
 package roundtripper
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -31,7 +32,7 @@ func TestBasicAuthTransport(t *testing.T) {
 		Password:  "admin",
 	}
 
-	req, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
 	roundTripper.RoundTrip(req)
 
 	w := httptest.NewRecorder()
@@ -49,7 +50,7 @@ func TestTokenAuthTransporter(t *testing.T) {
 		Token:     "admin",
 	}
 
-	req, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
 	roundTripper.RoundTrip(req)
 
 	w := httptest.NewRecorder()

@@ -146,7 +146,7 @@ func TestGetReleases(t *testing.T) {
 			router := Router{chi.NewRouter(), mockClustersClient, tt.permissionsEnabled}
 			router.Get("/releases", router.getReleases)
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 
 			w := httptest.NewRecorder()
 			tt.do(router, w, req)
@@ -254,7 +254,7 @@ func TestGetRelease(t *testing.T) {
 			router := Router{chi.NewRouter(), mockClustersClient, tt.permissionsEnabled}
 			router.Get("/release", router.getRelease)
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 
 			w := httptest.NewRecorder()
 			tt.do(router, w, req)
@@ -352,7 +352,7 @@ func TestGetReleaseHistory(t *testing.T) {
 			router := Router{chi.NewRouter(), mockClustersClient, tt.permissionsEnabled}
 			router.Get("/release/history", router.getReleaseHistory)
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 
 			w := httptest.NewRecorder()
 			tt.do(router, w, req)

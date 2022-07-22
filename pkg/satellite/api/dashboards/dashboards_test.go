@@ -1,6 +1,7 @@
 package dashboards
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -59,7 +60,7 @@ func TestGetDashboards(t *testing.T) {
 			}
 			router.Get("/dashboards", router.getDashboards)
 
-			req, _ := http.NewRequest(http.MethodGet, "/dashboards", nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/dashboards", nil)
 			w := httptest.NewRecorder()
 
 			router.getDashboards(w, req)

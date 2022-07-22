@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/v5/middleware"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 )
@@ -21,6 +22,9 @@ func doRequest[T any](ctx context.Context, client *http.Client, url string) (T, 
 	}
 
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
+	if requestID := middleware.GetReqID(ctx); requestID != "" {
+		req.Header.Set("requestID", requestID)
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {

@@ -86,7 +86,7 @@ func TestGetResourceGroups(t *testing.T) {
 			router := Router{chi.NewRouter(), []instance.Instance{mockInstance}}
 			router.Get("/resourcegroups", router.getResourceGroups)
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()

@@ -9,7 +9,6 @@ import (
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 
 	"github.com/mitchellh/mapstructure"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 // Config is the structure of the configuration for a single SonarQube instance.
@@ -90,7 +89,7 @@ func New(name string, options map[string]any) (Instance, error) {
 		address:      config.Address,
 		organization: config.Organization,
 		client: &http.Client{
-			Transport: otelhttp.NewTransport(roundTripper),
+			Transport: roundTripper,
 		},
 		metricKeys: metricKeys,
 	}, nil

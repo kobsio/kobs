@@ -1,6 +1,7 @@
 package azure
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -111,7 +112,7 @@ func TestGetActualCosts(t *testing.T) {
 				costManagementRouter.Get("/actualcosts", router.getActualCosts)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()

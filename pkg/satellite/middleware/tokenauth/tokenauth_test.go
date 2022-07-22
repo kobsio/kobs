@@ -1,6 +1,7 @@
 package tokenauth
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -47,7 +48,7 @@ func TestHandler(t *testing.T) {
 				render.JSON(w, r, nil)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, "/", nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
 			tt.prepareRequest(req)
 
 			w := httptest.NewRecorder()

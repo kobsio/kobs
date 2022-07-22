@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
 )
 
@@ -25,6 +26,9 @@ func (c *Client) GetTimeline(ctx context.Context, id string) ([]Entry, error) {
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("GenieKey %s", c.client.Config.ApiKey))
+	if requestID := middleware.GetReqID(ctx); requestID != "" {
+		req.Header.Set("requestID", requestID)
+	}
 
 	resp, err := c.client.RetryableClient.HTTPClient.Do(req)
 	if err != nil {
@@ -62,6 +66,9 @@ func (c *Client) Resolve(ctx context.Context, id, note string) error {
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("GenieKey %s", c.client.Config.ApiKey))
+	if requestID := middleware.GetReqID(ctx); requestID != "" {
+		req.Header.Set("requestID", requestID)
+	}
 
 	resp, err := c.client.RetryableClient.HTTPClient.Do(req)
 	if err != nil {

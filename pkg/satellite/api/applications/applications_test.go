@@ -1,6 +1,7 @@
 package applications
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -57,7 +58,7 @@ func TestGetApplications(t *testing.T) {
 			router := Router{chi.NewRouter(), Config{}, mockClustersClient}
 			router.Get("/applications", router.getApplications)
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			w := httptest.NewRecorder()
 
 			router.getApplications(w, req)

@@ -1,6 +1,7 @@
 package teams
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -52,7 +53,7 @@ func TestGetTeams(t *testing.T) {
 			router := Router{Mux: chi.NewRouter(), clustersClient: mockClustersClient, config: Config{}}
 			router.Get("/teams", router.getTeams)
 
-			req, _ := http.NewRequest(http.MethodGet, "/teams", nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/teams", nil)
 			w := httptest.NewRecorder()
 
 			router.getTeams(w, req)

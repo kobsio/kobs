@@ -4,17 +4,19 @@ import (
 	"net"
 	"net/http"
 	"time"
+
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 // DefaultRoundTripper is our default RoundTripper.
-var DefaultRoundTripper http.RoundTripper = &http.Transport{
+var DefaultRoundTripper http.RoundTripper = otelhttp.NewTransport(&http.Transport{
 	Proxy: http.ProxyFromEnvironment,
 	DialContext: (&net.Dialer{
 		Timeout:   30 * time.Second,
 		KeepAlive: 30 * time.Second,
 	}).DialContext,
 	TLSHandshakeTimeout: 10 * time.Second,
-}
+})
 
 // BasicAuthTransport is the struct to add basic auth to a RoundTripper.
 type BasicAuthTransport struct {

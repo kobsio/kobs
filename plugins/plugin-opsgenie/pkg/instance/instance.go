@@ -3,9 +3,11 @@ package instance
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 	extendedIncident "github.com/kobsio/kobs/plugins/plugin-opsgenie/pkg/instance/incident"
 
 	"github.com/mitchellh/mapstructure"
@@ -223,6 +225,9 @@ func New(name string, options map[string]any) (Instance, error) {
 	opsgenieConfig := &client.Config{
 		ApiKey:         config.APIKey,
 		OpsGenieAPIURL: client.ApiUrl(config.APIUrl),
+		HttpClient: &http.Client{
+			Transport: roundtripper.DefaultRoundTripper,
+		},
 	}
 	opsgenieConfig.ConfigureLogLevel("error")
 

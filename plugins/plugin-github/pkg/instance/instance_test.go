@@ -1,6 +1,7 @@
 package instance
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -33,7 +34,7 @@ func TestTokenFromCookie(t *testing.T) {
 	i := instance{name: "github", config: Config{Organization: "kobsio"}}
 
 	t.Run("no error", func(t *testing.T) {
-		r, _ := http.NewRequest(http.MethodGet, "", nil)
+		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
 		r.AddCookie(&http.Cookie{Name: "kobs-oauth-github-kobsio", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: false, HttpOnly: false})
 
 		token, err := i.TokenFromCookie(r)
@@ -42,7 +43,7 @@ func TestTokenFromCookie(t *testing.T) {
 	})
 
 	t.Run("with error invalid cookie value", func(t *testing.T) {
-		r, _ := http.NewRequest(http.MethodGet, "", nil)
+		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
 		r.AddCookie(&http.Cookie{Name: "kobs-oauth-github-kobsio", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ", Path: "/", Secure: false, HttpOnly: false})
 
 		token, err := i.TokenFromCookie(r)
@@ -51,7 +52,7 @@ func TestTokenFromCookie(t *testing.T) {
 	})
 
 	t.Run("with error invalid cookie name", func(t *testing.T) {
-		r, _ := http.NewRequest(http.MethodGet, "", nil)
+		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
 		r.AddCookie(&http.Cookie{Name: "kobs-oauth-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: false, HttpOnly: false})
 
 		token, err := i.TokenFromCookie(r)

@@ -103,7 +103,7 @@ func TestGetLogs(t *testing.T) {
 				r.Get("/logs", router.getLogs)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			rctx.URLParams.Add("name", strings.Split(tt.url, "/")[1])
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))

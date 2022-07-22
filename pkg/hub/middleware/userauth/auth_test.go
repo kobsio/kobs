@@ -231,7 +231,7 @@ func TestAuthHandler(t *testing.T) {
 			router.Use(tt.auth.Handler)
 			router.Mount(url, Mount(""))
 
-			req, _ := http.NewRequest(http.MethodGet, url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 			tt.prepareRequest(req)
 
 			w := httptest.NewRecorder()

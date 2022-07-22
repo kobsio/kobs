@@ -122,7 +122,7 @@ func TestGetVirtualMachineScaleSets(t *testing.T) {
 				virtualMachineScaleSetsRouter.Get("/virtualmachines", router.getVirtualMachines)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()
@@ -238,7 +238,7 @@ func TestGetVirtualMachineScaleSetDetails(t *testing.T) {
 				virtualMachineScaleSetsRouter.Get("/virtualmachines", router.getVirtualMachines)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()
@@ -354,7 +354,7 @@ func TestGetVirtualMachines(t *testing.T) {
 				virtualMachineScaleSetsRouter.Get("/virtualmachines", router.getVirtualMachines)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()

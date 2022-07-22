@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/go-chi/chi/v5/middleware"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 )
@@ -23,6 +24,9 @@ func doRequest[T any](ctx context.Context, client *http.Client, url string) (T, 
 
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 	req.Header.Set("X-Accept-Vulnerabilities", "application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0")
+	if requestID := middleware.GetReqID(ctx); requestID != "" {
+		req.Header.Set("requestID", requestID)
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {

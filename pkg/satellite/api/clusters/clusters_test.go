@@ -1,6 +1,7 @@
 package clusters
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -40,7 +41,7 @@ func TestGetClusters(t *testing.T) {
 			router := Router{chi.NewRouter(), Config{}, mockClustersClient}
 			router.Get("/clusters", router.getClusters)
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			w := httptest.NewRecorder()
 
 			router.getClusters(w, req)
@@ -93,7 +94,7 @@ func TestGetNamespaces(t *testing.T) {
 			}
 			router.Get("/namespaces", router.getNamespaces)
 
-			req, _ := http.NewRequest(http.MethodGet, "/namespaces", nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/namespaces", nil)
 			w := httptest.NewRecorder()
 
 			router.getNamespaces(w, req)
@@ -121,7 +122,7 @@ func TestGetCRDs(t *testing.T) {
 	}
 	router.Get("/crds", router.getCRDs)
 
-	req, _ := http.NewRequest(http.MethodGet, "/crds", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/crds", nil)
 	w := httptest.NewRecorder()
 
 	router.getCRDs(w, req)

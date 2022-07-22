@@ -123,7 +123,7 @@ func TestGetManagedClusters(t *testing.T) {
 				kubernetesServicesRouter.Get("/managedcluster/nodepools", router.getNodePools)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()
@@ -239,7 +239,7 @@ func TestGetManagedCluster(t *testing.T) {
 				kubernetesServicesRouter.Get("/managedcluster/nodepools", router.getNodePools)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()
@@ -355,7 +355,7 @@ func TestGetNodePools(t *testing.T) {
 				kubernetesServicesRouter.Get("/managedcluster/nodepools", router.getNodePools)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()

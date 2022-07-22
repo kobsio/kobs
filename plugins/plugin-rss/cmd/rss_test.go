@@ -1,6 +1,7 @@
 package rss
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -125,7 +126,7 @@ func TestGetFeed(t *testing.T) {
 			router := Router{chi.NewRouter(), []instance.Instance{i}}
 			router.Get("/feed", router.getFeed)
 
-			req, _ := http.NewRequest(http.MethodGet, "/feed?url="+ts.URL, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/feed?url="+ts.URL, nil)
 
 			w := httptest.NewRecorder()
 			tt.do(router, w, req)

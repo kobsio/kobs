@@ -111,7 +111,7 @@ func TestGetApplications(t *testing.T) {
 
 			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
@@ -192,7 +192,7 @@ func TestGetApplicationsCount(t *testing.T) {
 
 			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
@@ -246,7 +246,7 @@ func TestGetTags(t *testing.T) {
 
 			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
@@ -340,7 +340,7 @@ func TestGetApplication(t *testing.T) {
 
 			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
@@ -467,7 +467,7 @@ func TestGetApplicationsByTeam(t *testing.T) {
 
 			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 

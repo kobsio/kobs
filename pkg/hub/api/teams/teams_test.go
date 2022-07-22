@@ -116,7 +116,7 @@ func TestGetTeams(t *testing.T) {
 
 			router := Router{chi.NewRouter(), mockStoreClient}
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
@@ -197,7 +197,7 @@ func TestGetTeam(t *testing.T) {
 
 			router := Router{chi.NewRouter(), mockStoreClient}
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 

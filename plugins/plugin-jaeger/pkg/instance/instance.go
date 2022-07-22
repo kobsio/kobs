@@ -9,8 +9,8 @@ import (
 
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/mitchellh/mapstructure"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 )
@@ -59,6 +59,9 @@ func (i *instance) doRequest(ctx context.Context, url string) (map[string]any, e
 	}
 
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
+	if requestID := middleware.GetReqID(ctx); requestID != "" {
+		req.Header.Set("requestID", requestID)
+	}
 
 	resp, err := i.client.Do(req)
 	if err != nil {
@@ -137,7 +140,7 @@ func New(name string, options map[string]any) (Instance, error) {
 		name:    name,
 		address: config.Address,
 		client: &http.Client{
-			Transport: otelhttp.NewTransport(roundTripper),
+			Transport: roundTripper,
 		},
 	}, nil
 }

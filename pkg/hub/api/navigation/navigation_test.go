@@ -32,7 +32,7 @@ func TestGetNavigationGroups(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router := Router{chi.NewRouter(), tt.config}
 
-			req, _ := http.NewRequest(http.MethodGet, "/groups", nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/groups", nil)
 			rctx := chi.NewRouteContext()
 			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 

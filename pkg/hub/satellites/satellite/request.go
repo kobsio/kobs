@@ -9,6 +9,7 @@ import (
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
+	"github.com/go-chi/chi/v5/middleware"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 )
@@ -24,12 +25,14 @@ func doRequest[T any](ctx context.Context, user *authContext.User, client *http.
 	}
 
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
-
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	if user != nil {
 		req.Header.Set("x-kobs-user", user.ToString())
 	} else {
 		req.Header.Set("x-kobs-user", "{\"email\": \"\"}")
+	}
+	if requestID := middleware.GetReqID(ctx); requestID != "" {
+		req.Header.Set("requestID", requestID)
 	}
 
 	resp, err := client.Do(req)

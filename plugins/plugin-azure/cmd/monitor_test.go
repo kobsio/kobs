@@ -148,7 +148,7 @@ func TestGetMetrics(t *testing.T) {
 				monitorRouter.Get("/metrics", router.getMetrics)
 			})
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			req.Header.Set("x-kobs-plugin", tt.pluginName)
 
 			w := httptest.NewRecorder()

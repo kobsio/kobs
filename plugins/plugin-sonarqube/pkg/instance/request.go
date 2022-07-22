@@ -5,6 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5/middleware"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
@@ -15,6 +19,11 @@ func doRequest[T any](ctx context.Context, client *http.Client, url string) (T, 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return result, err
+	}
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
+	if requestID := middleware.GetReqID(ctx); requestID != "" {
+		req.Header.Set("requestID", requestID)
 	}
 
 	resp, err := client.Do(req)

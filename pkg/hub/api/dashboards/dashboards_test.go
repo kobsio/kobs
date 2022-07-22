@@ -2,6 +2,7 @@ package dashboards
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -48,7 +49,7 @@ func TestGetDashboardsFromReferences(t *testing.T) {
 			router := Router{chi.NewRouter(), mockStoreClient}
 			router.Get("/dashboards", router.getDashboardsFromReferences)
 
-			req, _ := http.NewRequest(http.MethodPost, "/dashboards", bytes.NewBuffer(tt.body))
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/dashboards", bytes.NewBuffer(tt.body))
 			w := httptest.NewRecorder()
 
 			router.getDashboardsFromReferences(w, req)
@@ -87,7 +88,7 @@ func TestGetDashboard(t *testing.T) {
 			router := Router{chi.NewRouter(), mockStoreClient}
 			router.Get("/dashboard", router.getDashboard)
 
-			req, _ := http.NewRequest(http.MethodGet, tt.url, nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
 			w := httptest.NewRecorder()
 
 			router.getDashboard(w, req)

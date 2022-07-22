@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"time"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
@@ -16,9 +15,9 @@ import (
 	"github.com/kobsio/kobs/pkg/kube/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -221,8 +220,7 @@ func NewClient(config Config) (Client, error) {
 	return &client{
 		config: config,
 		httpClient: &http.Client{
-			Transport: otelhttp.NewTransport(http.DefaultTransport),
-			Timeout:   60 * time.Second,
+			Transport: roundtripper.DefaultRoundTripper,
 		},
 		proxyURL: proxyURL,
 		tracer:   otel.Tracer("satellite"),

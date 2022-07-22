@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -51,7 +52,7 @@ func TestGetUsers(t *testing.T) {
 			router := Router{Mux: chi.NewRouter(), clustersClient: mockClustersClient, config: Config{}}
 			router.Get("/users", router.getUsers)
 
-			req, _ := http.NewRequest(http.MethodGet, "/users", nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/users", nil)
 			w := httptest.NewRecorder()
 
 			router.getUsers(w, req)

@@ -3,11 +3,11 @@ package rss
 import (
 	"net/http"
 	"sync"
-	"time"
 
 	"github.com/kobsio/kobs/pkg/kube/clusters"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 	"github.com/kobsio/kobs/plugins/plugin-rss/pkg/feed"
 	"github.com/kobsio/kobs/plugins/plugin-rss/pkg/instance"
@@ -15,7 +15,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/mmcdole/gofeed"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/zap"
 )
 
@@ -101,8 +100,7 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 
 	for _, i := range instances {
 		rssInstance := instance.New(i.Name, &http.Client{
-			Transport: otelhttp.NewTransport(http.DefaultTransport),
-			Timeout:   30 * time.Second,
+			Transport: roundtripper.DefaultRoundTripper,
 		})
 		rssInstances = append(rssInstances, rssInstance)
 	}

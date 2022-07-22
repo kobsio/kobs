@@ -34,7 +34,7 @@ func TestUserAuthHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router := Router{chi.NewRouter(), ""}
 
-			req, _ := http.NewRequest(http.MethodGet, "/user", nil)
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/user", nil)
 			req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, tt.user))
 
 			w := httptest.NewRecorder()
@@ -49,7 +49,7 @@ func TestUserAuthHandler(t *testing.T) {
 func TestUserLogoutHandler(t *testing.T) {
 	router := Router{chi.NewRouter(), ""}
 
-	req, _ := http.NewRequest(http.MethodGet, "/user", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/user", nil)
 
 	w := httptest.NewRecorder()
 	router.userLogoutHandler(w, req)
