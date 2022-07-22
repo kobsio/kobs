@@ -52,6 +52,27 @@ satellites:
 
 # The api configuration is optional.
 api:
+  # It is possible to customize the navigation sidebar of kobs. More details can be found on the "Navigation" page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).
+  navigation:
+
+  # It is possible to show notifications within kobs from a configured plugin. More details can be found on the "Notifications" page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).
+  notifications:
+
+  # The resources configuration section can be used to add integrations for Kubernetes Resources. Currently it is possible to add a set of default dashboards for each Kubernetes Resource via the integrations.
+  resources:
+    integrations:
+      dashboards:
+        # In the following example we are adding a dashboard "resource-usage" from the "kobs" namespace to each Pod.
+        # The configuration uses the same syntax as it is used in the "kobs.io/dashboards" annotation for resources. See https://kobs.io/main/resources/kubernetes-resources/#dashboards for more information.
+        # - resource: pods
+        #   dashboard:
+        #     name: resource-usage
+        #     namespace: kobs
+        #     title: Resource Usage
+        #     placeholders:
+        #       namespace: "<% $.metadata.namespace %>"
+        #       pod: "<% $.metadata.name %>"
+
   # The users configuration section can be used to show a list of default dashboards on the users profile page, when the user has not configured his profile page.
   users:
     defaultDashboards:
@@ -78,12 +99,6 @@ api:
       #             plugin:
       #               type: app
       #               name: userapplications
-
-    # It is possible to customize the navigation sidebar of kobs. More details can be found on the "Navigation" page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).
-    navigation:
-
-    # It is possible to show notifications within kobs from a configured plugin. More details can be found on the "Notifications" page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).
-    notifications:
 ```
 
 You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: `${NAME_OF_THE_ENVIRONMENT_VARIABLE}`. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.

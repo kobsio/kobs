@@ -17,6 +17,7 @@ import Actions from './Actions';
 import Dashboards from './Dashboards';
 import { Editor } from '@kobsio/shared';
 import Events from './Events';
+import { IIntegrations } from '../utils/interfaces';
 import { IResource } from '../../../resources/clusters';
 import { IResourceRow } from '../utils/tabledata';
 import Logs from './Logs';
@@ -46,10 +47,16 @@ const getSelector = (resource: IResource, resourceData: IResourceRow): string =>
 interface IDetailsProps {
   resource: IResource;
   resourceData: IResourceRow;
+  integrations: IIntegrations;
   close: () => void;
 }
 
-const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceData, close }: IDetailsProps) => {
+const Details: React.FunctionComponent<IDetailsProps> = ({
+  resource,
+  resourceData,
+  integrations,
+  close,
+}: IDetailsProps) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const podSelector = getSelector(resource, resourceData);
 
@@ -154,7 +161,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ resource, resourceDat
               className="kobsio-hide-scrollbar"
               style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 24px' }}
             >
-              <Dashboards resource={resource} resourceData={resourceData} />
+              <Dashboards resource={resource} resourceData={resourceData} integrations={integrations} />
             </div>
           </Tab>
         </Tabs>

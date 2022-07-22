@@ -10,6 +10,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/store/shared"
+	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
@@ -18,10 +19,29 @@ import (
 	"go.uber.org/zap"
 )
 
+// Config is the configuration for the resources API. At the moment it allows users to configure integration, which can
+// be used to set a list of default dashboards which should be added to a resource. This is the same as the
+// "kobs.io/dashboards" annotation, but allows to set a list of dashboards for all resources of a certain type which are
+// matching the specified labels.
+type Config struct {
+	Integrations Integrations `json:"integrations"`
+}
+
+type Integrations struct {
+	Dashboards []Dashboard `json:"dashboards"`
+}
+
+type Dashboard struct {
+	Resource  string                `json:"resource"`
+	Labels    map[string]string     `json:"labels"`
+	Dashboard dashboardv1.Reference `json:"dashboard"`
+}
+
 type ResourceResponse struct {
 	Resource      shared.Resource `json:"resource"`
 	ResourceLists []ResourceList  `json:"resourceLists"`
 	Errors        []string        `json:"errors"`
+	Integrations  Integrations    `json:"integrations"`
 }
 
 type ResourceList struct {
@@ -30,10 +50,25 @@ type ResourceList struct {
 	List      map[string]any `json:"list"`
 }
 
+// Router implements the resources API. It implement a chi.Mux and contains the satellites and store client and the
+// configured integration to serve our needs.
 type Router struct {
 	*chi.Mux
 	satellitesClient satellites.Client
 	storeClient      store.Client
+	integrations     Integrations
+}
+
+func (router *Router) getDashboardsFromIntegrationsByID(id string) []Dashboard {
+	var dashboards []Dashboard
+
+	for _, dashboard := range router.integrations.Dashboards {
+		if dashboard.Resource == id {
+			dashboards = append(dashboards, dashboard)
+		}
+	}
+
+	return dashboards
 }
 
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
@@ -88,6 +123,8 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 
 				resource = shared.CRDToResource(*crd)
 			}
+
+			dashboards := router.getDashboardsFromIntegrationsByID(resourceID)
 
 			var resourceLists []ResourceList
 			var errors []string
@@ -146,7 +183,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 
 			wgNamespaces.Wait()
 			muResources.Lock()
-			resourceResponses = append(resourceResponses, ResourceResponse{Resource: resource, ResourceLists: resourceLists, Errors: errors})
+			resourceResponses = append(resourceResponses, ResourceResponse{Resource: resource, ResourceLists: resourceLists, Errors: errors, Integrations: Integrations{Dashboards: dashboards}})
 			muResources.Unlock()
 		}(resourceID)
 	}
@@ -177,11 +214,12 @@ func (router *Router) proxyResources(w http.ResponseWriter, r *http.Request) {
 	satellite.Proxy(w, r)
 }
 
-func Mount(satellitesClient satellites.Client, storeClient store.Client) chi.Router {
+func Mount(config Config, satellitesClient satellites.Client, storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
 		satellitesClient,
 		storeClient,
+		config.Integrations,
 	}
 
 	router.Get("/_", router.getResources)

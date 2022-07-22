@@ -3,7 +3,7 @@ import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patter
 import React from 'react';
 import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
-import { IColumn, IResourceResponse } from './utils/interfaces';
+import { IColumn, IIntegrations, IResourceResponse } from './utils/interfaces';
 import { IResourceRow, customResourceDefinitionTableData, resourcesTableData } from './utils/tabledata';
 import { IResource } from '../../resources/clusters';
 
@@ -12,7 +12,7 @@ interface IResourcesPanelTableProps {
   columns?: IColumn[];
   filter?: string;
   selectedRow: number;
-  selectRow?: (rowIndex: number, resource: IResource, resourceData: IResourceRow) => void;
+  selectRow?: (rowIndex: number, resource: IResource, resourceData: IResourceRow, integrations: IIntegrations) => void;
 }
 
 const ResourcesPanelTable: React.FunctionComponent<IResourcesPanelTableProps> = ({
@@ -81,7 +81,11 @@ const ResourcesPanelTable: React.FunctionComponent<IResourcesPanelTableProps> = 
               key={rowIndex}
               isHoverable={selectRow ? true : false}
               isRowSelected={selectedRow === rowIndex}
-              onClick={(): void => (selectRow ? selectRow(rowIndex, resourceResponse.resource, row) : undefined)}
+              onClick={(): void =>
+                selectRow
+                  ? selectRow(rowIndex, resourceResponse.resource, row, resourceResponse.integrations)
+                  : undefined
+              }
             >
               {row.cells.map((cell, cellIndex) => (
                 <Td key={cellIndex}>{cell}</Td>

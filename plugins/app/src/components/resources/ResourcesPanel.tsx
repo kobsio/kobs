@@ -16,7 +16,7 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
-import { IOptions, IResourceResponse } from './utils/interfaces';
+import { IIntegrations, IOptions, IResourceResponse } from './utils/interfaces';
 import Details from './details/Details';
 import { IResource } from '../../resources/clusters';
 import { IResourceRow } from './utils/tabledata';
@@ -141,12 +141,18 @@ const ResourcesPanel: React.FunctionComponent<IResourcesPanelProps> = ({
             selectedRow={state.selectedRow}
             selectRow={
               setDetails
-                ? (rowIndex: number, resource: IResource, resourceData: IResourceRow): void => {
+                ? (
+                    rowIndex: number,
+                    resource: IResource,
+                    resourceData: IResourceRow,
+                    integrations: IIntegrations,
+                  ): void => {
                     setState({ ...state, selectedRow: rowIndex });
                     setDetails(
                       <Details
                         resource={resource}
                         resourceData={resourceData}
+                        integrations={integrations}
                         close={(): void => {
                           setState({ ...state, selectedRow: -1 });
                           setDetails(undefined);

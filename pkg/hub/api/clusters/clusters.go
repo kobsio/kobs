@@ -14,6 +14,8 @@ import (
 	"go.uber.org/zap"
 )
 
+type Config struct{}
+
 type Router struct {
 	*chi.Mux
 	storeClient store.Client
@@ -72,7 +74,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, shared.GetResources(crds))
 }
 
-func Mount(storeClient store.Client) chi.Router {
+func Mount(config Config, storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
 		storeClient,
