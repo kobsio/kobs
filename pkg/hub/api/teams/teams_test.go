@@ -212,6 +212,6 @@ func TestGetTeam(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(nil)
+	router := Mount(Config{}, nil)
 	require.NotNil(t, router)
 }

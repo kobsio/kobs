@@ -151,7 +151,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                             style={
                               row.size !== undefined && row.size === -1
                                 ? undefined
-                                : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
+                                : { height: rowHeight(row.size, panel.rowSpan) }
                             }
                           >
                             <PluginPanel
@@ -171,7 +171,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                             style={
                               row.size !== undefined && row.size === -1
                                 ? undefined
-                                : { height: rowHeight(row.size, panel.rowSpan), overflow: 'auto' }
+                                : { height: rowHeight(row.size, panel.rowSpan) }
                             }
                           ></div>
                         )}

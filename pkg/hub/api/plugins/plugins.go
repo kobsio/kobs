@@ -16,6 +16,8 @@ import (
 	"go.uber.org/zap"
 )
 
+type Config struct{}
+
 // Router implements the router for the resources plugin, which can be registered in the router for our rest api.
 type Router struct {
 	*chi.Mux
@@ -87,7 +89,7 @@ func (router *Router) proxyPlugins(w http.ResponseWriter, r *http.Request) {
 
 // Mount returns a chi.Router which can be used to interact with the plugins of the satellites. It returns all the
 // loaded plugins from the satellites and proxies the plugin requests to the satellites.
-func Mount(satellitesClient satellites.Client, storeClient store.Client) chi.Router {
+func Mount(config Config, satellitesClient satellites.Client, storeClient store.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
 		satellitesClient,

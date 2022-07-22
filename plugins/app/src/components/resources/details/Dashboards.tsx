@@ -2,12 +2,51 @@ import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
 import React from 'react';
 
 import { DashboardsWrapper } from '../../dashboards/DashboardsWrapper';
+import { IIntegrations } from '../utils/interfaces';
 import { IReference } from '../../../crds/dashboard';
 import { IResource } from '../../../resources/clusters';
 import { IResourceRow } from '../utils/tabledata';
 
+// getReferences returns all dashboard references for a resources. This includes all references from the configured
+// integration and the references from the "kobs.io/dashboards" annotation.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getReferences = (resourceData: IResourceRow): IReference[] | undefined => {
+const getReferences = (resourceData: IResourceRow, integrations: IIntegrations): IReference[] => {
+  // Get dashboard references from the integrations. For that we loop through all configured dashboards from the
+  // integrations. If a dashboard is defined we check if the user also defined some labels. If this is the case we check
+  // that the resource matches the configured labels to only add the these dashboards. If the user did not defined any
+  // labels we add all dashboards.
+  const integrationReferences: IReference[] = [];
+  if (integrations.dashboards) {
+    for (const dashboard of integrations.dashboards) {
+      if (dashboard.dashboard) {
+        if (dashboard.labels) {
+          if (resourceData.props.metadata.labels) {
+            for (const [key, value] of Object.entries(dashboard.labels)) {
+              if (key in resourceData.props.metadata.labels && resourceData.props.metadata.labels[key] === value) {
+                integrationReferences.push(dashboard.dashboard);
+              }
+            }
+          }
+        } else {
+          integrationReferences.push(dashboard.dashboard);
+        }
+      }
+    }
+
+    for (let i = 0; i < integrationReferences.length; i++) {
+      if (!integrationReferences[i].satellite || integrationReferences[i].satellite === '') {
+        integrationReferences[i].satellite = resourceData.satellite;
+      }
+      if (!integrationReferences[i].cluster || integrationReferences[i].cluster === '') {
+        integrationReferences[i].cluster = resourceData.cluster;
+      }
+      if (!integrationReferences[i].namespace || integrationReferences[i].namespace === '') {
+        integrationReferences[i].namespace = resourceData.namespace;
+      }
+    }
+  }
+
+  // Get dashboard references from the "kobs.io/dashboards" annotation.
   const referencesAnnotation =
     resourceData.props &&
     resourceData.props.metadata &&
@@ -17,7 +56,7 @@ const getReferences = (resourceData: IResourceRow): IReference[] | undefined => 
       : undefined;
 
   if (!referencesAnnotation) {
-    return undefined;
+    return integrationReferences;
   }
 
   try {
@@ -35,25 +74,30 @@ const getReferences = (resourceData: IResourceRow): IReference[] | undefined => 
       }
     }
 
-    return references;
+    return [...integrationReferences, ...references];
   } catch (err) {
-    return undefined;
+    return integrationReferences;
   }
 };
 
 interface IDashboardsProps {
   resource: IResource;
   resourceData: IResourceRow;
+  integrations: IIntegrations;
 }
 
-const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ resource, resourceData }: IDashboardsProps) => {
-  const references = getReferences(resourceData);
+const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
+  resource,
+  resourceData,
+  integrations,
+}: IDashboardsProps) => {
+  const references = getReferences(resourceData, integrations);
 
   const openDocs = (): void => {
-    window.open('https://kobs.io/main/resources/resources', '_blank');
+    window.open('https://kobs.io/main/resources/kubernetes-resources/#dashboards', '_blank');
   };
 
-  if (!references) {
+  if (references.length === 0) {
     return (
       <Alert
         variant={AlertVariant.info}

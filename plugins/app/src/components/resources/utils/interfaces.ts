@@ -1,5 +1,6 @@
 import { AlertVariant } from '@patternfly/react-core';
 
+import { IReference } from '../../../crds/dashboard';
 import { IResource } from '../../../resources/clusters';
 import { ITimes } from '@kobsio/shared';
 
@@ -25,6 +26,7 @@ export interface IResourceResponse {
   resource: IResource;
   resourceLists: IResourceList[];
   errors: string[];
+  integrations: IIntegrations;
 }
 
 export interface IResourceList {
@@ -32,6 +34,16 @@ export interface IResourceList {
   cluster: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   list: any;
+}
+
+export interface IIntegrations {
+  dashboards?: IDashboard[];
+}
+
+export interface IDashboard {
+  resource?: string;
+  labels?: { [key: string]: string };
+  dashboard?: IReference;
 }
 
 // IAlert is the interface for an alert. An alert in this component can be an error, when the fetchApplication fails or

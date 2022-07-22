@@ -18,6 +18,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#394](https://github.com/kobsio/kobs/pull/#394): [app] Allow users and teams to customize their notification settings.
 - [#398](https://github.com/kobsio/kobs/pull/#398): [github] Add GitHub plugin to access issues, pull requests, teams and members of an organization.
 - [#399](https://github.com/kobsio/kobs/pull/#399): [github] Add new `usernotifications` panel and allow users to use the plugin within the Notifications.
+- [#401](https://github.com/kobsio/kobs/pull/#401): [app] Add integrations for Kubernetes Resource, which allows administrators to define a set of default dashboards, which are added to each resource.
 
 ### Fixed
 
