@@ -4,8 +4,10 @@ package instance
 
 import (
 	context "context"
+	http "net/http"
 
 	github "github.com/google/go-github/github"
+
 	mock "github.com/stretchr/testify/mock"
 
 	oauth2 "golang.org/x/oauth2"
@@ -111,6 +113,52 @@ func (_m *MockInstance) OAuthLoginURL() string {
 	}
 
 	return r0
+}
+
+// TokenFromCookie provides a mock function with given fields: r
+func (_m *MockInstance) TokenFromCookie(r *http.Request) (*oauth2.Token, error) {
+	ret := _m.Called(r)
+
+	var r0 *oauth2.Token
+	if rf, ok := ret.Get(0).(func(*http.Request) *oauth2.Token); ok {
+		r0 = rf(r)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*oauth2.Token)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*http.Request) error); ok {
+		r1 = rf(r)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// TokenToCookie provides a mock function with given fields: token
+func (_m *MockInstance) TokenToCookie(token *oauth2.Token) (*http.Cookie, error) {
+	ret := _m.Called(token)
+
+	var r0 *http.Cookie
+	if rf, ok := ret.Get(0).(func(*oauth2.Token) *http.Cookie); ok {
+		r0 = rf(token)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*http.Cookie)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*oauth2.Token) error); ok {
+		r1 = rf(token)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 type NewMockInstanceT interface {

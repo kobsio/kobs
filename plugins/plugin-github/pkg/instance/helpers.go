@@ -1,9 +1,8 @@
-package helpers
+package instance
 
 import (
 	"encoding/base64"
 	"encoding/json"
-	"net/http"
 
 	"golang.org/x/oauth2"
 )
@@ -32,30 +31,4 @@ func tokenFromBase64(tokenStr string) (*oauth2.Token, error) {
 	}
 
 	return &token, nil
-}
-
-// TokenToCookie returns a cookie for the given oauth token.
-func TokenToCookie(token *oauth2.Token) (*http.Cookie, error) {
-	cookieValue, err := tokenToBase64(token)
-	if err != nil {
-		return nil, err
-	}
-
-	return &http.Cookie{
-		Name:     "kobs-oauth-github",
-		Value:    cookieValue,
-		Secure:   false,
-		HttpOnly: false,
-		Path:     "/",
-	}, nil
-}
-
-// TokenFromCookie returns the token from the "kobs-oauth-github" cookie in the given request.
-func TokenFromCookie(r *http.Request) (*oauth2.Token, error) {
-	cookie, err := r.Cookie("kobs-oauth-github")
-	if err != nil {
-		return nil, err
-	}
-
-	return tokenFromBase64(cookie.Value)
 }

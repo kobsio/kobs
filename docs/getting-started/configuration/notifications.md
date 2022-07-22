@@ -50,6 +50,25 @@ api:
             resources:
               - pods
             filter: $.status.containerStatuses[?(@.state.waiting || @.state.terminated && @.state.terminated.reason!='Completed')]
+      - title: GitHub Notifications
+        plugin:
+          satellite: global
+          name: github
+          type: github
+          options:
+            type: usernotifications
+            usernotifications:
+              all: true
+              participating: false
+      - title: GitHub Pull Requests
+        plugin:
+          satellite: global
+          name: github
+          type: github
+          options:
+            type: userpullrequests
+            userpullrequests:
+              query: created
 ```
 
 Each plugin is identified by a `satellite`, `name` and `type`. The options for each plugin can be found in the **Notification Options** section of the corresponding plugin documentation.

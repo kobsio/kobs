@@ -9,6 +9,7 @@ module.exports = {
     './Instance': './src/components/instance/Instance.tsx',
     './Panel': './src/components/panel/Panel.tsx',
     './Page': './src/components/page/Page.tsx',
+    './Notifications': './src/components/notifications/Notifications.tsx',
   },
   shared: {
     ...deps,

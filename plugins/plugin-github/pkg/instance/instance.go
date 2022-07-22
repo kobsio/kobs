@@ -3,6 +3,7 @@ package instance
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/google/go-github/github"
 	"github.com/mitchellh/mapstructure"
@@ -25,6 +26,8 @@ type OAuthConfig struct {
 type Instance interface {
 	GetName() string
 	GetOrganization() string
+	TokenToCookie(token *oauth2.Token) (*http.Cookie, error)
+	TokenFromCookie(r *http.Request) (*oauth2.Token, error)
 	OAuthLoginURL() string
 	OAuthCallback(ctx context.Context, state, code string) (*oauth2.Token, *github.User, error)
 	OAuthIsAuthenticated(ctx context.Context, token *oauth2.Token) (*github.User, error)
@@ -42,6 +45,32 @@ func (i *instance) GetName() string {
 
 func (i *instance) GetOrganization() string {
 	return i.config.Organization
+}
+
+// TokenToCookie returns a cookie for the given oauth token.
+func (i *instance) TokenToCookie(token *oauth2.Token) (*http.Cookie, error) {
+	cookieValue, err := tokenToBase64(token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &http.Cookie{
+		Name:     "kobs-oauth-github-" + i.config.Organization,
+		Value:    cookieValue,
+		Secure:   false,
+		HttpOnly: false,
+		Path:     "/",
+	}, nil
+}
+
+// TokenFromCookie returns the token from the "kobs-oauth-github" cookie in the given request.
+func (i *instance) TokenFromCookie(r *http.Request) (*oauth2.Token, error) {
+	cookie, err := r.Cookie("kobs-oauth-github-" + i.config.Organization)
+	if err != nil {
+		return nil, err
+	}
+
+	return tokenFromBase64(cookie.Value)
 }
 
 func (i *instance) OAuthLoginURL() string {

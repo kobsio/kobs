@@ -101,7 +101,7 @@ const UserPullRequests: React.FunctionComponent<IUserPullRequestsProps> = ({
         <Alert
           variant={AlertVariant.danger}
           isInline={true}
-          title="Could not get organization pull requests"
+          title="Could not get pull requests"
           actionLinks={
             <React.Fragment>
               <AlertActionLink onClick={(): Promise<QueryObserverResult<TUserPullRequests, Error>> => refetch()}>

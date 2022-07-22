@@ -7,7 +7,6 @@ import (
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
-	"github.com/kobsio/kobs/plugins/plugin-github/pkg/helpers"
 	"github.com/kobsio/kobs/plugins/plugin-github/pkg/instance"
 
 	"github.com/go-chi/chi/v5"
@@ -88,7 +87,7 @@ func (router *Router) oauthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie, err := helpers.TokenToCookie(token)
+	cookie, err := i.TokenToCookie(token)
 	if err != nil {
 		log.Error(r.Context(), "Could not create authentication cookie", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "Could not create authentication cookie")
@@ -113,7 +112,7 @@ func (router *Router) oauthToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := helpers.TokenFromCookie(r)
+	token, err := i.TokenFromCookie(r)
 	if err != nil {
 		log.Error(r.Context(), "Could not get authentication token from cookie", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "Could not get authentication token from cookie")

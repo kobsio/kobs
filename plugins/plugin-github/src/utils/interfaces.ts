@@ -1,10 +1,20 @@
 import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
 import { Octokit } from '@octokit/rest';
 
+import { IPluginNotificationsProps } from '@kobsio/shared';
+
 export interface IPanelOptions {
   type?: string;
   team?: string;
   repository?: string;
+}
+
+export interface INotificationProps extends IPluginNotificationsProps {
+  options: {
+    type: string;
+    usernotifications: { all?: boolean; participating?: boolean };
+    userpullrequests: { query?: string };
+  };
 }
 
 const octokit = new Octokit();
@@ -25,3 +35,6 @@ export type TRepositoryWorkflowRunsJobs = GetResponseDataTypeFromEndpointMethod<
   typeof octokit.actions.listJobsForWorkflowRunAttempt
 >;
 export type TUserPullRequests = GetResponseDataTypeFromEndpointMethod<typeof octokit.search.issuesAndPullRequests>;
+export type TUserNotifications = GetResponseDataTypeFromEndpointMethod<
+  typeof octokit.activity.listNotificationsForAuthenticatedUser
+>;

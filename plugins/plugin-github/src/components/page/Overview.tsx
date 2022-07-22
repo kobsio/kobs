@@ -29,7 +29,7 @@ const Overview: React.FunctionComponent<IOverviewProps> = ({ instance }: IOvervi
       />
 
       <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={details}>
-        <AuthContextProvider title="" instance={instance}>
+        <AuthContextProvider title="" isNotification={false} instance={instance}>
           <Grid hasGutter={true}>
             <GridItem span={9}>
               <Flex direction={{ default: 'column' }}>
