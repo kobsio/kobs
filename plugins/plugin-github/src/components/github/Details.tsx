@@ -44,7 +44,7 @@ const Details: React.FunctionComponent<IDetailsProps> = ({ title, link, instance
         </DrawerActions>
       </DrawerHead>
       <DrawerPanelBody>
-        <AuthContextProvider title="" instance={instance}>
+        <AuthContextProvider title="" isNotification={false} instance={instance}>
           {children}
         </AuthContextProvider>
       </DrawerPanelBody>

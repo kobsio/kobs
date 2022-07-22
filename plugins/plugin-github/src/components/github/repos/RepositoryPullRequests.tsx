@@ -64,19 +64,19 @@ const RepositoryPullRequests: React.FunctionComponent<IRepositoryPullRequestsPro
           <ToggleGroup aria-label="Type">
             <ToggleGroupItem
               className="pf-u-text-nowrap"
-              text="open"
+              text="Open"
               isSelected={state === 'open'}
               onChange={(): void => setState('open')}
             />
             <ToggleGroupItem
               className="pf-u-text-nowrap"
-              text="closed"
+              text="Closed"
               isSelected={state === 'closed'}
               onChange={(): void => setState('closed')}
             />
             <ToggleGroupItem
               className="pf-u-text-nowrap"
-              text="all"
+              text="All"
               isSelected={state === 'all'}
               onChange={(): void => setState('all')}
             />

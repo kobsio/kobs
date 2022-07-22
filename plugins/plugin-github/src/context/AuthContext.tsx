@@ -30,6 +30,7 @@ export const AuthContextConsumer = AuthContext.Consumer;
 // properties are child components of the type ReactElement.
 interface IAuthContextProviderProps {
   title: string;
+  isNotification: boolean;
   instance: IPluginInstance;
   children: React.ReactElement;
 }
@@ -38,6 +39,7 @@ interface IAuthContextProviderProps {
 // changes.
 export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderProps> = ({
   title,
+  isNotification,
   instance,
   children,
 }: IAuthContextProviderProps) => {
@@ -74,6 +76,10 @@ export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderPr
   };
 
   if (isLoading) {
+    if (isNotification) {
+      return <div></div>;
+    }
+
     const loadingContent = (
       <div className="pf-u-text-align-center">
         <Spinner />
@@ -86,6 +92,10 @@ export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderPr
   // If an error occured during the fetch of the plugins, we are showing the error message in the cernter of the screen
   // within an Alert component. The Alert component contains a Retry button to call the fetchData function again.
   if (isError) {
+    if (isNotification) {
+      return <div></div>;
+    }
+
     const alertContent = (
       <Alert
         variant={AlertVariant.danger}

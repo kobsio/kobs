@@ -45,14 +45,30 @@ The following options can be used for a panel with the GitHub plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The type of the panel which should be shown. This could be `orgmemebers`, `orgpullrequests`, `orgrepositories`, `orgteams`, `team`, `teammembers`, `teamrepositories`, `repository`, `repositoryissues`, `repositorypullrequests`, `repositoryworkflowruns` or `userpullrequests`. | Yes |
+| type | string | The type of the panel which should be shown. This could be `orgmemebers`, `orgpullrequests`, `orgrepositories`, `orgteams`, `team`, `teammembers`, `teamrepositories`, `repository`, `repositoryissues`, `repositorypullrequests`, `repositoryworkflowruns`, `userpullrequests` or `usernotifications`. | Yes |
 | team | string | The name of the GitHub team from your organization. This is required if the type is `team`, `teammembers` or `teamrepositories`. | No |
 | repository | string | The name of the GitHub repository from your organization. This is required if the type is `repository`, `repositoryissues`, `repositorypullrequests` or `repositoryworkflowruns`. | No |
 
 ## Notification Options
 
-!!! note
-    The GitHub plugin can not be used to get a list of notifications.
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The type of the panel which should be shown. This could be `userpullrequests` or `usernotifications`. | Yes |
+| userpullrequests | [User Pull Requests](#user-pull-requests) | Options for the `userpullrequests` type. | No |
+| usernotifications | [User Notifications](#user-notifications) | Options for the `usernotifications` type. | No |
+
+### User Pull Requests
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| query | string | The query which should be used to get the users pull requests. Must be `created`, `assigned`, `mentioned` or `reviewRequests`. | Yes |
+
+### User Notifications
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| all | boolean | If `true`, show notifications marked as read. | No |
+| participating | boolean | If `true`, only shows notifications in which the user is directly participating or mentioned. | No |
 
 ## Usage
 
