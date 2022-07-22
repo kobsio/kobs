@@ -1274,6 +1274,25 @@
 <span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
 <span class="w">            </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$.status.containerStatuses[?(@.state.waiting || @.state.terminated &amp;&amp; @.state.terminated.reason!=&#39;Completed&#39;)]</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Notifications</span><span class="w"></span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">usernotifications</span><span class="w"></span>
+<span class="w">            </span><span class="nt">usernotifications</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">all</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">              </span><span class="nt">participating</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Pull Requests</span><span class="w"></span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpullrequests</span><span class="w"></span>
+<span class="w">            </span><span class="nt">userpullrequests</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">created</span><span class="w"></span>
 </code></pre></div>
 <p>Each plugin is identified by a <code>satellite</code>, <code>name</code> and <code>type</code>. The options for each plugin can be found in the <strong>Notification Options</strong> section of the corresponding plugin documentation.</p>
 

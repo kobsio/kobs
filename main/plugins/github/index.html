@@ -851,6 +851,26 @@
     Notification Options
   </a>
   
+    <nav class="md-nav" aria-label="Notification Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-pull-requests" class="md-nav__link">
+    User Pull Requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user-notifications" class="md-nav__link">
+    User Notifications
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1355,6 +1375,26 @@
     Notification Options
   </a>
   
+    <nav class="md-nav" aria-label="Notification Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-pull-requests" class="md-nav__link">
+    User Pull Requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user-notifications" class="md-nav__link">
+    User Notifications
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1510,7 +1550,7 @@
 <tr>
 <td>type</td>
 <td>string</td>
-<td>The type of the panel which should be shown. This could be <code>orgmemebers</code>, <code>orgpullrequests</code>, <code>orgrepositories</code>, <code>orgteams</code>, <code>team</code>, <code>teammembers</code>, <code>teamrepositories</code>, <code>repository</code>, <code>repositoryissues</code>, <code>repositorypullrequests</code>, <code>repositoryworkflowruns</code> or <code>userpullrequests</code>.</td>
+<td>The type of the panel which should be shown. This could be <code>orgmemebers</code>, <code>orgpullrequests</code>, <code>orgrepositories</code>, <code>orgteams</code>, <code>team</code>, <code>teammembers</code>, <code>teamrepositories</code>, <code>repository</code>, <code>repositoryissues</code>, <code>repositorypullrequests</code>, <code>repositoryworkflowruns</code>, <code>userpullrequests</code> or <code>usernotifications</code>.</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -1528,10 +1568,80 @@
 </tbody>
 </table>
 <h2 id="notification-options">Notification Options</h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The GitHub plugin can not be used to get a list of notifications.</p>
-</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>The type of the panel which should be shown. This could be <code>userpullrequests</code> or <code>usernotifications</code>.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>userpullrequests</td>
+<td><a href="#user-pull-requests">User Pull Requests</a></td>
+<td>Options for the <code>userpullrequests</code> type.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>usernotifications</td>
+<td><a href="#user-notifications">User Notifications</a></td>
+<td>Options for the <code>usernotifications</code> type.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="user-pull-requests">User Pull Requests</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>query</td>
+<td>string</td>
+<td>The query which should be used to get the users pull requests. Must be <code>created</code>, <code>assigned</code>, <code>mentioned</code> or <code>reviewRequests</code>.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="user-notifications">User Notifications</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>all</td>
+<td>boolean</td>
+<td>If <code>true</code>, show notifications marked as read.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>participating</td>
+<td>boolean</td>
+<td>If <code>true</code>, only shows notifications in which the user is directly participating or mentioned.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="usage">Usage</h2>
 <h3 id="setup-an-oauth-app">Setup an OAuth App</h3>
 <p>To setup an OAuth App on GitHub for kobs go to the settings page of your organization and select <strong>OAuth Apps</strong> in the <strong>Developer settings</strong> section. Then click on <strong>Register an application</strong>. Provide the following information:</p>
