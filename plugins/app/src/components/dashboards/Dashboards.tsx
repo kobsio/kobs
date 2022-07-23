@@ -51,7 +51,7 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({
   }, [location.search, references, useDrawer]);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IDashboard[], Error>(
-    ['app/dashboards/dashboards', references],
+    ['app/dashboards/dashboards', references, manifest],
     async () => {
       try {
         const response = await fetch(`/api/dashboards`, {
