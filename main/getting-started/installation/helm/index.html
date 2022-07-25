@@ -1631,6 +1631,76 @@ helm upgrade --install satellite kobs/satellite
 <td>Relabel config.</td>
 <td><code>[]</code></td>
 </tr>
+<tr>
+<td><code>watcher.enabled</code></td>
+<td>Enable the watcher deployment to sync the data from all configured satellites. This only works when you are using MongoDB.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>watcher.resources</code></td>
+<td>Set cpu and memory requests and limits for the kobs container.</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>watcher.podAnnotations</code></td>
+<td>Specify additional annotations for the created Pods.</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>watcher.podLabels</code></td>
+<td>Specify additional labels for the created Pods.</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>watcher.service.type</code></td>
+<td>Set the type for the created Service: <code>ClusterIP</code>, <code>NodePort</code>, <code>LoadBalancer</code>.</td>
+<td><code>ClusterIP</code></td>
+</tr>
+<tr>
+<td><code>watcher.service.annotations</code></td>
+<td>Specify additional annotations for the created Service.</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>watcher.service.labels</code></td>
+<td>Specify additional labels for the created Service.</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>watcher.serviceMonitor.enabled</code></td>
+<td>Create a Service Monitor for kobs.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>watcher.serviceMonitor.interval</code></td>
+<td>Interval at which metrics should be scraped. Fallback to the Prometheus default unless specified.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>watcher.serviceMonitor.scrapeTimeout</code></td>
+<td>Timeout after which the scrape is ended. Fallback to the Prometheus default unless specified.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>watcher.serviceMonitor.labels</code></td>
+<td>Additional labels for the the Service Monitor.</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>watcher.serviceMonitor.honorLabels</code></td>
+<td>Chooses the metric's labels on collisions with target labels.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>watcher.serviceMonitor.metricRelabelings</code></td>
+<td>Metric relabel config.</td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td><code>watcher.serviceMonitor.relabelings</code></td>
+<td>Relabel config.</td>
+<td><code>[]</code></td>
+</tr>
 </tbody>
 </table>
 <h2 id="values-satellite">Values - satellite</h2>
