@@ -10,7 +10,7 @@ import (
 // type and an optionsl description. It can also contains a map with additional options. The options can be used to
 // specify the addess, username, password, etc. to access an service within the plugin.
 type Instance struct {
-	ID              string         `json:"id"`
+	ID              string         `json:"id" bson:"_id"`
 	Satellite       string         `json:"satellite"`
 	Name            string         `json:"name"`
 	Description     string         `json:"description"`

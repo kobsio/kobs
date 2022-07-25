@@ -2,7 +2,7 @@ package shared
 
 // Topology is the structure of the saved topology data in our store.
 type Topology struct {
-	ID                  string `json:"id"`
+	ID                  string `json:"id" bson:"_id"`
 	SourceID            string `json:"sourceID"`
 	SourceSatellite     string `json:"sourceSatellite"`
 	SourceCluster       string `json:"sourceCluster"`

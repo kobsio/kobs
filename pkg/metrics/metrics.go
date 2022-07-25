@@ -8,6 +8,7 @@ import (
 	"github.com/kobsio/kobs/pkg/log"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
@@ -51,6 +52,9 @@ func (s *server) Stop() {
 // New return a new metrics server.
 func New(address string) Server {
 	router := chi.NewRouter()
+	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+		render.JSON(w, r, nil)
+	})
 	router.Handle("/metrics", promhttp.Handler())
 
 	return &server{

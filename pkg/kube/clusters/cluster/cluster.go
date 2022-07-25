@@ -96,7 +96,7 @@ type client struct {
 // the CRs (namespaced vs. cluster) and an optional list of columns with the fields, which should be shown in the
 // frontend table.
 type CRD struct {
-	ID          string      `json:"id"`
+	ID          string      `json:"id" bson:"_id"`
 	Path        string      `json:"path"`
 	Resource    string      `json:"resource"`
 	Title       string      `json:"title"`

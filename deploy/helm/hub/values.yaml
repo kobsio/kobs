@@ -274,3 +274,85 @@ serviceMonitor:
     #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
+
+## The watcher allows you to use a seperate deployment for syncing the data from the configured satellites when enabled.
+## The watcher should be used when you are using the "mongodb" driver (hub.settings.store.driver) and the "server" mode
+## (hub.settings.mode).
+##
+## It is only possible to set the values for the resources and additional annotations and labels. All other values, like
+## settings and the configuration are set to the same values as for the hub Pods.
+##
+watcher:
+  enabled: false
+
+  ## We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This
+  ## also increases chances charts run on environments with little resources, such as Minikube. If you do want to
+  ## specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after
+  ## 'resources:'.
+  ##
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  ## Specify additional labels and annotations for the created Pods.
+  ##
+  podAnnotations: {}
+  podLabels: {}
+
+  ## Set the type for the created service: ClusterIP, NodePort, LoadBalancer.
+  ## See: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  ##
+  service:
+    type: ClusterIP
+
+    annotations: {}
+    labels: {}
+
+  ## Create a Service Monitor for the Prometheus Operator.
+  ## See: https://github.com/coreos/prometheus-operator
+  ##
+  serviceMonitor:
+    enabled: false
+
+    ## Interval at which metrics should be scraped. Fallback to the Prometheus default unless specified.
+    ##
+    # interval: 10s
+
+    ## Timeout after which the scrape is ended. Fallback to the Prometheus default unless specified.
+    ##
+    # scrapeTimeout: 30s
+
+    ## Additional labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+    ## See: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    ##
+    labels: {}
+
+    ## HonorLabels chooses the metric's labels on collisions with target labels.
+    ##
+    honorLabels: true
+
+    ## MetricRelabelConfigs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+      # - action: keep
+      #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+      #   sourceLabels: [__name__]
+
+    ## RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few
+    ## standard Kubernetes fields and replaces original scrape job name with __tmp_prometheus_job_name.
+    ##
+    relabelings: []
+      # - sourceLabels: [__meta_kubernetes_pod_node_name]
+      #   separator: ;
+      #   regex: ^(.*)$
+      #   targetLabel: nodename
+      #   replacement: $1
+      #   action: replace

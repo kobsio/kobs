@@ -1,0 +1,20 @@
+{{- if .Values.watcher.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hub.fullname" . }}-watcher
+  labels:
+    {{- include "hub.watcher.labels" . | nindent 4 }}
+    {{- include "hub.watcher.serviceLabels" . | nindent 4 }}
+  annotations:
+    {{- include "hub.watcher.serviceAnnotations" . | nindent 4 }}
+spec:
+  type: {{ .Values.watcher.service.type }}
+  ports:
+    - port: 15222
+      targetPort: http-metrics
+      protocol: TCP
+      name: http-metrics
+  selector:
+    {{- include "hub.watcher.selectorLabels" . | nindent 4 }}
+{{- end -}}

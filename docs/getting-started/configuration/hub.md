@@ -21,7 +21,7 @@ The following command-line arguments and environment variables are available.
 | `--hub.address` | `KOBS_HUB_ADDRESS` | The address, where the hub is listen on. | `:15220` |
 | `--hub.config` | `KOBS_HUB_CONFIG` | Path to the configuration file for the hub. | `config.yaml` |
 | `--hub.mode` | `KOBS_HUB_MODE` | The mode in which the hub should be started. Must be `default`, `server` or `watcher`. | `default` |
-| `--hub.store.driver` | `KOBS_HUB_STORE_DRIVER` | The database driver, which should be used for the store. | `bolt` |
+| `--hub.store.driver` | `KOBS_HUB_STORE_DRIVER` | The database driver, which should be used for the store. Must be `bolt` or `mongodb`. | `bolt` |
 | `--hub.store.uri` | `KOBS_HUB_STORE_URI` | The URI for the store. | `/tmp/kobs.db` |
 | `--hub.watcher.interval` | `KOBS_HUB_WATCHER_INTERVAL` | The interval for the watcher to sync the satellite configuration. | `300s` |
 | `--hub.watcher.worker` | `KOBS_HUB_WATCHER_WORKER` | The number of parallel sync processes for the watcher. | `10` |
