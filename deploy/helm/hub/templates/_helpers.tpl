@@ -94,3 +94,68 @@ Additional labels for the Service Monitor
 {{- toYaml .Values.serviceMonitor.labels }}
 {{- end }}
 {{- end }}
+
+{{/*
+Common labels for the watcher
+*/}}
+{{- define "hub.watcher.labels" -}}
+helm.sh/chart: {{ include "hub.chart" . }}
+{{ include "hub.watcher.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels for the watcher
+*/}}
+{{- define "hub.watcher.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "hub.name" . }}-watcher
+app.kubernetes.io/instance: {{ .Release.Name }}-watcher
+{{- end }}
+
+{{/*
+Additional annotations for watcher Pods
+*/}}
+{{- define "hub.watcher.podAnnotations" -}}
+{{- if .Values.watcher.podAnnotations }}
+{{- toYaml .Values.watcher.podAnnotations }}
+{{- end }}
+{{- end }}
+
+{{/*
+Additional labels for watcher Pods
+*/}}
+{{- define "hub.watcher.podLabels" -}}
+{{- if .Values.watcher.podLabels }}
+{{- toYaml .Values.watcher.podLabels }}
+{{- end }}
+{{- end }}
+
+{{/*
+Additional annotations for the watcher Service
+*/}}
+{{- define "hub.watcher.serviceAnnotations" -}}
+{{- if .Values.watcher.service.annotations }}
+{{- toYaml .Values.watcher.service.annotations }}
+{{- end }}
+{{- end }}
+
+{{/*
+Additional labels for the watcher Service
+*/}}
+{{- define "hub.watcher.serviceLabels" -}}
+{{- if .Values.watcher.service.labels }}
+{{- toYaml .Values.watcher.service.labels }}
+{{- end }}
+{{- end }}
+
+{{/*
+Additional labels for the watcher Service Monitor
+*/}}
+{{- define "hub.watcher.serviceMonitorLabels" -}}
+{{- if .Values.watcher.serviceMonitor.labels }}
+{{- toYaml .Values.watcher.serviceMonitor.labels }}
+{{- end }}
+{{- end }}

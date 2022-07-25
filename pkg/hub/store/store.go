@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kobsio/kobs/pkg/hub/store/bolt"
+	"github.com/kobsio/kobs/pkg/hub/store/mongodb"
 	"github.com/kobsio/kobs/pkg/hub/store/shared"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
@@ -51,6 +52,8 @@ func NewClient(driver, uri string) (Client, error) {
 	switch driver {
 	case "bolt":
 		return bolt.NewClient(uri)
+	case "mongodb":
+		return mongodb.NewClient(uri)
 	default:
 		return nil, fmt.Errorf("invalid driver")
 	}

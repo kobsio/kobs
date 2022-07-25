@@ -244,7 +244,7 @@ func Command() *cobra.Command {
 	hubCmd.PersistentFlags().StringVar(&hubAddress, "hub.address", defaultHubAddress, "The address, where the hub is listen on.")
 	hubCmd.PersistentFlags().StringVar(&hubConfigFile, "hub.config", defaultHubConfigFile, "Path to the configuration file for the hub.")
 	hubCmd.PersistentFlags().StringVar(&hubMode, "hub.mode", defaultHubMode, "The mode in which the hub should be started. Must be \"default\", \"server\" or \"watcher\".")
-	hubCmd.PersistentFlags().StringVar(&hubStoreDriver, "hub.store.driver", defaultHubStoreDriver, "The database driver, which should be used for the store.")
+	hubCmd.PersistentFlags().StringVar(&hubStoreDriver, "hub.store.driver", defaultHubStoreDriver, "The database driver, which should be used for the store. Must be \"bolt\" or \"mongodb\".")
 	hubCmd.PersistentFlags().StringVar(&hubStoreURI, "hub.store.uri", defaultHubStoreURI, "The URI for the store.")
 	hubCmd.PersistentFlags().DurationVar(&hubWatcherInterval, "hub.watcher.interval", defaultHubWatcherInterval, "The interval for the watcher to sync the satellite configuration.")
 	hubCmd.PersistentFlags().Int64Var(&hubWatcherWorker, "hub.watcher.worker", defaultHubWatcherWorker, "The number of parallel sync processes for the watcher.")

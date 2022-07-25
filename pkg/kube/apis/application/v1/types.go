@@ -28,7 +28,7 @@ type ApplicationList struct {
 }
 
 type ApplicationSpec struct {
-	ID          string                  `json:"id,omitempty" boltholdUnique:"UniqueID"`
+	ID          string                  `json:"id,omitempty" boltholdUnique:"UniqueID" bson:"_id"`
 	Satellite   string                  `json:"satellite,omitempty"`
 	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
 	Cluster     string                  `json:"cluster,omitempty"`

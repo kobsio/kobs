@@ -6,14 +6,14 @@ import (
 )
 
 type Cluster struct {
-	ID        string `json:"id"`
+	ID        string `json:"id" bson:"_id"`
 	Cluster   string `json:"cluster"`
 	Satellite string `json:"satellite"`
 	UpdatedAt int64  `json:"updatedAt"`
 }
 
 type Namespace struct {
-	ID        string `json:"id"`
+	ID        string `json:"id" bson:"_id"`
 	Namespace string `json:"namespace"`
 	Cluster   string `json:"cluster"`
 	Satellite string `json:"satellite"`
