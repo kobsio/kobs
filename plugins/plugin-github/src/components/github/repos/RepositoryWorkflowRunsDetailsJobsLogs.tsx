@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { AuthContext, IAuthContext } from '../../../context/AuthContext';
 import { IPluginInstance } from '@kobsio/shared';

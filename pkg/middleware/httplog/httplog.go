@@ -4,6 +4,7 @@ package httplog
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/kobsio/kobs/pkg/log"
@@ -30,7 +31,7 @@ func Handler(next http.Handler) http.Handler {
 					zap.String("requestProto", r.Proto),
 					zap.String("requestMethod", r.Method),
 					zap.String("requestAddr", r.RemoteAddr),
-					zap.String("requestUserAgent", r.UserAgent()),
+					zap.String("requestUserAgent", strings.Replace(strings.Replace(r.UserAgent(), "\n", "", -1), "\r", "", -1)),
 					zap.String("requestURI", fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)),
 					zap.Int("responseStatus", 500),
 					zap.Float64("requestLatency", float64(time.Since(start).Nanoseconds())/1000000),

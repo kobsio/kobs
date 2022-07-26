@@ -4,7 +4,7 @@ import '@patternfly/patternfly/patternfly-addons.css';
 
 import { Alert, AlertVariant, Page, Spinner } from '@patternfly/react-core';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { Suspense, lazy, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactDOM from 'react-dom/client';
@@ -14,6 +14,7 @@ import Header from './components/header/Header';
 import Notifications from './components/header/Notifications';
 import { NotificationsContextProvider } from './context/NotificationsContext';
 import { PluginsContextProvider } from './context/PluginsContext';
+import Sidebar from './components/sidebar/Sidebar';
 
 import 'xterm/css/xterm.css';
 import './assets/index.css';
@@ -27,7 +28,6 @@ const PluginPage = lazy(() => import('./components/plugins/PluginPage'));
 const Profile = lazy(() => import('./components/profile/Profile'));
 const Resources = lazy(() => import('./components/resources/Resources'));
 const Settings = lazy(() => import('./components/settings/Settings'));
-const Sidebar = lazy(() => import('./components/sidebar/Sidebar'));
 const Team = lazy(() => import('./components/teams/Team'));
 const Teams = lazy(() => import('./components/teams/Teams'));
 

@@ -24,9 +24,9 @@ module.exports = {
       singleton: true,
       requiredVersion: deps['react-router-dom'],
     },
-    'react-query': {
+    '@tanstack/react-query': {
       singleton: true,
-      requiredVersion: deps['react-query'],
+      requiredVersion: deps['@tanstack/react-query'],
     },
     '@patternfly/patternfly': {
       singleton: true,

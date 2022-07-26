@@ -1,6 +1,6 @@
 import { Alert, AlertVariant, Card, CardBody, Spinner } from '@patternfly/react-core';
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import ApplicationDetailsChartSparkline from './ApplicationDetailsChartSparkline';
 import { IDatum } from './utils/interfaces';

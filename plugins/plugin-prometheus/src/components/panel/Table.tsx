@@ -1,5 +1,5 @@
 import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
 

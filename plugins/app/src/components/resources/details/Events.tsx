@@ -1,5 +1,5 @@
 import { Alert, AlertActionLink, AlertVariant, Card, Flex, FlexItem, Spinner } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { IResourceResponse } from '../utils/interfaces';

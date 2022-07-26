@@ -9,7 +9,7 @@ import {
   Spinner,
 } from '@patternfly/react-core';
 import { CheckCircleFillIcon, DotFillIcon, DotIcon, XCircleFillIcon } from '@primer/octicons-react';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useContext, useState } from 'react';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 

@@ -1,6 +1,6 @@
 import { Pagination, PaginationVariant } from '@patternfly/react-core';
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export interface IApplicationsPagination {
   options: { page: number; perPage: number };

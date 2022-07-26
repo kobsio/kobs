@@ -7,7 +7,7 @@ import {
   SelectVariant,
   Spinner,
 } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useRef, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 

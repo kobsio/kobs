@@ -7,7 +7,7 @@ import {
   PageSectionVariants,
   Spinner,
 } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 

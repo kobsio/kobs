@@ -1,7 +1,7 @@
 import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Tooltip } from '@patternfly/react-core';
 import React from 'react';
 import { V1Pod } from '@kubernetes/client-node';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import yaml from 'js-yaml';
 
 import { IMetric, IMetricContainer } from '../../utils/interfaces';
