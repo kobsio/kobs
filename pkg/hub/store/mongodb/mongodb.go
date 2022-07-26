@@ -55,9 +55,9 @@ func (c *client) save(ctx context.Context, collection string, models []mongo.Wri
 		return err
 	}
 
-	filter := bson.D{{"updatedat", bson.D{{"$lt", updatedAt}}}}
+	filter := bson.D{{Key: "updatedat", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}
 	if satellite != "" {
-		filter = bson.D{{"$and", bson.A{bson.D{{"satellite", bson.D{{"$eq", satellite}}}}, filter}}}
+		filter = bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "satellite", Value: bson.D{{Key: "$eq", Value: satellite}}}}, filter}}}
 	}
 
 	_, err = c.store.Database("kobs").Collection(collection).DeleteMany(ctx, filter)
@@ -82,7 +82,7 @@ func (c *client) SavePlugins(ctx context.Context, satellite string, plugins []pl
 		p.Satellite = satellite
 		p.UpdatedAt = updatedAt
 
-		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", p.ID}}).SetReplacement(p).SetUpsert(true))
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: p.ID}}).SetReplacement(p).SetUpsert(true))
 	}
 
 	err := c.save(ctx, "plugins", models, satellite, updatedAt)
@@ -112,7 +112,7 @@ func (c *client) SaveClusters(ctx context.Context, satellite string, clusters []
 			UpdatedAt: updatedAt,
 		}
 
-		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", cluster.ID}}).SetReplacement(cluster).SetUpsert(true))
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: cluster.ID}}).SetReplacement(cluster).SetUpsert(true))
 	}
 
 	err := c.save(ctx, "clusters", models, satellite, updatedAt)
@@ -145,7 +145,7 @@ func (c *client) SaveNamespaces(ctx context.Context, satellite string, namespace
 				UpdatedAt: updatedAt,
 			}
 
-			models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", namespace.ID}}).SetReplacement(namespace).SetUpsert(true))
+			models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: namespace.ID}}).SetReplacement(namespace).SetUpsert(true))
 		}
 	}
 
@@ -170,7 +170,7 @@ func (c *client) SaveCRDs(ctx context.Context, crds []cluster.CRD) error {
 
 	for _, crd := range crds {
 		crd.UpdatedAt = updatedAt
-		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", crd.ID}}).SetReplacement(crd).SetUpsert(true))
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: crd.ID}}).SetReplacement(crd).SetUpsert(true))
 	}
 
 	err := c.save(ctx, "crds", models, "", updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix())
@@ -199,7 +199,7 @@ func (c *client) SaveApplications(ctx context.Context, satellite string, applica
 		a.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, a.Cluster)
 		a.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, a.Cluster, a.Namespace)
 
-		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", a.ID}}).SetReplacement(shared.SetSatelliteForApplication(a, satellite)).SetUpsert(true))
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: a.ID}}).SetReplacement(shared.SetSatelliteForApplication(a, satellite)).SetUpsert(true))
 	}
 
 	err := c.save(ctx, "applications", models, satellite, updatedAt)
@@ -228,7 +228,7 @@ func (c *client) SaveDashboards(ctx context.Context, satellite string, dashboard
 		d.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, d.Cluster)
 		d.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, d.Cluster, d.Namespace)
 
-		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", d.ID}}).SetReplacement(shared.SetSatelliteForDashboard(d, satellite)).SetUpsert(true))
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: d.ID}}).SetReplacement(shared.SetSatelliteForDashboard(d, satellite)).SetUpsert(true))
 	}
 
 	err := c.save(ctx, "dashboards", models, satellite, updatedAt)
@@ -257,7 +257,7 @@ func (c *client) SaveTeams(ctx context.Context, satellite string, teams []teamv1
 		t.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, t.Cluster)
 		t.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, t.Cluster, t.Namespace)
 
-		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", t.ID}}).SetReplacement(shared.SetSatelliteForTeam(t, satellite)).SetUpsert(true))
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: t.ID}}).SetReplacement(shared.SetSatelliteForTeam(t, satellite)).SetUpsert(true))
 	}
 
 	err := c.save(ctx, "teams", models, satellite, updatedAt)
@@ -286,7 +286,7 @@ func (c *client) SaveUsers(ctx context.Context, satellite string, users []userv1
 		u.ClusterID = fmt.Sprintf("/satellite/%s/cluster/%s", satellite, u.Cluster)
 		u.NamespaceID = fmt.Sprintf("/satellite/%s/cluster/%s/namespace/%s", satellite, u.Cluster, u.Namespace)
 
-		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", u.ID}}).SetReplacement(shared.SetSatelliteForUser(u, satellite)).SetUpsert(true))
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: u.ID}}).SetReplacement(shared.SetSatelliteForUser(u, satellite)).SetUpsert(true))
 	}
 
 	err := c.save(ctx, "users", models, satellite, updatedAt)
@@ -316,7 +316,7 @@ func (c *client) SaveTags(ctx context.Context, applications []applicationv1.Appl
 				UpdatedAt: updatedAt,
 			}
 
-			models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", tag.ID}}).SetReplacement(tag).SetUpsert(true))
+			models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: tag.ID}}).SetReplacement(tag).SetUpsert(true))
 		}
 	}
 
@@ -366,7 +366,7 @@ func (c *client) SaveTopology(ctx context.Context, satellite string, application
 				UpdatedAt:           updatedAt,
 			}
 
-			models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", t.ID}}).SetReplacement(t).SetUpsert(true))
+			models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: t.ID}}).SetReplacement(t).SetUpsert(true))
 		}
 	}
 
@@ -377,7 +377,7 @@ func (c *client) SaveTopology(ctx context.Context, satellite string, application
 		return err
 	}
 
-	_, err = c.store.Database("kobs").Collection("topology").DeleteMany(ctx, bson.D{{"$and", bson.A{bson.D{{"sourcesatellite", bson.D{{"$eq", satellite}}}}, bson.D{{"updatedat", bson.D{{"$lt", updatedAt}}}}}}})
+	_, err = c.store.Database("kobs").Collection("topology").DeleteMany(ctx, bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "sourcesatellite", Value: bson.D{{Key: "$eq", Value: satellite}}}}, bson.D{{Key: "updatedat", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}}}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -394,7 +394,7 @@ func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 
 	var plugins []plugin.Instance
 
-	cursor, err := c.store.Database("kobs").Collection("plugins").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("plugins").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -418,7 +418,7 @@ func (c *client) GetClusters(ctx context.Context) ([]shared.Cluster, error) {
 
 	var clusters []shared.Cluster
 
-	cursor, err := c.store.Database("kobs").Collection("clusters").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("clusters").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -442,7 +442,7 @@ func (c *client) GetNamespaces(ctx context.Context) ([]shared.Namespace, error) 
 
 	var namespaces []shared.Namespace
 
-	cursor, err := c.store.Database("kobs").Collection("namespaces").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("namespaces").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -466,7 +466,7 @@ func (c *client) GetCRDs(ctx context.Context) ([]cluster.CRD, error) {
 
 	var crds []cluster.CRD
 
-	cursor, err := c.store.Database("kobs").Collection("crds").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("crds").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -491,7 +491,7 @@ func (c *client) GetCRDByID(ctx context.Context, id string) (*cluster.CRD, error
 
 	var crd cluster.CRD
 
-	result := c.store.Database("kobs").Collection("crds").FindOne(ctx, bson.D{{"_id", id}})
+	result := c.store.Database("kobs").Collection("crds").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -520,7 +520,7 @@ func (c *client) GetNamespacesByClusterIDs(ctx context.Context, clusterIDs []str
 
 	var namespaces []shared.Namespace
 
-	cursor, err := c.store.Database("kobs").Collection("namespaces").Find(ctx, bson.D{{"clusterid", bson.D{{"$in", clusterIDs}}}})
+	cursor, err := c.store.Database("kobs").Collection("namespaces").Find(ctx, bson.D{{Key: "clusterid", Value: bson.D{{Key: "$in", Value: clusterIDs}}}}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -544,7 +544,7 @@ func (c *client) GetApplications(ctx context.Context) ([]applicationv1.Applicati
 
 	var applications []applicationv1.ApplicationSpec
 
-	cursor, err := c.store.Database("kobs").Collection("applications").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("applications").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -604,7 +604,6 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusterIDs,
 	}
 
 	var applications []applicationv1.ApplicationSpec
-	fmt.Printf("%#v\n", filter)
 
 	cursor, err := c.store.Database("kobs").Collection("applications").Find(ctx, filter, options.Find().SetSort(bson.M{"name": 1}).SetLimit(int64(limit)).SetSkip(int64(offset)))
 	if err != nil {
@@ -681,7 +680,7 @@ func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicatio
 
 	var application applicationv1.ApplicationSpec
 
-	result := c.store.Database("kobs").Collection("applications").FindOne(ctx, bson.D{{"_id", id}})
+	result := c.store.Database("kobs").Collection("applications").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -705,7 +704,7 @@ func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec
 
 	var dashboards []dashboardv1.DashboardSpec
 
-	cursor, err := c.store.Database("kobs").Collection("dashboards").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("dashboards").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -730,7 +729,7 @@ func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.
 
 	var dashboard dashboardv1.DashboardSpec
 
-	result := c.store.Database("kobs").Collection("dashboards").FindOne(ctx, bson.D{{"_id", id}})
+	result := c.store.Database("kobs").Collection("dashboards").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -754,7 +753,7 @@ func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
 
 	var teams []teamv1.TeamSpec
 
-	cursor, err := c.store.Database("kobs").Collection("teams").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("teams").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "group", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -783,7 +782,7 @@ func (c *client) GetTeamsByGroups(ctx context.Context, groups []string) ([]teamv
 
 	var teams []teamv1.TeamSpec
 
-	cursor, err := c.store.Database("kobs").Collection("teams").Find(ctx, bson.D{{"group", bson.D{{"$in", groups}}}})
+	cursor, err := c.store.Database("kobs").Collection("teams").Find(ctx, bson.D{{Key: "group", Value: bson.D{{Key: "$in", Value: groups}}}}, options.Find().SetSort(bson.D{{Key: "group", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -808,7 +807,7 @@ func (c *client) GetTeamByGroup(ctx context.Context, group string) (*teamv1.Team
 
 	var teams []teamv1.TeamSpec
 
-	cursor, err := c.store.Database("kobs").Collection("teams").Find(ctx, bson.D{{"group", group}})
+	cursor, err := c.store.Database("kobs").Collection("teams").Find(ctx, bson.D{{Key: "group", Value: group}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -847,7 +846,7 @@ func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
 
 	var users []userv1.UserSpec
 
-	cursor, err := c.store.Database("kobs").Collection("users").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("users").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -872,7 +871,7 @@ func (c *client) GetUsersByEmail(ctx context.Context, email string) ([]userv1.Us
 
 	var users []userv1.UserSpec
 
-	cursor, err := c.store.Database("kobs").Collection("users").Find(ctx, bson.D{{"email", email}})
+	cursor, err := c.store.Database("kobs").Collection("users").Find(ctx, bson.D{{Key: "email", Value: email}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -896,7 +895,7 @@ func (c *client) GetTags(ctx context.Context) ([]shared.Tag, error) {
 
 	var tags []shared.Tag
 
-	cursor, err := c.store.Database("kobs").Collection("tags").Find(ctx, bson.D{})
+	cursor, err := c.store.Database("kobs").Collection("tags").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "tag", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -922,7 +921,7 @@ func (c *client) GetTopologyByIDs(ctx context.Context, field string, ids []strin
 
 	var topology []shared.Topology
 
-	cursor, err := c.store.Database("kobs").Collection("topology").Find(ctx, bson.D{{strings.ToLower(field), bson.D{{"$in", ids}}}})
+	cursor, err := c.store.Database("kobs").Collection("topology").Find(ctx, bson.D{{Key: strings.ToLower(field), Value: bson.D{{Key: "$in", Value: ids}}}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())

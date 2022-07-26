@@ -8,11 +8,17 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-	t.Run("store created", func(t *testing.T) {
+	t.Run("store created for bolt driver", func(t *testing.T) {
 		client, err := NewClient("bolt", "/tmp/kobs-store-test.db")
 		defer os.Remove("/tmp/kobs-store-test.db")
 		require.NoError(t, err)
 		require.NotEmpty(t, client)
+	})
+
+	t.Run("store created for mongodb driver", func(t *testing.T) {
+		client, err := NewClient("mongodb", "")
+		require.Error(t, err)
+		require.Empty(t, client)
 	})
 
 	t.Run("store creation failed, invalid driver", func(t *testing.T) {
