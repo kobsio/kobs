@@ -28,6 +28,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#395](https://github.com/kobsio/kobs/pull/#395): [app] Fix permission handling for applications and teams.
 - [#396](https://github.com/kobsio/kobs/pull/#396): [app] Fix shutdown logic.
 - [#397](https://github.com/kobsio/kobs/pull/#397): [demo] Update elastic setup version to work with recent kubernetes api.
+- [#403](https://github.com/kobsio/kobs/pull/#403): [app] Add missing sort keys to MongoDB queries and fix `go.mongodb.org/mongo-driver/bson/primitive.E composite literal uses unkeyed fields`.
 
 ### Changed
 

@@ -17,6 +17,10 @@ build:
 		-X ${REPO}/pkg/version.BuildDate=${BUILDTIME}" \
 		-o ./bin/kobs ./cmd/kobs;
 
+.PHONY: vet
+vet:
+	@go vet ./...
+
 .PHONY: test
 test:
 	@go test ./cmd/... ./pkg/... ./plugins/...
