@@ -16,7 +16,7 @@ import {
   ToggleGroupItem,
 } from '@patternfly/react-core';
 import { IssueClosedIcon, IssueOpenedIcon } from '@primer/octicons-react';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useContext, useState } from 'react';
 
 import { AuthContext, IAuthContext } from '../../../context/AuthContext';

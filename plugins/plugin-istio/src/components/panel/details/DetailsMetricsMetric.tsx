@@ -1,5 +1,5 @@
 import { Alert, AlertActionLink, AlertVariant, Card, CardBody, CardTitle, Spinner } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { IPluginInstance, ITimes } from '@kobsio/shared';

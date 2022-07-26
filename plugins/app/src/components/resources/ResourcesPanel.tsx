@@ -12,7 +12,7 @@ import {
   Tabs,
   Title,
 } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 

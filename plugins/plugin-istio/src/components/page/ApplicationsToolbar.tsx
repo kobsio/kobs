@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Select, SelectOption, SelectVariant } from '@patternfly/react-core';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IApplicationsOptions } from '../../utils/interfaces';

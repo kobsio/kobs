@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Select, SelectOption, SelectVariant } from '@patternfly/react-core';
 import { IPluginInstance } from '@kobsio/shared';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 interface IPageToolbarNamespacesProps {
   instance: IPluginInstance;

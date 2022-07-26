@@ -12,7 +12,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
 import { PageContentSection, PageHeaderSection, Toolbar, ToolbarItem, useDebounce } from '@kobsio/shared';

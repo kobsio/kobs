@@ -1,7 +1,7 @@
 import { Alert, AlertVariant, Spinner } from '@patternfly/react-core';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { IPluginInstance } from '@kobsio/shared';
 

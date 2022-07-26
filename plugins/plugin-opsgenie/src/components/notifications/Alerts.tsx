@@ -1,6 +1,6 @@
 import { NotificationDrawerGroup, NotificationDrawerList } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import Alert from './Alert';
 import { IAlert } from '../../utils/interfaces';
