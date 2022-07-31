@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/store/shared"

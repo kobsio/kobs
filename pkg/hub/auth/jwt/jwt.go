@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 
 	goJWT "github.com/golang-jwt/jwt/v4"
 )

@@ -67,11 +67,6 @@ helm upgrade --install satellite kobs/satellite
 | `hub.settings.store.uri` | The uri to connect to the store. | `/tmp/kobs.db` |
 | `hub.settings.watcher.interval` | The interval which should be used to sync the resources with the satellites. | `300s` |
 | `hub.settings.watcher.worker` | The number of worker, which should be used to sync the resources. | `10` |
-| `hub.settings.auth.enabled` | Enable the authentication and authorization middleware. | `false` |
-| `hub.settings.auth.headerTeams` | The header, which contains the team ids. | `X-Auth-Request-Email` |
-| `hub.settings.auth.headerUser` | The header, which contains the user id. | `X-Auth-Request-Groups` |
-| `hub.settings.auth.logoutRedirect` | The url where kobs redirects a user after he logout. | `/oauth2/sign_out` |
-| `hub.settings.auth.sessiontInterval` | The interval for how long a session is valid. | `48h0m0s` |
 | `hub.config` | Content of the `config.yaml` file, which is loaded during the start of kobs and contains the configuration. | |
 | `istio.virtualService.enabled` | Specifies whether a VirtualService should be created. | `false` |
 | `istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |

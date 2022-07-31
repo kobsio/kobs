@@ -6,7 +6,7 @@ package log
 import (
 	"context"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"go.opentelemetry.io/otel/trace"

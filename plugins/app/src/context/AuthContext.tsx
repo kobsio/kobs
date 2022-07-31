@@ -1,6 +1,8 @@
-import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
+import { Spinner } from '@patternfly/react-core';
+import { useQuery } from '@tanstack/react-query';
+
+import Login from '../components/login/Login';
 
 export interface IUser {
   email: string;
@@ -69,8 +71,16 @@ interface IAuthContextProviderProps {
 export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderProps> = ({
   children,
 }: IAuthContextProviderProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<IUser, Error>(['app/authcontext'], async () => {
-    const response = await fetch('/api/auth', { method: 'get' });
+  const searchParams = new URLSearchParams(window.location.search);
+
+  const { isError, isLoading, data, refetch } = useQuery<IUser, Error>(['app/authcontext'], async () => {
+    let url = '/api/auth';
+
+    if (searchParams.get('state') && searchParams.get('code')) {
+      url = `/api/auth/oidc/callback?state=${searchParams.get('state')}&code=${searchParams.get('code')}`;
+    }
+
+    const response = await fetch(url, { method: 'get' });
     const json = await response.json();
 
     if (response.status >= 200 && response.status < 300) {
@@ -108,22 +118,7 @@ export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderPr
   // If an error occured during the fetch of the plugins, we are showing the error message in the cernter of the screen
   // within an Alert component. The Alert component contains a Retry button to call the fetchData function again.
   if (isError) {
-    return (
-      <Alert
-        style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
-        variant={AlertVariant.danger}
-        title="Could not initialize auth context"
-        actionLinks={
-          <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IUser, Error>> => refetch()}>
-              Retry
-            </AlertActionLink>
-          </React.Fragment>
-        }
-      >
-        <p>{error?.message}</p>
-      </Alert>
-    );
+    return <Login refetch={refetch} />;
   }
 
   if (!data) {

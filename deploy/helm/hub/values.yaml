@@ -132,12 +132,6 @@ hub:
     watcher:
       interval: 300s
       worker: 10
-    auth:
-      enabled: false
-      headerUser: X-Auth-Request-Email
-      headerTeams: X-Auth-Request-Groups
-      logoutRedirect: /oauth2/sign_out
-      sessiontInterval: 48h0m0s
 
   ## Set the content of the config.yaml file, which is used by kobs. The configuration file is used to specify the
   ## cluster providers and the configuration for the plugins.
@@ -165,8 +159,7 @@ istio:
 
     timeout: 300s
 
-    ## You can also add your own routes to the VirtualService. This can be used to add an oauth2-proxy to handle the
-    ## authentication for the dashboard.
+    ## You can also add your own routes to the VirtualService.
     ##
     additionalRoutes: []
 

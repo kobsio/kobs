@@ -3,7 +3,7 @@ package permissions
 import (
 	"testing"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 
 	"github.com/stretchr/testify/require"

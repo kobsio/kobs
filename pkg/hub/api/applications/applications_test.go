@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"

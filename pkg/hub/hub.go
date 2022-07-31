@@ -15,7 +15,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/api/resources"
 	"github.com/kobsio/kobs/pkg/hub/api/teams"
 	"github.com/kobsio/kobs/pkg/hub/api/users"
-	"github.com/kobsio/kobs/pkg/hub/middleware/userauth"
+	"github.com/kobsio/kobs/pkg/hub/auth"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/log"
@@ -71,7 +71,7 @@ func (s *server) Stop() {
 // We exclude the health check from all middlewares, because the health check just returns 200. Therefore we do not need
 // our defined middlewares like request id, metrics, auth or loggin. This also makes it easier to analyze the logs in a
 // Kubernetes cluster where the health check is called every x seconds, because we generate less logs.
-func New(config api.Config, debugUsername, debugPassword, hubAddress string, authEnabled bool, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken string, authSessionInterval time.Duration, satellitesClient satellites.Client, storeClient store.Client) (Server, error) {
+func New(config api.Config, debugUsername, debugPassword, hubAddress string, authClient auth.Client, satellitesClient satellites.Client, storeClient store.Client) (Server, error) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -87,17 +87,18 @@ func New(config api.Config, debugUsername, debugPassword, hubAddress string, aut
 		render.JSON(w, r, nil)
 	})
 
+	router.Mount("/api/auth", authClient.Mount())
+
 	router.Route("/api", func(r chi.Router) {
 		r.Use(middleware.RequestID)
 		r.Use(middleware.Recoverer)
 		r.Use(middleware.URLFormat)
-		r.Use(userauth.Handler(authEnabled, authHeaderUser, authHeaderTeams, authSessionToken, authSessionInterval, storeClient))
+		r.Use(authClient.MiddlewareHandler)
 		r.Use(httptracer.Handler("hub"))
 		r.Use(httpmetrics.Handler)
 		r.Use(httplog.Handler)
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
-		r.Mount("/auth", userauth.Mount(authLogoutRedirect))
 		r.Mount("/navigation", navigation.Mount(config.Navigation))
 		r.Mount("/notifications", notifications.Mount(config.Notifications, storeClient))
 		r.Mount("/clusters", clusters.Mount(config.Clusters, storeClient))

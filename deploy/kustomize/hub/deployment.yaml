@@ -32,11 +32,6 @@ spec:
             - --hub.store.uri=/tmp/kobs.db
             - --hub.watcher.interval=300s
             - --hub.watcher.worker=10
-            - --auth.enabled=false
-            - --auth.header.user=X-Auth-Request-Email
-            - --auth.header.teams=X-Auth-Request-Groups
-            - --auth.logout.redirect=/oauth2/sign_out
-            - --auth.session.interval=48h0m0s
           ports:
             - name: http-web
               containerPort: 15219

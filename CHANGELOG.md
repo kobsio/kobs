@@ -20,6 +20,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#399](https://github.com/kobsio/kobs/pull/#399): [github] Add new `usernotifications` panel and allow users to use the plugin within the Notifications.
 - [#401](https://github.com/kobsio/kobs/pull/#401): [app] Add integrations for Kubernetes Resource, which allows administrators to define a set of default dashboards, which are added to each resource.
 - [#402](https://github.com/kobsio/kobs/pull/#402): [app] Add `mongodb` driver as alternative to the existing `bolt` driver.
+- [#406](https://github.com/kobsio/kobs/pull/#406): [app] Implement authentication, so that no third party service like [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) is required to grant users access to kobs.
 
 ### Fixed
 

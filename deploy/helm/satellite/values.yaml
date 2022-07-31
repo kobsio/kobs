@@ -154,8 +154,7 @@ istio:
 
     timeout: 300s
 
-    ## You can also add your own routes to the VirtualService. This can be used to add an oauth2-proxy to handle the
-    ## authentication for the dashboard.
+    ## You can also add your own routes to the VirtualService.
     ##
     additionalRoutes: []
 

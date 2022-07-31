@@ -10,6 +10,7 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/hub/config"
 	"github.com/kobsio/kobs/pkg/app"
 	"github.com/kobsio/kobs/pkg/hub"
+	"github.com/kobsio/kobs/pkg/hub/auth"
 	"github.com/kobsio/kobs/pkg/hub/satellites"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	"github.com/kobsio/kobs/pkg/hub/watcher"
@@ -34,12 +35,6 @@ func Command() *cobra.Command {
 	var hubWatcherInterval time.Duration
 	var hubWatcherWorker int64
 	var metricsAddress string
-	var authEnabled bool
-	var authHeaderUser string
-	var authHeaderTeams string
-	var authLogoutRedirect string
-	var authSessionToken string
-	var authSessionInterval time.Duration
 
 	defaultAppAddress := ":15219"
 	if os.Getenv("KOBS_APP_ADDRESS") != "" {
@@ -97,34 +92,6 @@ func Command() *cobra.Command {
 		defaultMetricsAddress = os.Getenv("KOBS_METRICS_ADDRESS")
 	}
 
-	defaultAuthHeaderUser := "X-Auth-Request-Email"
-	if os.Getenv("KOBS_AUTH_HEADER_USER") != "" {
-		defaultAuthHeaderUser = os.Getenv("KOBS_AUTH_HEADER_USER")
-	}
-
-	defaultAuthHeaderTeams := "X-Auth-Request-Groups"
-	if os.Getenv("KOBS_AUTH_HEADER_TEAMS") != "" {
-		defaultAuthHeaderTeams = os.Getenv("KOBS_AUTH_HEADER_TEAMS")
-	}
-
-	defaultAuthLogoutRedirect := "/oauth2/sign_out"
-	if os.Getenv("KOBS_AUTH_LOGOUT_REDIRECT") != "" {
-		defaultAuthLogoutRedirect = os.Getenv("KOBS_AUTH_LOGOUT_REDIRECT")
-	}
-
-	defaultAuthSessionToken := ""
-	if os.Getenv("KOBS_AUTH_SESSION_TOKEN") != "" {
-		defaultAuthSessionToken = os.Getenv("KOBS_AUTH_SESSION_TOKEN")
-	}
-
-	defaultAuthSessionInterval := time.Duration(48 * time.Hour)
-	if os.Getenv("KOBS_AUTH_SESSION_INTERVAL") != "" {
-		parsedDefaultAuthSessionInterval, err := time.ParseDuration(os.Getenv("KOBS_AUTH_SESSION_INTERVAL"))
-		if err == nil && parsedDefaultAuthSessionInterval > 60*time.Second {
-			defaultAuthSessionInterval = parsedDefaultAuthSessionInterval
-		}
-	}
-
 	hubCmd := &cobra.Command{
 		Use:   "hub",
 		Short: "Hub component of kobs.",
@@ -174,6 +141,11 @@ func Command() *cobra.Command {
 				log.Fatal(nil, "Could not create store", zap.Error(err))
 			}
 
+			authClient, err := auth.NewClient(cfg.Auth, storeClient)
+			if err != nil {
+				log.Fatal(nil, "Could not create auth client", zap.Error(err))
+			}
+
 			var watcherClient watcher.Client
 			if hubMode == "default" || hubMode == "watcher" {
 				watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, satellitesClient, storeClient)
@@ -191,7 +163,7 @@ func Command() *cobra.Command {
 			var appServer app.Server
 
 			if hubMode == "default" || hubMode == "server" {
-				hubSever, err = hub.New(cfg.API, debugUsername, debugPassword, hubAddress, authEnabled, authHeaderUser, authHeaderTeams, authLogoutRedirect, authSessionToken, authSessionInterval, satellitesClient, storeClient)
+				hubSever, err = hub.New(cfg.API, debugUsername, debugPassword, hubAddress, authClient, satellitesClient, storeClient)
 				if err != nil {
 					log.Fatal(nil, "Could not create hub server", zap.Error(err))
 				}
@@ -249,12 +221,6 @@ func Command() *cobra.Command {
 	hubCmd.PersistentFlags().DurationVar(&hubWatcherInterval, "hub.watcher.interval", defaultHubWatcherInterval, "The interval for the watcher to sync the satellite configuration.")
 	hubCmd.PersistentFlags().Int64Var(&hubWatcherWorker, "hub.watcher.worker", defaultHubWatcherWorker, "The number of parallel sync processes for the watcher.")
 	hubCmd.PersistentFlags().StringVar(&metricsAddress, "metrics.address", defaultMetricsAddress, "The address, where the metrics server is listen on.")
-	hubCmd.PersistentFlags().BoolVar(&authEnabled, "auth.enabled", false, "Enable the authentication and authorization middleware.")
-	hubCmd.PersistentFlags().StringVar(&authHeaderUser, "auth.header.user", defaultAuthHeaderUser, "The header, which contains the user id.")
-	hubCmd.PersistentFlags().StringVar(&authHeaderTeams, "auth.header.teams", defaultAuthHeaderTeams, "The header, which contains the team ids.")
-	hubCmd.PersistentFlags().StringVar(&authLogoutRedirect, "auth.logout.redirect", defaultAuthLogoutRedirect, "The redirect url which should be used, when the user clicks on the logout button.")
-	hubCmd.PersistentFlags().StringVar(&authSessionToken, "auth.session.token", defaultAuthSessionToken, "The token to encrypt the session cookie.")
-	hubCmd.PersistentFlags().DurationVar(&authSessionInterval, "auth.session.interval", defaultAuthSessionInterval, "The interval for how long a session is valid.")
 
 	return hubCmd
 }
