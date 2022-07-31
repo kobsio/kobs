@@ -33,6 +33,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 ### Changed
 
 - [#400](https://github.com/kobsio/kobs/pull/#400): [app] Add recover handler for `httpmetrics` middleware and rename metrics to `kobs_requests_total`, `kobs_request_duration_seconds` and `kobs_request_size_bytes`.
+- [#405](https://github.com/kobsio/kobs/pull/405): [app] Imporove federated module core
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
 
