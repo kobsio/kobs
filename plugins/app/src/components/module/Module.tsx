@@ -13,6 +13,12 @@ import { useDynamicScript } from '../../hooks/useDynamicScript';
 //   return;
 // };
 
+/**
+ * Load and initialize a federated module via webpack container.
+ * @param scope the module scope. In kobs it's usually the plugin name: e.g. 'kiali'
+ * @param module the name of the module entry point. e.g. './Page'
+ * @returns the module component or method
+ */
 const loadComponent = (scope: string, module: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (): Promise<any> => {
@@ -59,7 +65,7 @@ const Module: React.FunctionComponent<IModuleProps> = ({
   errorContent,
   loadingContent,
 }: IModuleProps) => {
-  const { ready, failed } = useDynamicScript(name, version);
+  const { isReady, isFailed } = useDynamicScript(name, version);
 
   const ErrorContent = errorContent;
   const LoadingContent = loadingContent;
@@ -74,11 +80,7 @@ const Module: React.FunctionComponent<IModuleProps> = ({
     );
   }
 
-  if (!ready) {
-    return <LoadingContent />;
-  }
-
-  if (failed) {
+  if (isFailed) {
     return (
       <ErrorContent title="Failed to load module">
         <p>
@@ -86,6 +88,10 @@ const Module: React.FunctionComponent<IModuleProps> = ({
         </p>
       </ErrorContent>
     );
+  }
+
+  if (!isReady) {
+    return <LoadingContent />;
   }
 
   const Component = React.lazy(loadComponent(name, module));
