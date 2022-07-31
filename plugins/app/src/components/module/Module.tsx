@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { ComponentProps, ComponentType, ReactElement, memo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { useDynamicScript } from '../../hooks/useDynamicScript';
@@ -19,9 +19,12 @@ import { useDynamicScript } from '../../hooks/useDynamicScript';
  * @param module the name of the module entry point. e.g. './Page'
  * @returns the module component or method
  */
-const loadComponent = (scope: string, module: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return async (): Promise<any> => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const loadComponent = <T extends ComponentType<any>>(
+  scope: string,
+  module: string,
+): (() => Promise<{ default: T }>) => {
+  return async (): Promise<{ default: T }> => {
     // wait can be used to simulate long loading times
     // await wait();
 
@@ -37,8 +40,8 @@ const loadComponent = (scope: string, module: string) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const factory = await window[scope].get(module);
-    const Module = factory();
-    return Module;
+    const ModuleInstance = factory();
+    return ModuleInstance;
   };
 };
 
@@ -47,24 +50,25 @@ declare function errorContentRenderer(props: {
   children: React.ReactElement;
 }): React.ReactElement<unknown, string | React.FunctionComponent | typeof React.Component> | null;
 
-export interface IModuleProps {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface IModuleProps<P = any> {
   version: string;
   name: string;
   module: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  props: any;
+  props: P;
   loadingContent: React.FunctionComponent;
   errorContent: typeof errorContentRenderer;
 }
 
-const Module: React.FunctionComponent<IModuleProps> = ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Module = <M extends ComponentType<any>, P extends ComponentProps<M>>({
   version,
   name,
   module,
   props,
   errorContent,
   loadingContent,
-}: IModuleProps) => {
+}: IModuleProps<P>): ReactElement => {
   const { isReady, isFailed } = useDynamicScript(name, version);
 
   const ErrorContent = errorContent;
@@ -94,7 +98,7 @@ const Module: React.FunctionComponent<IModuleProps> = ({
     return <LoadingContent />;
   }
 
-  const Component = React.lazy(loadComponent(name, module));
+  const Component = React.lazy(loadComponent<M>(name, module));
 
   return (
     <ErrorBoundary
