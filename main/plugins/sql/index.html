@@ -1567,7 +1567,7 @@
 <tr>
 <td>type</td>
 <td>string</td>
-<td>The chart type. This could be <code>pie</code>, <code>line</code> or <code>area</code>.</td>
+<td>The chart type. This could be <code>pie</code>, <code>line</code>, <code>area</code> or <code>singlestats</code>.</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -1630,6 +1630,12 @@
 <td>A map of string pairs, to set the displayed title for a column in the legend. The key is the column name as returned by the query and the value is the shown title.</td>
 <td>No</td>
 </tr>
+<tr>
+<td>thresholds</td>
+<td>map<string, string></td>
+<td>A map of string pairs, to set the background color in a <code>singlestats</code> chart.</td>
+<td>No</td>
+</tr>
 </tbody>
 </table>
 <h2 id="notification-options">Notification Options</h2>
@@ -1639,7 +1645,7 @@
 </div>
 <h2 id="usage">Usage</h2>
 <details class="note">
-<summary>Application</summary>
+<summary>Application 1</summary>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
 <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
@@ -1831,6 +1837,97 @@
 </details>
 <p><img alt="SQL Example 1" src="../assets/sql-example-1.png" /></p>
 <p><img alt="SQL Example 2" src="../assets/sql-example-2.png" /></p>
+<details class="note">
+<summary>Application 2</summary>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-application</span><span class="w"></span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span><span class="w"></span>
+<span class="w">        </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">              </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-traces</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singlestats</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">                          </span><span class="no">SELECT</span><span class="w"></span>
+<span class="w">                            </span><span class="no">floor(quantile(0.5)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p50,</span><span class="w"></span>
+<span class="w">                            </span><span class="no">floor(quantile(0.95)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p95,</span><span class="w"></span>
+<span class="w">                            </span><span class="no">floor(quantile(0.99)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p99</span><span class="w"></span>
+<span class="w">                          </span><span class="no">FROM</span><span class="w"></span>
+<span class="w">                            </span><span class="no">(</span><span class="w"></span>
+<span class="w">                              </span><span class="no">SELECT * FROM jaeger_spans</span><span class="w"></span>
+<span class="w">                              </span><span class="no">WHERE</span><span class="w"></span>
+<span class="w">                                </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
+<span class="w">                                </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
+<span class="w">                                </span><span class="no">AND JSONExtractString(model, &#39;operation_name&#39;) = &#39;async envoy.service.auth.v3.Authorization.Check egress&#39;</span><span class="w"></span>
+<span class="w">                            </span><span class="no">)</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span><span class="w"></span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p50</span><span class="w"></span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95</span><span class="w"></span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p99</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span><span class="w"></span>
+<span class="w">                          </span><span class="nt">p50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P50</span><span class="w"></span>
+<span class="w">                          </span><span class="nt">p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P95</span><span class="w"></span>
+<span class="w">                          </span><span class="nt">p99</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P99</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">thresholds</span><span class="p">:</span><span class="w"></span>
+<span class="w">                          </span><span class="s">&quot;-1024&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#3E8635&quot;</span><span class="w"></span>
+<span class="w">                          </span><span class="s">&quot;4&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#F0AB00&quot;</span><span class="w"></span>
+<span class="w">                          </span><span class="s">&quot;6&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#C9190B&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
+<span class="w">              </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-traces</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">                          </span><span class="no">SELECT</span><span class="w"></span>
+<span class="w">                            </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span><span class="w"></span>
+<span class="w">                            </span><span class="no">floor(quantile(0.5)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p50,</span><span class="w"></span>
+<span class="w">                            </span><span class="no">floor(quantile(0.95)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p95,</span><span class="w"></span>
+<span class="w">                            </span><span class="no">floor(quantile(0.99)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p99</span><span class="w"></span>
+<span class="w">                          </span><span class="no">FROM</span><span class="w"></span>
+<span class="w">                            </span><span class="no">(</span><span class="w"></span>
+<span class="w">                              </span><span class="no">SELECT * FROM jaeger_spans</span><span class="w"></span>
+<span class="w">                              </span><span class="no">WHERE</span><span class="w"></span>
+<span class="w">                                </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
+<span class="w">                                </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
+<span class="w">                                </span><span class="no">AND JSONExtractString(model, &#39;operation_name&#39;) = &#39;async envoy.service.auth.v3.Authorization.Check egress&#39;</span><span class="w"></span>
+<span class="w">                            </span><span class="no">)</span><span class="w"></span>
+<span class="w">                          </span><span class="no">GROUP BY time</span><span class="w"></span>
+<span class="w">                          </span><span class="no">ORDER BY time</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">xAxisColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">xAxisType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span><span class="w"></span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p50</span><span class="w"></span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95</span><span class="w"></span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p99</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
+<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span><span class="w"></span>
+<span class="w">                          </span><span class="nt">p50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P50</span><span class="w"></span>
+<span class="w">                          </span><span class="nt">p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P95</span><span class="w"></span>
+<span class="w">                          </span><span class="nt">p99</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P99</span><span class="w"></span>
+</code></pre></div>
+</details>
+<p><img alt="SQL Example 3" src="../assets/sql-example-3.png" /></p>
 
               
             </article>
