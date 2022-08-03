@@ -37,6 +37,7 @@ const Panel: React.FunctionComponent<ISQLPluginPanelProps> = ({
         yAxisUnit={options.chart.yAxisUnit}
         yAxisStacked={options.chart.yAxisStacked}
         legend={options.chart.legend}
+        thresholds={options.chart.thresholds}
       />
     );
   }
