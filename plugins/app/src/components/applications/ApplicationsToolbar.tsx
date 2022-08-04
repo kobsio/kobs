@@ -1,5 +1,5 @@
 import { Button, ButtonVariant, SearchInput, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { Toolbar, ToolbarItem } from '@kobsio/shared';
@@ -67,6 +67,10 @@ const ApplicationsToolbar: React.FunctionComponent<IApplicationsToolbarProps> = 
       setOptions({ ...state, page: 1, perPage: 10 });
     }
   };
+
+  useEffect(() => {
+    setState((prevState) => ({ ...prevState, all: options.all }));
+  }, [options.all]);
 
   return (
     <Toolbar usePageInsets={true}>
