@@ -59,6 +59,7 @@ const Applications: React.FunctionComponent = () => {
         {options ? (
           <ApplicationsList
             options={options}
+            setOptions={changeOptions}
             selectedApplication={selectedApplication}
             setSelectedApplication={setSelectedApplication}
           />

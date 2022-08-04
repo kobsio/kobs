@@ -8,12 +8,14 @@ import { IOptions } from './utils/interfaces';
 
 export interface IApplicationsListProps {
   options: IOptions;
+  setOptions: (data: IOptions) => void;
   selectedApplication?: IApplication;
   setSelectedApplication: (application: IApplication) => void;
 }
 
 const ApplicationsList: React.FunctionComponent<IApplicationsListProps> = ({
   options,
+  setOptions,
   selectedApplication,
   setSelectedApplication,
 }: IApplicationsListProps) => {
@@ -88,6 +90,27 @@ const ApplicationsList: React.FunctionComponent<IApplicationsListProps> = ({
   }
 
   if (!data || data.length === 0) {
+    if (!options.all) {
+      return (
+        <Alert
+          variant={AlertVariant.info}
+          title="No applications were found"
+          actionLinks={
+            <React.Fragment>
+              <AlertActionLink onClick={(): void => setOptions({ ...options, all: true })}>
+                Search all applications
+              </AlertActionLink>
+              <AlertActionLink onClick={(): Promise<QueryObserverResult<IApplication[], Error>> => refetch()}>
+                Retry
+              </AlertActionLink>
+            </React.Fragment>
+          }
+        >
+          <p>We could not found any applications you own for the selected filters.</p>
+        </Alert>
+      );
+    }
+
     return null;
   }
 
