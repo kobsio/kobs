@@ -1,44 +1,41 @@
-import {
-  Gallery,
-  PageSection,
-  PageSectionVariants,
-  Pagination,
-  PaginationVariant,
-  SearchInput,
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core';
-import React, { useContext, useState } from 'react';
+import { Gallery, PageSection, PageSectionVariants, Pagination, PaginationVariant } from '@patternfly/react-core';
+import React, { useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { IPluginsContext, PluginsContext } from '../../context/PluginsContext';
-import { PageContentSection, PageHeaderSection, Toolbar, ToolbarItem, useDebounce } from '@kobsio/shared';
+import { PageContentSection, PageHeaderSection, useDebounce } from '@kobsio/shared';
+import { IOptions } from './utils/interfaces';
 import Module from '../module/Module';
 import PluginInstancesError from './PluginInstancesError';
 import PluginInstancesLoading from './PluginInstancesLoading';
+import PluginInstancesToolbar from './PluginInstancesToolbar';
+import { getInitialOptions } from './utils/helpers';
 
 const PluginInstances: React.FunctionComponent = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const pluginsContext = useContext<IPluginsContext>(PluginsContext);
 
-  const [state, setState] = useState<{
-    page: number;
-    perPage: number;
-    pluginSatellite: string;
-    pluginSatelliteIsOpen: boolean;
-    pluginType: string;
-    pluginTypeIsOpen: boolean;
-    searchTerm: string;
-  }>({
+  const [options, setOptions] = useState<IOptions>({
     page: 1,
     perPage: 10,
     pluginSatellite: '',
-    pluginSatelliteIsOpen: false,
     pluginType: '',
-    pluginTypeIsOpen: false,
     searchTerm: '',
   });
-  const debouncedSearchTerm = useDebounce<string>(state.searchTerm, 500);
+  const debouncedSearchTerm = useDebounce<string>(options.searchTerm, 500);
+
+  const changeOptions = (opts: IOptions): void => {
+    navigate(
+      `${location.pathname}?pluginSatellite=${opts.pluginSatellite}&pluginType=${
+        opts.pluginType
+      }&searchTerm=${encodeURIComponent(opts.searchTerm)}&page=${opts.page}&perPage=${opts.perPage}`,
+    );
+  };
+
+  useEffect(() => {
+    setOptions(getInitialOptions(location.search));
+  }, [location.search]);
 
   return (
     <React.Fragment>
@@ -50,68 +47,13 @@ const PluginInstances: React.FunctionComponent = () => {
       <PageContentSection
         hasPadding={true}
         hasDivider={true}
-        toolbarContent={
-          <Toolbar usePageInsets={true}>
-            <ToolbarItem width="200px">
-              <Select
-                variant={SelectVariant.single}
-                aria-label="Select satellite input"
-                placeholderText="Satellite"
-                onToggle={(): void => setState({ ...state, pluginSatelliteIsOpen: !state.pluginSatelliteIsOpen })}
-                onSelect={(
-                  event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                  value: string | SelectOptionObject,
-                ): void =>
-                  setState({ ...state, page: 1, pluginSatellite: value.toString(), pluginSatelliteIsOpen: false })
-                }
-                onClear={(): void => setState({ ...state, page: 1, pluginSatellite: '' })}
-                selections={state.pluginSatellite}
-                isOpen={state.pluginSatelliteIsOpen}
-                maxHeight="50vh"
-              >
-                {pluginsContext.getPluginSatellites().map((option) => (
-                  <SelectOption key={option} value={option} />
-                ))}
-              </Select>
-            </ToolbarItem>
-
-            <ToolbarItem width="200px">
-              <Select
-                variant={SelectVariant.single}
-                aria-label="Select plugin type input"
-                placeholderText="Plugin Type"
-                onToggle={(): void => setState({ ...state, pluginTypeIsOpen: !state.pluginTypeIsOpen })}
-                onSelect={(
-                  event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-                  value: string | SelectOptionObject,
-                ): void => setState({ ...state, page: 1, pluginType: value.toString(), pluginTypeIsOpen: false })}
-                onClear={(): void => setState({ ...state, page: 1, pluginType: '' })}
-                selections={state.pluginType}
-                isOpen={state.pluginTypeIsOpen}
-                maxHeight="50vh"
-              >
-                {pluginsContext.getPluginTypes().map((option) => (
-                  <SelectOption key={option} value={option} />
-                ))}
-              </Select>
-            </ToolbarItem>
-
-            <ToolbarItem grow={true}>
-              <SearchInput
-                aria-label="Search plugin input"
-                onChange={(value: string): void => setState({ ...state, page: 1, searchTerm: value })}
-                value={state.searchTerm}
-                onClear={(): void => setState({ ...state, page: 1, searchTerm: '' })}
-              />
-            </ToolbarItem>
-          </Toolbar>
-        }
+        toolbarContent={<PluginInstancesToolbar options={options} setOptions={changeOptions} />}
         panelContent={undefined}
       >
         <Gallery hasGutter={true}>
           {pluginsContext
-            .getInstances(state.pluginSatellite, state.pluginType, debouncedSearchTerm)
-            .slice((state.page - 1) * state.perPage, state.page * state.perPage)
+            .getInstances(options.pluginSatellite, options.pluginType, debouncedSearchTerm)
+            .slice((options.page - 1) * options.perPage, options.page * options.perPage)
             .map((instance) => (
               <Module
                 key={instance.id}
@@ -133,27 +75,29 @@ const PluginInstances: React.FunctionComponent = () => {
         variant={PageSectionVariants.light}
       >
         <Pagination
-          itemCount={pluginsContext.getInstances(state.pluginSatellite, state.pluginType, debouncedSearchTerm).length}
-          perPage={state.perPage}
-          page={state.page}
+          itemCount={
+            pluginsContext.getInstances(options.pluginSatellite, options.pluginType, debouncedSearchTerm).length
+          }
+          perPage={options.perPage}
+          page={options.page}
           variant={PaginationVariant.bottom}
           onSetPage={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPage: number): void =>
-            setState({ ...state, page: newPage })
+            changeOptions({ ...options, page: newPage })
           }
           onPerPageSelect={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPerPage: number): void =>
-            setState({ ...state, page: 1, perPage: newPerPage })
+            changeOptions({ ...options, page: 1, perPage: newPerPage })
           }
           onFirstClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-            setState({ ...state, page: newPage })
+            changeOptions({ ...options, page: newPage })
           }
           onLastClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-            setState({ ...state, page: newPage })
+            changeOptions({ ...options, page: newPage })
           }
           onNextClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-            setState({ ...state, page: newPage })
+            changeOptions({ ...options, page: newPage })
           }
           onPreviousClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
-            setState({ ...state, page: newPage })
+            changeOptions({ ...options, page: newPage })
           }
         />
       </PageSection>
