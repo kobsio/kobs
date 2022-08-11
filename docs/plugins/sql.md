@@ -70,6 +70,7 @@ The following options can be used for a panel with the SQL plugin:
 | xAxisUnit | string | The unit which should be used for the x axis. | No |
 | yAxisColumns | []string | A list of columns which should be shown for the y axis. This is required when the type is `line` or `area`. | No |
 | yAxisUnit | string | The unit for the y axis. | No |
+| yAxisGroup | string | The name of the column, which values should be used to group the data. | No |
 | yAxisStacked | boolean | When this is `true` the values of the y axis are stacked. | No |
 | legend | map<string, string> | A map of string pairs, to set the displayed title for a column in the legend. The key is the column name as returned by the query and the value is the shown title. | No |
 | thresholds | map<string, string> | A map of string pairs, to set the background color in a `singlestats` chart. | No |
