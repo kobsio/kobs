@@ -16,7 +16,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
   // changeOptions is used to change the options for an SQL query. Instead of directly modifying the options state we
   // change the URL parameters.
   const changeOptions = (opts: IOptions): void => {
-    navigate(`${location.pathname}?query=${opts.query}`);
+    navigate(`${location.pathname}?query=${encodeURIComponent(opts.query)}`);
   };
 
   useEffect(() => {

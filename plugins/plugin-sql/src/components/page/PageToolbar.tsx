@@ -23,6 +23,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ options, setO
   // use "SHIFT" + "ENTER".
   const onEnter = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
     if (e?.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       setOptions(data);
     }
   };

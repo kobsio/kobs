@@ -7,7 +7,6 @@ import { IPluginInstance } from '@kobsio/shared';
 import { PluginPanel } from '@kobsio/shared';
 import SQLChartActions from './SQLChartActions';
 import SQLChartLine from './SQLChartLine';
-import SQLChartLineLegend from './SQLChartLineLegend';
 import SQLChartPie from './SQLChartPie';
 import SQLChartSinglestats from './SQLChartSinglestats';
 
@@ -24,6 +23,7 @@ interface ISQLChartProps {
   xAxisUnit?: string;
   yAxisColumns?: string[];
   yAxisUnit?: string;
+  yAxisGroup?: string;
   yAxisStacked?: boolean;
   legend?: ILegend;
   thresholds?: IThresholds;
@@ -42,6 +42,7 @@ const SQLChart: React.FunctionComponent<ISQLChartProps> = ({
   xAxisUnit,
   yAxisColumns,
   yAxisUnit,
+  yAxisGroup,
   yAxisStacked,
   legend,
   thresholds,
@@ -106,23 +107,18 @@ const SQLChart: React.FunctionComponent<ISQLChartProps> = ({
         </Alert>
       ) : data && (type === 'line' || type === 'area') && xAxisColumn && yAxisColumns ? (
         <React.Fragment>
-          <div style={{ height: 'calc(100% - 80px)' }}>
-            <SQLChartLine
-              data={data}
-              type={type}
-              xAxisColumn={xAxisColumn}
-              xAxisType={xAxisType}
-              xAxisUnit={xAxisUnit}
-              yAxisColumns={yAxisColumns}
-              yAxisUnit={yAxisUnit}
-              yAxisStacked={yAxisStacked}
-              legend={legend}
-            />
-          </div>
-
-          <div className="pf-u-mt-md kobsio-hide-scrollbar" style={{ height: '60px', overflow: 'auto' }}>
-            <SQLChartLineLegend data={data} yAxisColumns={yAxisColumns} yAxisUnit={yAxisUnit} legend={legend} />
-          </div>
+          <SQLChartLine
+            data={data}
+            type={type}
+            xAxisColumn={xAxisColumn}
+            xAxisType={xAxisType}
+            xAxisUnit={xAxisUnit}
+            yAxisColumns={yAxisColumns}
+            yAxisUnit={yAxisUnit}
+            yAxisGroup={yAxisGroup}
+            yAxisStacked={yAxisStacked}
+            legend={legend}
+          />
         </React.Fragment>
       ) : data && type === 'pie' && pieLabelColumn && pieValueColumn ? (
         <React.Fragment>

@@ -35,6 +35,7 @@ export interface IChart {
   xAxisUnit?: string;
   yAxisColumns?: string[];
   yAxisUnit?: string;
+  yAxisGroup?: string;
   yAxisStacked?: boolean;
   legend?: ILegend;
   thresholds?: IThresholds;
