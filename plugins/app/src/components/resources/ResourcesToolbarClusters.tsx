@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Select, SelectGroup, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { ICluster, IClusters } from '../../resources/clusters';
 

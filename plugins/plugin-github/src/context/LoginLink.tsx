@@ -1,6 +1,6 @@
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { IPluginInstance } from '@kobsio/shared';
 

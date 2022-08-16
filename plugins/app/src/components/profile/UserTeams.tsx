@@ -12,7 +12,7 @@ import {
   FlexItem,
   Spinner,
 } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import UserIcon from '@patternfly/react-icons/dist/esm/icons/user-icon';
 

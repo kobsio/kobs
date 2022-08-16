@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"github.com/kobsio/kobs/pkg/log"
 	"github.com/kobsio/kobs/plugins/plugin-techdocs/pkg/shared"
@@ -52,6 +53,10 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 
 // GetIndex returns a single index for a service.
 func (p *Provider) GetIndex(ctx context.Context, service string) (*shared.Index, error) {
+	if strings.Contains(service, "./") || strings.Contains(service, "../") {
+		return nil, fmt.Errorf("service name can not contain \"./\" or \"./\"")
+	}
+
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/%s/index.yaml", p.config.RootDirectory, service))
 	if err != nil {
 		return nil, err
@@ -67,6 +72,14 @@ func (p *Provider) GetIndex(ctx context.Context, service string) (*shared.Index,
 
 // GetMarkdown returns a single markdown file.
 func (p *Provider) GetMarkdown(ctx context.Context, service, path string) (string, error) {
+	if strings.Contains(service, "./") || strings.Contains(service, "../") {
+		return "", fmt.Errorf("service name can not contain \"./\" or \"./\"")
+	}
+
+	if strings.Contains(path, "./") || strings.Contains(path, "../") {
+		return "", fmt.Errorf("path name can not contain \"./\" or \"./\"")
+	}
+
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/%s/%s", p.config.RootDirectory, service, path))
 	if err != nil {
 		return "", err
@@ -77,6 +90,14 @@ func (p *Provider) GetMarkdown(ctx context.Context, service, path string) (strin
 
 // GetFile returns a single file.
 func (p *Provider) GetFile(ctx context.Context, service, path string) ([]byte, error) {
+	if strings.Contains(service, "./") || strings.Contains(service, "../") {
+		return nil, fmt.Errorf("service name can not contain \"./\" or \"./\"")
+	}
+
+	if strings.Contains(path, "./") || strings.Contains(path, "../") {
+		return nil, fmt.Errorf("path name can not contain \"./\" or \"./\"")
+	}
+
 	return ioutil.ReadFile(fmt.Sprintf("%s/%s/%s", p.config.RootDirectory, service, path))
 }
 

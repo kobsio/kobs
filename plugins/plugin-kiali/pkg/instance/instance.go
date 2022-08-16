@@ -153,7 +153,7 @@ func (i *instance) GetGraph(ctx context.Context, duration int64, graphType, grou
 
 // GetMetrics returns the metrics for an edge or node in the Kiali topology graph.
 func (i *instance) GetMetrics(ctx context.Context, url string) (*map[string]any, error) {
-	metrics, err := doRequest[map[string]any](ctx, i.client, i.address+url)
+	metrics, err := doRequest[map[string]any](ctx, i.client, fmt.Sprintf("%s%s", i.address, url))
 	if err != nil {
 		return nil, err
 	}

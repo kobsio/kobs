@@ -2,7 +2,7 @@ import { V1Container, V1Node, V1Pod } from '@kubernetes/client-node';
 import { BarDatum } from '@nivo/bar';
 import React from 'react';
 import { Title } from '@patternfly/react-core';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { IMetric, IMetricUsage } from '../../utils/interfaces';
 import Conditions from './Conditions';

@@ -8,7 +8,7 @@ import {
   SelectVariant,
   Spinner,
 } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
 import { IQuery, ISQLData } from '../../utils/interfaces';

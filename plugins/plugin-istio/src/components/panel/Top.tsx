@@ -10,7 +10,7 @@ import {
   Thead,
   Tr,
 } from '@patternfly/react-table';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MicroscopeIcon from '@patternfly/react-icons/dist/esm/icons/microscope-icon';
