@@ -1,8 +1,6 @@
-import { Button, ButtonVariant } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
-import { IPluginInstance, Toolbar, ToolbarItem } from '@kobsio/shared';
+import { IOptionsAdditionalFields, IPluginInstance, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
 import PageToolbarItemClusters from './PageToolbarItemClusters';
 import PageToolbarItemNamespaces from './PageToolbarItemNamespaces';
@@ -44,8 +42,8 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
     }
   };
 
-  const changeOptions = (): void => {
-    setOptions(state);
+  const changeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined): void => {
+    setOptions({ clusters: state.clusters, namespaces: state.namespaces, times: times });
   };
 
   return (
@@ -61,11 +59,8 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({
           selectNamespace={selectNamespace}
         />
       </ToolbarItem>
-      <ToolbarItem alignRight={true}>
-        <Button variant={ButtonVariant.primary} icon={<SearchIcon />} onClick={changeOptions}>
-          Search
-        </Button>
-      </ToolbarItem>
+
+      <Options times={options.times} showOptions={false} showSearchButton={true} setOptions={changeOptions} />
     </Toolbar>
   );
 };

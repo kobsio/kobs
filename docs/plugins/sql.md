@@ -61,7 +61,7 @@ The following options can be used for a panel with the SQL plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The chart type. This could be `pie`, `line` or `area`. | Yes |
+| type | string | The chart type. This could be `pie`, `line`, `area` or `singlestats`. | Yes |
 | query | string | The query which which results should be used in the chart. | Yes |
 | pieLabelColumn | string | The name of the column which should be used for the labels in the pie chart. This is required when the type is `pie`. | No |
 | pieValueColumn | string | The name of the column which should be used for the values in the pie chart. This is required when the type is `pie`. | No |
@@ -70,8 +70,10 @@ The following options can be used for a panel with the SQL plugin:
 | xAxisUnit | string | The unit which should be used for the x axis. | No |
 | yAxisColumns | []string | A list of columns which should be shown for the y axis. This is required when the type is `line` or `area`. | No |
 | yAxisUnit | string | The unit for the y axis. | No |
+| yAxisGroup | string | The name of the column, which values should be used to group the data. | No |
 | yAxisStacked | boolean | When this is `true` the values of the y axis are stacked. | No |
 | legend | map<string, string> | A map of string pairs, to set the displayed title for a column in the legend. The key is the column name as returned by the query and the value is the shown title. | No |
+| thresholds | map<string, string> | A map of string pairs, to set the background color in a `singlestats` chart. | No |
 
 ## Notification Options
 
@@ -80,7 +82,7 @@ The following options can be used for a panel with the SQL plugin:
 
 ## Usage
 
-??? note "Application"
+??? note "Application 1"
 
     ```yaml
     ---
@@ -275,3 +277,96 @@ The following options can be used for a panel with the SQL plugin:
 ![SQL Example 1](assets/sql-example-1.png)
 
 ![SQL Example 2](assets/sql-example-2.png)
+
+??? note "Application 2"
+
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Application
+    metadata:
+      name: example-application
+      namespace: kobs
+    spec:
+        dashboards:
+          - title: Latency
+            inline:
+              rows:
+                - size: 1
+                  panels:
+                    - title: Latency
+                      plugin:
+                        satellite: global
+                        name: sql-traces
+                        type: sql
+                        options:
+                          type: chart
+                          chart:
+                            type: singlestats
+                            query: |
+                              SELECT
+                                floor(quantile(0.5)(JSONExtractInt(model, 'duration')) / 1000000, 2) as p50,
+                                floor(quantile(0.95)(JSONExtractInt(model, 'duration')) / 1000000, 2) as p95,
+                                floor(quantile(0.99)(JSONExtractInt(model, 'duration')) / 1000000, 2) as p99
+                              FROM
+                                (
+                                  SELECT * FROM jaeger_spans
+                                  WHERE
+                                    timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                                    AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                                    AND JSONExtractString(model, 'operation_name') = 'async envoy.service.auth.v3.Authorization.Check egress'
+                                )
+                            yAxisColumns:
+                              - p50
+                              - p95
+                              - p99
+                            yAxisUnit: ms
+                            legend:
+                              p50: P50
+                              p95: P95
+                              p99: P99
+                            thresholds:
+                              "-1024": "#3E8635"
+                              "4": "#F0AB00"
+                              "6": "#C9190B"
+                - size: 3
+                  panels:
+                    - title: Latency
+                      plugin:
+                        satellite: global
+                        name: sql-traces
+                        type: sql
+                        options:
+                          type: chart
+                          chart:
+                            type: line
+                            query: |
+                              SELECT
+                                toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
+                                floor(quantile(0.5)(JSONExtractInt(model, 'duration')) / 1000000, 2) as p50,
+                                floor(quantile(0.95)(JSONExtractInt(model, 'duration')) / 1000000, 2) as p95,
+                                floor(quantile(0.99)(JSONExtractInt(model, 'duration')) / 1000000, 2) as p99
+                              FROM
+                                (
+                                  SELECT * FROM jaeger_spans
+                                  WHERE
+                                    timestamp >= FROM_UNIXTIME({% .__timeStart %})
+                                    AND timestamp <= FROM_UNIXTIME({% .__timeEnd %})
+                                    AND JSONExtractString(model, 'operation_name') = 'async envoy.service.auth.v3.Authorization.Check egress'
+                                )
+                              GROUP BY time
+                              ORDER BY time
+                            xAxisColumn: time
+                            xAxisType: time
+                            yAxisColumns:
+                              - p50
+                              - p95
+                              - p99
+                            yAxisUnit: ms
+                            legend:
+                              p50: P50
+                              p95: P95
+                              p99: P99
+    ```
+
+![SQL Example 3](assets/sql-example-3.png)

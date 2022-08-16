@@ -2,7 +2,9 @@ package resources
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"sort"
 	"sync"
 	"time"
 
@@ -117,7 +119,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 				crd, err := router.storeClient.GetCRDByID(r.Context(), resourceID)
 				if err != nil {
 					log.Error(r.Context(), "Resource was not found", zap.Error(err), zap.String("resourceID", resourceID))
-					errresponse.Render(w, r, err, http.StatusBadRequest, "Resource was not found")
+					resourceResponses = append(resourceResponses, ResourceResponse{Resource: shared.Resource{ID: resourceID, Title: resourceID}, Errors: []string{fmt.Sprintf("Resource was not found: %s", err.Error())}})
 					return
 				}
 
@@ -189,6 +191,12 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	}
 
 	wgResources.Wait()
+
+	sort.Slice(resourceResponses, func(i, j int) bool {
+		fmt.Println(resourceResponses[i].Resource.Title, resourceResponses[j].Resource.Title)
+		return resourceResponses[i].Resource.Title < resourceResponses[j].Resource.Title
+	})
+
 	render.JSON(w, r, resourceResponses)
 }
 
