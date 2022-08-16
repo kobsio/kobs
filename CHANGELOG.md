@@ -39,6 +39,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#405](https://github.com/kobsio/kobs/pull/405): [app] Imporove federated module core
 - [#408](https://github.com/kobsio/kobs/pull/408): [app] Improve usablility for end users, by showing a hint when the `own` filter does not return any applications and by sorting the returned resource tabs alphabetically.
 - [#409](https://github.com/kobsio/kobs/pull/409): [app] Improve toolbar for plugin instances page and reflect selected filter in the url.
+- [#412](https://github.com/kobsio/kobs/pull/412): [helm] Reload list of Helm releases, when user clicks the search button again.
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
 
