@@ -33,6 +33,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#397](https://github.com/kobsio/kobs/pull/397): [demo] Update elastic setup version to work with recent kubernetes api.
 - [#403](https://github.com/kobsio/kobs/pull/403): [app] Add missing sort keys to MongoDB queries and fix `go.mongodb.org/mongo-driver/bson/primitive.E composite literal uses unkeyed fields`.
 - [#410](https://github.com/kobsio/kobs/pull/410): [app] Fix 404 error for ACE worker files, by disabling workers.
+- [#413](https://github.com/kobsio/kobs/pull/413): [app] Fix permission handling for applications.
 
 ### Changed
 

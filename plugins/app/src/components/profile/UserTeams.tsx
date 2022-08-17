@@ -8,9 +8,14 @@ import {
   DataListItem,
   DataListItemCells,
   DataListItemRow,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
   Flex,
   FlexItem,
   Spinner,
+  Title,
 } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
@@ -69,7 +74,15 @@ const UserTeams: React.FunctionComponent<IUserTeamsProps> = ({ setDetails }: IUs
   }
 
   if (!data || data.length === 0) {
-    return null;
+    return (
+      <EmptyState variant={EmptyStateVariant.small}>
+        <EmptyStateIcon icon={UserIcon} />
+        <Title headingLevel="h2" size="lg">
+          No teams found
+        </Title>
+        <EmptyStateBody>We could not found any teams you are part of.</EmptyStateBody>
+      </EmptyState>
+    );
   }
 
   return (
