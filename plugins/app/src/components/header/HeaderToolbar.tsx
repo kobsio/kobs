@@ -9,8 +9,6 @@ import {
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
 import { BellIcon } from '@patternfly/react-icons/dist/esm/icons/bell-icon';
-import CogIcon from '@patternfly/react-icons/dist/esm/icons/cog-icon';
-import { Link } from 'react-router-dom';
 import { QuestionCircleIcon } from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 
 import { AuthContext, IAuthContext } from '../../context/AuthContext';
@@ -55,15 +53,6 @@ const HeaderToolbar: React.FunctionComponent<IHeaderToolbarProps> = ({
             variant={ToolbarGroupVariant['icon-button-group']}
             visibility={{ default: 'hidden', lg: 'visible' }}
           >
-            <ToolbarItem>
-              <Button
-                aria-label="Settings actions"
-                variant={ButtonVariant.plain}
-                component={(props): React.ReactElement => <Link {...props} to="/settings" />}
-              >
-                <CogIcon />
-              </Button>
-            </ToolbarItem>
             <ToolbarItem>
               <Button
                 aria-label="Help actions"

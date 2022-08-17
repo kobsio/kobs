@@ -27,7 +27,6 @@ const PluginInstances = lazy(() => import('./components/plugins/PluginInstances'
 const PluginPage = lazy(() => import('./components/plugins/PluginPage'));
 const Profile = lazy(() => import('./components/profile/Profile'));
 const Resources = lazy(() => import('./components/resources/Resources'));
-const Settings = lazy(() => import('./components/settings/Settings'));
 const Signin = lazy(() => import('./components/signin/Signin'));
 const SigninOIDCCallback = lazy(() => import('./components/signin/SigninOIDCCallback'));
 const Team = lazy(() => import('./components/teams/Team'));
@@ -139,7 +138,6 @@ const App: React.FunctionComponent = () => {
                                 <Route path="/plugins" element={<PluginInstances />} />
                                 <Route path="/plugins/:satellite/:type/:name/*" element={<PluginPage />} />
                                 <Route path="/profile" element={<Profile />} />
-                                <Route path="/settings" element={<Settings />} />
                               </Routes>
                             </Suspense>
                           </ErrorBoundary>

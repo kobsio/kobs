@@ -1,6 +1,5 @@
 import { Dropdown, DropdownItem, DropdownSeparator, KebabToggle } from '@patternfly/react-core';
 import React, { useContext } from 'react';
-import CogIcon from '@patternfly/react-icons/dist/esm/icons/cog-icon';
 import { Link } from 'react-router-dom';
 import { QuestionCircleIcon } from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 
@@ -34,11 +33,6 @@ const HeaderToolbarMobileDropdown: React.FunctionComponent<IHeaderToolbarMobileD
           <DropdownSeparator key="divider1" />,
           <HeaderToolbarSignout key="signout" />,
           <DropdownSeparator key="divider2" />,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          <DropdownItem key="settings" component={(props): React.ReactElement => <Link {...props} to="/settings" />}>
-            <CogIcon /> Settings
-          </DropdownItem>,
           <DropdownItem
             key="help"
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -61,11 +55,6 @@ const HeaderToolbarMobileDropdown: React.FunctionComponent<IHeaderToolbarMobileD
       toggle={<KebabToggle onToggle={(): void => setIsOpen(!isOpen)} />}
       isOpen={isOpen}
       dropdownItems={[
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        <DropdownItem key="settings" component={(props): React.ReactElement => <Link {...props} to="/settings" />}>
-          <CogIcon /> Settings
-        </DropdownItem>,
         <DropdownItem
           key="help"
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
