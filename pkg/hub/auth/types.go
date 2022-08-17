@@ -33,7 +33,7 @@ type UserConfig struct {
 	Groups   []string `json:"groups"`
 }
 
-type LoginRequest struct {
+type SigninRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }

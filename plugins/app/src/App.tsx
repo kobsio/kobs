@@ -28,6 +28,8 @@ const PluginPage = lazy(() => import('./components/plugins/PluginPage'));
 const Profile = lazy(() => import('./components/profile/Profile'));
 const Resources = lazy(() => import('./components/resources/Resources'));
 const Settings = lazy(() => import('./components/settings/Settings'));
+const Signin = lazy(() => import('./components/signin/Signin'));
+const SigninOIDCCallback = lazy(() => import('./components/signin/SigninOIDCCallback'));
 const Team = lazy(() => import('./components/teams/Team'));
 const Teams = lazy(() => import('./components/teams/Teams'));
 
@@ -47,74 +49,111 @@ const App: React.FunctionComponent = () => {
   const [isNotificationDrawerExpanded, setIsNotificationDrawerExpanded] = useState<boolean>(false);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthContextProvider>
-        <NotificationsContextProvider>
-          <PluginsContextProvider>
-            <BrowserRouter>
-              <Page
-                isManagedSidebar={true}
-                header={
-                  <Header
-                    isNotificationDrawerExpanded={isNotificationDrawerExpanded}
-                    setIsNotificationDrawerExpanded={setIsNotificationDrawerExpanded}
-                  />
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <ErrorBoundary
+          fallbackRender={({ error }): React.ReactElement => (
+            <Alert
+              style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
+              variant={AlertVariant.danger}
+              title="An error occured"
+            >
+              <p>{error?.message}</p>
+            </Alert>
+          )}
+        >
+          <Suspense
+            fallback={
+              <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />
+            }
+          >
+            <Routes>
+              <Route path="/auth" element={<Signin />} />
+              <Route path="/auth/callback" element={<SigninOIDCCallback />} />
+              <Route
+                path="*"
+                element={
+                  <AuthContextProvider>
+                    <NotificationsContextProvider>
+                      <PluginsContextProvider>
+                        <Page
+                          isManagedSidebar={true}
+                          header={
+                            <Header
+                              isNotificationDrawerExpanded={isNotificationDrawerExpanded}
+                              setIsNotificationDrawerExpanded={setIsNotificationDrawerExpanded}
+                            />
+                          }
+                          sidebar={<Sidebar />}
+                          notificationDrawer={
+                            <Notifications
+                              isNotificationDrawerExpanded={isNotificationDrawerExpanded}
+                              setIsNotificationDrawerExpanded={setIsNotificationDrawerExpanded}
+                            />
+                          }
+                          isNotificationDrawerExpanded={isNotificationDrawerExpanded}
+                        >
+                          <ErrorBoundary
+                            fallbackRender={({ error }): React.ReactElement => (
+                              <Alert
+                                style={{
+                                  left: '50%',
+                                  position: 'fixed',
+                                  top: '50%',
+                                  transform: 'translate(-50%, -50%)',
+                                }}
+                                variant={AlertVariant.danger}
+                                title="An error occured"
+                              >
+                                <p>{error?.message}</p>
+                              </Alert>
+                            )}
+                          >
+                            <Suspense
+                              fallback={
+                                <Spinner
+                                  style={{
+                                    left: '50%',
+                                    position: 'fixed',
+                                    top: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                />
+                              }
+                            >
+                              <Routes>
+                                <Route path="/" element={<Navigate to="/applications" replace={true} />} />
+                                <Route path="/applications" element={<Applications />} />
+                                <Route
+                                  path="/applications/satellite/:satellite/cluster/:cluster/namespace/:namespace/name/:name"
+                                  element={<Application />}
+                                />
+                                <Route
+                                  path="/dashboards/satellite/:satellite/cluster/:cluster/namespace/:namespace/name/:name"
+                                  element={<DashboardPage />}
+                                />
+                                <Route path="/topology" element={<ApplicationsTopology />} />
+                                <Route path="/teams" element={<Teams />} />
+                                <Route path="/teams/:team" element={<Team />} />
+                                <Route path="/resources" element={<Resources />} />
+                                <Route path="/plugins" element={<PluginInstances />} />
+                                <Route path="/plugins/:satellite/:type/:name/*" element={<PluginPage />} />
+                                <Route path="/profile" element={<Profile />} />
+                                <Route path="/settings" element={<Settings />} />
+                              </Routes>
+                            </Suspense>
+                          </ErrorBoundary>
+                        </Page>
+                      </PluginsContextProvider>
+                    </NotificationsContextProvider>
+                  </AuthContextProvider>
                 }
-                sidebar={<Sidebar />}
-                notificationDrawer={
-                  <Notifications
-                    isNotificationDrawerExpanded={isNotificationDrawerExpanded}
-                    setIsNotificationDrawerExpanded={setIsNotificationDrawerExpanded}
-                  />
-                }
-                isNotificationDrawerExpanded={isNotificationDrawerExpanded}
-              >
-                <ErrorBoundary
-                  fallbackRender={({ error }): React.ReactElement => (
-                    <Alert
-                      style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
-                      variant={AlertVariant.danger}
-                      title="An error occured"
-                    >
-                      <p>{error?.message}</p>
-                    </Alert>
-                  )}
-                >
-                  <Suspense
-                    fallback={
-                      <Spinner
-                        style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
-                      />
-                    }
-                  >
-                    <Routes>
-                      <Route path="/" element={<Navigate to="/applications" replace={true} />} />
-                      <Route path="/applications" element={<Applications />} />
-                      <Route
-                        path="/applications/satellite/:satellite/cluster/:cluster/namespace/:namespace/name/:name"
-                        element={<Application />}
-                      />
-                      <Route
-                        path="/dashboards/satellite/:satellite/cluster/:cluster/namespace/:namespace/name/:name"
-                        element={<DashboardPage />}
-                      />
-                      <Route path="/topology" element={<ApplicationsTopology />} />
-                      <Route path="/teams" element={<Teams />} />
-                      <Route path="/teams/:team" element={<Team />} />
-                      <Route path="/resources" element={<Resources />} />
-                      <Route path="/plugins" element={<PluginInstances />} />
-                      <Route path="/plugins/:satellite/:type/:name/*" element={<PluginPage />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/settings" element={<Settings />} />
-                    </Routes>
-                  </Suspense>
-                </ErrorBoundary>
-              </Page>
-            </BrowserRouter>
-          </PluginsContextProvider>
-        </NotificationsContextProvider>
-      </AuthContextProvider>
-    </QueryClientProvider>
+              />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 };
 

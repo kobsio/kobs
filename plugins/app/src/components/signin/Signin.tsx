@@ -1,9 +1,6 @@
 import {
   Alert,
   AlertVariant,
-  Button,
-  ButtonVariant,
-  Divider,
   ListItem,
   ListVariant,
   LoginFooterItem,
@@ -18,9 +15,11 @@ import pfbg576at2x from '@patternfly/patternfly/assets/images/pfbg_576@2x.jpg';
 import pfbg768 from '@patternfly/patternfly/assets/images/pfbg_768.jpg';
 import pfbg768at2x from '@patternfly/patternfly/assets/images/pfbg_768@2x.jpg';
 
+import SigninOIDC from './SigninOIDC';
+
 import logo from '../../assets/logo.png';
 
-import '../../assets/login.css';
+import '../../assets/signin.css';
 
 const images = {
   lg: pfbg1200,
@@ -30,11 +29,7 @@ const images = {
   xs2x: pfbg576at2x,
 };
 
-interface ILoginProps {
-  refetch: () => void;
-}
-
-const Login: React.FunctionComponent<ILoginProps> = ({ refetch }: ILoginProps) => {
+const Signin: React.FunctionComponent = () => {
   const [state, setState] = useState<{ email: string; error: string; isLoading: boolean; password: string }>({
     email: '',
     error: '',
@@ -42,12 +37,12 @@ const Login: React.FunctionComponent<ILoginProps> = ({ refetch }: ILoginProps) =
     password: '',
   });
 
-  const login = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
+  const signin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
     e.preventDefault();
     setState({ ...state, error: '', isLoading: true });
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/auth/signin', {
         body: JSON.stringify({ email: state.email, password: state.password }),
         method: 'post',
       });
@@ -55,8 +50,12 @@ const Login: React.FunctionComponent<ILoginProps> = ({ refetch }: ILoginProps) =
 
       if (response.status >= 200 && response.status < 300) {
         setState({ ...state, error: '', isLoading: false });
-        refetch();
-        return;
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirect = searchParams.get('redirect');
+        window.location.replace(
+          redirect && redirect.startsWith(window.location.origin) ? redirect.replace(window.location.origin, '') : '/',
+        );
       } else {
         if (json.error) {
           throw new Error(json.error);
@@ -71,7 +70,7 @@ const Login: React.FunctionComponent<ILoginProps> = ({ refetch }: ILoginProps) =
 
   return (
     <LoginPage
-      className="kobsio-login"
+      className="kobsio-signin"
       footerListVariants={ListVariant.inline}
       brandImgSrc={logo}
       brandImgAlt="kobs logo"
@@ -87,22 +86,9 @@ const Login: React.FunctionComponent<ILoginProps> = ({ refetch }: ILoginProps) =
         </React.Fragment>
       }
       textContent="Welcome to kobs. Your application-centric observability platform for Kubernetes and Cloud workloads."
-      loginTitle="Log in to your account"
+      loginTitle="Sign in to your account"
       loginSubtitle="Enter your username and password or use the OIDC provider."
-      socialMediaLoginContent={
-        <React.Fragment>
-          <Divider className="pf-u-mb-xl" />
-          <Button
-            isBlock={true}
-            isDisabled={state.isLoading}
-            variant={ButtonVariant.primary}
-            component="a"
-            href="/api/auth/oidc"
-          >
-            Log in via OIDC provider
-          </Button>
-        </React.Fragment>
-      }
+      socialMediaLoginContent={<SigninOIDC isLoading={state.isLoading} />}
       signUpForAccountMessage={undefined}
       forgotCredentials={undefined}
     >
@@ -114,9 +100,9 @@ const Login: React.FunctionComponent<ILoginProps> = ({ refetch }: ILoginProps) =
         passwordLabel="Password"
         passwordValue={state.password}
         onChangePassword={(value: string): void => setState({ ...state, password: value })}
-        loginButtonLabel="Log in"
+        loginButtonLabel="Sign in"
         isLoginButtonDisabled={state.isLoading}
-        onLoginButtonClick={login}
+        onLoginButtonClick={signin}
         showHelperText={state.error !== ''}
         helperText={
           state.error && <Alert variant={AlertVariant.danger} isInline={true} isPlain={true} title={state.error} />
@@ -126,4 +112,4 @@ const Login: React.FunctionComponent<ILoginProps> = ({ refetch }: ILoginProps) =
   );
 };
 
-export default Login;
+export default Signin;

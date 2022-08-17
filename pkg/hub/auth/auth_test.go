@@ -51,7 +51,7 @@ func TestMiddlewareHandler(t *testing.T) {
 			expectedStatusCode: http.StatusUnauthorized,
 			expectedBody:       "{\"error\":\"Unauthorized: token contains an invalid number of segments\"}\n",
 			prepareRequest: func(r *http.Request) {
-				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: "fake"})
+				r.AddCookie(&http.Cookie{Name: "kobs", Value: "fake"})
 			},
 		},
 		{
@@ -61,7 +61,7 @@ func TestMiddlewareHandler(t *testing.T) {
 			expectedBody:       "null\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
-				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
+				r.AddCookie(&http.Cookie{Name: "kobs", Value: token})
 			},
 		},
 	} {
@@ -183,7 +183,7 @@ func TestUserHandler(t *testing.T) {
 			expectedStatusCode: http.StatusUnauthorized,
 			expectedBody:       "{\"error\":\"Unauthorized: token contains an invalid number of segments\"}\n",
 			prepareRequest: func(r *http.Request) {
-				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: "fake"})
+				r.AddCookie(&http.Cookie{Name: "kobs", Value: "fake"})
 			},
 		},
 		{
@@ -193,7 +193,7 @@ func TestUserHandler(t *testing.T) {
 			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{}}\n",
 			prepareRequest: func(r *http.Request) {
 				token, _ := jwt.CreateToken(authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
-				r.AddCookie(&http.Cookie{Name: "kobs-auth", Value: token})
+				r.AddCookie(&http.Cookie{Name: "kobs", Value: token})
 			},
 		},
 	} {
@@ -209,7 +209,7 @@ func TestUserHandler(t *testing.T) {
 	}
 }
 
-func TestLoginHandler(t *testing.T) {
+func TestSigninHandler(t *testing.T) {
 	for _, tt := range []struct {
 		name               string
 		client             client
@@ -219,7 +219,7 @@ func TestLoginHandler(t *testing.T) {
 		prepareStoreClient func(mockStoreClient *store.MockClient)
 	}{
 		{
-			name:               "login without body",
+			name:               "signin without body",
 			client:             client{config: Config{Enabled: true}},
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Could not decode request body: EOF\"}\n",
@@ -229,7 +229,7 @@ func TestLoginHandler(t *testing.T) {
 			},
 		},
 		{
-			name:               "login, user not found",
+			name:               "signin, user not found",
 			client:             client{config: Config{Enabled: true}},
 			requestBody:        "{\"email\":\"admin\", \"password\":\"admin\"}\n",
 			expectedStatusCode: http.StatusBadRequest,
@@ -240,7 +240,7 @@ func TestLoginHandler(t *testing.T) {
 			},
 		},
 		{
-			name:               "login, wrong password",
+			name:               "signin, wrong password",
 			client:             client{config: Config{Enabled: true, Users: []UserConfig{{Email: "admin", Password: "$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"}}}},
 			requestBody:        "{\"email\":\"admin\", \"password\":\"admin\"}\n",
 			expectedStatusCode: http.StatusBadRequest,
@@ -251,7 +251,7 @@ func TestLoginHandler(t *testing.T) {
 			},
 		},
 		{
-			name:               "login, get user from store error",
+			name:               "signin, get user from store error",
 			client:             client{config: Config{Enabled: true, Users: []UserConfig{{Email: "admin", Password: "$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"}}}},
 			requestBody:        "{\"email\":\"admin\", \"password\":\"fakepassword\"}\n",
 			expectedStatusCode: http.StatusBadRequest,
@@ -262,7 +262,7 @@ func TestLoginHandler(t *testing.T) {
 			},
 		},
 		{
-			name:               "login create token error",
+			name:               "signin create token error",
 			client:             client{config: Config{Enabled: true, Session: SessionConfig{ParsedInterval: -1 * time.Minute}, Users: []UserConfig{{Email: "admin", Password: "$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"}}}},
 			requestBody:        "{\"email\":\"admin\", \"password\":\"fakepassword\"}\n",
 			expectedStatusCode: http.StatusBadRequest,
@@ -273,11 +273,11 @@ func TestLoginHandler(t *testing.T) {
 			},
 		},
 		{
-			name:               "login succeeded",
+			name:               "signin succeeded",
 			client:             client{config: Config{Enabled: true, Users: []UserConfig{{Email: "admin", Password: "$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"}}}},
 			requestBody:        "{\"email\":\"admin\", \"password\":\"fakepassword\"}\n",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"email\":\"admin\",\"teams\":null,\"permissions\":{}}\n",
+			expectedBody:       "null\n",
 			prepareStoreClient: func(mockStoreClient *store.MockClient) {
 				mockStoreClient.On("GetUsersByEmail", mock.Anything, mock.Anything).Return(nil, nil)
 				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
@@ -292,7 +292,7 @@ func TestLoginHandler(t *testing.T) {
 
 			req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/", bytes.NewBuffer([]byte(tt.requestBody)))
 			w := httptest.NewRecorder()
-			tt.client.loginHandler(w, req)
+			tt.client.signinHandler(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
 			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
@@ -301,18 +301,18 @@ func TestLoginHandler(t *testing.T) {
 	}
 }
 
-func TestLogoutHandler(t *testing.T) {
+func TestSignoutHandler(t *testing.T) {
 	c := client{
 		router: chi.NewRouter(),
 	}
 
 	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
 	w := httptest.NewRecorder()
-	c.logoutHandler(w, req)
-	require.Equal(t, http.StatusSeeOther, w.Code)
+	c.signoutHandler(w, req)
+	require.Equal(t, http.StatusOK, w.Code)
 }
 
-func TestOidcRedirectHandler(t *testing.T) {
+func TestOidcHandler(t *testing.T) {
 	t.Run("oidc not configured", func(t *testing.T) {
 		c := client{
 			router: chi.NewRouter(),
@@ -320,8 +320,8 @@ func TestOidcRedirectHandler(t *testing.T) {
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
 		w := httptest.NewRecorder()
-		c.oidcRedirectHandler(w, req)
-		require.Equal(t, http.StatusSeeOther, w.Code)
+		c.oidcHandler(w, req)
+		require.Equal(t, http.StatusBadRequest, w.Code)
 	})
 
 	t.Run("redirect", func(t *testing.T) {
@@ -342,8 +342,8 @@ func TestOidcRedirectHandler(t *testing.T) {
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
 		w := httptest.NewRecorder()
-		c.oidcRedirectHandler(w, req)
-		require.Equal(t, http.StatusFound, w.Code)
+		c.oidcHandler(w, req)
+		require.Equal(t, http.StatusOK, w.Code)
 	})
 }
 

@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
@@ -112,7 +114,7 @@ func (c *client) getUserFromConfig(email string) *UserConfig {
 // handle this within other API calls, because we will always have a valid user object there.
 func (c *client) getUserFromRequest(r *http.Request) (*authContext.User, error) {
 	if c.config.Enabled {
-		cookie, err := r.Cookie("kobs-auth")
+		cookie, err := r.Cookie("kobs")
 		if err != nil {
 			return nil, err
 		}
@@ -145,33 +147,33 @@ func (c *client) userHandler(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, user)
 }
 
-// loginHandler handles the login of users, which are provided via the configuration file of the hub. For that we have
+// signinHandler handles the login of users, which are provided via the configuration file of the hub. For that we have
 // to check if the user from the request is present in the configuration and if the provided password matches the
 // configured password. If this is the case we are are creating a user object with all the users permissions and using
 // it in the session token. The session token is then set as cookie, so it can be validated with each request.
-func (c *client) loginHandler(w http.ResponseWriter, r *http.Request) {
-	var loginRequest LoginRequest
+func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
+	var signinRequest SigninRequest
 
-	err := json.NewDecoder(r.Body).Decode(&loginRequest)
+	err := json.NewDecoder(r.Body).Decode(&signinRequest)
 	if err != nil {
 		log.Warn(r.Context(), "Could not decode request body", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
 		return
 	}
 
-	userConfig := c.getUserFromConfig(loginRequest.Email)
+	userConfig := c.getUserFromConfig(signinRequest.Email)
 	if userConfig == nil {
 		// When no user is found for the provided email address, we use a fixed password hash to prevent user
 		// enumeration by timing requests. Here we are comparing the bcrypt-hashed version of "fakepassword" against
 		// the user provided password.
-		bcrypt.CompareHashAndPassword([]byte("$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"), []byte(loginRequest.Password))
+		bcrypt.CompareHashAndPassword([]byte("$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"), []byte(signinRequest.Password))
 
 		log.Warn(r.Context(), "Invalid email or password")
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid email or password")
 		return
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(userConfig.Password), []byte(loginRequest.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(userConfig.Password), []byte(signinRequest.Password))
 	if err != nil {
 		log.Warn(r.Context(), "Invalid email or password", zap.Error(err))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid email or password")
@@ -193,42 +195,51 @@ func (c *client) loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "kobs-auth",
+		Name:     "kobs",
 		Value:    token,
 		Path:     "/",
-		Secure:   false,
+		Secure:   true,
 		HttpOnly: true,
 		Expires:  time.Now().Add(c.config.Session.ParsedInterval),
 	})
 
-	render.JSON(w, r, user)
+	render.JSON(w, r, nil)
 }
 
-// logoutHandler handles the logout for an user. For this we are setting the value of the auth cookie to an empty string
-// and we adjust the expiration date of the cookie. Finally we redirect the user to the start page of kobs, we the auth
-// context fails and the user has to do the auth flow again.
-func (c *client) logoutHandler(w http.ResponseWriter, r *http.Request) {
+// signoutHandler handles the logout for an user. For this we are setting the value of the auth cookie to an empty
+// string and we adjust the expiration date of the cookie.
+func (c *client) signoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
-		Name:     "kobs-auth",
+		Name:     "kobs",
 		Value:    "",
 		Path:     "/",
-		Secure:   false,
+		Secure:   true,
 		HttpOnly: true,
 		Expires:  time.Unix(0, 0),
 	})
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	render.JSON(w, r, nil)
 }
 
-// oidcRedirectHandler redirects a user to the configured OIDC provider to start the login flow. If no OIDC provider was
-// configured we redirect the user to the frontend.
-func (c *client) oidcRedirectHandler(w http.ResponseWriter, r *http.Request) {
+// oidcRedirectHandler returns the login for the OIDC provider, which can then be used by the user to authenticate via
+// the configured provider. If no OIDC provider is configured this will return an error.
+//
+// We also "abusing" the state parameter by adding a redirect url, so that we have access to this url in the
+// oidcCallbackHandler and that we can redirect the user to this url.
+func (c *client) oidcHandler(w http.ResponseWriter, r *http.Request) {
 	if c.oidcConfig == nil || c.oidcProvider == nil {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		log.Warn(r.Context(), "OIDC provider is not configured")
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "OIDC provider is not configured")
 		return
 	}
 
-	http.Redirect(w, r, c.oidcConfig.AuthCodeURL(c.config.OIDC.State), http.StatusFound)
+	data := struct {
+		URL string `json:"url"`
+	}{
+		c.oidcConfig.AuthCodeURL(c.config.OIDC.State + url.QueryEscape(r.URL.Query().Get("redirect"))),
+	}
+
+	render.JSON(w, r, data)
 }
 
 // oidcCallbackHandler handles the callback from the OIDC login flow. Once we finished the OIDC flow and retrieved the
@@ -240,8 +251,10 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.URL.Query().Get("state") != c.config.OIDC.State {
-		log.Warn(r.Context(), "Invalid state")
+	state := r.URL.Query().Get("state")
+
+	if !strings.HasPrefix(state, c.config.OIDC.State) {
+		log.Warn(r.Context(), "Invalid state", zap.String("state", state))
 		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid state")
 		return
 	}
@@ -295,15 +308,21 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "kobs-auth",
+		Name:     "kobs",
 		Value:    token,
 		Path:     "/",
-		Secure:   false,
+		Secure:   true,
 		HttpOnly: true,
 		Expires:  time.Now().Add(c.config.Session.ParsedInterval),
 	})
 
-	render.JSON(w, r, user)
+	data := struct {
+		URL string `json:"url"`
+	}{
+		strings.TrimPrefix(state, c.config.OIDC.State),
+	}
+
+	render.JSON(w, r, data)
 }
 
 // NewClient returns a new auth client for handling authentication and authorization within the kobs hub. The auth
@@ -349,9 +368,9 @@ func NewClient(config Config, storeClient store.Client) (Client, error) {
 	}
 
 	c.router.Get("/", c.userHandler)
-	c.router.Post("/login", c.loginHandler)
-	c.router.Get("/logout", c.logoutHandler)
-	c.router.Get("/oidc", c.oidcRedirectHandler)
+	c.router.Post("/signin", c.signinHandler)
+	c.router.Get("/signout", c.signoutHandler)
+	c.router.Get("/oidc", c.oidcHandler)
 	c.router.Get("/oidc/callback", c.oidcCallbackHandler)
 
 	return c, nil

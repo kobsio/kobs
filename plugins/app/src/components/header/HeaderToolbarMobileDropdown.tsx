@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { QuestionCircleIcon } from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 
 import { AuthContext, IAuthContext } from '../../context/AuthContext';
+import HeaderToolbarSignout from './HeaderToolbarSignout';
 
 interface IHeaderToolbarMobileDropdownProps {
   isOpen: boolean;
@@ -31,15 +32,7 @@ const HeaderToolbarMobileDropdown: React.FunctionComponent<IHeaderToolbarMobileD
             My profile
           </DropdownItem>,
           <DropdownSeparator key="divider1" />,
-          <DropdownItem
-            key="logout"
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            // eslint-disable-next-line jsx-a11y/anchor-has-content
-            component={(props): React.ReactElement => <a {...props} href="/api/auth/logout" />}
-          >
-            Logout
-          </DropdownItem>,
+          <HeaderToolbarSignout key="signout" />,
           <DropdownSeparator key="divider2" />,
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore

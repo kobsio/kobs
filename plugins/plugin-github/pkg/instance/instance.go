@@ -55,17 +55,17 @@ func (i *instance) TokenToCookie(token *oauth2.Token) (*http.Cookie, error) {
 	}
 
 	return &http.Cookie{
-		Name:     "kobs-oauth-github-" + i.config.Organization,
+		Name:     "kobs-plugin-github-" + i.config.Organization,
 		Value:    cookieValue,
-		Secure:   false,
-		HttpOnly: false,
+		Secure:   true,
+		HttpOnly: true,
 		Path:     "/",
 	}, nil
 }
 
 // TokenFromCookie returns the token from the "kobs-oauth-github" cookie in the given request.
 func (i *instance) TokenFromCookie(r *http.Request) (*oauth2.Token, error) {
-	cookie, err := r.Cookie("kobs-oauth-github-" + i.config.Organization)
+	cookie, err := r.Cookie("kobs-plugin-github-" + i.config.Organization)
 	if err != nil {
 		return nil, err
 	}
