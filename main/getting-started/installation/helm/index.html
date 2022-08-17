@@ -578,8 +578,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/authentication/" class="md-nav__link">
-        Authentication
+      <a href="../../configuration/auth/" class="md-nav__link">
+        Authentication and Authorization
       </a>
     </li>
   
@@ -1490,31 +1490,6 @@ helm upgrade --install satellite kobs/satellite
 <td><code>hub.settings.watcher.worker</code></td>
 <td>The number of worker, which should be used to sync the resources.</td>
 <td><code>10</code></td>
-</tr>
-<tr>
-<td><code>hub.settings.auth.enabled</code></td>
-<td>Enable the authentication and authorization middleware.</td>
-<td><code>false</code></td>
-</tr>
-<tr>
-<td><code>hub.settings.auth.headerTeams</code></td>
-<td>The header, which contains the team ids.</td>
-<td><code>X-Auth-Request-Email</code></td>
-</tr>
-<tr>
-<td><code>hub.settings.auth.headerUser</code></td>
-<td>The header, which contains the user id.</td>
-<td><code>X-Auth-Request-Groups</code></td>
-</tr>
-<tr>
-<td><code>hub.settings.auth.logoutRedirect</code></td>
-<td>The url where kobs redirects a user after he logout.</td>
-<td><code>/oauth2/sign_out</code></td>
-</tr>
-<tr>
-<td><code>hub.settings.auth.sessiontInterval</code></td>
-<td>The interval for how long a session is valid.</td>
-<td><code>48h0m0s</code></td>
 </tr>
 <tr>
 <td><code>hub.config</code></td>

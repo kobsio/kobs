@@ -564,8 +564,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../authentication/" class="md-nav__link">
-        Authentication
+      <a href="../auth/" class="md-nav__link">
+        Authentication and Authorization
       </a>
     </li>
   
@@ -1405,42 +1405,6 @@
 <td><code>10</code></td>
 </tr>
 <tr>
-<td><code>--auth.enabled</code></td>
-<td></td>
-<td>Enable the authentication and authorization middleware.</td>
-<td><code>false</code></td>
-</tr>
-<tr>
-<td><code>--auth.header.user</code></td>
-<td><code>KOBS_AUTH_HEADER_USER</code></td>
-<td>The header, which contains the users email address.</td>
-<td><code>X-Auth-Request-Email</code></td>
-</tr>
-<tr>
-<td><code>--auth.header.teams</code></td>
-<td><code>KOBS_AUTH_HEADER_TEAMS</code></td>
-<td>The header, which contains the team groups.</td>
-<td><code>X-Auth-Request-Groups</code></td>
-</tr>
-<tr>
-<td><code>--auth.logout.redirect</code></td>
-<td><code>KOBS_AUTH_LOGOUT_REDIRECT</code></td>
-<td>The redirect url which should be used, when the user clicks on the logout button.</td>
-<td><code>X-Auth-Request-Groups</code></td>
-</tr>
-<tr>
-<td><code>--auth.session.token</code></td>
-<td><code>KOBS_AUTH_SESSION_TOKEN</code></td>
-<td>The token to encrypt the session cookie.</td>
-<td></td>
-</tr>
-<tr>
-<td><code>--auth.session.interval</code></td>
-<td><code>KOBS_AUTH_SESSION_INTERVAL</code></td>
-<td>The interval for how long a session is valid.</td>
-<td><code>48h0m0s</code></td>
-</tr>
-<tr>
 <td><code>--metrics.address</code></td>
 <td><code>KOBS_METRICS_ADDRESS</code></td>
 <td>The address, where the Prometheus metrics are served.</td>
@@ -1461,6 +1425,9 @@
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-de1</span><span class="w"></span>
 <span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://kobssatellite-prod-de1.kobs.io</span><span class="w"></span>
 <span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unsecuretoken</span><span class="w"></span>
+
+<span class="c1"># The authentication and authorization configuration for kobs. See https://kobs.io/main/getting-started/configuration/auth/ for all available options.</span><span class="w"></span>
+<span class="nt">auth</span><span class="p">:</span><span class="w"></span>
 
 <span class="c1"># The api configuration is optional.</span><span class="w"></span>
 <span class="nt">api</span><span class="p">:</span><span class="w"></span>
