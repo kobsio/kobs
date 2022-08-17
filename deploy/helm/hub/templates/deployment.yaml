@@ -43,11 +43,6 @@ spec:
             - --hub.store.uri={{ .Values.hub.settings.store.uri }}
             - --hub.watcher.interval={{ .Values.hub.settings.watcher.interval }}
             - --hub.watcher.worker={{ .Values.hub.settings.watcher.worker }}
-            - --auth.enabled={{ .Values.hub.settings.auth.enabled }}
-            - --auth.header.user={{ .Values.hub.settings.auth.headerUser }}
-            - --auth.header.teams={{ .Values.hub.settings.auth.headerTeams }}
-            - --auth.logout.redirect={{ .Values.hub.settings.auth.logoutRedirect }}
-            - --auth.session.interval={{ .Values.hub.settings.auth.sessiontInterval }}
           {{- with .Values.env }}
           env:
             {{- toYaml . | nindent 12 }}

@@ -21,7 +21,7 @@ kobs brings your metrics, logs, traces and Kubernetes into one place, to provide
 - **Prometheus:** Access your Prometheus directly in kobs next to your Kubernetes resources.
 - **Elasticsearch and Jaeger:** View the logs from Elasticsearch and traces from Jaeger, where it matters.
 - **Istio:** Get the topology graph from Kiali for your Istio service mesh directly in kobs.
-- **Authentication and Authorization:** Manage the access to kobs via [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) and provide your developers the permissions they need via Teams and Users CRs.
+- **Authentication and Authorization:** Manage the access to kobs via OIDC and provide your developers the permissions they need via Teams and Users CRs.
 
 ## Contributing
 

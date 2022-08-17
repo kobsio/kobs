@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/middleware/errresponse"
 
 	"github.com/go-chi/chi/v5/middleware"

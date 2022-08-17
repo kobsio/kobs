@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 	extendedIncident "github.com/kobsio/kobs/plugins/plugin-opsgenie/pkg/instance/incident"
 

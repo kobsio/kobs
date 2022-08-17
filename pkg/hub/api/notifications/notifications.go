@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/store"
 	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 )
 
 // Permissions is the structure of the custom permissions field for the Helm plugin.

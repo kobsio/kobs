@@ -10,7 +10,7 @@ In the following you can found the specification for the User CRD.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| email | string | The email address of the authenticated user. This is used to connect the authenticated user (from the header specified via the `--auth.header.user` flag) with this CR. | Yes |
+| email | string | The email address of the authenticated user. This is used to connect the authenticated user with this CR. | Yes |
 | permissions | [Permissions](#permissions) | Permissions for the user when the authentication / authorization middleware is enabled. | No |
 | dashboards | [[]Dashboard](./applications.md#dashboard) | A list of dashboards which will be shown on the users profile page. | No |
 | notifications | [Notifications](#notifications) | Overwrite the global notification settings for this user. | No |

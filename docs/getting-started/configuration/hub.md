@@ -25,12 +25,6 @@ The following command-line arguments and environment variables are available.
 | `--hub.store.uri` | `KOBS_HUB_STORE_URI` | The URI for the store. | `/tmp/kobs.db` |
 | `--hub.watcher.interval` | `KOBS_HUB_WATCHER_INTERVAL` | The interval for the watcher to sync the satellite configuration. | `300s` |
 | `--hub.watcher.worker` | `KOBS_HUB_WATCHER_WORKER` | The number of parallel sync processes for the watcher. | `10` |
-| `--auth.enabled` | | Enable the authentication and authorization middleware. | `false` |
-| `--auth.header.user` | `KOBS_AUTH_HEADER_USER` | The header, which contains the users email address. | `X-Auth-Request-Email` |
-| `--auth.header.teams` | `KOBS_AUTH_HEADER_TEAMS` | The header, which contains the team groups. | `X-Auth-Request-Groups` |
-| `--auth.logout.redirect` | `KOBS_AUTH_LOGOUT_REDIRECT` | The redirect url which should be used, when the user clicks on the logout button. | `X-Auth-Request-Groups` |
-| `--auth.session.token` | `KOBS_AUTH_SESSION_TOKEN` | The token to encrypt the session cookie. | |
-| `--auth.session.interval` | `KOBS_AUTH_SESSION_INTERVAL` | The interval for how long a session is valid. | `48h0m0s` |
 | `--metrics.address` | `KOBS_METRICS_ADDRESS` | The address, where the Prometheus metrics are served. | `:15221` |
 
 ## Configuration File
@@ -49,6 +43,9 @@ satellites:
   - name: prod-de1
     address: https://kobssatellite-prod-de1.kobs.io
     token: unsecuretoken
+
+# The authentication and authorization configuration for kobs. See https://kobs.io/main/getting-started/configuration/auth/ for all available options.
+auth:
 
 # The api configuration is optional.
 api:

@@ -12,7 +12,7 @@ In the following you can found the specification for the Team CRD.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| group | string | The group name of the team. This is used to connect the authenticated user (from the header specified via the `--auth.header.teams` flag) with this CR. | Yes |
+| group | string | The group name of the team. This is used to connect the authenticated user with this CR. | Yes |
 | description | string | A description for the team. | No |
 | links | [[]Link](#link) | A list of links (e.g. a link to the teams Slack channel, Confluence page, etc.) | No |
 | logo | string | The logo for the team. Must be a path to an image file. | No |

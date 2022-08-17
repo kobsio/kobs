@@ -1,6 +1,6 @@
-import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
+import { Spinner } from '@patternfly/react-core';
+import { useQuery } from '@tanstack/react-query';
 
 export interface IUser {
   email: string;
@@ -69,18 +69,22 @@ interface IAuthContextProviderProps {
 export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderProps> = ({
   children,
 }: IAuthContextProviderProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<IUser, Error>(['app/authcontext'], async () => {
-    const response = await fetch('/api/auth', { method: 'get' });
-    const json = await response.json();
+  const { isLoading, data } = useQuery<IUser, Error>(['app/authcontext'], async () => {
+    try {
+      const response = await fetch('/api/auth', { method: 'get' });
+      const json = await response.json();
 
-    if (response.status >= 200 && response.status < 300) {
-      return json;
-    } else {
-      if (json.error) {
-        throw new Error(json.error);
+      if (response.status >= 200 && response.status < 300) {
+        return json;
       } else {
-        throw new Error('An unknown error occured');
+        if (json.error) {
+          throw new Error(json.error);
+        } else {
+          throw new Error('An unknown error occured');
+        }
       }
+    } catch (err) {
+      window.location.replace(`/auth?redirect=${encodeURIComponent(window.location.href)}`);
     }
   });
 
@@ -103,27 +107,6 @@ export const AuthContextProvider: React.FunctionComponent<IAuthContextProviderPr
   // As long as the isLoading property of the state is true, we are showing a spinner in the cernter of the screen.
   if (isLoading) {
     return <Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />;
-  }
-
-  // If an error occured during the fetch of the plugins, we are showing the error message in the cernter of the screen
-  // within an Alert component. The Alert component contains a Retry button to call the fetchData function again.
-  if (isError) {
-    return (
-      <Alert
-        style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }}
-        variant={AlertVariant.danger}
-        title="Could not initialize auth context"
-        actionLinks={
-          <React.Fragment>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<IUser, Error>> => refetch()}>
-              Retry
-            </AlertActionLink>
-          </React.Fragment>
-        }
-      >
-        <p>{error?.message}</p>
-      </Alert>
-    );
   }
 
   if (!data) {

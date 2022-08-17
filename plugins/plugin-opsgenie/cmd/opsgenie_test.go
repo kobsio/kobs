@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 	"github.com/kobsio/kobs/plugins/plugin-opsgenie/pkg/instance"
 

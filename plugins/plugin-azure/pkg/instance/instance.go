@@ -1,7 +1,7 @@
 package instance
 
 import (
-	authContext "github.com/kobsio/kobs/pkg/hub/middleware/userauth/context"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/plugins/plugin-azure/pkg/instance/containerinstances"
 	"github.com/kobsio/kobs/plugins/plugin-azure/pkg/instance/costmanagement"
 	"github.com/kobsio/kobs/plugins/plugin-azure/pkg/instance/kubernetesservices"
