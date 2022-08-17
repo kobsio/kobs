@@ -77,8 +77,11 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if the user requested to see all applications, if this is the case we have to check if he is alowed to do
+	// so. If a team isn't part of any teams "user.Teams" is "nil" we handle it the same ways as he wants to see all
+	// applications.
 	parsedAll, _ := strconv.ParseBool(all)
-	if parsedAll == true {
+	if parsedAll == true || teams == nil {
 		if !user.HasApplicationAccess("", "", "", []string{""}) {
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
@@ -131,8 +134,11 @@ func (router *Router) getApplicationsCount(w http.ResponseWriter, r *http.Reques
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
 	span.SetAttributes(attribute.Key("external").String(external))
 
+	// Check if the user requested to see all applications, if this is the case we have to check if he is alowed to do
+	// so. If a team isn't part of any teams "user.Teams" is "nil" we handle it the same ways as he wants to see all
+	// applications.
 	parsedAll, _ := strconv.ParseBool(all)
-	if parsedAll == true {
+	if parsedAll == true || teams == nil {
 		if !user.HasApplicationAccess("", "", "", []string{""}) {
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
