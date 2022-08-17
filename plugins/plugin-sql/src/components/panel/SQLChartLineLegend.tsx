@@ -1,75 +1,72 @@
 import { Button, ButtonVariant } from '@patternfly/react-core';
+import { Datum, Serie } from '@nivo/line';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import React from 'react';
 import SquareIcon from '@patternfly/react-icons/dist/esm/icons/square-icon';
 
-import { ILegend, ISQLData, ISQLDataRow } from '../../utils/interfaces';
+import { ILegend } from '../../utils/interfaces';
 import { getColor } from '@kobsio/shared';
 
-const calcMin = (column: string, rows: ISQLDataRow[] | undefined, unit: string | undefined): string => {
-  if (!rows) {
-    return '';
-  }
-
+const calcMin = (data: Datum[], unit: string | undefined): string => {
   let min = 0;
 
-  for (let i = 0; i < rows.length; i++) {
-    if (i === 0) {
-      min = rows[i][column] as number;
-    }
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].y) {
+      if (i === 0) {
+        min = data[i].y as number;
+      }
 
-    if (rows[i][column] < min) {
-      min = rows[i][column] as number;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (data[i].y! < min) {
+        min = data[i].y as number;
+      }
     }
   }
 
-  return `${min} ${unit}`;
+  return `${min} ${unit ? unit : ''}`;
 };
 
-const calcMax = (column: string, rows: ISQLDataRow[] | undefined, unit: string | undefined): string => {
-  if (!rows) {
-    return '';
-  }
-
+const calcMax = (data: Datum[], unit: string | undefined): string => {
   let max = 0;
 
-  for (let i = 0; i < rows.length; i++) {
-    if (i === 0) {
-      max = rows[i][column] as number;
-    }
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].y) {
+      if (i === 0) {
+        max = data[i].y as number;
+      }
 
-    if (rows[i][column] > max) {
-      max = rows[i][column] as number;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (data[i].y! > max) {
+        max = data[i].y as number;
+      }
     }
   }
 
-  return `${max} ${unit}`;
+  return `${max} ${unit ? unit : ''}`;
 };
 
-const calcAvg = (column: string, rows: ISQLDataRow[] | undefined, unit: string | undefined): string => {
-  if (!rows) {
-    return '';
-  }
-
+const calcAvg = (data: Datum[], unit: string | undefined): string => {
+  let count = 0;
   let sum = 0;
 
-  for (let i = 0; i < rows.length; i++) {
-    sum = sum + (rows[i][column] as number);
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].y) {
+      count = count + 1;
+      sum = sum + (data[i].y as number);
+    }
   }
 
-  return `${sum / rows.length} ${unit}`;
+  return `${count > 0 ? sum / count : 0} ${unit ? unit : ''}`;
 };
 
 interface ISQLChartLineLegendProps {
-  data: ISQLData;
-  yAxisColumns: string[];
+  series: Serie[];
   yAxisUnit?: string;
   legend?: ILegend;
 }
 
 const SQLChartLineLegend: React.FunctionComponent<ISQLChartLineLegendProps> = ({
-  data,
-  yAxisColumns,
+  series,
   yAxisUnit,
   legend,
 }: ISQLChartLineLegendProps) => {
@@ -85,8 +82,8 @@ const SQLChartLineLegend: React.FunctionComponent<ISQLChartLineLegendProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {yAxisColumns.map((column, index) => (
-          <Tr key={index}>
+        {series.map((serie, index) => (
+          <Tr key={serie.id}>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Name">
               <Button
                 style={{ color: 'inherit', cursor: 'inherit', textDecoration: 'inherit' }}
@@ -94,21 +91,21 @@ const SQLChartLineLegend: React.FunctionComponent<ISQLChartLineLegendProps> = ({
                 isInline={true}
                 icon={<SquareIcon color={getColor(index)} />}
               >
-                {legend && legend.hasOwnProperty(column) ? legend[column] : column}
+                {legend && legend.hasOwnProperty(serie.id) ? legend[serie.id] : serie.id}
               </Button>
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Min">
-              {calcMin(column, data.rows, yAxisUnit)}
+              {calcMin(serie.data, yAxisUnit)}
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Max">
-              {calcMax(column, data.rows, yAxisUnit)}
+              {calcMax(serie.data, yAxisUnit)}
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Avg">
-              {calcAvg(column, data.rows, yAxisUnit)}
+              {calcAvg(serie.data, yAxisUnit)}
             </Td>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Current">
-              {data.rows && data.rows[data.rows?.length - 1].hasOwnProperty(column)
-                ? `${data.rows[data.rows?.length - 1][column]} ${yAxisUnit}`
+              {serie.data.length > 0
+                ? `${serie.data[serie.data?.length - 1].y}${yAxisUnit ? ` ${yAxisUnit}` : ''}`
                 : ''}
             </Td>
           </Tr>

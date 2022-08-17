@@ -1,6 +1,12 @@
 import React, { useRef } from 'react';
 import AceEditor from 'react-ace';
 
+// At the moment we are using "useWorker: false" to fix a 404 error for loading worker files. We can also set
+// "useWorker: true" and import the "ace-builds/webpack-resolver" file to enable syntax checking.
+//
+// See https://github.com/securingsincity/react-ace/issues/725
+//
+// import 'ace-builds/webpack-resolver';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-yaml';
 import 'ace-builds/src-noconflict/theme-nord_dark';
@@ -36,6 +42,7 @@ export const Editor: React.FunctionComponent<IEditorProps> = ({ value, mode, rea
       ref={editor}
       setOptions={{
         useSoftTabs: true,
+        useWorker: false,
       }}
       showPrintMargin={false}
       tabSize={2}

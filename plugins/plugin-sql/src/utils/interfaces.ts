@@ -35,11 +35,17 @@ export interface IChart {
   xAxisUnit?: string;
   yAxisColumns?: string[];
   yAxisUnit?: string;
+  yAxisGroup?: string;
   yAxisStacked?: boolean;
   legend?: ILegend;
+  thresholds?: IThresholds;
 }
 
 export interface ILegend {
+  [key: string]: string;
+}
+
+export interface IThresholds {
   [key: string]: string;
 }
 

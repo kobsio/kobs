@@ -10,77 +10,84 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 
 ### Added
 
-- [#388](https://github.com/kobsio/kobs/pull/#388): [app] Customize navigation sidebar.
-- [#389](https://github.com/kobsio/kobs/pull/#389): [app] Add notifications. In the first iteration notifications are only supported by the Opsgenie plugin.
-- [#390](https://github.com/kobsio/kobs/pull/#390): [app] Improve instrumentation middleware.
-- [#392](https://github.com/kobsio/kobs/pull/#392): [rss] Display RSS feeds within the notifications.
-- [#393](https://github.com/kobsio/kobs/pull/#393): [app] Display Kubernetes Resources within notifications.
-- [#394](https://github.com/kobsio/kobs/pull/#394): [app] Allow users and teams to customize their notification settings.
-- [#398](https://github.com/kobsio/kobs/pull/#398): [github] Add GitHub plugin to access issues, pull requests, teams and members of an organization.
-- [#399](https://github.com/kobsio/kobs/pull/#399): [github] Add new `usernotifications` panel and allow users to use the plugin within the Notifications.
-- [#401](https://github.com/kobsio/kobs/pull/#401): [app] Add integrations for Kubernetes Resource, which allows administrators to define a set of default dashboards, which are added to each resource.
-- [#402](https://github.com/kobsio/kobs/pull/#402): [app] Add `mongodb` driver as alternative to the existing `bolt` driver.
-- [#406](https://github.com/kobsio/kobs/pull/#406): [app] Implement authentication, so that no third party service like [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) is required to grant users access to kobs.
+- [#388](https://github.com/kobsio/kobs/pull/388): [app] Customize navigation sidebar.
+- [#389](https://github.com/kobsio/kobs/pull/389): [app] Add notifications. In the first iteration notifications are only supported by the Opsgenie plugin.
+- [#390](https://github.com/kobsio/kobs/pull/390): [app] Improve instrumentation middleware.
+- [#392](https://github.com/kobsio/kobs/pull/392): [rss] Display RSS feeds within the notifications.
+- [#393](https://github.com/kobsio/kobs/pull/393): [app] Display Kubernetes Resources within notifications.
+- [#394](https://github.com/kobsio/kobs/pull/394): [app] Allow users and teams to customize their notification settings.
+- [#398](https://github.com/kobsio/kobs/pull/398): [github] Add GitHub plugin to access issues, pull requests, teams and members of an organization.
+- [#399](https://github.com/kobsio/kobs/pull/399): [github] Add new `usernotifications` panel and allow users to use the plugin within the Notifications.
+- [#401](https://github.com/kobsio/kobs/pull/401): [app] Add integrations for Kubernetes Resource, which allows administrators to define a set of default dashboards, which are added to each resource.
+- [#402](https://github.com/kobsio/kobs/pull/402): [app] Add `mongodb` driver as alternative to the existing `bolt` driver.
+- [#406](https://github.com/kobsio/kobs/pull/406): [app] Implement authentication, so that no third party service like [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) is required to grant users access to kobs.
+- [#407](https://github.com/kobsio/kobs/pull/407): [sql] Add `singlestats` chart to render single values returned by a query.
+- [#411](https://github.com/kobsio/kobs/pull/411): [sql] Add `yAxisGroup` property for charts.
 
 ### Fixed
 
-- [#387](https://github.com/kobsio/kobs/pull/#387): [app] Fix tooltip in charts.
-- [#391](https://github.com/kobsio/kobs/pull/#391): [app] Fix terminal for Kubernetes Pods.
-- [#395](https://github.com/kobsio/kobs/pull/#395): [app] Fix permission handling for applications and teams.
-- [#396](https://github.com/kobsio/kobs/pull/#396): [app] Fix shutdown logic.
-- [#397](https://github.com/kobsio/kobs/pull/#397): [demo] Update elastic setup version to work with recent kubernetes api.
-- [#403](https://github.com/kobsio/kobs/pull/#403): [app] Add missing sort keys to MongoDB queries and fix `go.mongodb.org/mongo-driver/bson/primitive.E composite literal uses unkeyed fields`.
+- [#387](https://github.com/kobsio/kobs/pull/387): [app] Fix tooltip in charts.
+- [#391](https://github.com/kobsio/kobs/pull/391): [app] Fix terminal for Kubernetes Pods.
+- [#395](https://github.com/kobsio/kobs/pull/395): [app] Fix permission handling for applications and teams.
+- [#396](https://github.com/kobsio/kobs/pull/396): [app] Fix shutdown logic.
+- [#397](https://github.com/kobsio/kobs/pull/397): [demo] Update elastic setup version to work with recent kubernetes api.
+- [#403](https://github.com/kobsio/kobs/pull/403): [app] Add missing sort keys to MongoDB queries and fix `go.mongodb.org/mongo-driver/bson/primitive.E composite literal uses unkeyed fields`.
+- [#410](https://github.com/kobsio/kobs/pull/410): [app] Fix 404 error for ACE worker files, by disabling workers.
 
 ### Changed
 
-- [#400](https://github.com/kobsio/kobs/pull/#400): [app] Add recover handler for `httpmetrics` middleware and rename metrics to `kobs_requests_total`, `kobs_request_duration_seconds` and `kobs_request_size_bytes`.
+- [#400](https://github.com/kobsio/kobs/pull/400): [app] Add recover handler for `httpmetrics` middleware and rename metrics to `kobs_requests_total`, `kobs_request_duration_seconds` and `kobs_request_size_bytes`.
+- [#405](https://github.com/kobsio/kobs/pull/405): [app] Imporove federated module core
+- [#408](https://github.com/kobsio/kobs/pull/408): [app] Improve usablility for end users, by showing a hint when the `own` filter does not return any applications and by sorting the returned resource tabs alphabetically.
+- [#409](https://github.com/kobsio/kobs/pull/409): [app] Improve toolbar for plugin instances page and reflect selected filter in the url.
+- [#412](https://github.com/kobsio/kobs/pull/412): [helm] Reload list of Helm releases, when user clicks the search button again.
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
 
 ### Fixed
 
-- [#382](https://github.com/kobsio/kobs/pull/#382): [app] Remove ServiceWorker.
-- [#383](https://github.com/kobsio/kobs/pull/#383): [app] Fix tooltip in charts.
+- [#382](https://github.com/kobsio/kobs/pull/382): [app] Remove ServiceWorker.
+- [#383](https://github.com/kobsio/kobs/pull/383): [app] Fix tooltip in charts.
 
 ## [v0.9.0](https://github.com/kobsio/kobs/releases/tag/v0.9.0) (2022-07-05)
 
 ### Added
 
-- [#355](https://github.com/kobsio/kobs/pull/#355): [app] Add profile page for authenticated users, which can be customized via dashboards.
-- [#361](https://github.com/kobsio/kobs/pull/#361): [app] Add tracing support for kobs via Jaeger or Zipkin.
-- [#363](https://github.com/kobsio/kobs/pull/#363): [app] Re-add topology chart, which is generated based on the dependencies of an Application.
-- [#374](https://github.com/kobsio/kobs/pull/#374): [app] Reduce bundle size by using code splitting for React Router and optimizing the import of icons.
-- [#375](https://github.com/kobsio/kobs/pull/#375): [app] Add ServiceWorker and version parameter for `remoteEntry.js` file.
-- [#376](https://github.com/kobsio/kobs/pull/#376): [flux] Add action to suspend / resume resources.
+- [#355](https://github.com/kobsio/kobs/pull/355): [app] Add profile page for authenticated users, which can be customized via dashboards.
+- [#361](https://github.com/kobsio/kobs/pull/361): [app] Add tracing support for kobs via Jaeger or Zipkin.
+- [#363](https://github.com/kobsio/kobs/pull/363): [app] Re-add topology chart, which is generated based on the dependencies of an Application.
+- [#374](https://github.com/kobsio/kobs/pull/374): [app] Reduce bundle size by using code splitting for React Router and optimizing the import of icons.
+- [#375](https://github.com/kobsio/kobs/pull/375): [app] Add ServiceWorker and version parameter for `remoteEntry.js` file.
+- [#376](https://github.com/kobsio/kobs/pull/376): [flux] Add action to suspend / resume resources.
 
 ### Fixed
 
-- [#349](https://github.com/kobsio/kobs/pull/#349): [app] Fix the creation of a VirtualService in the Helm chart when no `additionalRoutes` are set.
-- [#350](https://github.com/kobsio/kobs/pull/#350): [app] Fix Docker image and request proxy.
-- [#351](https://github.com/kobsio/kobs/pull/#351): [jaeger] Fix links and colors in Jaeger plugin.
-- [#352](https://github.com/kobsio/kobs/pull/#352): [app] Fix plugin filter and allow filtering by the name of a satellite.
-- [#356](https://github.com/kobsio/kobs/pull/#356): [app] Fix tooltip in documents table of the klogs plugin. Fix filtering of services and operations in the Jaeger plugin. Add max height to all select boxes.
-- [#358](https://github.com/kobsio/kobs/pull/#358): [app] Fix namespace handling, when multiple namespaces are selected.
-- [#359](https://github.com/kobsio/kobs/pull/#359): [app] Fix pagination, when the number of items per page is changed.
-- [#360](https://github.com/kobsio/kobs/pull/#360): [app] Fix static file handling, when url contains a dot (`.`).
-- [#364](https://github.com/kobsio/kobs/pull/#364): [app] Fix usage of cytoscape in the topology graph. The fix was also applied for the `istio` and `kiali` plugin.
-- [#365](https://github.com/kobsio/kobs/pull/#365): [app] Fix satellite replacement for variables in inline dashboards.
-- [#368](https://github.com/kobsio/kobs/pull/#368): [flux] Fix panel implementation, so that the Flux plugin can be used within a dashboard again.
+- [#349](https://github.com/kobsio/kobs/pull/349): [app] Fix the creation of a VirtualService in the Helm chart when no `additionalRoutes` are set.
+- [#350](https://github.com/kobsio/kobs/pull/350): [app] Fix Docker image and request proxy.
+- [#351](https://github.com/kobsio/kobs/pull/351): [jaeger] Fix links and colors in Jaeger plugin.
+- [#352](https://github.com/kobsio/kobs/pull/352): [app] Fix plugin filter and allow filtering by the name of a satellite.
+- [#356](https://github.com/kobsio/kobs/pull/356): [app] Fix tooltip in documents table of the klogs plugin. Fix filtering of services and operations in the Jaeger plugin. Add max height to all select boxes.
+- [#358](https://github.com/kobsio/kobs/pull/358): [app] Fix namespace handling, when multiple namespaces are selected.
+- [#359](https://github.com/kobsio/kobs/pull/359): [app] Fix pagination, when the number of items per page is changed.
+- [#360](https://github.com/kobsio/kobs/pull/360): [app] Fix static file handling, when url contains a dot (`.`).
+- [#364](https://github.com/kobsio/kobs/pull/364): [app] Fix usage of cytoscape in the topology graph. The fix was also applied for the `istio` and `kiali` plugin.
+- [#365](https://github.com/kobsio/kobs/pull/365): [app] Fix satellite replacement for variables in inline dashboards.
+- [#368](https://github.com/kobsio/kobs/pull/368): [flux] Fix panel implementation, so that the Flux plugin can be used within a dashboard again.
 
 ### Changed
 
 - [#346](https://github.com/kobsio/kobs/pull/346): [app] :warning: _Breaking change:_ :warning: Rework kobs architecture, by introducing a `hub` and a `satellite` component. This new architecture allows us to run the kobs `hub` component in a central cluster and access clusters / services (plugins) through the kobs `satellite` component. More information regarding the new kobs architecture can be found in the documentation at [kobs.io](https://kobs.io).
 - [#348](https://github.com/kobsio/kobs/pull/348): [app] Update permission handling.
-- [#354](https://github.com/kobsio/kobs/pull/#354): [app] Change URLs for the details page of an Application and a Dashboard.
-- [#357](https://github.com/kobsio/kobs/pull/#357): [app] Adjust namespace handling in the frontend, so that it is not required anymore to select the namespaces from all selected clusters.
-- [#362](https://github.com/kobsio/kobs/pull/#362): [app] :warning: _Breaking change:_ :warning: Rename `preview` field to `insights` in Application CRD.
-- [#366](https://github.com/kobsio/kobs/pull/#366): [app] :warning: _Breaking change:_ :warning: Rework Go plugin architecture, to not uses Go's `plugin` mode.
-- [#367](https://github.com/kobsio/kobs/pull/#367): [app] Change filtering for select components, by using `item.includes(value)`.
-- [#369](https://github.com/kobsio/kobs/pull/#369): [app] Add `insights` panel, to display the insights of an application within a dashboard.
-- [#371](https://github.com/kobsio/kobs/pull/#371): [app] Change toolbar handling by replacing the Patternfly `Toolbar` and `ToolbarItem` components with a custom `Toolbar` and `ToolbarItem` component.
-- [#372](https://github.com/kobsio/kobs/pull/#372): [app] Change `hasDivider` property to `PageContentSection` component to explicit enable / disable the diver.
-- [#373](https://github.com/kobsio/kobs/pull/#373): [app] Change behaviour of drawer panels on pages with dashboards.
-- [#377](https://github.com/kobsio/kobs/pull/#377): [app] Change filter for select boxes by always comparing the lower case values.
+- [#354](https://github.com/kobsio/kobs/pull/354): [app] Change URLs for the details page of an Application and a Dashboard.
+- [#357](https://github.com/kobsio/kobs/pull/357): [app] Adjust namespace handling in the frontend, so that it is not required anymore to select the namespaces from all selected clusters.
+- [#362](https://github.com/kobsio/kobs/pull/362): [app] :warning: _Breaking change:_ :warning: Rename `preview` field to `insights` in Application CRD.
+- [#366](https://github.com/kobsio/kobs/pull/366): [app] :warning: _Breaking change:_ :warning: Rework Go plugin architecture, to not uses Go's `plugin` mode.
+- [#367](https://github.com/kobsio/kobs/pull/367): [app] Change filtering for select components, by using `item.includes(value)`.
+- [#369](https://github.com/kobsio/kobs/pull/369): [app] Add `insights` panel, to display the insights of an application within a dashboard.
+- [#371](https://github.com/kobsio/kobs/pull/371): [app] Change toolbar handling by replacing the Patternfly `Toolbar` and `ToolbarItem` components with a custom `Toolbar` and `ToolbarItem` component.
+- [#372](https://github.com/kobsio/kobs/pull/372): [app] Change `hasDivider` property to `PageContentSection` component to explicit enable / disable the diver.
+- [#373](https://github.com/kobsio/kobs/pull/373): [app] Change behaviour of drawer panels on pages with dashboards.
+- [#377](https://github.com/kobsio/kobs/pull/377): [app] Change filter for select boxes by always comparing the lower case values.
 
 ## [v0.8.0](https://github.com/kobsio/kobs/releases/tag/v0.8.0) (2022-03-24)
 
