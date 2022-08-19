@@ -69,6 +69,13 @@ api:
             type: userpullrequests
             userpullrequests:
               query: created
+      - title: Your Issues
+        plugin:
+          satellite: global
+          name: jira
+          type: jira
+          options:
+            jql: sprint in openSprints() and assignee = currentUser()
 ```
 
 Each plugin is identified by a `satellite`, `name` and `type`. The options for each plugin can be found in the **Notification Options** section of the corresponding plugin documentation.

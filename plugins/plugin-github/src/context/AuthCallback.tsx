@@ -12,7 +12,6 @@ interface IAuthCallbackProps {
 const AuthCallback: React.FunctionComponent<IAuthCallbackProps> = ({ instance }: IAuthCallbackProps) => {
   const location = useLocation();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { isError, isLoading, error, data } = useQuery<
     { organization: string; token: string; username: string },
     Error
@@ -74,7 +73,8 @@ const AuthCallback: React.FunctionComponent<IAuthCallbackProps> = ({ instance }:
       title="Authentication process finished"
     >
       <p>
-        You are now authenticated for the organization {data.organization} as {data.username}
+        You are now authenticated for the organization {data.organization} as {data.username}. You can close this window
+        and go back to your page and click the <b>Retry</b>.
       </p>
     </Alert>
   );

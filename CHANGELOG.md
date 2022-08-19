@@ -23,6 +23,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#406](https://github.com/kobsio/kobs/pull/406): [app] :warning: _Breaking change:_ :warning: Implement authentication, so that no third party service like [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) is required to grant users access to kobs.
 - [#407](https://github.com/kobsio/kobs/pull/407): [sql] Add `singlestats` chart to render single values returned by a query.
 - [#411](https://github.com/kobsio/kobs/pull/411): [sql] Add `yAxisGroup` property for charts.
+- [#414](https://github.com/kobsio/kobs/pull/414): [jira] Add Jira plugin.
 
 ### Fixed
 
