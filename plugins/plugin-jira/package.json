@@ -1,0 +1,46 @@
+{
+  "name": "@kobsio/plugin-jira",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@kobsio/react-scripts": "5.0.1-1",
+    "@patternfly/patternfly": "^4.194.4",
+    "@patternfly/react-core": "^4.214.1",
+    "@patternfly/react-icons": "^4.65.1",
+    "@patternfly/react-styles": "^4.64.1",
+    "@patternfly/react-table": "^4.83.1",
+    "@tanstack/react-query": "^4.0.10",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^13.0.0",
+    "@testing-library/user-event": "^14.2.1",
+    "@types/jest": "^28.1.3",
+    "@types/node": "^18.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/react-router-dom": "^5.3.3",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-router-dom": "^6.3.0",
+    "typescript": "^4.4.2"
+  },
+  "scripts": {
+    "start": "PUBLIC_URL='http://localhost:3001/' PORT=3001 react-scripts start",
+    "build": "PUBLIC_URL='/plugins/jira' react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:15220",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

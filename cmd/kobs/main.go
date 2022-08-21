@@ -14,6 +14,7 @@ import (
 	helm "github.com/kobsio/kobs/plugins/plugin-helm/cmd"
 	istio "github.com/kobsio/kobs/plugins/plugin-istio/cmd"
 	jaeger "github.com/kobsio/kobs/plugins/plugin-jaeger/cmd"
+	jira "github.com/kobsio/kobs/plugins/plugin-jira/cmd"
 	kiali "github.com/kobsio/kobs/plugins/plugin-kiali/cmd"
 	klogs "github.com/kobsio/kobs/plugins/plugin-klogs/cmd"
 	opsgenie "github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd"
@@ -39,6 +40,7 @@ func main() {
 	pluginMounts[helm.PluginType] = helm.Mount
 	pluginMounts[istio.PluginType] = istio.Mount
 	pluginMounts[jaeger.PluginType] = jaeger.Mount
+	pluginMounts[jira.PluginType] = jira.Mount
 	pluginMounts[kiali.PluginType] = kiali.Mount
 	pluginMounts[klogs.PluginType] = klogs.Mount
 	pluginMounts[opsgenie.PluginType] = opsgenie.Mount

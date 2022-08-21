@@ -62,6 +62,7 @@ nav:
       - Helm: plugins/helm.md
       - Istio: plugins/istio.md
       - Jaeger: plugins/jaeger.md
+      - Jira: plugins/jira.md
       - Kiali: plugins/kiali.md
       - klogs: plugins/klogs.md
       - Opsgenie: plugins/opsgenie.md
