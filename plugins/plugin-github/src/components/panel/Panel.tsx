@@ -129,7 +129,7 @@ const Panel: React.FunctionComponent<IGitHubPluginPanelProps> = ({
     );
   }
 
-  if (options && options.type && options.type === 'userpullrequests' && options.repository) {
+  if (options && options.type && options.type === 'userpullrequests') {
     return (
       <AuthContextProvider title={title} isNotification={false} instance={instance}>
         <UserPullRequests title={title} description={description} instance={instance} />
@@ -137,7 +137,7 @@ const Panel: React.FunctionComponent<IGitHubPluginPanelProps> = ({
     );
   }
 
-  if (options && options.type && options.type === 'usernotifications' && options.repository) {
+  if (options && options.type && options.type === 'usernotifications') {
     return (
       <AuthContextProvider title={title} isNotification={false} instance={instance}>
         <UserNotifications title={title} description={description} instance={instance} />

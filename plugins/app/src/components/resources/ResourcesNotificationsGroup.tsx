@@ -1,13 +1,10 @@
 import {
-  Button,
-  ButtonVariant,
   NotificationDrawerListItem,
   NotificationDrawerListItemBody,
   NotificationDrawerListItemHeader,
 } from '@patternfly/react-core';
-import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
-import { Link } from 'react-router-dom';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { IColumn, IResourceResponse } from './utils/interfaces';
 import { customResourceDefinitionTableData, resourcesTableData } from './utils/tabledata';
@@ -23,6 +20,8 @@ const ResourcesNotificationsGroup: React.FunctionComponent<IResourcesNotificatio
   columns,
   filter,
 }: IResourcesNotificationsGroupProps) => {
+  const navigate = useNavigate();
+
   if (
     resourceResponse.resourceLists.filter(
       (resourceList) => resourceList.list && resourceList.list.items && resourceList.list.items.length > 0,
@@ -39,23 +38,24 @@ const ResourcesNotificationsGroup: React.FunctionComponent<IResourcesNotificatio
   return (
     <React.Fragment>
       {tableData.rows(resourceResponse, columns, filter).map((row, rowIndex) => (
-        <NotificationDrawerListItem key={rowIndex} variant="info" isRead={false}>
-          <NotificationDrawerListItemHeader
-            variant="info"
-            title={row.namespace ? `${row.namespace}/${row.name}` : row.name}
-          >
-            <Link
-              to={`/resources?clusterID=${encodeURIComponent(`/satellite/${row.satellite}/cluster/${row.cluster}`)}${
+        <NotificationDrawerListItem
+          key={rowIndex}
+          variant="info"
+          isRead={false}
+          onClick={(): void =>
+            navigate(
+              `/resources?clusterID=${encodeURIComponent(`/satellite/${row.satellite}/cluster/${row.cluster}`)}${
                 row.namespace ? `&namespace=${encodeURIComponent(row.namespace)}` : ''
               }&resourceID=${encodeURIComponent(resourceResponse.resource.id)}&param=metadata.name=${encodeURIComponent(
                 row.name,
-              )}&paramName=fieldSelector`}
-            >
-              <Button variant={ButtonVariant.plain}>
-                <ExternalLinkAltIcon />
-              </Button>
-            </Link>
-          </NotificationDrawerListItemHeader>
+              )}&paramName=fieldSelector`,
+            )
+          }
+        >
+          <NotificationDrawerListItemHeader
+            variant="info"
+            title={row.namespace ? `${row.namespace}/${row.name}` : row.name}
+          />
           <NotificationDrawerListItemBody>
             {columns ? (
               <React.Fragment>

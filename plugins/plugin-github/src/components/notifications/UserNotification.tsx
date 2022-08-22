@@ -1,12 +1,9 @@
 import {
-  Button,
-  ButtonVariant,
   NotificationDrawerListItem,
   NotificationDrawerListItemBody,
   NotificationDrawerListItemHeader,
 } from '@patternfly/react-core';
 import React, { useContext } from 'react';
-import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 
 import { AuthContext, IAuthContext } from '../../context/AuthContext';
 import { formatTime } from '@kobsio/shared';
@@ -41,11 +38,7 @@ const UserNotification: React.FunctionComponent<IAlertProps> = ({
 
   return (
     <NotificationDrawerListItem variant="info" isRead={!unread}>
-      <NotificationDrawerListItemHeader variant="info" title={title}>
-        <Button variant={ButtonVariant.plain} onClick={selectNotification}>
-          <ExternalLinkAltIcon />
-        </Button>
-      </NotificationDrawerListItemHeader>
+      <NotificationDrawerListItemHeader variant="info" title={title} onClick={selectNotification} />
       <NotificationDrawerListItemBody timestamp={formatTime(Math.floor(new Date(updatedAt).getTime() / 1000))}>
         {repo}
       </NotificationDrawerListItemBody>

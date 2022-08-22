@@ -52,12 +52,12 @@ const ResourcesPanelTable: React.FunctionComponent<IResourcesPanelTableProps> = 
         )}
       </Thead>
       <Tbody>
-        {resourceResponse.errors ||
-        !resourceResponse.resourceLists ||
-        resourceResponse.resourceLists.length === 0 ||
-        resourceResponse.resourceLists.filter(
-          (resourceList) => resourceList.list && resourceList.list.items && resourceList.list.items.length > 0,
-        ).length === 0 ? (
+        {resourceResponse.errors &&
+        (!resourceResponse.resourceLists ||
+          resourceResponse.resourceLists.length === 0 ||
+          resourceResponse.resourceLists.filter(
+            (resourceList) => resourceList.list && resourceList.list.items && resourceList.list.items.length > 0,
+          ).length === 0) ? (
           <Tr>
             <Td colSpan={columns ? 3 + columns.length : tableData.columns.length}>
               <Bullseye>

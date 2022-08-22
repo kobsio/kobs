@@ -1,11 +1,8 @@
 import {
-  Button,
-  ButtonVariant,
   NotificationDrawerListItem,
   NotificationDrawerListItemBody,
   NotificationDrawerListItemHeader,
 } from '@patternfly/react-core';
-import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import React from 'react';
 
 import { formatTime } from '@kobsio/shared';
@@ -34,15 +31,13 @@ const UserPullRequest: React.FunctionComponent<IAlertProps> = ({
   closedAt,
   mergedAt,
 }: IAlertProps) => {
+  const open = (): void => {
+    window.open(url, '_blank');
+  };
+
   return (
     <NotificationDrawerListItem variant="info" isRead={mergedAt ? true : false}>
-      <NotificationDrawerListItemHeader variant="info" title={title}>
-        <a href={url} target="_blank" rel="noreferrer">
-          <Button variant={ButtonVariant.plain}>
-            <ExternalLinkAltIcon />
-          </Button>
-        </a>
-      </NotificationDrawerListItemHeader>
+      <NotificationDrawerListItemHeader variant="info" title={title} onClick={open} />
       <NotificationDrawerListItemBody timestamp={formatTime(Math.floor(new Date(updatedAt).getTime() / 1000))}>
         {getPRSubTitle(number, user, state, createdAt, closedAt, mergedAt)}
       </NotificationDrawerListItemBody>
