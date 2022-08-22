@@ -4,11 +4,16 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/google/go-github/github"
 	"github.com/mitchellh/mapstructure"
 	"golang.org/x/oauth2"
 	githuboauth "golang.org/x/oauth2/github"
+)
+
+var (
+	slugifyRe = regexp.MustCompile("[^a-z0-9]+")
 )
 
 // Config is the structure of the configuration for a single GitHub instance.
@@ -55,7 +60,7 @@ func (i *instance) TokenToCookie(token *oauth2.Token) (*http.Cookie, error) {
 	}
 
 	return &http.Cookie{
-		Name:     "kobs-plugin-github-" + i.config.Organization,
+		Name:     "kobs-plugin-github-" + i.name,
 		Value:    cookieValue,
 		Secure:   true,
 		HttpOnly: true,
@@ -65,7 +70,7 @@ func (i *instance) TokenToCookie(token *oauth2.Token) (*http.Cookie, error) {
 
 // TokenFromCookie returns the token from the "kobs-oauth-github" cookie in the given request.
 func (i *instance) TokenFromCookie(r *http.Request) (*oauth2.Token, error) {
-	cookie, err := r.Cookie("kobs-plugin-github-" + i.config.Organization)
+	cookie, err := r.Cookie("kobs-plugin-github-" + i.name)
 	if err != nil {
 		return nil, err
 	}

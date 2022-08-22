@@ -26,7 +26,7 @@ func TestTokenToCookie(t *testing.T) {
 	t.Run("no error", func(t *testing.T) {
 		cookie, err := i.TokenToCookie(&oauth2.Token{AccessToken: "1234"})
 		require.NoError(t, err)
-		require.Equal(t, &http.Cookie{Name: "kobs-plugin-github-kobsio", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: true, HttpOnly: true}, cookie)
+		require.Equal(t, &http.Cookie{Name: "kobs-plugin-github-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: true, HttpOnly: true}, cookie)
 	})
 }
 
@@ -35,7 +35,7 @@ func TestTokenFromCookie(t *testing.T) {
 
 	t.Run("no error", func(t *testing.T) {
 		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
-		r.AddCookie(&http.Cookie{Name: "kobs-plugin-github-kobsio", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: true, HttpOnly: true})
+		r.AddCookie(&http.Cookie{Name: "kobs-plugin-github-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: true, HttpOnly: true})
 
 		token, err := i.TokenFromCookie(r)
 		require.NoError(t, err)
@@ -44,7 +44,7 @@ func TestTokenFromCookie(t *testing.T) {
 
 	t.Run("with error invalid cookie value", func(t *testing.T) {
 		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
-		r.AddCookie(&http.Cookie{Name: "kobs-plugin-github-kobsio", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ", Path: "/", Secure: true, HttpOnly: true})
+		r.AddCookie(&http.Cookie{Name: "kobs-plugin-github-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ", Path: "/", Secure: true, HttpOnly: true})
 
 		token, err := i.TokenFromCookie(r)
 		require.Error(t, err)

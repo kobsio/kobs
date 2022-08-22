@@ -12,8 +12,7 @@ import (
 
 // Config is the structure of the configuration for a single GitHub instance.
 type Config struct {
-	Site string `json:"site"`
-	URL  string `json:"url"`
+	URL string `json:"url"`
 }
 
 type Instance interface {
@@ -59,7 +58,7 @@ func (i *instance) TokenToCookie(token *Token) (*http.Cookie, error) {
 	}
 
 	return &http.Cookie{
-		Name:     "kobs-plugin-jira-" + i.config.Site,
+		Name:     "kobs-plugin-jira-" + i.name,
 		Value:    cookieValue,
 		Secure:   true,
 		HttpOnly: true,
@@ -69,7 +68,7 @@ func (i *instance) TokenToCookie(token *Token) (*http.Cookie, error) {
 
 // TokenFromCookie returns the token from the "kobs-oauth-github" cookie in the given request.
 func (i *instance) TokenFromCookie(r *http.Request) (*Token, error) {
-	cookie, err := r.Cookie("kobs-plugin-jira-" + i.config.Site)
+	cookie, err := r.Cookie("kobs-plugin-jira-" + i.name)
 	if err != nil {
 		return nil, err
 	}

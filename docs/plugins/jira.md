@@ -10,7 +10,6 @@ To use the Jira plugin the following configuration is needed in the satellites c
 | ----- | ---- | ----------- | -------- |
 | name | string | The name of the Jira plugin instance. | Yes |
 | type | `jira` | The type for the Jira plugin. | Yes |
-| options.site | string | The name of your Jira instance. | Yes |
 | options.url | string | The URL of your Jira instance. | Yes |
 
 ```yaml
@@ -18,7 +17,6 @@ plugins:
   - name: jira
     type: jira
     options:
-      site:
       url:
 ```
 
