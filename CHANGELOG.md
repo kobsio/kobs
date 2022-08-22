@@ -43,6 +43,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#408](https://github.com/kobsio/kobs/pull/408): [app] Improve usablility for end users, by showing a hint when the `own` filter does not return any applications and by sorting the returned resource tabs alphabetically.
 - [#409](https://github.com/kobsio/kobs/pull/409): [app] Improve toolbar for plugin instances page and reflect selected filter in the url.
 - [#412](https://github.com/kobsio/kobs/pull/412): [helm] Reload list of Helm releases, when user clicks the search button again.
+- [#415](https://github.com/kobsio/kobs/pull/415): [jira] Convert the description of issues to markdown before the description is rendered. Adjust the colors of the rendered status label. Show fields in details only when they have a value.
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
 
