@@ -17,9 +17,11 @@ const ResourcesPanelWrapper: React.FunctionComponent<IResourcesPanelWrapperProps
   setDetails,
 }: IResourcesPanelWrapperProps) => {
   if (options.satellites && options.clusters && options.resources && times) {
-    const clusterIDs: string[] = options.satellites.map((satellite: string) =>
-      options.clusters.map((cluster: string) => `/satellite/${satellite}/cluster/${cluster}`),
-    );
+    const clusterIDs: string[] = options.satellites
+      .map((satellite: string) =>
+        options.clusters.map((cluster: string) => `/satellite/${satellite}/cluster/${cluster}`),
+      )
+      .flat();
 
     return (
       <ResourcesPanel
