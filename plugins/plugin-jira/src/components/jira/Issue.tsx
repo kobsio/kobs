@@ -49,7 +49,7 @@ const Issue: React.FunctionComponent<IIssueProps> = ({ issue }: IIssueProps) => 
           <Tooltip content={issue.fields?.priority?.name}>
             <Avatar style={{ height: '14px', width: '14px' }} src={issue.fields?.priority?.iconUrl} alt="" />
           </Tooltip>
-          <Label style={{ fontSize: '10px' }} color={getStatusColor(issue.fields?.status?.statusCategory.colorName)}>
+          <Label style={{ fontSize: '10px' }} color={getStatusColor(issue.fields?.status?.statusCategory.name)}>
             {issue.fields?.status?.name.toUpperCase()}
           </Label>
           {issue.fields?.assignee?.avatarUrls?.['24x24'] && (
