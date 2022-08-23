@@ -21,12 +21,9 @@ const UserApplications: React.FunctionComponent<IUserApplicationsProps> = ({
 }: IUserApplicationsProps) => {
   const [options, setOptions] = useState<{ page: number; perPage: number }>({ page: 1, perPage: 10 });
 
-  const selectApplicationID = (id: string): void => {
-    const selectedApplications = data?.filter((application) => application.id === id);
-    if (selectedApplications?.length === 1 && setDetails) {
-      setDetails(
-        <ApplicationDetails application={selectedApplications[0]} close={(): void => setDetails(undefined)} />,
-      );
+  const selectApplication = (application: IApplication): void => {
+    if (setDetails) {
+      setDetails(<ApplicationDetails application={application} close={(): void => setDetails(undefined)} />);
     }
   };
 
@@ -84,13 +81,13 @@ const UserApplications: React.FunctionComponent<IUserApplicationsProps> = ({
           <p>{error?.message}</p>
         </Alert>
       ) : data && data.length > 0 ? (
-        <DataList
-          aria-label="applications list"
-          selectedDataListItemId={undefined}
-          onSelectDataListItem={selectApplicationID}
-        >
+        <DataList aria-label="applications list" selectedDataListItemId={undefined}>
           {data.map((application) => (
-            <ApplicationsListItem key={application.id} application={application} />
+            <ApplicationsListItem
+              key={application.id}
+              application={application}
+              selectApplication={selectApplication}
+            />
           ))}
         </DataList>
       ) : null}
