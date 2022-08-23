@@ -19,13 +19,6 @@ const ApplicationsList: React.FunctionComponent<IApplicationsListProps> = ({
   selectedApplication,
   setSelectedApplication,
 }: IApplicationsListProps) => {
-  const selectApplicationID = (id: string): void => {
-    const selectedApplications = data?.filter((application) => application.id === id);
-    if (selectedApplications?.length === 1) {
-      setSelectedApplication(selectedApplications[0]);
-    }
-  };
-
   const { isError, isLoading, error, data, refetch } = useQuery<IApplication[], Error>(
     ['app/applications/applications', options],
     async () => {
@@ -118,10 +111,13 @@ const ApplicationsList: React.FunctionComponent<IApplicationsListProps> = ({
     <DataList
       aria-label="applications list"
       selectedDataListItemId={selectedApplication ? selectedApplication.id : undefined}
-      onSelectDataListItem={selectApplicationID}
     >
       {data.map((application) => (
-        <ApplicationsListItem key={application.id} application={application} />
+        <ApplicationsListItem
+          key={application.id}
+          application={application}
+          selectApplication={setSelectedApplication}
+        />
       ))}
     </DataList>
   );
