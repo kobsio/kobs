@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { IPluginInstance, formatTime, pluginBasePath } from '@kobsio/shared';
 import { IIssue } from '../../utils/issue';
+import { getStatusVariant } from '../../utils/helpers';
 
 interface IIssueNotificationProps {
   instance: IPluginInstance;
@@ -20,15 +21,17 @@ const IssueNotification: React.FunctionComponent<IIssueNotificationProps> = ({
 }: IIssueNotificationProps) => {
   const navigate = useNavigate();
 
+  const variant = getStatusVariant(issue.fields?.status?.statusCategory.name);
+
   return (
     <NotificationDrawerListItem
-      variant="info"
-      isRead={false}
+      variant={variant}
+      isRead={variant === 'success' ? true : false}
       onClick={(): void =>
         navigate(`${pluginBasePath(instance)}/search?jql=${encodeURIComponent(`key = ${issue.key}`)}`)
       }
     >
-      <NotificationDrawerListItemHeader variant="info" title={issue.key || ''} />
+      <NotificationDrawerListItemHeader variant={variant} title={issue.key || ''} />
       <NotificationDrawerListItemBody
         timestamp={formatTime(Math.floor(new Date(issue.fields?.updated || '').getTime() / 1000))}
       >
