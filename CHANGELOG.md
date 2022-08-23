@@ -45,6 +45,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#409](https://github.com/kobsio/kobs/pull/409): [app] Improve toolbar for plugin instances page and reflect selected filter in the url.
 - [#412](https://github.com/kobsio/kobs/pull/412): [helm] Reload list of Helm releases, when user clicks the search button again.
 - [#415](https://github.com/kobsio/kobs/pull/415): [jira] Convert the description of issues to markdown before the description is rendered. Adjust the colors of the rendered status label. Show fields in details only when they have a value.
+- [#417](https://github.com/kobsio/kobs/pull/417): [jira] Adjust notification style based on the issue status.
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
 

@@ -27,6 +27,18 @@ export const getStatusColor = (name?: string): 'blue' | 'green' | 'grey' => {
   return 'grey';
 };
 
+export const getStatusVariant = (name?: string): 'info' | 'success' | 'warning' => {
+  if (name === 'Done') {
+    return 'success';
+  }
+
+  if (name === 'In Progress') {
+    return 'info';
+  }
+
+  return 'warning';
+};
+
 // The jiraToMarkdown and markdownToJira functions are used to convert the provided description for an issue into
 // markdown, so that we can render it using react markdown. For that we are using a modified version of the functions
 // provided by https://github.com/kylefarris/J2M
