@@ -4,18 +4,17 @@ import { IPluginPanelProps, PluginPanelError } from '@kobsio/shared';
 import { IPanelOptions } from '../../utils/interfaces';
 import Issues from '../jira/Issues';
 
-interface IGitHubPluginPanelProps extends IPluginPanelProps {
+interface IJiraPluginPanelProps extends IPluginPanelProps {
   options?: IPanelOptions;
 }
 
-const Panel: React.FunctionComponent<IGitHubPluginPanelProps> = ({
+const Panel: React.FunctionComponent<IJiraPluginPanelProps> = ({
   title,
   description,
   options,
   instance,
-  times,
   setDetails,
-}: IGitHubPluginPanelProps) => {
+}: IJiraPluginPanelProps) => {
   if (options && options.jql) {
     return (
       <Issues title={title} description={description} instance={instance} jql={options.jql} setDetails={setDetails} />
