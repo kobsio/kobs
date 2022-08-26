@@ -20,6 +20,7 @@ import (
 	opsgenie "github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd"
 	prometheus "github.com/kobsio/kobs/plugins/plugin-prometheus/cmd"
 	rss "github.com/kobsio/kobs/plugins/plugin-rss/cmd"
+	signalsciences "github.com/kobsio/kobs/plugins/plugin-signalsciences/cmd"
 	sonarqube "github.com/kobsio/kobs/plugins/plugin-sonarqube/cmd"
 	sql "github.com/kobsio/kobs/plugins/plugin-sql/cmd"
 	techdocs "github.com/kobsio/kobs/plugins/plugin-techdocs/cmd"
@@ -46,6 +47,7 @@ func main() {
 	pluginMounts[opsgenie.PluginType] = opsgenie.Mount
 	pluginMounts[prometheus.PluginType] = prometheus.Mount
 	pluginMounts[rss.PluginType] = rss.Mount
+	pluginMounts[signalsciences.PluginType] = signalsciences.Mount
 	pluginMounts[sonarqube.PluginType] = sonarqube.Mount
 	pluginMounts[sql.PluginType] = sql.Mount
 	pluginMounts[techdocs.PluginType] = techdocs.Mount

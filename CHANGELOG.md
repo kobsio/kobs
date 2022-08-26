@@ -24,6 +24,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#407](https://github.com/kobsio/kobs/pull/407): [sql] Add `singlestats` chart to render single values returned by a query.
 - [#411](https://github.com/kobsio/kobs/pull/411): [sql] Add `yAxisGroup` property for charts.
 - [#414](https://github.com/kobsio/kobs/pull/414): [jira] Add Jira plugin.
+- [#419](https://github.com/kobsio/kobs/pull/419): [signalsciences] Add Signal Sciences plugin.
 
 ### Fixed
 

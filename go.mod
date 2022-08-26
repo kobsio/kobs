@@ -36,6 +36,7 @@ require (
 	github.com/orlangure/gnomock v0.21.1
 	github.com/prometheus/client_golang v1.13.0
 	github.com/prometheus/common v0.37.0
+	github.com/signalsciences/go-sigsci v0.1.4
 	github.com/spf13/cobra v1.5.0
 	github.com/stretchr/testify v1.8.0
 	github.com/timshannon/bolthold v0.0.0-20210913165410-232392fc8a6a
