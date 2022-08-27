@@ -209,14 +209,20 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 // signoutHandler handles the logout for an user. For this we are setting the value of the auth cookie to an empty
 // string and we adjust the expiration date of the cookie.
 func (c *client) signoutHandler(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     "kobs",
-		Value:    "",
-		Path:     "/",
-		Secure:   true,
-		HttpOnly: true,
-		Expires:  time.Unix(0, 0),
-	})
+	cookies := r.Cookies()
+
+	for _, cookie := range cookies {
+		if strings.HasPrefix(cookie.Name, "kobs") {
+			http.SetCookie(w, &http.Cookie{
+				Name:     cookie.Name,
+				Value:    "",
+				Path:     "/",
+				Secure:   true,
+				HttpOnly: true,
+				Expires:  time.Unix(0, 0),
+			})
+		}
+	}
 
 	render.JSON(w, r, nil)
 }
