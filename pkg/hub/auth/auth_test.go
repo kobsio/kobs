@@ -307,6 +307,14 @@ func TestSignoutHandler(t *testing.T) {
 	}
 
 	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
+	req.AddCookie(&http.Cookie{
+		Name:     "kobs",
+		Value:    "1234",
+		Path:     "/",
+		Secure:   true,
+		HttpOnly: true,
+		Expires:  time.Unix(0, 0),
+	})
 	w := httptest.NewRecorder()
 	c.signoutHandler(w, req)
 	require.Equal(t, http.StatusOK, w.Code)

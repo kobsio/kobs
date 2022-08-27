@@ -49,6 +49,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#417](https://github.com/kobsio/kobs/pull/417): [jira] Adjust notification style based on the issue status.
 - [#418](https://github.com/kobsio/kobs/pull/418): [app] Go to details page when a user selects an application.
 - [#420](https://github.com/kobsio/kobs/pull/420): [app] Use generics for `jwt` package and reuse the package for the GitHub and Jira plugin, to make the generated cookies more secure.
+- [#421](https://github.com/kobsio/kobs/pull/421): [app] Delete all cookies on signout.
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
 
