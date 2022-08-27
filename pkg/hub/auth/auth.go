@@ -119,7 +119,7 @@ func (c *client) getUserFromRequest(r *http.Request) (*authContext.User, error) 
 			return nil, err
 		}
 
-		return jwt.ValidateToken(cookie.Value, c.config.Session.Token)
+		return jwt.ValidateToken[authContext.User](cookie.Value, c.config.Session.Token)
 	}
 
 	return &authContext.User{

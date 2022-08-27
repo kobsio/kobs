@@ -16,6 +16,9 @@ To use the GitHub plugin the following configuration is needed in the satellites
 | options.oauth.clientID | string | The Client ID of your OAuth App. | Yes |
 | options.oauth.clientSecret | string | The Client Secret of your OAuth App. | Yes |
 | options.oauth.state | string | A random string used to verify the OAuth Redirects. | Yes |
+| options.session.token | string | The token must be a random string which is used to sign the JWT token, which is generated when a user is authenticated. | No |
+| options.session.interval | string | The interval defines the lifetime of the generated token. When the token is expired the user must authenticate again. The default value is `48h` | No |
+
 
 ```yaml
 plugins:

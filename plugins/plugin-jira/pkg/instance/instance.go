@@ -3,16 +3,25 @@ package instance
 import (
 	"context"
 	"net/http"
+	"time"
 
+	"github.com/kobsio/kobs/pkg/hub/auth"
+	"github.com/kobsio/kobs/pkg/hub/auth/jwt"
 	"github.com/kobsio/kobs/pkg/middleware/roundtripper"
 
 	"github.com/andygrunwald/go-jira"
 	"github.com/mitchellh/mapstructure"
 )
 
+type Token struct {
+	Email string `json:"email"`
+	Token string `json:"token"`
+}
+
 // Config is the structure of the configuration for a single GitHub instance.
 type Config struct {
-	URL string `json:"url"`
+	URL     string             `json:"url"`
+	Session auth.SessionConfig `json:"session"`
 }
 
 type Instance interface {
@@ -52,17 +61,18 @@ func (i *instance) GetURL() string {
 
 // TokenToCookie returns a cookie for the given oauth token.
 func (i *instance) TokenToCookie(token *Token) (*http.Cookie, error) {
-	cookieValue, err := tokenToBase64(token)
+	jwtToken, err := jwt.CreateToken(token, i.config.Session.Token, i.config.Session.ParsedInterval)
 	if err != nil {
 		return nil, err
 	}
 
 	return &http.Cookie{
 		Name:     "kobs-plugin-jira-" + i.name,
-		Value:    cookieValue,
+		Value:    jwtToken,
+		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
-		Path:     "/",
+		Expires:  time.Now().Add(i.config.Session.ParsedInterval),
 	}, nil
 }
 
@@ -73,7 +83,7 @@ func (i *instance) TokenFromCookie(r *http.Request) (*Token, error) {
 		return nil, err
 	}
 
-	return tokenFromBase64(cookie.Value)
+	return jwt.ValidateToken[Token](cookie.Value, i.config.Session.Token)
 }
 
 func (i *instance) GetSelf(ctx context.Context, token *Token) (*jira.User, error) {
@@ -113,6 +123,12 @@ func New(name string, options map[string]any) (Instance, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	sessionInterval := time.Duration(48 * time.Hour)
+	if parsedSessionInterval, err := time.ParseDuration(config.Session.Interval); err == nil {
+		sessionInterval = parsedSessionInterval
+	}
+	config.Session.ParsedInterval = sessionInterval
 
 	return &instance{
 		name:   name,

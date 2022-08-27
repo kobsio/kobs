@@ -26,7 +26,7 @@ auth:
     # The token must be a random string which is used to sign the JWT token, which is generated when a user is authenticated.
     token:
     # The interval defines the lifetime of the generated token. When the token is expired the user must authenticate again.
-    interval: 48m
+    interval: 48h
   # A static list of users which can be access kobs. Each user must have a email address and password.
   # ATTENTION: Substitution of environment variables is not supported for the user configuration. Instead you can directly use the hashed password within the configuration.
   users:

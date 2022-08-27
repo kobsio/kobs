@@ -1,8 +1,6 @@
 package instance
 
 import (
-	"context"
-	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -18,47 +16,6 @@ func TestGetName(t *testing.T) {
 func TestGetOrganization(t *testing.T) {
 	i := instance{name: "github", config: Config{Organization: "kobsio"}}
 	require.Equal(t, "kobsio", i.GetOrganization())
-}
-
-func TestTokenToCookie(t *testing.T) {
-	i := instance{name: "github", config: Config{Organization: "kobsio"}}
-
-	t.Run("no error", func(t *testing.T) {
-		cookie, err := i.TokenToCookie(&oauth2.Token{AccessToken: "1234"})
-		require.NoError(t, err)
-		require.Equal(t, &http.Cookie{Name: "kobs-plugin-github-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: true, HttpOnly: true}, cookie)
-	})
-}
-
-func TestTokenFromCookie(t *testing.T) {
-	i := instance{name: "github", config: Config{Organization: "kobsio"}}
-
-	t.Run("no error", func(t *testing.T) {
-		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
-		r.AddCookie(&http.Cookie{Name: "kobs-plugin-github-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: true, HttpOnly: true})
-
-		token, err := i.TokenFromCookie(r)
-		require.NoError(t, err)
-		require.Equal(t, &oauth2.Token{AccessToken: "1234"}, token)
-	})
-
-	t.Run("with error invalid cookie value", func(t *testing.T) {
-		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
-		r.AddCookie(&http.Cookie{Name: "kobs-plugin-github-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ", Path: "/", Secure: true, HttpOnly: true})
-
-		token, err := i.TokenFromCookie(r)
-		require.Error(t, err)
-		require.Nil(t, token)
-	})
-
-	t.Run("with error invalid cookie name", func(t *testing.T) {
-		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "", nil)
-		r.AddCookie(&http.Cookie{Name: "kobs-plugin-github", Value: "eyJhY2Nlc3NfdG9rZW4iOiIxMjM0IiwiZXhwaXJ5IjoiMDAwMS0wMS0wMVQwMDowMDowMFoifQ==", Path: "/", Secure: true, HttpOnly: true})
-
-		token, err := i.TokenFromCookie(r)
-		require.Error(t, err)
-		require.Nil(t, token)
-	})
 }
 
 func TestOAuthLoginURL(t *testing.T) {

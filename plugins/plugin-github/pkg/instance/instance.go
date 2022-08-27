@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/google/go-github/github"
+	"github.com/kobsio/kobs/pkg/hub/auth"
+	"github.com/kobsio/kobs/pkg/hub/auth/jwt"
 	"github.com/mitchellh/mapstructure"
 	"golang.org/x/oauth2"
 	githuboauth "golang.org/x/oauth2/github"
@@ -18,8 +21,9 @@ var (
 
 // Config is the structure of the configuration for a single GitHub instance.
 type Config struct {
-	Organization string      `json:"organization"`
-	OAuth        OAuthConfig `json:"oauth"`
+	Organization string             `json:"organization"`
+	OAuth        OAuthConfig        `json:"oauth"`
+	Session      auth.SessionConfig `json:"session"`
 }
 
 type OAuthConfig struct {
@@ -54,17 +58,18 @@ func (i *instance) GetOrganization() string {
 
 // TokenToCookie returns a cookie for the given oauth token.
 func (i *instance) TokenToCookie(token *oauth2.Token) (*http.Cookie, error) {
-	cookieValue, err := tokenToBase64(token)
+	jwtToken, err := jwt.CreateToken(token, i.config.Session.Token, i.config.Session.ParsedInterval)
 	if err != nil {
 		return nil, err
 	}
 
 	return &http.Cookie{
 		Name:     "kobs-plugin-github-" + i.name,
-		Value:    cookieValue,
+		Value:    jwtToken,
+		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
-		Path:     "/",
+		Expires:  time.Now().Add(i.config.Session.ParsedInterval),
 	}, nil
 }
 
@@ -75,7 +80,7 @@ func (i *instance) TokenFromCookie(r *http.Request) (*oauth2.Token, error) {
 		return nil, err
 	}
 
-	return tokenFromBase64(cookie.Value)
+	return jwt.ValidateToken[oauth2.Token](cookie.Value, i.config.Session.Token)
 }
 
 func (i *instance) OAuthLoginURL() string {
@@ -120,6 +125,12 @@ func New(name string, options map[string]any) (Instance, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	sessionInterval := time.Duration(48 * time.Hour)
+	if parsedSessionInterval, err := time.ParseDuration(config.Session.Interval); err == nil {
+		sessionInterval = parsedSessionInterval
+	}
+	config.Session.ParsedInterval = sessionInterval
 
 	return &instance{
 		name:   name,
