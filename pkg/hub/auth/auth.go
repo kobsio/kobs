@@ -187,7 +187,7 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.CreateToken(user, c.config.Session.Token, c.config.Session.ParsedInterval)
+	token, err := jwt.CreateToken(&user, c.config.Session.Token, c.config.Session.ParsedInterval)
 	if err != nil {
 		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create jwt token")
@@ -306,7 +306,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.CreateToken(user, c.config.Session.Token, c.config.Session.ParsedInterval)
+	token, err := jwt.CreateToken(&user, c.config.Session.Token, c.config.Session.ParsedInterval)
 	if err != nil {
 		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create jwt token")

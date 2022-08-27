@@ -9,7 +9,7 @@ import (
 
 // CustomClaims is the struct which defines the claims for our jwt tokens.
 type CustomClaims[T any] struct {
-	Data T
+	Data *T `json:"data,omitempty"`
 	goJWT.RegisteredClaims
 }
 
@@ -28,14 +28,14 @@ func ValidateToken[T any](tokenString, sessionToken string) (*T, error) {
 
 	claims, ok := token.Claims.(*CustomClaims[T])
 	if ok && token.Valid {
-		return &claims.Data, nil
+		return claims.Data, nil
 	}
 
 	return nil, fmt.Errorf("invalid jwt claims")
 }
 
 // CreateToken creates a new signed jwt token with the user information saved in the claims.
-func CreateToken[T any](data T, sessionToken string, sessionInterval time.Duration) (string, error) {
+func CreateToken[T any](data *T, sessionToken string, sessionInterval time.Duration) (string, error) {
 	if sessionInterval < 0 {
 		return "", fmt.Errorf("invalid session interval")
 	}

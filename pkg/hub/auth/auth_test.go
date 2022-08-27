@@ -60,7 +60,7 @@ func TestMiddlewareHandler(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "null\n",
 			prepareRequest: func(r *http.Request) {
-				token, _ := jwt.CreateToken(authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
+				token, _ := jwt.CreateToken(&authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
 				r.AddCookie(&http.Cookie{Name: "kobs", Value: token})
 			},
 		},
@@ -192,7 +192,7 @@ func TestUserHandler(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{}}\n",
 			prepareRequest: func(r *http.Request) {
-				token, _ := jwt.CreateToken(authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
+				token, _ := jwt.CreateToken(&authContext.User{Email: "user1@kobs.io"}, "", 10*time.Minute)
 				r.AddCookie(&http.Cookie{Name: "kobs", Value: token})
 			},
 		},
