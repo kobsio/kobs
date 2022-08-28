@@ -21,12 +21,14 @@ export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps>
 
   return (
     <div style={{ minHeight: '100%' }} ref={refTabs}>
-      <Dashboards
-        manifest={manifest}
-        references={references}
-        forceDefaultSpan={tabsSize.width < 1200}
-        useDrawer={useDrawer}
-      />
+      {tabsSize.height !== 0 && tabsSize.width !== 0 && (
+        <Dashboards
+          manifest={manifest}
+          references={references}
+          forceDefaultSpan={tabsSize.width < 1200}
+          useDrawer={useDrawer}
+        />
+      )}
     </div>
   );
 };
