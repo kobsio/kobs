@@ -17,18 +17,16 @@ export const DashboardsWrapper: React.FunctionComponent<IDashboardsWrapperProps>
   useDrawer,
 }: IDashboardsWrapperProps) => {
   const refTabs = useRef<HTMLDivElement>(null);
-  const tabsSize = useDimensions(refTabs);
+  const tabsSize = useDimensions(refTabs, { height: 0, width: 0 }, 0);
 
   return (
     <div style={{ minHeight: '100%' }} ref={refTabs}>
-      {tabsSize.height !== 0 && tabsSize.width !== 0 && (
-        <Dashboards
-          manifest={manifest}
-          references={references}
-          forceDefaultSpan={tabsSize.width < 1200}
-          useDrawer={useDrawer}
-        />
-      )}
+      <Dashboards
+        manifest={manifest}
+        references={references}
+        forceDefaultSpan={tabsSize.width < 1200}
+        useDrawer={useDrawer}
+      />
     </div>
   );
 };
