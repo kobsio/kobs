@@ -23,23 +23,25 @@ const AggregationChart: React.FunctionComponent<IAggregationChartProps> = ({
 
   return (
     <div ref={refChartContainer} style={{ height: '100%', minHeight: `${minHeight}px`, width: '100%' }}>
-      <div style={{ height: `${chartContainerSize.height}px`, width: '100%' }}>
-        {options.chart === 'pie' ? (
-          <AggregationChartPie data={data} />
-        ) : options.chart === 'bar' && options.options.horizontalAxisOperation === 'top' ? (
-          <AggregationChartBarTop filters={options.options.breakDownByFilters} data={data} />
-        ) : options.chart === 'bar' && options.options.horizontalAxisOperation === 'time' ? (
-          <AggregationChartBarTime filters={options.options.breakDownByFilters} data={data} />
-        ) : options.chart === 'line' || options.chart === 'area' ? (
-          <AggregationChartLine
-            isArea={options.chart === 'area'}
-            startTime={options.times.timeStart}
-            endTime={options.times.timeEnd}
-            filters={options.options.breakDownByFilters}
-            data={data}
-          />
-        ) : null}
-      </div>
+      {chartContainerSize.height !== 0 && chartContainerSize.width !== 0 && (
+        <div style={{ height: `${chartContainerSize.height}px`, width: '100%' }}>
+          {options.chart === 'pie' ? (
+            <AggregationChartPie data={data} />
+          ) : options.chart === 'bar' && options.options.horizontalAxisOperation === 'top' ? (
+            <AggregationChartBarTop filters={options.options.breakDownByFilters} data={data} />
+          ) : options.chart === 'bar' && options.options.horizontalAxisOperation === 'time' ? (
+            <AggregationChartBarTime filters={options.options.breakDownByFilters} data={data} />
+          ) : options.chart === 'line' || options.chart === 'area' ? (
+            <AggregationChartLine
+              isArea={options.chart === 'area'}
+              startTime={options.times.timeStart}
+              endTime={options.times.timeEnd}
+              filters={options.options.breakDownByFilters}
+              data={data}
+            />
+          ) : null}
+        </div>
+      )}
     </div>
   );
 };
