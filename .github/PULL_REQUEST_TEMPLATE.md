@@ -1,5 +1,7 @@
 <!--
   Keep PR title verbose enough and add prefix telling about what plugin it touches e.g "[prometheus]" or "[app]"
+
+  If you add a breaking change within your PR you should add ":warning:" to the title, e.g. ":warning: [app] My breaking change"
 -->
 
 <!--
@@ -13,6 +15,5 @@
     - [#<PR-ID>](<PR-URL>): [<PLUGIN>] ...
 -->
 
-- [ ] I added a [CHANGELOG](https://github.com/kobsio/kobs/blob/master/CHANGELOG.md) entry for this change.
 - [ ] I adjusted the corresponding [documentation](https://github.com/kobsio/kobs/tree/main/docs) for this change.
 - [ ] I adjusted the [values.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/kobs/values.yaml) file and the [documentation for all values](https://github.com/kobsio/kobs/blob/main/docs/installation/helm.md).

@@ -1,14 +1,6 @@
 # Release
 
-Before a new version of kobs can be release we have to make sure that the [changelog](https://github.com/kobsio/kobs/blob/main/CHANGELOG.md) contains all added, fixed and changed feature. When this is the case we can replace the `## Unreleased` line for the new version, e.g.
-
-```txt
-## [v0.4.0](https://github.com/kobsio/kobs/releases/tag/v0.4.0) (2021-07-14)
-```
-
-Each release entry contains a link to the GitHub release and the date, when the release was created. When we have updated the changelog we can create a new section for unreleased features.
-
-In the last step before we can create a new tag we have to update the following files, so that they contain the correct version for the new Docker image:
+Before we can create a new tag we have to update the following files, so that they contain the correct version for the new Docker image:
 
 - [hub Chart.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/Chart.yaml): Update the `appVersion` field and bump the `version` field in the Helm chart for the hub.
 - [hub values.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/values.yaml): Set the new tag in the `kobs.image.tag` value in the Helm chart for the hub.
@@ -26,7 +18,7 @@ make release-minor
 make release-major
 ```
 
-When the new tag was created we run a GitHub Action to create the new Docker image and to publish the new Helm chart version. While the GitHub Actions are running we can create a new release on GitHub, where we are using the changelog as description. When we create the GitHub release the **Create a discussion for this release** should be checked, and the discussion should be created in the **Announcements** category.
+Now we can publish the created draft release, which is automatically updated by the [Release GitHub Action](https://github.com/kobsio/kobs/blob/main/.github/workflows/release.yaml). When we create the GitHub release the **Create a discussion for this release** should be checked, and the discussion should be created in the **Announcements** category.
 
 ## Publish NPM Packages
 
