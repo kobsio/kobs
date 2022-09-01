@@ -51,6 +51,7 @@ NOTE: As semantic versioning states all 0.y.z releases can contain breaking chan
 - [#420](https://github.com/kobsio/kobs/pull/420): [app] Use generics for `jwt` package and reuse the package for the GitHub and Jira plugin, to make the generated cookies more secure.
 - [#421](https://github.com/kobsio/kobs/pull/421): [app] Delete all cookies on signout.
 - [#422](https://github.com/kobsio/kobs/pull/422): [app] Rework `useDimensions` hook.
+- [#423](https://github.com/kobsio/kobs/pull/423): [app] Replace plouc/nivo with @patternfly/react-charts.
 
 ## [v0.9.1](https://github.com/kobsio/kobs/releases/tag/v0.9.1) (2022-07-08)
 
