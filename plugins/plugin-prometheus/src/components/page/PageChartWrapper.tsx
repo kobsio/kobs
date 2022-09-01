@@ -3,10 +3,9 @@ import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { IOptions, ISeries } from '../../utils/interfaces';
+import { IMetrics, IOptions } from '../../utils/interfaces';
 import { IPluginInstance } from '@kobsio/shared';
 import PageChart from './PageChart';
-import { convertMetrics } from '../../utils/helpers';
 
 interface IPageChartWrapperProps extends IOptions {
   instance: IPluginInstance;
@@ -23,7 +22,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
 }: IPageChartWrapperProps) => {
   const navigate = useNavigate();
 
-  const { isError, isLoading, error, data, refetch } = useQuery<ISeries, Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IMetrics, Error>(
     ['prometheus/metrics', instance, queries, resolution, times],
     async () => {
       try {
@@ -47,10 +46,18 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          if (json && json.metrics) {
-            return convertMetrics(json.metrics, json.startTime, json.endTime, json.min, json.max);
+          if ((json as IMetrics).metrics) {
+            for (let i = 0; i < json.metrics.length; i++) {
+              for (let j = 0; j < json.metrics[i].data.length; j++) {
+                json.metrics[i].data[j] = {
+                  x: new Date(json.metrics[i].data[j].x),
+                  y: json.metrics[i].data[j].y,
+                };
+              }
+            }
+            return json;
           } else {
-            return { endTime: times.timeEnd, labels: {}, max: 0, min: 0, series: [], startTime: times.timeStart };
+            return json;
           }
         } else {
           if (json.error) {
@@ -81,7 +88,7 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
         actionLinks={
           <React.Fragment>
             <AlertActionLink onClick={(): void => navigate('/')}>Home</AlertActionLink>
-            <AlertActionLink onClick={(): Promise<QueryObserverResult<ISeries, Error>> => refetch()}>
+            <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetrics, Error>> => refetch()}>
               Retry
             </AlertActionLink>
           </React.Fragment>
@@ -92,11 +99,11 @@ const PageChartWrapper: React.FunctionComponent<IPageChartWrapperProps> = ({
     );
   }
 
-  if (!data) {
+  if (!data || !data.metrics || data.metrics.length === 0) {
     return null;
   }
 
-  return <PageChart queries={queries} series={data} />;
+  return <PageChart queries={queries} metrics={data.metrics} times={times} />;
 };
 
 export default PageChartWrapper;

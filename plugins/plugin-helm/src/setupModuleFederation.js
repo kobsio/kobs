@@ -44,6 +44,10 @@ module.exports = {
       singleton: true,
       requiredVersion: deps['@patternfly/react-table'],
     },
+    '@patternfly/react-charts': {
+      singleton: true,
+      requiredVersion: deps['@patternfly/react-charts'],
+    },
   },
 }
 /* eslint-enable */

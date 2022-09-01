@@ -8,6 +8,7 @@
     "@octokit/rest": "^19.0.3",
     "@octokit/types": "^7.1.0",
     "@patternfly/patternfly": "^4.194.4",
+    "@patternfly/react-charts": "^6.84.8",
     "@patternfly/react-core": "^4.214.1",
     "@patternfly/react-icons": "^4.65.1",
     "@patternfly/react-log-viewer": "^4.69.1",

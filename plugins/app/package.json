@@ -6,8 +6,8 @@
   "dependencies": {
     "@kobsio/react-scripts": "5.0.1-1",
     "@kubernetes/client-node": "^0.17.0",
-    "@nivo/bar": "^0.79.1",
     "@patternfly/patternfly": "^4.194.4",
+    "@patternfly/react-charts": "^6.84.8",
     "@patternfly/react-core": "^4.214.1",
     "@patternfly/react-icons": "^4.65.1",
     "@patternfly/react-log-viewer": "^4.59.1",

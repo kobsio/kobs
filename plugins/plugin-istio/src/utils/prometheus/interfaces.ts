@@ -1,4 +1,12 @@
-import { Serie } from '@nivo/line';
+// IMetrics implements the interface for the corresponding Go struct, which is returned by our API. It contains a list
+// of metrics, the start and end time and the minimum and maximum value accross all time series.
+export interface IMetrics {
+  startTime: number;
+  endTime: number;
+  min: number;
+  max: number;
+  metrics?: IMetric[];
+}
 
 // IMetric implements the interface for the corresponding Go struct, which is returned by our API. It contains one
 // additional field named "color", which is used to specify the color for a line, when the user selected a single line
@@ -14,7 +22,7 @@ export interface IMetric {
 }
 
 export interface IDatum {
-  x: number;
+  x: number | Date;
   y: number;
 }
 
@@ -26,23 +34,6 @@ export interface IRows {
 
 export interface IRowValues {
   [key: string]: string;
-}
-
-// ILabels is the interface for all labels in a series. It contains the series id as key and the label as values. This
-// allows us to access the label via a serie, which was converted from the retunred metrics.
-export interface ILabels {
-  [key: string]: string;
-}
-
-// ISeries is the interface which is retunred by the convertMetrics function. It contains the converted series and all
-// labels for these series.
-export interface ISeries {
-  startTime: number;
-  endTime: number;
-  labels: ILabels;
-  max: number;
-  min: number;
-  series: Serie[];
 }
 
 // IPanelOptions is the interface, which implements the options property for the panel of the Prometheus plugin. A user

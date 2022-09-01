@@ -10,6 +10,6 @@ export interface IOptions {
 }
 
 export interface IDatum {
-  x: number;
+  x: Date;
   y: number;
 }

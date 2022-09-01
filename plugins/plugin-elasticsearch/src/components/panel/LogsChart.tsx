@@ -9,7 +9,14 @@ import {
 import React, { useRef } from 'react';
 
 import { IBucket, IDatum, IDomain, ILabel } from '../../utils/interfaces';
-import { ITimes, formatTime, useDimensions } from '@kobsio/shared';
+import {
+  ITimes,
+  chartAxisStyle,
+  chartFormatLabel,
+  chartTickFormatDate,
+  formatTime,
+  useDimensions,
+} from '@kobsio/shared';
 
 interface ILogsChartProps {
   buckets?: IBucket[];
@@ -40,7 +47,7 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
           <CursorVoronoiContainer
             cursorDimension="x"
             brushDimension="x"
-            labels={({ datum }: ILabel): string => `${datum.y}`}
+            labels={({ datum }: ILabel): string => chartFormatLabel(`${datum.y}`)}
             labelComponent={
               <ChartLegendTooltip
                 legendData={legendData}
@@ -74,20 +81,9 @@ const LogsChart: React.FunctionComponent<ILogsChartProps> = ({ buckets, changeTi
           tickValues={data
             .filter((datum, index) => index !== 0 && index !== data.length - 1 && (index + 1) % 2 === 0)
             .map((datum) => datum.x)}
-          tickFormat={(tick: Date): string =>
-            `${('0' + (tick.getMonth() + 1)).slice(-2)}-${('0' + tick.getDate()).slice(-2)} ${(
-              '0' + tick.getHours()
-            ).slice(-2)}:${('0' + tick.getMinutes()).slice(-2)}:${('0' + tick.getSeconds()).slice(-2)}`
-          }
+          tickFormat={chartTickFormatDate}
           showGrid={false}
-          style={{
-            tickLabels: {
-              fontFamily: 'RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif',
-              fontSize: 10,
-              fontWeight: 'bold',
-              padding: 5,
-            },
-          }}
+          style={chartAxisStyle}
         />
         <ChartBar data={data} name="count" barWidth={data && chartSize.width / data.length} />
       </Chart>

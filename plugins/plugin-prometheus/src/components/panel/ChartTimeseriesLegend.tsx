@@ -2,28 +2,25 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import EyeSlashIcon from '@patternfly/react-icons/dist/esm/icons/eye-slash-icon';
 import React from 'react';
-import { Serie } from '@nivo/line';
 import SquareIcon from '@patternfly/react-icons/dist/esm/icons/square-icon';
 
+import { IMetric } from '../../utils/interfaces';
 import { getColor } from '@kobsio/shared';
 import { roundNumber } from '../../utils/helpers';
 
-interface IChartLegendProps {
-  series: Serie[];
+interface IPanelChartLegendProps {
+  metrics: IMetric[];
   unit: string;
-  selected: Serie[];
-  select: (color: string, serie: Serie) => void;
+  selected: number;
+  select: (index: number) => void;
 }
 
-// The ChartLegend implements the legend for the line and area chart. Currently the only legend we are supporting is
-// a table. The table also displays the min, max and avg value for each metric. When the user clicks on the name of a
-// metric we toogle between this single metric and all metrics in the corresponding chart.
-const ChartLegend: React.FunctionComponent<IChartLegendProps> = ({
-  series,
+const PanelChartLegend: React.FunctionComponent<IPanelChartLegendProps> = ({
+  metrics,
   unit,
   selected,
   select,
-}: IChartLegendProps) => {
+}: IPanelChartLegendProps) => {
   return (
     <TableComposable aria-label="Legend" variant={TableVariant.compact} borders={false}>
       <Thead>
@@ -36,22 +33,16 @@ const ChartLegend: React.FunctionComponent<IChartLegendProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {series.map((metric, index) => (
+        {metrics.map((metric, index) => (
           <Tr key={index}>
             <Td style={{ fontSize: '12px', padding: 0 }} dataLabel="Name">
               <Button
-                className={selected.length === 1 && selected[0].label !== metric.label ? 'pf-u-color-400' : ''}
+                className={selected === index || selected === -1 ? '' : 'pf-u-color-400'}
                 style={{ color: 'inherit', textDecoration: 'inherit' }}
                 variant={ButtonVariant.link}
                 isInline={true}
-                icon={
-                  selected.length === 1 && selected[0].label !== metric.label ? (
-                    <EyeSlashIcon />
-                  ) : (
-                    <SquareIcon color={getColor(index)} />
-                  )
-                }
-                onClick={(): void => select(getColor(index), metric)}
+                icon={selected === index || selected === -1 ? <SquareIcon color={getColor(index)} /> : <EyeSlashIcon />}
+                onClick={(): void => select(index)}
               >
                 {metric.label}
               </Button>
@@ -77,4 +68,4 @@ const ChartLegend: React.FunctionComponent<IChartLegendProps> = ({
   );
 };
 
-export default ChartLegend;
+export default PanelChartLegend;

@@ -3,9 +3,8 @@ import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { IPluginInstance, ITimes } from '@kobsio/shared';
-import { Chart } from '../../../utils/prometheus/Chart';
-import { ISeries } from '../../../utils/prometheus/interfaces';
-import { convertMetrics } from '../../../utils/prometheus/helpers';
+import Chart from '../../../utils/prometheus/Chart';
+import { IMetrics } from '../../../utils/prometheus/interfaces';
 
 interface IDetailsMetricsPodProps {
   instance: IPluginInstance;
@@ -26,7 +25,7 @@ const DetailsMetricsPod: React.FunctionComponent<IDetailsMetricsPodProps> = ({
   pod,
   times,
 }: IDetailsMetricsPodProps) => {
-  const { isError, isLoading, error, data, refetch } = useQuery<ISeries, Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IMetrics, Error>(
     ['istio/metricspod', instance, metric, namespace, pod, times],
     async () => {
       try {
@@ -45,10 +44,18 @@ const DetailsMetricsPod: React.FunctionComponent<IDetailsMetricsPodProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          if (json && json.metrics) {
-            return convertMetrics(json.metrics, json.startTime, json.endTime, json.min, json.max);
+          if ((json as IMetrics).metrics) {
+            for (let i = 0; i < json.metrics.length; i++) {
+              for (let j = 0; j < json.metrics[i].data.length; j++) {
+                json.metrics[i].data[j] = {
+                  x: new Date(json.metrics[i].data[j].x),
+                  y: json.metrics[i].data[j].y,
+                };
+              }
+            }
+            return json;
           } else {
-            return { endTime: times.timeEnd, labels: {}, max: 0, min: 0, series: [], startTime: times.timeStart };
+            return json;
           }
         } else {
           if (json.error) {
@@ -78,7 +85,7 @@ const DetailsMetricsPod: React.FunctionComponent<IDetailsMetricsPodProps> = ({
             title="Could not get metrics"
             actionLinks={
               <React.Fragment>
-                <AlertActionLink onClick={(): Promise<QueryObserverResult<ISeries, Error>> => refetch()}>
+                <AlertActionLink onClick={(): Promise<QueryObserverResult<IMetrics, Error>> => refetch()}>
                   Retry
                 </AlertActionLink>
               </React.Fragment>
@@ -86,17 +93,9 @@ const DetailsMetricsPod: React.FunctionComponent<IDetailsMetricsPodProps> = ({
           >
             <p>{error?.message}</p>
           </Alert>
-        ) : data ? (
+        ) : data && data.metrics ? (
           <div style={{ height: '300px' }}>
-            <Chart
-              startTime={data.startTime}
-              endTime={data.endTime}
-              min={data.min}
-              max={data.max}
-              options={{ stacked: false, type: 'line', unit: unit }}
-              labels={data.labels}
-              series={data.series}
-            />
+            <Chart metrics={data.metrics} unit={unit} times={times} />
           </div>
         ) : null}
       </CardBody>

@@ -1,6 +1,8 @@
 import {
   Chart,
+  ChartArea,
   ChartAxis,
+  ChartBar,
   ChartGroup,
   ChartLegendTooltip,
   ChartLine,
@@ -9,7 +11,7 @@ import {
 } from '@patternfly/react-charts';
 import React, { useRef } from 'react';
 
-import { IDatum, IMetric } from './interfaces';
+import { IAggregationData, ISeriesDatum } from '../../utils/interfaces';
 import {
   ITimes,
   chartAxisStyle,
@@ -18,28 +20,39 @@ import {
   formatTime,
   useDimensions,
 } from '@kobsio/shared';
+import { convertToTimeseriesChartData } from '../../utils/aggregation';
 
-interface IPrometheusChartProps {
-  metrics: IMetric[];
-  unit?: string;
+interface IAggregationChartTimeseriesProps {
+  data: IAggregationData;
+  type: 'line' | 'area' | 'bar';
+  filters: string[];
   times: ITimes;
 }
 
-const PrometheusChart: React.FunctionComponent<IPrometheusChartProps> = ({
-  metrics,
-  unit,
+const AggregationChartTimeseries: React.FunctionComponent<IAggregationChartTimeseriesProps> = ({
+  data,
+  type,
+  filters,
   times,
-}: IPrometheusChartProps) => {
+}: IAggregationChartTimeseriesProps) => {
   const refChart = useRef<HTMLDivElement>(null);
   const chartSize = useDimensions(refChart);
 
-  const legendData = metrics.map((metric, index) => {
-    return { childName: metric.label, name: metric.label };
+  const series = convertToTimeseriesChartData(data, filters);
+
+  const legendData = series.map((serie) => {
+    return { childName: serie.name, name: serie.name };
   });
 
-  const chartData = metrics.map((metric, index) => (
-    <ChartLine key={metrics[index].label} data={metric.data} name={metrics[index].label} interpolation="monotoneX" />
-  ));
+  const chartData = series.map((serie) =>
+    type === 'area' ? (
+      <ChartArea key={serie.name} data={serie.data} name={serie.name} interpolation="monotoneX" />
+    ) : type === 'bar' ? (
+      <ChartBar key={serie.name} data={serie.data} name={serie.name} />
+    ) : (
+      <ChartLine key={serie.name} data={serie.data} name={serie.name} interpolation="monotoneX" />
+    ),
+  );
 
   const CursorVoronoiContainer = createContainer('voronoi', 'cursor');
 
@@ -49,16 +62,12 @@ const PrometheusChart: React.FunctionComponent<IPrometheusChartProps> = ({
         containerComponent={
           <CursorVoronoiContainer
             cursorDimension="x"
-            labels={({ datum }: { datum: IDatum }): string =>
-              chartFormatLabel(datum.y ? `${datum.y}${unit ? ` ${unit}` : ''}` : '')
-            }
+            labels={({ datum }: { datum: ISeriesDatum }): string => chartFormatLabel(datum.y ? `${datum.y}` : '')}
             labelComponent={
               <ChartLegendTooltip
                 themeColor={ChartThemeColor.multiOrdered}
                 legendData={legendData}
-                title={(datum: IDatum): string =>
-                  metrics.length > 0 ? formatTime(Math.floor((datum.x as Date).getTime() / 1000)) : ''
-                }
+                title={(datum: ISeriesDatum): string => formatTime(Math.floor((datum.x as Date).getTime() / 1000))}
               />
             }
             mouseFollowTooltips={true}
@@ -67,14 +76,14 @@ const PrometheusChart: React.FunctionComponent<IPrometheusChartProps> = ({
           />
         }
         height={chartSize.height}
-        padding={{ bottom: 20, left: unit ? 55 : 50, right: 0, top: 0 }}
+        padding={{ bottom: 20, left: 50, right: 0, top: 0 }}
         scale={{ x: 'time', y: 'linear' }}
         themeColor={ChartThemeColor.multiOrdered}
         width={chartSize.width}
         domain={{ x: [new Date(times.timeStart * 1000), new Date(times.timeEnd * 1000)] }}
       >
         <ChartAxis dependentAxis={false} tickFormat={chartTickFormatDate} showGrid={true} style={chartAxisStyle} />
-        <ChartAxis dependentAxis={true} showGrid={true} label={unit} style={chartAxisStyle} />
+        <ChartAxis dependentAxis={true} showGrid={true} style={chartAxisStyle} />
 
         <ChartGroup>{chartData}</ChartGroup>
       </Chart>
@@ -82,4 +91,4 @@ const PrometheusChart: React.FunctionComponent<IPrometheusChartProps> = ({
   );
 };
 
-export default PrometheusChart;
+export default AggregationChartTimeseries;

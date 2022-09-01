@@ -1,21 +1,19 @@
 import { Card, CardBody } from '@patternfly/react-core';
-import React, { useMemo } from 'react';
-import {
-  ResponsiveScatterPlotCanvas,
-  ScatterPlotDatum,
-  ScatterPlotNodeData,
-  ScatterPlotRawSerie,
-} from '@nivo/scatterplot';
+import { Chart, ChartAxis, ChartScatter, ChartThemeColor, ChartVoronoiContainer } from '@patternfly/react-charts';
+import React, { useMemo, useRef } from 'react';
 import Trace from './details/Trace';
 
-import { CHART_THEME, ChartTooltip, IPluginInstance } from '@kobsio/shared';
+import { IPluginInstance, chartAxisStyle, chartFormatLabel, useDimensions } from '@kobsio/shared';
+import { doesTraceContainsError, formatTraceTime } from '../../utils/helpers';
 import { ITrace } from '../../utils/interfaces';
-import { doesTraceContainsError } from '../../utils/helpers';
 
-interface IDatum extends ScatterPlotDatum {
-  label: string;
-  spans: number;
+interface IDatum {
+  hasError: boolean;
+  name: string;
   trace: ITrace;
+  x: Date;
+  y: number;
+  z: number;
 }
 
 interface ITracesChartProps {
@@ -24,123 +22,99 @@ interface ITracesChartProps {
   setDetails?: (details: React.ReactNode) => void;
 }
 
-function isIDatum(object: ScatterPlotDatum): object is IDatum {
-  return (object as IDatum).trace !== undefined;
-}
-
 const TracesChart: React.FunctionComponent<ITracesChartProps> = ({
   instance,
   traces,
   setDetails,
 }: ITracesChartProps) => {
-  const { series, min, max, first, last } = useMemo<{
-    series: ScatterPlotRawSerie<ScatterPlotDatum>[];
-    min: number;
-    max: number;
-    first: number;
-    last: number;
-  }>(() => {
-    // Initialize min and max so that we can simply compare during traversing.
-    let minimalSpans = Number.MAX_SAFE_INTEGER;
-    let maximalSpans = 0;
-    let firstTime = 0;
-    let lastTime = 0;
+  const refChart = useRef<HTMLDivElement>(null);
+  const chartSize = useDimensions(refChart);
+
+  const { data } = useMemo<{ data: IDatum[] }>(() => {
     const result: IDatum[] = [];
 
     traces.forEach((trace, index) => {
-      if (trace.spans.length < minimalSpans) {
-        minimalSpans = trace.spans.length;
-      }
-      if (trace.spans.length > maximalSpans) {
-        maximalSpans = trace.spans.length;
-      }
-
-      if (trace.startTime < firstTime || index === 0) {
-        firstTime = trace.startTime;
-      }
-      if (trace.startTime > lastTime || index === 0) {
-        lastTime = trace.startTime;
-      }
-
       result.push({
-        label: trace.traceName,
-        spans: trace.spans.length,
+        hasError: doesTraceContainsError(trace),
+        name: trace.traceName,
         trace: trace,
         x: new Date(Math.floor(trace.spans[0].startTime / 1000)),
         y: trace.duration / 1000,
+        z: trace.spans.length,
       });
     });
 
     return {
-      first: firstTime,
-      last: lastTime,
-      max: maximalSpans,
-      min: minimalSpans,
-      series: [
-        {
-          data: result.sort((a, b) => (a.x.valueOf() as number) - (b.x.valueOf() as number)),
-          id: 'Traces',
-        },
-      ],
+      data: result.sort((a, b) => (a.x.valueOf() as number) - (b.x.valueOf() as number)),
     };
   }, [traces]);
 
   return (
     <Card isCompact={true}>
       <CardBody>
-        <div style={{ height: '250px' }}>
-          <ResponsiveScatterPlotCanvas
-            axisBottom={{
-              format: '%H:%M:%S',
-            }}
-            axisLeft={null}
-            axisRight={null}
-            axisTop={null}
-            colors={['#0066cc']}
-            data={series}
-            enableGridX={false}
-            enableGridY={false}
-            margin={{ bottom: 25, left: 0, right: 0, top: 0 }}
-            nodeSize={{ key: 'data.spans', sizes: [15, 75], values: [min, max] }}
-            onClick={(node: ScatterPlotNodeData<ScatterPlotDatum>): void => {
-              if (setDetails && isIDatum(node.data)) {
-                setDetails(
-                  <Trace instance={instance} trace={node.data.trace} close={(): void => setDetails(undefined)} />,
-                );
-              }
-            }}
-            renderNode={(ctx: CanvasRenderingContext2D, props: ScatterPlotNodeData<ScatterPlotDatum>): void => {
-              // eslint-disable-next-line react/prop-types
-              const hasError = isIDatum(props.data) ? doesTraceContainsError(props.data.trace) : false;
-
-              ctx.beginPath();
-              // eslint-disable-next-line react/prop-types
-              ctx.arc(props.x, props.y, props.size / 2, 0, 2 * Math.PI);
-              // eslint-disable-next-line react/prop-types
-              ctx.fillStyle = hasError ? '#c9190b' : props.color;
-              ctx.fill();
-            }}
-            theme={CHART_THEME}
-            tooltip={(tooltip): React.ReactElement => {
-              const isFirstHalf = (tooltip.node.data as IDatum).trace.startTime < (last + first) / 2;
-              const hasError = isIDatum(tooltip.node.data) ? doesTraceContainsError(tooltip.node.data.trace) : false;
-              const squareColor = hasError ? '#c9190b' : '#0066cc';
-
-              return (
-                <ChartTooltip
-                  anchor={isFirstHalf ? 'right' : 'left'}
-                  color={squareColor}
-                  label={`${(tooltip.node.data as unknown as IDatum).label} ${tooltip.node.formattedY}`}
-                  position={[0, 20]}
-                  title={tooltip.node.formattedX.toString()}
-                />
-              );
-            }}
-            xFormat="time:%Y-%m-%d %H:%M:%S.%L"
-            xScale={{ type: 'time' }}
-            yFormat={(e): string => e + ' ms'}
-            yScale={{ max: 'auto', min: 'auto', type: 'linear' }}
-          />
+        <div style={{ height: '250px' }} ref={refChart}>
+          <Chart
+            containerComponent={
+              <ChartVoronoiContainer
+                labels={({ datum }: { datum: IDatum }): string =>
+                  chartFormatLabel(`${formatTraceTime(datum.x.getTime() * 1000)}\n${datum.name}: ${datum.y}ms`)
+                }
+                constrainToVisibleArea={true}
+              />
+            }
+            height={chartSize.height}
+            padding={{ bottom: 20, left: 50, right: 0, top: 0 }}
+            scale={{ x: 'time', y: 'linear' }}
+            themeColor={ChartThemeColor.multiOrdered}
+            width={chartSize.width}
+          >
+            <ChartAxis
+              dependentAxis={true}
+              showGrid={false}
+              style={chartAxisStyle}
+              tickFormat={(tick: number): string => `${tick}ms`}
+            />
+            <ChartAxis dependentAxis={false} showGrid={false} style={chartAxisStyle} />
+            <ChartScatter
+              style={{
+                data: {
+                  fill: ({ datum }) =>
+                    datum.hasError ? 'var(--pf-global--danger-color--100)' : 'var(--pf-global--primary-color--100)',
+                },
+              }}
+              events={[
+                {
+                  eventHandlers: {
+                    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+                    onClick: () => {
+                      return [
+                        {
+                          mutation: ({ datum }: { datum: IDatum }): void => {
+                            if (setDetails && datum) {
+                              setDetails(
+                                <Trace
+                                  instance={instance}
+                                  trace={datum.trace}
+                                  close={(): void => setDetails(undefined)}
+                                />,
+                              );
+                            }
+                          },
+                          target: 'data',
+                        },
+                      ];
+                    },
+                  },
+                  target: 'data',
+                },
+              ]}
+              data={data}
+              bubbleProperty="z"
+              maxBubbleSize={25}
+              minBubbleSize={10}
+              size={1}
+            />
+          </Chart>
         </div>
       </CardBody>
     </Card>

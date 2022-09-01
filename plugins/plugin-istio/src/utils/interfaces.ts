@@ -1,8 +1,7 @@
-import { IRowValues } from './prometheus/interfaces';
-
-import { ITimes } from '@kobsio/shared';
-import { Serie } from '@nivo/line';
 import cytoscape from 'cytoscape';
+
+import { IRowValues } from './prometheus/interfaces';
+import { ITimes } from '@kobsio/shared';
 
 export interface IPluginOptions {
   prometheus: boolean;
@@ -71,6 +70,6 @@ export interface ILogLine {
 
 // ITopDetailsMetrics contains the success rate and the latency series which can be used within our charts.
 export interface ITopDetailsMetrics {
-  sr: Serie[];
-  latency: Serie[];
+  sr: { name: string; data: { x: Date; y: number }[] }[];
+  latency: { name: string; data: { x: Date; y: number }[] }[];
 }

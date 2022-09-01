@@ -58,3 +58,13 @@ export interface ISQLData {
 export interface ISQLDataRow {
   [key: string]: string | number | string[] | number[];
 }
+
+export interface IMetrics {
+  name: string;
+  data: IDatum[];
+}
+
+export interface IDatum {
+  x: number | Date;
+  y: number | null;
+}

@@ -1,5 +1,3 @@
-import { Serie } from '@nivo/line';
-
 import { IPieDatum, IQueryResult } from '../components/costmanagement/interfaces';
 import { IMetric } from './interfaces';
 import { formatTime as formatTimeCore } from '@kobsio/shared';
@@ -28,37 +26,23 @@ export const formatTime = (time: string): string => {
   return formatTimeCore(Math.floor(new Date(time).getTime() / 1000));
 };
 
-// formatAxisBottom calculates the format for the bottom axis based on the specified start and end time.
-export const formatAxisBottom = (timeStart: number, timeEnd: number): string => {
-  timeStart = Math.floor(timeStart);
-  timeEnd = Math.floor(timeEnd);
-
-  if (timeEnd - timeStart < 3600) {
-    return '%H:%M:%S';
-  } else if (timeEnd - timeStart < 86400) {
-    return '%H:%M';
-  } else if (timeEnd - timeStart < 604800) {
-    return '%m-%d %H:%M';
-  }
-
-  return '%m-%d';
-};
-
 // convertMetrics returns the metrics from the Azure API in the format required for nivo charts.
-export const convertMetrics = (metrics: IMetric[], aggregationType: string): Serie[] => {
-  const series: Serie[] = [];
+export const convertMetrics = (
+  metrics: IMetric[],
+  aggregationType: string,
+): { name: string; data: { x: Date; y: number }[] }[] => {
+  const series: { name: string; data: { x: Date; y: number }[] }[] = [];
 
   for (let i = 0; i < metrics.length; i++) {
     for (let j = 0; j < metrics[i].timeseries.length; j++) {
       series.push({
         data: metrics[i].timeseries[j].data.map((datum) => {
           return {
-            unit: metrics[i].unit,
             x: new Date(datum.timeStamp),
             y: datum[aggregationType.toLowerCase()] === undefined ? null : datum[aggregationType.toLowerCase()],
           };
         }),
-        id: metrics[i].name.localizedValue,
+        name: metrics[i].name.localizedValue,
       });
     }
   }
@@ -72,9 +56,8 @@ export const convertQueryResult = (data: IQueryResult): IPieDatum[] => {
 
   for (let i = 0; i < data.properties.rows.length; i++) {
     pieData.push({
-      id: data.properties.rows[i][1],
-      label: data.properties.rows[i][1],
-      value: data.properties.rows[i][0],
+      x: data.properties.rows[i][1],
+      y: data.properties.rows[i][0],
     });
   }
 

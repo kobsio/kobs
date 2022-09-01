@@ -109,3 +109,13 @@ export interface IAggregationData {
 export interface IAggregationDataRow {
   [key: string]: string | number | null;
 }
+
+export interface ISeries {
+  name: string;
+  data: ISeriesDatum[];
+}
+
+export interface ISeriesDatum {
+  x: Date;
+  y: number | null;
+}

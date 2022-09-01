@@ -1,5 +1,4 @@
 import { V1Container, V1Node, V1Pod } from '@kubernetes/client-node';
-import { BarDatum } from '@nivo/bar';
 import React from 'react';
 import { Title } from '@patternfly/react-core';
 import { useQuery } from '@tanstack/react-query';
@@ -10,7 +9,7 @@ import NodeChart from './NodeChart';
 import { formatResourceValue } from '../../utils/helpers';
 
 interface INodeMetrics {
-  [key: string]: BarDatum[];
+  [key: string]: { name: string; value: number }[];
 }
 
 const podResources = (containers: V1Container[]): number[] => {

@@ -1,6 +1,4 @@
-import { Datum, Serie } from '@nivo/line';
-
-import { IDatum, IOptions } from './interfaces';
+import { IOptions } from './interfaces';
 
 export const getInitialOptions = (search: string): IOptions => {
   const params = new URLSearchParams(search);
@@ -38,14 +36,4 @@ export const getMappingValue = (value: number, mappings: { [key: string]: string
 // overwritten by the user.
 export const roundNumber = (value: number, dec = 4): number => {
   return Math.round(value * Math.pow(10, dec)) / Math.pow(10, dec);
-};
-
-export const sparklineDataToSeries = (data: IDatum[]): Serie[] => {
-  const convertedData: Datum[] = [];
-
-  for (const datum of data) {
-    convertedData.push({ x: new Date(datum.x), y: datum.y });
-  }
-
-  return [{ data: convertedData, id: 'data' }];
 };

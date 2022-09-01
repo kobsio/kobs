@@ -1,19 +1,18 @@
-import { Datum, Serie } from '@nivo/line';
 import React from 'react';
 
-import { ILegend, ISQLData, ISQLDataRow } from '../../utils/interfaces';
+import { IDatum, ILegend, IMetrics, ISQLData, ISQLDataRow } from '../../utils/interfaces';
 import SQLChartLineChart from './SQLChartLineChart';
 import SQLChartLineLegend from './SQLChartLineLegend';
 
-const getSeriesData = (
+const getMetricsData = (
   rows: ISQLDataRow[],
   xAxisColumn: string,
   xAxisType: string | undefined,
   yAxisColumns: string[],
   yAxisGroup: string | undefined,
-): Serie[] => {
+): IMetrics[] => {
   const groups: string[] = [];
-  const series: Serie[] = [];
+  const metrics: IMetrics[] = [];
 
   if (yAxisGroup) {
     for (const value of rows) {
@@ -26,7 +25,7 @@ const getSeriesData = (
   for (const yAxisColumn of yAxisColumns) {
     if (yAxisGroup && groups.length > 0) {
       for (const group of groups) {
-        const data: Datum[] = [];
+        const data: IDatum[] = [];
 
         for (const row of rows) {
           if (row[yAxisGroup] === group) {
@@ -37,13 +36,13 @@ const getSeriesData = (
           }
         }
 
-        series.push({
+        metrics.push({
           data: data,
-          id: `${yAxisColumn}-${group}`,
+          name: `${yAxisColumn}-${group}`,
         });
       }
     } else {
-      const data: Datum[] = [];
+      const data: IDatum[] = [];
 
       for (const row of rows) {
         data.push({
@@ -52,14 +51,14 @@ const getSeriesData = (
         });
       }
 
-      series.push({
+      metrics.push({
         data: data,
-        id: yAxisColumn,
+        name: yAxisColumn,
       });
     }
   }
 
-  return series;
+  return metrics;
 };
 
 interface ISQLChartLineProps {
@@ -87,13 +86,13 @@ export const SQLChartLine: React.FunctionComponent<ISQLChartLineProps> = ({
   yAxisStacked,
   legend,
 }: ISQLChartLineProps) => {
-  const series = data.rows ? getSeriesData(data.rows, xAxisColumn, xAxisType, yAxisColumns, yAxisGroup) : [];
+  const metrics = data.rows ? getMetricsData(data.rows, xAxisColumn, xAxisType, yAxisColumns, yAxisGroup) : [];
 
   return (
     <React.Fragment>
       <div style={{ height: 'calc(100% - 80px)' }}>
         <SQLChartLineChart
-          series={series}
+          metrics={metrics}
           type={type}
           xAxisType={xAxisType}
           yAxisUnit={yAxisUnit}
@@ -103,7 +102,7 @@ export const SQLChartLine: React.FunctionComponent<ISQLChartLineProps> = ({
       </div>
 
       <div className="pf-u-mt-md kobsio-hide-scrollbar" style={{ height: '60px', overflow: 'auto' }}>
-        <SQLChartLineLegend series={series} yAxisUnit={yAxisUnit} legend={legend} />
+        <SQLChartLineLegend metrics={metrics} yAxisUnit={yAxisUnit} legend={legend} />
       </div>
     </React.Fragment>
   );

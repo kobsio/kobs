@@ -1,70 +1,60 @@
-import React from 'react';
-import { ResponsiveBarCanvas } from '@nivo/bar';
+import {
+  Chart,
+  ChartAxis,
+  ChartBar,
+  ChartGroup,
+  ChartThemeColor,
+  ChartVoronoiContainer,
+} from '@patternfly/react-charts';
+import React, { useRef } from 'react';
 
-import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/shared';
-import { convertToBarChartTopData, formatFilter } from '../../utils/aggregation';
+import { chartAxisStyle, chartFormatLabel, useDimensions } from '@kobsio/shared';
 import { IAggregationData } from '../../utils/interfaces';
+import { convertToBarChartTopData } from '../../utils/aggregation';
 
 interface IAggregationChartBarTopProps {
-  filters: string[];
   data: IAggregationData;
+  filters: string[];
 }
 
 const AggregationChartBarTop: React.FunctionComponent<IAggregationChartBarTopProps> = ({
   data,
   filters,
 }: IAggregationChartBarTopProps) => {
-  const barData = convertToBarChartTopData(data);
+  const refChart = useRef<HTMLDivElement>(null);
+  const chartSize = useDimensions(refChart);
+
+  const barData = convertToBarChartTopData(data, filters);
+  const noMetrics = barData.metrics.map((metric) => metric.length).reduce((prev, curr) => prev + curr, 0);
+  const barWidth = (chartSize.width - 50) / noMetrics;
 
   return (
-    <ResponsiveBarCanvas
-      axisLeft={{
-        format: '>-.0s',
-        legend: '',
-        legendOffset: -40,
-        legendPosition: 'middle',
-      }}
-      axisBottom={{
-        legend: '',
-        tickRotation: 45,
-      }}
-      borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-      borderRadius={0}
-      borderWidth={0}
-      colorBy={barData.columns.length > 1 ? 'id' : 'indexValue'}
-      colors={COLOR_SCALE}
-      data={barData.data}
-      enableLabel={false}
-      enableGridX={false}
-      enableGridY={true}
-      groupMode="stacked"
-      indexBy="label"
-      indexScale={{ round: true, type: 'band' }}
-      isInteractive={true}
-      keys={barData.columns}
-      layout="vertical"
-      margin={{ bottom: 100, left: 50, right: 0, top: 0 }}
-      maxValue="auto"
-      minValue="auto"
-      reverse={false}
-      theme={CHART_THEME}
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      tooltip={(tooltip) => {
-        const isFirstHalf = tooltip.index < barData.data.length / 2;
-
-        return (
-          <ChartTooltip
-            anchor={isFirstHalf ? 'right' : 'left'}
-            color={tooltip.color}
-            label={`${formatFilter(tooltip.id as string, filters)}: ${tooltip.value}`}
-            position={[0, 5]}
-            title={tooltip.indexValue as string}
+    <div style={{ height: '100%', width: '100%' }} ref={refChart}>
+      <Chart
+        containerComponent={
+          <ChartVoronoiContainer
+            labels={({ datum }: { datum: { name: string; x: string; y: number } }): string =>
+              chartFormatLabel(`${datum.name}: ${datum.y}`)
+            }
+            constrainToVisibleArea={true}
           />
-        );
-      }}
-      valueFormat=""
-      valueScale={{ type: 'linear' }}
-    />
+        }
+        legendData={barData.legend}
+        height={chartSize.height}
+        padding={{ bottom: 0, left: 50, right: 0, top: 0 }}
+        themeColor={ChartThemeColor.multiOrdered}
+        width={chartSize.width}
+      >
+        <ChartAxis dependentAxis={true} showGrid={true} style={chartAxisStyle} />
+        <ChartAxis dependentAxis={false} showGrid={true} style={chartAxisStyle} />
+
+        <ChartGroup>
+          {barData.metrics.map((metric, index) => (
+            <ChartBar key={metric[0].name} name={metric[0].name} data={metric} barWidth={barWidth} barRatio={0.5} />
+          ))}
+        </ChartGroup>
+      </Chart>
+    </div>
   );
 };
 
