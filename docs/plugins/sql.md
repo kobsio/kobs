@@ -61,7 +61,7 @@ The following options can be used for a panel with the SQL plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The chart type. This could be `pie`, `line`, `area` or `singlestats`. | Yes |
+| type | string | The chart type. This could be `pie`, `line`, `area`, `bar` or `singlestats`. | Yes |
 | query | string | The query which which results should be used in the chart. | Yes |
 | pieLabelColumn | string | The name of the column which should be used for the labels in the pie chart. This is required when the type is `pie`. | No |
 | pieValueColumn | string | The name of the column which should be used for the values in the pie chart. This is required when the type is `pie`. | No |

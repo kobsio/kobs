@@ -37,10 +37,9 @@ export const convertMetrics = (metrics: IMetric[]): ISerie[] => {
   for (const metric of metrics) {
     series.push({
       data: metric.datapoints.map((datum) => {
-        return { x: new Date(datum[0] * 1000), y: datum[1] };
+        return { x: new Date(datum[0] * 1000), y: parseFloat(datum[1]) };
       }),
-      id: metric.name + metric.stat,
-      label: getMetricLabel(metric),
+      name: getMetricLabel(metric),
     });
   }
 
@@ -81,20 +80,4 @@ export const getSteps = (start: number, end: number): string => {
   }
 
   return `&step=${seconds / 1000}&rateInterval=${seconds / 1000}s`;
-};
-
-// formatAxisBottom calculates the format for the bottom axis based on the specified start and end time.
-export const formatAxisBottom = (timeStart: number, timeEnd: number): string => {
-  timeStart = Math.floor(timeStart / 1000);
-  timeEnd = Math.floor(timeEnd / 1000);
-
-  if (timeEnd - timeStart < 3600) {
-    return '%H:%M:%S';
-  } else if (timeEnd - timeStart < 86400) {
-    return '%H:%M';
-  } else if (timeEnd - timeStart < 604800) {
-    return '%m-%d %H:%M';
-  }
-
-  return '%m-%d';
 };

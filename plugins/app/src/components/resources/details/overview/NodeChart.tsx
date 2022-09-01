@@ -1,48 +1,47 @@
-import { BarDatum, ResponsiveBarCanvas } from '@nivo/bar';
-import React from 'react';
+import { Chart, ChartAxis, ChartBar, ChartGroup, ChartThemeColor } from '@patternfly/react-charts';
+import React, { useRef } from 'react';
 
-import { CHART_THEME } from '@kobsio/shared';
+import { chartAxisStyle, useDimensions } from '@kobsio/shared';
 
 interface INodeChartProps {
-  data: BarDatum[];
+  data: { name: string; value: number }[];
   legend: string;
 }
 
 const NodeChart: React.FunctionComponent<INodeChartProps> = ({ data, legend }: INodeChartProps) => {
+  const refChart = useRef<HTMLDivElement>(null);
+  const chartSize = useDimensions(refChart);
+
   return (
-    <div style={{ height: `${50 * data.length}px` }}>
-      <ResponsiveBarCanvas
-        axisBottom={{
-          legend: legend,
-          legendOffset: 30,
-          legendPosition: 'middle',
-        }}
-        axisLeft={{
-          legend: '',
-        }}
-        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-        borderRadius={0}
-        borderWidth={0}
-        colorBy="id"
-        colors={['#0066cc']}
-        data={data}
-        enableLabel={false}
-        enableGridX={false}
-        enableGridY={true}
-        groupMode="stacked"
-        indexBy="name"
-        indexScale={{ round: true, type: 'band' }}
-        isInteractive={false}
-        keys={['value']}
-        layout="horizontal"
-        margin={{ bottom: 40, left: 50, right: 0, top: 0 }}
-        maxValue="auto"
-        minValue="auto"
-        reverse={false}
-        theme={CHART_THEME}
-        valueFormat=""
-        valueScale={{ type: 'linear' }}
-      />
+    <div style={{ height: `${75 + 40 * data.length}px` }} ref={refChart}>
+      <Chart
+        legendData={data.map((datum) => {
+          return { name: datum.name };
+        })}
+        legendPosition="bottom-left"
+        height={chartSize.height}
+        padding={{ bottom: 100, left: 0, right: 0, top: 0 }}
+        scale={{ x: 'linear', y: 'linear' }}
+        width={chartSize.width}
+        themeColor={ChartThemeColor.multiOrdered}
+      >
+        <ChartAxis
+          dependentAxis={true}
+          showGrid={false}
+          tickFormat={(tick: number): string => `${tick} ${legend}`}
+          style={chartAxisStyle}
+        />
+        <ChartGroup offset={30} horizontal={true}>
+          {data.map((datum, index) => (
+            <ChartBar
+              key={datum.name}
+              name={datum.name}
+              data={[{ name: datum.name, x: legend, y: datum.value }]}
+              barWidth={25}
+            />
+          ))}
+        </ChartGroup>
+      </Chart>
     </div>
   );
 };

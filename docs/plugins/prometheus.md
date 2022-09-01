@@ -51,7 +51,7 @@ The following options can be used for a panel with the Prometheus plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The type of the chart. Must be `sparkline`, `line`, `area` or `table`. | Yes |
+| type | string | The type of the chart. Must be `sparkline`, `line`, `area`, `bar` or `table`. | Yes |
 | unit | string | An optional unit for the y axis of the chart. | No |
 | stacked | boolean | When this is `true` all time series in the chart will be stacked. | No |
 | legend | string | The type which should be used for the legend. Currently only `table` and `table-large` is supported as legend. If the value is not set, no legend will be shown. | No |

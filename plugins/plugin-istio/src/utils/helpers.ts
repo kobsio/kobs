@@ -1,5 +1,3 @@
-import { Datum } from '@nivo/line';
-
 import { getTimeParams } from '@kobsio/shared';
 
 import { IApplicationOptions, IApplicationsOptions, ITopDetailsMetrics } from './interfaces';
@@ -70,10 +68,10 @@ export const formatTime = (time: string): string => {
 
 // convertMetrics converts the returned top metrics from our API into the format needed for the charts.
 export const convertMetrics = (rows: [string, number, number, number, number, number][]): ITopDetailsMetrics => {
-  const sr: Datum[] = [];
-  const p50: Datum[] = [];
-  const p90: Datum[] = [];
-  const p99: Datum[] = [];
+  const sr: { x: Date; y: number }[] = [];
+  const p50: { x: Date; y: number }[] = [];
+  const p90: { x: Date; y: number }[] = [];
+  const p99: { x: Date; y: number }[] = [];
 
   for (const row of rows) {
     const d = new Date(row[0]);
@@ -85,11 +83,11 @@ export const convertMetrics = (rows: [string, number, number, number, number, nu
 
   return {
     latency: [
-      { data: p50, id: 'P50' },
-      { data: p90, id: 'P90' },
-      { data: p99, id: 'P99' },
+      { data: p50, name: 'P50' },
+      { data: p90, name: 'P90' },
+      { data: p99, name: 'P99' },
     ],
-    sr: [{ data: sr, id: 'SR' }],
+    sr: [{ data: sr, name: 'SR' }],
   };
 };
 

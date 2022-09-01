@@ -1,11 +1,11 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
-import { ResponsiveLineCanvas } from '@nivo/line';
 
-import { CHART_THEME, COLOR_SCALE, ChartTooltip, IPluginInstance, ITimes } from '@kobsio/shared';
-import { convertMetrics, formatAxisBottom, formatMetrics } from '../../utils/helpers';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import { IMetric } from '../../utils/interfaces';
+import MetricChart from './MetricChart';
+import { formatMetrics } from '../../utils/helpers';
 
 interface IMetricProps {
   instance: IPluginInstance;
@@ -92,49 +92,7 @@ const Metric: React.FunctionComponent<IMetricProps> = ({
     return null;
   }
 
-  return (
-    <ResponsiveLineCanvas
-      axisBottom={{
-        format: formatAxisBottom(times.timeStart, times.timeEnd),
-      }}
-      axisLeft={{
-        format: '>-.2f',
-        legend: data[0].unit,
-        legendOffset: -40,
-        legendPosition: 'middle',
-      }}
-      colors={COLOR_SCALE}
-      curve="monotoneX"
-      data={convertMetrics(data, aggregationType)}
-      enableArea={true}
-      enableGridX={false}
-      enableGridY={true}
-      enablePoints={false}
-      xFormat="time:%Y-%m-%d %H:%M:%S"
-      lineWidth={1}
-      margin={{ bottom: 25, left: 50, right: 0, top: 0 }}
-      theme={CHART_THEME}
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      tooltip={(tooltip) => {
-        const isFirstHalf =
-          new Date(tooltip.point.data.x).getTime() < (times.timeStart * 1000 + times.timeEnd * 1000) / 2;
-
-        return (
-          <ChartTooltip
-            anchor={isFirstHalf ? 'right' : 'left'}
-            color={tooltip.point.color}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            label={`${tooltip.point.serieId}: ${tooltip.point.data.yFormatted} ${(tooltip.point.data as any).unit}`}
-            position={[0, 20]}
-            title={tooltip.point.data.xFormatted.toString()}
-          />
-        );
-      }}
-      xScale={{ type: 'time' }}
-      yScale={{ max: 'auto', min: 0, stacked: false, type: 'linear' }}
-      yFormat=" >-.4f"
-    />
-  );
+  return <MetricChart aggregationType={aggregationType} metrics={data} times={times} />;
 };
 
 export default Metric;

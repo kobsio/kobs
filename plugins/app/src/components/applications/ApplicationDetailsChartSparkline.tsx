@@ -1,8 +1,8 @@
-import React from 'react';
-import { ResponsiveLineCanvas } from '@nivo/line';
+import { Chart, ChartArea, ChartGroup, ChartThemeColor } from '@patternfly/react-charts';
+import React, { useRef } from 'react';
 
-import { COLOR_SCALE, ITimes } from '@kobsio/shared';
-import { getMappingValue, roundNumber, sparklineDataToSeries } from './utils/helpers';
+import { ITimes, useDimensions } from '@kobsio/shared';
+import { getMappingValue, roundNumber } from './utils/helpers';
 import { IDatum } from './utils/interfaces';
 
 interface IApplicationDetailsChartSparklineProps {
@@ -20,6 +20,9 @@ const ApplicationDetailsChartSparkline: React.FunctionComponent<IApplicationDeta
   mappings,
   times,
 }: IApplicationDetailsChartSparklineProps) => {
+  const refChart = useRef<HTMLDivElement>(null);
+  const chartSize = useDimensions(refChart);
+
   // Determine the label which should be shown above the chart. This is the last value in first metric of the returned
   // data or a value from the user specified mappings.
   let label = 'N/A';
@@ -38,21 +41,19 @@ const ApplicationDetailsChartSparkline: React.FunctionComponent<IApplicationDeta
     <div>
       <div className="pf-u-font-size-lg pf-u-text-nowrap pf-u-text-truncate">{label}</div>
       <div className="pf-u-font-size-sm pf-u-color-400 pf-u-text-nowrap pf-u-text-truncate">{title}</div>
-      <div style={{ height: '75px' }}>
-        <ResponsiveLineCanvas
-          colors={COLOR_SCALE[0]}
-          curve="monotoneX"
-          data={sparklineDataToSeries(data)}
-          enableArea={true}
-          enableGridX={false}
-          enableGridY={false}
-          enablePoints={false}
-          isInteractive={false}
-          lineWidth={1}
-          margin={{ bottom: 0, left: 0, right: 0, top: 0 }}
-          xScale={{ max: new Date(times.timeEnd * 1000), min: new Date(times.timeStart * 1000), type: 'time' }}
-          yScale={{ stacked: false, type: 'linear' }}
-        />
+      <div style={{ height: '75px' }} ref={refChart}>
+        <Chart
+          height={chartSize.height}
+          padding={{ bottom: 0, left: 0, right: 0, top: 0 }}
+          scale={{ x: 'time', y: 'linear' }}
+          themeColor={ChartThemeColor.multiOrdered}
+          width={chartSize.width}
+          domain={{ x: [new Date(times.timeStart * 1000), new Date(times.timeEnd * 1000)] }}
+        >
+          <ChartGroup>
+            <ChartArea key="sparkline" data={data} name="sparkline" interpolation="monotoneX" />
+          </ChartGroup>
+        </Chart>
       </div>
     </div>
   );

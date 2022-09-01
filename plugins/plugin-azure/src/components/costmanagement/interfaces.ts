@@ -23,7 +23,6 @@ export interface IQueryColumn {
 }
 
 export interface IPieDatum {
-  id: string;
-  label: string;
-  value: number;
+  x: string;
+  y: number;
 }

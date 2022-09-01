@@ -1,5 +1,3 @@
-import { Serie } from '@nivo/line';
-
 import { ITimes } from '@kobsio/shared';
 
 // IOptions is the interface for the Kiali page.
@@ -183,7 +181,7 @@ export type ILabels = {
   [key: string]: string;
 };
 
-export type IDatapoint = [number, number];
+export type IDatapoint = [number, string];
 
 // IChart is the interface to render a chart for the returned data from the Kiali API. To get the serues data we have
 // to use the convertMetrics function from the helpers.ts file.
@@ -193,6 +191,12 @@ export interface IChart {
   unit: string;
 }
 
-export interface ISerie extends Serie {
-  label: string;
+export interface ISerie {
+  name: string;
+  data: IDatum[];
+}
+
+export interface IDatum {
+  y: number | null;
+  x: Date;
 }

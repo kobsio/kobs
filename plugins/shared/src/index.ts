@@ -1,4 +1,3 @@
-export * from './components/chart/ChartTooltip';
 export * from './components/misc/Editor';
 export * from './components/misc/LinkWrapper';
 export * from './components/misc/PageHeaderSection';

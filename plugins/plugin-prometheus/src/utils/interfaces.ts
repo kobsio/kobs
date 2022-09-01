@@ -1,5 +1,3 @@
-import { Serie } from '@nivo/line';
-
 import { ITimes } from '@kobsio/shared';
 
 // IOptions are the options for the Prometheus page, it need a list of queries, a resolution and the time, start and end
@@ -17,7 +15,7 @@ export interface IMetrics {
   endTime: number;
   min: number;
   max: number;
-  metrics: IMetric[];
+  metrics?: IMetric[];
 }
 
 // IMetric implements the interface for the corresponding Go struct, which is returned by our API. It contains one
@@ -34,7 +32,7 @@ export interface IMetric {
 }
 
 export interface IDatum {
-  x: number;
+  x: number | Date;
   y: number;
 }
 
@@ -52,17 +50,6 @@ export interface IRowValues {
 // allows us to access the label via a serie, which was converted from the retunred metrics.
 export interface ILabels {
   [key: string]: string;
-}
-
-// ISeries is the interface which is retunred by the convertMetrics function. It contains the converted series and all
-// labels for these series.
-export interface ISeries {
-  startTime: number;
-  endTime: number;
-  labels: ILabels;
-  max: number;
-  min: number;
-  series: Serie[];
 }
 
 // IPanelOptions is the interface, which implements the options property for the panel of the Prometheus plugin. A user
@@ -97,6 +84,6 @@ export interface IColumn {
 }
 
 export interface IYAxis {
-  min: string | number;
-  max: string | number;
+  min: number;
+  max: number;
 }

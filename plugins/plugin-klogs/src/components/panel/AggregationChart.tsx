@@ -1,10 +1,9 @@
 import React, { memo, useRef } from 'react';
 
 import { IAggregationData, IAggregationOptions } from '../../utils/interfaces';
-import AggregationChartBarTime from './AggregationChartBarTime';
 import AggregationChartBarTop from './AggregationChartBarTop';
-import AggregationChartLine from './AggregationChartLine';
 import AggregationChartPie from './AggregationChartPie';
+import AggregationChartTimeseries from './AggregationChartTimeseries';
 import { useDimensions } from '@kobsio/shared';
 
 interface IAggregationChartProps {
@@ -28,15 +27,12 @@ const AggregationChart: React.FunctionComponent<IAggregationChartProps> = ({
           <AggregationChartPie data={data} />
         ) : options.chart === 'bar' && options.options.horizontalAxisOperation === 'top' ? (
           <AggregationChartBarTop filters={options.options.breakDownByFilters} data={data} />
-        ) : options.chart === 'bar' && options.options.horizontalAxisOperation === 'time' ? (
-          <AggregationChartBarTime filters={options.options.breakDownByFilters} data={data} />
-        ) : options.chart === 'line' || options.chart === 'area' ? (
-          <AggregationChartLine
-            isArea={options.chart === 'area'}
-            startTime={options.times.timeStart}
-            endTime={options.times.timeEnd}
-            filters={options.options.breakDownByFilters}
+        ) : options.chart === 'line' || options.chart === 'area' || options.chart === 'bar' ? (
+          <AggregationChartTimeseries
             data={data}
+            filters={options.options.breakDownByFilters}
+            type={options.chart}
+            times={options.times}
           />
         ) : null}
       </div>

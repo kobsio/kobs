@@ -36,7 +36,11 @@ const ApplicationDetailsChart: React.FunctionComponent<IApplicationDetailsChartP
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          return json;
+          return json
+            ? (json as { x: number; y: number }[]).map((datum) => {
+                return { x: new Date(datum.x), y: datum.y };
+              })
+            : json;
         } else {
           if (json.error) {
             throw new Error(json.error);

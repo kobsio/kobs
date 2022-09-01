@@ -117,9 +117,9 @@ const DetailsTop: React.FunctionComponent<IDetailsTopProps> = ({
           </Alert>
         ) : data ? (
           <div>
-            <DetailsTopChart title="Success Rate" unit="%" series={data.sr} times={times} />
+            <DetailsTopChart title="Success Rate" unit="%" metrics={data.sr} times={times} />
             <p>&nbsp;</p>
-            <DetailsTopChart title="Latency" unit="ms" series={data.latency} times={times} />
+            <DetailsTopChart title="Latency" unit="ms" metrics={data.latency} times={times} />
             <p>&nbsp;</p>
           </div>
         ) : null}

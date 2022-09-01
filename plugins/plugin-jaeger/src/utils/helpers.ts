@@ -1,5 +1,5 @@
 import { IDeduplicateTags, IKeyValuePair, IOptions, ISpan, ITrace } from './interfaces';
-import { ITimes, formatTime, getTimeParams } from '@kobsio/shared';
+import { formatTime, getTimeParams } from '@kobsio/shared';
 import TreeNode from './TreeNode';
 
 // getInitialOptions is used to get the initial Jaeger options from the url.
@@ -44,19 +44,6 @@ export const encodeTags = (tags: string): string => {
   }
 
   return encodeURIComponent(JSON.stringify(jsonTags));
-};
-
-// formatAxisBottom calculates the format for the bottom axis based on the specified start and end time.
-export const formatAxisBottom = (times: ITimes): string => {
-  if (times.timeEnd - times.timeStart < 3600) {
-    return '%H:%M:%S';
-  } else if (times.timeEnd - times.timeStart < 86400) {
-    return '%H:%M';
-  } else if (times.timeEnd - times.timeStart < 604800) {
-    return '%m-%d %H:%M';
-  }
-
-  return '%m-%d';
 };
 
 // doesTraceContainsError returns true, when a span of the given trace contains a tag error=true. This is used to show

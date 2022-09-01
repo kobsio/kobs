@@ -1,15 +1,15 @@
 import {
   Chart,
+  ChartArea,
   ChartAxis,
   ChartGroup,
   ChartLegendTooltip,
-  ChartLine,
   ChartThemeColor,
   createContainer,
 } from '@patternfly/react-charts';
 import React, { useRef } from 'react';
 
-import { IDatum, IMetric } from './interfaces';
+import { IMetric, IMetricDatum } from '../../utils/interfaces';
 import {
   ITimes,
   chartAxisStyle,
@@ -18,28 +18,26 @@ import {
   formatTime,
   useDimensions,
 } from '@kobsio/shared';
+import { convertMetrics } from '../../utils/helpers';
 
-interface IPrometheusChartProps {
+interface IMetricChartProps {
+  aggregationType: string;
   metrics: IMetric[];
-  unit?: string;
   times: ITimes;
 }
 
-const PrometheusChart: React.FunctionComponent<IPrometheusChartProps> = ({
+const MetricChart: React.FunctionComponent<IMetricChartProps> = ({
+  aggregationType,
   metrics,
-  unit,
   times,
-}: IPrometheusChartProps) => {
+}: IMetricChartProps) => {
   const refChart = useRef<HTMLDivElement>(null);
   const chartSize = useDimensions(refChart);
 
-  const legendData = metrics.map((metric, index) => {
-    return { childName: metric.label, name: metric.label };
+  const data = convertMetrics(metrics, aggregationType);
+  const legendData = data.map((metric) => {
+    return { childName: metric.name, name: metric.name };
   });
-
-  const chartData = metrics.map((metric, index) => (
-    <ChartLine key={metrics[index].label} data={metric.data} name={metrics[index].label} interpolation="monotoneX" />
-  ));
 
   const CursorVoronoiContainer = createContainer('voronoi', 'cursor');
 
@@ -49,14 +47,14 @@ const PrometheusChart: React.FunctionComponent<IPrometheusChartProps> = ({
         containerComponent={
           <CursorVoronoiContainer
             cursorDimension="x"
-            labels={({ datum }: { datum: IDatum }): string =>
-              chartFormatLabel(datum.y ? `${datum.y}${unit ? ` ${unit}` : ''}` : '')
+            labels={({ datum }: { datum: IMetricDatum }): string =>
+              chartFormatLabel(datum.y ? `${datum.y} ${metrics[0].unit}` : '')
             }
             labelComponent={
               <ChartLegendTooltip
                 themeColor={ChartThemeColor.multiOrdered}
                 legendData={legendData}
-                title={(datum: IDatum): string =>
+                title={(datum: IMetricDatum): string =>
                   metrics.length > 0 ? formatTime(Math.floor((datum.x as Date).getTime() / 1000)) : ''
                 }
               />
@@ -67,19 +65,23 @@ const PrometheusChart: React.FunctionComponent<IPrometheusChartProps> = ({
           />
         }
         height={chartSize.height}
-        padding={{ bottom: 20, left: unit ? 55 : 50, right: 0, top: 0 }}
+        padding={{ bottom: 20, left: 55, right: 0, top: 0 }}
         scale={{ x: 'time', y: 'linear' }}
         themeColor={ChartThemeColor.multiOrdered}
         width={chartSize.width}
         domain={{ x: [new Date(times.timeStart * 1000), new Date(times.timeEnd * 1000)] }}
       >
         <ChartAxis dependentAxis={false} tickFormat={chartTickFormatDate} showGrid={true} style={chartAxisStyle} />
-        <ChartAxis dependentAxis={true} showGrid={true} label={unit} style={chartAxisStyle} />
+        <ChartAxis dependentAxis={true} showGrid={true} label={metrics[0].unit} style={chartAxisStyle} />
 
-        <ChartGroup>{chartData}</ChartGroup>
+        <ChartGroup>
+          {data.map((metric, index) => (
+            <ChartArea key={metric.name} data={metric.data} name={metric.name} interpolation="monotoneX" />
+          ))}
+        </ChartGroup>
       </Chart>
     </div>
   );
 };
 
-export default PrometheusChart;
+export default MetricChart;

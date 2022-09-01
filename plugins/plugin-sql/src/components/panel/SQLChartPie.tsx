@@ -1,8 +1,8 @@
-import React from 'react';
-import { ResponsivePieCanvas } from '@nivo/pie';
+import { ChartPie, ChartThemeColor } from '@patternfly/react-charts';
+import React, { useRef } from 'react';
 
-import { CHART_THEME, COLOR_SCALE, ChartTooltip } from '@kobsio/shared';
 import { ISQLData } from '../../utils/interfaces';
+import { useDimensions } from '@kobsio/shared';
 
 interface ISQLChartPieProps {
   data: ISQLData;
@@ -15,45 +15,34 @@ const SQLChartPie: React.FunctionComponent<ISQLChartPieProps> = ({
   pieLabelColumn,
   pieValueColumn,
 }: ISQLChartPieProps) => {
+  const refChart = useRef<HTMLDivElement>(null);
+  const chartSize = useDimensions(refChart);
+
   const pieData = data.rows
     ? data.rows.map((row) => {
         return {
-          label: row.hasOwnProperty(pieLabelColumn) ? row[pieLabelColumn] : '',
-          value: row.hasOwnProperty(pieValueColumn) ? row[pieValueColumn] : null,
+          x: row.hasOwnProperty(pieLabelColumn) ? row[pieLabelColumn] : '',
+          y: row.hasOwnProperty(pieValueColumn) ? row[pieValueColumn] : null,
         };
       })
     : [];
 
   return (
-    <ResponsivePieCanvas
-      arcLabelsSkipAngle={10}
-      arcLabelsTextColor="#151515"
-      arcLinkLabelsColor={{ from: 'color' }}
-      arcLinkLabelsSkipAngle={10}
-      arcLinkLabelsTextColor="#151515"
-      arcLinkLabelsThickness={2}
-      borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-      borderWidth={0}
-      colors={COLOR_SCALE}
-      data={pieData}
-      id="label"
-      innerRadius={0}
-      isInteractive={true}
-      margin={{ bottom: 25, left: 25, right: 25, top: 25 }}
-      theme={CHART_THEME}
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      tooltip={(tooltip) => {
-        return (
-          <ChartTooltip
-            anchor="right"
-            color={tooltip.datum.color}
-            label={`${tooltip.datum.label}: ${tooltip.datum.value}`}
-            position={[0, 5]}
-          />
-        );
-      }}
-      value="value"
-    />
+    <div style={{ height: '100%', width: '100%' }} ref={refChart}>
+      <ChartPie
+        constrainToVisibleArea={true}
+        data={pieData}
+        height={chartSize.height}
+        padding={{
+          bottom: 0,
+          left: 0,
+          right: 0,
+          top: 0,
+        }}
+        width={chartSize.width}
+        themeColor={ChartThemeColor.multiOrdered}
+      />
+    </div>
   );
 };
 

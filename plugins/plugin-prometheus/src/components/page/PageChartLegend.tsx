@@ -2,17 +2,17 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import EyeSlashIcon from '@patternfly/react-icons/dist/esm/icons/eye-slash-icon';
 import React from 'react';
-import { Serie } from '@nivo/line';
 import SquareIcon from '@patternfly/react-icons/dist/esm/icons/square-icon';
 
+import { IMetric } from '../../utils/interfaces';
 import { getColor } from '@kobsio/shared';
 import { roundNumber } from '../../utils/helpers';
 
 interface IPageChartLegendProps {
   queries: string[];
-  series: Serie[];
-  selected: Serie[];
-  select: (color: string, serie: Serie) => void;
+  metrics: IMetric[];
+  selected: number;
+  select: (index: number) => void;
 }
 
 // The PageChartLegend component renders the legend for the returned metrics. The legend is displayed in a table format
@@ -20,7 +20,7 @@ interface IPageChartLegendProps {
 // from the selected metrics. We then only display the selected metrics in the chart.
 const PageChartLegend: React.FunctionComponent<IPageChartLegendProps> = ({
   queries,
-  series,
+  metrics,
   selected,
   select,
 }: IPageChartLegendProps) => {
@@ -36,24 +36,18 @@ const PageChartLegend: React.FunctionComponent<IPageChartLegendProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {series.map((metric, index) => (
+        {metrics.map((metric, index) => (
           <Tr key={index}>
             <Td dataLabel="Name">
               <Button
-                className={selected.length === 1 && selected[0].label !== metric.label ? 'pf-u-color-400' : ''}
+                className={selected === index || selected === -1 ? '' : 'pf-u-color-400'}
                 style={{ color: 'inherit', textDecoration: 'inherit' }}
                 variant={ButtonVariant.link}
                 isInline={true}
-                icon={
-                  selected.length === 1 && selected[0].label !== metric.label ? (
-                    <EyeSlashIcon />
-                  ) : (
-                    <SquareIcon color={getColor(index)} />
-                  )
-                }
-                onClick={(): void => select(getColor(index), metric)}
+                icon={selected === index || selected === -1 ? <SquareIcon color={getColor(index)} /> : <EyeSlashIcon />}
+                onClick={(): void => select(index)}
               >
-                {metric.label === '{}' && series.length === queries.length ? queries[index] : metric.label}
+                {metric.label === '{}' && metrics.length === queries.length ? queries[index] : metric.label}
               </Button>
             </Td>
             <Td dataLabel="Min">{roundNumber(metric.min)}</Td>

@@ -188,7 +188,8 @@ func buildAggregationQuery(chart string, options AggregationOptions, materialize
 				groupByStatement = fmt.Sprintf("%s, %s", groupByStatement, strings.Join(breakDownByFields, ", "))
 			}
 
-			return selectStatement, groupByStatement, "", "", nil
+			limitByStatement = strings.TrimSpace(options.HorizontalAxisLimit)
+			return selectStatement, groupByStatement, "", limitByStatement, nil
 		}
 	}
 
