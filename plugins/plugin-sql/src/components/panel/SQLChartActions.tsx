@@ -28,7 +28,10 @@ export const SQLChartActions: React.FunctionComponent<ISQLChartActionsProps> = (
           isPlain={true}
           position="right"
           dropdownItems={[
-            <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}?query=${query}`}>Explore</Link>} />,
+            <DropdownItem
+              key={0}
+              component={<Link to={`${pluginBasePath(instance)}?query=${encodeURIComponent(query)}`}>Explore</Link>}
+            />,
           ]}
         />
       )}
