@@ -1410,14 +1410,14 @@
 <div class="highlight"><pre><span></span><code><span class="w">FROM kobsio/kobs:v0.9.1 as app</span>
 <span class="gi">+FROM kobsio/plugin:main as plugin-helloworld</span><span class="w"></span>
 
-<span class="w">FROM golang:1.18.3 as api</span>
+<span class="w">FROM golang:1.19.0 as api</span>
 <span class="w">WORKDIR /kobs</span>
 <span class="w">COPY go.mod go.sum /kobs/</span>
 <span class="w">RUN go mod download</span>
 <span class="w">COPY . .</span>
 <span class="w">RUN export CGO_ENABLED=0 &amp;&amp; make build</span>
 
-<span class="w">FROM alpine:3.16.0</span>
+<span class="w">FROM alpine:3.16.2</span>
 <span class="w">RUN apk update &amp;&amp; apk add --no-cache ca-certificates</span>
 <span class="w">RUN mkdir /kobs</span>
 <span class="w">COPY --from=api /kobs/bin/kobs /kobs</span>
