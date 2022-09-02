@@ -1,11 +1,11 @@
-FROM --platform=linux/amd64 node:16.16.0 as app
+FROM --platform=linux/amd64 node:16.17.0 as app
 WORKDIR /kobs
 COPY lerna.json package.json yarn.lock Makefile /kobs/
 COPY plugins /kobs/plugins
 RUN yarn install --frozen-lockfile --network-timeout 3600000
 RUN make generate-assets
 
-FROM golang:1.18.5 as api
+FROM golang:1.19.0 as api
 WORKDIR /kobs
 COPY go.mod go.sum /kobs/
 RUN go mod download
