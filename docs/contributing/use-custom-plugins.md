@@ -78,7 +78,7 @@ When you have adjusted the `main.go` file run `go mod tidy` to add it to your `g
 The `Dockerfile` is used to build your own version of kobs and to copy the frontend files for your plugin. We are using again the `helloworld` plugin from the [kobsio/plugin-template](https://github.com/kobsio/plugin-template) in the following example:
 
 ```diff
-FROM kobsio/kobs:v0.9.1 as app
+FROM kobsio/kobs:v0.10.0 as app
 +FROM kobsio/plugin:main as plugin-helloworld
 
 FROM golang:1.19.0 as api

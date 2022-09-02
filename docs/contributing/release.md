@@ -4,19 +4,11 @@ Before we can create a new tag we have to update the following files, so that th
 
 - [hub Chart.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/Chart.yaml): Update the `appVersion` field and bump the `version` field in the Helm chart for the hub.
 - [hub values.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/values.yaml): Set the new tag in the `kobs.image.tag` value in the Helm chart for the hub.
-- [satellite deployment.yaml](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/hub/deployment.yaml): Update the Docker image in the Kustomize deployment file for the hub.
-- [satellite Chart.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/Chart.yaml): Update the `appVersion` field and bump the `version` field in the Helm chart for the hub.
-- [satellite values.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/values.yaml): Set the new tag in the `kobs.image.tag` value in the Helm chart for the hub.
-- [satellite deployment.yaml](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/satellite/deployment.yaml): Update the Docker image in the Kustomize deployment file for the hub.
+- [hub deployment.yaml](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/hub/deployment.yaml): Update the Docker image in the Kustomize deployment file for the hub.
+- [satellite Chart.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/satellite/Chart.yaml): Update the `appVersion` field and bump the `version` field in the Helm chart for the satellite.
+- [satellite values.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/satellite/values.yaml): Set the new tag in the `kobs.image.tag` value in the Helm chart for the satellite.
+- [satellite deployment.yaml](https://github.com/kobsio/kobs/blob/main/deploy/kustomize/satellite/deployment.yaml): Update the Docker image in the Kustomize deployment file for the satellite.
 - [helm.md](https://github.com/kobsio/kobs/blob/main/docs/getting-started/installation/helm.md): Update the table with the Helm values for the hub and satellite, so that it contains the new value for the `image.tag`.
-
-Now we can use our [Makefile](https://github.com/kobsio/kobs/blob/main/Makefile) to create a new tag:
-
-```sh
-make release-patch
-make release-minor
-make release-major
-```
 
 Now we can publish the created draft release, which is automatically updated by the [Release GitHub Action](https://github.com/kobsio/kobs/blob/main/.github/workflows/release.yaml). When we create the GitHub release the **Create a discussion for this release** should be checked, and the discussion should be created in the **Announcements** category.
 
