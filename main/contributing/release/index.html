@@ -1319,17 +1319,12 @@
 <ul>
 <li><a href="https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/Chart.yaml">hub Chart.yaml</a>: Update the <code>appVersion</code> field and bump the <code>version</code> field in the Helm chart for the hub.</li>
 <li><a href="https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/values.yaml">hub values.yaml</a>: Set the new tag in the <code>kobs.image.tag</code> value in the Helm chart for the hub.</li>
-<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/kustomize/hub/deployment.yaml">satellite deployment.yaml</a>: Update the Docker image in the Kustomize deployment file for the hub.</li>
-<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/Chart.yaml">satellite Chart.yaml</a>: Update the <code>appVersion</code> field and bump the <code>version</code> field in the Helm chart for the hub.</li>
-<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/values.yaml">satellite values.yaml</a>: Set the new tag in the <code>kobs.image.tag</code> value in the Helm chart for the hub.</li>
-<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/kustomize/satellite/deployment.yaml">satellite deployment.yaml</a>: Update the Docker image in the Kustomize deployment file for the hub.</li>
+<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/kustomize/hub/deployment.yaml">hub deployment.yaml</a>: Update the Docker image in the Kustomize deployment file for the hub.</li>
+<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/helm/satellite/Chart.yaml">satellite Chart.yaml</a>: Update the <code>appVersion</code> field and bump the <code>version</code> field in the Helm chart for the satellite.</li>
+<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/helm/satellite/values.yaml">satellite values.yaml</a>: Set the new tag in the <code>kobs.image.tag</code> value in the Helm chart for the satellite.</li>
+<li><a href="https://github.com/kobsio/kobs/blob/main/deploy/kustomize/satellite/deployment.yaml">satellite deployment.yaml</a>: Update the Docker image in the Kustomize deployment file for the satellite.</li>
 <li><a href="https://github.com/kobsio/kobs/blob/main/docs/getting-started/installation/helm.md">helm.md</a>: Update the table with the Helm values for the hub and satellite, so that it contains the new value for the <code>image.tag</code>.</li>
 </ul>
-<p>Now we can use our <a href="https://github.com/kobsio/kobs/blob/main/Makefile">Makefile</a> to create a new tag:</p>
-<div class="highlight"><pre><span></span><code>make release-patch
-make release-minor
-make release-major
-</code></pre></div>
 <p>Now we can publish the created draft release, which is automatically updated by the <a href="https://github.com/kobsio/kobs/blob/main/.github/workflows/release.yaml">Release GitHub Action</a>. When we create the GitHub release the <strong>Create a discussion for this release</strong> should be checked, and the discussion should be created in the <strong>Announcements</strong> category.</p>
 <h2 id="publish-npm-packages">Publish NPM Packages</h2>
 <p>In the next step we have to publish a new version for our NPM packages. To do that we have to run the following commands, where <code>&lt;version&gt;</code> should be replaced with the version which was just created:</p>
