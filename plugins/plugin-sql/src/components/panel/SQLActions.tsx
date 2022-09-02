@@ -31,7 +31,11 @@ export const SQLActions: React.FunctionComponent<ISQLActionsProps> = ({
           dropdownItems={queries.map((query, index) => (
             <DropdownItem
               key={index}
-              component={<Link to={`${pluginBasePath(instance)}?query=${query.query}`}>{query.name}</Link>}
+              component={
+                <Link to={`${pluginBasePath(instance)}?query=${encodeURIComponent(query.query || '')}`}>
+                  {query.name}
+                </Link>
+              }
             />
           ))}
         />
