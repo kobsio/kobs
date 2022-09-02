@@ -81,14 +81,14 @@ The `Dockerfile` is used to build your own version of kobs and to copy the front
 FROM kobsio/kobs:v0.9.1 as app
 +FROM kobsio/plugin:main as plugin-helloworld
 
-FROM golang:1.18.3 as api
+FROM golang:1.19.0 as api
 WORKDIR /kobs
 COPY go.mod go.sum /kobs/
 RUN go mod download
 COPY . .
 RUN export CGO_ENABLED=0 && make build
 
-FROM alpine:3.16.0
+FROM alpine:3.16.2
 RUN apk update && apk add --no-cache ca-certificates
 RUN mkdir /kobs
 COPY --from=api /kobs/bin/kobs /kobs
