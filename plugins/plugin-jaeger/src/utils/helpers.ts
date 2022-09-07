@@ -1,5 +1,18 @@
-import { IDeduplicateTags, IKeyValuePair, IOptions, ISpan, ITrace } from './interfaces';
-import { formatTime, getTimeParams } from '@kobsio/shared';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
+
+import {
+  IChartData,
+  IChartDatum,
+  IDeduplicateTags,
+  IKeyValuePair,
+  IMetrics,
+  IMonitorOptions,
+  IOperationData,
+  IOptions,
+  ISpan,
+  ITrace,
+} from './interfaces';
+import { IPluginInstance, ITimes, formatTime, getTimeParams } from '@kobsio/shared';
 import TreeNode from './TreeNode';
 
 // getInitialOptions is used to get the initial Jaeger options from the url.
@@ -264,4 +277,235 @@ export const transformTraceData = (data: ITrace): ITrace | null => {
     traceID,
     traceName,
   };
+};
+
+// getInitialMonitorOptions is used to get the initial Jaeger options from the url.
+export const getInitialMonitorOptions = (search: string, isInitial: boolean): IMonitorOptions => {
+  const params = new URLSearchParams(search);
+  const service = params.get('service');
+
+  return {
+    service: service ? service : '',
+    times: getTimeParams(params, isInitial),
+  };
+};
+
+// useGetServiceLatency is a custom React Hook to run the queries to get the P50, P75 and P95 latency of a service in
+// parallel.
+export const useGetServiceLatency = (
+  instance: IPluginInstance,
+  service: string,
+  times: ITimes,
+): [UseQueryResult<IMetrics, Error>, UseQueryResult<IMetrics, Error>, UseQueryResult<IMetrics, Error>] => {
+  const p50 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/service', instance, service, times, 0.5], () =>
+    getServiceLatency(instance, service, times, 0.5),
+  );
+  const p75 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/service', instance, service, times, 0.75], () =>
+    getServiceLatency(instance, service, times, 0.75),
+  );
+  const p95 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/service', instance, service, times, 0.95], () =>
+    getServiceLatency(instance, service, times, 0.95),
+  );
+  return [p50, p75, p95];
+};
+
+const getServiceLatency = async (
+  instance: IPluginInstance,
+  service: string,
+  times: ITimes,
+  quantile: number,
+): Promise<IMetrics> => {
+  const response = await fetch(
+    `/api/plugins/jaeger/metrics?metric=latencies&service=${service}&quantile=${quantile}&groupByOperation=false&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+    {
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'x-kobs-plugin': instance.name,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'x-kobs-satellite': instance.satellite,
+      },
+      method: 'get',
+    },
+  );
+  const json = await response.json();
+
+  if (response.status >= 200 && response.status < 300) {
+    return json;
+  } else {
+    if (json.error) {
+      throw new Error(json.error);
+    } else {
+      throw new Error('An unknown error occured');
+    }
+  }
+};
+
+export const serviceMetricsToChartData = (metrics: { name: string; metrics?: IMetrics }[]): IChartData[] => {
+  const chartData: IChartData[] = [];
+
+  for (const metric of metrics) {
+    if (!metric.metrics || metric.metrics.metrics.length !== 1) {
+      chartData.push({ data: [], name: metric.name });
+    } else {
+      const data: IChartDatum[] = [];
+
+      for (const metricPoint of metric.metrics.metrics[0].metricPoints) {
+        data.push({
+          x: new Date(metricPoint.timestamp),
+          y: typeof metricPoint.gaugeValue.doubleValue === 'number' ? metricPoint.gaugeValue.doubleValue : null,
+        });
+      }
+
+      chartData.push({ data: data, name: metric.name });
+    }
+  }
+
+  return chartData;
+};
+
+// useGetOperationMetrics is a custom React Hook to run the queries to get the P50, P75 and P95 latency and the error
+// rate and calls of each operation for a service.
+export const useGetOperationMetrics = (
+  instance: IPluginInstance,
+  service: string,
+  times: ITimes,
+): [
+  UseQueryResult<IMetrics, Error>,
+  UseQueryResult<IMetrics, Error>,
+  UseQueryResult<IMetrics, Error>,
+  UseQueryResult<IMetrics, Error>,
+  UseQueryResult<IMetrics, Error>,
+] => {
+  const p50 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/operations', instance, service, times, 0.5], () =>
+    getOperationMetrics(instance, service, times, 'latencies', 0.5),
+  );
+  const p75 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/operations', instance, service, times, 0.75], () =>
+    getOperationMetrics(instance, service, times, 'latencies', 0.75),
+  );
+  const p95 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/operations', instance, service, times, 0.95], () =>
+    getOperationMetrics(instance, service, times, 'latencies', 0.95),
+  );
+  const errors = useQuery<IMetrics, Error>(['jaeger/metrics/errors/operations', instance, service, times], () =>
+    getOperationMetrics(instance, service, times, 'errors'),
+  );
+  const calls = useQuery<IMetrics, Error>(['jaeger/metrics/calls/operations', instance, service, times], () =>
+    getOperationMetrics(instance, service, times, 'calls'),
+  );
+  return [p50, p75, p95, errors, calls];
+};
+
+const getOperationMetrics = async (
+  instance: IPluginInstance,
+  service: string,
+  times: ITimes,
+  metric: string,
+  quantile?: number,
+): Promise<IMetrics> => {
+  const response = await fetch(
+    `/api/plugins/jaeger/metrics?metric=${metric}&service=${service}${
+      quantile ? `&quantile=${quantile}` : ''
+    }&groupByOperation=true&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+    {
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'x-kobs-plugin': instance.name,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'x-kobs-satellite': instance.satellite,
+      },
+      method: 'get',
+    },
+  );
+  const json = await response.json();
+
+  if (response.status >= 200 && response.status < 300) {
+    return json;
+  } else {
+    if (json.error) {
+      throw new Error(json.error);
+    } else {
+      throw new Error('An unknown error occured');
+    }
+  }
+};
+
+export const operationMetricsToData = (metrics: { name: string; metrics?: IMetrics }[]): IOperationData[] => {
+  const operationData: IOperationData[] = [];
+  const operations: Record<string, IOperationData> = {};
+
+  let i = 0;
+
+  for (const metric of metrics) {
+    if (metric.metrics) {
+      for (const operationMetric of metric.metrics.metrics) {
+        const operationName =
+          operationMetric.labels.filter((label) => label.name === 'operation').length === 1
+            ? operationMetric.labels.filter((label) => label.name === 'operation')[0].value
+            : '';
+
+        if (operationName !== '') {
+          let count = 0;
+          let total = 0;
+
+          const data: IChartDatum[] = [];
+
+          for (const metricPoint of operationMetric.metricPoints) {
+            if (typeof metricPoint.gaugeValue.doubleValue === 'number') {
+              count = count + 1;
+              total = total + metricPoint.gaugeValue.doubleValue;
+            }
+
+            data.push({
+              x: new Date(metricPoint.timestamp),
+              y: typeof metricPoint.gaugeValue.doubleValue === 'number' ? metricPoint.gaugeValue.doubleValue : null,
+            });
+          }
+
+          if (operationName in operations) {
+            operations[operationName].avgs[i] = roundNumber(total / count);
+            operations[operationName].chartData[i] = { data: data, name: metric.name };
+          } else {
+            const avgs: number[] = [0, 0, 0, 0, 0];
+            const chartData: IChartData[] = [
+              { data: [], name: 'P50' },
+              { data: [], name: 'P75' },
+              { data: [], name: 'P95' },
+              { data: [], name: 'Errors' },
+              { data: [], name: 'Calls' },
+            ];
+
+            avgs[i] = roundNumber(total / count);
+            chartData[i] = { data: data, name: metric.name };
+
+            if (i === 0)
+              operations[operationName] = {
+                avgs: avgs,
+                chartData: chartData,
+                impact: 0,
+                operation: operationName,
+              };
+          }
+        }
+      }
+    }
+
+    i++;
+  }
+
+  for (const operation in operations) {
+    operationData.push({
+      ...operations[operation],
+      impact:
+        operations[operation].avgs[2] && operations[operation].avgs[4]
+          ? operations[operation].avgs[2] * operations[operation].avgs[4]
+          : 0,
+    });
+  }
+
+  operationData.sort((a, b) => (a.impact > b.impact ? -1 : a.impact < b.impact ? 1 : 0));
+
+  return operationData;
+};
+
+const roundNumber = (value: number, dec = 2): number => {
+  return Math.round(value * Math.pow(10, dec)) / Math.pow(10, dec);
 };

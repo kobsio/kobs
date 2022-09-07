@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 
 import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 
-interface ITracesActionsProps {
+interface IMonitorActionsProps {
   instance: IPluginInstance;
 }
 
-export const TracesActions: React.FunctionComponent<ITracesActionsProps> = ({ instance }: ITracesActionsProps) => {
+export const MonitorActions: React.FunctionComponent<IMonitorActionsProps> = ({ instance }: IMonitorActionsProps) => {
   const [show, setShow] = useState<boolean>(false);
 
   return (
@@ -19,11 +19,11 @@ export const TracesActions: React.FunctionComponent<ITracesActionsProps> = ({ in
       isPlain={true}
       position="right"
       dropdownItems={[
-        <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}/trace`}>Compare Traces</Link>} />,
-        <DropdownItem key={1} component={<Link to={`${pluginBasePath(instance)}/monitor`}>Monitor</Link>} />,
+        <DropdownItem key={0} component={<Link to={pluginBasePath(instance)}>Traces</Link>} />,
+        <DropdownItem key={1} component={<Link to={`${pluginBasePath(instance)}/trace`}>Compare Traces</Link>} />,
       ]}
     />
   );
 };
 
-export default TracesActions;
+export default MonitorActions;

@@ -6,6 +6,7 @@ import { IPluginPageProps } from '@kobsio/shared';
 
 const Trace = lazy(() => import('./Trace'));
 const Traces = lazy(() => import('./Traces'));
+const Monitor = lazy(() => import('./Monitor'));
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPageProps) => {
   return (
@@ -16,6 +17,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
         <Route path="/" element={<Traces instance={instance} />} />
         <Route path="/trace/" element={<Trace instance={instance} />} />
         <Route path="/trace/:traceID" element={<Trace instance={instance} />} />
+        <Route path="/monitor" element={<Monitor instance={instance} />} />
       </Routes>
     </Suspense>
   );

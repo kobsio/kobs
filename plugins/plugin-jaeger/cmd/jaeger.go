@@ -154,6 +154,50 @@ func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, body)
 }
 
+func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	metric := r.URL.Query().Get("metric")
+	service := r.URL.Query().Get("service")
+	groupByOperation := r.URL.Query().Get("groupByOperation")
+	quantile := r.URL.Query().Get("quantile")
+	ratePer := r.URL.Query().Get("ratePer")
+	step := r.URL.Query().Get("step")
+	timeEnd := r.URL.Query().Get("timeEnd")
+	timeStart := r.URL.Query().Get("timeStart")
+
+	log.Debug(r.Context(), "Get metrics parameters", zap.String("name", name), zap.String("metric", metric), zap.String("service", service), zap.String("groupByOperation", groupByOperation), zap.String("quantile", quantile), zap.String("ratePer", ratePer), zap.String("step", step), zap.String("timeEnd", timeEnd), zap.String("timeStart", timeStart))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse start time", zap.Error(err))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse start time")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		log.Error(r.Context(), "Could not parse end time", zap.Error(err))
+		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not parse end time")
+		return
+	}
+
+	body, err := i.GetMetrics(r.Context(), metric, service, groupByOperation, quantile, ratePer, step, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		log.Error(r.Context(), "Could not get metrics", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get metrics")
+		return
+	}
+
+	render.JSON(w, r, body)
+}
+
 // Mount mounts the Jaeger plugin routes in the plugins router of a kobs satellite instance.
 func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
 	var jaegerInstances []instance.Instance
@@ -176,6 +220,7 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 	router.Get("/operations", router.getOperations)
 	router.Get("/traces", router.getTraces)
 	router.Get("/trace", router.getTrace)
+	router.Get("/metrics", router.getMetrics)
 
 	return router, nil
 }
