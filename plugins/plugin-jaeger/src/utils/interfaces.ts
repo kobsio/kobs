@@ -119,3 +119,52 @@ export interface IDeduplicateTags {
   tags: IKeyValuePair[];
   warnings: string[];
 }
+
+// IMonitorOptions is the interface for all options, which can be set for Jaeger to get a the metrics for a service.
+export interface IMonitorOptions {
+  service: string;
+  times: ITimes;
+}
+
+// IMetrics is the JSON format which is returned by the Jaeger API for a metrics call.
+export interface IMetrics {
+  name: string;
+  type: string;
+  help: string;
+  metrics: IMetric[];
+}
+
+export interface IMetric {
+  labels: IMetricLabel[];
+  metricPoints: IMetricPoint[];
+}
+
+export interface IMetricLabel {
+  name: string;
+  value: string;
+}
+
+export interface IMetricPoint {
+  gaugeValue: IMetricGaugeValue;
+  timestamp: string;
+}
+export interface IMetricGaugeValue {
+  doubleValue: number | string;
+}
+
+export interface IChartData {
+  name: string;
+  data: IChartDatum[];
+}
+
+export interface IChartDatum {
+  x: Date;
+  y: number | null;
+}
+
+export interface IOperationData {
+  operation: string;
+  avgs: number[];
+  impact: number;
+  chartData: IChartData[];
+}
