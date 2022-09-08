@@ -13,13 +13,13 @@ type MockInstance struct {
 	mock.Mock
 }
 
-// GetMetrics provides a mock function with given fields: ctx, metric, service, groupByOperation, quantile, ratePer, step, timeEnd, timeStart
-func (_m *MockInstance) GetMetrics(ctx context.Context, metric string, service string, groupByOperation string, quantile string, ratePer string, step string, timeEnd int64, timeStart int64) (map[string]interface{}, error) {
-	ret := _m.Called(ctx, metric, service, groupByOperation, quantile, ratePer, step, timeEnd, timeStart)
+// GetMetrics provides a mock function with given fields: ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd
+func (_m *MockInstance) GetMetrics(ctx context.Context, metric string, service string, groupByOperation string, quantile string, ratePer string, step string, spanKinds []string, timeStart int64, timeEnd int64) (map[string]interface{}, error) {
+	ret := _m.Called(ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
 
 	var r0 map[string]interface{}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string, string, string, int64, int64) map[string]interface{}); ok {
-		r0 = rf(ctx, metric, service, groupByOperation, quantile, ratePer, step, timeEnd, timeStart)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string, string, string, []string, int64, int64) map[string]interface{}); ok {
+		r0 = rf(ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]interface{})
@@ -27,8 +27,8 @@ func (_m *MockInstance) GetMetrics(ctx context.Context, metric string, service s
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string, string, string, int64, int64) error); ok {
-		r1 = rf(ctx, metric, service, groupByOperation, quantile, ratePer, step, timeEnd, timeStart)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string, string, string, []string, int64, int64) error); ok {
+		r1 = rf(ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
 	} else {
 		r1 = ret.Error(1)
 	}

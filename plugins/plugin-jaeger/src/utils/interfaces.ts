@@ -18,6 +18,11 @@ export interface IOptions {
 export interface IPanelOptions {
   queries?: IQuery[];
   showChart?: boolean;
+  metrics?: {
+    type: string;
+    service?: string;
+    spanKinds?: string[];
+  };
 }
 
 export interface IQuery {
@@ -123,6 +128,7 @@ export interface IDeduplicateTags {
 // IMonitorOptions is the interface for all options, which can be set for Jaeger to get a the metrics for a service.
 export interface IMonitorOptions {
   service: string;
+  spanKinds: string[];
   times: ITimes;
 }
 

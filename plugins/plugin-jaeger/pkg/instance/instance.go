@@ -38,7 +38,7 @@ type Instance interface {
 	GetOperations(ctx context.Context, service string) (map[string]any, error)
 	GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]any, error)
 	GetTrace(ctx context.Context, traceID string) (map[string]any, error)
-	GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, timeStart, timeEnd int64) (map[string]any, error)
+	GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) (map[string]any, error)
 }
 
 type instance struct {
@@ -112,12 +112,17 @@ func (i *instance) GetTrace(ctx context.Context, traceID string) (map[string]any
 	return i.doRequest(ctx, fmt.Sprintf("/api/traces/%s", traceID))
 }
 
-func (i *instance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, timeStart, timeEnd int64) (map[string]any, error) {
+func (i *instance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) (map[string]any, error) {
 	timeStart = timeStart * 1000
 	timeEnd = timeEnd * 1000
 	lookback := timeEnd - timeStart
 
-	return i.doRequest(ctx, fmt.Sprintf("/api/metrics/%s?service=%s&endTs=%d&lookback=%d&groupByOperation=%s&quantile=%s&ratePer=%s&step=%s&spanKind=unspecified&spanKind=internal&spanKind=server&spanKind=client&spanKind=producer&spanKind=consumer", metric, service, timeEnd, lookback, groupByOperation, quantile, ratePer, step))
+	var spanKindsParameters string
+	for _, spanKind := range spanKinds {
+		spanKindsParameters = fmt.Sprintf("%s&spanKind=%s", spanKindsParameters, spanKind)
+	}
+
+	return i.doRequest(ctx, fmt.Sprintf("/api/metrics/%s?service=%s&endTs=%d&lookback=%d&groupByOperation=%s&quantile=%s&ratePer=%s&step=%s%s", metric, service, timeEnd, lookback, groupByOperation, quantile, ratePer, step, spanKindsParameters))
 }
 
 // New returns a new Jaeger instance for the given configuration.

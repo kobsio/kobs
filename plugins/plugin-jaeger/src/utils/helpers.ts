@@ -283,9 +283,12 @@ export const transformTraceData = (data: ITrace): ITrace | null => {
 export const getInitialMonitorOptions = (search: string, isInitial: boolean): IMonitorOptions => {
   const params = new URLSearchParams(search);
   const service = params.get('service');
+  const spanKinds = params.getAll('spanKind');
 
   return {
     service: service ? service : '',
+    spanKinds:
+      spanKinds.length > 0 ? spanKinds : ['unspecified', 'internal', 'server', 'client', 'producer', 'consumer'],
     times: getTimeParams(params, isInitial),
   };
 };
@@ -295,16 +298,20 @@ export const getInitialMonitorOptions = (search: string, isInitial: boolean): IM
 export const useGetServiceLatency = (
   instance: IPluginInstance,
   service: string,
+  spanKinds: string[],
   times: ITimes,
 ): [UseQueryResult<IMetrics, Error>, UseQueryResult<IMetrics, Error>, UseQueryResult<IMetrics, Error>] => {
-  const p50 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/service', instance, service, times, 0.5], () =>
-    getServiceLatency(instance, service, times, 0.5),
+  const p50 = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/latencies/service', instance, service, spanKinds, times, 0.5],
+    () => getServiceLatency(instance, service, spanKinds, times, 0.5),
   );
-  const p75 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/service', instance, service, times, 0.75], () =>
-    getServiceLatency(instance, service, times, 0.75),
+  const p75 = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/latencies/service', instance, service, spanKinds, times, 0.75],
+    () => getServiceLatency(instance, service, spanKinds, times, 0.75),
   );
-  const p95 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/service', instance, service, times, 0.95], () =>
-    getServiceLatency(instance, service, times, 0.95),
+  const p95 = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/latencies/service', instance, service, spanKinds, times, 0.95],
+    () => getServiceLatency(instance, service, spanKinds, times, 0.95),
   );
   return [p50, p75, p95];
 };
@@ -312,11 +319,18 @@ export const useGetServiceLatency = (
 const getServiceLatency = async (
   instance: IPluginInstance,
   service: string,
+  spanKinds: string[],
   times: ITimes,
   quantile: number,
 ): Promise<IMetrics> => {
+  const sk = spanKinds.map((spanKind) => `&spanKind=${spanKind}`);
+
   const response = await fetch(
-    `/api/plugins/jaeger/metrics?metric=latencies&service=${service}&quantile=${quantile}&groupByOperation=false&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+    `/api/plugins/jaeger/metrics?metric=latencies&service=${service}${
+      sk.length > 0 ? sk.join('') : ''
+    }&quantile=${quantile}&groupByOperation=false&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${
+      times.timeEnd
+    }`,
     {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -352,7 +366,12 @@ export const serviceMetricsToChartData = (metrics: { name: string; metrics?: IMe
       for (const metricPoint of metric.metrics.metrics[0].metricPoints) {
         data.push({
           x: new Date(metricPoint.timestamp),
-          y: typeof metricPoint.gaugeValue.doubleValue === 'number' ? metricPoint.gaugeValue.doubleValue : null,
+          y:
+            typeof metricPoint.gaugeValue.doubleValue === 'number'
+              ? metric.name === 'Errors'
+                ? metricPoint.gaugeValue.doubleValue * 100
+                : metricPoint.gaugeValue.doubleValue
+              : null,
         });
       }
 
@@ -368,6 +387,7 @@ export const serviceMetricsToChartData = (metrics: { name: string; metrics?: IMe
 export const useGetOperationMetrics = (
   instance: IPluginInstance,
   service: string,
+  spanKinds: string[],
   times: ITimes,
 ): [
   UseQueryResult<IMetrics, Error>,
@@ -376,20 +396,25 @@ export const useGetOperationMetrics = (
   UseQueryResult<IMetrics, Error>,
   UseQueryResult<IMetrics, Error>,
 ] => {
-  const p50 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/operations', instance, service, times, 0.5], () =>
-    getOperationMetrics(instance, service, times, 'latencies', 0.5),
+  const p50 = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/latencies/operations', instance, service, spanKinds, times, 0.5],
+    () => getOperationMetrics(instance, service, spanKinds, times, 'latencies', 0.5),
   );
-  const p75 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/operations', instance, service, times, 0.75], () =>
-    getOperationMetrics(instance, service, times, 'latencies', 0.75),
+  const p75 = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/latencies/operations', instance, service, spanKinds, times, 0.75],
+    () => getOperationMetrics(instance, service, spanKinds, times, 'latencies', 0.75),
   );
-  const p95 = useQuery<IMetrics, Error>(['jaeger/metrics/latencies/operations', instance, service, times, 0.95], () =>
-    getOperationMetrics(instance, service, times, 'latencies', 0.95),
+  const p95 = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/latencies/operations', instance, service, spanKinds, times, 0.95],
+    () => getOperationMetrics(instance, service, spanKinds, times, 'latencies', 0.95),
   );
-  const errors = useQuery<IMetrics, Error>(['jaeger/metrics/errors/operations', instance, service, times], () =>
-    getOperationMetrics(instance, service, times, 'errors'),
+  const errors = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/errors/operations', instance, service, spanKinds, times],
+    () => getOperationMetrics(instance, service, spanKinds, times, 'errors'),
   );
-  const calls = useQuery<IMetrics, Error>(['jaeger/metrics/calls/operations', instance, service, times], () =>
-    getOperationMetrics(instance, service, times, 'calls'),
+  const calls = useQuery<IMetrics, Error>(
+    ['jaeger/metrics/calls/operations', instance, service, spanKinds, times],
+    () => getOperationMetrics(instance, service, spanKinds, times, 'calls'),
   );
   return [p50, p75, p95, errors, calls];
 };
@@ -397,12 +422,15 @@ export const useGetOperationMetrics = (
 const getOperationMetrics = async (
   instance: IPluginInstance,
   service: string,
+  spanKinds: string[],
   times: ITimes,
   metric: string,
   quantile?: number,
 ): Promise<IMetrics> => {
+  const sk = spanKinds.map((spanKind) => `&spanKind=${spanKind}`);
+
   const response = await fetch(
-    `/api/plugins/jaeger/metrics?metric=${metric}&service=${service}${
+    `/api/plugins/jaeger/metrics?metric=${metric}&service=${service}${sk.length > 0 ? sk.join('') : ''}${
       quantile ? `&quantile=${quantile}` : ''
     }&groupByOperation=true&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
     {
@@ -452,16 +480,24 @@ export const operationMetricsToData = (metrics: { name: string; metrics?: IMetri
             if (typeof metricPoint.gaugeValue.doubleValue === 'number') {
               count = count + 1;
               total = total + metricPoint.gaugeValue.doubleValue;
+            } else if (metric.name === 'Errors') {
+              count = count + 1;
             }
 
             data.push({
               x: new Date(metricPoint.timestamp),
-              y: typeof metricPoint.gaugeValue.doubleValue === 'number' ? metricPoint.gaugeValue.doubleValue : null,
+              y:
+                typeof metricPoint.gaugeValue.doubleValue === 'number'
+                  ? metric.name === 'Errors'
+                    ? metricPoint.gaugeValue.doubleValue * 100
+                    : metricPoint.gaugeValue.doubleValue
+                  : null,
             });
           }
 
           if (operationName in operations) {
-            operations[operationName].avgs[i] = roundNumber(total / count);
+            operations[operationName].avgs[i] =
+              metric.name === 'Errors' ? roundNumber((total / count) * 100) : roundNumber(total / count);
             operations[operationName].chartData[i] = { data: data, name: metric.name };
           } else {
             const avgs: number[] = [0, 0, 0, 0, 0];
@@ -473,7 +509,7 @@ export const operationMetricsToData = (metrics: { name: string; metrics?: IMetri
               { data: [], name: 'Calls' },
             ];
 
-            avgs[i] = roundNumber(total / count);
+            avgs[i] = metric.name === 'Errors' ? roundNumber((total / count) * 100) : roundNumber(total / count);
             chartData[i] = { data: data, name: metric.name };
 
             if (i === 0)

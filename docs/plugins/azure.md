@@ -171,7 +171,7 @@ The `*` value is a special value, which allows access to all resources, resource
 - `verbs`: `delete`, `get`, `post` and `put`
 
 !!! note
-    You have to set the `permissionsEnabled` property in the configuration to `true` and you must enable [authentication](../getting-started/configuration/authentication.md) for kobs to use this feature.
+    You have to set the `permissionsEnabled` property in the configuration to `true` and you must enable [authentication](../getting-started/configuration/auth.md) for kobs to use this feature.
 
 ### Metrics
 

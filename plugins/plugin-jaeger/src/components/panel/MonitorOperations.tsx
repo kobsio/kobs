@@ -10,6 +10,7 @@ interface IMonitorOperationsProps {
   description?: string;
   instance: IPluginInstance;
   service: string;
+  spanKinds: string[];
   times: ITimes;
   setDetails?: (details: React.ReactNode) => void;
 }
@@ -18,11 +19,12 @@ const MonitorOperations: React.FunctionComponent<IMonitorOperationsProps> = ({
   title,
   description,
   instance,
-  times,
   service,
+  spanKinds,
+  times,
   setDetails,
 }: IMonitorOperationsProps) => {
-  const metrics = useGetOperationMetrics(instance, service, times);
+  const metrics = useGetOperationMetrics(instance, service, spanKinds, times);
 
   if (
     metrics[0].isLoading ||

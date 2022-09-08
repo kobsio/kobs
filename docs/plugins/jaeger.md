@@ -52,7 +52,8 @@ The following options can be used for a panel with the Jaeger plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | showChart | boolean | If this is `true` the chart with the traces will be shown. | No |
-| queries | [[]Query](#query) | A list of Jaeger queries, which can be selected by the user. | Yes |
+| queries | [[]Query](#query) | A list of Jaeger queries, which can be selected by the user. | No |
+| metrics | [Metrics](#metrics) | The configuration to show the metrics for the Service Performance Monitoring. | No |
 
 ### Query
 
@@ -65,6 +66,14 @@ The following options can be used for a panel with the Jaeger plugin:
 | service | string | The service to retrieve traces for. | Yes |
 | operation | string | An optional operation to retrieve traces for. | No |
 | tags | string | Tags, which the traces must be contain. | No |
+
+### Metrics
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| type | string | The metrics type which should be displayed. Must be one of the following: `servicelatency`, `serviceerrors`, `servicecalls` or `operations`. | Yes |
+| service | string | The service for which the selected metrics should be displayed. | Yes |
+| spanKinds | string | A list of span kinds for which the selected metrics should be displayed. By default it includes all span kinds: `unspecified`, `internal`, `server`, `client`, `producer` and `consumer`. | No |
 
 ## Notification Options
 
@@ -107,3 +116,59 @@ spec:
 ```
 
 ![Dashboard](assets/jaeger-dashboard.png)
+
+```yaml
+---
+apiVersion: kobs.io/v1
+kind: Application
+metadata:
+  name: satellite
+  namespace: kobs
+spec:
+  dashboards:
+    - title: Service Performance Monitoring
+      inline:
+        rows:
+          - size: 3
+            panels:
+              - title: Latency (ms)
+                colSpan: 4
+                plugin:
+                  name: jaeger
+                  type: jaeger
+                  options:
+                    metrics:
+                      type: servicelatency
+                      service: satellite
+              - title: Errors (%)
+                colSpan: 4
+                plugin:
+                  name: jaeger
+                  type: jaeger
+                  options:
+                    metrics:
+                      type: serviceerrors
+                      service: satellite
+              - title: Request Rate (req/s)
+                colSpan: 4
+                plugin:
+                  name: jaeger
+                  type: jaeger
+                  options:
+                    metrics:
+                      type: servicecalls
+                      service: satellite
+          - size: -1
+            panels:
+              - title: Operations
+                colSpan: 4
+                plugin:
+                  name: jaeger
+                  type: jaeger
+                  options:
+                    metrics:
+                      type: operations
+                      service: satellite
+```
+
+![Service Performance Monitoring](assets/jaeger-service-performance-monitoring.png)

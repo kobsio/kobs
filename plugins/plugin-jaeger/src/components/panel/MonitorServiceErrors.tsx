@@ -12,6 +12,7 @@ interface IMonitorServiceErrorsProps {
   description?: string;
   instance: IPluginInstance;
   service: string;
+  spanKinds: string[];
   times: ITimes;
 }
 
@@ -19,15 +20,20 @@ const MonitorServiceErrors: React.FunctionComponent<IMonitorServiceErrorsProps> 
   title,
   description,
   instance,
-  times,
   service,
+  spanKinds,
+  times,
 }: IMonitorServiceErrorsProps) => {
   const { isError, isLoading, error, data } = useQuery<IChartData[], Error>(
-    ['jaeger/metrics/errors/service', instance, service, times],
+    ['jaeger/metrics/errors/service', instance, service, spanKinds, times],
     async () => {
       try {
+        const sk = spanKinds.map((spanKind) => `&spanKind=${spanKind}`);
+
         const response = await fetch(
-          `/api/plugins/jaeger/metrics?metric=errors&service=${service}&groupByOperation=false&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/jaeger/metrics?metric=errors&service=${service}${
+            sk.length > 0 ? sk.join('') : ''
+          }&groupByOperation=false&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention

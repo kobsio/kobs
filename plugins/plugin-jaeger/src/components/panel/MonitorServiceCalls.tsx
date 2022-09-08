@@ -12,6 +12,7 @@ interface IMonitorServiceCallsProps {
   description?: string;
   instance: IPluginInstance;
   service: string;
+  spanKinds: string[];
   times: ITimes;
 }
 
@@ -19,15 +20,20 @@ const MonitorServiceCalls: React.FunctionComponent<IMonitorServiceCallsProps> = 
   title,
   description,
   instance,
-  times,
   service,
+  spanKinds,
+  times,
 }: IMonitorServiceCallsProps) => {
   const { isError, isLoading, error, data } = useQuery<IChartData[], Error>(
-    ['jaeger/metrics/calls/service', instance, service, times],
+    ['jaeger/metrics/calls/service', instance, service, spanKinds, times],
     async () => {
       try {
+        const sk = spanKinds.map((spanKind) => `&spanKind=${spanKind}`);
+
         const response = await fetch(
-          `/api/plugins/jaeger/metrics?metric=calls&service=${service}&groupByOperation=false&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+          `/api/plugins/jaeger/metrics?metric=calls&service=${service}${
+            sk.length > 0 ? sk.join('') : ''
+          }&groupByOperation=false&ratePer=600000&step=60000&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
