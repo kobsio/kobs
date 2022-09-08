@@ -10,6 +10,7 @@ interface IMonitorServiceLatencyProps {
   description?: string;
   instance: IPluginInstance;
   service: string;
+  spanKinds: string[];
   times: ITimes;
 }
 
@@ -17,10 +18,11 @@ const MonitorServiceLatency: React.FunctionComponent<IMonitorServiceLatencyProps
   title,
   description,
   instance,
-  times,
   service,
+  spanKinds,
+  times,
 }: IMonitorServiceLatencyProps) => {
-  const latencies = useGetServiceLatency(instance, service, times);
+  const latencies = useGetServiceLatency(instance, service, spanKinds, times);
 
   return (
     <PluginPanel title={title} description={description}>

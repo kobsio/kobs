@@ -24,10 +24,12 @@ const Monitor: React.FunctionComponent<IMonitorProps> = ({ instance }: IMonitorP
   const [details, setDetails] = useState<React.ReactNode>(undefined);
 
   const changeOptions = (opts: IMonitorOptions): void => {
+    const spanKinds = opts.spanKinds.map((spanKind) => `&spanKind=${spanKind}`);
+
     navigate(
-      `${location.pathname}?service=${encodeURIComponent(opts.service)}&time=${opts.times.time}&timeEnd=${
-        opts.times.timeEnd
-      }&timeStart=${opts.times.timeStart}`,
+      `${location.pathname}?service=${encodeURIComponent(opts.service)}${
+        spanKinds.length > 0 ? spanKinds.join('') : ''
+      }&time=${opts.times.time}&timeEnd=${opts.times.timeEnd}&timeStart=${opts.times.timeStart}`,
     );
   };
 
@@ -58,13 +60,14 @@ const Monitor: React.FunctionComponent<IMonitorProps> = ({ instance }: IMonitorP
         toolbarContent={<MonitorToolbar instance={instance} options={options} setOptions={changeOptions} />}
         panelContent={details}
       >
-        {options.service ? (
+        {options.service && options.spanKinds.length > 0 ? (
           <Grid hasGutter={true}>
             <GridItem style={{ height: '300px' }} sm={12} md={12} lg={4} xl={4} xl2={4}>
               <MonitorServiceLatency
                 title="Latency (ms)"
                 instance={instance}
                 service={options.service}
+                spanKinds={options.spanKinds}
                 times={options.times}
               />
             </GridItem>
@@ -73,6 +76,7 @@ const Monitor: React.FunctionComponent<IMonitorProps> = ({ instance }: IMonitorP
                 title="Error Rate (%)"
                 instance={instance}
                 service={options.service}
+                spanKinds={options.spanKinds}
                 times={options.times}
               />
             </GridItem>
@@ -81,6 +85,7 @@ const Monitor: React.FunctionComponent<IMonitorProps> = ({ instance }: IMonitorP
                 title="Request Rate (req/s)"
                 instance={instance}
                 service={options.service}
+                spanKinds={options.spanKinds}
                 times={options.times}
               />
             </GridItem>
@@ -89,6 +94,7 @@ const Monitor: React.FunctionComponent<IMonitorProps> = ({ instance }: IMonitorP
                 title="Operations"
                 instance={instance}
                 service={options.service}
+                spanKinds={options.spanKinds}
                 times={options.times}
                 setDetails={setDetails}
               />

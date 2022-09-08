@@ -158,6 +158,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	name := r.Header.Get("x-kobs-plugin")
 	metric := r.URL.Query().Get("metric")
 	service := r.URL.Query().Get("service")
+	spanKinds := r.URL.Query()["spanKind"]
 	groupByOperation := r.URL.Query().Get("groupByOperation")
 	quantile := r.URL.Query().Get("quantile")
 	ratePer := r.URL.Query().Get("ratePer")
@@ -165,7 +166,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 	timeEnd := r.URL.Query().Get("timeEnd")
 	timeStart := r.URL.Query().Get("timeStart")
 
-	log.Debug(r.Context(), "Get metrics parameters", zap.String("name", name), zap.String("metric", metric), zap.String("service", service), zap.String("groupByOperation", groupByOperation), zap.String("quantile", quantile), zap.String("ratePer", ratePer), zap.String("step", step), zap.String("timeEnd", timeEnd), zap.String("timeStart", timeStart))
+	log.Debug(r.Context(), "Get metrics parameters", zap.String("name", name), zap.String("metric", metric), zap.String("service", service), zap.Strings("spanKinds", spanKinds), zap.String("groupByOperation", groupByOperation), zap.String("quantile", quantile), zap.String("ratePer", ratePer), zap.String("step", step), zap.String("timeEnd", timeEnd), zap.String("timeStart", timeStart))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -188,7 +189,7 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetMetrics(r.Context(), metric, service, groupByOperation, quantile, ratePer, step, parsedTimeStart, parsedTimeEnd)
+	body, err := i.GetMetrics(r.Context(), metric, service, groupByOperation, quantile, ratePer, step, spanKinds, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		log.Error(r.Context(), "Could not get metrics", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get metrics")

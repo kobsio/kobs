@@ -2,6 +2,10 @@ import React from 'react';
 
 import { IPluginPanelProps, PluginPanelError } from '@kobsio/shared';
 import { IPanelOptions } from '../../utils/interfaces';
+import MonitorOperations from './MonitorOperations';
+import MonitorServiceCalls from './MonitorServiceCalls';
+import MonitorServiceErrors from './MonitorServiceErrors';
+import MonitorServiceLatency from './MonitorServiceLatency';
 import TracesWrapper from './TracesWrapper';
 
 interface IJaegerPluginPanelProps extends IPluginPanelProps {
@@ -28,6 +32,66 @@ const Panel: React.FunctionComponent<IJaegerPluginPanelProps> = ({
         times={times}
       />
     );
+  }
+
+  if (options && options.metrics && options.metrics.type && options.metrics.service && times) {
+    const spanKinds =
+      options.metrics.spanKinds && Array.isArray(options.metrics.spanKinds) && options.metrics.spanKinds.length > 0
+        ? options.metrics.spanKinds
+        : ['unspecified', 'internal', 'server', 'client', 'producer', 'consumer'];
+
+    if (options.metrics.type === 'servicelatency') {
+      return (
+        <MonitorServiceLatency
+          instance={instance}
+          title={title}
+          description={description}
+          service={options.metrics.service}
+          spanKinds={spanKinds}
+          times={times}
+        />
+      );
+    }
+
+    if (options.metrics.type === 'serviceerrors') {
+      return (
+        <MonitorServiceErrors
+          instance={instance}
+          title={title}
+          description={description}
+          service={options.metrics.service}
+          spanKinds={spanKinds}
+          times={times}
+        />
+      );
+    }
+
+    if (options.metrics.type === 'servicecalls') {
+      return (
+        <MonitorServiceCalls
+          instance={instance}
+          title={title}
+          description={description}
+          service={options.metrics.service}
+          spanKinds={spanKinds}
+          times={times}
+        />
+      );
+    }
+
+    if (options.metrics.type === 'operations') {
+      return (
+        <MonitorOperations
+          instance={instance}
+          title={title}
+          description={description}
+          service={options.metrics.service}
+          spanKinds={spanKinds}
+          times={times}
+          setDetails={setDetails}
+        />
+      );
+    }
   }
 
   return (
