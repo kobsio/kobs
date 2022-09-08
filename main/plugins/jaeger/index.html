@@ -924,6 +924,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    Metrics
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1359,6 +1366,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    Metrics
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1500,7 +1514,13 @@
 <td>queries</td>
 <td><a href="#query">[]Query</a></td>
 <td>A list of Jaeger queries, which can be selected by the user.</td>
-<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>metrics</td>
+<td><a href="#metrics">Metrics</a></td>
+<td>The configuration to show the metrics for the Service Performance Monitoring.</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
@@ -1559,6 +1579,37 @@
 </tr>
 </tbody>
 </table>
+<h3 id="metrics">Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>The metrics type which should be displayed. Must be one of the following: <code>servicelatency</code>, <code>serviceerrors</code>, <code>servicecalls</code> or <code>operations</code>.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>service</td>
+<td>string</td>
+<td>The service for which the selected metrics should be displayed.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>spanKinds</td>
+<td>string</td>
+<td>A list of span kinds for which the selected metrics should be displayed. By default it includes all span kinds: <code>unspecified</code>, <code>internal</code>, <code>server</code>, <code>client</code>, <code>producer</code> and <code>consumer</code>.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="notification-options">Notification Options</h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1596,6 +1647,59 @@
 <span class="w">                        </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error=true</span><span class="w"></span>
 </code></pre></div>
 <p><img alt="Dashboard" src="../assets/jaeger-dashboard.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">satellite</span><span class="w"></span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service Performance Monitoring</span><span class="w"></span>
+<span class="w">      </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency (ms)</span><span class="w"></span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">metrics</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">servicelatency</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">satellite</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Errors (%)</span><span class="w"></span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">metrics</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serviceerrors</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">satellite</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Request Rate (req/s)</span><span class="w"></span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">metrics</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">servicecalls</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">satellite</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Operations</span><span class="w"></span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">metrics</span><span class="p">:</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">operations</span><span class="w"></span>
+<span class="w">                      </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">satellite</span><span class="w"></span>
+</code></pre></div>
+<p><img alt="Service Performance Monitoring" src="../assets/jaeger-service-performance-monitoring.png" /></p>
 
               
             </article>
