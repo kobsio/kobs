@@ -5,11 +5,11 @@ kobs supports all Kubernetes objects like Pods, Deployments, StatefulSets and Cu
 !!! note
     Ensure that the satellite has enough permissions to retrieve all these resources from the Kubernetes API server. If you are using the [Helm chart](../getting-started/installation//helm.md) or [Kustomize](../getting-started/installation/kustomize.md) to install kobs, it will automatically create the correct Cluster Role and Cluster Role Binding, so that you can view, but not edit all these resources.
 
-On the Kubernetes Resources page in kobs you can view all the resources available in you clusters. You can filter the list by clusters, namespaces and resources. You can also specify a label or field selector.
+On the Kubernetes Resources page in kobs you can view all the resources available in your clusters. You can filter the list by clusters, namespaces and resources. You can also specify a label or field selector.
 
 ![Resources](assets/resources.png)
 
-By selecting an item in the table, you can view more details for this resource. All the details can be found in the overview tab.
+By selecting an item in the table, you can view more details for this resource. All the details can be found in the "Overview" tab.
 
 ![Resources Overview](assets/resources-overview.png)
 
@@ -17,7 +17,7 @@ If you want to view the Yaml representation of the resource you can select the c
 
 ![Resources YAML](assets/resources-yaml.png)
 
-Next to the yaml representation, you find a second tab events, which shows all events, which are related to the selected object. The events are retrieved with a field selector and the name of the resource: `fieldSelector=involvedObject.name=<NAME-OF-THE-RESOURCE>`.
+Next to the yaml representation, you find a second tab "Events", which shows all events, which are related to the selected object. The events are retrieved with a field selector and the name of the resource: `fieldSelector=involvedObject.name=<NAME-OF-THE-RESOURCE>`.
 
 ![Resources Events](assets/resources-events.png)
 
@@ -41,7 +41,7 @@ You can specify a list of dashboards for your Kubernetes resources, to get addit
 
 The dashboards can be configured via the `kobs.io/dashboards` annotation. They follow the same syntax as they can be configured for [applications](applications.md#dashboard), [users](teams.md#dashboard) and [teams](teams.md#dashboard).
 
-You can use [JSONPath](https://goessner.net/articles/JsonPath/) within the dashboar dspecification, to use a value from the reosurce manifest in the dashboard, e.g. the name of the Pod `<% $.metadata.name %>`.
+You can use [JSONPath](https://goessner.net/articles/JsonPath/) within the dashboard specification, to use a value from the resource manifest in the dashboard, e.g. the name of the Pod `<% $.metadata.name %>`.
 
 !!! note
     We are using the [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) to extract the content from the Kubernetes objects. A list of examples can be found within the documentation of the module.
