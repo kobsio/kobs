@@ -1320,13 +1320,13 @@
 <p class="admonition-title">Note</p>
 <p>Ensure that the satellite has enough permissions to retrieve all these resources from the Kubernetes API server. If you are using the <a href="../../getting-started/installation/helm/">Helm chart</a> or <a href="../../getting-started/installation/kustomize/">Kustomize</a> to install kobs, it will automatically create the correct Cluster Role and Cluster Role Binding, so that you can view, but not edit all these resources.</p>
 </div>
-<p>On the Kubernetes Resources page in kobs you can view all the resources available in you clusters. You can filter the list by clusters, namespaces and resources. You can also specify a label or field selector.</p>
+<p>On the Kubernetes Resources page in kobs you can view all the resources available in your clusters. You can filter the list by clusters, namespaces and resources. You can also specify a label or field selector.</p>
 <p><img alt="Resources" src="../assets/resources.png" /></p>
-<p>By selecting an item in the table, you can view more details for this resource. All the details can be found in the overview tab.</p>
+<p>By selecting an item in the table, you can view more details for this resource. All the details can be found in the "Overview" tab.</p>
 <p><img alt="Resources Overview" src="../assets/resources-overview.png" /></p>
 <p>If you want to view the Yaml representation of the resource you can select the corresponding tab.</p>
 <p><img alt="Resources YAML" src="../assets/resources-yaml.png" /></p>
-<p>Next to the yaml representation, you find a second tab events, which shows all events, which are related to the selected object. The events are retrieved with a field selector and the name of the resource: <code>fieldSelector=involvedObject.name=&lt;NAME-OF-THE-RESOURCE&gt;</code>.</p>
+<p>Next to the yaml representation, you find a second tab "Events", which shows all events, which are related to the selected object. The events are retrieved with a field selector and the name of the resource: <code>fieldSelector=involvedObject.name=&lt;NAME-OF-THE-RESOURCE&gt;</code>.</p>
 <p><img alt="Resources Events" src="../assets/resources-events.png" /></p>
 <h2 id="actions">Actions</h2>
 <p>kobs provides several actions for all Kubernetes resources. These actions can be found in the upper right corner in the details view next to the close icon. For each resource it is possible to edit and delete the selected resource.</p>
@@ -1342,7 +1342,7 @@
 <h2 id="dashboards">Dashboards</h2>
 <p>You can specify a list of dashboards for your Kubernetes resources, to get additional information. For example you can add a dashboard to a Pod to get the resource usage metrics from Prometheus or you can add a dashboard to a Deployment to view all the logs from Elasticsearch for this Deployment.</p>
 <p>The dashboards can be configured via the <code>kobs.io/dashboards</code> annotation. They follow the same syntax as they can be configured for <a href="../applications/#dashboard">applications</a>, <a href="../teams/#dashboard">users</a> and <a href="../teams/#dashboard">teams</a>.</p>
-<p>You can use <a href="https://goessner.net/articles/JsonPath/">JSONPath</a> within the dashboar dspecification, to use a value from the reosurce manifest in the dashboard, e.g. the name of the Pod <code>&lt;% $.metadata.name %&gt;</code>.</p>
+<p>You can use <a href="https://goessner.net/articles/JsonPath/">JSONPath</a> within the dashboard specification, to use a value from the resource manifest in the dashboard, e.g. the name of the Pod <code>&lt;% $.metadata.name %&gt;</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>We are using the <a href="https://www.npmjs.com/package/jsonpath-plus">jsonpath-plus</a> to extract the content from the Kubernetes objects. A list of examples can be found within the documentation of the module.</p>
