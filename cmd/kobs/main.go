@@ -17,6 +17,7 @@ import (
 	jira "github.com/kobsio/kobs/plugins/plugin-jira/cmd"
 	kiali "github.com/kobsio/kobs/plugins/plugin-kiali/cmd"
 	klogs "github.com/kobsio/kobs/plugins/plugin-klogs/cmd"
+	mongodb "github.com/kobsio/kobs/plugins/plugin-mongodb/cmd"
 	opsgenie "github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd"
 	prometheus "github.com/kobsio/kobs/plugins/plugin-prometheus/cmd"
 	rss "github.com/kobsio/kobs/plugins/plugin-rss/cmd"
@@ -44,6 +45,7 @@ func main() {
 	pluginMounts[jira.PluginType] = jira.Mount
 	pluginMounts[kiali.PluginType] = kiali.Mount
 	pluginMounts[klogs.PluginType] = klogs.Mount
+	pluginMounts[mongodb.PluginType] = mongodb.Mount
 	pluginMounts[opsgenie.PluginType] = opsgenie.Mount
 	pluginMounts[prometheus.PluginType] = prometheus.Mount
 	pluginMounts[rss.PluginType] = rss.Mount
