@@ -1440,6 +1440,11 @@ helm upgrade --install satellite kobs/satellite
 <td><code>{}</code></td>
 </tr>
 <tr>
+<td><code>topologySpreadConstraints</code></td>
+<td>Topology spread constraints rely on node labels to identify the topology domain(s) that each Node is in.</td>
+<td><code>[]</code></td>
+</tr>
+<tr>
 <td><code>volumes</code></td>
 <td>Specify additional volumes for the kobs deployment.</td>
 <td><code>[]</code></td>
@@ -1780,6 +1785,11 @@ helm upgrade --install satellite kobs/satellite
 <td><code>affinity</code></td>
 <td>Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods.</td>
 <td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>topologySpreadConstraints</code></td>
+<td>Topology spread constraints rely on node labels to identify the topology domain(s) that each Node is in.</td>
+<td><code>[]</code></td>
 </tr>
 <tr>
 <td><code>volumes</code></td>
