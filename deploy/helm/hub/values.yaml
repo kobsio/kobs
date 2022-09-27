@@ -84,7 +84,7 @@ topologySpreadConstraints: []
   #   whenUnsatisfiable: DoNotSchedule
   #   labelSelector:
   #     matchLabels:
-  #       app.kubernetes.io/name=vault-secrets-operator
+  #       app.kubernetes.io/name=hub
 
 ## Specify additional volumes for the kobs deployment.
 ## See: https://kubernetes.io/docs/concepts/storage/volumes/
