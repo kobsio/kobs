@@ -51,6 +51,7 @@ helm upgrade --install satellite kobs/satellite
 | `nodeSelector` | Specify a map of key-value pairs, to assign the Pods to a specific set of nodes. | `{}` |
 | `tolerations` | Specify the tolerations for the kobs Pods. | `[]` |
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
+| `topologySpreadConstraints` | Topology spread constraints rely on node labels to identify the topology domain(s) that each Node is in. | `[]` |
 | `volumes` | Specify additional volumes for the kobs deployment. | `[]` |
 | `volumeMounts` | Specify additional volumeMounts for the kobs container. | `[]` |
 | `env` | Set additional environment variables for the kobs container. | `[]` |
@@ -122,6 +123,7 @@ helm upgrade --install satellite kobs/satellite
 | `nodeSelector` | Specify a map of key-value pairs, to assign the Pods to a specific set of nodes. | `{}` |
 | `tolerations` | Specify the tolerations for the kobs Pods. | `[]` |
 | `affinity` | Specify a node affinity or inter-pod affinity / anti-affinity for an advanced scheduling of the kobs Pods. | `{}` |
+| `topologySpreadConstraints` | Topology spread constraints rely on node labels to identify the topology domain(s) that each Node is in. | `[]` |
 | `volumes` | Specify additional volumes for the kobs deployment. | `[]` |
 | `volumeMounts` | Specify additional volumeMounts for the kobs container. | `[]` |
 | `env` | Set additional environment variables for the kobs container. | `[]` |

@@ -75,6 +75,17 @@ tolerations: []
 ##
 affinity: {}
 
+## Topology spread constraints rely on node labels to identify the topology domain(s) that each Node is in.
+## See: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+##
+topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   whenUnsatisfiable: DoNotSchedule
+  #   labelSelector:
+  #     matchLabels:
+  #       app.kubernetes.io/name=satellite
+
 ## Specify additional volumes for the kobs deployment.
 ## See: https://kubernetes.io/docs/concepts/storage/volumes/
 ##
