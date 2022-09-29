@@ -8,18 +8,18 @@ The Helm plugin can be used to manage Helm releases within kobs.
 
 ## Configuration
 
-To use the Istio plugin the following configuration is needed in the satellites configuration file:
+To use the Helm plugin the following configuration is needed in the satellites configuration file:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| name | string | The name of the Istio plugin instance. | Yes |
-| type | `istio` | The type for the Istio plugin. | Yes |
+| name | string | The name of the Helm plugin instance. | Yes |
+| type | `helm` | The type for the Helm plugin. | Yes |
 | options.permissionsEnabled | string | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 
 ```yaml
 plugins:
-  - name: istio
-    type: istio
+  - name: helm
+    type: helm
     options:
       permissionsEnabled: true
 ```
@@ -27,16 +27,16 @@ plugins:
 ## Insight Options
 
 !!! note
-    The Istio plugin can not be used within the insights section of an application.
+    The Helm plugin can not be used within the insights section of an application.
 
 ## Variable Options
 
 !!! note
-    The Istio plugin can not be used to get a list of variable values.
+    The Helm plugin can not be used to get a list of variable values.
 
 ## Panel Options
 
-The following options can be used for a panel with the Istio plugin:
+The following options can be used for a panel with the Helm plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -48,7 +48,7 @@ The following options can be used for a panel with the Istio plugin:
 ## Notification Options
 
 !!! note
-    The Harbor plugin can not be used to get a list of notifications.
+    The Helm plugin can not be used to get a list of notifications.
 
 ## Usage
 

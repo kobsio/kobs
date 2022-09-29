@@ -1,27 +1,27 @@
 import { Alert, AlertActionLink, AlertVariant, Spinner } from '@patternfly/react-core';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { ICollectionStatsData } from '../../utils/interfaces';
-import { IPluginInstance } from '@kobsio/shared';
+import { Link } from 'react-router-dom';
 import React from 'react';
-import { humanReadableSize } from '../../utils/helpers';
-import { useNavigate } from 'react-router-dom';
 
-interface ICollectionItemProps {
+import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
+import { ICollectionStatsData } from '../../utils/interfaces';
+import { humanReadableSize } from '../../utils/helpers';
+
+interface ICollectionDetailsProps {
   instance: IPluginInstance;
   collectionName: string;
 }
 
-const CollectionDetails: React.FunctionComponent<ICollectionItemProps> = ({
+const CollectionDetails: React.FunctionComponent<ICollectionDetailsProps> = ({
   instance,
   collectionName,
-}: ICollectionItemProps) => {
-  const navigate = useNavigate();
+}: ICollectionDetailsProps) => {
   const { isError, isLoading, data, error, refetch } = useQuery<ICollectionStatsData, Error>(
-    [`mongodb/collections/${collectionName}/stats`, instance],
+    [`mongodb/collections/stats`, instance, collectionName],
     async () => {
       try {
-        const response = await fetch(`/api/plugins/mongodb/collections/${collectionName}/stats`, {
+        const response = await fetch(`/api/plugins/mongodb/collections/stats?collectionName=${collectionName}`, {
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'x-kobs-plugin': instance.name,
@@ -33,10 +33,6 @@ const CollectionDetails: React.FunctionComponent<ICollectionItemProps> = ({
         const json = await response.json();
 
         if (response.status >= 200 && response.status < 300) {
-          if (json.error) {
-            throw new Error(json.error);
-          }
-
           return json;
         } else {
           if (json.error) {
@@ -69,7 +65,6 @@ const CollectionDetails: React.FunctionComponent<ICollectionItemProps> = ({
         title="Could not get collection details"
         actionLinks={
           <React.Fragment>
-            <AlertActionLink onClick={(): void => navigate('/')}>Home</AlertActionLink>
             <AlertActionLink onClick={(): Promise<QueryObserverResult<ICollectionStatsData, Error>> => refetch()}>
               Retry
             </AlertActionLink>
@@ -89,11 +84,16 @@ const CollectionDetails: React.FunctionComponent<ICollectionItemProps> = ({
     <TableComposable aria-label="CollectionStats" variant={TableVariant.compact} borders={true}>
       <Thead>
         <Tr>
-          <Th tooltip={null}>Metric</Th>
-          <Th tooltip={null}>Value</Th>
+          <Th>Metric</Th>
+          <Th>Value</Th>
         </Tr>
       </Thead>
       <Tbody>
+        <Tr>
+          <Td colSpan={2}>
+            <Link to={`${pluginBasePath(instance)}/${collectionName}/query`}>Query Documents</Link>
+          </Td>
+        </Tr>
         <Tr>
           <Td>Namespace</Td>
           <Td>{data.ns}</Td>

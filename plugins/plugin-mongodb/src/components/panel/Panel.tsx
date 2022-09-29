@@ -1,34 +1,54 @@
 import React from 'react';
 
-import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/shared';
+import { IPluginPanelProps, PluginPanelError } from '@kobsio/shared';
+import Collections from './Collections';
+import Count from './Count';
+import DBStats from './DBStats';
+import Find from './Find';
+import { IPanelOptions } from '../../utils/interfaces';
 
 interface IMongoDBPluginPanelProps extends IPluginPanelProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  options?: any;
+  options?: IPanelOptions;
 }
 
-// The Panel component is always used, when a user tries to use your plugin in a Application or Dashboard. Since we can
-// not valide the options property on the server side, you should always validate the given user value within your code.
-// As for the Page component, the Panel component can return whatever you want, to have a unified styling across kobs,
-// we recommend to use the PluginPanel component from the "@kobsio/shared" package as a wrapper for your content.
 const Panel: React.FunctionComponent<IMongoDBPluginPanelProps> = ({
   title,
   description,
   options,
   instance,
-  times,
-  setDetails,
 }: IMongoDBPluginPanelProps) => {
-  if (options) {
+  if (options && options.operation && options.operation === 'dbstats') {
+    return <DBStats instance={instance} title={title} description={description} />;
+  }
+
+  if (options && options.operation && options.operation === 'collections') {
+    return <Collections instance={instance} title={title} description={description} />;
+  }
+
+  if (options && options.operation && options.operation === 'find' && options.collectionName) {
     return (
-      <PluginPanel title={title} description={description}>
-        <div>
-          <div>{JSON.stringify(options)}</div>
-          <div>{JSON.stringify(instance)}</div>
-          <div>{JSON.stringify(times)}</div>
-          <div>{JSON.stringify(setDetails)}</div>
-        </div>
-      </PluginPanel>
+      <Find
+        instance={instance}
+        title={title}
+        description={description}
+        collectionName={options.collectionName}
+        query={options.query ?? '{}'}
+        limit={options.limit ?? '50'}
+        sort={options.sort ?? '{"_id" : -1}'}
+      />
+    );
+  }
+
+  if (options && options.operation && options.operation === 'count' && options.collectionName) {
+    return (
+      <Count
+        instance={instance}
+        title={title}
+        description={description}
+        collectionName={options.collectionName}
+        query={options.query ?? '{}'}
+      />
     );
   }
 
@@ -38,7 +58,7 @@ const Panel: React.FunctionComponent<IMongoDBPluginPanelProps> = ({
       description={description}
       message="Options for MongoDB panel are missing or invalid"
       details="The panel doesn't contain the required options to get data from MongoDB."
-      documentation="https://kobs.io/main/community-plugins/mongodb"
+      documentation="https://kobs.io/main/plugins/mongodb"
     />
   );
 };

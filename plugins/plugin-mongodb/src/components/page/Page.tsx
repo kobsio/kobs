@@ -1,26 +1,22 @@
 import React, { Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { Spinner } from '@patternfly/react-core';
 
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { Route, Routes } from 'react-router-dom';
-
+import DocumentPage from './DocumentPage';
 import { IPluginPageProps } from '@kobsio/shared';
+import OverviewPage from './OverviewPage';
 import QueryPage from './QueryPage';
-import StatsPage from './StatsPage';
-
-const queryClient = new QueryClient();
 
 const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPageProps) => {
   return (
     <Suspense
       fallback={<Spinner style={{ left: '50%', position: 'fixed', top: '50%', transform: 'translate(-50%, -50%)' }} />}
     >
-      <QueryClientProvider client={queryClient}>
-        <Routes>
-          <Route path="/" element={<StatsPage instance={instance} />} />
-          <Route path="/:collectionName/query" element={<QueryPage instance={instance} />} />
-        </Routes>
-      </QueryClientProvider>
+      <Routes>
+        <Route path="/" element={<OverviewPage instance={instance} />} />
+        <Route path="/:collectionName/query" element={<QueryPage instance={instance} />} />
+        <Route path="/:collectionName/document" element={<DocumentPage instance={instance} />} />
+      </Routes>
     </Suspense>
   );
 };

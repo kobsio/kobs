@@ -1,15 +1,20 @@
 // IQueryOptions are the options which can be set by a user for a query.
 export interface IQueryOptions {
-  operation: QueryOperationType | undefined;
+  limit: string;
+  operation: TQueryOperation;
   query: string;
+  sort: string;
 }
 
-export const QueryOperationTypes = {
-  count: 'count',
-  find: 'find',
-};
+export type TQueryOperation = 'find' | 'count';
 
-export type QueryOperationType = keyof typeof QueryOperationTypes;
+export interface IPanelOptions {
+  collectionName?: string;
+  limit?: string;
+  operation?: string;
+  query?: string;
+  sort?: string;
+}
 
 export interface IStatsData {
   db: string;

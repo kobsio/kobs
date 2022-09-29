@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { IPluginInstance, PluginInstance } from '@kobsio/shared';
-
 import { defaultDescription } from '../../utils/constants';
 import icon from '../../assets/icon.png';
 

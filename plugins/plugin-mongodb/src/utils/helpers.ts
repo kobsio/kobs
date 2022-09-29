@@ -1,22 +1,23 @@
-import { IQueryOptions, QueryOperationType, QueryOperationTypes } from './interfaces';
 import { EJSON } from 'bson';
 import parse from 'ejson-shell-parser/dist/ejson-shell-parser.cjs';
 
+import { IQueryOptions, TQueryOperation } from './interfaces';
+
+export const queryOperations: string[] = ['find', 'count'];
+
 export const getInitialQueryOptions = (search: string, isInitial: boolean): IQueryOptions => {
   const params = new URLSearchParams(search);
+  const operation = params.get('operation') ?? 'find';
+  const query = params.get('query');
+  const sort = params.get('sort');
+  const limit = params.get('limit');
 
   return {
-    operation: determineOperation(params.get('operation') ?? '') ?? (QueryOperationTypes.find as QueryOperationType),
-    query: params.get('query') ?? '',
+    limit: limit ?? '50',
+    operation: queryOperations.includes(operation) ? (operation as TQueryOperation) : 'find',
+    query: query ?? '{}',
+    sort: sort ?? '{"_id" : -1}',
   };
-};
-
-export const determineOperation = (operation: string): QueryOperationType | undefined => {
-  if (operation in QueryOperationTypes) {
-    return operation as QueryOperationType;
-  }
-
-  return undefined;
 };
 
 export const humanReadableSize = (size: number): string => {

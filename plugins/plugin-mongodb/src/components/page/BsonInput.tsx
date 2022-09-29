@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Ace } from 'ace-builds';
 import AceEditor from 'react-ace';
 import { addCompleter } from 'ace-builds/src-noconflict/ext-language_tools';
 
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-github';
+
 import { mongoOperatorCompletions, mongoTypesCompletions } from '../../utils/mongo-completions';
 
 interface IBsonInputProps {
@@ -15,7 +16,7 @@ interface IBsonInputProps {
 const BsonInput: React.FunctionComponent<IBsonInputProps> = ({ onInputChange, data }: IBsonInputProps) => {
   const editor = useRef<AceEditor>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const mongoCompleter = {
       getCompletions: (
         editor: Ace.Editor,
@@ -40,8 +41,10 @@ const BsonInput: React.FunctionComponent<IBsonInputProps> = ({ onInputChange, da
 
   return (
     <AceEditor
+      className="pf-c-form-control"
       height="100%"
       maxLines={Infinity}
+      minLines={2}
       mode="javascript"
       name="query-editor"
       onChange={changeValue}
