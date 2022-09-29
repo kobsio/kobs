@@ -24,9 +24,9 @@ const FindDocument: React.FunctionComponent<IFindDocumentProps> = ({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getFilter = (value: any): string => {
-    if (value instanceof ObjectId) return `{"_id": ObjectId("${value.toString()}")}`;
-    if (value instanceof ObjectID) return `{"_id": ObjectID("${value.toString()}")}`;
-    return `{"_id": "${value.toString()}"}`;
+    if (value instanceof ObjectId) return `{"_id": ObjectId("${value?.toString() ?? 'null'}")}`;
+    if (value instanceof ObjectID) return `{"_id": ObjectID("${value?.toString() ?? 'null'}")}`;
+    return `{"_id": "${value?.toString() ?? 'null'}"}`;
   };
 
   const defaultActions = [
@@ -53,7 +53,7 @@ const FindDocument: React.FunctionComponent<IFindDocumentProps> = ({
           expand={{ isExpanded: isExpanded, onToggle: (): void => setIsExpanded(!isExpanded), rowIndex: 0 }}
         />
         <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="ID">
-          <TableText wrapModifier="nowrap">{document['_id'].toString()}</TableText>
+          <TableText wrapModifier="nowrap">{document['_id']?.toString() ?? 'null'}</TableText>
         </Td>
         <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Document">
           <div className="kobsio-mongodb-document-preview">
@@ -62,7 +62,7 @@ const FindDocument: React.FunctionComponent<IFindDocumentProps> = ({
               .map((key) => (
                 <span key={key} className="pf-u-mr-sm pf-u-mb-sm">
                   <span className="pf-u-background-color-200 pf-u-p-xs">{key}:</span>
-                  <span className="pf-u-p-xs"> {document[key].toString()}</span>
+                  <span className="pf-u-p-xs"> {document[key]?.toString() ?? 'null'}</span>
                 </span>
               ))}
           </div>

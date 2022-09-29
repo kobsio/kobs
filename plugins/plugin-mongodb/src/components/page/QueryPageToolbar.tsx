@@ -8,7 +8,7 @@ import {
   FormSelectOption,
   TextInput,
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 import { IQueryOptions, TQueryOperation } from '../../utils/interfaces';
 import { Toolbar, ToolbarItem } from '@kobsio/shared';
@@ -31,14 +31,15 @@ const QueryPageToolbar: React.FunctionComponent<IQueryPageToolbarProps> = ({
     sort: options.sort,
   });
 
-  const changeOptions = (): void => {
+  const changeOptions = (e: FormEvent): void => {
+    e.preventDefault();
     setOptions({ limit: state.limit, operation: state.operation, query: state.query, sort: state.sort });
   };
 
   return (
     <Toolbar usePageInsets={true}>
       <ToolbarItem grow={true}>
-        <Form isHorizontal={true}>
+        <Form isHorizontal={true} onSubmit={changeOptions}>
           <FormGroup label="Operation" fieldId="operation">
             <FormSelect
               value={state.operation}

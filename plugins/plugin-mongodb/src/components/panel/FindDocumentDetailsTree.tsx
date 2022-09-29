@@ -83,7 +83,7 @@ const FindDocumentDetailsTree: React.FunctionComponent<IFindDocumentDetailsTreeP
       return (
         <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Value">
           <TableText wrapModifier="nowrap">
-            {value.toString()}
+            {value?.toString() ?? 'null'}
             <small className="pf-u-ml-sm"> ({getTypeName(value)})</small>
           </TableText>
         </Td>
@@ -96,7 +96,7 @@ const FindDocumentDetailsTree: React.FunctionComponent<IFindDocumentDetailsTreeP
           {Object.keys(value).map((key) => (
             <span key={key} className="pf-u-mr-sm pf-u-mb-sm">
               <span className="pf-u-background-color-200 pf-u-p-xs">{key}:</span>
-              <span className="pf-u-p-xs"> {value[key].toString()}</span>
+              <span className="pf-u-p-xs"> {value[key]?.toString() ?? 'null'}</span>
             </span>
           ))}
         </div>
@@ -110,7 +110,7 @@ const FindDocumentDetailsTree: React.FunctionComponent<IFindDocumentDetailsTreeP
       return (
         <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Value">
           <TableText wrapModifier="nowrap">
-            {value.toString()}
+            {value?.toString() ?? 'null'}
             <small className="pf-u-ml-sm"> ({getTypeName(value)})</small>
           </TableText>
         </Td>
@@ -127,7 +127,11 @@ const FindDocumentDetailsTree: React.FunctionComponent<IFindDocumentDetailsTreeP
           </Tr>
         </Thead>
         {Object.keys(value).map((key) => (
-          <FindDocumentDetailsTree key={value[key].toString()} documentKey={key} documentValue={value[key]} />
+          <FindDocumentDetailsTree
+            key={value[key]?.toString() ?? 'null'}
+            documentKey={key}
+            documentValue={value[key]}
+          />
         ))}
       </TableComposable>
     );
@@ -146,7 +150,7 @@ const FindDocumentDetailsTree: React.FunctionComponent<IFindDocumentDetailsTreeP
           }
         />
         <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Key">
-          <TableText wrapModifier="nowrap">{documentKey.toString()}</TableText>
+          <TableText wrapModifier="nowrap">{documentKey?.toString() ?? 'null'}</TableText>
         </Td>
         {formatValue(documentValue)}
       </Tr>
