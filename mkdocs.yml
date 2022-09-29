@@ -65,6 +65,7 @@ nav:
       - Jira: plugins/jira.md
       - Kiali: plugins/kiali.md
       - klogs: plugins/klogs.md
+      - MongoDB: plugins/mongodb.md
       - Opsgenie: plugins/opsgenie.md
       - Prometheus: plugins/prometheus.md
       - RSS: plugins/rss.md

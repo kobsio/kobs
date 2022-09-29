@@ -124,6 +124,22 @@
           "selector": "typeParameter",
           "leadingUnderscore": "forbid",
           "trailingUnderscore": "forbid"
+        },
+        {
+          "format": [
+            "PascalCase"
+          ],
+          "selector": "enum",
+          "leadingUnderscore": "forbid",
+          "trailingUnderscore": "forbid"
+        },
+        {
+          "format": [
+            "UPPER_CASE"
+          ],
+          "selector": "enumMember",
+          "leadingUnderscore": "forbid",
+          "trailingUnderscore": "forbid"
         }
       ]
     }
