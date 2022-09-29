@@ -36,7 +36,7 @@ const FindDocumentDetails: React.FunctionComponent<IFindDocumentDetailsProps> = 
               .filter((key) => key !== '_id')
               .map((key) => (
                 <FindDocumentDetailsTree
-                  key={document[key].toString()}
+                  key={document[key]?.toString() ?? 'null'}
                   documentKey={key}
                   documentValue={document[key]}
                 />

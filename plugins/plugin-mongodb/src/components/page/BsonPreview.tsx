@@ -14,8 +14,8 @@ const BsonPreview: React.FunctionComponent<IBsonPreviewProps> = ({ data }: IBson
   const renderDocument = (document: string): string => {
     try {
       return toExtendedJson(document);
-    } catch (error) {
-      return error.toString();
+    } catch (err) {
+      return err.toString();
     }
   };
 

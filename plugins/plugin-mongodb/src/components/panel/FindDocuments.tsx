@@ -28,7 +28,7 @@ const FindDocuments: React.FunctionComponent<IFindDocumentsProps> = ({
       </Thead>
       {documents.map((document) => (
         <FindDocument
-          key={document['_id'].toString()}
+          key={document['_id']?.toString() ?? 'null'}
           instance={instance}
           collectionName={collectionName}
           document={document}

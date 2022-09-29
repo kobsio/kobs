@@ -28,7 +28,7 @@ const QueryPage: React.FunctionComponent<IQueryPageProps> = ({ instance }: IQuer
     navigate(
       `${location.pathname}?query=${encodeURIComponent(opts.query)}&operation=${
         opts.operation
-      }&sort=${encodeURIComponent(opts.sort)}`,
+      }&sort=${encodeURIComponent(opts.sort)}&limit=${opts.limit}`,
     );
   };
 
