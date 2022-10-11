@@ -25,8 +25,8 @@ const DetailsTap: React.FunctionComponent<IDetailsTapProps> = ({ line, close }: 
       <DrawerHead>
         <Title headingLevel="h2" size="xl">
           {`${
-            line.hasOwnProperty('content.upstream_cluster') ? getDirection(line['content.upstream_cluster']) : '-'
-          }: ${line.hasOwnProperty('content.authority') ? line['content.authority'] : '-'}`}
+            line.hasOwnProperty('content_upstream_cluster') ? getDirection(line['content_upstream_cluster']) : '-'
+          }: ${line.hasOwnProperty('content_authority') ? line['content_authority'] : '-'}`}
           <span className="pf-u-pl-sm pf-u-font-size-sm pf-u-color-400">{formatTime(line['timestamp'])}</span>
         </Title>
         <DrawerActions style={{ padding: 0 }}>
