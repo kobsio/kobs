@@ -1747,7 +1747,9 @@ export const customResourceDefinitionTableData = (crd: IResource): ITableDatum =
               crd.columns && crd.columns.length > 0
                 ? crd.columns.map((column) => {
                     const value = JSONPath<string | string[]>({ json: cr, path: `$.${column.jsonPath}` })[0];
-                    if (!value) {
+                    if (column.type === 'integer' && !value) {
+                      return 0;
+                    } else if (!value) {
                       return '';
                     } else if (column.type === 'date') {
                       return timeDifference(new Date().getTime(), new Date(value).getTime());
