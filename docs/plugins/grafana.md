@@ -48,7 +48,7 @@ The following options can be used for a panel with the Grafana plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | type | string | The panel type. This could be `dashboards` or `panel`. | No |
-| dashboards | []string | A list of dashboard ids to show, when the type is `dashboards`. | Yes |
+| dashboards | []string | A list of dashboard ids to show, when the type is `dashboards`. To pass variables to a dashboard the following can be used: `<dashboard-id>?myvar=myvarvalue` | Yes |
 | panel | [Panel](#panel) | The panel which should be displayed, when the type is `panel`. | Yes |
 
 ### Panel

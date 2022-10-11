@@ -15,13 +15,18 @@ import { IPluginInstance } from '@kobsio/shared';
 interface IDashboardItemProps {
   instance: IPluginInstance;
   dashboard: IDashboard;
+  vars: string;
 }
 
-const DashboardItem: React.FunctionComponent<IDashboardItemProps> = ({ instance, dashboard }: IDashboardItemProps) => {
+const DashboardItem: React.FunctionComponent<IDashboardItemProps> = ({
+  instance,
+  dashboard,
+  vars,
+}: IDashboardItemProps) => {
   return (
     <a
       style={{ color: 'inherit', textDecoration: 'inherit' }}
-      href={`${instance.options?.address}${dashboard.url}`}
+      href={`${instance.options?.address}${dashboard.url}${vars}`}
       target="_blank"
       rel="noreferrer"
     >
