@@ -6,6 +6,7 @@ import (
 	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
 
 	azure "github.com/kobsio/kobs/plugins/plugin-azure/cmd"
+	datadog "github.com/kobsio/kobs/plugins/plugin-datadog/cmd"
 	elasticsearch "github.com/kobsio/kobs/plugins/plugin-elasticsearch/cmd"
 	flux "github.com/kobsio/kobs/plugins/plugin-flux/cmd"
 	github "github.com/kobsio/kobs/plugins/plugin-github/cmd"
@@ -34,6 +35,7 @@ func main() {
 	pluginMounts = make(map[string]plugin.MountFn)
 
 	pluginMounts[azure.PluginType] = azure.Mount
+	pluginMounts[datadog.PluginType] = datadog.Mount
 	pluginMounts[elasticsearch.PluginType] = elasticsearch.Mount
 	pluginMounts[flux.PluginType] = flux.Mount
 	pluginMounts[github.PluginType] = github.Mount

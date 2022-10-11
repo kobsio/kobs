@@ -15,6 +15,7 @@ require (
 	github.com/Azure/go-autorest/autorest/azure/auth v0.5.11
 	github.com/Azure/go-autorest/autorest/date v0.3.0
 	github.com/ClickHouse/clickhouse-go v1.5.4
+	github.com/DataDog/datadog-api-client-go/v2 v2.3.1
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/coreos/go-oidc/v3 v3.3.0
 	github.com/fluxcd/helm-controller/api v0.23.1
@@ -71,6 +72,7 @@ require (
 	github.com/Azure/go-autorest/logger v0.2.1 // indirect
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v0.5.1 // indirect
+	github.com/DataDog/zstd v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
