@@ -27,7 +27,12 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ instance, dashb
     async () => {
       try {
         const uidParams = dashboardIDs
-          .map((dashboardID) => `uid=${dashboardID.substring(0, dashboardID.lastIndexOf('?'))}`)
+          .map(
+            (dashboardID) =>
+              `uid=${
+                dashboardID.lastIndexOf('?') > -1 ? dashboardID.substring(0, dashboardID.lastIndexOf('?')) : dashboardID
+              }`,
+          )
           .join('&');
 
         const response = await fetch(`/api/plugins/grafana/dashboards?${uidParams}`, {
