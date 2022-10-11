@@ -6,6 +6,16 @@ import DashboardsItem from './DashboardsItem';
 import { IDashboard } from '../../utils/interfaces';
 import { IPluginInstance } from '@kobsio/shared';
 
+const getVars = (dashboardID: string, dashboardIDs: string[]): string => {
+  for (const id of dashboardIDs) {
+    if (id.startsWith(dashboardID)) {
+      return id.replace(dashboardID, '');
+    }
+  }
+
+  return '';
+};
+
 interface IDashboardsProps {
   instance: IPluginInstance;
   dashboardIDs: string[];
@@ -16,7 +26,9 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ instance, dashb
     ['grafana/dashboards', instance, dashboardIDs],
     async () => {
       try {
-        const uidParams = dashboardIDs.map((dashboardID) => `uid=${dashboardID}`).join('&');
+        const uidParams = dashboardIDs
+          .map((dashboardID) => `uid=${dashboardID.substring(0, dashboardID.lastIndexOf('?'))}`)
+          .join('&');
 
         const response = await fetch(`/api/plugins/grafana/dashboards?${uidParams}`, {
           headers: {
@@ -79,7 +91,12 @@ const Dashboards: React.FunctionComponent<IDashboardsProps> = ({ instance, dashb
       {data
         .filter((dashboard) => dashboard.type !== 'dash-folder')
         .map((dashboard, index) => (
-          <DashboardsItem key={dashboard.id} instance={instance} dashboard={dashboard} />
+          <DashboardsItem
+            key={dashboard.id}
+            instance={instance}
+            dashboard={dashboard}
+            vars={getVars(dashboard.uid, dashboardIDs)}
+          />
         ))}
     </DataList>
   );
