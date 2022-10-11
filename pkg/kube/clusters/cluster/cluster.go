@@ -718,12 +718,14 @@ func (c *client) loadCRDs() {
 				var columns []CRDColumn
 				if version.AdditionalPrinterColumns != nil {
 					for _, column := range version.AdditionalPrinterColumns {
-						columns = append(columns, CRDColumn{
-							Description: column.Description,
-							JSONPath:    column.JSONPath,
-							Name:        column.Name,
-							Type:        column.Type,
-						})
+						if column.Priority == 0 {
+							columns = append(columns, CRDColumn{
+								Description: column.Description,
+								JSONPath:    column.JSONPath,
+								Name:        column.Name,
+								Type:        column.Type,
+							})
+						}
 					}
 				}
 
