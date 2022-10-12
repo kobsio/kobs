@@ -4,6 +4,9 @@ import {
   AlertActionLink,
   AlertVariant,
   CardActions,
+  CardFooter,
+  Pagination,
+  PaginationVariant,
   Spinner,
   TextInput,
 } from '@patternfly/react-core';
@@ -25,6 +28,7 @@ const Collections: React.FunctionComponent<ICollectionsProps> = ({
   description,
 }: ICollectionsProps) => {
   const [filter, setFilter] = useState<string>('');
+  const [page, setPage] = useState<{ page: number; perPage: number }>({ page: 1, perPage: 20 });
 
   const { isError, isLoading, data, error, refetch } = useQuery<string[], Error>(
     ['mongodb/collections', instance],
@@ -112,10 +116,41 @@ const Collections: React.FunctionComponent<ICollectionsProps> = ({
           />
         </CardActions>
       }
+      footer={
+        <CardFooter>
+          <Pagination
+            style={{ padding: 0 }}
+            isCompact={true}
+            itemCount={data.length}
+            perPage={page.perPage}
+            page={page.page}
+            variant={PaginationVariant.bottom}
+            onSetPage={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPage: number): void =>
+              setPage({ ...page, page: newPage })
+            }
+            onPerPageSelect={(event: React.MouseEvent | React.KeyboardEvent | MouseEvent, newPerPage: number): void =>
+              setPage({ ...page, page: 1, perPage: newPerPage })
+            }
+            onFirstClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
+              setPage({ ...page, page: newPage })
+            }
+            onLastClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
+              setPage({ ...page, page: newPage })
+            }
+            onNextClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
+              setPage({ ...page, page: newPage })
+            }
+            onPreviousClick={(event: React.SyntheticEvent<HTMLButtonElement>, newPage: number): void =>
+              setPage({ ...page, page: newPage })
+            }
+          />
+        </CardFooter>
+      }
     >
       <Accordion asDefinitionList={true}>
         {data
           .filter((name) => name.toLowerCase().includes(filter.toLowerCase()))
+          .slice((page.page - 1) * page.perPage, page.page * page.perPage)
           .map((name) => (
             <Collection key={name} instance={instance} collectionName={name} />
           ))}

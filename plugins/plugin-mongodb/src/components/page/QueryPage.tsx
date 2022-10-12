@@ -1,3 +1,4 @@
+import { Flex, FlexItem } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -57,20 +58,24 @@ const QueryPage: React.FunctionComponent<IQueryPageProps> = ({ instance }: IQuer
         toolbarContent={<QueryPageToolbar options={options} setOptions={changeOptions} />}
         panelContent={undefined}
       >
-        {options.operation === 'find' ? (
-          <Find
-            instance={instance}
-            title="Results"
-            collectionName={params.collectionName}
-            query={options.query}
-            limit={options.limit}
-            sort={options.sort}
-          />
-        ) : options.operation === 'count' ? (
-          <Count instance={instance} title="Results" collectionName={params.collectionName} query={options.query} />
-        ) : (
-          <div></div>
-        )}
+        <Flex direction={{ default: 'column' }}>
+          <FlexItem>
+            {options.operation === 'find' ? (
+              <Find
+                instance={instance}
+                title="Results"
+                collectionName={params.collectionName}
+                query={options.query}
+                limit={options.limit}
+                sort={options.sort}
+              />
+            ) : options.operation === 'count' ? (
+              <Count instance={instance} title="Results" collectionName={params.collectionName} query={options.query} />
+            ) : (
+              <div></div>
+            )}
+          </FlexItem>
+        </Flex>
       </PageContentSection>
     </React.Fragment>
   );

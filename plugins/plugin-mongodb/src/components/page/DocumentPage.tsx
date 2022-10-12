@@ -1,4 +1,4 @@
-import { Alert, AlertActionLink, AlertVariant, Card, Spinner } from '@patternfly/react-core';
+import { Alert, AlertActionLink, AlertVariant, Card, Flex, FlexItem, Spinner } from '@patternfly/react-core';
 import { Document, EJSON } from 'bson';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 import { TableComposable, TableVariant, Th, Thead, Tr } from '@patternfly/react-table';
@@ -73,42 +73,46 @@ const DocumentPage: React.FunctionComponent<IDocumentPageProps> = ({ instance }:
         }
       />
       <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={undefined} panelContent={undefined}>
-        {isLoading ? (
-          <div className="pf-u-text-align-center">
-            <Spinner />
-          </div>
-        ) : isError ? (
-          <Alert
-            variant={AlertVariant.danger}
-            isInline={false}
-            title="Could not get document"
-            actionLinks={
-              <React.Fragment>
-                <AlertActionLink onClick={(): Promise<QueryObserverResult<Document[], Error>> => refetch()}>
-                  Retry
-                </AlertActionLink>
-              </React.Fragment>
-            }
-          >
-            <p>{error?.message}</p>
-          </Alert>
-        ) : data ? (
-          <Card>
-            <TableComposable aria-label="Documents" variant={TableVariant.compact} borders={true}>
-              <Thead>
-                <Tr>
-                  <Th />
-                  <Th>ID</Th>
-                  <Th>Document</Th>
-                  <Th />
-                </Tr>
-              </Thead>
-              <FindDocument instance={instance} collectionName={params.collectionName ?? ''} document={data} />
-            </TableComposable>
-          </Card>
-        ) : (
-          <div></div>
-        )}
+        <Flex direction={{ default: 'column' }}>
+          <FlexItem>
+            {isLoading ? (
+              <div className="pf-u-text-align-center">
+                <Spinner />
+              </div>
+            ) : isError ? (
+              <Alert
+                variant={AlertVariant.danger}
+                isInline={false}
+                title="Could not get document"
+                actionLinks={
+                  <React.Fragment>
+                    <AlertActionLink onClick={(): Promise<QueryObserverResult<Document[], Error>> => refetch()}>
+                      Retry
+                    </AlertActionLink>
+                  </React.Fragment>
+                }
+              >
+                <p>{error?.message}</p>
+              </Alert>
+            ) : data ? (
+              <Card>
+                <TableComposable aria-label="Documents" variant={TableVariant.compact} borders={true}>
+                  <Thead>
+                    <Tr>
+                      <Th />
+                      <Th>ID</Th>
+                      <Th>Document</Th>
+                      <Th />
+                    </Tr>
+                  </Thead>
+                  <FindDocument instance={instance} collectionName={params.collectionName ?? ''} document={data} />
+                </TableComposable>
+              </Card>
+            ) : (
+              <div></div>
+            )}
+          </FlexItem>
+        </Flex>
       </PageContentSection>
     </React.Fragment>
   );

@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Flex, FlexItem, Grid, GridItem } from '@patternfly/react-core';
 import React from 'react';
 
 import { IPluginInstance, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
@@ -25,10 +25,18 @@ const OverviewPage: React.FunctionComponent<IOverviewPageProps> = ({ instance }:
       <PageContentSection hasPadding={true} hasDivider={true} toolbarContent={<div />} panelContent={undefined}>
         <Grid hasGutter={true}>
           <GridItem sm={12} md={12} lg={7} xl={9} xl2={9}>
-            <Collections instance={instance} title="Collections" />
+            <Flex direction={{ default: 'column' }}>
+              <FlexItem>
+                <Collections instance={instance} title="Collections" />
+              </FlexItem>
+            </Flex>
           </GridItem>
           <GridItem sm={12} md={12} lg={5} xl={3} xl2={3}>
-            <DBStats instance={instance} title="Database Statistics" />
+            <Flex direction={{ default: 'column' }}>
+              <FlexItem>
+                <DBStats instance={instance} title="Database Statistics" />
+              </FlexItem>
+            </Flex>
           </GridItem>
         </Grid>
       </PageContentSection>

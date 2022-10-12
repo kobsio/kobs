@@ -18,11 +18,18 @@ interface IEditorProps {
   value: string;
   mode: string;
   readOnly: boolean;
+  maxLines?: number;
   onChange?: (newValue: string) => void;
 }
 
 // Editor is the editor component, which can be used to show for example the yaml representation of a resource.
-export const Editor: React.FunctionComponent<IEditorProps> = ({ value, mode, readOnly, onChange }: IEditorProps) => {
+export const Editor: React.FunctionComponent<IEditorProps> = ({
+  value,
+  mode,
+  readOnly,
+  maxLines,
+  onChange,
+}: IEditorProps) => {
   const editor = useRef<AceEditor>(null);
 
   const changeValue = (newValue: string): void => {
@@ -34,7 +41,7 @@ export const Editor: React.FunctionComponent<IEditorProps> = ({ value, mode, rea
   return (
     <AceEditor
       height="100%"
-      maxLines={Infinity}
+      maxLines={maxLines || Infinity}
       mode={mode}
       name="yaml-editor"
       onChange={changeValue}

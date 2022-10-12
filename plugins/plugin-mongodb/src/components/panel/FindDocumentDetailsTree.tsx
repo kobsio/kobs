@@ -156,7 +156,7 @@ const FindDocumentDetailsTree: React.FunctionComponent<IFindDocumentDetailsTreeP
       </Tr>
       <Tr isExpanded={isExpanded}>
         <Td />
-        <Td colSpan={2}>{formatDetails(documentValue)}</Td>
+        <Td colSpan={2}>{isExpanded && formatDetails(documentValue)}</Td>
       </Tr>
     </Tbody>
   );
