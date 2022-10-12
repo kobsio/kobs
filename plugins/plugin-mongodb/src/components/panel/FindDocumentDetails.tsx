@@ -21,6 +21,7 @@ const FindDocumentDetails: React.FunctionComponent<IFindDocumentDetailsProps> = 
       onSelect={(event, tabIndex): void => setActiveTab(tabIndex.toString())}
       isFilled={true}
       mountOnEnter={true}
+      unmountOnExit={true}
     >
       <Tab eventKey="tree" title={<TabTitleText>Tree</TabTitleText>}>
         <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 0px' }}>
@@ -50,12 +51,13 @@ const FindDocumentDetails: React.FunctionComponent<IFindDocumentDetailsProps> = 
             value={JSON.stringify(EJSON.serialize(document, { relaxed: true }), null, 2)}
             mode="json"
             readOnly={true}
+            maxLines={50}
           />
         </div>
       </Tab>
       <Tab eventKey="json" title={<TabTitleText>JSON</TabTitleText>}>
         <div style={{ maxWidth: '100%', overflowX: 'scroll', padding: '24px 0px' }}>
-          <Editor value={JSON.stringify(document, null, 2)} mode="json" readOnly={true} />
+          <Editor value={JSON.stringify(document, null, 2)} mode="json" readOnly={true} maxLines={50} />
         </div>
       </Tab>
     </Tabs>
