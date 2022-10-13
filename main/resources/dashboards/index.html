@@ -1455,7 +1455,7 @@
 </tr>
 <tr>
 <td>variables</td>
-<td><a href="#Variable">[]Variable</a></td>
+<td><a href="#variable">[]Variable</a></td>
 <td>A list of variables, where the values are loaded by the specified plugin.</td>
 <td>No</td>
 </tr>
@@ -1488,6 +1488,18 @@
 <td>description</td>
 <td>string</td>
 <td>An optional description, to provide more information how the placeholder is used.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>default</td>
+<td>string</td>
+<td>A default value for the placeholder, when it is not provided in a dashboard reference.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>The type of the placeholder value. This could be <code>string</code>, <code>number</code> or <code>object</code>. The default value is <code>string</code>.</td>
 <td>No</td>
 </tr>
 </tbody>
@@ -1795,6 +1807,45 @@
 <span class="w">                  </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MiB</span><span class="w"></span>
 </code></pre></div>
 <p><img alt="Dashboard - Resource Usage" src="../assets/dashboards-resource-usage.png" /></p>
+<p>The following example shows how complex types for placeholders can be used. In the example the <code>grafana-dashboards</code> dashboard requires a list of dashboards via the <code>dashboards</code> placeholder:</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span><span class="w"></span>
+<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Grafana Dashboards</span><span class="w"></span>
+<span class="w">      </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">          </span><span class="no">- &quot;vErzsZIVk&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">- &quot;Tf1skG8Mz&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">- &quot;iyJszGUMk&quot;</span><span class="w"></span>
+
+<span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana-dashboards</span><span class="w"></span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboards</span><span class="w"></span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">object</span><span class="w"></span>
+<span class="w">  </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Grafana Dashboards</span><span class="w"></span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboards</span><span class="w"></span>
+<span class="w">              </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{%</span><span class="nv"> </span><span class="s">.dashboards</span><span class="nv"> </span><span class="s">%}&#39;</span><span class="w"></span>
+</code></pre></div>
 
               
             </article>
