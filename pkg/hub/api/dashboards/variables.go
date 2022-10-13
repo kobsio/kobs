@@ -1,6 +1,7 @@
 package dashboards
 
 import (
+	"encoding/json"
 	"fmt"
 
 	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
@@ -9,20 +10,42 @@ import (
 )
 
 // addPlaceholdersAsVariables adds the placeholders from a reference to the list of variables of the dashboard
-func addPlaceholdersAsVariables(variables []dashboardv1.Variable, placeholders map[string]string) []dashboardv1.Variable {
+func addPlaceholdersAsVariables(placeholders []dashboardv1.Placeholder, variables []dashboardv1.Variable, placeholderValues map[string]string) []dashboardv1.Variable {
 	var newVariables []dashboardv1.Variable
 
-	for k, v := range placeholders {
-		newVariables = append(newVariables, dashboardv1.Variable{
-			Name:  k,
-			Label: k,
-			Hide:  true,
-			Plugin: dashboardv1.Plugin{
-				Name:    "static",
-				Type:    "app",
-				Options: &apiextensionsv1.JSON{Raw: []byte(fmt.Sprintf(`["%s"]`, v))},
-			},
+	for _, placeholder := range placeholders {
+		fmt.Println(placeholder.Default, placeholder.Type)
+
+		placeholderValue := placeholder.Default
+		if val, ok := placeholderValues[placeholder.Name]; ok {
+			placeholderValue = val
+		}
+
+		placeholderType := placeholder.Type
+		if placeholderType == "" {
+			placeholderType = "string"
+		}
+
+		options, err := json.Marshal(struct {
+			Type  string `json:"type"`
+			Value string `json:"value"`
+		}{
+			placeholderType,
+			placeholderValue,
 		})
+
+		if err == nil {
+			newVariables = append(newVariables, dashboardv1.Variable{
+				Name:  placeholder.Name,
+				Label: placeholder.Name,
+				Hide:  true,
+				Plugin: dashboardv1.Plugin{
+					Name:    "placeholder",
+					Type:    "app",
+					Options: &apiextensionsv1.JSON{Raw: options},
+				},
+			})
+		}
 	}
 
 	newVariables = append(newVariables, variables...)

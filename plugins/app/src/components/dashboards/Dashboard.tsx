@@ -56,6 +56,13 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = ({
                 tmpVariables[i].value = tmpVariables[i].value || tmpVariables[i].plugin.options[0];
               }
             }
+
+            if (tmpVariables[i].plugin.name === 'placeholder') {
+              if (tmpVariables[i].plugin.options) {
+                tmpVariables[i].values = [tmpVariables[i].plugin.options.value || ''];
+                tmpVariables[i].value = tmpVariables[i].plugin.options.value || '';
+              }
+            }
           } else {
             tmpVariables[i] = await getVariableViaPlugin(tmpVariables[i], tmpVariables, times);
           }

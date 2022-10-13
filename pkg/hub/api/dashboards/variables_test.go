@@ -17,12 +17,16 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Label: "placeholder1",
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
-					Name:    "static",
+					Name:    "placeholder",
 					Type:    "app",
-					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
+					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type":"string","value":"value1"}`)},
 				},
 			},
-		}, addPlaceholdersAsVariables(nil, map[string]string{"placeholder1": "value1"}))
+		}, addPlaceholdersAsVariables([]dashboardv1.Placeholder{
+			{
+				Name: "placeholder1",
+			},
+		}, nil, map[string]string{"placeholder1": "value1"}))
 	})
 
 	t.Run("placeholders are nil", func(t *testing.T) {
@@ -37,7 +41,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
 				},
 			},
-		}, addPlaceholdersAsVariables([]dashboardv1.Variable{
+		}, addPlaceholdersAsVariables(nil, []dashboardv1.Variable{
 			{
 				Name:  "variable1",
 				Label: "Variable 1",
@@ -58,9 +62,9 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Label: "placeholder1",
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
-					Name:    "static",
+					Name:    "placeholder",
 					Type:    "app",
-					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
+					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type":"string","value":"value1"}`)},
 				},
 			},
 			{
@@ -73,7 +77,11 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
 				},
 			},
-		}, addPlaceholdersAsVariables([]dashboardv1.Variable{
+		}, addPlaceholdersAsVariables([]dashboardv1.Placeholder{
+			{
+				Name: "placeholder1",
+			},
+		}, []dashboardv1.Variable{
 			{
 				Name:  "variable1",
 				Label: "Variable 1",
@@ -85,5 +93,25 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				},
 			},
 		}, map[string]string{"placeholder1": "value1"}))
+	})
+
+	t.Run("placeholder values are nil", func(t *testing.T) {
+		require.Equal(t, []dashboardv1.Variable{
+			{
+				Name:  "placeholder1",
+				Label: "placeholder1",
+				Hide:  true,
+				Plugin: dashboardv1.Plugin{
+					Name:    "placeholder",
+					Type:    "app",
+					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type":"string","value":"default1"}`)},
+				},
+			},
+		}, addPlaceholdersAsVariables([]dashboardv1.Placeholder{
+			{
+				Name:    "placeholder1",
+				Default: "default1",
+			},
+		}, nil, nil))
 	})
 }

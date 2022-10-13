@@ -77,12 +77,12 @@ func TestGetDashboard(t *testing.T) {
 			name:               "get dashboards",
 			url:                "/dashboard?id=/satellite/satellite2/cluster/cluster1/namespace/namespace1/name/name1&key1=value1",
 			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"variables\":[{\"name\":\"key1\",\"label\":\"key1\",\"hide\":true,\"plugin\":{\"type\":\"app\",\"name\":\"static\",\"options\":[\"value1\"]}}],\"rows\":null}\n",
+			expectedBody:       "{\"placeholders\":[{\"name\":\"key1\"}],\"variables\":[{\"name\":\"key1\",\"label\":\"key1\",\"hide\":true,\"plugin\":{\"type\":\"app\",\"name\":\"placeholder\",\"options\":{\"type\":\"string\",\"value\":\"value1\"}}}],\"rows\":null}\n",
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			mockStoreClient := &store.MockClient{}
-			mockStoreClient.On("GetDashboardByID", mock.Anything, "/satellite/satellite2/cluster/cluster1/namespace/namespace1/name/name1").Return(&dashboardv1.DashboardSpec{}, nil)
+			mockStoreClient.On("GetDashboardByID", mock.Anything, "/satellite/satellite2/cluster/cluster1/namespace/namespace1/name/name1").Return(&dashboardv1.DashboardSpec{Placeholders: []dashboardv1.Placeholder{{Name: "key1"}}}, nil)
 			mockStoreClient.On("GetDashboardByID", mock.Anything, "/satellite/satellite1/cluster/cluster1/namespace/namespace1/name/name1").Return(nil, fmt.Errorf("could not get dashboard"))
 
 			router := Router{chi.NewRouter(), mockStoreClient}
