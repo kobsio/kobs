@@ -112,7 +112,10 @@ const Collections: React.FunctionComponent<ICollectionsProps> = ({
             placeholder="Filter"
             aria-label="Filter"
             value={filter}
-            onChange={(value: string): void => setFilter(value)}
+            onChange={(value: string): void => {
+              setPage({ page: 1, perPage: 20 });
+              setFilter(value);
+            }}
           />
         </CardActions>
       }
@@ -121,7 +124,7 @@ const Collections: React.FunctionComponent<ICollectionsProps> = ({
           <Pagination
             style={{ padding: 0 }}
             isCompact={true}
-            itemCount={data.length}
+            itemCount={data.filter((name) => name.toLowerCase().includes(filter.toLowerCase())).length}
             perPage={page.perPage}
             page={page.page}
             variant={PaginationVariant.bottom}

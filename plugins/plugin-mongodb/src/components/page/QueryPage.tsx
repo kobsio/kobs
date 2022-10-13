@@ -46,8 +46,8 @@ const QueryPage: React.FunctionComponent<IQueryPageProps> = ({ instance }: IQuer
       <PageHeaderSection
         component={
           <PluginPageTitle
-            satellite={instance.satellite}
-            name={instance.name}
+            satellite={`${instance.name} / ${instance.satellite}`}
+            name={params.collectionName || ''}
             description={instance.description || defaultDescription}
           />
         }
