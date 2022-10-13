@@ -44,7 +44,7 @@ func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http
 				Title:       reference.Title,
 				Description: reference.Description,
 				HideToolbar: reference.Inline.HideToolbar,
-				Variables:   addPlaceholdersAsVariables(reference.Inline.Variables, reference.Placeholders),
+				Variables:   addPlaceholdersAsVariables(nil, reference.Inline.Variables, reference.Placeholders),
 				Rows:        reference.Inline.Rows,
 			})
 		} else {
@@ -56,7 +56,7 @@ func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http
 			}
 
 			dashboard.Title = reference.Title
-			dashboard.Variables = addPlaceholdersAsVariables(dashboard.Variables, reference.Placeholders)
+			dashboard.Variables = addPlaceholdersAsVariables(dashboard.Placeholders, dashboard.Variables, reference.Placeholders)
 			dashboards = append(dashboards, dashboard)
 		}
 	}
@@ -84,7 +84,7 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dashboard.Variables = addPlaceholdersAsVariables(dashboard.Variables, placeholders)
+	dashboard.Variables = addPlaceholdersAsVariables(dashboard.Placeholders, dashboard.Variables, placeholders)
 	render.JSON(w, r, dashboard)
 }
 

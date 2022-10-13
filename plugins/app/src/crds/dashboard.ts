@@ -16,6 +16,8 @@ export interface IDashboard {
 export interface IPlaceholder {
   name: string;
   description?: string;
+  default?: string;
+  type?: string;
 }
 
 export interface IVariable {

@@ -9,7 +9,7 @@ Dashboards are defined via the [Dashboard Custom Resource Definition](https://gi
 | description | string | Provide a descriptions for the dashboard with additional details. | No |
 | hideToolbar | boolean | If this is `true` the toolbar will be hidden in the dashboard. | No |
 | placeholders | [[]Placeholder](#placeholder) | A list of placeholders, which can be directly set by the user. | No |
-| variables | [[]Variable](#Variable) | A list of variables, where the values are loaded by the specified plugin. | No |
+| variables | [[]Variable](#variable) | A list of variables, where the values are loaded by the specified plugin. | No |
 | rows | [[]Row](#row) | A list of rows for the dashboard. | Yes |
 
 ### Placeholder
@@ -18,6 +18,8 @@ Dashboards are defined via the [Dashboard Custom Resource Definition](https://gi
 | ----- | ---- | ----------- | -------- |
 | name | string | The name for the placeholder, which can be used in the dashboard via `{% .<placeholder-name> %}`. | Yes |
 | description | string | An optional description, to provide more information how the placeholder is used. | No |
+| default | string | A default value for the placeholder, when it is not provided in a dashboard reference. | No |
+| type | string | The type of the placeholder value. This could be `string`, `number` or `object`. The default value is `string`. | No |
 
 ### Variable
 
@@ -235,3 +237,45 @@ spec:
 ```
 
 ![Dashboard - Resource Usage](assets/dashboards-resource-usage.png)
+
+The following example shows how complex types for placeholders can be used. In the example the `grafana-dashboards` dashboard requires a list of dashboards via the `dashboards` placeholder:
+
+```yaml
+---
+apiVersion: kobs.io/v1
+kind: Application
+metadata:
+  name: kobs
+  namespace: kobs
+spec:
+  dashboards:
+    - namespace: kobs
+      name: test
+      title: Grafana Dashboards
+      placeholders:
+        dashboards: |
+          - "vErzsZIVk"
+          - "Tf1skG8Mz"
+          - "iyJszGUMk"
+
+---
+apiVersion: kobs.io/v1
+kind: Dashboard
+metadata:
+  name: grafana-dashboards
+  namespace: kobs
+spec:
+  placeholders:
+    - name: dashboards
+      type: object
+  rows:
+    - size: -1
+      panels:
+        - title: Grafana Dashboards
+          plugin:
+            name: grafana
+            type: grafana
+            options:
+              type: dashboards
+              dashboards: '{% .dashboards %}'
+```

@@ -1,4 +1,5 @@
 import { JSONPath } from 'jsonpath-plus';
+import yaml from 'js-yaml';
 
 import { ITimes } from '@kobsio/shared';
 import { IVariableValues } from '../../../crds/dashboard';
@@ -6,7 +7,8 @@ import { IVariableValues } from '../../../crds/dashboard';
 // IVariables is a map of variable names with the current value. This interface should only be used by the interpolate
 // function, to convert a given array of variables to the format, which is required by the function.
 interface IVariables {
-  [key: string]: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 // interpolate is used to replace the variables in a given string with the current value for this variable. Before we
@@ -24,7 +26,19 @@ export const interpolate = (
   const vars: IVariables = {};
 
   for (const variable of variables) {
-    vars[variable.name] = variable.value;
+    if (variable.plugin.type === 'app' && variable.plugin.name === 'placeholder') {
+      if (variable.plugin.options && variable.plugin.options.type && variable.plugin.options.type === 'number') {
+        str = str.replaceAll(`"{% .${variable.name} %}"`, `{% .${variable.name} %}`);
+        vars[variable.name] = parseFloat(variable.value);
+      } else if (variable.plugin.options && variable.plugin.options.type && variable.plugin.options.type === 'object') {
+        str = str.replaceAll(`"{% .${variable.name} %}"`, `{% .${variable.name} %}`);
+        vars[variable.name] = JSON.stringify(yaml.load(variable.value));
+      } else {
+        vars[variable.name] = variable.value;
+      }
+    } else {
+      vars[variable.name] = variable.value;
+    }
   }
 
   vars['__timeStart'] = `${times.timeStart}`;

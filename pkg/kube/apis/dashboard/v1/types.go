@@ -46,6 +46,8 @@ type DashboardSpec struct {
 type Placeholder struct {
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
+	Default     string `json:"default,omitempty"`
+	Type        string `json:"type,omitempty"`
 }
 
 type Variable struct {
