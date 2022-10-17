@@ -11,7 +11,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.3.4">
+      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.3.4">
     
     
       
@@ -1624,15 +1624,27 @@
 <td>No</td>
 </tr>
 <tr>
-<td>options.readTimeout</td>
+<td>options.dialTimeout</td>
 <td>string</td>
-<td>The read timeout for operations.</td>
+<td>ClickHouse dial timeout. The default value is <code>10s</code>.</td>
 <td>No</td>
 </tr>
 <tr>
-<td>options.writeTimeout</td>
+<td>options.connMaxLifetime</td>
 <td>string</td>
-<td>The write timeout for operations.</td>
+<td>ClickHouse maximum connection lifetime. The default value is <code>1h</code>.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>options.maxIdleConns</td>
+<td>number</td>
+<td>ClickHouse maximum number of idle connections. The default value is <code>5</code>.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>options.maxOpenConns</td>
+<td>number</td>
+<td>ClickHouse maximum number of open connections. The default value is <code>10</code>.</td>
 <td>No</td>
 </tr>
 <tr>
@@ -1649,10 +1661,12 @@
 <span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="nt">address</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">writeTimeout</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">readTimeout</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">dialTimeout</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">connMaxLifetime</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">maxIdleConns</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">maxOpenConns</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="nt">materializedColumns</span><span class="p">:</span><span class="w"></span>
 </code></pre></div>
 <h2 id="insight-options">Insight Options</h2>
@@ -1891,7 +1905,7 @@
 <tr>
 <td><code>_exists_</code></td>
 <td>The field can not be <code>null</code></td>
-<td><code>container_name='istio-proxy' _and_ _exists_ content.request_id</code></td>
+<td><code>container_name='istio-proxy' _and_ _exists_ content_request_id</code></td>
 </tr>
 <tr>
 <td><code>=</code></td>
@@ -1906,37 +1920,37 @@
 <tr>
 <td><code>&gt;</code></td>
 <td>The value of the field must be greater than the specified value.</td>
-<td><code>content.response_code&gt;499</code></td>
+<td><code>content_response_code&gt;499</code></td>
 </tr>
 <tr>
 <td><code>&gt;=</code></td>
 <td>The value of the field must be greater than or equal to the specified value.</td>
-<td><code>content.response_code&gt;=500</code></td>
+<td><code>content_response_code&gt;=500</code></td>
 </tr>
 <tr>
 <td><code>&lt;</code></td>
 <td>The value of the field must be lower than the specified value.</td>
-<td><code>content.response_code&lt;500</code></td>
+<td><code>content_response_code&lt;500</code></td>
 </tr>
 <tr>
 <td><code>&lt;=</code></td>
 <td>The value of the field must be lower than or equal to the specified value.</td>
-<td><code>content.response_code&lt;=499</code></td>
+<td><code>content_response_code&lt;=499</code></td>
 </tr>
 <tr>
 <td><code>=~</code></td>
 <td>The value of the field is compared using <code>ILIKE</code>.</td>
-<td><code>content.upstream_cluster=~'inbound%'</code></td>
+<td><code>content_upstream_cluster=~'inbound%'</code></td>
 </tr>
 <tr>
 <td><code>!~</code></td>
 <td>The value of the field is compared using <code>NOT ILIKE</code>.</td>
-<td><code>content.upstream_cluster!~'inbound%'</code></td>
+<td><code>content_upstream_cluster!~'inbound%'</code></td>
 </tr>
 <tr>
 <td><code>~</code></td>
 <td>The value of the field must match the regular expression. The syntax of the <code>re2</code> regular expressions can be found <a href="https://github.com/google/re2/wiki/Syntax">here</a>.</td>
-<td><code>content.upstream_cluster~'inbound.*'</code></td>
+<td><code>content_upstream_cluster~'inbound.*'</code></td>
 </tr>
 </tbody>
 </table>
@@ -1954,7 +1968,7 @@
 </ul>
 <h4 id="examples">Examples</h4>
 <ul>
-<li><code>namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content.upstream_cluster~'inbound.*'</code>: Select all inbound Istio logs from the bookinfo app in the bookinfo namespace.</li>
+<li><code>namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content_upstream_cluster~'inbound.*'</code>: Select all inbound Istio logs from the bookinfo app in the bookinfo namespace.</li>
 </ul>
 <h3 id="logs-dashboard">Logs Dashboard</h3>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
@@ -1973,18 +1987,18 @@
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logs</span><span class="w"></span>
 <span class="w">              </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Logs</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;namespace=&#39;bookinfo&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">app=&#39;bookinfo&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">container_name=&#39;istio-proxy&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">content.upstream_cluster~&#39;inbound.*&#39;&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;namespace=&#39;bookinfo&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">app=&#39;bookinfo&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">container_name=&#39;istio-proxy&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">content_upstream_cluster~&#39;inbound.*&#39;&quot;</span><span class="w"></span>
 <span class="w">                  </span><span class="nt">fields</span><span class="p">:</span><span class="w"></span>
 <span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;pod_name&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.authority&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.route_name&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.protocol&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.method&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.path&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.response_code&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.upstream_service_time&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_received&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_sent&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_authority&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_route_name&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_protocol&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_method&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_path&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_response_code&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_upstream_service_time&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_bytes_received&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content_bytes_sent&quot;</span><span class="w"></span>
 </code></pre></div>
 <h3 id="aggregation-dashboard">Aggregation Dashboard</h3>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
@@ -2026,7 +2040,7 @@
 <span class="w">                </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cluster=&#39;kobs-demo&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">app=&#39;myapplication&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">container_name=&#39;myapplication&#39;&quot;</span><span class="w"></span>
 <span class="w">                </span><span class="nt">chart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pie</span><span class="w"></span>
 <span class="w">                </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">sliceBy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content.level</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">sliceBy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content_level</span><span class="w"></span>
 <span class="w">                  </span><span class="nt">sizeByOperation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">count</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
 <span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
@@ -2038,14 +2052,14 @@
 <span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aggregation</span><span class="w"></span>
 <span class="w">              </span><span class="nt">aggregation</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cluster=&#39;kobs-demo&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">app=&#39;myapplication&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">container_name=&#39;istio-proxy&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">content.response_code&gt;0&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cluster=&#39;kobs-demo&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">app=&#39;myapplication&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">container_name=&#39;istio-proxy&#39;</span><span class="nv"> </span><span class="s">_and_</span><span class="nv"> </span><span class="s">content_response_code&gt;0&quot;</span><span class="w"></span>
 <span class="w">                </span><span class="nt">chart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span><span class="w"></span>
 <span class="w">                </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
 <span class="w">                  </span><span class="nt">horizontalAxisOperation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
 <span class="w">                  </span><span class="nt">verticalAxisOperation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avg</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">verticalAxisField</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content.duration</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">verticalAxisField</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content_duration</span><span class="w"></span>
 <span class="w">                  </span><span class="nt">breakDownByFields</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content.response_code</span><span class="w"></span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content_response_code</span><span class="w"></span>
 </code></pre></div>
 <p><img alt="Aggregation Example" src="../assets/klogs-aggregation.png" /></p>
 
