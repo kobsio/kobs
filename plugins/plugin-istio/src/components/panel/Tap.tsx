@@ -147,23 +147,23 @@ const Tap: React.FunctionComponent<ITapProps> = ({
             onClick={setDetails ? (): void => handleRowClick(index, line) : undefined}
           >
             <Td dataLabel="Direction">
-              {line.hasOwnProperty('content.upstream_cluster') ? getDirection(line['content.upstream_cluster']) : '-'}
+              {line.hasOwnProperty('content_upstream_cluster') ? getDirection(line['content_upstream_cluster']) : '-'}
             </Td>
             <Td dataLabel="Upstream Cluster">
-              {line.hasOwnProperty('content.upstream_cluster') ? line['content.upstream_cluster'] : '-'}
+              {line.hasOwnProperty('content_upstream_cluster') ? line['content_upstream_cluster'] : '-'}
             </Td>
-            <Td dataLabel="Method">{line.hasOwnProperty('content.method') ? line['content.method'] : '-'}</Td>
+            <Td dataLabel="Method">{line.hasOwnProperty('content_method') ? line['content_method'] : '-'}</Td>
             <Td className="pf-u-text-wrap pf-u-text-break-word" dataLabel="Path">
-              {line.hasOwnProperty('content.path') ? line['content.path'] : '-'}
+              {line.hasOwnProperty('content_path') ? line['content_path'] : '-'}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="Latency">
-              {line.hasOwnProperty('content.duration') ? `${line['content.duration']} ms` : '-'}
+              {line.hasOwnProperty('content_duration') ? `${line['content_duration']} ms` : '-'}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="HTTP Status">
-              {line.hasOwnProperty('content.response_code') ? line['content.response_code'] : '-'}
+              {line.hasOwnProperty('content_response_code') ? line['content_response_code'] : '-'}
             </Td>
             <Td className="pf-u-text-nowrap" dataLabel="gRPC Status">
-              {line.hasOwnProperty('content.grpc_status') ? line['content.grpc_status'] : '-'}
+              {line.hasOwnProperty('content_grpc_status') ? line['content_grpc_status'] : '-'}
             </Td>
           </Tr>
         ))}

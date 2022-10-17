@@ -82,7 +82,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
               </span>
 
               {Object.keys(document)
-                .filter((key) => key.startsWith('content.') && document[key].length < 128)
+                .filter((key) => key.startsWith('content_') && document[key].length < 128)
                 .map((key) => (
                   <span key={key} className="pf-u-mr-sm pf-u-mb-sm">
                     <span className="pf-u-background-color-200 pf-u-p-xs">{key}:</span>
@@ -95,7 +95,7 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
                 <span className="pf-u-p-xs"> {document['log']}</span>
               </span>
 
-              {Object.keys(document).filter((key) => key.startsWith('content.') && document[key].length < 128)
+              {Object.keys(document).filter((key) => key.startsWith('content_') && document[key].length < 128)
                 .length === 0
                 ? Object.keys(document)
                     .filter((key) => key.startsWith('kubernetes.'))

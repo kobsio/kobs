@@ -57,16 +57,16 @@ func generateFieldName(fieldName string, materializedColumns []string, customFie
 	}
 
 	if mustNumber {
-		return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')]", fieldName)
+		return fmt.Sprintf("fields_number['%s']", fieldName)
 	}
 
 	for _, field := range customFields.Number {
 		if field == fieldName {
-			return fmt.Sprintf("fields_number.value[indexOf(fields_number.key, '%s')]", fieldName)
+			return fmt.Sprintf("fields_number['%s']", fieldName)
 		}
 	}
 
-	return fmt.Sprintf("fields_string.value[indexOf(fields_string.key, '%s')]", fieldName)
+	return fmt.Sprintf("fields_string['%s']", fieldName)
 }
 
 // getOrderBy returns the SQL keyword for the user defined order in the aggregation.

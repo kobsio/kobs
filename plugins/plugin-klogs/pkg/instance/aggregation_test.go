@@ -14,12 +14,12 @@ func TestGenerateFieldName(t *testing.T) {
 	}{
 		{field: "namespace", mustNumber: false, expect: "namespace"},
 		{field: "namespace", mustNumber: false, expect: "namespace"},
-		{field: "content.method", mustNumber: false, expect: "fields_string.value[indexOf(fields_string.key, 'content.method')]"},
-		{field: "content.duration", mustNumber: true, expect: "fields_number.value[indexOf(fields_number.key, 'content.duration')]"},
-		{field: "content.duration", mustNumber: false, expect: "fields_number.value[indexOf(fields_number.key, 'content.duration')]"},
+		{field: "content_method", mustNumber: false, expect: "fields_string['content_method']"},
+		{field: "content_duration", mustNumber: true, expect: "fields_number['content_duration']"},
+		{field: "content_duration", mustNumber: false, expect: "fields_number['content_duration']"},
 	} {
 		t.Run(tt.field, func(t *testing.T) {
-			actual := generateFieldName(tt.field, nil, Fields{String: nil, Number: []string{"content.duration"}}, tt.mustNumber)
+			actual := generateFieldName(tt.field, nil, Fields{String: nil, Number: []string{"content_duration"}}, tt.mustNumber)
 			require.Equal(t, tt.expect, actual)
 		})
 	}

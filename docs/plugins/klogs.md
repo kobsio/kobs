@@ -16,8 +16,10 @@ To use the klogs plugin the following configuration is needed in the satellites 
 | options.database | string | The name of the database. | Yes |
 | options.username | string | Username to access a ClickHouse instance. | No |
 | options.password | string | Password to access a ClickHouse instance. | No |
-| options.readTimeout | string | The read timeout for operations. | No |
-| options.writeTimeout | string | The write timeout for operations. | No |
+| options.dialTimeout | string | ClickHouse dial timeout. The default value is `10s`. | No |
+| options.connMaxLifetime | string | ClickHouse maximum connection lifetime. The default value is `1h`. | No |
+| options.maxIdleConns | number | ClickHouse maximum number of idle connections. The default value is `5`. | No |
+| options.maxOpenConns | number | ClickHouse maximum number of open connections. The default value is `10`. | No |
 | options.materializedColumns | []string | A list of materialized columns. See [kobsio/klogs](https://github.com/kobsio/klogs#configuration) for more information. | No |
 
 ```yaml
@@ -27,10 +29,12 @@ plugins:
     options:
       address:
       database:
-      writeTimeout:
-      readTimeout:
       username:
       password:
+      dialTimeout:
+      connMaxLifetime:
+      maxIdleConns:
+      maxOpenConns:
       materializedColumns:
 ```
 
@@ -107,16 +111,16 @@ kobs supports multiple operators which can be used in a query to retrieve logs f
 | `_not_` | Exclude the term from the query. | `cluster='kobs-demo' _and_ _not_ namespace='bookinfo'` |
 | `_and_` | Both terms must be included in the results. | `namespace='bookinfo' _and_ app='bookinfo'` |
 | `_or_` | The result can contain one of the given terms. | `namespace='bookinfo' _or_ namespace='istio-system'` |
-| `_exists_` | The field can not be `null` | `container_name='istio-proxy' _and_ _exists_ content.request_id` |
+| `_exists_` | The field can not be `null` | `container_name='istio-proxy' _and_ _exists_ content_request_id` |
 | `=` | The field must have this value. | `namespace='bookinfo'` |
 | `!=` | The field should not have this value. | `namespace!='bookinfo'` |
-| `>` | The value of the field must be greater than the specified value. | `content.response_code>499` |
-| `>=` | The value of the field must be greater than or equal to the specified value. | `content.response_code>=500` |
-| `<` | The value of the field must be lower than the specified value. | `content.response_code<500` |
-| `<=` | The value of the field must be lower than or equal to the specified value. | `content.response_code<=499` |
-| `=~` | The value of the field is compared using `ILIKE`. | `content.upstream_cluster=~'inbound%'` |
-| `!~` | The value of the field is compared using `NOT ILIKE`. | `content.upstream_cluster!~'inbound%'` |
-| `~` | The value of the field must match the regular expression. The syntax of the `re2` regular expressions can be found [here](https://github.com/google/re2/wiki/Syntax). | `content.upstream_cluster~'inbound.*'` |
+| `>` | The value of the field must be greater than the specified value. | `content_response_code>499` |
+| `>=` | The value of the field must be greater than or equal to the specified value. | `content_response_code>=500` |
+| `<` | The value of the field must be lower than the specified value. | `content_response_code<500` |
+| `<=` | The value of the field must be lower than or equal to the specified value. | `content_response_code<=499` |
+| `=~` | The value of the field is compared using `ILIKE`. | `content_upstream_cluster=~'inbound%'` |
+| `!~` | The value of the field is compared using `NOT ILIKE`. | `content_upstream_cluster!~'inbound%'` |
+| `~` | The value of the field must match the regular expression. The syntax of the `re2` regular expressions can be found [here](https://github.com/google/re2/wiki/Syntax). | `content_upstream_cluster~'inbound.*'` |
 
 #### Default Fields
 
@@ -133,7 +137,7 @@ In the following you can find a list of fields which are available for each log 
 
 #### Examples
 
-- `namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content.upstream_cluster~'inbound.*'`: Select all inbound Istio logs from the bookinfo app in the bookinfo namespace.
+- `namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content_upstream_cluster~'inbound.*'`: Select all inbound Istio logs from the bookinfo app in the bookinfo namespace.
 
 ### Logs Dashboard
 
@@ -154,18 +158,18 @@ spec:
               type: logs
               queries:
                 - name: Istio Logs
-                  query: "namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content.upstream_cluster~'inbound.*'"
+                  query: "namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content_upstream_cluster~'inbound.*'"
                   fields:
                     - "pod_name"
-                    - "content.authority"
-                    - "content.route_name"
-                    - "content.protocol"
-                    - "content.method"
-                    - "content.path"
-                    - "content.response_code"
-                    - "content.upstream_service_time"
-                    - "content.bytes_received"
-                    - "content.bytes_sent"
+                    - "content_authority"
+                    - "content_route_name"
+                    - "content_protocol"
+                    - "content_method"
+                    - "content_path"
+                    - "content_response_code"
+                    - "content_upstream_service_time"
+                    - "content_bytes_received"
+                    - "content_bytes_sent"
 ```
 
 ### Aggregation Dashboard
@@ -210,7 +214,7 @@ spec:
                 query: "cluster='kobs-demo' _and_ app='myapplication' _and_ container_name='myapplication'"
                 chart: pie
                 options:
-                  sliceBy: content.level
+                  sliceBy: content_level
                   sizeByOperation: count
     - size: 3
       panels:
@@ -222,14 +226,14 @@ spec:
             options:
               type: aggregation
               aggregation:
-                query: "cluster='kobs-demo' _and_ app='myapplication' _and_ container_name='istio-proxy' _and_ content.response_code>0"
+                query: "cluster='kobs-demo' _and_ app='myapplication' _and_ container_name='istio-proxy' _and_ content_response_code>0"
                 chart: line
                 options:
                   horizontalAxisOperation: time
                   verticalAxisOperation: avg
-                  verticalAxisField: content.duration
+                  verticalAxisField: content_duration
                   breakDownByFields:
-                    - content.response_code
+                    - content_response_code
 ```
 
 ![Aggregation Example](assets/klogs-aggregation.png)

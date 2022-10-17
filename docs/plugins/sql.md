@@ -111,8 +111,8 @@ The following options can be used for a panel with the SQL plugin:
                               query: |
                                 SELECT
                                   toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
-                                  avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
-                                  avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust,
+                                  avg(fields_number['content_duration']) as avg_duration,
+                                  avg(fields_number['content_upstream_service_time']) as avg_ust,
                                   avg_duration - avg_ust as avg_diff
                                 FROM
                                   logs.logs
@@ -122,7 +122,7 @@ The following options can be used for a panel with the SQL plugin:
                                   AND namespace='myservice'
                                   AND app='myservice'
                                   AND container_name='istio-proxy'
-                                  AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                                  AND match(fields_string['content_upstream_cluster'], '^inbound.*')
                                 GROUP BY
                                   time
                                 ORDER BY
@@ -153,7 +153,7 @@ The following options can be used for a panel with the SQL plugin:
                             query: |
                               SELECT
                                 toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
-                                avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) - avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_diff
+                                avg(fields_number['content_duration']) - avg(fields_number['content_upstream_service_time']) as avg_diff
                               FROM
                                 logs.logs
                               WHERE
@@ -162,7 +162,7 @@ The following options can be used for a panel with the SQL plugin:
                                 AND namespace='myservice'
                                 AND app='myservice'
                                 AND container_name='istio-proxy'
-                                AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                                AND match(fields_string['content_upstream_cluster'], '^inbound.*')
                               GROUP BY
                                 time
                               ORDER BY
@@ -188,8 +188,8 @@ The following options can be used for a panel with the SQL plugin:
                             query: |
                               SELECT
                                 toStartOfInterval(timestamp, INTERVAL 60 second) AS time,
-                                avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg_duration,
-                                avg(fields_number.value[indexOf(fields_number.key, 'content.upstream_service_time')]) as avg_ust
+                                avg(fields_number['content_duration']) as avg_duration,
+                                avg(fields_number['content_upstream_service_time']) as avg_ust
                               FROM
                                 logs.logs
                               WHERE
@@ -198,7 +198,7 @@ The following options can be used for a panel with the SQL plugin:
                                 AND namespace='myservice'
                                 AND app='myservice'
                                 AND container_name='istio-proxy'
-                                AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '^inbound.*')
+                                AND match(fields_string['content_upstream_cluster'], '^inbound.*')
                               GROUP BY
                                 time
                               ORDER BY
@@ -230,8 +230,8 @@ The following options can be used for a panel with the SQL plugin:
                             - name: Log Levels
                               query: |
                                 SELECT
-                                  content.level,
-                                  count(content.level) as count_data
+                                  content_level,
+                                  count(content_level) as count_data
                                 FROM
                                   logs.logs
                                 WHERE
@@ -241,9 +241,9 @@ The following options can be used for a panel with the SQL plugin:
                                   AND app='myservice'
                                   AND container_name='myservice'
                                 GROUP BY
-                                  content.level
+                                  content_level
                               columns:
-                                content.level:
+                                content_level:
                                   title: Level
                                 count_data:
                                   title: Count
@@ -258,8 +258,8 @@ The following options can be used for a panel with the SQL plugin:
                             type: pie
                             query: |
                               SELECT
-                                content.level,
-                                count(content.level) as count_data
+                                content_level,
+                                count(content_level) as count_data
                               FROM
                                 logs.logs
                               WHERE
@@ -269,8 +269,8 @@ The following options can be used for a panel with the SQL plugin:
                                 AND app='myservice'
                                 AND container_name='myservice'
                               GROUP BY
-                                content.level
-                            pieLabelColumn: content.level
+                                content_level
+                            pieLabelColumn: content_level
                             pieValueColumn: count_data
     ```
 

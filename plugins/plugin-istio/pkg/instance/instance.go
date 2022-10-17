@@ -315,13 +315,13 @@ func (i *instance) GetTopology(ctx context.Context, namespace, application strin
 func (i *instance) Tap(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath string, timeStart int64, timeEnd int64) ([]map[string]any, error) {
 	var filters string
 	if filterUpstreamCluster != "" {
-		filters = filters + fmt.Sprintf(" _and_ content.upstream_cluster~'%s'", filterUpstreamCluster)
+		filters = filters + fmt.Sprintf(" _and_ content_upstream_cluster~'%s'", filterUpstreamCluster)
 	}
 	if filterMethod != "" {
-		filters = filters + fmt.Sprintf(" _and_ content.method~'%s'", filterMethod)
+		filters = filters + fmt.Sprintf(" _and_ content_method~'%s'", filterMethod)
 	}
 	if filterPath != "" {
-		filters = filters + fmt.Sprintf(" _and_ content.path~'%s'", filterPath)
+		filters = filters + fmt.Sprintf(" _and_ content_path~'%s'", filterPath)
 	}
 
 	logs, _, _, _, _, err := i.klogs.GetLogs(ctx, fmt.Sprintf("namespace='%s' _and_ app='%s' _and_ container_name='istio-proxy' %s", namespace, application, filters), "", "", 100, timeStart, timeEnd)
@@ -336,31 +336,31 @@ func (i *instance) Tap(ctx context.Context, namespace, application, filterUpstre
 func (i *instance) Top(ctx context.Context, namespace, application, filterUpstreamCluster, filterMethod, filterPath, sortBy, sortDirection string, timeStart int64, timeEnd int64) ([][]any, error) {
 	var filters string
 	if filterUpstreamCluster != "" {
-		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')], '%s')", filterUpstreamCluster)
+		filters = filters + fmt.Sprintf(" AND match(fields_string['content_upstream_cluster'], '%s')", filterUpstreamCluster)
 	}
 	if filterMethod != "" {
-		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.method')], '%s')", filterMethod)
+		filters = filters + fmt.Sprintf(" AND match(fields_string['content_method'], '%s')", filterMethod)
 	}
 	if filterPath != "" {
-		filters = filters + fmt.Sprintf(" AND match(fields_string.value[indexOf(fields_string.key, 'content.path')], '%s')", filterPath)
+		filters = filters + fmt.Sprintf(" AND match(fields_string['content_path'], '%s')", filterPath)
 	}
 
 	rows, _, err := i.klogs.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT
-    fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')] as upstream,
-    fields_string.value[indexOf(fields_string.key, 'content.method')] as method,
-    path(fields_string.value[indexOf(fields_string.key, 'content.path')]) as path,
+    fields_string['content_upstream_cluster'] as upstream,
+    fields_string['content_method'] as method,
+    path(fields_string['content_path']) as path,
     count(*) as count,
-    min(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as min,
-    max(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as max,
-    avg(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as avg,
-    anyLast(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as last,
-    countIf(fields_number.value[indexOf(fields_number.key, 'content.response_code')] < 500) / count * 100 as sr
+    min(fields_number['content_duration']) as min,
+    max(fields_number['content_duration']) as max,
+    avg(fields_number['content_duration']) as avg,
+    anyLast(fields_number['content_duration']) as last,
+    countIf(fields_number['content_response_code'] < 500) / count * 100 as sr
 FROM logs.logs
 WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND namespace = '%s' AND app = '%s' AND container_name = 'istio-proxy' %s
 GROUP BY
-    fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')],
-    fields_string.value[indexOf(fields_string.key, 'content.method')],
-    path(fields_string.value[indexOf(fields_string.key, 'content.path')])
+    fields_string['content_upstream_cluster'],
+    fields_string['content_method'],
+    path(fields_string['content_path'])
 ORDER BY %s %s
 LIMIT 100
 SETTINGS skip_unavailable_shards = 1`, timeStart, timeEnd, namespace, application, filters, sortBy, sortDirection))
@@ -377,22 +377,22 @@ func (i *instance) TopDetails(ctx context.Context, namespace, application, upstr
 	filters := fmt.Sprintf(" AND namespace = '%s' AND app = '%s' AND container_name = 'istio-proxy'", namespace, application)
 
 	if upstreamCluster != "" {
-		filters = filters + fmt.Sprintf(" AND fields_string.value[indexOf(fields_string.key, 'content.upstream_cluster')] = '%s'", upstreamCluster)
+		filters = filters + fmt.Sprintf(" AND fields_string['content_upstream_cluster'] = '%s'", upstreamCluster)
 	}
 	if method != "" {
-		filters = filters + fmt.Sprintf(" AND fields_string.value[indexOf(fields_string.key, 'content.method')] = '%s'", method)
+		filters = filters + fmt.Sprintf(" AND fields_string['content_method'] = '%s'", method)
 	}
 	if path != "" {
-		filters = filters + fmt.Sprintf(" AND path(fields_string.value[indexOf(fields_string.key, 'content.path')]) = '%s'", path)
+		filters = filters + fmt.Sprintf(" AND path(fields_string['content_path']) = '%s'", path)
 	}
 
 	rows, _, err := i.klogs.GetRawQueryResults(ctx, fmt.Sprintf(`SELECT
     toStartOfInterval(timestamp, INTERVAL %d second) AS interval_data,
     count(*) AS count_data,
-    countIf(fields_number.value[indexOf(fields_number.key, 'content.response_code')] < 500) / count_data * 100 as sr_data,
-    quantile(0.5)(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as p50_data,
-    quantile(0.9)(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as p90_data,
-    quantile(0.99)(fields_number.value[indexOf(fields_number.key, 'content.duration')]) as p99_data
+    countIf(fields_number['content_response_code'] < 500) / count_data * 100 as sr_data,
+    quantile(0.5)(fields_number['content_duration']) as p50_data,
+    quantile(0.9)(fields_number['content_duration']) as p90_data,
+    quantile(0.99)(fields_number['content_duration']) as p99_data
 FROM logs.logs
 WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) %s
 GROUP BY interval_data
