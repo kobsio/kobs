@@ -14,7 +14,7 @@ func Handler(token string) func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			if token != "" {
 				authHeader := r.Header.Get("Authorization")
-				if !strings.HasPrefix(authHeader, "Bearer ") || strings.TrimLeft(authHeader, "Bearer ") != token {
+				if !strings.HasPrefix(authHeader, "Bearer ") || strings.TrimPrefix(authHeader, "Bearer ") != token {
 					errresponse.Render(w, r, fmt.Errorf("authorization token is missing or invalid"), http.StatusUnauthorized, "You are not authorized to access the resource")
 					return
 				}
