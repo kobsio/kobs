@@ -54,6 +54,7 @@ spec:
             httpGet:
               path: /api/health
               port: http-api
+            failureThreshold: 10
           readinessProbe:
             httpGet:
               path: /api/health
