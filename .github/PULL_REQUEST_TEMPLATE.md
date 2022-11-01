@@ -16,4 +16,4 @@
 -->
 
 - [ ] I adjusted the corresponding [documentation](https://github.com/kobsio/kobs/tree/main/docs) for this change.
-- [ ] I adjusted the [values.yaml](https://github.com/kobsio/kobs/blob/main/deploy/helm/kobs/values.yaml) file and the [documentation for all values](https://github.com/kobsio/kobs/blob/main/docs/installation/helm.md).
+- [ ] I adjusted the [values.yaml for the hub](https://github.com/kobsio/kobs/blob/main/deploy/helm/hub/values.yaml) / [values.yaml for the satellite](https://github.com/kobsio/kobs/blob/main/deploy/helm/satellite/values.yaml) file and the [documentation for all values](https://github.com/kobsio/kobs/blob/main/docs/getting-started/installation/helm.md).

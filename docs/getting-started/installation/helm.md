@@ -45,6 +45,7 @@ helm upgrade --install satellite kobs/satellite
 | `image.repository` | The repository for the Docker image. | `kobsio/kobs` |
 | `image.tag` | The tag of the Docker image which should be used. | `v0.10.0` |
 | `image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
+| `podDisruptionBudget` | Specifies if PodDisruptionBudget should be enabled. | `{}` |
 | `podSecurityContext` | Specify security settings for the created Pods. To set the security settings for the kobs or envoy Container use the corresponding `securityContext` field. | `{}` |
 | `securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
@@ -117,6 +118,7 @@ helm upgrade --install satellite kobs/satellite
 | `image.repository` | The repository for the Docker image. | `kobsio/kobs` |
 | `image.tag` | The tag of the Docker image which should be used. | `v0.10.0` |
 | `image.pullPolicy` | The image pull policy for the Docker image. | `IfNotPresent` |
+| `podDisruptionBudget` | Specifies if PodDisruptionBudget should be enabled. | `{}` |
 | `podSecurityContext` | Specify security settings for the created Pods. To set the security settings for the kobs or envoy Container use the corresponding `securityContext` field. | `{}` |
 | `securityContext` | Specify security settings for the kobs Container. They override settings made at the Pod level via the `podSecurityContext` when there is overlap. | `{}` |
 | `resources` | Set cpu and memory requests and limits for the kobs container. | `{}` |
