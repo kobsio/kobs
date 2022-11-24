@@ -11,11 +11,14 @@ import {
   GridItem,
   Spinner,
 } from '@patternfly/react-core';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
+
 import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
+import { AutolinkReference } from '../../utils/ResolveReference';
 import { ILogsData } from '../../utils/interfaces';
 import LogsActions from './LogsActions';
 import LogsChart from '../panel/LogsChart';
@@ -166,15 +169,17 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
 
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
           <CardBody>
-            <LogsDocuments
-              documents={data.documents}
-              fields={fields}
-              order={order}
-              orderBy={orderBy}
-              addFilter={addFilter}
-              changeOrder={changeOrder}
-              selectField={selectField}
-            />
+            <AutolinkReference.Context.Provider value={AutolinkReference.Factory([fakeAutolink], times)}>
+              <LogsDocuments
+                documents={data.documents}
+                fields={fields}
+                order={order}
+                orderBy={orderBy}
+                addFilter={addFilter}
+                changeOrder={changeOrder}
+                selectField={selectField}
+              />
+            </AutolinkReference.Context.Provider>
           </CardBody>
         </Card>
       </GridItem>
@@ -183,3 +188,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
 };
 
 export default Logs;
+const fakeAutolink = {
+  fieldName: 'content_request_id',
+  path: `?query=content_request_id='<<value>>'`,
+};
