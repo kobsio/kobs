@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { IPluginInstance, ITimes, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
-import { IOptions } from '../../utils/interfaces';
+
+import { IField, IOptions } from '../../utils/interfaces';
 import Logs from './Logs';
 import LogsPageActions from './LogsPageActions';
 import LogsToolbar from './LogsToolbar';
@@ -21,7 +22,7 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ instance }: ILogsPa
   // changeOptions is used to change the options. Besides setting a new value for the options state we also reflect the
   // options in the current url.
   const changeOptions = (opts: IOptions): void => {
-    const fields = opts.fields ? opts.fields.map((field) => `&field=${field}`) : [];
+    const fields = opts.fields ? opts.fields.map((field) => `&field=${field.name}`) : [];
 
     navigate(
       `${location.pathname}?query=${encodeURIComponent(opts.query)}&order=${opts.order}&orderBy=${opts.orderBy}&time=${
@@ -32,15 +33,15 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ instance }: ILogsPa
 
   // selectField is used to add a field as parameter, when it isn't present and to remove a fields from as parameter,
   // when it is already present via the changeOptions function.
-  const selectField = (field: string): void => {
+  const selectField = (field: { name: string }): void => {
     if (options) {
-      let tmpFields: string[] = [];
+      let tmpFields: IField[] = [];
       if (options.fields) {
         tmpFields = [...options.fields];
       }
 
-      if (tmpFields.includes(field)) {
-        tmpFields = tmpFields.filter((f) => f !== field);
+      if (tmpFields.some((tf) => tf.name === field.name)) {
+        tmpFields = tmpFields.filter((f) => f.name !== field.name);
       } else {
         tmpFields.push(field);
       }

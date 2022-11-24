@@ -18,8 +18,8 @@ import React from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
+import { IField, ILogsData } from '../../utils/interfaces';
 import { AutolinkReference } from '../../utils/ResolveReference';
-import { ILogsData } from '../../utils/interfaces';
 import LogsActions from './LogsActions';
 import LogsChart from '../panel/LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
@@ -27,14 +27,14 @@ import LogsFields from './LogsFields';
 
 interface ILogsProps {
   instance: IPluginInstance;
-  fields?: string[];
+  fields?: IField[];
   order: string;
   orderBy: string;
   query: string;
   addFilter: (filter: string) => void;
   changeTime: (times: ITimes) => void;
   changeOrder: (order: string, orderBy: string) => void;
-  selectField: (field: string) => void;
+  selectField: (field: { name: string }) => void;
   changeFieldOrder: (oldIndex: number, newIndex: number) => void;
   times: ITimes;
 }
@@ -83,7 +83,10 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
             throw new Error(json.error);
           }
 
-          return json;
+          return {
+            ...json,
+            fields: json.fields.map((f: string) => ({ name: f })),
+          };
         } else {
           if (json.error) {
             throw new Error(json.error);

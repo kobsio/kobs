@@ -9,9 +9,9 @@ import '../../assets/logsdocuments.css';
 
 interface ILogsDocumentProps {
   document: IDocument;
-  fields?: string[];
+  fields?: { name: string }[];
   addFilter?: (filter: string) => void;
-  selectField?: (field: string) => void;
+  selectField?: (field: { name: string }) => void;
 }
 
 const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
@@ -49,8 +49,8 @@ const LogsDocument: React.FunctionComponent<ILogsDocumentProps> = ({
         </Td>
         {fields && fields.length > 0 ? (
           fields.map((field, index) => (
-            <Td key={index} className="pf-u-text-wrap pf-u-text-break-word" dataLabel={field}>
-              {document[field]}
+            <Td key={index} className="pf-u-text-wrap pf-u-text-break-word" dataLabel={field.name}>
+              {document[field.name]}
             </Td>
           ))
         ) : (

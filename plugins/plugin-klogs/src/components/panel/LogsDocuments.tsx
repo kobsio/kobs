@@ -22,12 +22,12 @@ interface IPage {
 
 interface ILogsDocumentsProps {
   documents?: IDocument[];
-  fields?: string[];
+  fields?: { name: string }[];
   order?: string;
   orderBy?: string;
   addFilter?: (filter: string) => void;
   changeOrder?: (order: string, orderBy: string) => void;
-  selectField?: (field: string) => void;
+  selectField?: (field: { name: string }) => void;
 }
 
 const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
@@ -41,7 +41,8 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
 }: ILogsDocumentsProps) => {
   const [page, setPage] = useState<IPage>({ page: 1, perPage: 100 });
 
-  const activeSortIndex = fields && orderBy && orderBy !== 'timestamp' ? fields?.indexOf(orderBy) : -1;
+  const activeSortIndex =
+    fields && orderBy && orderBy !== 'timestamp' ? fields?.findIndex((f) => f.name === orderBy) : -1;
   const activeSortDirection = order === 'ascending' ? 'asc' : 'desc';
 
   useEffect(() => {
@@ -86,13 +87,13 @@ const LogsDocuments: React.FunctionComponent<ILogsDocumentsProps> = ({
                     extraData: IExtraColumnData,
                   ): void => {
                     if (changeOrder) {
-                      changeOrder(sortByDirection === 'asc' ? 'ascending' : 'descending', field);
+                      changeOrder(sortByDirection === 'asc' ? 'ascending' : 'descending', field.name);
                     }
                   },
                   sortBy: { direction: activeSortDirection, index: activeSortIndex },
                 }}
               >
-                {field}
+                {field.name}
               </Th>
             ))
           ) : (

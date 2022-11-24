@@ -10,7 +10,7 @@ export const getInitialOptions = (search: string, isInitial: boolean): IOptions 
   const query = params.get('query');
 
   return {
-    fields: fields.length > 0 ? fields : undefined,
+    fields: fields.length > 0 ? fields.map((name) => ({ name })) : undefined,
     order: order ? order : 'descending',
     orderBy: orderBy ? orderBy : '',
     query: query ? query : '',

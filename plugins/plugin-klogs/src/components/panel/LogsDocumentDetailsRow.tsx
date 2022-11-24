@@ -14,7 +14,7 @@ export interface ILogsDocumentDetailsRowProps {
   documentKey: string;
   documentValue: string;
   addFilter?: (filter: string) => void;
-  selectField?: (field: string) => void;
+  selectField?: (field: { name: string }) => void;
 }
 
 const LogsDocumentDetailsRow: React.FunctionComponent<ILogsDocumentDetailsRowProps> = ({
@@ -26,7 +26,6 @@ const LogsDocumentDetailsRow: React.FunctionComponent<ILogsDocumentDetailsRowPro
   const { getReferenceForField } = useContext(AutolinkReference.Context);
   const [showActions, setShowActions] = useState<boolean>(false);
   const reference = getReferenceForField(documentKey, documentValue);
-  console.log({ getReferenceForField });
 
   return (
     <Tr onMouseEnter={(): void => setShowActions(true)} onMouseLeave={(): void => setShowActions(false)}>
@@ -76,7 +75,7 @@ const LogsDocumentDetailsRow: React.FunctionComponent<ILogsDocumentDetailsRowPro
                   variant="plain"
                   aria-label="Toggle field in table"
                   isSmall={true}
-                  onClick={(): void => selectField(documentKey)}
+                  onClick={(): void => selectField({ name: documentKey })}
                 >
                   <ColumnsIcon />
                 </Button>

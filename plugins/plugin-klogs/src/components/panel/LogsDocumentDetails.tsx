@@ -9,7 +9,7 @@ import LogsDocumentDetailsRow from './LogsDocumentDetailsRow';
 export interface ILogsDocumentDetailsProps {
   document: IDocument;
   addFilter?: (filter: string) => void;
-  selectField?: (field: string) => void;
+  selectField?: (field: { name: string }) => void;
 }
 
 const LogsDocumentDetails: React.FunctionComponent<ILogsDocumentDetailsProps> = ({

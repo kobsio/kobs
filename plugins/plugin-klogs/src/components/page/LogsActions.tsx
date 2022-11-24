@@ -11,7 +11,7 @@ interface ILogsActionsProps {
   query: string;
   times: ITimes;
   documents?: IDocument[];
-  fields?: string[];
+  fields?: { name: string }[];
   isFetching: boolean;
 }
 
@@ -48,8 +48,8 @@ export const LogsActions: React.FunctionComponent<ILogsActionsProps> = ({
       for (const document of documents) {
         csv = csv + formatTime(document['timestamp']);
 
-        for (const field of fields) {
-          csv = csv + ';' + (document.hasOwnProperty(field) ? document[field] : '-');
+        for (const { name } of fields) {
+          csv = csv + ';' + (document.hasOwnProperty(name) ? document[name] : '-');
         }
 
         csv = csv + '\r\n';
