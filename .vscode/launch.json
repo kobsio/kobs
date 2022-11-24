@@ -8,9 +8,10 @@
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
       "args": [
+        "hub",
         "--log.level=debug",
         "--hub.config=../../deploy/docker/kobs/hub.yaml",
-        "--app.assets=''"
+        "--app.assets="
       ]
     },
     {
@@ -20,6 +21,7 @@
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
       "args": [
+        "satellite",
         "--log.level=debug",
         "--satellite.config=../../deploy/docker/kobs/satellite.yaml",
         "--satellite.token=unsecuretoken"
