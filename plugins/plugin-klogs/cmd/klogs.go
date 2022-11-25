@@ -139,7 +139,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	data := struct {
 		Documents []map[string]any  `json:"documents"`
-		Fields    []string          `json:"fields"`
+		Fields    []instance.Field  `json:"fields"`
 		Count     int64             `json:"count"`
 		Took      int64             `json:"took"`
 		Buckets   []instance.Bucket `json:"buckets"`

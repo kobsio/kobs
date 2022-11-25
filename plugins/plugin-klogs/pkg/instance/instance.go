@@ -14,25 +14,36 @@ import (
 	"go.uber.org/zap"
 )
 
+type IntegrationAutolinks struct {
+	ColumnName string `json:"columnName"`
+	Path       string `json:"path"`
+}
+
+type Integration struct {
+	Type      string `json:"type"`
+	Autolinks IntegrationAutolinks
+}
+
 // Config is the structure of the configuration for a single klogs instance.
 type Config struct {
-	Address             string   `json:"address"`
-	Database            string   `json:"database"`
-	Username            string   `json:"username"`
-	Password            string   `json:"password"`
-	DialTimeout         string   `json:"dialTimeout"`
-	ConnMaxLifetime     string   `json:"connMaxLifetime"`
-	MaxIdleConns        int      `json:"maxIdleConns"`
-	MaxOpenConns        int      `json:"maxOpenConns"`
-	MaterializedColumns []string `json:"materializedColumns"`
+	Address             string        `json:"address"`
+	Database            string        `json:"database"`
+	Username            string        `json:"username"`
+	Password            string        `json:"password"`
+	DialTimeout         string        `json:"dialTimeout"`
+	ConnMaxLifetime     string        `json:"connMaxLifetime"`
+	MaxIdleConns        int           `json:"maxIdleConns"`
+	MaxOpenConns        int           `json:"maxOpenConns"`
+	MaterializedColumns []string      `json:"materializedColumns"`
+	Integrations        []Integration `json:"integration"`
 }
 
 type Instance interface {
 	GetName() string
 	getFields(ctx context.Context) (Fields, error)
 	refreshCachedFields() []string
-	GetFields(filter string, fieldType string) []string
-	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error)
+	GetFields(filter string, fieldType string) []Field
+	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []Field, int64, int64, []Bucket, error)
 	GetRawQueryResults(ctx context.Context, query string) ([][]any, []string, error)
 	GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]any, []string, error)
 }
@@ -62,16 +73,16 @@ func (i *instance) getFields(ctx context.Context) (Fields, error) {
 		defer rowsFieldKeys.Close()
 
 		for rowsFieldKeys.Next() {
-			var field string
+			var f Field
 
-			if err := rowsFieldKeys.Scan(&field); err != nil {
+			if err := rowsFieldKeys.Scan(&f.Name); err != nil {
 				return fields, err
 			}
 
 			if fieldType == "string" {
-				fields.String = append(fields.String, field)
+				fields.String = append(fields.String, f)
 			} else if fieldType == "number" {
-				fields.Number = append(fields.Number, field)
+				fields.Number = append(fields.Number, f)
 			}
 		}
 
@@ -113,11 +124,11 @@ func (i *instance) refreshCachedFields() []string {
 				log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
 
 				for _, field := range fields.String {
-					i.cachedFields.String = appendIfMissing(i.cachedFields.String, field)
+					i.cachedFields.String = appendIfFieldIsMissing(i.cachedFields.String, field)
 				}
 
 				for _, field := range fields.Number {
-					i.cachedFields.Number = appendIfMissing(i.cachedFields.Number, field)
+					i.cachedFields.Number = appendIfFieldIsMissing(i.cachedFields.Number, field)
 				}
 			}
 		}
@@ -125,12 +136,12 @@ func (i *instance) refreshCachedFields() []string {
 }
 
 // GetFields returns all cached fields which are containing the filter term. The cached fields are refreshed every 24.
-func (i *instance) GetFields(filter string, fieldType string) []string {
-	var fields []string
+func (i *instance) GetFields(filter string, fieldType string) []Field {
+	var fields []Field
 
 	if fieldType == "string" || fieldType == "" {
 		for _, field := range i.cachedFields.String {
-			if strings.Contains(field, filter) {
+			if strings.Contains(field.Name, filter) {
 				fields = append(fields, field)
 			}
 		}
@@ -140,7 +151,7 @@ func (i *instance) GetFields(filter string, fieldType string) []string {
 
 	if fieldType == "number" || fieldType == "" {
 		for _, field := range i.cachedFields.Number {
-			if strings.Contains(field, filter) {
+			if strings.Contains(field.Name, filter) {
 				fields = append(fields, field)
 			}
 		}

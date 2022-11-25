@@ -53,10 +53,7 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ instance, query, times }: I
             throw new Error(json.error);
           }
 
-          return {
-            ...json,
-            fields: json.fields.map((f: string) => ({ name: f })),
-          };
+          return json;
         } else {
           if (json.error) {
             throw new Error(json.error);

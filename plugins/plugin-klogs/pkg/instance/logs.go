@@ -12,7 +12,7 @@ import (
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error) {
+func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []Field, int64, int64, []Bucket, error) {
 	var count int64
 	var buckets []Bucket
 	var documents []map[string]any
@@ -182,12 +182,12 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 
 		for k, v := range r.FieldsNumber {
 			document[k] = v
-			fields = appendIfMissing(fields, k)
+			fields = appendIfFieldIsMissing(fields, Field{k})
 		}
 
 		for k, v := range r.FieldsString {
 			document[k] = v
-			fields = appendIfMissing(fields, k)
+			fields = appendIfFieldIsMissing(fields, Field{k})
 		}
 
 		documents = append(documents, document)
@@ -197,7 +197,9 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 		return nil, nil, 0, 0, nil, err
 	}
 
-	sort.Strings(fields)
+	sort.SliceStable(fields, func(i, j int) bool {
+		return fields[i].Name < fields[j].Name
+	})
 	log.Debug(ctx, "SQL result raw logs", zap.Int("documentsCount", len(documents)))
 
 	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
