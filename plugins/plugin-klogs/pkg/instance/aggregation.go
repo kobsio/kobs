@@ -52,7 +52,7 @@ type AggregationTimes struct {
 // We can also directly say that the passed in field must be a number field, e.g. aggregation with the min, max, sum or
 // avg operation can only run against number fields.
 func generateFieldName(fieldName string, materializedColumns []string, customFields Fields, mustNumber bool) string {
-	if containsField(defaultFields, Field{fieldName}) || contains(materializedColumns, fieldName) {
+	if containsField(defaultFields, Field{Name: fieldName}) || contains(materializedColumns, fieldName) {
 		return fieldName
 	}
 

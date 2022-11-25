@@ -10,6 +10,25 @@ import (
 	"go.uber.org/zap"
 )
 
+func (i *instance) enrichAutolinks(fields []Field) []Field {
+	autolinkIntegrations := make([]IntegrationAutolinks, 0)
+	for _, integration := range i.integrations {
+		if integration.Type == "autolinks" {
+			autolinkIntegrations = append(autolinkIntegrations, integration.Autolinks)
+		}
+	}
+
+	for i, f := range fields {
+		for _, autolink := range autolinkIntegrations {
+			if f.Name == autolink.ColumnName {
+				fields[i].AutolinkPath = autolink.Path
+			}
+		}
+	}
+
+	return fields
+}
+
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
 func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []Field, int64, int64, []Bucket, error) {
@@ -182,12 +201,12 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 
 		for k, v := range r.FieldsNumber {
 			document[k] = v
-			fields = appendIfFieldIsMissing(fields, Field{k})
+			fields = appendIfFieldIsMissing(fields, Field{Name: k})
 		}
 
 		for k, v := range r.FieldsString {
 			document[k] = v
-			fields = appendIfFieldIsMissing(fields, Field{k})
+			fields = appendIfFieldIsMissing(fields, Field{Name: k})
 		}
 
 		documents = append(documents, document)
@@ -197,6 +216,7 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 		return nil, nil, 0, 0, nil, err
 	}
 
+	fields = i.enrichAutolinks(fields)
 	sort.SliceStable(fields, func(i, j int) bool {
 		return fields[i].Name < fields[j].Name
 	})

@@ -166,10 +166,9 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
         </Card>
 
         <p>&nbsp;</p>
-
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
           <CardBody>
-            <AutolinkReference.Context.Provider value={AutolinkReference.Factory([fakeAutolink], times)}>
+            <AutolinkReference.Context.Provider value={AutolinkReference.Factory(data.fields || [], times)}>
               <LogsDocuments
                 documents={data.documents}
                 fields={fields}
@@ -188,7 +187,3 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
 };
 
 export default Logs;
-const fakeAutolink = {
-  fieldName: 'content_request_id',
-  path: `?query=content_request_id='<<value>>'`,
-};

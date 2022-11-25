@@ -9,7 +9,8 @@ import (
 )
 
 type Field struct {
-	Name string `json:"name"`
+	Name         string `json:"name"`
+	AutolinkPath string `json:"autolinkPath,omitempty"`
 }
 
 func fieldsFromNames(names ...string) []Field {
@@ -151,7 +152,7 @@ func handleConditionParts(key, value, operator string, materializedColumns []str
 	// ALTER TABLE logs.logs ON CLUSTER '{cluster}' ADD COLUMN <FIELD> Float64 DEFAULT fields_number['<FIELD>'];
 	fieldsMetric.WithLabelValues(key).Inc()
 
-	if containsField(defaultFields, Field{key}) || contains(materializedColumns, key) {
+	if containsField(defaultFields, Field{Name: key}) || contains(materializedColumns, key) {
 		if operator == "=~" {
 			return fmt.Sprintf("%s ILIKE %s", key, value), nil
 		}
@@ -199,7 +200,7 @@ func handleConditionParts(key, value, operator string, materializedColumns []str
 }
 
 func handleExistsCondition(key string, materializedColumns []string) string {
-	if containsField(defaultFields, Field{key}) || contains(materializedColumns, key) {
+	if containsField(defaultFields, Field{Name: key}) || contains(materializedColumns, key) {
 		return fmt.Sprintf("%s IS NOT NULL", key)
 	}
 
@@ -218,7 +219,7 @@ func parseOrder(order, orderBy string, materializedColumns []string) string {
 	}
 
 	orderBy = strings.TrimSpace(orderBy)
-	if containsField(defaultFields, Field{orderBy}) || contains(materializedColumns, orderBy) {
+	if containsField(defaultFields, Field{Name: orderBy}) || contains(materializedColumns, orderBy) {
 		return fmt.Sprintf("%s %s", orderBy, order)
 	}
 

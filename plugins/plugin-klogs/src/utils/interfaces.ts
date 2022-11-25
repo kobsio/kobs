@@ -18,6 +18,7 @@ export interface IPanelOptions {
 
 export interface IField {
   name: string;
+  autolinkPath?: string;
 }
 
 export interface IQuery {
@@ -28,19 +29,13 @@ export interface IQuery {
   orderBy?: string;
 }
 
-interface IAutolinks {
-  fieldName: string;
-  path: string;
-}
-
 // ILogsData is the interface of the data returned from our Go API for the logs view of the klogs plugin.
 export interface ILogsData {
   offset: number;
   timeStart: number;
   count?: number;
   took?: number;
-  fields?: { name: string }[];
-  autolinks?: IAutolinks[];
+  fields?: IField[];
   documents?: IDocument[];
   buckets?: IBucket[];
 }

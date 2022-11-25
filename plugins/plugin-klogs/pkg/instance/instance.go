@@ -55,6 +55,7 @@ type instance struct {
 	client              *sql.DB
 	materializedColumns []string
 	cachedFields        Fields
+	integrations        []Integration
 }
 
 func (i *instance) GetName() string {
@@ -249,6 +250,7 @@ func New(name string, options map[string]any) (Instance, error) {
 		database:            config.Database,
 		client:              client,
 		materializedColumns: config.MaterializedColumns,
+		integrations:        config.Integrations,
 	}
 
 	go instance.refreshCachedFields()
