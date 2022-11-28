@@ -21,6 +21,7 @@ To use the klogs plugin the following configuration is needed in the satellites 
 | options.maxIdleConns | number | ClickHouse maximum number of idle connections. The default value is `5`. | No |
 | options.maxOpenConns | number | ClickHouse maximum number of open connections. The default value is `10`. | No |
 | options.materializedColumns | []string | A list of materialized columns. See [kobsio/klogs](https://github.com/kobsio/klogs#configuration) for more information. | No |
+| options.integrations | []object | A list of integrations. See [Integrations](#integrations) for more information. | No |
 
 ```yaml
 plugins:
@@ -36,6 +37,7 @@ plugins:
       maxIdleConns:
       maxOpenConns:
       materializedColumns:
+      integrations:
 ```
 
 ## Insight Options
@@ -57,6 +59,35 @@ The following options can be used for a panel with the klogs plugin:
 | type | string | Set the type which should be used to visualize your logs. This can be `logs` or `aggregation`. | Yes |
 | queries | [[]Query](#query) | A list of queries, which can be selected by the user. This is only required for type `logs`. | Yes |
 | aggregation | [Aggregation](#aggregation) | Options for the aggregation. This is only required for type `aggregation`. | Yes |
+
+## Integrations
+
+Integrations enhance the experience of the klogs plugin. The integrations are differentiated by the `type` property on the integration config. Integrations share the following properties:
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| name  | string | Sets the name of the integration | No |
+| type  | string | Sets the integration type. | Yes |
+
+The following integrations are available:
+
+### Integration - Autolinks (`type: autolinks`)
+
+The autolinks integration converts a value of a specific column to a link. This could be a link to a different kobs plugin. It's possible to use relative or absolute paths. 
+The options for this integration type are specified under the property `autolinks` and use the following configuration values:
+
+| Field | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| columnName | string | The column name for which the autolinks should be applied | Yes |
+| path | string | The path for the autolink (can be absolute or relative) | Yes |
+
+The path property can contain placeholders for the document value and time frame values:
+
+| Placeholder | Description |
+| ----- | ---- |
+| `<<value>>` | placeholder for the document value |
+| `<<timeStart>>` | placeholder for the klogs start time (unix timestamp) |
+| `<<timeEnd>>` | placeholder for the klogs end time (unix timestamp) |
 
 ### Query
 
