@@ -13,6 +13,8 @@ import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-i
 import React from 'react';
 
 import { ILogsData, IQuery } from '../../utils/interfaces';
+import { AutolinkReference } from '../../utils/ResolveReference';
+
 import { IPluginInstance, ITimes } from '@kobsio/shared';
 import LogsChart from './LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
@@ -116,7 +118,9 @@ const Logs: React.FunctionComponent<ILogsProps> = ({ instance, query, times }: I
       <LogsChart buckets={data.buckets} />
       <p>&nbsp;</p>
 
-      <LogsDocuments documents={data.documents} fields={query.fields} order={query.order} orderBy={query.orderBy} />
+      <AutolinkReference.Context.Provider value={AutolinkReference.Factory(data.fields || [], times)}>
+        <LogsDocuments documents={data.documents} fields={query.fields} order={query.order} orderBy={query.orderBy} />
+      </AutolinkReference.Context.Provider>
     </div>
   );
 };
