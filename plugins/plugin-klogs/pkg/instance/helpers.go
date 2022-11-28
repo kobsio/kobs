@@ -240,7 +240,7 @@ func getBucketTimes(interval, bucketTime, timeStart, timeEnd int64) (int64, int6
 	return bucketTime, bucketTime + interval
 }
 
-// appendIf appends a value to a slice, when this values doesn't exist in the slice already.
+// appendIf appends a value to a slice, when the predicate returns true
 func appendIf[T any](items []T, item T, predecate func(iter, newItem T) bool) []T {
 	for _, ele := range items {
 		if predecate(ele, item) {
