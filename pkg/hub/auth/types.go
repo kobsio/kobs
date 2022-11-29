@@ -37,3 +37,8 @@ type SigninRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type Session struct {
+	Email string   `json:"email"`
+	Teams []string `json:"teams"`
+}

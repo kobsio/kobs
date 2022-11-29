@@ -24,6 +24,10 @@ import (
 )
 
 func TestMiddlewareHandler(t *testing.T) {
+	mockStoreClient := &store.MockClient{}
+	mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+	mockStoreClient.On("GetTeamsByGroups", mock.Anything, []string{"team1@kobs.io"}).Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+
 	for _, tt := range []struct {
 		name               string
 		client             client
@@ -56,7 +60,7 @@ func TestMiddlewareHandler(t *testing.T) {
 		},
 		{
 			name:               "auth enabled, request with cookie",
-			client:             client{config: Config{Enabled: true}},
+			client:             client{config: Config{Enabled: true}, storeClient: mockStoreClient},
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "null\n",
 			prepareRequest: func(r *http.Request) {
@@ -139,7 +143,7 @@ func TestGetUserFromStore(t *testing.T) {
 				require.Equal(t, tt.expectedError, err)
 			} else {
 				require.NoError(t, err)
-				require.Equal(t, tt.expectedUser, user)
+				require.Equal(t, tt.expectedUser, *user)
 			}
 			mockStoreClient.AssertExpectations(t)
 		})
@@ -156,6 +160,10 @@ func TestGetUserFromConfig(t *testing.T) {
 }
 
 func TestUserHandler(t *testing.T) {
+	mockStoreClient := &store.MockClient{}
+	mockStoreClient.On("GetUsersByEmail", mock.Anything, "user1@kobs.io").Return([]userv1.UserSpec{{Cluster: "", Namespace: "", Name: "", Email: "user1@kobs.io"}}, nil)
+	mockStoreClient.On("GetTeamsByGroups", mock.Anything, []string{"team1@kobs.io"}).Return([]teamv1.TeamSpec{{Cluster: "", Namespace: "", Name: "", Group: "team1@kobs.io"}}, nil)
+
 	for _, tt := range []struct {
 		name               string
 		client             client
@@ -188,7 +196,7 @@ func TestUserHandler(t *testing.T) {
 		},
 		{
 			name:               "auth enabled, request with cookie",
-			client:             client{config: Config{Enabled: true}},
+			client:             client{config: Config{Enabled: true}, storeClient: mockStoreClient},
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "{\"email\":\"user1@kobs.io\",\"teams\":null,\"permissions\":{}}\n",
 			prepareRequest: func(r *http.Request) {
@@ -216,17 +224,12 @@ func TestSigninHandler(t *testing.T) {
 		requestBody        string
 		expectedStatusCode int
 		expectedBody       string
-		prepareStoreClient func(mockStoreClient *store.MockClient)
 	}{
 		{
 			name:               "signin without body",
 			client:             client{config: Config{Enabled: true}},
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Could not decode request body: EOF\"}\n",
-			prepareStoreClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetUsersByEmail", mock.Anything, mock.Anything)
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
-			},
 		},
 		{
 			name:               "signin, user not found",
@@ -234,10 +237,6 @@ func TestSigninHandler(t *testing.T) {
 			requestBody:        "{\"email\":\"admin\", \"password\":\"admin\"}\n",
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Invalid email or password\"}\n",
-			prepareStoreClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetUsersByEmail", mock.Anything, mock.Anything)
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
-			},
 		},
 		{
 			name:               "signin, wrong password",
@@ -245,21 +244,6 @@ func TestSigninHandler(t *testing.T) {
 			requestBody:        "{\"email\":\"admin\", \"password\":\"admin\"}\n",
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Invalid email or password\"}\n",
-			prepareStoreClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetUsersByEmail", mock.Anything, mock.Anything)
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
-			},
-		},
-		{
-			name:               "signin, get user from store error",
-			client:             client{config: Config{Enabled: true, Users: []UserConfig{{Email: "admin", Password: "$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"}}}},
-			requestBody:        "{\"email\":\"admin\", \"password\":\"fakepassword\"}\n",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not get user: could not get users\"}\n",
-			prepareStoreClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetUsersByEmail", mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get users"))
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
-			},
 		},
 		{
 			name:               "signin create token error",
@@ -267,10 +251,6 @@ func TestSigninHandler(t *testing.T) {
 			requestBody:        "{\"email\":\"admin\", \"password\":\"fakepassword\"}\n",
 			expectedStatusCode: http.StatusBadRequest,
 			expectedBody:       "{\"error\":\"Could not create jwt token: invalid session interval\"}\n",
-			prepareStoreClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetUsersByEmail", mock.Anything, mock.Anything).Return(nil, nil)
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
-			},
 		},
 		{
 			name:               "signin succeeded",
@@ -278,25 +258,15 @@ func TestSigninHandler(t *testing.T) {
 			requestBody:        "{\"email\":\"admin\", \"password\":\"fakepassword\"}\n",
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "null\n",
-			prepareStoreClient: func(mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetUsersByEmail", mock.Anything, mock.Anything).Return(nil, nil)
-				mockStoreClient.AssertNotCalled(t, "GetTeamsByGroups", mock.Anything, mock.Anything)
-			},
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			mockStoreClient := &store.MockClient{}
-
-			tt.prepareStoreClient(mockStoreClient)
-			tt.client.storeClient = mockStoreClient
-
 			req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/", bytes.NewBuffer([]byte(tt.requestBody)))
 			w := httptest.NewRecorder()
 			tt.client.signinHandler(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
 			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-			mockStoreClient.AssertExpectations(t)
 		})
 	}
 }

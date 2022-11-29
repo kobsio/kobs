@@ -45,6 +45,7 @@ func (c *client) MiddlewareHandler(next http.Handler) http.Handler {
 
 		user, err := c.getUserFromRequest(r)
 		if err != nil || user == nil {
+			log.Error(ctx, "Could not get user from request", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 			return
 		}
@@ -65,8 +66,8 @@ func (c *client) Mount() chi.Router {
 
 // getUserFromStore returns the user information for the currently authenticated user based on his email and groups from
 // the store. This is required to get the users permissions, so that we can save them in the auth context.
-func (c *client) getUserFromStore(ctx context.Context, userEmail string, teamGroups []string) (authContext.User, error) {
-	authContextUser := authContext.User{Email: userEmail, Teams: teamGroups}
+func (c *client) getUserFromStore(ctx context.Context, userEmail string, teamGroups []string) (*authContext.User, error) {
+	authContextUser := &authContext.User{Email: userEmail, Teams: teamGroups}
 
 	users, err := c.storeClient.GetUsersByEmail(ctx, userEmail)
 	if err != nil {
@@ -119,7 +120,12 @@ func (c *client) getUserFromRequest(r *http.Request) (*authContext.User, error) 
 			return nil, err
 		}
 
-		return jwt.ValidateToken[authContext.User](cookie.Value, c.config.Session.Token)
+		user, err := jwt.ValidateToken[Session](cookie.Value, c.config.Session.Token)
+		if err != nil {
+			return nil, err
+		}
+
+		return c.getUserFromStore(r.Context(), user.Email, user.Teams)
 	}
 
 	return &authContext.User{
@@ -140,6 +146,7 @@ func (c *client) getUserFromRequest(r *http.Request) (*authContext.User, error) 
 func (c *client) userHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := c.getUserFromRequest(r)
 	if err != nil || user == nil {
+		log.Error(r.Context(), "Could not get user from request", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
@@ -149,8 +156,8 @@ func (c *client) userHandler(w http.ResponseWriter, r *http.Request) {
 
 // signinHandler handles the login of users, which are provided via the configuration file of the hub. For that we have
 // to check if the user from the request is present in the configuration and if the provided password matches the
-// configured password. If this is the case we are are creating a user object with all the users permissions and using
-// it in the session token. The session token is then set as cookie, so it can be validated with each request.
+// configured password. If this is the case we are are creating a session object with all the users email and teams. The
+// session can then be used to get the users permissions in the authentication middleware.
 func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 	var signinRequest SigninRequest
 
@@ -180,14 +187,7 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := c.getUserFromStore(r.Context(), userConfig.Email, userConfig.Groups)
-	if err != nil {
-		log.Warn(r.Context(), "Could not get user", zap.Error(err), zap.String("user", userConfig.Email), zap.Strings("teams", userConfig.Groups))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get user")
-		return
-	}
-
-	token, err := jwt.CreateToken(&user, c.config.Session.Token, c.config.Session.ParsedInterval)
+	token, err := jwt.CreateToken(&Session{Email: userConfig.Email, Teams: userConfig.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
 	if err != nil {
 		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create jwt token")
@@ -299,14 +299,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := c.getUserFromStore(r.Context(), claims.Email, claims.Groups)
-	if err != nil {
-		log.Warn(r.Context(), "Could not get user", zap.Error(err), zap.String("user", claims.Email), zap.Strings("teams", claims.Groups))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get user")
-		return
-	}
-
-	token, err := jwt.CreateToken(&user, c.config.Session.Token, c.config.Session.ParsedInterval)
+	token, err := jwt.CreateToken(&Session{Email: claims.Email, Teams: claims.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
 	if err != nil {
 		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create jwt token")
