@@ -87,27 +87,31 @@ func New(config api.Config, debugUsername, debugPassword, hubAddress string, aut
 		render.JSON(w, r, nil)
 	})
 
-	router.Mount("/api/auth", authClient.Mount())
-
 	router.Route("/api", func(r chi.Router) {
 		r.Use(middleware.RequestID)
 		r.Use(middleware.Recoverer)
 		r.Use(middleware.URLFormat)
-		r.Use(authClient.MiddlewareHandler)
 		r.Use(httptracer.Handler("hub"))
 		r.Use(httpmetrics.Handler)
 		r.Use(httplog.Handler)
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 
-		r.Mount("/navigation", navigation.Mount(config.Navigation))
-		r.Mount("/notifications", notifications.Mount(config.Notifications, storeClient))
-		r.Mount("/clusters", clusters.Mount(config.Clusters, storeClient))
-		r.Mount("/applications", applications.Mount(config.Applications, storeClient))
-		r.Mount("/teams", teams.Mount(config.Teams, storeClient))
-		r.Mount("/users", users.Mount(config.Users, storeClient))
-		r.Mount("/dashboards", dashboards.Mount(config.Dashboards, storeClient))
-		r.Mount("/resources", resources.Mount(config.Resources, satellitesClient, storeClient))
-		r.Mount("/plugins", plugins.Mount(config.Plugins, satellitesClient, storeClient))
+		r.Mount("/auth", authClient.Mount())
+
+		r.Group(func(r chi.Router) {
+			r.Use(authClient.MiddlewareHandler)
+
+			r.Mount("/navigation", navigation.Mount(config.Navigation))
+			r.Mount("/notifications", notifications.Mount(config.Notifications, storeClient))
+			r.Mount("/clusters", clusters.Mount(config.Clusters, storeClient))
+			r.Mount("/applications", applications.Mount(config.Applications, storeClient))
+			r.Mount("/teams", teams.Mount(config.Teams, storeClient))
+			r.Mount("/users", users.Mount(config.Users, storeClient))
+			r.Mount("/dashboards", dashboards.Mount(config.Dashboards, storeClient))
+			r.Mount("/resources", resources.Mount(config.Resources, satellitesClient, storeClient))
+			r.Mount("/plugins", plugins.Mount(config.Plugins, satellitesClient, storeClient))
+		})
+
 	})
 
 	return &server{
