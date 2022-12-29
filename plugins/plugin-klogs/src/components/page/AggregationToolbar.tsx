@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput } from '@patternfly/react-core';
+import { TextArea } from '@patternfly/react-core';
 
 import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IAggregationOptions } from '../../utils/interfaces';
@@ -27,7 +27,14 @@ const AggregationToolbar: React.FunctionComponent<IAggregationToolbarProps> = ({
   return (
     <Toolbar usePageInsets={true}>
       <ToolbarItem grow={true}>
-        <TextInput aria-label="Query" type="text" value={options.query} onChange={changeQuery} />
+        <TextArea
+          aria-label="Query"
+          resizeOrientation="vertical"
+          rows={1}
+          type="text"
+          value={options.query}
+          onChange={changeQuery}
+        />
       </ToolbarItem>
 
       <Options times={options.times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
