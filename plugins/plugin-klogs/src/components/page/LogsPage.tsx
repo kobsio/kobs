@@ -99,7 +99,7 @@ const LogsPage: React.FunctionComponent<ILogsPageProps> = ({ instance }: ILogsPa
             satellite={instance.satellite}
             name={instance.name}
             description={instance.description || defaultDescription}
-            actions={<LogsPageActions instance={instance} />}
+            actions={<LogsPageActions instance={instance} query={options.query || ''} />}
           />
         }
       />

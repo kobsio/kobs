@@ -6,10 +6,12 @@ import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
 
 interface ILogsPageActionsProps {
   instance: IPluginInstance;
+  query: string;
 }
 
 export const LogsPageActions: React.FunctionComponent<ILogsPageActionsProps> = ({
   instance,
+  query,
 }: ILogsPageActionsProps) => {
   const [show, setShow] = useState<boolean>(false);
 
@@ -21,7 +23,12 @@ export const LogsPageActions: React.FunctionComponent<ILogsPageActionsProps> = (
       isPlain={true}
       position="right"
       dropdownItems={[
-        <DropdownItem key={0} component={<Link to={`${pluginBasePath(instance)}/aggregation`}>Aggregation</Link>} />,
+        <DropdownItem
+          key={0}
+          component={
+            <Link to={`${pluginBasePath(instance)}/aggregation?query=${encodeURIComponent(query)}`}>Aggregation</Link>
+          }
+        />,
         <DropdownItem
           key={1}
           component={
