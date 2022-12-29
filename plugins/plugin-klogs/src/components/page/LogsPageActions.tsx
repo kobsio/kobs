@@ -2,7 +2,7 @@ import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IPluginInstance, pluginBasePath } from '@kobsio/shared';
+import { IPluginInstance, addQueryUrlParameter, pluginBasePath } from '@kobsio/shared';
 
 interface ILogsPageActionsProps {
   instance: IPluginInstance;
@@ -26,7 +26,7 @@ export const LogsPageActions: React.FunctionComponent<ILogsPageActionsProps> = (
         <DropdownItem
           key={0}
           component={
-            <Link to={`${pluginBasePath(instance)}/aggregation?query=${encodeURIComponent(query)}`}>Aggregation</Link>
+            <Link to={addQueryUrlParameter(`${pluginBasePath(instance)}/aggregation`, query || '')}>Aggregation</Link>
           }
         />,
         <DropdownItem

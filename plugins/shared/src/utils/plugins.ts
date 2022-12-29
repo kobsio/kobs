@@ -55,6 +55,13 @@ export const pluginBasePath = (instance: IPluginInstance): string => {
   )}`;
 };
 
+export const addQueryUrlParameter = (input: string, query: string | undefined): string => {
+  if (!query || query === '') {
+    return input;
+  }
+  return `${input}?query=${encodeURIComponent(query)}`;
+};
+
 export const pluginBasePathAlt = (satellite: string, type: string, name: string): string => {
   return `/plugins/${encodeURIComponent(satellite)}/${encodeURIComponent(type)}/${encodeURIComponent(name)}`;
 };
