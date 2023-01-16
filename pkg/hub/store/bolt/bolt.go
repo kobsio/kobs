@@ -23,8 +23,9 @@ import (
 )
 
 type client struct {
-	store  *bh.Store
-	tracer trace.Tracer
+	todoRefreshToken string // hack, will write db stuff later
+	store            *bh.Store
+	tracer           trace.Tracer
 }
 
 func NewClient(uri string) (*client, error) {
@@ -399,6 +400,16 @@ func (c *client) SaveTopology(ctx context.Context, satellite string, application
 		return err
 	}
 
+	return nil
+}
+
+func (c *client) GetRefreshToken(ctx context.Context, userId string) (string, error) {
+	return c.todoRefreshToken, nil
+}
+
+func (c *client) SaveRefreshToken(ctx context.Context, userId, token string) error {
+	fmt.Println("storing token", userId, token)
+	c.todoRefreshToken = token
 	return nil
 }
 

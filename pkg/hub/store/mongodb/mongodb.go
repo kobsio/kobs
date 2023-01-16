@@ -32,9 +32,10 @@ type client struct {
 
 // NewClient creates a new MongoDB client which implements our store interface and can be used instead of Bolt. To
 // create a local MongoDB for testing the following commands can be used:
-//     docker run --name mongodb -d -p 27017:27017 mongo
-//     docker stop mongodb
-//     docker rm mongodb
+//
+//	docker run --name mongodb -d -p 27017:27017 mongo
+//	docker stop mongodb
+//	docker rm mongodb
 func NewClient(uri string) (*client, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -389,6 +390,14 @@ func (c *client) SaveTopology(ctx context.Context, satellite string, application
 		return err
 	}
 
+	return nil
+}
+
+func (c *client) GetRefreshToken(ctx context.Context, userId string) (string, error) {
+	return "", nil
+}
+
+func (c *client) SaveRefreshToken(ctx context.Context, userId, token string) error {
 	return nil
 }
 

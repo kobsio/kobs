@@ -27,6 +27,8 @@ type Client interface {
 	SaveUsers(ctx context.Context, satellite string, users []userv1.UserSpec) error
 	SaveTags(ctx context.Context, applications []applicationv1.ApplicationSpec) error
 	SaveTopology(ctx context.Context, satellite string, applications []applicationv1.ApplicationSpec) error
+	GetRefreshToken(ctx context.Context, userId string) (string, error)
+	SaveRefreshToken(ctx context.Context, userId, token string) error
 	GetPlugins(ctx context.Context) ([]plugin.Instance, error)
 	GetClusters(ctx context.Context) ([]shared.Cluster, error)
 	GetNamespaces(ctx context.Context) ([]shared.Namespace, error)

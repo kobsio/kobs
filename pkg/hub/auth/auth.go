@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -47,6 +48,11 @@ func (c *client) MiddlewareHandler(next http.Handler) http.Handler {
 		if err != nil || user == nil {
 			log.Error(ctx, "Could not get user from request", zap.Error(err))
 			errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
+			return
+		}
+
+		if err := c.refreshToken(ctx, user); err != nil {
+			errresponse.Render(w, r, err, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized))
 			return
 		}
 
@@ -152,6 +158,29 @@ func (c *client) userHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.JSON(w, r, user)
+}
+
+func (c *client) refreshToken(ctx context.Context, user *authContext.User) error {
+	before := time.Now()
+	refreshToken, err := c.storeClient.GetRefreshToken(ctx, user.Email)
+	if err != nil {
+		return fmt.Errorf("unexpected error when retrieving the refresh token: %w", err)
+	}
+
+	tokenSource := c.oidcConfig.TokenSource(ctx, &oauth2.Token{RefreshToken: refreshToken})
+	newToken, err := tokenSource.Token()
+	if err != nil {
+		return fmt.Errorf("unexpected error when refreshing token: %w", err)
+	}
+
+	fmt.Printf("tokenSource.Token kinda slow: %dms\n", time.Since(before).Milliseconds())
+	if refreshToken != newToken.RefreshToken {
+		if err := c.storeClient.SaveRefreshToken(ctx, user.Email, newToken.RefreshToken); err != nil {
+			return fmt.Errorf("unexpected error when saving refresh token: %w", err)
+		}
+	}
+
+	return nil
 }
 
 // signinHandler handles the login of users, which are provided via the configuration file of the hub. For that we have
@@ -267,7 +296,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	verifier := c.oidcProvider.Verifier(&oidc.Config{ClientID: c.config.OIDC.ClientID})
 
-	oauth2Token, err := c.oidcConfig.Exchange(r.Context(), r.URL.Query().Get("code"))
+	oauth2Token, err := c.oidcConfig.Exchange(r.Context(), r.URL.Query().Get("code"), oauth2.AccessTypeOffline)
 	if err != nil {
 		log.Warn(r.Context(), "Could not exchange authorization code into token", zap.Error(err))
 		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not exchange authorization code into token")
@@ -306,6 +335,12 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := c.storeClient.SaveRefreshToken(r.Context(), claims.Email, oauth2Token.RefreshToken); err != nil {
+		log.Warn(r.Context(), "Could not save refresh token", zap.Error(err))
+		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not save refresh token")
+		return
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "kobs",
 		Value:    token,
@@ -338,7 +373,7 @@ func NewClient(config Config, storeClient store.Client) (Client, error) {
 	var oidcConfig *oauth2.Config
 	var oidcProvider *oidc.Provider
 	if config.OIDC.Enabled {
-		oidcScopes := []string{"openid", "profile", "email", "groups"}
+		oidcScopes := []string{"openid", "profile", "email", "groups", "offline_access"}
 		if len(config.OIDC.Scopes) > 0 {
 			oidcScopes = config.OIDC.Scopes
 		}
