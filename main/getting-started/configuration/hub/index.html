@@ -1470,70 +1470,70 @@
 </table>
 <h2 id="configuration-file">Configuration File</h2>
 <p>The hub requires a configuration file in yaml format for the satellite configuration. By default kobs will look for a <code>config.yaml</code> file in the directory of the kobs binary. To set a custom location of the configuration file your can use the <code>--hub.config</code> command-line flag or the <code>KOBS_HUB_CONFIG</code> environment variable.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># A list of satellites, which can be accessed via the hub. To access a satellite the address of the satellite is required. The satellite API is protected by a token.</span><span class="w"></span>
-<span class="nt">satellites</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev-de1</span><span class="w"></span>
-<span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://kobssatellite-dev-de1.kobs.io</span><span class="w"></span>
-<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unsecuretoken</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stage-de1</span><span class="w"></span>
-<span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://kobssatellite-stage-de1.kobs.io</span><span class="w"></span>
-<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unsecuretoken</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-de1</span><span class="w"></span>
-<span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://kobssatellite-prod-de1.kobs.io</span><span class="w"></span>
-<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unsecuretoken</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="c1"># A list of satellites, which can be accessed via the hub. To access a satellite the address of the satellite is required. The satellite API is protected by a token.</span>
+<span class="nt">satellites</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev-de1</span>
+<span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://kobssatellite-dev-de1.kobs.io</span>
+<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unsecuretoken</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stage-de1</span>
+<span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://kobssatellite-stage-de1.kobs.io</span>
+<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unsecuretoken</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-de1</span>
+<span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://kobssatellite-prod-de1.kobs.io</span>
+<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unsecuretoken</span>
 
-<span class="c1"># The authentication and authorization configuration for kobs. See https://kobs.io/main/getting-started/configuration/auth/ for all available options.</span><span class="w"></span>
-<span class="nt">auth</span><span class="p">:</span><span class="w"></span>
+<span class="c1"># The authentication and authorization configuration for kobs. See https://kobs.io/main/getting-started/configuration/auth/ for all available options.</span>
+<span class="nt">auth</span><span class="p">:</span>
 
-<span class="c1"># The api configuration is optional.</span><span class="w"></span>
-<span class="nt">api</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># It is possible to customize the navigation sidebar of kobs. More details can be found on the &quot;Navigation&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).</span><span class="w"></span>
-<span class="w">  </span><span class="nt">navigation</span><span class="p">:</span><span class="w"></span>
+<span class="c1"># The api configuration is optional.</span>
+<span class="nt">api</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># It is possible to customize the navigation sidebar of kobs. More details can be found on the &quot;Navigation&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).</span>
+<span class="w">  </span><span class="nt">navigation</span><span class="p">:</span>
 
-<span class="w">  </span><span class="c1"># It is possible to show notifications within kobs from a configured plugin. More details can be found on the &quot;Notifications&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).</span><span class="w"></span>
-<span class="w">  </span><span class="nt">notifications</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># It is possible to show notifications within kobs from a configured plugin. More details can be found on the &quot;Notifications&quot; page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).</span>
+<span class="w">  </span><span class="nt">notifications</span><span class="p">:</span>
 
-<span class="w">  </span><span class="c1"># The resources configuration section can be used to add integrations for Kubernetes Resources. Currently it is possible to add a set of default dashboards for each Kubernetes Resource via the integrations.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">integrations</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="c1"># In the following example we are adding a dashboard &quot;resource-usage&quot; from the &quot;kobs&quot; namespace to each Pod.</span><span class="w"></span>
-<span class="w">        </span><span class="c1"># The configuration uses the same syntax as it is used in the &quot;kobs.io/dashboards&quot; annotation for resources. See https://kobs.io/main/resources/kubernetes-resources/#dashboards for more information.</span><span class="w"></span>
-<span class="w">        </span><span class="c1"># - resource: pods</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#   dashboard:</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#     name: resource-usage</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#     namespace: kobs</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#     title: Resource Usage</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#     placeholders:</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#       namespace: &quot;&lt;% $.metadata.namespace %&gt;&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#       pod: &quot;&lt;% $.metadata.name %&gt;&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The resources configuration section can be used to add integrations for Kubernetes Resources. Currently it is possible to add a set of default dashboards for each Kubernetes Resource via the integrations.</span>
+<span class="w">  </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">integrations</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">dashboards</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># In the following example we are adding a dashboard &quot;resource-usage&quot; from the &quot;kobs&quot; namespace to each Pod.</span>
+<span class="w">        </span><span class="c1"># The configuration uses the same syntax as it is used in the &quot;kobs.io/dashboards&quot; annotation for resources. See https://kobs.io/main/resources/kubernetes-resources/#dashboards for more information.</span>
+<span class="w">        </span><span class="c1"># - resource: pods</span>
+<span class="w">        </span><span class="c1">#   dashboard:</span>
+<span class="w">        </span><span class="c1">#     name: resource-usage</span>
+<span class="w">        </span><span class="c1">#     namespace: kobs</span>
+<span class="w">        </span><span class="c1">#     title: Resource Usage</span>
+<span class="w">        </span><span class="c1">#     placeholders:</span>
+<span class="w">        </span><span class="c1">#       namespace: &quot;&lt;% $.metadata.namespace %&gt;&quot;</span>
+<span class="w">        </span><span class="c1">#       pod: &quot;&lt;% $.metadata.name %&gt;&quot;</span>
 
-<span class="w">  </span><span class="c1"># The users configuration section can be used to show a list of default dashboards on the users profile page, when the user has not configured his profile page.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">users</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">defaultDashboards</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># When no default dashboards are provided and authentication is enabled, the following dashboards will be shown on the users profile page:</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># - title: Teams</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#   inline:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#     hideToolbar: true</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#     rows:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#       - size: -1</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#         panels:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#           - title: Teams</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#             description: The teams you are part of</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#             plugin:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#               type: app</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#               name: userteams</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># - title: Applications</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#   inline:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#     hideToolbar: true</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#     rows:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#       - size: -1</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#         panels:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#           - title: Applications</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#             description: The applications which are owned by your teams</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#             plugin:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#               type: app</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#               name: userapplications</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The users configuration section can be used to show a list of default dashboards on the users profile page, when the user has not configured his profile page.</span>
+<span class="w">  </span><span class="nt">users</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">defaultDashboards</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># When no default dashboards are provided and authentication is enabled, the following dashboards will be shown on the users profile page:</span>
+<span class="w">      </span><span class="c1"># - title: Teams</span>
+<span class="w">      </span><span class="c1">#   inline:</span>
+<span class="w">      </span><span class="c1">#     hideToolbar: true</span>
+<span class="w">      </span><span class="c1">#     rows:</span>
+<span class="w">      </span><span class="c1">#       - size: -1</span>
+<span class="w">      </span><span class="c1">#         panels:</span>
+<span class="w">      </span><span class="c1">#           - title: Teams</span>
+<span class="w">      </span><span class="c1">#             description: The teams you are part of</span>
+<span class="w">      </span><span class="c1">#             plugin:</span>
+<span class="w">      </span><span class="c1">#               type: app</span>
+<span class="w">      </span><span class="c1">#               name: userteams</span>
+<span class="w">      </span><span class="c1"># - title: Applications</span>
+<span class="w">      </span><span class="c1">#   inline:</span>
+<span class="w">      </span><span class="c1">#     hideToolbar: true</span>
+<span class="w">      </span><span class="c1">#     rows:</span>
+<span class="w">      </span><span class="c1">#       - size: -1</span>
+<span class="w">      </span><span class="c1">#         panels:</span>
+<span class="w">      </span><span class="c1">#           - title: Applications</span>
+<span class="w">      </span><span class="c1">#             description: The applications which are owned by your teams</span>
+<span class="w">      </span><span class="c1">#             plugin:</span>
+<span class="w">      </span><span class="c1">#               type: app</span>
+<span class="w">      </span><span class="c1">#               name: userapplications</span>
 </code></pre></div>
 <p>You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: <code>${NAME_OF_THE_ENVIRONMENT_VARIABLE}</code>. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.</p>
 

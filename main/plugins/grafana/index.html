@@ -1483,16 +1483,16 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">address</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">token</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">frontendOptions</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">address</span><span class="p">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">address</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">username</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">token</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">frontendOptions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">address</span><span class="p">:</span>
 </code></pre></div>
 <h2 id="insight-options">Insight Options</h2>
 <div class="admonition note">
@@ -1574,141 +1574,141 @@
 </div>
 <h2 id="usage">Usage</h2>
 <p>The following dashboards shows some panels from a Grafana plugin and a list of dashboards from this instance. The dashboard also uses some variables, which are then passed to the panels from Grafana.</p>
-<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span><span class="w"></span>
-<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio-overview</span><span class="w"></span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Overview</span><span class="w"></span>
-<span class="w">  </span><span class="nt">variables</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var_namespace</span><span class="w"></span>
-<span class="w">      </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Namespace</span><span class="w"></span>
-<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">core</span><span class="w"></span>
-<span class="w">        </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static</span><span class="w"></span>
-<span class="w">          </span><span class="nt">items</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var_workload</span><span class="w"></span>
-<span class="w">      </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Workload</span><span class="w"></span>
-<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">core</span><span class="w"></span>
-<span class="w">        </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static</span><span class="w"></span>
-<span class="w">          </span><span class="nt">items</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">details</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ratings</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reviews</span><span class="w"></span>
-<span class="w">  </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Global Request Volume</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panel</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span><span class="w"></span>
-<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;20&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Global Success Rate</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panel</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span><span class="w"></span>
-<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;21&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4xx</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panel</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span><span class="w"></span>
-<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;22&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5xx</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panel</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span><span class="w"></span>
-<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;23&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio-overview</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Overview</span>
+<span class="w">  </span><span class="nt">variables</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var_namespace</span>
+<span class="w">      </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Namespace</span>
+<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">core</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static</span>
+<span class="w">          </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var_workload</span>
+<span class="w">      </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Workload</span>
+<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">core</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static</span>
+<span class="w">          </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">details</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ratings</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reviews</span>
+<span class="w">  </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">      </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Global Request Volume</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span>
+<span class="w">              </span><span class="nt">panel</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span>
+<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;20&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Global Success Rate</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span>
+<span class="w">              </span><span class="nt">panel</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span>
+<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;21&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4xx</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span>
+<span class="w">              </span><span class="nt">panel</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span>
+<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;22&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5xx</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span>
+<span class="w">              </span><span class="nt">panel</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span>
+<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;23&quot;</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Incoming Request Volume</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panel</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span><span class="w"></span>
-<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;12&quot;</span><span class="w"></span>
-<span class="w">                </span><span class="nt">variables</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-datasource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-workload</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_workload</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-qrep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-srcns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-srcwl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-dstsvc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Incoming Success Rate</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panel</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span><span class="w"></span>
-<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;14&quot;</span><span class="w"></span>
-<span class="w">                </span><span class="nt">variables</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-datasource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-workload</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_workload</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-qrep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-srcns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-srcwl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-dstsvc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Request Duration</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panel</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span><span class="w"></span>
-<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;87&quot;</span><span class="w"></span>
-<span class="w">                </span><span class="nt">variables</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-datasource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-workload</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_workload</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-qrep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-srcns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-srcwl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">var-dstsvc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">      </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Incoming Request Volume</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span>
+<span class="w">              </span><span class="nt">panel</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span>
+<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;12&quot;</span>
+<span class="w">                </span><span class="nt">variables</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">var-datasource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">                  </span><span class="nt">var-namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_namespace</span><span class="nv"> </span><span class="s">%}&quot;</span>
+<span class="w">                  </span><span class="nt">var-workload</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_workload</span><span class="nv"> </span><span class="s">%}&quot;</span>
+<span class="w">                  </span><span class="nt">var-qrep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span>
+<span class="w">                  </span><span class="nt">var-srcns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">                  </span><span class="nt">var-srcwl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">                  </span><span class="nt">var-dstsvc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Incoming Success Rate</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span>
+<span class="w">              </span><span class="nt">panel</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span>
+<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;14&quot;</span>
+<span class="w">                </span><span class="nt">variables</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">var-datasource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">                  </span><span class="nt">var-namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_namespace</span><span class="nv"> </span><span class="s">%}&quot;</span>
+<span class="w">                  </span><span class="nt">var-workload</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_workload</span><span class="nv"> </span><span class="s">%}&quot;</span>
+<span class="w">                  </span><span class="nt">var-qrep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span>
+<span class="w">                  </span><span class="nt">var-srcns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">                  </span><span class="nt">var-srcwl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">                  </span><span class="nt">var-dstsvc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Request Duration</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">panel</span>
+<span class="w">              </span><span class="nt">panel</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">dashboardID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span>
+<span class="w">                </span><span class="nt">panelID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;87&quot;</span>
+<span class="w">                </span><span class="nt">variables</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">var-datasource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">                  </span><span class="nt">var-namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_namespace</span><span class="nv"> </span><span class="s">%}&quot;</span>
+<span class="w">                  </span><span class="nt">var-workload</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.var_workload</span><span class="nv"> </span><span class="s">%}&quot;</span>
+<span class="w">                  </span><span class="nt">var-qrep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span>
+<span class="w">                  </span><span class="nt">var-srcns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">                  </span><span class="nt">var-srcwl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
+<span class="w">                  </span><span class="nt">var-dstsvc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboards</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboards</span><span class="w"></span>
-<span class="w">              </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3--MLVZZk</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vu8e0VWZk</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LJ_uJAvmk</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">      </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboards</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grafana</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboards</span>
+<span class="w">              </span><span class="nt">dashboards</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3--MLVZZk</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">G8wLrJIZk</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vu8e0VWZk</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LJ_uJAvmk</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UbsSZTDik</span>
 </code></pre></div>
 
               

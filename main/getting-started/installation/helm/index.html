@@ -1376,21 +1376,21 @@
 <p><a href="https://helm.sh/">Helm</a> is the package manager for Kubernetes, and you can read detailed background information in the <a href="https://www.cncf.io/cncf-helm-project-journey/">CNCF Helm Project Journey report</a>.</p>
 <h2 id="install-the-helm-charts">Install the Helm Charts</h2>
 <p>To install kobs using Helm you have to add our Helm repository:</p>
-<div class="highlight"><pre><span></span><code>helm repo add kobs https://helm.kobs.io
-helm repo list
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>kobs<span class="w"> </span>https://helm.kobs.io
+helm<span class="w"> </span>repo<span class="w"> </span>list
 </code></pre></div>
 <p>When you have added the Helm repository, you can install the kobs hub and satellite via the following commands:</p>
-<div class="highlight"><pre><span></span><code>helm install hub kobs/hub
-helm install satellite kobs/satellite
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>install<span class="w"> </span>hub<span class="w"> </span>kobs/hub
+helm<span class="w"> </span>install<span class="w"> </span>satellite<span class="w"> </span>kobs/satellite
 </code></pre></div>
 <h2 id="update-the-helm-charts">Update the Helm Charts</h2>
 <p>To update the Helm repository and to show all available versions of the Helm chart, you can run the following commands:</p>
-<div class="highlight"><pre><span></span><code>helm repo update
-helm search repo -l kobs/
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>update
+helm<span class="w"> </span>search<span class="w"> </span>repo<span class="w"> </span>-l<span class="w"> </span>kobs/
 </code></pre></div>
 <p>To update your deployed Helm chart run:</p>
-<div class="highlight"><pre><span></span><code>helm upgrade --install hub kobs/hub
-helm upgrade --install satellite kobs/satellite
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>hub<span class="w"> </span>kobs/hub
+helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>satellite<span class="w"> </span>kobs/satellite
 </code></pre></div>
 <h2 id="values-hub">Values - hub</h2>
 <table>

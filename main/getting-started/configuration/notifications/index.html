@@ -1289,73 +1289,73 @@
 <p>The global notification settings can be overwritten via a <a href="../../../resources/users/">User CR</a> or <a href="../../../resources/teams/">Team CR</a>. The ranking of the used notifications is as follow: If a user has a CR with a list of defined notification groups, these groups are used. If a user does not have any specific notification groups, the groups of the teams he is part of will be used. If none of these conditions match the global notification groups from the configuration file are used.</p>
 <p><img alt="Opsgenie" src="../assets/notifications-opsgenie.png" /></p>
 <p>The following example uses the Opsgenie plugin to show all open alerts and incidents and the RSS plugin to show the status of GitHub.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">api</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">notifications</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">groups</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Incidents</span><span class="w"></span>
-<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">incidents</span><span class="w"></span>
-<span class="w">            </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;status:</span><span class="nv"> </span><span class="s">open&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alerts</span><span class="w"></span>
-<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alerts</span><span class="w"></span>
-<span class="w">            </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;status:</span><span class="nv"> </span><span class="s">open&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Status</span><span class="w"></span>
-<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rss</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rss</span><span class="w"></span>
-<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">urls</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://www.githubstatus.com/history.rss</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Unhealthy Workloads</span><span class="w"></span>
-<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">satellites</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev-de1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev-de1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
-<span class="w">            </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$.status.containerStatuses[?(@.state.waiting || @.state.terminated &amp;&amp; @.state.terminated.reason!=&#39;Completed&#39;)]</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Notifications</span><span class="w"></span>
-<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
-<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">usernotifications</span><span class="w"></span>
-<span class="w">            </span><span class="nt">usernotifications</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">all</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">              </span><span class="nt">participating</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Pull Requests</span><span class="w"></span>
-<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span><span class="w"></span>
-<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpullrequests</span><span class="w"></span>
-<span class="w">            </span><span class="nt">userpullrequests</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">created</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Your Issues</span><span class="w"></span>
-<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jira</span><span class="w"></span>
-<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jira</span><span class="w"></span>
-<span class="w">          </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">jql</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sprint in openSprints() and assignee = currentUser()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">api</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">notifications</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Incidents</span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">incidents</span>
+<span class="w">            </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;status:</span><span class="nv"> </span><span class="s">open&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alerts</span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alerts</span>
+<span class="w">            </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;status:</span><span class="nv"> </span><span class="s">open&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Status</span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rss</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rss</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">urls</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://www.githubstatus.com/history.rss</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Unhealthy Workloads</span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">satellites</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev-de1</span>
+<span class="w">            </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev-de1</span>
+<span class="w">            </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">            </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
+<span class="w">            </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$.status.containerStatuses[?(@.state.waiting || @.state.terminated &amp;&amp; @.state.terminated.reason!=&#39;Completed&#39;)]</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Notifications</span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">usernotifications</span>
+<span class="w">            </span><span class="nt">usernotifications</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">all</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">              </span><span class="nt">participating</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub Pull Requests</span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpullrequests</span>
+<span class="w">            </span><span class="nt">userpullrequests</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">created</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Your Issues</span>
+<span class="w">        </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jira</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jira</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">jql</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sprint in openSprints() and assignee = currentUser()</span>
 </code></pre></div>
 <p>Each plugin is identified by a <code>satellite</code>, <code>name</code> and <code>type</code>. The options for each plugin can be found in the <strong>Notification Options</strong> section of the corresponding plugin documentation.</p>
 

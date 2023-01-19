@@ -1378,65 +1378,65 @@
 <div class="highlight"><pre><span></span><code><span class="w">package main</span>
 
 <span class="w">import (</span>
-<span class="w"> </span>   &quot;github.com/kobsio/kobs/cmd/kobs/root&quot;<span class="w"></span>
-<span class="w"> </span>   &quot;github.com/kobsio/kobs/pkg/log&quot;<span class="w"></span>
-<span class="w"> </span>   &quot;github.com/kobsio/kobs/pkg/satellite/plugins/plugin&quot;<span class="w"></span>
+<span class="w"> </span>   &quot;github.com/kobsio/kobs/cmd/kobs/root&quot;
+<span class="w"> </span>   &quot;github.com/kobsio/kobs/pkg/log&quot;
+<span class="w"> </span>   &quot;github.com/kobsio/kobs/pkg/satellite/plugins/plugin&quot;
 
-<span class="w"> </span>   azure &quot;github.com/kobsio/kobs/plugins/plugin-azure/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   elasticsearch &quot;github.com/kobsio/kobs/plugins/plugin-elasticsearch/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   flux &quot;github.com/kobsio/kobs/plugins/plugin-flux/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   grafana &quot;github.com/kobsio/kobs/plugins/plugin-grafana/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   harbor &quot;github.com/kobsio/kobs/plugins/plugin-harbor/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   helm &quot;github.com/kobsio/kobs/plugins/plugin-helm/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   istio &quot;github.com/kobsio/kobs/plugins/plugin-istio/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   jaeger &quot;github.com/kobsio/kobs/plugins/plugin-jaeger/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   kiali &quot;github.com/kobsio/kobs/plugins/plugin-kiali/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   klogs &quot;github.com/kobsio/kobs/plugins/plugin-klogs/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   opsgenie &quot;github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   prometheus &quot;github.com/kobsio/kobs/plugins/plugin-prometheus/cmd&quot;<span class="w"></span>
-<span class="gd">-    rss &quot;github.com/kobsio/kobs/plugins/plugin-rss/cmd&quot;</span><span class="w"></span>
-<span class="w"> </span>   sonarqube &quot;github.com/kobsio/kobs/plugins/plugin-sonarqube/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   sql &quot;github.com/kobsio/kobs/plugins/plugin-sql/cmd&quot;<span class="w"></span>
-<span class="w"> </span>   techdocs &quot;github.com/kobsio/kobs/plugins/plugin-techdocs/cmd&quot;<span class="w"></span>
+<span class="w"> </span>   azure &quot;github.com/kobsio/kobs/plugins/plugin-azure/cmd&quot;
+<span class="w"> </span>   elasticsearch &quot;github.com/kobsio/kobs/plugins/plugin-elasticsearch/cmd&quot;
+<span class="w"> </span>   flux &quot;github.com/kobsio/kobs/plugins/plugin-flux/cmd&quot;
+<span class="w"> </span>   grafana &quot;github.com/kobsio/kobs/plugins/plugin-grafana/cmd&quot;
+<span class="w"> </span>   harbor &quot;github.com/kobsio/kobs/plugins/plugin-harbor/cmd&quot;
+<span class="w"> </span>   helm &quot;github.com/kobsio/kobs/plugins/plugin-helm/cmd&quot;
+<span class="w"> </span>   istio &quot;github.com/kobsio/kobs/plugins/plugin-istio/cmd&quot;
+<span class="w"> </span>   jaeger &quot;github.com/kobsio/kobs/plugins/plugin-jaeger/cmd&quot;
+<span class="w"> </span>   kiali &quot;github.com/kobsio/kobs/plugins/plugin-kiali/cmd&quot;
+<span class="w"> </span>   klogs &quot;github.com/kobsio/kobs/plugins/plugin-klogs/cmd&quot;
+<span class="w"> </span>   opsgenie &quot;github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd&quot;
+<span class="w"> </span>   prometheus &quot;github.com/kobsio/kobs/plugins/plugin-prometheus/cmd&quot;
+<span class="gd">-    rss &quot;github.com/kobsio/kobs/plugins/plugin-rss/cmd&quot;</span>
+<span class="w"> </span>   sonarqube &quot;github.com/kobsio/kobs/plugins/plugin-sonarqube/cmd&quot;
+<span class="w"> </span>   sql &quot;github.com/kobsio/kobs/plugins/plugin-sql/cmd&quot;
+<span class="w"> </span>   techdocs &quot;github.com/kobsio/kobs/plugins/plugin-techdocs/cmd&quot;
 
-<span class="gi">+    helloworld &quot;github.com/kobsio/plugin-template/cmd&quot;</span><span class="w"></span>
+<span class="gi">+    helloworld &quot;github.com/kobsio/plugin-template/cmd&quot;</span>
 
-<span class="w"> </span>   &quot;go.uber.org/zap&quot;<span class="w"></span>
+<span class="w"> </span>   &quot;go.uber.org/zap&quot;
 <span class="w">)</span>
 
 <span class="w">func main() {</span>
-<span class="w"> </span>   var pluginMounts map[string]plugin.MountFn<span class="w"></span>
-<span class="w"> </span>   pluginMounts = make(map[string]plugin.MountFn)<span class="w"></span>
+<span class="w"> </span>   var pluginMounts map[string]plugin.MountFn
+<span class="w"> </span>   pluginMounts = make(map[string]plugin.MountFn)
 
-<span class="w"> </span>   pluginMounts[azure.PluginType] = azure.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[elasticsearch.PluginType] = elasticsearch.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[flux.PluginType] = flux.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[grafana.PluginType] = grafana.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[harbor.PluginType] = harbor.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[helm.PluginType] = helm.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[istio.PluginType] = istio.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[jaeger.PluginType] = jaeger.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[kiali.PluginType] = kiali.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[klogs.PluginType] = klogs.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[opsgenie.PluginType] = opsgenie.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[prometheus.PluginType] = prometheus.Mount<span class="w"></span>
-<span class="gd">-    pluginMounts[rss.PluginType] = rss.Mount</span><span class="w"></span>
-<span class="w"> </span>   pluginMounts[sonarqube.PluginType] = sonarqube.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[sql.PluginType] = sql.Mount<span class="w"></span>
-<span class="w"> </span>   pluginMounts[techdocs.PluginType] = techdocs.Mount<span class="w"></span>
+<span class="w"> </span>   pluginMounts[azure.PluginType] = azure.Mount
+<span class="w"> </span>   pluginMounts[elasticsearch.PluginType] = elasticsearch.Mount
+<span class="w"> </span>   pluginMounts[flux.PluginType] = flux.Mount
+<span class="w"> </span>   pluginMounts[grafana.PluginType] = grafana.Mount
+<span class="w"> </span>   pluginMounts[harbor.PluginType] = harbor.Mount
+<span class="w"> </span>   pluginMounts[helm.PluginType] = helm.Mount
+<span class="w"> </span>   pluginMounts[istio.PluginType] = istio.Mount
+<span class="w"> </span>   pluginMounts[jaeger.PluginType] = jaeger.Mount
+<span class="w"> </span>   pluginMounts[kiali.PluginType] = kiali.Mount
+<span class="w"> </span>   pluginMounts[klogs.PluginType] = klogs.Mount
+<span class="w"> </span>   pluginMounts[opsgenie.PluginType] = opsgenie.Mount
+<span class="w"> </span>   pluginMounts[prometheus.PluginType] = prometheus.Mount
+<span class="gd">-    pluginMounts[rss.PluginType] = rss.Mount</span>
+<span class="w"> </span>   pluginMounts[sonarqube.PluginType] = sonarqube.Mount
+<span class="w"> </span>   pluginMounts[sql.PluginType] = sql.Mount
+<span class="w"> </span>   pluginMounts[techdocs.PluginType] = techdocs.Mount
 
-<span class="gi">+    pluginMounts[helloworld.PluginType] = helloworld.Mount</span><span class="w"></span>
+<span class="gi">+    pluginMounts[helloworld.PluginType] = helloworld.Mount</span>
 
-<span class="w"> </span>   if err := root.Command(pluginMounts).Execute(); err != nil {<span class="w"></span>
-<span class="w"> </span>       log.Fatal(nil, &quot;Failed to initialize kobs&quot;, zap.Error(err))<span class="w"></span>
-<span class="w"> </span>   }<span class="w"></span>
+<span class="w"> </span>   if err := root.Command(pluginMounts).Execute(); err != nil {
+<span class="w"> </span>       log.Fatal(nil, &quot;Failed to initialize kobs&quot;, zap.Error(err))
+<span class="w"> </span>   }
 <span class="w">}</span>
 </code></pre></div>
 <p>When you have adjusted the <code>main.go</code> file run <code>go mod tidy</code> to add it to your <code>go.mod</code> file.</p>
 <h3 id="dockerfile"><code>Dockerfile</code></h3>
 <p>The <code>Dockerfile</code> is used to build your own version of kobs and to copy the frontend files for your plugin. We are using again the <code>helloworld</code> plugin from the <a href="https://github.com/kobsio/plugin-template">kobsio/plugin-template</a> in the following example:</p>
 <div class="highlight"><pre><span></span><code><span class="w">FROM kobsio/kobs:v0.10.0 as app</span>
-<span class="gi">+FROM kobsio/plugin:main as plugin-helloworld</span><span class="w"></span>
+<span class="gi">+FROM kobsio/plugin:main as plugin-helloworld</span>
 
 <span class="w">FROM golang:1.19.0 as api</span>
 <span class="w">WORKDIR /kobs</span>
@@ -1450,7 +1450,7 @@
 <span class="w">RUN mkdir /kobs</span>
 <span class="w">COPY --from=api /kobs/bin/kobs /kobs</span>
 <span class="w">COPY --from=app /kobs/app /kobs/app</span>
-<span class="gi">+COPY --from=plugin-helloworld /kobs/helloworld /kobs/app/plugins/helloworld</span><span class="w"></span>
+<span class="gi">+COPY --from=plugin-helloworld /kobs/helloworld /kobs/app/plugins/helloworld</span>
 <span class="w">WORKDIR /kobs</span>
 <span class="w">USER nobody</span>
 <span class="w">ENTRYPOINT  [ &quot;/kobs/kobs&quot; ]</span>

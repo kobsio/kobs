@@ -1434,79 +1434,79 @@
 </table>
 <h2 id="configuration-file">Configuration File</h2>
 <p>The satellite requires a configuration file in yaml format for the cluster and plugin configuration. By default kobs will look for a <code>config.yaml</code> file in the directory of the kobs binary. To set a custom location of the configuration file your can use the <code>--satellite.config</code> command-line flag or the <code>KOBS_SATELLITE_CONFIG</code> environment variable.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># The clusters configuration, to provide a satellite the required information on how to access the Kubernetes API.</span><span class="w"></span>
-<span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">providers</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The incluster provider can be used, when the satellite runs inside a Kubernetes cluster to access the API. The permissions can then be configured via a ServiceAccount.</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">incluster</span><span class="w"></span>
-<span class="w">      </span><span class="nt">incluster</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs-demo</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The kubeconfig provider can be used, when the satellite should be used to access multiple clusters, which are configured via a Kubeconfig file.</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubeconfig</span><span class="w"></span>
-<span class="w">      </span><span class="nt">kubeconfig</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${HOME}/.kube/config</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="c1"># The clusters configuration, to provide a satellite the required information on how to access the Kubernetes API.</span>
+<span class="nt">clusters</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">providers</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># The incluster provider can be used, when the satellite runs inside a Kubernetes cluster to access the API. The permissions can then be configured via a ServiceAccount.</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">incluster</span>
+<span class="w">      </span><span class="nt">incluster</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs-demo</span>
+<span class="w">    </span><span class="c1"># The kubeconfig provider can be used, when the satellite should be used to access multiple clusters, which are configured via a Kubeconfig file.</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubeconfig</span>
+<span class="w">      </span><span class="nt">kubeconfig</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${HOME}/.kube/config</span>
 
-<span class="c1"># The plugins section is used to configure all plugins which can be accessed by the satellite. For each plugin a &quot;name&quot; and &quot;type&quot; must be provided.</span><span class="w"></span>
-<span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The &quot;description&quot; field is optional and can be used to overwrite the default description which is displayed in the frontend.</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># description:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://prometheus.istio-system.svc.cluster.local:9090</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The &quot;options&quot; field can be used to provide additional configuration options for each plugin. The format of this section can be found in the corresponding plugin documentation.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">apiKey</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">apiURL</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">permissionsEnabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The &quot;frontendOptions&quot; field can be used to provide additional configuration options for each plugin, which are used in the UI. The format of this section can be found in the corresponding plugin documentation.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">frontendOptions</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"></span>
+<span class="c1"># The plugins section is used to configure all plugins which can be accessed by the satellite. For each plugin a &quot;name&quot; and &quot;type&quot; must be provided.</span>
+<span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">    </span><span class="c1"># The &quot;description&quot; field is optional and can be used to overwrite the default description which is displayed in the frontend.</span>
+<span class="w">    </span><span class="c1"># description:</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://prometheus.istio-system.svc.cluster.local:9090</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">    </span><span class="c1"># The &quot;options&quot; field can be used to provide additional configuration options for each plugin. The format of this section can be found in the corresponding plugin documentation.</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">apiKey</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">apiURL</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">permissionsEnabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="c1"># The &quot;frontendOptions&quot; field can be used to provide additional configuration options for each plugin, which are used in the UI. The format of this section can be found in the corresponding plugin documentation.</span>
+<span class="w">    </span><span class="nt">frontendOptions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">url</span><span class="p">:</span>
 
-<span class="c1"># The api configuration is optional.</span><span class="w"></span>
-<span class="nt">api</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># The resources configuration can be used to forbid the access to Kubernetes resources via the the satellite. For example when the satellite is installed via the Helm chart with the default RBAC configuration, it would be possible to access all resources:</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># - apiGroups:</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;*&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#   resources:</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;*&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#   verbs:</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;get&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;watch&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;list&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># - nonResourceURLs:</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;*&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#   verbs:</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;get&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;watch&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#     - &#39;list&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="c1">#</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># If we now want to restrict the access to secrets the resources.forbidden filed can be used.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">forbidden</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># Each resource is identified by a list of &quot;clusters&quot;, &quot;namespaces&quot;, &quot;resources&quot; and &quot;verbs&quot; (similar to the permissions which can be set for a user).</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># In the following we forbid to list or edit secrets for all clusters and namespaces, which can be accessed via the satellite.</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;secrets&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">verbs</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># In the following we forbid users to exec into a Pod in the kobs namespace.</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kobs&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;pods/exec&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">verbs</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+<span class="c1"># The api configuration is optional.</span>
+<span class="nt">api</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># The resources configuration can be used to forbid the access to Kubernetes resources via the the satellite. For example when the satellite is installed via the Helm chart with the default RBAC configuration, it would be possible to access all resources:</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="c1"># - apiGroups:</span>
+<span class="w">  </span><span class="c1">#     - &#39;*&#39;</span>
+<span class="w">  </span><span class="c1">#   resources:</span>
+<span class="w">  </span><span class="c1">#     - &#39;*&#39;</span>
+<span class="w">  </span><span class="c1">#   verbs:</span>
+<span class="w">  </span><span class="c1">#     - &#39;get&#39;</span>
+<span class="w">  </span><span class="c1">#     - &#39;watch&#39;</span>
+<span class="w">  </span><span class="c1">#     - &#39;list&#39;</span>
+<span class="w">  </span><span class="c1"># - nonResourceURLs:</span>
+<span class="w">  </span><span class="c1">#     - &#39;*&#39;</span>
+<span class="w">  </span><span class="c1">#   verbs:</span>
+<span class="w">  </span><span class="c1">#     - &#39;get&#39;</span>
+<span class="w">  </span><span class="c1">#     - &#39;watch&#39;</span>
+<span class="w">  </span><span class="c1">#     - &#39;list&#39;</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="c1"># If we now want to restrict the access to secrets the resources.forbidden filed can be used.</span>
+<span class="w">  </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">forbidden</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># Each resource is identified by a list of &quot;clusters&quot;, &quot;namespaces&quot;, &quot;resources&quot; and &quot;verbs&quot; (similar to the permissions which can be set for a user).</span>
+<span class="w">      </span><span class="c1">#</span>
+<span class="w">      </span><span class="c1"># In the following we forbid to list or edit secrets for all clusters and namespaces, which can be accessed via the satellite.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="w">        </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;secrets&quot;</span>
+<span class="w">        </span><span class="nt">verbs</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="w">      </span><span class="c1"># In the following we forbid users to exec into a Pod in the kobs namespace.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="w">        </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kobs&quot;</span>
+<span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;pods/exec&quot;</span>
+<span class="w">        </span><span class="nt">verbs</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
 </code></pre></div>
 <p>You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: <code>${NAME_OF_THE_ENVIRONMENT_VARIABLE}</code>. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.</p>
 

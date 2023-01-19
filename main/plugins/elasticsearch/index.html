@@ -1629,14 +1629,14 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span><span class="w"></span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">address</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">token</span><span class="p">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">address</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">username</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">token</span><span class="p">:</span>
 </code></pre></div>
 <h2 id="insight-options">Insight Options</h2>
 <div class="admonition note">
@@ -1795,39 +1795,39 @@ to provide more control.</p>
 <div class="highlight"><pre><span></span><code>(quick OR brown) AND fox
 </code></pre></div>
 <h3 id="example-dashboard">Example Dashboard</h3>
-<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span><span class="w"></span>
-<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">namespace</span><span class="w"></span>
-<span class="w">      </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The workload namespace</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">      </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The workloads app label</span><span class="w"></span>
-<span class="w">  </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
-<span class="w">      </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Logs</span><span class="w"></span>
-<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
-<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span><span class="w"></span>
-<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span><span class="w"></span>
-<span class="w">            </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="nt">showChart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">              </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Logs</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kubernetes.namespace:</span><span class="nv"> </span><span class="s">{%</span><span class="nv"> </span><span class="s">.namespace</span><span class="nv"> </span><span class="s">%}</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.labels.app:</span><span class="nv"> </span><span class="s">{%</span><span class="nv"> </span><span class="s">.app</span><span class="nv"> </span><span class="s">%}</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.container.name:</span><span class="nv"> </span><span class="s">istio-proxy</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">_exists_:</span><span class="nv"> </span><span class="s">content.method&quot;</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">fields</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kubernetes.pod.name&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.authority&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.route_name&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.protocol&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.method&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.path&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.response_code&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.upstream_service_time&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_received&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_sent&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dashboard</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">placeholders</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">namespace</span>
+<span class="w">      </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The workload namespace</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">      </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The workloads app label</span>
+<span class="w">  </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">      </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Logs</span>
+<span class="w">          </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+<span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">showChart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">              </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Logs</span>
+<span class="w">                  </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kubernetes.namespace:</span><span class="nv"> </span><span class="s">{%</span><span class="nv"> </span><span class="s">.namespace</span><span class="nv"> </span><span class="s">%}</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.labels.app:</span><span class="nv"> </span><span class="s">{%</span><span class="nv"> </span><span class="s">.app</span><span class="nv"> </span><span class="s">%}</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.container.name:</span><span class="nv"> </span><span class="s">istio-proxy</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">_exists_:</span><span class="nv"> </span><span class="s">content.method&quot;</span>
+<span class="w">                  </span><span class="nt">fields</span><span class="p">:</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kubernetes.pod.name&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.authority&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.route_name&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.protocol&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.method&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.path&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.response_code&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.upstream_service_time&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_received&quot;</span>
+<span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_sent&quot;</span>
 </code></pre></div>
 
               

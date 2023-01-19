@@ -1417,19 +1417,19 @@
 </code></pre></div>
 <h3 id="backend-code">Backend Code</h3>
 <p>For each plugin you develop your should create a new Go package with the name of your plugin. In our case the package will be named <code>helloworld</code> and lives in the <code>cmd</code> folder:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">helloworld</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">helloworld</span>
 </code></pre></div>
 <p>Each plugin must export a <code>PluginType</code> constant, which is the type of the plugin how it can be used in the configuration. The value of the <code>PluginType</code> variable is also used as prefix for the http routes, which are exposed by the plugin.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">PluginType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;helloworld&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">PluginType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;helloworld&quot;</span>
 </code></pre></div>
 <p>Finally each plugin must implement a <code>Mount</code> function, which receives the configured plugin instances (<code>plugin.Instance</code>) and the cluster client (<code>clusters.Client</code>) as argument. It must return a <code>chi.Router</code> and an <code>error</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">func</span><span class="w"> </span><span class="nx">Mount</span><span class="p">(</span><span class="nx">instances</span><span class="w"> </span><span class="p">[]</span><span class="nx">plugin</span><span class="p">.</span><span class="nx">Instance</span><span class="p">,</span><span class="w"> </span><span class="nx">clustersClient</span><span class="w"> </span><span class="nx">clusters</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">chi</span><span class="p">.</span><span class="nx">Router</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nx">router</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Router</span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nx">chi</span><span class="p">.</span><span class="nx">NewRouter</span><span class="p">(),</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span><span class="w"> </span><span class="nx">Mount</span><span class="p">(</span><span class="nx">instances</span><span class="w"> </span><span class="p">[]</span><span class="nx">plugin</span><span class="p">.</span><span class="nx">Instance</span><span class="p">,</span><span class="w"> </span><span class="nx">clustersClient</span><span class="w"> </span><span class="nx">clusters</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">chi</span><span class="p">.</span><span class="nx">Router</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">router</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Router</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">chi</span><span class="p">.</span><span class="nx">NewRouter</span><span class="p">(),</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">router</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">router</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>A complete example can be found in the following file <a href="https://github.com/kobsio/plugin-template/blob/main/cmd/helloworld.go">https://github.com/kobsio/plugin-template/blob/main/cmd/helloworld.go</a>.</p>
 <h3 id="frontend-code">Frontend Code</h3>

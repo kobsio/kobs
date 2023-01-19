@@ -1356,9 +1356,9 @@
 <p>Now we can publish the created draft release, which is automatically updated by the <a href="https://github.com/kobsio/kobs/blob/main/.github/workflows/release.yaml">Release GitHub Action</a>. When we create the GitHub release the <strong>Create a discussion for this release</strong> should be checked, and the discussion should be created in the <strong>Announcements</strong> category.</p>
 <h2 id="publish-npm-packages">Publish NPM Packages</h2>
 <p>In the next step we have to publish a new version for our NPM packages. To do that we have to run the following commands, where <code>&lt;version&gt;</code> should be replaced with the version which was just created:</p>
-<div class="highlight"><pre><span></span><code>yarn build
-npx lerna publish &lt;version&gt; --force-publish --no-changelog --no-git-tag-version --no-private --no-push
-git restore .
+<div class="highlight"><pre><span></span><code>yarn<span class="w"> </span>build
+npx<span class="w"> </span>lerna<span class="w"> </span>publish<span class="w"> </span>&lt;version&gt;<span class="w"> </span>--force-publish<span class="w"> </span>--no-changelog<span class="w"> </span>--no-git-tag-version<span class="w"> </span>--no-private<span class="w"> </span>--no-push
+git<span class="w"> </span>restore<span class="w"> </span>.
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

@@ -1805,238 +1805,238 @@
 </table>
 <h2 id="example">Example</h2>
 <p>The following Application CR is used in the <a href="../../getting-started/demo/demo/">demo</a> to display the resources, metrics, logs and traces for the productpage Application of the Bookinfo service.</p>
-<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
-<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span><span class="w"></span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The productpage microservice calls the details and reviews microservices to populate the page.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tags</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">  </span><span class="nt">links</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Website</span><span class="w"></span>
-<span class="w">      </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://istio.io/latest/docs/examples/bookinfo/</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub</span><span class="w"></span>
-<span class="w">      </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/istio/istio/tree/master/samples/bookinfo</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application CR</span><span class="w"></span>
-<span class="w">      </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/kobsio/kobs/blob/main/deploy/demo/kobs/base/crs/applications/productpage.yaml</span><span class="w"></span>
-<span class="w">  </span><span class="nt">teams</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">re@kobs.io</span><span class="w"></span>
-<span class="w">  </span><span class="nt">topology</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">dependencies</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">details</span><span class="w"></span>
-<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get book information.</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reviews</span><span class="w"></span>
-<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get book reviews.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">insights</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Success Rate</span><span class="w"></span>
-<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span><span class="w"></span>
-<span class="w">      </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">        </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sum(irate(istio_requests_total{reporter=&quot;destination&quot;,destination_workload_namespace=~&quot;bookinfo&quot;,destination_workload=~&quot;productpage-v1&quot;,response_code!~&quot;5.*&quot;}[5m])) / sum(irate(istio_requests_total{reporter=&quot;destination&quot;,destination_workload_namespace=~&quot;bookinfo&quot;,destination_workload=~&quot;productpage-v1&quot;}[5m])) * 100</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Healthy Replicas</span><span class="w"></span>
-<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span><span class="w"></span>
-<span class="w">      </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">        </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;} / kube_deployment_spec_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;} * 100</span><span class="w"></span>
-<span class="w">  </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Overview</span><span class="w"></span>
-<span class="w">      </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Desired Replicas</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_spec_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Current Replicas</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Updated Replicas</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas_updated{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Available Replicas</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas_available{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Workloads</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellites</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">services</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=productpage</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
-<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Open Alerts</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alerts</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;status:</span><span class="nv"> </span><span class="s">open</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">namespace:</span><span class="nv"> </span><span class="s">&quot;bookinfo&quot;&#39;</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;status:</span><span class="nv"> </span><span class="s">closed</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">namespace:</span><span class="nv"> </span><span class="s">&quot;bookinfo&quot;&#39;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">31536000</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Topology</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">topology</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.name</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The productpage microservice calls the details and reviews microservices to populate the page.</span>
+<span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">  </span><span class="nt">links</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Website</span>
+<span class="w">      </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://istio.io/latest/docs/examples/bookinfo/</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GitHub</span>
+<span class="w">      </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/istio/istio/tree/master/samples/bookinfo</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application CR</span>
+<span class="w">      </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/kobsio/kobs/blob/main/deploy/demo/kobs/base/crs/applications/productpage.yaml</span>
+<span class="w">  </span><span class="nt">teams</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">re@kobs.io</span>
+<span class="w">  </span><span class="nt">topology</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dependencies</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">details</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get book information.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reviews</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get book reviews.</span>
+<span class="w">  </span><span class="nt">insights</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Success Rate</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span>
+<span class="w">      </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%&quot;</span>
+<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sum(irate(istio_requests_total{reporter=&quot;destination&quot;,destination_workload_namespace=~&quot;bookinfo&quot;,destination_workload=~&quot;productpage-v1&quot;,response_code!~&quot;5.*&quot;}[5m])) / sum(irate(istio_requests_total{reporter=&quot;destination&quot;,destination_workload_namespace=~&quot;bookinfo&quot;,destination_workload=~&quot;productpage-v1&quot;}[5m])) * 100</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Healthy Replicas</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span>
+<span class="w">      </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%&quot;</span>
+<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;} / kube_deployment_spec_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;} * 100</span>
+<span class="w">  </span><span class="nt">dashboards</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Overview</span>
+<span class="w">      </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Desired Replicas</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span>
+<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_spec_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Current Replicas</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span>
+<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Updated Replicas</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span>
+<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas_updated{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Available Replicas</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkline</span>
+<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube_deployment_status_replicas_available{namespace=&quot;bookinfo&quot;, deployment=~&quot;productpage.*&quot;}</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Workloads</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellites</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="w">                    </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="w">                    </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">                    </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">services</span>
+<span class="w">                    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=productpage</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Open Alerts</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opsgenie</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alerts</span>
+<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;status:</span><span class="nv"> </span><span class="s">open</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">namespace:</span><span class="nv"> </span><span class="s">&quot;bookinfo&quot;&#39;</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;status:</span><span class="nv"> </span><span class="s">closed</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">namespace:</span><span class="nv"> </span><span class="s">&quot;bookinfo&quot;&#39;</span>
+<span class="w">                    </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">31536000</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Topology</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">topology</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.name</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resource-usage</span><span class="w"></span>
-<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Resource Usage</span><span class="w"></span>
-<span class="w">      </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">        </span><span class="nt">pod</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;productpage-.*-.*-.*&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resource-usage</span>
+<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Resource Usage</span>
+<span class="w">      </span><span class="nt">placeholders</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">        </span><span class="nt">pod</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;productpage-.*-.*-.*&quot;</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio-http</span><span class="w"></span>
-<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio HTTP Metrics</span><span class="w"></span>
-<span class="w">      </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio-http</span>
+<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio HTTP Metrics</span>
+<span class="w">      </span><span class="nt">placeholders</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Logs</span><span class="w"></span>
-<span class="w">      </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Logs</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">showChart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pod Logs</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kubernetes.namespace:</span><span class="nv"> </span><span class="s">bookinfo</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.labels.app:</span><span class="nv"> </span><span class="s">productpage&quot;</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">fields</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kubernetes.container.name&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;message&quot;</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Logs</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kubernetes.namespace:</span><span class="nv"> </span><span class="s">bookinfo</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.labels.app:</span><span class="nv"> </span><span class="s">productpage</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.container.name:</span><span class="nv"> </span><span class="s">istio-proxy</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">_exists_:</span><span class="nv"> </span><span class="s">content.method&quot;</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">fields</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kubernetes.pod.name&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.authority&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.route_name&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.protocol&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.method&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.path&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.response_code&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.upstream_service_time&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_received&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_sent&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Logs</span>
+<span class="w">      </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Logs</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">showChart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pod Logs</span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kubernetes.namespace:</span><span class="nv"> </span><span class="s">bookinfo</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.labels.app:</span><span class="nv"> </span><span class="s">productpage&quot;</span>
+<span class="w">                        </span><span class="nt">fields</span><span class="p">:</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kubernetes.container.name&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;message&quot;</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Istio Logs</span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kubernetes.namespace:</span><span class="nv"> </span><span class="s">bookinfo</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.labels.app:</span><span class="nv"> </span><span class="s">productpage</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">kubernetes.container.name:</span><span class="nv"> </span><span class="s">istio-proxy</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">_exists_:</span><span class="nv"> </span><span class="s">content.method&quot;</span>
+<span class="w">                        </span><span class="nt">fields</span><span class="p">:</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kubernetes.pod.name&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.authority&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.route_name&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.protocol&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.method&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.path&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.response_code&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.upstream_service_time&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_received&quot;</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;content.bytes_sent&quot;</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Traces</span><span class="w"></span>
-<span class="w">      </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Traces</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">showChart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All Requests</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage.bookinfo</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Slow Requests</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage.bookinfo</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">minDuration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100ms</span><span class="w"></span>
-<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Errors</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage.bookinfo</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error=true</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Traces</span>
+<span class="w">      </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Traces</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jaeger</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">showChart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                    </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All Requests</span>
+<span class="w">                        </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage.bookinfo</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Slow Requests</span>
+<span class="w">                        </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage.bookinfo</span>
+<span class="w">                        </span><span class="nt">minDuration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100ms</span>
+<span class="w">                      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Errors</span>
+<span class="w">                        </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage.bookinfo</span>
+<span class="w">                        </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error=true</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Documentation</span><span class="w"></span>
-<span class="w">      </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">hideToolbar</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">        </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Bookinfo Documentation</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                      </span><span class="no">The application displays information about a</span><span class="w"></span>
-<span class="w">                      </span><span class="no">book, similar to a single catalog entry of an online book store. Displayed</span><span class="w"></span>
-<span class="w">                      </span><span class="no">on the page is a description of the book, book details (ISBN, number of</span><span class="w"></span>
-<span class="w">                      </span><span class="no">pages, and so on), and a few book reviews.</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Documentation</span>
+<span class="w">      </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">hideToolbar</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Bookinfo Documentation</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                      </span><span class="no">The application displays information about a</span>
+<span class="w">                      </span><span class="no">book, similar to a single catalog entry of an online book store. Displayed</span>
+<span class="w">                      </span><span class="no">on the page is a description of the book, book details (ISBN, number of</span>
+<span class="w">                      </span><span class="no">pages, and so on), and a few book reviews.</span>
 
-<span class="w">                      </span><span class="no">The Bookinfo application is broken into four separate microservices:</span><span class="w"></span>
+<span class="w">                      </span><span class="no">The Bookinfo application is broken into four separate microservices:</span>
 
-<span class="w">                      </span><span class="no">* `productpage`. The `productpage` microservice calls the `details` and `reviews` microservices to populate the page.</span><span class="w"></span>
-<span class="w">                      </span><span class="no">* `details`. The `details` microservice contains book information.</span><span class="w"></span>
-<span class="w">                      </span><span class="no">* `reviews`. The `reviews` microservice contains book reviews. It also calls the `ratings` microservice.</span><span class="w"></span>
-<span class="w">                      </span><span class="no">* `ratings`. The `ratings` microservice contains book ranking information that accompanies a book review.</span><span class="w"></span>
+<span class="w">                      </span><span class="no">* `productpage`. The `productpage` microservice calls the `details` and `reviews` microservices to populate the page.</span>
+<span class="w">                      </span><span class="no">* `details`. The `details` microservice contains book information.</span>
+<span class="w">                      </span><span class="no">* `reviews`. The `reviews` microservice contains book reviews. It also calls the `ratings` microservice.</span>
+<span class="w">                      </span><span class="no">* `ratings`. The `ratings` microservice contains book ranking information that accompanies a book review.</span>
 
-<span class="w">                      </span><span class="no">There are 3 versions of the `reviews` microservice:</span><span class="w"></span>
+<span class="w">                      </span><span class="no">There are 3 versions of the `reviews` microservice:</span>
 
-<span class="w">                      </span><span class="no">* Version v1 doesn&#39;t call the `ratings` service.</span><span class="w"></span>
-<span class="w">                      </span><span class="no">* Version v2 calls the `ratings` service, and displays each rating as 1 to 5 black stars.</span><span class="w"></span>
-<span class="w">                      </span><span class="no">* Version v3 calls the `ratings` service, and displays each rating as 1 to 5 red stars.</span><span class="w"></span>
+<span class="w">                      </span><span class="no">* Version v1 doesn&#39;t call the `ratings` service.</span>
+<span class="w">                      </span><span class="no">* Version v2 calls the `ratings` service, and displays each rating as 1 to 5 black stars.</span>
+<span class="w">                      </span><span class="no">* Version v3 calls the `ratings` service, and displays each rating as 1 to 5 red stars.</span>
 
-<span class="w">                      </span><span class="no">The end-to-end architecture of the application is shown below.</span><span class="w"></span>
+<span class="w">                      </span><span class="no">The end-to-end architecture of the application is shown below.</span>
 
-<span class="w">                      </span><span class="no">![Bookinfo Application without Istio](https://istio.io/latest/docs/examples/bookinfo/noistio.svg)</span><span class="w"></span>
+<span class="w">                      </span><span class="no">![Bookinfo Application without Istio](https://istio.io/latest/docs/examples/bookinfo/noistio.svg)</span>
 
-<span class="w">                      </span><span class="no">This application is polyglot, i.e., the microservices are written in different languages.</span><span class="w"></span>
-<span class="w">                      </span><span class="no">It&#39;s worth noting that these services have no dependencies on Istio, but make an interesting</span><span class="w"></span>
-<span class="w">                      </span><span class="no">service mesh example, particularly because of the multitude of services, languages and versions</span><span class="w"></span>
-<span class="w">                      </span><span class="no">for the `reviews` service.</span><span class="w"></span>
+<span class="w">                      </span><span class="no">This application is polyglot, i.e., the microservices are written in different languages.</span>
+<span class="w">                      </span><span class="no">It&#39;s worth noting that these services have no dependencies on Istio, but make an interesting</span>
+<span class="w">                      </span><span class="no">service mesh example, particularly because of the multitude of services, languages and versions</span>
+<span class="w">                      </span><span class="no">for the `reviews` service.</span>
 </code></pre></div>
 <p>In the fowlling you can find some screenshots how the above application will look in kobs. The application contains the Deployments and Pods, which are related to the reviews service of the Bookinfo Application. It also uses the Prometheus plugin to display metrics, the Elasticsearch plugin to display the logs and the Jaeger plugin to display the traces for the service.</p>
 <h3 id="overview">Overview</h3>

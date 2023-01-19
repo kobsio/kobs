@@ -1286,43 +1286,43 @@
 
 <h1 id="authentication-and-authorization">Authentication and Authorization</h1>
 <p>kobs supports the authentication and authorization of users. Users can be authenticated using a static list of configured email and password combinations or using OIDC. Authorization is handled via the permissions set in a <a href="../../../resources/users/">User CR</a> or a <a href="../../../resources/teams/">Team CR</a>. An authenticated user is connected a corresponding User CR and Team CR via the email and groups claim from the OIDC flow.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">auth</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># Enable authentication and authorization of of users.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># OIDC configuration for kobs. OIDC can be used next to the static user list to authenticate and authorize users. The OIDC provider must be enabled explizit. If the configuration is wrong kobs will crash during the startup process.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">oidc</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The issuer (e.g. &quot;https://accounts.google.com&quot;), client id and client secret for your OIDC provider.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">issuer</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">clientID</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">clientSecret</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The url where the OIDC provider redirects a user after login. Must be the URL where your kobs instance is running at.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">redirectURL</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># A random string to mitigate CSRF attacks.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The scopes for the OIDC provider. By default we need the &quot;openid&quot;, &quot;profile&quot;, &quot;email&quot;, &quot;groups&quot; scope. If your OIDC provider (e.g. Google) does not support the &quot;groups&quot; scope you can also omit it.</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The &quot;groups&quot; scope is needed to connect a user with a team, so that you can set the permissions of users in a team and not for each single user.</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># If you are using Google and want to use Google Groups to connect your users with teams, you can use a tool like Dex (https://dexidp.io) to get the groups of a user.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">scopes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;openid&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;profile&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;email&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;groups&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># Session configuration for kobs.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">session</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The token must be a random string which is used to sign the JWT token, which is generated when a user is authenticated.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The interval defines the lifetime of the generated token. When the token is expired the user must authenticate again.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">48h</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># A static list of users which can be access kobs. Each user must have a email address and password.</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># ATTENTION: Substitution of environment variables is not supported for the user configuration. Instead you can directly use the hashed password within the configuration.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">users</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">email</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># The hashed password of the user. The password can be generated using htpasswd (https://httpd.apache.org/docs/2.4/programs/htpasswd.html).</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#     htpasswd -nBC 10 &quot;&quot; | tr -d &#39;:\n&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># That command will prompt you for a password and output the hashed password, which will look something like:</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#     $2y$10$dqqr3NIClzy4.jDQ3bHpveqVVxSqmpeP8oRI.eTZd91KxL8EyZx0e</span><span class="w"></span>
-<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># An optional list of groups to authorize a user to access resources based on the permissions of the corresponding Team CRs.</span><span class="w"></span>
-<span class="w">      </span><span class="c1">#     groups: [&quot;dia@kobs.io&quot;]</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># See https://kobs.io/main/resources/teams/#example for an example Team CR.</span><span class="w"></span>
-<span class="w">      </span><span class="nt">groups</span><span class="p">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">auth</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Enable authentication and authorization of of users.</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="c1"># OIDC configuration for kobs. OIDC can be used next to the static user list to authenticate and authorize users. The OIDC provider must be enabled explizit. If the configuration is wrong kobs will crash during the startup process.</span>
+<span class="w">  </span><span class="nt">oidc</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="c1"># The issuer (e.g. &quot;https://accounts.google.com&quot;), client id and client secret for your OIDC provider.</span>
+<span class="w">    </span><span class="nt">issuer</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">clientID</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">clientSecret</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># The url where the OIDC provider redirects a user after login. Must be the URL where your kobs instance is running at.</span>
+<span class="w">    </span><span class="nt">redirectURL</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># A random string to mitigate CSRF attacks.</span>
+<span class="w">    </span><span class="nt">state</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># The scopes for the OIDC provider. By default we need the &quot;openid&quot;, &quot;profile&quot;, &quot;email&quot;, &quot;groups&quot; scope. If your OIDC provider (e.g. Google) does not support the &quot;groups&quot; scope you can also omit it.</span>
+<span class="w">    </span><span class="c1"># The &quot;groups&quot; scope is needed to connect a user with a team, so that you can set the permissions of users in a team and not for each single user.</span>
+<span class="w">    </span><span class="c1"># If you are using Google and want to use Google Groups to connect your users with teams, you can use a tool like Dex (https://dexidp.io) to get the groups of a user.</span>
+<span class="w">    </span><span class="nt">scopes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;openid&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;profile&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;email&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;groups&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="c1"># Session configuration for kobs.</span>
+<span class="w">  </span><span class="nt">session</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># The token must be a random string which is used to sign the JWT token, which is generated when a user is authenticated.</span>
+<span class="w">    </span><span class="nt">token</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># The interval defines the lifetime of the generated token. When the token is expired the user must authenticate again.</span>
+<span class="w">    </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">48h</span>
+<span class="w">  </span><span class="c1"># A static list of users which can be access kobs. Each user must have a email address and password.</span>
+<span class="w">  </span><span class="c1"># ATTENTION: Substitution of environment variables is not supported for the user configuration. Instead you can directly use the hashed password within the configuration.</span>
+<span class="w">  </span><span class="nt">users</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">email</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># The hashed password of the user. The password can be generated using htpasswd (https://httpd.apache.org/docs/2.4/programs/htpasswd.html).</span>
+<span class="w">      </span><span class="c1">#     htpasswd -nBC 10 &quot;&quot; | tr -d &#39;:\n&#39;</span>
+<span class="w">      </span><span class="c1"># That command will prompt you for a password and output the hashed password, which will look something like:</span>
+<span class="w">      </span><span class="c1">#     $2y$10$dqqr3NIClzy4.jDQ3bHpveqVVxSqmpeP8oRI.eTZd91KxL8EyZx0e</span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># An optional list of groups to authorize a user to access resources based on the permissions of the corresponding Team CRs.</span>
+<span class="w">      </span><span class="c1">#     groups: [&quot;dia@kobs.io&quot;]</span>
+<span class="w">      </span><span class="c1"># See https://kobs.io/main/resources/teams/#example for an example Team CR.</span>
+<span class="w">      </span><span class="nt">groups</span><span class="p">:</span>
 </code></pre></div>
 
               

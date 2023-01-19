@@ -1284,17 +1284,17 @@
 
 <h1 id="development-using-the-demo">Development using the Demo</h1>
 <p>The created kind cluster in the demo comes with a local registry, so that the demo can be used within your development flow. For that you have to build the Docker image with your changes and push it into the local registry:</p>
-<div class="highlight"><pre><span></span><code>docker build -f ./cmd/kobs/Dockerfile -t localhost:5000/kobs:dev .
-docker push localhost:5000/kobs:dev
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>./cmd/kobs/Dockerfile<span class="w"> </span>-t<span class="w"> </span>localhost:5000/kobs:dev<span class="w"> </span>.
+docker<span class="w"> </span>push<span class="w"> </span>localhost:5000/kobs:dev
 </code></pre></div>
 <p>When you have pushed your custom image, you can run the following command to deploy kobs with the new image:</p>
-<div class="highlight"><pre><span></span><code>kustomize build deploy/demo/kobs/dev <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>deploy/demo/kobs/dev<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 <p>Finally you can check if the kobs Pod is using your image, with the following command:</p>
-<div class="highlight"><pre><span></span><code>k get pods -n kobs -l app.kubernetes.io/name<span class="o">=</span>kobs -o yaml <span class="p">|</span> grep <span class="s2">&quot;image: localhost:5000/kobs:dev&quot;</span>
+<div class="highlight"><pre><span></span><code>k<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>kobs<span class="w"> </span>-l<span class="w"> </span>app.kubernetes.io/name<span class="o">=</span>kobs<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;image: localhost:5000/kobs:dev&quot;</span>
 </code></pre></div>
 <p>If you make changes to the CRDs for kobs you can deploy them using the following command:</p>
-<div class="highlight"><pre><span></span><code>kustomize build deploy/kustomize/crds <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>deploy/kustomize/crds<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 
               

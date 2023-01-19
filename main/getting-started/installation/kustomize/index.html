@@ -1287,13 +1287,13 @@
 <h1 id="kustomize">Kustomize</h1>
 <p><a href="https://kustomize.io">Kustomize</a> introduces a template-free way to customize application configuration that simplifies the use of off-the-shelf applications.</p>
 <p>To install kobs using Kustomize your can run the following command:</p>
-<div class="highlight"><pre><span></span><code>kubectl create namespace kobs
-kustomize build github.com/kobsio/kobs/deploy/kustomize <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>kobs
+kustomize<span class="w"> </span>build<span class="w"> </span>github.com/kobsio/kobs/deploy/kustomize<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 <p>You can also use the following commands to install all the required components:</p>
-<div class="highlight"><pre><span></span><code>kustomize build github.com/kobsio/kobs/deploy/kustomize/crds <span class="p">|</span> kubectl apply -f -
-kustomize build github.com/kobsio/kobs/deploy/kustomize/hub <span class="p">|</span> kubectl apply -f -
-kustomize build github.com/kobsio/kobs/deploy/kustomize/satellite <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>github.com/kobsio/kobs/deploy/kustomize/crds<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+kustomize<span class="w"> </span>build<span class="w"> </span>github.com/kobsio/kobs/deploy/kustomize/hub<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+kustomize<span class="w"> </span>build<span class="w"> </span>github.com/kobsio/kobs/deploy/kustomize/satellite<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 
               

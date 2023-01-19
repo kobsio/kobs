@@ -1610,11 +1610,11 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">applications</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">team</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dia@kobs.io</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">applications</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">team</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dia@kobs.io</span>
 </code></pre></div>
 <h3 id="topology"><code>topology</code></h3>
 <p>The <code>topology</code> plugin can be used to display the topology graph of an application within a dashboard. The plugin requires the following options:</p>
@@ -1654,14 +1654,14 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">topology</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.name</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">topology</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.name</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
 </code></pre></div>
 <h3 id="insights"><code>insights</code></h3>
 <p>The <code>insights</code> plugin can be used to display the insights of an application within a dashboard. The plugin requires the following options:</p>
@@ -1701,69 +1701,69 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.name</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.name</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
 </code></pre></div>
 <details class="note">
 <summary>Example</summary>
-<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
-<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-application</span><span class="w"></span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Inisghts</span><span class="w"></span>
-<span class="w">      </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
-<span class="w">            </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-compactor</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-compactor&quot;</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-querier</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-querier&quot;</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-ruler</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-ruler&quot;</span><span class="w"></span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-store</span><span class="w"></span>
-<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-store&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-application</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dashboards</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Inisghts</span>
+<span class="w">      </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">            </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-compactor</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-compactor&quot;</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-querier</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-querier&quot;</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-ruler</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-ruler&quot;</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thanos-store</span>
+<span class="w">                </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insights</span>
+<span class="w">                  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">                  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">                    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;monitoring&quot;</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thanos-store&quot;</span>
 </code></pre></div>
 </details>
 <p><img alt="Insights" src="assets/plugins-insights.png" /></p>
@@ -1829,18 +1829,18 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboards</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch-details</span><span class="w"></span>
-<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Details</span><span class="w"></span>
-<span class="w">      </span><span class="nt">placeholders</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.namespace</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.cluster</span><span class="nv"> </span><span class="s">%}&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboards</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">      </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticsearch-details</span>
+<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Details</span>
+<span class="w">      </span><span class="nt">placeholders</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.namespace</span><span class="nv"> </span><span class="s">%}&quot;</span>
+<span class="w">        </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{%</span><span class="nv"> </span><span class="s">.cluster</span><span class="nv"> </span><span class="s">%}&quot;</span>
 </code></pre></div>
 <h3 id="markdown"><code>markdown</code></h3>
 <p>The <code>markdown</code> plugin can be used to display a Markdown formatted text within a dashboard. The plugin requires the following options:</p>
@@ -1862,37 +1862,37 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">      </span><span class="no">The application displays information about a</span><span class="w"></span>
-<span class="w">      </span><span class="no">book, similar to a single catalog entry of an online book store. Displayed</span><span class="w"></span>
-<span class="w">      </span><span class="no">on the page is a description of the book, book details (ISBN, number of</span><span class="w"></span>
-<span class="w">      </span><span class="no">pages, and so on), and a few book reviews.</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">The application displays information about a</span>
+<span class="w">      </span><span class="no">book, similar to a single catalog entry of an online book store. Displayed</span>
+<span class="w">      </span><span class="no">on the page is a description of the book, book details (ISBN, number of</span>
+<span class="w">      </span><span class="no">pages, and so on), and a few book reviews.</span>
 
-<span class="w">      </span><span class="no">The Bookinfo application is broken into four separate microservices:</span><span class="w"></span>
+<span class="w">      </span><span class="no">The Bookinfo application is broken into four separate microservices:</span>
 
-<span class="w">      </span><span class="no">* `productpage`. The `productpage` microservice calls the `details` and `reviews` microservices to populate the page.</span><span class="w"></span>
-<span class="w">      </span><span class="no">* `details`. The `details` microservice contains book information.</span><span class="w"></span>
-<span class="w">      </span><span class="no">* `reviews`. The `reviews` microservice contains book reviews. It also calls the `ratings` microservice.</span><span class="w"></span>
-<span class="w">      </span><span class="no">* `ratings`. The `ratings` microservice contains book ranking information that accompanies a book review.</span><span class="w"></span>
+<span class="w">      </span><span class="no">* `productpage`. The `productpage` microservice calls the `details` and `reviews` microservices to populate the page.</span>
+<span class="w">      </span><span class="no">* `details`. The `details` microservice contains book information.</span>
+<span class="w">      </span><span class="no">* `reviews`. The `reviews` microservice contains book reviews. It also calls the `ratings` microservice.</span>
+<span class="w">      </span><span class="no">* `ratings`. The `ratings` microservice contains book ranking information that accompanies a book review.</span>
 
-<span class="w">      </span><span class="no">There are 3 versions of the `reviews` microservice:</span><span class="w"></span>
+<span class="w">      </span><span class="no">There are 3 versions of the `reviews` microservice:</span>
 
-<span class="w">      </span><span class="no">* Version v1 doesn&#39;t call the `ratings` service.</span><span class="w"></span>
-<span class="w">      </span><span class="no">* Version v2 calls the `ratings` service, and displays each rating as 1 to 5 black stars.</span><span class="w"></span>
-<span class="w">      </span><span class="no">* Version v3 calls the `ratings` service, and displays each rating as 1 to 5 red stars.</span><span class="w"></span>
+<span class="w">      </span><span class="no">* Version v1 doesn&#39;t call the `ratings` service.</span>
+<span class="w">      </span><span class="no">* Version v2 calls the `ratings` service, and displays each rating as 1 to 5 black stars.</span>
+<span class="w">      </span><span class="no">* Version v3 calls the `ratings` service, and displays each rating as 1 to 5 red stars.</span>
 
-<span class="w">      </span><span class="no">The end-to-end architecture of the application is shown below.</span><span class="w"></span>
+<span class="w">      </span><span class="no">The end-to-end architecture of the application is shown below.</span>
 
-<span class="w">      </span><span class="no">![Bookinfo Application without Istio](https://istio.io/latest/docs/examples/bookinfo/noistio.svg)</span><span class="w"></span>
+<span class="w">      </span><span class="no">![Bookinfo Application without Istio](https://istio.io/latest/docs/examples/bookinfo/noistio.svg)</span>
 
-<span class="w">      </span><span class="no">This application is polyglot, i.e., the microservices are written in different languages.</span><span class="w"></span>
-<span class="w">      </span><span class="no">It&#39;s worth noting that these services have no dependencies on Istio, but make an interesting</span><span class="w"></span>
-<span class="w">      </span><span class="no">service mesh example, particularly because of the multitude of services, languages and versions</span><span class="w"></span>
-<span class="w">      </span><span class="no">for the `reviews` service.</span><span class="w"></span>
+<span class="w">      </span><span class="no">This application is polyglot, i.e., the microservices are written in different languages.</span>
+<span class="w">      </span><span class="no">It&#39;s worth noting that these services have no dependencies on Istio, but make an interesting</span>
+<span class="w">      </span><span class="no">service mesh example, particularly because of the multitude of services, languages and versions</span>
+<span class="w">      </span><span class="no">for the `reviews` service.</span>
 </code></pre></div>
 <p><img alt="Markdown" src="assets/plugins-markdown.png" /></p>
 <h3 id="resources"><code>resources</code></h3>
@@ -2044,114 +2044,114 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">services</span><span class="w"></span>
-<span class="w">    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=productpage</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">services</span>
+<span class="w">    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=productpage</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you want to display Kubernetes resources from the same satellite / cluster / namespace as it is used in an application / user / team / dashboard you can use the following JSONPath to set the values: <code>&lt;% $.satellite %&gt;</code>, <code>&lt;% $.cluster %&gt;</code>, <code>&lt;% $.namespace %&gt;</code> and <code>&lt;% $.name %&gt;</code>. For example the following configuration would display all pods and deployments with from the same satellite, cluster and namespace where the application lives.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
-<span class="w">    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app.kubernetes.io/name=&quot;&lt;% $.name %&gt;&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.namespace</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span>
+<span class="w">    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app.kubernetes.io/name=&quot;&lt;% $.name %&gt;&quot;</span>
 </code></pre></div>
 </div>
 <details class="note">
 <summary>Example 1 with Custom Columns</summary>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
-<span class="w">    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=reviews</span><span class="w"></span>
-<span class="w">    </span><span class="nt">columns</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Image</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.spec.containers[?(@.name===&#39;bookinfo&#39;)].image&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Creation Time</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.metadata.creationTimestamp&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Image</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.spec.template.spec.containers[*].image&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span>
+<span class="w">    </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app=reviews</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Image</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.spec.containers[?(@.name===&#39;bookinfo&#39;)].image&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Creation Time</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.metadata.creationTimestamp&quot;</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Image</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployments</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.spec.template.spec.containers[*].image&quot;</span>
 </code></pre></div>
 </details>
 <details class="note">
 <summary>Example 2 with Custom Columns</summary>
-<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span><span class="w"></span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span><span class="w"></span>
-<span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
-<span class="w">    </span><span class="nt">columns</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Status</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].status&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reason</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].reason&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Type</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].type&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Message</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].message&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Last Transition Time</span><span class="w"></span>
-<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].lastTransitionTime&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resources</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">satellites</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.satellite</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;%</span><span class="nv"> </span><span class="s">$.cluster</span><span class="nv"> </span><span class="s">%&gt;&quot;</span>
+<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookinfo</span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Status</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].status&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reason</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].reason&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Type</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].type&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Message</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].message&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Last Transition Time</span>
+<span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vaultsecrets.ricoberger.de/v1alpha1</span>
+<span class="w">        </span><span class="nt">jsonPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$.status.conditions[*].lastTransitionTime&quot;</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span>
 </code></pre></div>
 </details>
 <h3 id="static"><code>static</code></h3>
 <p>The <code>static</code> plugin can be used within the variables section of a dashboard, to define a static list of variable values. The options for this plugin is a list of strings with the possible values for the variable:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">variables</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var_reporter</span><span class="w"></span>
-<span class="w">    </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reporter</span><span class="w"></span>
-<span class="w">    </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static</span><span class="w"></span>
-<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span><span class="w"></span>
-<span class="w">      </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">source</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">variables</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var_reporter</span>
+<span class="w">    </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reporter</span>
+<span class="w">    </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destination</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">source</span>
 </code></pre></div>
 
               

@@ -1504,12 +1504,12 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">connection</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">driver</span><span class="p">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">connection</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">driver</span><span class="p">:</span>
 </code></pre></div>
 <h2 id="insight-options">Insight Options</h2>
 <div class="admonition note">
@@ -1708,285 +1708,285 @@
 <h2 id="usage">Usage</h2>
 <details class="note">
 <summary>Application 1</summary>
-<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
-<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-application</span><span class="w"></span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span><span class="w"></span>
-<span class="w">        </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Raw Data</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">rowSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration and Upstream Service Time</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                            </span><span class="no">SELECT</span><span class="w"></span>
-<span class="w">                              </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span><span class="w"></span>
-<span class="w">                              </span><span class="no">avg(fields_number[&#39;content_duration&#39;]) as avg_duration,</span><span class="w"></span>
-<span class="w">                              </span><span class="no">avg(fields_number[&#39;content_upstream_service_time&#39;]) as avg_ust,</span><span class="w"></span>
-<span class="w">                              </span><span class="no">avg_duration - avg_ust as avg_diff</span><span class="w"></span>
-<span class="w">                            </span><span class="no">FROM</span><span class="w"></span>
-<span class="w">                              </span><span class="no">logs.logs</span><span class="w"></span>
-<span class="w">                            </span><span class="no">WHERE</span><span class="w"></span>
-<span class="w">                              </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND namespace=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND app=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND container_name=&#39;istio-proxy&#39;</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND match(fields_string[&#39;content_upstream_cluster&#39;], &#39;^inbound.*&#39;)</span><span class="w"></span>
-<span class="w">                            </span><span class="no">GROUP BY</span><span class="w"></span>
-<span class="w">                              </span><span class="no">time</span><span class="w"></span>
-<span class="w">                            </span><span class="no">ORDER BY</span><span class="w"></span>
-<span class="w">                              </span><span class="no">time</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">columns</span><span class="p">:</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">time</span><span class="p">:</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Time</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">avg_duration</span><span class="p">:</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">avg_ust</span><span class="p">:</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upstream Service Time</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">avg_diff</span><span class="p">:</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Difference</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-application</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dashboards</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span>
+<span class="w">        </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">              </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Raw Data</span>
+<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">                  </span><span class="nt">rowSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
+<span class="w">                      </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration and Upstream Service Time</span>
+<span class="w">                          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                            </span><span class="no">SELECT</span>
+<span class="w">                              </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span>
+<span class="w">                              </span><span class="no">avg(fields_number[&#39;content_duration&#39;]) as avg_duration,</span>
+<span class="w">                              </span><span class="no">avg(fields_number[&#39;content_upstream_service_time&#39;]) as avg_ust,</span>
+<span class="w">                              </span><span class="no">avg_duration - avg_ust as avg_diff</span>
+<span class="w">                            </span><span class="no">FROM</span>
+<span class="w">                              </span><span class="no">logs.logs</span>
+<span class="w">                            </span><span class="no">WHERE</span>
+<span class="w">                              </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span>
+<span class="w">                              </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span>
+<span class="w">                              </span><span class="no">AND namespace=&#39;myservice&#39;</span>
+<span class="w">                              </span><span class="no">AND app=&#39;myservice&#39;</span>
+<span class="w">                              </span><span class="no">AND container_name=&#39;istio-proxy&#39;</span>
+<span class="w">                              </span><span class="no">AND match(fields_string[&#39;content_upstream_cluster&#39;], &#39;^inbound.*&#39;)</span>
+<span class="w">                            </span><span class="no">GROUP BY</span>
+<span class="w">                              </span><span class="no">time</span>
+<span class="w">                            </span><span class="no">ORDER BY</span>
+<span class="w">                              </span><span class="no">time</span>
+<span class="w">                          </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">                            </span><span class="nt">time</span><span class="p">:</span>
+<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Time</span>
+<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">                            </span><span class="nt">avg_duration</span><span class="p">:</span>
+<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration</span>
+<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span>
+<span class="w">                            </span><span class="nt">avg_ust</span><span class="p">:</span>
+<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upstream Service Time</span>
+<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span>
+<span class="w">                            </span><span class="nt">avg_diff</span><span class="p">:</span>
+<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Difference</span>
+<span class="w">                              </span><span class="nt">unit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span>
 
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Difference</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                          </span><span class="no">SELECT</span><span class="w"></span>
-<span class="w">                            </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">avg(fields_number[&#39;content_duration&#39;]) - avg(fields_number[&#39;content_upstream_service_time&#39;]) as avg_diff</span><span class="w"></span>
-<span class="w">                          </span><span class="no">FROM</span><span class="w"></span>
-<span class="w">                            </span><span class="no">logs.logs</span><span class="w"></span>
-<span class="w">                          </span><span class="no">WHERE</span><span class="w"></span>
-<span class="w">                            </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND namespace=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND app=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND container_name=&#39;istio-proxy&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND match(fields_string[&#39;content_upstream_cluster&#39;], &#39;^inbound.*&#39;)</span><span class="w"></span>
-<span class="w">                          </span><span class="no">GROUP BY</span><span class="w"></span>
-<span class="w">                            </span><span class="no">time</span><span class="w"></span>
-<span class="w">                          </span><span class="no">ORDER BY</span><span class="w"></span>
-<span class="w">                            </span><span class="no">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">xAxisColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">xAxisType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avg_diff</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisStacked</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">avg_diff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Difference</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Difference</span>
+<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span>
+<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span>
+<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                          </span><span class="no">SELECT</span>
+<span class="w">                            </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span>
+<span class="w">                            </span><span class="no">avg(fields_number[&#39;content_duration&#39;]) - avg(fields_number[&#39;content_upstream_service_time&#39;]) as avg_diff</span>
+<span class="w">                          </span><span class="no">FROM</span>
+<span class="w">                            </span><span class="no">logs.logs</span>
+<span class="w">                          </span><span class="no">WHERE</span>
+<span class="w">                            </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span>
+<span class="w">                            </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span>
+<span class="w">                            </span><span class="no">AND namespace=&#39;myservice&#39;</span>
+<span class="w">                            </span><span class="no">AND app=&#39;myservice&#39;</span>
+<span class="w">                            </span><span class="no">AND container_name=&#39;istio-proxy&#39;</span>
+<span class="w">                            </span><span class="no">AND match(fields_string[&#39;content_upstream_cluster&#39;], &#39;^inbound.*&#39;)</span>
+<span class="w">                          </span><span class="no">GROUP BY</span>
+<span class="w">                            </span><span class="no">time</span>
+<span class="w">                          </span><span class="no">ORDER BY</span>
+<span class="w">                            </span><span class="no">time</span>
+<span class="w">                        </span><span class="nt">xAxisColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">                        </span><span class="nt">xAxisType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avg_diff</span>
+<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span>
+<span class="w">                        </span><span class="nt">yAxisStacked</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span>
+<span class="w">                          </span><span class="nt">avg_diff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Difference</span>
 
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration vs Upstream Service Time</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                          </span><span class="no">SELECT</span><span class="w"></span>
-<span class="w">                            </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">avg(fields_number[&#39;content_duration&#39;]) as avg_duration,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">avg(fields_number[&#39;content_upstream_service_time&#39;]) as avg_ust</span><span class="w"></span>
-<span class="w">                          </span><span class="no">FROM</span><span class="w"></span>
-<span class="w">                            </span><span class="no">logs.logs</span><span class="w"></span>
-<span class="w">                          </span><span class="no">WHERE</span><span class="w"></span>
-<span class="w">                            </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND namespace=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND app=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND container_name=&#39;istio-proxy&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND match(fields_string[&#39;content_upstream_cluster&#39;], &#39;^inbound.*&#39;)</span><span class="w"></span>
-<span class="w">                          </span><span class="no">GROUP BY</span><span class="w"></span>
-<span class="w">                            </span><span class="no">time</span><span class="w"></span>
-<span class="w">                          </span><span class="no">ORDER BY</span><span class="w"></span>
-<span class="w">                            </span><span class="no">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">xAxisColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">xAxisType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avg_duration</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avg_ust</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisStacked</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">avg_duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">avg_ust</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upstream Service Time</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration vs Upstream Service Time</span>
+<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span>
+<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span>
+<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                          </span><span class="no">SELECT</span>
+<span class="w">                            </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span>
+<span class="w">                            </span><span class="no">avg(fields_number[&#39;content_duration&#39;]) as avg_duration,</span>
+<span class="w">                            </span><span class="no">avg(fields_number[&#39;content_upstream_service_time&#39;]) as avg_ust</span>
+<span class="w">                          </span><span class="no">FROM</span>
+<span class="w">                            </span><span class="no">logs.logs</span>
+<span class="w">                          </span><span class="no">WHERE</span>
+<span class="w">                            </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span>
+<span class="w">                            </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span>
+<span class="w">                            </span><span class="no">AND namespace=&#39;myservice&#39;</span>
+<span class="w">                            </span><span class="no">AND app=&#39;myservice&#39;</span>
+<span class="w">                            </span><span class="no">AND container_name=&#39;istio-proxy&#39;</span>
+<span class="w">                            </span><span class="no">AND match(fields_string[&#39;content_upstream_cluster&#39;], &#39;^inbound.*&#39;)</span>
+<span class="w">                          </span><span class="no">GROUP BY</span>
+<span class="w">                            </span><span class="no">time</span>
+<span class="w">                          </span><span class="no">ORDER BY</span>
+<span class="w">                            </span><span class="no">time</span>
+<span class="w">                        </span><span class="nt">xAxisColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">                        </span><span class="nt">xAxisType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avg_duration</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avg_ust</span>
+<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span>
+<span class="w">                        </span><span class="nt">yAxisStacked</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span>
+<span class="w">                          </span><span class="nt">avg_duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Duration</span>
+<span class="w">                          </span><span class="nt">avg_ust</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upstream Service Time</span>
 
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Levels</span><span class="w"></span>
-<span class="w">        </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Raw Data</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">queries</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Levels</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                            </span><span class="no">SELECT</span><span class="w"></span>
-<span class="w">                              </span><span class="no">content_level,</span><span class="w"></span>
-<span class="w">                              </span><span class="no">count(content_level) as count_data</span><span class="w"></span>
-<span class="w">                            </span><span class="no">FROM</span><span class="w"></span>
-<span class="w">                              </span><span class="no">logs.logs</span><span class="w"></span>
-<span class="w">                            </span><span class="no">WHERE</span><span class="w"></span>
-<span class="w">                              </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND namespace=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND app=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                              </span><span class="no">AND container_name=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">GROUP BY</span><span class="w"></span>
-<span class="w">                              </span><span class="no">content_level</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">columns</span><span class="p">:</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">content_level</span><span class="p">:</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Level</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">count_data</span><span class="p">:</span><span class="w"></span>
-<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Count</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Level Distribution</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pie</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                          </span><span class="no">SELECT</span><span class="w"></span>
-<span class="w">                            </span><span class="no">content_level,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">count(content_level) as count_data</span><span class="w"></span>
-<span class="w">                          </span><span class="no">FROM</span><span class="w"></span>
-<span class="w">                            </span><span class="no">logs.logs</span><span class="w"></span>
-<span class="w">                          </span><span class="no">WHERE</span><span class="w"></span>
-<span class="w">                            </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND namespace=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND app=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">AND container_name=&#39;myservice&#39;</span><span class="w"></span>
-<span class="w">                          </span><span class="no">GROUP BY</span><span class="w"></span>
-<span class="w">                            </span><span class="no">content_level</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">pieLabelColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content_level</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">pieValueColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">count_data</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Levels</span>
+<span class="w">        </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">              </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Raw Data</span>
+<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
+<span class="w">                      </span><span class="nt">queries</span><span class="p">:</span>
+<span class="w">                        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Levels</span>
+<span class="w">                          </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                            </span><span class="no">SELECT</span>
+<span class="w">                              </span><span class="no">content_level,</span>
+<span class="w">                              </span><span class="no">count(content_level) as count_data</span>
+<span class="w">                            </span><span class="no">FROM</span>
+<span class="w">                              </span><span class="no">logs.logs</span>
+<span class="w">                            </span><span class="no">WHERE</span>
+<span class="w">                              </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span>
+<span class="w">                              </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span>
+<span class="w">                              </span><span class="no">AND namespace=&#39;myservice&#39;</span>
+<span class="w">                              </span><span class="no">AND app=&#39;myservice&#39;</span>
+<span class="w">                              </span><span class="no">AND container_name=&#39;myservice&#39;</span>
+<span class="w">                            </span><span class="no">GROUP BY</span>
+<span class="w">                              </span><span class="no">content_level</span>
+<span class="w">                          </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">                            </span><span class="nt">content_level</span><span class="p">:</span>
+<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Level</span>
+<span class="w">                            </span><span class="nt">count_data</span><span class="p">:</span>
+<span class="w">                              </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Count</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Log Level Distribution</span>
+<span class="w">                  </span><span class="nt">colSpan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span>
+<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span>
+<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pie</span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                          </span><span class="no">SELECT</span>
+<span class="w">                            </span><span class="no">content_level,</span>
+<span class="w">                            </span><span class="no">count(content_level) as count_data</span>
+<span class="w">                          </span><span class="no">FROM</span>
+<span class="w">                            </span><span class="no">logs.logs</span>
+<span class="w">                          </span><span class="no">WHERE</span>
+<span class="w">                            </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span>
+<span class="w">                            </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span>
+<span class="w">                            </span><span class="no">AND namespace=&#39;myservice&#39;</span>
+<span class="w">                            </span><span class="no">AND app=&#39;myservice&#39;</span>
+<span class="w">                            </span><span class="no">AND container_name=&#39;myservice&#39;</span>
+<span class="w">                          </span><span class="no">GROUP BY</span>
+<span class="w">                            </span><span class="no">content_level</span>
+<span class="w">                        </span><span class="nt">pieLabelColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content_level</span>
+<span class="w">                        </span><span class="nt">pieValueColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">count_data</span>
 </code></pre></div>
 </details>
 <p><img alt="SQL Example 1" src="../assets/sql-example-1.png" /></p>
 <p><img alt="SQL Example 2" src="../assets/sql-example-2.png" /></p>
 <details class="note">
 <summary>Application 2</summary>
-<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span><span class="w"></span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span><span class="w"></span>
-<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-application</span><span class="w"></span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span><span class="w"></span>
-<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">dashboards</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span><span class="w"></span>
-<span class="w">        </span><span class="nt">inline</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">rows</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-traces</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singlestats</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                          </span><span class="no">SELECT</span><span class="w"></span>
-<span class="w">                            </span><span class="no">floor(quantile(0.5)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p50,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">floor(quantile(0.95)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p95,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">floor(quantile(0.99)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p99</span><span class="w"></span>
-<span class="w">                          </span><span class="no">FROM</span><span class="w"></span>
-<span class="w">                            </span><span class="no">(</span><span class="w"></span>
-<span class="w">                              </span><span class="no">SELECT * FROM jaeger_spans</span><span class="w"></span>
-<span class="w">                              </span><span class="no">WHERE</span><span class="w"></span>
-<span class="w">                                </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
-<span class="w">                                </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
-<span class="w">                                </span><span class="no">AND JSONExtractString(model, &#39;operation_name&#39;) = &#39;async envoy.service.auth.v3.Authorization.Check egress&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">)</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p50</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p99</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">p50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P50</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P95</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">p99</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P99</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">thresholds</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="s">&quot;-1024&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#3E8635&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="s">&quot;4&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#F0AB00&quot;</span><span class="w"></span>
-<span class="w">                          </span><span class="s">&quot;6&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#C9190B&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">              </span><span class="nt">panels</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span><span class="w"></span>
-<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-traces</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span><span class="w"></span>
-<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">                          </span><span class="no">SELECT</span><span class="w"></span>
-<span class="w">                            </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">floor(quantile(0.5)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p50,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">floor(quantile(0.95)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p95,</span><span class="w"></span>
-<span class="w">                            </span><span class="no">floor(quantile(0.99)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p99</span><span class="w"></span>
-<span class="w">                          </span><span class="no">FROM</span><span class="w"></span>
-<span class="w">                            </span><span class="no">(</span><span class="w"></span>
-<span class="w">                              </span><span class="no">SELECT * FROM jaeger_spans</span><span class="w"></span>
-<span class="w">                              </span><span class="no">WHERE</span><span class="w"></span>
-<span class="w">                                </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span><span class="w"></span>
-<span class="w">                                </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span><span class="w"></span>
-<span class="w">                                </span><span class="no">AND JSONExtractString(model, &#39;operation_name&#39;) = &#39;async envoy.service.auth.v3.Authorization.Check egress&#39;</span><span class="w"></span>
-<span class="w">                            </span><span class="no">)</span><span class="w"></span>
-<span class="w">                          </span><span class="no">GROUP BY time</span><span class="w"></span>
-<span class="w">                          </span><span class="no">ORDER BY time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">xAxisColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">xAxisType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p50</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95</span><span class="w"></span>
-<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p99</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">p50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P50</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P95</span><span class="w"></span>
-<span class="w">                          </span><span class="nt">p99</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P99</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-application</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kobs</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dashboards</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span>
+<span class="w">        </span><span class="nt">inline</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">rows</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">              </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-traces</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span>
+<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span>
+<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singlestats</span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                          </span><span class="no">SELECT</span>
+<span class="w">                            </span><span class="no">floor(quantile(0.5)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p50,</span>
+<span class="w">                            </span><span class="no">floor(quantile(0.95)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p95,</span>
+<span class="w">                            </span><span class="no">floor(quantile(0.99)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p99</span>
+<span class="w">                          </span><span class="no">FROM</span>
+<span class="w">                            </span><span class="no">(</span>
+<span class="w">                              </span><span class="no">SELECT * FROM jaeger_spans</span>
+<span class="w">                              </span><span class="no">WHERE</span>
+<span class="w">                                </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span>
+<span class="w">                                </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span>
+<span class="w">                                </span><span class="no">AND JSONExtractString(model, &#39;operation_name&#39;) = &#39;async envoy.service.auth.v3.Authorization.Check egress&#39;</span>
+<span class="w">                            </span><span class="no">)</span>
+<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p50</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p99</span>
+<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span>
+<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span>
+<span class="w">                          </span><span class="nt">p50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P50</span>
+<span class="w">                          </span><span class="nt">p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P95</span>
+<span class="w">                          </span><span class="nt">p99</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P99</span>
+<span class="w">                        </span><span class="nt">thresholds</span><span class="p">:</span>
+<span class="w">                          </span><span class="s">&quot;-1024&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#3E8635&quot;</span>
+<span class="w">                          </span><span class="s">&quot;4&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#F0AB00&quot;</span>
+<span class="w">                          </span><span class="s">&quot;6&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;#C9190B&quot;</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">              </span><span class="nt">panels</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Latency</span>
+<span class="w">                  </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">satellite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-traces</span>
+<span class="w">                    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span>
+<span class="w">                    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">                      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chart</span>
+<span class="w">                      </span><span class="nt">chart</span><span class="p">:</span>
+<span class="w">                        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">line</span>
+<span class="w">                        </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                          </span><span class="no">SELECT</span>
+<span class="w">                            </span><span class="no">toStartOfInterval(timestamp, INTERVAL 60 second) AS time,</span>
+<span class="w">                            </span><span class="no">floor(quantile(0.5)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p50,</span>
+<span class="w">                            </span><span class="no">floor(quantile(0.95)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p95,</span>
+<span class="w">                            </span><span class="no">floor(quantile(0.99)(JSONExtractInt(model, &#39;duration&#39;)) / 1000000, 2) as p99</span>
+<span class="w">                          </span><span class="no">FROM</span>
+<span class="w">                            </span><span class="no">(</span>
+<span class="w">                              </span><span class="no">SELECT * FROM jaeger_spans</span>
+<span class="w">                              </span><span class="no">WHERE</span>
+<span class="w">                                </span><span class="no">timestamp &gt;= FROM_UNIXTIME({% .__timeStart %})</span>
+<span class="w">                                </span><span class="no">AND timestamp &lt;= FROM_UNIXTIME({% .__timeEnd %})</span>
+<span class="w">                                </span><span class="no">AND JSONExtractString(model, &#39;operation_name&#39;) = &#39;async envoy.service.auth.v3.Authorization.Check egress&#39;</span>
+<span class="w">                            </span><span class="no">)</span>
+<span class="w">                          </span><span class="no">GROUP BY time</span>
+<span class="w">                          </span><span class="no">ORDER BY time</span>
+<span class="w">                        </span><span class="nt">xAxisColumn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">                        </span><span class="nt">xAxisType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">                        </span><span class="nt">yAxisColumns</span><span class="p">:</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p50</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95</span>
+<span class="w">                          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p99</span>
+<span class="w">                        </span><span class="nt">yAxisUnit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ms</span>
+<span class="w">                        </span><span class="nt">legend</span><span class="p">:</span>
+<span class="w">                          </span><span class="nt">p50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P50</span>
+<span class="w">                          </span><span class="nt">p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P95</span>
+<span class="w">                          </span><span class="nt">p99</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P99</span>
 </code></pre></div>
 </details>
 <p><img alt="SQL Example 3" src="../assets/sql-example-3.png" /></p>

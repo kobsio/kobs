@@ -1397,21 +1397,21 @@ kubectl cluster-info --context kind-kobs
 <p>To use the cluster you can switch your <code>kubectl</code> context using <code>kubectl cluster-info --context kind-kobs</code>.</p>
 <h2 id="install-all-services">Install all Services</h2>
 <p>Now we can deploy the <a href="https://github.com/kubernetes-sigs/metrics-server">metrics-server</a> and the <a href="https://github.com/kubernetes/kube-state-metrics">kube-state-metrics</a> to get some Prometheus metrics:</p>
-<div class="highlight"><pre><span></span><code>kustomize build deploy/demo/kube-system <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>deploy/demo/kube-system<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 <p>When the <code>metrics-server</code> and <code>kube-state-metrics</code> are ready, we can continue with the <code>istio-operator</code> and <code>istio-system</code> namespace. Within the <code>istio-system</code> namespace we are also deploying Prometheus, Jaeger and Kiali:</p>
-<div class="highlight"><pre><span></span><code>kustomize build deploy/demo/istio-operator <span class="p">|</span> kubectl apply -f -
-kustomize build deploy/demo/istio-system <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>deploy/demo/istio-operator<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+kustomize<span class="w"> </span>build<span class="w"> </span>deploy/demo/istio-system<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 <p>When Istio is up and running, we can install Elasticsearch and Filebeat to collect the logs in the kind cluster:</p>
-<div class="highlight"><pre><span></span><code>kustomize build deploy/demo/elastic-system <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>deploy/demo/elastic-system<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 <p>Once all our observability tools are ready we can deploy the bookinfo applications:</p>
-<div class="highlight"><pre><span></span><code>kustomize build deploy/demo/bookinfo <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>deploy/demo/bookinfo<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 <p>Finally we are deploying the Custom Resource Definitions for kobs and the hub and satellite component:</p>
-<div class="highlight"><pre><span></span><code>kustomize build deploy/kustomize/crds <span class="p">|</span> kubectl apply -f -
-kustomize build deploy/demo/kobs/main <span class="p">|</span> kubectl apply -f -
+<div class="highlight"><pre><span></span><code>kustomize<span class="w"> </span>build<span class="w"> </span>deploy/kustomize/crds<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+kustomize<span class="w"> </span>build<span class="w"> </span>deploy/demo/kobs/main<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </code></pre></div>
 <p>If all components were installed correctly you can run <code>kubectl get pods -A</code> to get a list of all Pods. The output should look similar to the following:</p>
 <div class="highlight"><pre><span></span><code>NAMESPACE            NAME                                              READY   STATUS    RESTARTS   AGE
@@ -1449,7 +1449,7 @@ local-path-storage   local-path-provisioner-78776bfc44-59fhc           1/1     R
 127.0.0.1 bookinfo.demo
 </code></pre></div>
 <p>After you have adjusted the hosts file, you can open <a href="http://bookinfo.demo/productpage">http://bookinfo.demo/productpage</a> in your browser. You should see the productpage for the Bookinfo Application. When you refresh the page, the reviews section of the page should change with every request. To generate some traffic to get more metrics, logs and traces you can run the following command in your terminal:</p>
-<div class="highlight"><pre><span></span><code><span class="k">while</span> :<span class="p">;</span> <span class="k">do</span> curl -s <span class="s2">&quot;http://bookinfo.demo/productpage&quot;</span> <span class="p">|</span> grep -o <span class="s2">&quot;&lt;title&gt;.*&lt;/title&gt;&quot;</span><span class="p">;</span> sleep <span class="m">1</span><span class="p">;</span> <span class="k">done</span>
+<div class="highlight"><pre><span></span><code><span class="k">while</span><span class="w"> </span>:<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;http://bookinfo.demo/productpage&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;&lt;title&gt;.*&lt;/title&gt;&quot;</span><span class="p">;</span><span class="w"> </span>sleep<span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 </code></pre></div>
 <p>Now you can take a look at kobs. Open <a href="http://kobs.demo">http://kobs.demo</a> to view the kobs UI.</p>
 <figure>
@@ -1489,9 +1489,9 @@ local-path-storage   local-path-provisioner-78776bfc44-59fhc           1/1     R
 </figure>
 <h2 id="cleanup">Cleanup</h2>
 <p>To delete the created Kubernetes cluster and the local Docker registry, when you are done with the demo, you can run the following commands. This will delete the kind cluster and the Docker container for the local Docker registry:</p>
-<div class="highlight"><pre><span></span><code>kind delete cluster --name kobs
-docker stop kind-registry
-docker rm kind-registry
+<div class="highlight"><pre><span></span><code>kind<span class="w"> </span>delete<span class="w"> </span>cluster<span class="w"> </span>--name<span class="w"> </span>kobs
+docker<span class="w"> </span>stop<span class="w"> </span>kind-registry
+docker<span class="w"> </span>rm<span class="w"> </span>kind-registry
 </code></pre></div>
 
               

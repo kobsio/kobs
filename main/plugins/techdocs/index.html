@@ -1495,21 +1495,21 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">techdocs</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">techdocs</span><span class="w"></span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">provider</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span><span class="w"></span>
-<span class="w">        </span><span class="nt">local</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">rootDirectory</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="c1"># type: s3</span><span class="w"></span>
-<span class="w">        </span><span class="c1"># s3:</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#   endpoint:</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#   accessKeyID:</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#   secretAccessKey:</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#   bucket:</span><span class="w"></span>
-<span class="w">        </span><span class="c1">#   useSSL: true</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">techdocs</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">techdocs</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">provider</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<span class="w">        </span><span class="nt">local</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">rootDirectory</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># type: s3</span>
+<span class="w">        </span><span class="c1"># s3:</span>
+<span class="w">        </span><span class="c1">#   endpoint:</span>
+<span class="w">        </span><span class="c1">#   accessKeyID:</span>
+<span class="w">        </span><span class="c1">#   secretAccessKey:</span>
+<span class="w">        </span><span class="c1">#   bucket:</span>
+<span class="w">        </span><span class="c1">#   useSSL: true</span>
 </code></pre></div>
 <h2 id="insight-options">Insight Options</h2>
 <div class="admonition note">
@@ -1574,23 +1574,23 @@
     └── index.yaml
 </code></pre></div>
 <p>As you can see each folder must also contain a <code>index.yaml</code> file with the following content:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># The key should be a unique identifier for all of your TechDocs.</span><span class="w"></span>
-<span class="c1"># It must have the same name as the folder, where the TechDocs for the service are stored for kobs.</span><span class="w"></span>
-<span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span><span class="w"></span>
-<span class="c1"># The name of your service and a short description of your service.</span><span class="w"></span>
-<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Productpage</span><span class="w"></span>
-<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The productpage for the bookinfo application.</span><span class="w"></span>
-<span class="c1"># The first markdown file which should be shown, when a user opens the TechDocs for the service.</span><span class="w"></span>
-<span class="nt">home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span><span class="w"></span>
-<span class="c1"># The table of contents for your service, with links to all the markdown files should can be accessed by a user.</span><span class="w"></span>
-<span class="nt">toc</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Installation</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Helm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">installation/helm.md</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Kustomize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">installation/kustomize.md</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Configuration</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Getting Started</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configuration/getting-started.md</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Add Books</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configuration/addbooks.md</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="c1"># The key should be a unique identifier for all of your TechDocs.</span>
+<span class="c1"># It must have the same name as the folder, where the TechDocs for the service are stored for kobs.</span>
+<span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">productpage</span>
+<span class="c1"># The name of your service and a short description of your service.</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Productpage</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The productpage for the bookinfo application.</span>
+<span class="c1"># The first markdown file which should be shown, when a user opens the TechDocs for the service.</span>
+<span class="nt">home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
+<span class="c1"># The table of contents for your service, with links to all the markdown files should can be accessed by a user.</span>
+<span class="nt">toc</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Installation</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Helm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">installation/helm.md</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Kustomize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">installation/kustomize.md</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Configuration</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Getting Started</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configuration/getting-started.md</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Add Books</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configuration/addbooks.md</span>
 </code></pre></div>
 
               
