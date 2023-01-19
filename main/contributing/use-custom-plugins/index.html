@@ -1435,7 +1435,7 @@
 <p>When you have adjusted the <code>main.go</code> file run <code>go mod tidy</code> to add it to your <code>go.mod</code> file.</p>
 <h3 id="dockerfile"><code>Dockerfile</code></h3>
 <p>The <code>Dockerfile</code> is used to build your own version of kobs and to copy the frontend files for your plugin. We are using again the <code>helloworld</code> plugin from the <a href="https://github.com/kobsio/plugin-template">kobsio/plugin-template</a> in the following example:</p>
-<div class="highlight"><pre><span></span><code><span class="w">FROM kobsio/kobs:v0.10.0 as app</span>
+<div class="highlight"><pre><span></span><code><span class="w">FROM kobsio/kobs:v0.11.0 as app</span>
 <span class="gi">+FROM kobsio/plugin:main as plugin-helloworld</span>
 
 <span class="w">FROM golang:1.19.0 as api</span>
