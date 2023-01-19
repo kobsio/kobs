@@ -20,7 +20,7 @@ const PageToolbar: React.FunctionComponent<IPageToolbarProps> = ({ options, setO
 
   // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we are calling the setOptions
   // function to trigger the search.
-  // use "SHIFT" + "ENTER".
+  // use "SHIFT" + "ENTER" to write multiple lines.
   const onEnter = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
     if (e?.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();

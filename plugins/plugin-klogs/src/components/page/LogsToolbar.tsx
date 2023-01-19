@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput } from '@patternfly/react-core';
+import { TextArea } from '@patternfly/react-core';
 
 import { IOptionsAdditionalFields, ITimes, Options, Toolbar, ToolbarItem } from '@kobsio/shared';
 import { IOptions } from '../../utils/interfaces';
@@ -12,11 +12,12 @@ interface ILogsToolbarProps {
 const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({ options, setOptions }: ILogsToolbarProps) => {
   const [query, setQuery] = useState<string>(options.query);
 
-  // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we are calling the setOptions
-  // function to trigger the search.
-  // use "SHIFT" + "ENTER".
-  const onEnter = (e: React.KeyboardEvent<HTMLInputElement> | undefined): void => {
+  // onEnter is used to detect if the user pressed the "ENTER" key. If this is the case we will not add a newline.
+  // Instead of this we are calling the setOptions function to trigger the search.
+  // use "SHIFT" + "ENTER" to write multiple lines.
+  const onEnter = (e: React.KeyboardEvent<HTMLTextAreaElement> | undefined): void => {
     if (e?.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       setOptions({ ...options, query: query });
     }
   };
@@ -42,8 +43,10 @@ const LogsToolbar: React.FunctionComponent<ILogsToolbarProps> = ({ options, setO
   return (
     <Toolbar usePageInsets={true}>
       <ToolbarItem grow={true}>
-        <TextInput
+        <TextArea
           aria-label="Query"
+          resizeOrientation="vertical"
+          rows={1}
           type="text"
           value={query}
           onChange={(value: string): void => setQuery(value)}
