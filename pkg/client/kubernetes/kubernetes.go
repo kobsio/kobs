@@ -1,5 +1,11 @@
 package kubernetes
 
+// go:generate mockgen -source=kubernetes.go -destination=./mock_kubernetes.go -package=kubernetes Client
+// Hint: please rename the imported package `client` to controllerRuntimeClient in the generated mock_kubernetes.go file.
+// Otherwise the name conflicts with the client struct in this package.
+// The `-import` option of mockgen should allow us to rename the package import, but it's currently broken.
+// See: https://github.com/golang/mock/issues/646
+
 import (
 	"bufio"
 	"context"
