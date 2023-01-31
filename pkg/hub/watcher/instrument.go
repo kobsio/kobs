@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/kobsio/kobs/pkg/log"
+	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go.uber.org/zap"

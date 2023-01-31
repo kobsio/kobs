@@ -3,224 +3,110 @@ package hub
 import (
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
-	"time"
 
-	"github.com/kobsio/kobs/cmd/kobs/hub/config"
-	"github.com/kobsio/kobs/pkg/app"
-	"github.com/kobsio/kobs/pkg/hub"
+	"github.com/kobsio/kobs/pkg/config"
+	"github.com/kobsio/kobs/pkg/hub/api"
+	"github.com/kobsio/kobs/pkg/hub/app"
 	"github.com/kobsio/kobs/pkg/hub/auth"
-	"github.com/kobsio/kobs/pkg/hub/satellites"
-	"github.com/kobsio/kobs/pkg/hub/store"
-	"github.com/kobsio/kobs/pkg/hub/watcher"
-	"github.com/kobsio/kobs/pkg/log"
-	"github.com/kobsio/kobs/pkg/metrics"
-	"github.com/kobsio/kobs/pkg/tracer"
-	"github.com/kobsio/kobs/pkg/version"
+	"github.com/kobsio/kobs/pkg/hub/clusters"
+	"github.com/kobsio/kobs/pkg/hub/db"
+	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/instrument/metrics"
+	"github.com/kobsio/kobs/pkg/instrument/tracer"
+	"github.com/kobsio/kobs/pkg/plugins"
+	"github.com/kobsio/kobs/pkg/plugins/plugin"
 
-	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
 
-// Command returns the cobra command for the "hub" command. The command can be used to start the hub component of kobs.
-func Command() *cobra.Command {
-	var appAddress string
-	var appAssetsDir string
-	var hubAddress string
-	var hubConfigFile string
-	var hubMode string
-	var hubStoreDriver string
-	var hubStoreURI string
-	var hubWatcherInterval time.Duration
-	var hubWatcherWorker int64
-	var metricsAddress string
+type Config struct {
+	Clusters clusters.Config   `json:"clusters"`
+	Plugins  []plugin.Instance `json:"plugins"`
+}
 
-	defaultAppAddress := ":15219"
-	if os.Getenv("KOBS_APP_ADDRESS") != "" {
-		defaultAppAddress = os.Getenv("KOBS_APP_ADDRESS")
+type Cmd struct {
+	Log      log.Config     `embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
+	Tracer   tracer.Config  `embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
+	Metrics  metrics.Config `embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
+	Database db.Config      `embed:"" prefix:"database." envprefix:"KOBS_DATABASE_"`
+	API      api.Config     `embed:"" prefix:"api." envprefix:"KOBS_API_"`
+	Auth     auth.Config    `embed:"" prefix:"auth." envprefix:"KOBS_AUTH_"`
+	App      app.Config     `embed:"" prefix:"app." envprefix:"KOBS_APP_"`
+	Config   string         `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the hub."`
+}
+
+func (r *Cmd) Run(plugins []plugins.Plugin) error {
+	logger, err := log.Setup(r.Log)
+	if err != nil {
+		return err
+	}
+	defer logger.Sync()
+
+	tracerClient, err := tracer.Setup(r.Tracer)
+	if err != nil {
+		return err
+	}
+	if tracerClient != nil {
+		defer tracerClient.Shutdown()
 	}
 
-	defaultAppAssetsDir := "app"
-	if os.Getenv("KOBS_APP_ASSETS") != "" {
-		defaultAppAssetsDir = os.Getenv("KOBS_APP_ASSETS")
+	metricsServer := metrics.New(r.Metrics)
+	go metricsServer.Start()
+	defer metricsServer.Stop()
+
+	cfg, err := config.Load[Config](r.Config)
+	if err != nil {
+		log.Error(nil, "Could not load configuration", zap.Error(err))
+		return err
 	}
 
-	defaultHubAddress := ":15220"
-	if os.Getenv("KOBS_HUB_ADDRESS") != "" {
-		defaultHubAddress = os.Getenv("KOBS_HUB_ADDRESS")
+	clustersClient, err := clusters.NewClient(cfg.Clusters)
+	if err != nil {
+		log.Error(nil, "Could not create clusters client", zap.Error(err))
+		return err
 	}
 
-	defaultHubConfigFile := "config.yaml"
-	if os.Getenv("KOBS_HUB_CONFIG") != "" {
-		defaultHubConfigFile = os.Getenv("KOBS_HUB_CONFIG")
+	dbClient, err := db.NewClient(r.Database)
+	if err != nil {
+		log.Error(nil, "Could not create database client", zap.Error(err))
+		return err
 	}
 
-	defaultHubMode := "default"
-	if os.Getenv("KOBS_HUB_MODE") != "" {
-		defaultHubMode = os.Getenv("KOBS_HUB_MODE")
+	authClient, err := auth.NewClient(r.Auth, dbClient)
+	if err != nil {
+		log.Error(nil, "Could not create auth client", zap.Error(err))
+		return err
 	}
 
-	defaultHubStoreDriver := "bolt"
-	if os.Getenv("KOBS_HUB_STORE_DRIVER") != "" {
-		defaultHubStoreDriver = os.Getenv("KOBS_HUB_STORE_DRIVER")
+	apiServer, err := api.New(r.API, authClient, clustersClient, dbClient)
+	if err != nil {
+		log.Error(nil, "Could not create client server", zap.Error(err))
+		return err
 	}
+	go apiServer.Start()
 
-	defaultHubStoreURI := "/tmp/kobs.db"
-	if os.Getenv("KOBS_HUB_STORE_URI") != "" {
-		defaultHubStoreURI = os.Getenv("KOBS_HUB_STORE_URI")
+	appServer, err := app.New(r.App, r.API)
+	if err != nil {
+		log.Error(nil, "Could not create Application server", zap.Error(err))
+		return err
 	}
+	go appServer.Start()
 
-	defaultHubWatcherInterval := 300 * time.Second
-	if os.Getenv("KOBS_HUB_WATCHER_INTERVAL") != "" {
-		defaultHubWatcherIntervalEnv := os.Getenv("KOBS_HUB_WATCHER_INTERVAL")
-		if defaultHubWatcherIntervalEnvParsed, err := time.ParseDuration(defaultHubWatcherIntervalEnv); err != nil {
-			defaultHubWatcherInterval = defaultHubWatcherIntervalEnvParsed
-		}
-	}
+	// All components should be terminated gracefully. For that we are listen for the SIGINT and SIGTERM signals and try
+	// to gracefully shutdown the started kobs components. This ensures that established connections or tasks are not
+	// interrupted.
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 
-	defaultHubWatcherWorker := int64(10)
-	if os.Getenv("KOBS_HUB_WATCHER_WORKER") != "" {
-		defaultHubWatcherWorkerEnv := os.Getenv("KOBS_HUB_WATCHER_WORKER")
-		if defaultHubWatcherWorkerEnvParsed, err := strconv.ParseInt(defaultHubWatcherWorkerEnv, 10, 64); err != nil {
-			defaultHubWatcherWorker = defaultHubWatcherWorkerEnvParsed
-		}
-	}
+	log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
+	<-done
+	log.Info(nil, "Shutdown kobs hub...")
 
-	defaultMetricsAddress := ":15222"
-	if os.Getenv("KOBS_METRICS_ADDRESS") != "" {
-		defaultMetricsAddress = os.Getenv("KOBS_METRICS_ADDRESS")
-	}
+	appServer.Stop()
+	apiServer.Stop()
 
-	hubCmd := &cobra.Command{
-		Use:   "hub",
-		Short: "Hub component of kobs.",
-		Long:  "Hub component of kobs.",
-		Run: func(cmd *cobra.Command, args []string) {
-			// Get our global flags for kobs and use them to setup our logging configuration. After our logging is
-			// configured we print the version information and build context of kobs.
-			debugUsername, _ := cmd.Flags().GetString("debug.username")
-			debugPassword, _ := cmd.Flags().GetString("debug.password")
+	log.Info(nil, "Shutdown is done")
 
-			logLevel, _ := cmd.Flags().GetString("log.level")
-			logFormat, _ := cmd.Flags().GetString("log.format")
-			log.Setup(logLevel, logFormat)
-
-			log.Info(nil, "Version information", version.Info()...)
-			log.Info(nil, "Build context", version.BuildContext()...)
-
-			traceEnabled, _ := cmd.Flags().GetBool("trace.enabled")
-			traceServiceName, _ := cmd.Flags().GetString("trace.service-name")
-			traceProvider, _ := cmd.Flags().GetString("trace.provider")
-			traceAddress, _ := cmd.Flags().GetString("trace.address")
-
-			tracerClient, err := tracer.Setup(traceEnabled, traceServiceName, traceProvider, traceAddress)
-			if err != nil {
-				log.Fatal(nil, "Could not setup tracing", zap.Error(err), zap.String("provider", traceProvider), zap.String("address", traceAddress))
-			}
-
-			// Load the configuration for the satellite from the provided configuration file.
-			cfg, err := config.Load(hubConfigFile)
-			if err != nil {
-				log.Fatal(nil, "Could not load configuration file", zap.Error(err), zap.String("config", hubConfigFile))
-			}
-
-			// Initialize the store, which is used to "cache" all clusters, plugins, applications, etc. from the satellites.
-			// So that we can directly interact with the store for these resources and do not have to call each satellite
-			// for every single API request.
-			// The store is then passed to the watcher. The watcher is used to get the resources from the satellites in a
-			// preconfigured interval and to pass them to the store. To watch the resources we start the "Watch" process in
-			// a new goroutine.
-			satellitesClient, err := satellites.NewClient(cfg.Satellites)
-			if err != nil {
-				log.Fatal(nil, "Could not create satellites client", zap.Error(err))
-			}
-
-			storeClient, err := store.NewClient(hubStoreDriver, hubStoreURI)
-			if err != nil {
-				log.Fatal(nil, "Could not create store", zap.Error(err))
-			}
-
-			authClient, err := auth.NewClient(cfg.Auth, storeClient)
-			if err != nil {
-				log.Fatal(nil, "Could not create auth client", zap.Error(err))
-			}
-
-			var watcherClient watcher.Client
-			if hubMode == "default" || hubMode == "watcher" {
-				watcherClient, err = watcher.NewClient(hubWatcherInterval, hubWatcherWorker, satellitesClient, storeClient)
-				if err != nil {
-					log.Fatal(nil, "Could not create watcher", zap.Error(err))
-				}
-				go watcherClient.Watch()
-			}
-
-			// Initialize each component and start it in it's own goroutine, so that the main goroutine is only used as
-			// listener for terminal signals, to initialize the graceful shutdown of the components.
-			// The hubServer handles all requests from the kobs ui, which is served via the appServer. The metrics server is
-			// used to serve the kobs metrics.
-			var hubSever hub.Server
-			var appServer app.Server
-
-			if hubMode == "default" || hubMode == "server" {
-				hubSever, err = hub.New(cfg.API, debugUsername, debugPassword, hubAddress, authClient, satellitesClient, storeClient)
-				if err != nil {
-					log.Fatal(nil, "Could not create hub server", zap.Error(err))
-				}
-				go hubSever.Start()
-
-				appServer, err = app.New(hubAddress, appAddress, appAssetsDir)
-				if err != nil {
-					log.Fatal(nil, "Could not create Application server", zap.Error(err))
-				}
-				go appServer.Start()
-			}
-
-			metricsServer := metrics.New(metricsAddress)
-			go metricsServer.Start()
-
-			// All components should be terminated gracefully. For that we are listen for the SIGINT and SIGTERM signals and try
-			// to gracefully shutdown the started kobs components. This ensures that established connections or tasks are not
-			// interrupted.
-			done := make(chan os.Signal, 1)
-			signal.Notify(done, os.Interrupt, syscall.SIGTERM)
-
-			log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
-			<-done
-			log.Info(nil, "Shutdown kobs hub...")
-
-			if hubMode == "default" || hubMode == "watcher" {
-				err := watcherClient.Stop()
-				if err != nil {
-					log.Error(nil, "Failed to stop watcher", zap.Error(err))
-				}
-			}
-
-			metricsServer.Stop()
-
-			if hubMode == "default" || hubMode == "server" {
-				appServer.Stop()
-				hubSever.Stop()
-			}
-
-			if tracerClient != nil {
-				tracerClient.Shutdown()
-			}
-
-			log.Info(nil, "Shutdown is done")
-		},
-	}
-
-	hubCmd.PersistentFlags().StringVar(&appAddress, "app.address", defaultAppAddress, "The address, where the application server is listen on.")
-	hubCmd.PersistentFlags().StringVar(&appAssetsDir, "app.assets", defaultAppAssetsDir, "The location of the assets directory.")
-	hubCmd.PersistentFlags().StringVar(&hubAddress, "hub.address", defaultHubAddress, "The address, where the hub is listen on.")
-	hubCmd.PersistentFlags().StringVar(&hubConfigFile, "hub.config", defaultHubConfigFile, "Path to the configuration file for the hub.")
-	hubCmd.PersistentFlags().StringVar(&hubMode, "hub.mode", defaultHubMode, "The mode in which the hub should be started. Must be \"default\", \"server\" or \"watcher\".")
-	hubCmd.PersistentFlags().StringVar(&hubStoreDriver, "hub.store.driver", defaultHubStoreDriver, "The database driver, which should be used for the store. Must be \"bolt\" or \"mongodb\".")
-	hubCmd.PersistentFlags().StringVar(&hubStoreURI, "hub.store.uri", defaultHubStoreURI, "The URI for the store.")
-	hubCmd.PersistentFlags().DurationVar(&hubWatcherInterval, "hub.watcher.interval", defaultHubWatcherInterval, "The interval for the watcher to sync the satellite configuration.")
-	hubCmd.PersistentFlags().Int64Var(&hubWatcherWorker, "hub.watcher.worker", defaultHubWatcherWorker, "The number of parallel sync processes for the watcher.")
-	hubCmd.PersistentFlags().StringVar(&metricsAddress, "metrics.address", defaultMetricsAddress, "The address, where the metrics server is listen on.")
-
-	return hubCmd
+	return nil
 }
