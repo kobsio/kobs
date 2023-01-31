@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func AssertEqualStatus(t *testing.T, want int, r *httptest.ResponseRecorder) {
+func AssertStatusEq(t *testing.T, want int, r *httptest.ResponseRecorder) {
 	statusMessage := ""
 	if r.Code != want {
 		bytes, _ := io.ReadAll(r.Body)

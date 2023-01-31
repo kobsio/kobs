@@ -40,7 +40,7 @@ func TestGetDashboards(t *testing.T) {
 
 		router.getDashboards(w, req)
 
-		testutil.AssertEqualStatus(t, http.StatusInternalServerError, w)
+		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
 		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 
@@ -63,7 +63,7 @@ func TestGetDashboards(t *testing.T) {
 
 		router.getDashboards(w, req)
 
-		testutil.AssertEqualStatus(t, http.StatusOK, w)
+		testutil.AssertStatusEq(t, http.StatusOK, w)
 		testutil.AssertJSONEq(t, `
 			[
 				{

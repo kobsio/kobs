@@ -41,7 +41,7 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		testutil.AssertEqualStatus(t, http.StatusInternalServerError, w)
+		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
 		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 
@@ -68,7 +68,7 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		testutil.AssertEqualStatus(t, http.StatusOK, w)
+		testutil.AssertStatusEq(t, http.StatusOK, w)
 		testutil.AssertJSONEq(t, `
 			[
 				{
