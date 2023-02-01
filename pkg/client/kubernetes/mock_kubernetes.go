@@ -130,18 +130,18 @@ func (mr *MockClientMockRecorder) GetApplications(ctx, cluster, namespace interf
 }
 
 // GetCRDs mocks base method.
-func (m *MockClient) GetCRDs() ([]CRD, error) {
+func (m *MockClient) GetCRDs(ctx context.Context) ([]CRD, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCRDs")
+	ret := m.ctrl.Call(m, "GetCRDs", ctx)
 	ret0, _ := ret[0].([]CRD)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCRDs indicates an expected call of GetCRDs.
-func (mr *MockClientMockRecorder) GetCRDs() *gomock.Call {
+func (mr *MockClientMockRecorder) GetCRDs(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCRDs", reflect.TypeOf((*MockClient)(nil).GetCRDs))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCRDs", reflect.TypeOf((*MockClient)(nil).GetCRDs), ctx)
 }
 
 // GetClient mocks base method.
