@@ -238,7 +238,7 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 		log.Error(ctx, "Application was not found", zap.Error(err), zap.String("id", id))
 		span.RecordError(fmt.Errorf("application was not found"))
 		span.SetStatus(codes.Error, "application was not found")
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("application was not found"))
+		errresponse.Render(w, r, http.StatusNotFound, fmt.Errorf("application was not found"))
 		return
 	}
 
