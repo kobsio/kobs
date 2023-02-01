@@ -3,6 +3,7 @@ package resources
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -117,7 +118,7 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		log.Error(ctx, "Could not delete resource", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		errresponse.Render(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -140,7 +141,7 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 	span.SetAttributes(attribute.Key("path").String(path))
 	log.Debug(ctx, "Patch resource", zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource), zap.String("path", path))
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
