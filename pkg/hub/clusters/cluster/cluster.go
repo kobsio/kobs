@@ -1,5 +1,7 @@
 package cluster
 
+//go:generate mockgen -source=cluster.go -destination=./cluster_mock.go -package=cluster Client
+
 import (
 	"context"
 	"net/http"

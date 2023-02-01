@@ -11,9 +11,11 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/hub/api"
+	"github.com/kobsio/kobs/pkg/hub/middleware/recoverer"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
@@ -65,6 +67,8 @@ func (s *server) Stop() {
 // localtion for the app.assets flag.
 func New(config Config, apiConfig api.Config) (Server, error) {
 	router := chi.NewRouter()
+	router.Use(recoverer.Handler)
+	router.Use(middleware.Compress(5))
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"DELETE", "GET", "HEAD", "OPTIONS", "POST", "PUT"},

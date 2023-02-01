@@ -7,12 +7,19 @@ import (
 
 	"github.com/kobsio/kobs/pkg/client/api"
 	"github.com/kobsio/kobs/pkg/client/kubernetes"
+	pluginsPkg "github.com/kobsio/kobs/pkg/client/plugins"
+	"github.com/kobsio/kobs/pkg/config"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/instrument/metrics"
 	"github.com/kobsio/kobs/pkg/instrument/tracer"
 	"github.com/kobsio/kobs/pkg/plugins"
+	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"go.uber.org/zap"
 )
+
+type Config struct {
+	Plugins []plugin.Instance `json:"plugins"`
+}
 
 type Cmd struct {
 	Log        log.Config        `embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
@@ -20,6 +27,7 @@ type Cmd struct {
 	Metrics    metrics.Config    `embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
 	Kubernetes kubernetes.Config `embed:"" prefix:"kubernetes." envprefix:"KOBS_KUBERNETES_"`
 	API        api.Config        `embed:"" prefix:"api." envprefix:"KOBS_API_"`
+	Config     string            `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the client."`
 }
 
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
@@ -41,13 +49,25 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	go metricsServer.Start()
 	defer metricsServer.Stop()
 
+	cfg, err := config.Load[Config](r.Config)
+	if err != nil {
+		log.Error(nil, "Could not load configuration", zap.Error(err))
+		return err
+	}
+
 	kubernetesClient, err := kubernetes.NewClient(r.Kubernetes)
 	if err != nil {
 		log.Error(nil, "Could not create Kubernetes client", zap.Error(err))
 		return err
 	}
 
-	apiServer, err := api.New(r.API, kubernetesClient)
+	pluginsClient, err := pluginsPkg.NewClient(plugins, cfg.Plugins, kubernetesClient)
+	if err != nil {
+		log.Error(nil, "Could not create plugins client", zap.Error(err))
+		return err
+	}
+
+	apiServer, err := api.New(r.API, kubernetesClient, pluginsClient)
 	if err != nil {
 		log.Error(nil, "Could not create client server", zap.Error(err))
 		return err

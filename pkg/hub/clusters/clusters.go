@@ -1,5 +1,7 @@
 package clusters
 
+//go:generate mockgen -source=clusters.go -destination=./clusters_mock.go -package=clusters Client
+
 import (
 	cluster "github.com/kobsio/kobs/pkg/hub/clusters/cluster"
 )

@@ -1,5 +1,7 @@
 package auth
 
+//go:generate mockgen -source=auth.go -destination=./auth_mock.go -package=auth Client
+
 import (
 	"context"
 	"net/http"

@@ -35,6 +35,10 @@ test-coverage:
 generate: generate-crds generate-assets
 
 .PHONY: generate-crds
+generate-mocks:
+	@go generate ./...
+
+.PHONY: generate-crds
 generate-crds:
 	@for crd in $(CRDS); do \
 		./hack/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/client/kubernetes/clients/$$crd github.com/kobsio/kobs/pkg/client/kubernetes/apis $$crd:v1 --go-header-file ./hack/boilerplate.go.txt --output-base ./tmp; \

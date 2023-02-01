@@ -559,7 +559,7 @@ func TestGetTeamsByIDs(t *testing.T) {
 
 	storedTeams5, err := c.GetTeamsByIDs(context.Background(), []string{"team3@kobs.io"})
 	require.NoError(t, err)
-	require.Equal(t, 2, len(storedTeams5))
+	require.Equal(t, 1, len(storedTeams5))
 }
 
 func TestGetTeamByID(t *testing.T) {

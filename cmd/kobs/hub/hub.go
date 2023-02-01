@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/auth"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
+	pluginsPkg "github.com/kobsio/kobs/pkg/hub/plugins"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/instrument/metrics"
 	"github.com/kobsio/kobs/pkg/instrument/tracer"
@@ -73,13 +74,19 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		return err
 	}
 
+	pluginsClient, err := pluginsPkg.NewClient(plugins, cfg.Plugins, clustersClient, dbClient)
+	if err != nil {
+		log.Error(nil, "Could not create plugins client", zap.Error(err))
+		return err
+	}
+
 	authClient, err := auth.NewClient(r.Auth, dbClient)
 	if err != nil {
 		log.Error(nil, "Could not create auth client", zap.Error(err))
 		return err
 	}
 
-	apiServer, err := api.New(r.API, authClient, clustersClient, dbClient)
+	apiServer, err := api.New(r.API, authClient, clustersClient, dbClient, pluginsClient)
 	if err != nil {
 		log.Error(nil, "Could not create client server", zap.Error(err))
 		return err

@@ -1,5 +1,7 @@
 package watcher
 
+//go:generate mockgen -source=watcher.go -destination=./watcher_mock.go -package=watcher Client
+
 import (
 	"context"
 	"time"

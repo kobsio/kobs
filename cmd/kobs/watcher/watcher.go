@@ -13,14 +13,12 @@ import (
 	"github.com/kobsio/kobs/pkg/instrument/metrics"
 	"github.com/kobsio/kobs/pkg/instrument/tracer"
 	"github.com/kobsio/kobs/pkg/plugins"
-	"github.com/kobsio/kobs/pkg/plugins/plugin"
 
 	"go.uber.org/zap"
 )
 
 type Config struct {
-	Clusters clusters.Config   `json:"clusters"`
-	Plugins  []plugin.Instance `json:"plugins"`
+	Clusters clusters.Config `json:"clusters"`
 }
 
 type Cmd struct {
