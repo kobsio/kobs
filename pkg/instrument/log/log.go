@@ -6,6 +6,8 @@ package log
 import (
 	"context"
 
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
+
 	"github.com/go-chi/chi/v5/middleware"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -41,9 +43,9 @@ func getFields(ctx context.Context, fields ...zapcore.Field) []zapcore.Field {
 		fields = append(fields, zap.String("requestID", requestID))
 	}
 
-	// if user, _ := authContext.GetUser(ctx); user != nil {
-	// 	fields = append(fields, zap.String("userEmail", user.Email))
-	// }
+	if user, _ := authContext.GetUser(ctx); user != nil {
+		fields = append(fields, zap.String("userID", user.ID))
+	}
 
 	if span := trace.SpanFromContext(ctx); span.SpanContext().HasTraceID() {
 		fields = append(fields, zap.String("traceID", span.SpanContext().TraceID().String()))

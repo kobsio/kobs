@@ -7,11 +7,15 @@ import (
 )
 
 func TestSetup(t *testing.T) {
-	require.NotPanics(t, func() {
-		Setup(Config{Level: "debug", Format: "console"})
+	t.Run("should succeed", func(t *testing.T) {
+		logger, err := Setup(Config{Level: "debug", Format: "console"})
+		require.NoError(t, err)
+		require.NotNil(t, logger)
 	})
 
-	require.Panics(t, func() {
-		Setup(Config{Level: "debug", Format: "logfmt"})
+	t.Run("should fail", func(t *testing.T) {
+		logger, err := Setup(Config{Level: "debug", Format: "logfmt"})
+		require.Error(t, err)
+		require.Nil(t, logger)
 	})
 }

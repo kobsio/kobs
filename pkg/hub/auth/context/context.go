@@ -16,7 +16,7 @@ const UserKey ctxKeyUser = 0
 // User is the structure of the user object saved in the request context. It contains the users id and permissions if
 // authentication is enabled.
 type User struct {
-	Email       string             `json:"email"`
+	ID          string             `json:"id"`
 	Teams       []string           `json:"teams"`
 	Permissions userv1.Permissions `json:"permissions"`
 }

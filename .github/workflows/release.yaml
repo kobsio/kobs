@@ -1,25 +1,25 @@
-name: Release
+# name: Release
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-jobs:
-  changelog:
-    permissions:
-      contents: write
-      pull-requests: write
-    name: Changelog
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update Changelog
-        uses: release-drafter/release-drafter@v5
-        with:
-          config-name: release.yaml
-          disable-autolabeler: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# jobs:
+#   changelog:
+#     permissions:
+#       contents: write
+#       pull-requests: write
+#     name: Changelog
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Update Changelog
+#         uses: release-drafter/release-drafter@v5
+#         with:
+#           config-name: release.yaml
+#           disable-autolabeler: true
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

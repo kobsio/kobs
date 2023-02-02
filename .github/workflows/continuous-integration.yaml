@@ -1,23 +1,7 @@
 name: Continuous Integration
 
 on:
-  push:
-    paths-ignore:
-      - '.github/**'
-      - '.vscode/**'
-      - 'cmd/kobs/Dockerfile'
-      - 'deploy/**'
-      - 'docs/**'
-      - 'hack/**'
-      - '.dockerignore'
-      - '.editorconfig'
-      - '.gitignore'
-      - 'CHANGELOG.md'
-      - 'CODE_OF_CONDUCT.md'
-      - 'CONTRIBUTING.md'
-      - 'LICENSE'
-      - 'mkdocs.yml'
-      - 'README.md'
+  pull_request:
 
 jobs:
   go:
@@ -67,39 +51,39 @@ jobs:
         run: |
           make build
 
-  node:
-    name: Node.js
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  # node:
+  #   name: Node.js
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
+  #     - name: Setup
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '16.x'
 
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            */node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+  #     - name: Cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: |
+  #           node_modules
+  #           */node_modules
+  #           */*/node_modules
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
 
-      - name: Install Dependencies
-        run: |
-          yarn install
+  #     - name: Install Dependencies
+  #       run: |
+  #         yarn install
 
-      - name: Lint
-        run: |
-          yarn lint
+  #     - name: Lint
+  #       run: |
+  #         yarn lint
 
-      - name: Build
-        run: |
-          make generate-assets
+  #     - name: Build
+  #       run: |
+  #         make generate-assets

@@ -1,50 +1,50 @@
-name: Continuous Delivery
+# name: Continuous Delivery
 
-on:
-  push:
-    branches:
-      - main
-    tags:
-      - v*
+# on:
+#   push:
+#     branches:
+#       - main
+#     tags:
+#       - v*
 
-jobs:
-  docker:
-    name: Docker
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+# jobs:
+#   docker:
+#     name: Docker
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Set Docker Tag
-        id: tag
-        run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            DOCKER_TAG="${GITHUB_REF:10}"
-          else
-            DOCKER_TAG="main"
-          fi
-          echo ::set-output name=tag::${DOCKER_TAG}
+#       - name: Set Docker Tag
+#         id: tag
+#         run: |
+#           if [[ $GITHUB_REF == refs/tags/* ]]; then
+#             DOCKER_TAG="${GITHUB_REF:10}"
+#           else
+#             DOCKER_TAG="main"
+#           fi
+#           echo ::set-output name=tag::${DOCKER_TAG}
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image
-        id: docker_build
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          context: .
-          file: ./cmd/kobs/Dockerfile
-          platforms: linux/386,linux/amd64,linux/arm64
-          tags: kobsio/kobs:${{ steps.tag.outputs.tag }}
+#       - name: Build and Push Docker Image
+#         id: docker_build
+#         uses: docker/build-push-action@v3
+#         with:
+#           push: true
+#           context: .
+#           file: ./cmd/kobs/Dockerfile
+#           platforms: linux/386,linux/amd64,linux/arm64
+#           tags: kobsio/kobs:${{ steps.tag.outputs.tag }}

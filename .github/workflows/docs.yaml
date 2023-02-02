@@ -1,56 +1,56 @@
-name: Deploy to GitHub Pages
+# name: Deploy to GitHub Pages
 
-on:
-  push:
-    branches:
-      - main
-    tags:
-      - v*
+# on:
+#   push:
+#     branches:
+#       - main
+#     tags:
+#       - v*
 
-jobs:
-  docs:
-    name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+# jobs:
+#   docs:
+#     name: Deploy to GitHub Pages
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.x
+#       - name: Setup Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: 3.x
 
-      - name: Set Aliases
-        id: aliases
-        run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            MIKE_ALIASES="${GITHUB_REF:10}"
-          else
-            MIKE_ALIASES="main latest"
-          fi
-          echo ::set-output name=aliases::${MIKE_ALIASES}
+#       - name: Set Aliases
+#         id: aliases
+#         run: |
+#           if [[ $GITHUB_REF == refs/tags/* ]]; then
+#             MIKE_ALIASES="${GITHUB_REF:10}"
+#           else
+#             MIKE_ALIASES="main latest"
+#           fi
+#           echo ::set-output name=aliases::${MIKE_ALIASES}
 
-      - name: Install Material for MkDocs
-        run: pip install -Iv mkdocs-material==8.3.4
+#       - name: Install Material for MkDocs
+#         run: pip install -Iv mkdocs-material==8.3.4
 
-      - name: Install PyMdown Extensions
-        run: pip install -Iv pymdown-extensions==9.5
+#       - name: Install PyMdown Extensions
+#         run: pip install -Iv pymdown-extensions==9.5
 
-      - name: Install mike
-        run: pip install -Iv mike==1.1.2
+#       - name: Install mike
+#         run: pip install -Iv mike==1.1.2
 
-      - name: Prepare Deployment
-        run: |
-          remote_repo="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git remote rm origin
-          git remote add origin "${remote_repo}"
+#       - name: Prepare Deployment
+#         run: |
+#           remote_repo="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+#           git config --global user.name "${GITHUB_ACTOR}"
+#           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+#           git remote rm origin
+#           git remote add origin "${remote_repo}"
 
-      - name: Deploy to GitHub Pages
-        run: |
-          git fetch origin gh-pages --verbose
-          mike deploy --push --update-aliases ${{ steps.aliases.outputs.aliases }}
-          mike set-default --push latest
+#       - name: Deploy to GitHub Pages
+#         run: |
+#           git fetch origin gh-pages --verbose
+#           mike deploy --push --update-aliases ${{ steps.aliases.outputs.aliases }}
+#           mike set-default --push latest
