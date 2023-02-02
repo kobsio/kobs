@@ -4,6 +4,7 @@ package cluster
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -41,6 +42,7 @@ type Client interface {
 	GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error)
 	GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error)
 	GetUsers(ctx context.Context) ([]userv1.UserSpec, error)
+	Request(ctx context.Context, method, url string, body io.Reader) (map[string]any, error)
 	Proxy(w http.ResponseWriter, r *http.Request)
 }
 
@@ -60,7 +62,7 @@ func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 	span.SetAttributes(attribute.Key("client").String(c.config.Name))
 	defer span.End()
 
-	res, err := doRequest[[]plugin.Instance](c.httpClient, ctx, c.config.Address+"/api/plugins", c.config.Token)
+	res, err := doRequest[[]plugin.Instance](c.httpClient, ctx, c.config.Token, http.MethodGet, c.config.Address+"/api/plugins", nil)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -74,7 +76,7 @@ func (c *client) GetNamespaces(ctx context.Context) ([]string, error) {
 	span.SetAttributes(attribute.Key("client").String(c.config.Name))
 	defer span.End()
 
-	res, err := doRequest[[]string](c.httpClient, ctx, c.config.Address+"/api/resources/namespaces", c.config.Token)
+	res, err := doRequest[[]string](c.httpClient, ctx, c.config.Token, http.MethodGet, c.config.Address+"/api/resources/namespaces", nil)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -88,7 +90,7 @@ func (c *client) GetCRDs(ctx context.Context) ([]kubernetes.CRD, error) {
 	span.SetAttributes(attribute.Key("client").String(c.config.Name))
 	defer span.End()
 
-	res, err := doRequest[[]kubernetes.CRD](c.httpClient, ctx, c.config.Address+"/api/resources/crds", c.config.Token)
+	res, err := doRequest[[]kubernetes.CRD](c.httpClient, ctx, c.config.Token, http.MethodGet, c.config.Address+"/api/resources/crds", nil)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -102,7 +104,7 @@ func (c *client) GetApplications(ctx context.Context) ([]applicationv1.Applicati
 	span.SetAttributes(attribute.Key("client").String(c.config.Name))
 	defer span.End()
 
-	res, err := doRequest[[]applicationv1.ApplicationSpec](c.httpClient, ctx, c.config.Address+"/api/applications?cluster="+c.GetName(), c.config.Token)
+	res, err := doRequest[[]applicationv1.ApplicationSpec](c.httpClient, ctx, c.config.Token, http.MethodGet, c.config.Address+"/api/applications?cluster="+c.GetName(), nil)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -116,7 +118,7 @@ func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec
 	span.SetAttributes(attribute.Key("client").String(c.config.Name))
 	defer span.End()
 
-	res, err := doRequest[[]dashboardv1.DashboardSpec](c.httpClient, ctx, c.config.Address+"/api/dashboards?cluster="+c.GetName(), c.config.Token)
+	res, err := doRequest[[]dashboardv1.DashboardSpec](c.httpClient, ctx, c.config.Token, http.MethodGet, c.config.Address+"/api/dashboards?cluster="+c.GetName(), nil)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -130,7 +132,7 @@ func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
 	span.SetAttributes(attribute.Key("client").String(c.config.Name))
 	defer span.End()
 
-	res, err := doRequest[[]teamv1.TeamSpec](c.httpClient, ctx, c.config.Address+"/api/teams?cluster="+c.GetName(), c.config.Token)
+	res, err := doRequest[[]teamv1.TeamSpec](c.httpClient, ctx, c.config.Token, http.MethodGet, c.config.Address+"/api/teams?cluster="+c.GetName(), nil)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -144,7 +146,23 @@ func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
 	span.SetAttributes(attribute.Key("client").String(c.config.Name))
 	defer span.End()
 
-	res, err := doRequest[[]userv1.UserSpec](c.httpClient, ctx, c.config.Address+"/api/users?cluster="+c.GetName(), c.config.Token)
+	res, err := doRequest[[]userv1.UserSpec](c.httpClient, ctx, c.config.Token, http.MethodGet, c.config.Address+"/api/users?cluster="+c.GetName(), nil)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+	}
+
+	return res, err
+}
+
+func (c *client) Request(ctx context.Context, method, url string, body io.Reader) (map[string]any, error) {
+	ctx, span := c.tracer.Start(ctx, "client.Request")
+	span.SetAttributes(attribute.Key("client").String(c.config.Name))
+	span.SetAttributes(attribute.Key("method").String(method))
+	span.SetAttributes(attribute.Key("url").String(url))
+	defer span.End()
+
+	res, err := doRequest[map[string]any](c.httpClient, ctx, c.config.Token, method, url, body)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
