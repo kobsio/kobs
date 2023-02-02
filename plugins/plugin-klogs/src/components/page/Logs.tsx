@@ -11,12 +11,15 @@ import {
   GridItem,
   Spinner,
 } from '@patternfly/react-core';
+import { IPluginInstance, ITimes } from '@kobsio/shared';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
+
 import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
-import { IPluginInstance, ITimes } from '@kobsio/shared';
-import { ILogsData } from '../../utils/interfaces';
+import { IField, ILogsData } from '../../utils/interfaces';
+import { AutolinkReference } from '../../utils/ResolveReference';
 import LogsActions from './LogsActions';
 import LogsChart from '../panel/LogsChart';
 import LogsDocuments from '../panel/LogsDocuments';
@@ -24,14 +27,14 @@ import LogsFields from './LogsFields';
 
 interface ILogsProps {
   instance: IPluginInstance;
-  fields?: string[];
+  fields?: IField[];
   order: string;
   orderBy: string;
   query: string;
   addFilter: (filter: string) => void;
   changeTime: (times: ITimes) => void;
   changeOrder: (order: string, orderBy: string) => void;
-  selectField: (field: string) => void;
+  selectField: (field: { name: string }) => void;
   changeFieldOrder: (oldIndex: number, newIndex: number) => void;
   times: ITimes;
 }
@@ -163,18 +166,19 @@ const Logs: React.FunctionComponent<ILogsProps> = ({
         </Card>
 
         <p>&nbsp;</p>
-
         <Card isCompact={true} style={{ maxWidth: '100%', overflowX: 'scroll' }}>
           <CardBody>
-            <LogsDocuments
-              documents={data.documents}
-              fields={fields}
-              order={order}
-              orderBy={orderBy}
-              addFilter={addFilter}
-              changeOrder={changeOrder}
-              selectField={selectField}
-            />
+            <AutolinkReference.Context.Provider value={AutolinkReference.Factory(data.fields || [], times)}>
+              <LogsDocuments
+                documents={data.documents}
+                fields={fields}
+                order={order}
+                orderBy={orderBy}
+                addFilter={addFilter}
+                changeOrder={changeOrder}
+                selectField={selectField}
+              />
+            </AutolinkReference.Context.Provider>
           </CardBody>
         </Card>
       </GridItem>

@@ -144,15 +144,39 @@ func TestGetInterval(t *testing.T) {
 	}
 }
 
-func TestAppendIfMissing(t *testing.T) {
-	items := []string{"foo", "bar"}
+func TestAppendIf(t *testing.T) {
+	t.Run("works with strings", func(t *testing.T) {
+		strCmpr := func(a, b string) bool { return a == b }
+		items := []string{"foo", "bar"}
 
-	items = appendIfMissing(items, "foo")
-	require.Equal(t, []string{"foo", "bar"}, items)
+		items = appendIf(items, "foo", strCmpr)
+		require.Equal(t, []string{"foo", "bar"}, items)
 
-	items = appendIfMissing(items, "hello")
-	items = appendIfMissing(items, "world")
-	require.Equal(t, []string{"foo", "bar", "hello", "world"}, items)
+		items = appendIf(items, "hello", strCmpr)
+		items = appendIf(items, "world", strCmpr)
+		require.Equal(t, []string{"foo", "bar", "hello", "world"}, items)
+	})
+
+	t.Run("works with int's", func(t *testing.T) {
+		appendIfGreater := func(items []int, item int) []int {
+			return appendIf(items, item, func(a, b int) bool { return a > b })
+		}
+
+		require.Equal(t, []int{1, 2, 3}, appendIfGreater([]int{1, 2, 3}, 0))
+		require.Equal(t, []int{1, 2, 3, 100}, appendIfGreater([]int{1, 2, 3}, 100))
+	})
+}
+
+func TestSome(t *testing.T) {
+	items := []int64{1, 2, 3}
+
+	require.True(t, some(items, 12, func(a, b int64) bool {
+		return a%10 == b%10
+	}))
+
+	require.False(t, some(items, 14, func(a, b int64) bool {
+		return a%10 == b%10
+	}))
 }
 
 func TestContains(t *testing.T) {

@@ -8,8 +8,8 @@ import TrashIcon from '@patternfly/react-icons/dist/esm/icons/trash-icon';
 export interface ILogsFieldsItemProps {
   index: number;
   length: number;
-  field: string;
-  selectField: (field: string) => void;
+  field: { name: string };
+  selectField: (field: { name: string }) => void;
   changeFieldOrder: (oldIndex: number, newIndex: number) => void;
 }
 
@@ -22,16 +22,16 @@ const LogsFieldsItem: React.FunctionComponent<ILogsFieldsItemProps> = ({
 }: ILogsFieldsItemProps) => {
   const [showActions, setShowActions] = useState<boolean>(false);
 
-  const copyField = (field: string): void => {
+  const copyField = (field: { name: string }): void => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(field);
+      navigator.clipboard.writeText(field.name);
     }
   };
 
   return (
     <SimpleListItem key={index} isActive={false}>
       <div onMouseEnter={(): void => setShowActions(true)} onMouseLeave={(): void => setShowActions(false)}>
-        {field}
+        {field.name}
         {showActions && (
           <div style={{ float: 'right' }}>
             {index !== length - 1 ? (

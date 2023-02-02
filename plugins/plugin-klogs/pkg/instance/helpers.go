@@ -8,8 +8,22 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+type Field struct {
+	Name         string `json:"name"`
+	AutolinkPath string `json:"autolinkPath,omitempty"`
+}
+
+func fieldsFromNames(names ...string) []Field {
+	ret := make([]Field, len(names))
+	for i, n := range names {
+		ret[i] = Field{Name: n}
+	}
+
+	return ret
+}
+
 var (
-	defaultFields  = []string{"timestamp", "cluster", "namespace", "app", "pod_name", "container_name", "host", "log"}
+	defaultFields  = fieldsFromNames("timestamp", "cluster", "namespace", "app", "pod_name", "container_name", "host", "log")
 	defaultColumns = "timestamp, cluster, namespace, app, pod_name, container_name, host, fields_string, fields_number, log"
 
 	fieldsMetric = promauto.NewCounterVec(prometheus.CounterOpts{
@@ -138,7 +152,7 @@ func handleConditionParts(key, value, operator string, materializedColumns []str
 	// ALTER TABLE logs.logs ON CLUSTER '{cluster}' ADD COLUMN <FIELD> Float64 DEFAULT fields_number['<FIELD>'];
 	fieldsMetric.WithLabelValues(key).Inc()
 
-	if contains(defaultFields, key) || contains(materializedColumns, key) {
+	if containsField(defaultFields, Field{Name: key}) || contains(materializedColumns, key) {
 		if operator == "=~" {
 			return fmt.Sprintf("%s ILIKE %s", key, value), nil
 		}
@@ -186,7 +200,7 @@ func handleConditionParts(key, value, operator string, materializedColumns []str
 }
 
 func handleExistsCondition(key string, materializedColumns []string) string {
-	if contains(defaultFields, key) || contains(materializedColumns, key) {
+	if containsField(defaultFields, Field{Name: key}) || contains(materializedColumns, key) {
 		return fmt.Sprintf("%s IS NOT NULL", key)
 	}
 
@@ -205,7 +219,7 @@ func parseOrder(order, orderBy string, materializedColumns []string) string {
 	}
 
 	orderBy = strings.TrimSpace(orderBy)
-	if contains(defaultFields, orderBy) || contains(materializedColumns, orderBy) {
+	if containsField(defaultFields, Field{Name: orderBy}) || contains(materializedColumns, orderBy) {
 		return fmt.Sprintf("%s %s", orderBy, order)
 	}
 
@@ -226,10 +240,10 @@ func getBucketTimes(interval, bucketTime, timeStart, timeEnd int64) (int64, int6
 	return bucketTime, bucketTime + interval
 }
 
-// appendIfMissing appends a value to a slice, when this values doesn't exist in the slice already.
-func appendIfMissing(items []string, item string) []string {
+// appendIf appends a value to a slice, when the predicate returns true
+func appendIf[T any](items []T, item T, predecate func(iter, newItem T) bool) []T {
 	for _, ele := range items {
-		if ele == item {
+		if predecate(ele, item) {
 			return items
 		}
 	}
@@ -237,14 +251,26 @@ func appendIfMissing(items []string, item string) []string {
 	return append(items, item)
 }
 
-// contains checks if the given slice of string contains the given item. It returns true when the slice contains the
-// given item.
-func contains(items []string, item string) bool {
+func appendIfFieldIsMissing(items []Field, item Field) []Field {
+	return appendIf(items, item, func(a, b Field) bool { return a.Name == b.Name })
+}
+
+func some[T any](items []T, item T, predecate func(a, b T) bool) bool {
 	for _, ele := range items {
-		if ele == item {
+		if predecate(ele, item) {
 			return true
 		}
 	}
 
 	return false
+}
+
+// contains checks if the given slice of string contains the given item. It returns true when the slice contains the
+// given item.
+func contains(items []string, item string) bool {
+	return some(items, item, func(a, b string) bool { return a == b })
+}
+
+func containsField(items []Field, item Field) bool {
+	return some(items, item, func(a, b Field) bool { return a.Name == b.Name })
 }

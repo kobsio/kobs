@@ -4,9 +4,9 @@ import React from 'react';
 import LogsFieldsItem from './LogsFieldsItem';
 
 export interface ILogsFieldsProps {
-  fields?: string[];
-  selectedFields?: string[];
-  selectField: (field: string) => void;
+  fields?: { name: string }[];
+  selectedFields?: { name: string }[];
+  selectField: (field: { name: string }) => void;
   changeFieldOrder: (oldIndex: number, newIndex: number) => void;
 }
 
@@ -44,7 +44,7 @@ const LogsFields: React.FunctionComponent<ILogsFieldsProps> = ({
         <SimpleListGroup title="Fields">
           {fields.map((field, index) => (
             <SimpleListItem key={index} onClick={(): void => selectField(field)} isActive={false}>
-              {field}
+              {field.name}
             </SimpleListItem>
           ))}
         </SimpleListGroup>

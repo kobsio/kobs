@@ -19,7 +19,7 @@ func TestGenerateFieldName(t *testing.T) {
 		{field: "content_duration", mustNumber: false, expect: "fields_number['content_duration']"},
 	} {
 		t.Run(tt.field, func(t *testing.T) {
-			actual := generateFieldName(tt.field, nil, Fields{String: nil, Number: []string{"content_duration"}}, tt.mustNumber)
+			actual := generateFieldName(tt.field, nil, Fields{String: nil, Number: []Field{{Name: "content_duration"}}}, tt.mustNumber)
 			require.Equal(t, tt.expect, actual)
 		})
 	}

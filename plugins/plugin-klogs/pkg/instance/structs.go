@@ -6,8 +6,8 @@ import (
 
 // Fields is the struct for cached fields, which can be of type number or string.
 type Fields struct {
-	String []string
-	Number []string
+	String []Field
+	Number []Field
 }
 
 // Row is the struct which represents a single row in the logs table of ClickHouse.

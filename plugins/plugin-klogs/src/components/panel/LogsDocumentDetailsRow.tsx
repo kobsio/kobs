@@ -1,16 +1,20 @@
 import { Button, Tooltip } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Td, Tr } from '@patternfly/react-table';
 import ColumnsIcon from '@patternfly/react-icons/dist/esm/icons/columns-icon';
 import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 import SearchMinusIcon from '@patternfly/react-icons/dist/esm/icons/search-minus-icon';
 import SearchPlusIcon from '@patternfly/react-icons/dist/esm/icons/search-plus-icon';
 
+import { Link } from 'react-router-dom';
+
+import { AutolinkReference } from '../../utils/ResolveReference';
+
 export interface ILogsDocumentDetailsRowProps {
   documentKey: string;
   documentValue: string;
   addFilter?: (filter: string) => void;
-  selectField?: (field: string) => void;
+  selectField?: (field: { name: string }) => void;
 }
 
 const LogsDocumentDetailsRow: React.FunctionComponent<ILogsDocumentDetailsRowProps> = ({
@@ -19,7 +23,9 @@ const LogsDocumentDetailsRow: React.FunctionComponent<ILogsDocumentDetailsRowPro
   addFilter,
   selectField,
 }: ILogsDocumentDetailsRowProps) => {
+  const { getReferenceForField } = useContext(AutolinkReference.Context);
   const [showActions, setShowActions] = useState<boolean>(false);
+  const reference = getReferenceForField(documentKey, documentValue);
 
   return (
     <Tr onMouseEnter={(): void => setShowActions(true)} onMouseLeave={(): void => setShowActions(false)}>
@@ -69,7 +75,7 @@ const LogsDocumentDetailsRow: React.FunctionComponent<ILogsDocumentDetailsRowPro
                   variant="plain"
                   aria-label="Toggle field in table"
                   isSmall={true}
-                  onClick={(): void => selectField(documentKey)}
+                  onClick={(): void => selectField({ name: documentKey })}
                 >
                   <ColumnsIcon />
                 </Button>
@@ -82,7 +88,9 @@ const LogsDocumentDetailsRow: React.FunctionComponent<ILogsDocumentDetailsRowPro
         <b>{documentKey}</b>
       </Td>
       <Td className="pf-u-text-wrap pf-u-text-break-word" noPadding={true} dataLabel="Value">
-        <div style={{ whiteSpace: 'pre-wrap' }}>{documentValue}</div>
+        <div style={{ whiteSpace: 'pre-wrap' }}>
+          {reference ? <Link to={reference}>{documentValue}</Link> : documentValue}
+        </div>
       </Td>
     </Tr>
   );

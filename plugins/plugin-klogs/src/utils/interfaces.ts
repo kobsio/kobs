@@ -2,7 +2,7 @@ import { ITimes } from '@kobsio/shared';
 
 // IOptions is the interface for all options, which can be set for an klogs query.
 export interface IOptions {
-  fields?: string[];
+  fields?: IField[];
   order: string;
   orderBy: string;
   query: string;
@@ -16,10 +16,15 @@ export interface IPanelOptions {
   aggregation: IAggregationOptions;
 }
 
+export interface IField {
+  name: string;
+  autolinkPath?: string;
+}
+
 export interface IQuery {
   name?: string;
   query?: string;
-  fields?: string[];
+  fields?: IField[];
   order?: string;
   orderBy?: string;
 }
@@ -30,7 +35,7 @@ export interface ILogsData {
   timeStart: number;
   count?: number;
   took?: number;
-  fields?: string[];
+  fields?: IField[];
   documents?: IDocument[];
   buckets?: IBucket[];
 }
