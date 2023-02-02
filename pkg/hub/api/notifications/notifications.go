@@ -32,16 +32,16 @@ func (router *Router) getNotificationGroups(w http.ResponseWriter, r *http.Reque
 	defer span.End()
 
 	authUser := authContext.MustGetUser(ctx)
-	if authUser.Email == "" {
+	if authUser.ID == "" {
 		log.Warn(ctx, "user has no email, return default notification groups")
 		span.AddEvent("returnedGroups", trace.WithAttributes(attribute.String("groups", fmt.Sprintf("%#v", router.config.Groups))))
 		render.JSON(w, r, router.config.Groups)
 		return
 	}
 
-	user, err := router.storeClient.GetUserByID(ctx, authUser.Email)
+	user, err := router.storeClient.GetUserByID(ctx, authUser.ID)
 	if err != nil {
-		log.Error(ctx, "could not get user, return default notification groups", zap.Error(err), zap.String("email", authUser.Email))
+		log.Error(ctx, "could not get user, return default notification groups", zap.Error(err), zap.String("id", authUser.ID))
 		span.AddEvent("returnedGroups", trace.WithAttributes(attribute.String("groups", fmt.Sprintf("%#v", router.config.Groups))))
 		render.JSON(w, r, router.config.Groups)
 		return

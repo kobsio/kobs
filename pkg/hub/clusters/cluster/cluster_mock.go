@@ -6,6 +6,7 @@ package cluster
 
 import (
 	context "context"
+	io "io"
 	http "net/http"
 	reflect "reflect"
 
@@ -170,4 +171,19 @@ func (m *MockClient) Proxy(w http.ResponseWriter, r *http.Request) {
 func (mr *MockClientMockRecorder) Proxy(w, r interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Proxy", reflect.TypeOf((*MockClient)(nil).Proxy), w, r)
+}
+
+// Request mocks base method.
+func (m *MockClient) Request(ctx context.Context, method, url string, body io.Reader) (map[string]any, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Request", ctx, method, url, body)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Request indicates an expected call of Request.
+func (mr *MockClientMockRecorder) Request(ctx, method, url, body interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Request", reflect.TypeOf((*MockClient)(nil).Request), ctx, method, url, body)
 }
