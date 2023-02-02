@@ -1,6 +1,6 @@
 package db
 
-//go:generate mockgen -source=db.go -destination=./mock_db.go -package=db Client
+//go:generate mockgen -source=db.go -destination=./db_mock.go -package=db Client
 
 import (
 	"context"

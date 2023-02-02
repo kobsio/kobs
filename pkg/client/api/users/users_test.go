@@ -10,8 +10,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"go.opentelemetry.io/otel"
 
-	"github.com/kobsio/kobs/pkg/client/api/testutil"
 	"github.com/kobsio/kobs/pkg/client/kubernetes"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	userv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
 
@@ -41,8 +41,8 @@ func TestGetUsers(t *testing.T) {
 
 		router.getUsers(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 
 	t.Run("can list users", func(t *testing.T) {
@@ -68,8 +68,8 @@ func TestGetUsers(t *testing.T) {
 
 		router.getUsers(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `
 				[
 					{
 						"cluster": "cluster1",

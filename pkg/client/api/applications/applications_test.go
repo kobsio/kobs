@@ -10,8 +10,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"go.opentelemetry.io/otel"
 
-	"github.com/kobsio/kobs/pkg/client/api/testutil"
 	applicationv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/application/v1"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/kobsio/kobs/pkg/client/kubernetes"
 
@@ -41,8 +41,8 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 
 	t.Run("can list applications", func(t *testing.T) {
@@ -68,8 +68,8 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `
 			[
 				{
 					"cluster": "cluster1",

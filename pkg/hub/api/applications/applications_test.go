@@ -8,11 +8,11 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/kobsio/kobs/pkg/client/api/testutil"
 	applicationv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/db"
+	"github.com/kobsio/kobs/pkg/utils"
 	"github.com/stretchr/testify/require"
 
 	"github.com/go-chi/chi/v5"
@@ -39,8 +39,8 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusBadRequest, w)
-		testutil.AssertJSONEq(t, `{"error": "could not parse limit parameter"}`, w)
+		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertJSONEq(t, `{"error": "could not parse limit parameter"}`, w)
 	})
 
 	t.Run("parse offset fails", func(t *testing.T) {
@@ -54,8 +54,8 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusBadRequest, w)
-		testutil.AssertJSONEq(t, `{"error": "could not parse offset parameter"}`, w)
+		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertJSONEq(t, `{"error": "could not parse offset parameter"}`, w)
 	})
 
 	t.Run("get all applications fails, because user is not authorized to view all applications", func(t *testing.T) {
@@ -69,8 +69,8 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusForbidden, w)
-		testutil.AssertJSONEq(t, `{"error": "you are not allowed to view all applications"}`, w)
+		utils.AssertStatusEq(t, http.StatusForbidden, w)
+		utils.AssertJSONEq(t, `{"error": "you are not allowed to view all applications"}`, w)
 	})
 
 	t.Run("get all applications fails", func(t *testing.T) {
@@ -85,8 +85,8 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error": "could not get applications"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error": "could not get applications"}`, w)
 	})
 
 	t.Run("get all applications", func(t *testing.T) {
@@ -106,8 +106,8 @@ func TestGetApplications(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplications(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `[{"name":"foo", "namespace":"bar", "topology": {}}]`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `[{"name":"foo", "namespace":"bar", "topology": {}}]`, w)
 	})
 }
 
@@ -130,8 +130,8 @@ func TestGetApplicationsCount(t *testing.T) {
 
 		router.getApplicationsCount(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusForbidden, w)
-		testutil.AssertJSONEq(t, `{"error": "you are not allowed to view all applications"}`, w)
+		utils.AssertStatusEq(t, http.StatusForbidden, w)
+		utils.AssertJSONEq(t, `{"error": "you are not allowed to view all applications"}`, w)
 	})
 
 	t.Run("get all applications fails", func(t *testing.T) {
@@ -145,8 +145,8 @@ func TestGetApplicationsCount(t *testing.T) {
 
 		router.getApplicationsCount(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error": "could not get applications count"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error": "could not get applications count"}`, w)
 
 	})
 	t.Run("count all applications", func(t *testing.T) {
@@ -160,8 +160,8 @@ func TestGetApplicationsCount(t *testing.T) {
 
 		router.getApplicationsCount(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `{"count": 100}`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `{"count": 100}`, w)
 	})
 }
 
@@ -183,8 +183,8 @@ func TestGetTags(t *testing.T) {
 
 		router.getTags(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error": "could not get tags"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error": "could not get tags"}`, w)
 	})
 
 	t.Run("get tags", func(t *testing.T) {
@@ -203,8 +203,8 @@ func TestGetTags(t *testing.T) {
 
 		router.getTags(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `[{"id":"foo", "tag":"some tag", "updatedAt":0}]`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `[{"id":"foo", "tag":"some tag", "updatedAt":0}]`, w)
 	})
 }
 
@@ -227,8 +227,8 @@ func TestGetApplication(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplication(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error": "could not get application"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error": "could not get application"}`, w)
 	})
 	t.Run("application not found", func(t *testing.T) {
 		dbClient, router := newRouter(t)
@@ -240,8 +240,8 @@ func TestGetApplication(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplication(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusNotFound, w)
-		testutil.AssertJSONEq(t, `{"error": "application was not found"}`, w)
+		utils.AssertStatusEq(t, http.StatusNotFound, w)
+		utils.AssertJSONEq(t, `{"error": "application was not found"}`, w)
 	})
 	t.Run("user does not have permissions to view application", func(t *testing.T) {
 		dbClient, router := newRouter(t)
@@ -253,8 +253,8 @@ func TestGetApplication(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplication(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusForbidden, w)
-		testutil.AssertJSONEq(t, `{"error": "you are not allowed to view the application"}`, w)
+		utils.AssertStatusEq(t, http.StatusForbidden, w)
+		utils.AssertJSONEq(t, `{"error": "you are not allowed to view the application"}`, w)
 	})
 	t.Run("can get application", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Teams: []string{"myteam"}}
@@ -267,8 +267,8 @@ func TestGetApplication(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplication(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t,
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t,
 			fmt.Sprintf(`{
 				"cluster": "%s",
 				"namespace": "%s",
@@ -295,8 +295,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplicationsByTeam(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusBadRequest, w)
-		testutil.AssertJSONEq(t, `{"error": "could not parse limit parameter"}`, w)
+		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertJSONEq(t, `{"error": "could not parse limit parameter"}`, w)
 	})
 
 	t.Run("parse offset fails", func(t *testing.T) {
@@ -307,8 +307,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplicationsByTeam(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusBadRequest, w)
-		testutil.AssertJSONEq(t, `{"error": "could not parse offset parameter"}`, w)
+		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertJSONEq(t, `{"error": "could not parse offset parameter"}`, w)
 	})
 
 	t.Run("get team applications fails, because user is not authorized", func(t *testing.T) {
@@ -319,8 +319,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplicationsByTeam(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusForbidden, w)
-		testutil.AssertJSONEq(t, `{"error": "you are not allowed to view the applications of this team"}`, w)
+		utils.AssertStatusEq(t, http.StatusForbidden, w)
+		utils.AssertJSONEq(t, `{"error": "you are not allowed to view the applications of this team"}`, w)
 	})
 
 	t.Run("get team applications fails", func(t *testing.T) {
@@ -333,8 +333,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplicationsByTeam(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error": "could not get applications"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error": "could not get applications"}`, w)
 	})
 
 	t.Run("get all applications count fails", func(t *testing.T) {
@@ -348,8 +348,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplicationsByTeam(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error": "could not get applications count"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error": "could not get applications count"}`, w)
 	})
 	t.Run("can get all applications", func(t *testing.T) {
 		dbClient, router := newRouter(t)
@@ -367,8 +367,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getApplicationsByTeam(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, fmt.Sprintf(`{
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, fmt.Sprintf(`{
 				"count": 20,
 				"applications": [{
 					"cluster": "%s",
