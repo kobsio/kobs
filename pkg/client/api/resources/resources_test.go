@@ -14,8 +14,8 @@ import (
 	"github.com/gorilla/websocket"
 	"go.opentelemetry.io/otel"
 
-	"github.com/kobsio/kobs/pkg/client/api/testutil"
 	"github.com/kobsio/kobs/pkg/client/kubernetes"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/require"
@@ -58,8 +58,8 @@ func TestGetResources(t *testing.T) {
 
 		router.getResources(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, string(resourceBytes), w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, string(resourceBytes), w)
 	})
 
 	t.Run("can handle error", func(t *testing.T) {
@@ -75,8 +75,8 @@ func TestGetResources(t *testing.T) {
 
 		router.getResources(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 
 	t.Run("can handle unmarshal error", func(t *testing.T) {
@@ -91,8 +91,8 @@ func TestGetResources(t *testing.T) {
 
 		router.getResources(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error": "unexpected end of JSON input"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error": "unexpected end of JSON input"}`, w)
 	})
 }
 
@@ -141,8 +141,8 @@ func TestPatchResource(t *testing.T) {
 
 		router.patchResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `null`, w)
 	})
 
 	t.Run("handles bad body", func(t *testing.T) {
@@ -155,8 +155,8 @@ func TestPatchResource(t *testing.T) {
 
 		router.patchResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusBadRequest, w)
-		testutil.AssertJSONEq(t, `{"error":"read failed from badReader{}"}`, w)
+		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertJSONEq(t, `{"error":"read failed from badReader{}"}`, w)
 	})
 
 	t.Run("handles client error", func(t *testing.T) {
@@ -170,8 +170,8 @@ func TestPatchResource(t *testing.T) {
 
 		router.patchResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 }
 
@@ -203,8 +203,8 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `null`, w)
 	})
 
 	t.Run("can force delete resource", func(t *testing.T) {
@@ -226,8 +226,8 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `null`, w)
 	})
 
 	t.Run("can handle invalid force parameter", func(t *testing.T) {
@@ -240,7 +240,7 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertStatusEq(t, http.StatusBadRequest, w)
 	})
 
 	t.Run("can handle client error", func(t *testing.T) {
@@ -254,8 +254,8 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 }
 
@@ -307,8 +307,8 @@ func TestCreateResource(t *testing.T) {
 
 		router.createResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `null`, w)
 	})
 
 	t.Run("handles bad body", func(t *testing.T) {
@@ -321,8 +321,8 @@ func TestCreateResource(t *testing.T) {
 
 		router.createResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusBadRequest, w)
-		testutil.AssertJSONEq(t, `{"error":"read failed from badReader{}"}`, w)
+		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertJSONEq(t, `{"error":"read failed from badReader{}"}`, w)
 	})
 
 	t.Run("handles client error", func(t *testing.T) {
@@ -336,8 +336,8 @@ func TestCreateResource(t *testing.T) {
 
 		router.createResource(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 }
 
@@ -368,7 +368,7 @@ func TestGetFile(t *testing.T) {
 
 		router.getFile(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
 	})
 
 	t.Run("get file can handle client error", func(t *testing.T) {
@@ -383,8 +383,8 @@ func TestGetFile(t *testing.T) {
 
 		router.getFile(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 }
 
@@ -449,8 +449,8 @@ func TestGetLogs(t *testing.T) {
 
 		router.getLogs(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `{"logs":"log line"}`, w)
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `{"logs":"log line"}`, w)
 	})
 
 	t.Run("can stream logs", func(t *testing.T) {
@@ -527,7 +527,7 @@ func TestGetLogs(t *testing.T) {
 
 				router.getLogs(w, req)
 
-				testutil.AssertStatusEq(t, http.StatusBadRequest, w)
+				utils.AssertStatusEq(t, http.StatusBadRequest, w)
 			})
 		}
 	})

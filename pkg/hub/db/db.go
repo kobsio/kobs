@@ -1,5 +1,7 @@
 package db
 
+//go:generate mockgen -source=db.go -destination=./db_mock.go -package=db Client
+
 import (
 	"context"
 	"fmt"

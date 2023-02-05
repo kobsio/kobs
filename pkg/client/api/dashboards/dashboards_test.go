@@ -10,9 +10,9 @@ import (
 	"github.com/golang/mock/gomock"
 	"go.opentelemetry.io/otel"
 
-	"github.com/kobsio/kobs/pkg/client/api/testutil"
 	"github.com/kobsio/kobs/pkg/client/kubernetes"
 	dashboardsv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/dashboard/v1"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/require"
@@ -40,8 +40,8 @@ func TestGetDashboards(t *testing.T) {
 
 		router.getDashboards(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusInternalServerError, w)
-		testutil.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
+		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
 	})
 
 	t.Run("can list dashboards", func(t *testing.T) {
@@ -63,8 +63,8 @@ func TestGetDashboards(t *testing.T) {
 
 		router.getDashboards(w, req)
 
-		testutil.AssertStatusEq(t, http.StatusOK, w)
-		testutil.AssertJSONEq(t, `
+		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertJSONEq(t, `
 			[
 				{
 					"cluster": "cluster1",
