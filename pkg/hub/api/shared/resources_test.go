@@ -3,7 +3,7 @@ package shared
 import (
 	"testing"
 
-	"github.com/kobsio/kobs/pkg/client/kubernetes"
+	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	"github.com/kobsio/kobs/pkg/utils"
 	"github.com/stretchr/testify/require"
 )

@@ -3,8 +3,8 @@ package context
 import (
 	"testing"
 
-	applicationv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/application/v1"
-	userv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 	"github.com/stretchr/testify/require"
 )
 

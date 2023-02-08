@@ -8,10 +8,10 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/auth"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
-	"github.com/kobsio/kobs/pkg/hub/middleware/recoverer"
 	"github.com/kobsio/kobs/pkg/hub/plugins"
 	"github.com/kobsio/kobs/pkg/instrument"
 	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils/middleware/recoverer"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

@@ -1,0 +1,4 @@
+clusters:
+  - name: test
+    address: http://localhost:15221
+    token: unsecuretoken

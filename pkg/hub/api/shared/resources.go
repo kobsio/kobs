@@ -3,7 +3,7 @@ package shared
 import (
 	"strings"
 
-	"github.com/kobsio/kobs/pkg/client/kubernetes"
+	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 )
 
 type Resource struct {

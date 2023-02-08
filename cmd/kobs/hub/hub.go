@@ -5,18 +5,18 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kobsio/kobs/pkg/config"
 	"github.com/kobsio/kobs/pkg/hub/api"
 	"github.com/kobsio/kobs/pkg/hub/app"
 	"github.com/kobsio/kobs/pkg/hub/auth"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
-	pluginsPkg "github.com/kobsio/kobs/pkg/hub/plugins"
+	hubPlugins "github.com/kobsio/kobs/pkg/hub/plugins"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/instrument/metrics"
 	"github.com/kobsio/kobs/pkg/instrument/tracer"
 	"github.com/kobsio/kobs/pkg/plugins"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/utils/config"
 
 	"go.uber.org/zap"
 )
@@ -74,7 +74,7 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		return err
 	}
 
-	pluginsClient, err := pluginsPkg.NewClient(plugins, cfg.Plugins, clustersClient, dbClient)
+	pluginsClient, err := hubPlugins.NewClient(plugins, cfg.Plugins, clustersClient, dbClient)
 	if err != nil {
 		log.Error(nil, "Could not create plugins client", zap.Error(err))
 		return err

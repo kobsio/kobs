@@ -8,15 +8,15 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/kobsio/kobs/pkg/hub/db"
-	"github.com/kobsio/kobs/pkg/hub/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
-	applicationv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/application/v1"
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 )
 

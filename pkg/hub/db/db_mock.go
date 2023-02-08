@@ -9,11 +9,11 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	kubernetes "github.com/kobsio/kobs/pkg/client/kubernetes"
-	v1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/application/v1"
-	v10 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/dashboard/v1"
-	v11 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/team/v1"
-	v12 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
+	kubernetes "github.com/kobsio/kobs/pkg/cluster/kubernetes"
+	v1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	v10 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
+	v11 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
+	v12 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 	plugin "github.com/kobsio/kobs/pkg/plugins/plugin"
 )
 

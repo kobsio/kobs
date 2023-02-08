@@ -39,7 +39,7 @@ jobs:
       - name: Test
         run: |
           make test-coverage
-          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/client/kubernetes/apis" | grep -v "github.com/kobsio/kobs/pkg/client/kubernetes/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
+          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis" | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v2
