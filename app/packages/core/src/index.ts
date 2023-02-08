@@ -1,2 +1,1 @@
-export * from './buttons/MyFirstButton';
-export * from './buttons/MySecondButton';
+export * from './components/app/App';

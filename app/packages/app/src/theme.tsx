@@ -28,6 +28,9 @@ const theme = createTheme({
       main: '#ffa726',
     },
   },
+  typography: {
+    fontSize: 12,
+  },
 });
 
 export default theme;
