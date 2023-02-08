@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	teamv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/team/v1"
-	userv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/utils"

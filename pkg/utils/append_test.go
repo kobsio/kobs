@@ -28,3 +28,13 @@ func TestAppendIf(t *testing.T) {
 		require.Equal(t, []int{1, 2, 3, 100}, appendIfGreater([]int{1, 2, 3}, 100))
 	})
 }
+
+func TestAppendIfStringIsMissing(t *testing.T) {
+	t.Run("should append if missing", func(t *testing.T) {
+		require.Equal(t, []string{"test1", "test2", "test3"}, AppendIfStringIsMissing([]string{"test1", "test2"}, "test3"))
+	})
+
+	t.Run("should not append if value already exists", func(t *testing.T) {
+		require.Equal(t, []string{"test1", "test2"}, AppendIfStringIsMissing([]string{"test1", "test2"}, "test2"))
+	})
+}

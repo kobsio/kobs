@@ -9,9 +9,9 @@ import (
 
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
-	"github.com/kobsio/kobs/pkg/hub/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/plugins"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"

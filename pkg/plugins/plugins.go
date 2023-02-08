@@ -1,7 +1,7 @@
 package plugins
 
 import (
-	"github.com/kobsio/kobs/pkg/client/kubernetes"
+	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"

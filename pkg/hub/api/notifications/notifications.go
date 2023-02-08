@@ -8,7 +8,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 
-	userv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
+	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"

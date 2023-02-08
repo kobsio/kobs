@@ -5,7 +5,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kobsio/kobs/pkg/config"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/hub/watcher"
@@ -13,6 +12,7 @@ import (
 	"github.com/kobsio/kobs/pkg/instrument/metrics"
 	"github.com/kobsio/kobs/pkg/instrument/tracer"
 	"github.com/kobsio/kobs/pkg/plugins"
+	"github.com/kobsio/kobs/pkg/utils/config"
 
 	"go.uber.org/zap"
 )

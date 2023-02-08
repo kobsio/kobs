@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/kobsio/kobs/pkg/hub/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"go.opentelemetry.io/otel"

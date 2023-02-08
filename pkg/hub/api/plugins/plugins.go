@@ -7,9 +7,9 @@ import (
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/hub/db"
-	"github.com/kobsio/kobs/pkg/hub/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/version"
 
 	"github.com/go-chi/chi/v5"

@@ -8,11 +8,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kobsio/kobs/pkg/client/kubernetes"
-	applicationv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/application/v1"
-	dashboardv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/dashboard/v1"
-	teamv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/team/v1"
-	userv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
+	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
+	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 
 	"go.mongodb.org/mongo-driver/bson"

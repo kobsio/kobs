@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/hub/api"
-	"github.com/kobsio/kobs/pkg/hub/middleware/recoverer"
 	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils/middleware/recoverer"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

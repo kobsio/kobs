@@ -3,8 +3,8 @@ package context
 import (
 	"encoding/json"
 
-	applicationv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/application/v1"
-	userv1 "github.com/kobsio/kobs/pkg/client/kubernetes/apis/user/v1"
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 )
 
 // User is the structure of the user object saved in the request context. It contains the users id and permissions if

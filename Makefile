@@ -28,7 +28,7 @@ test:
 .PHONY: test-coverage
 test-coverage:
 	@go test -coverpkg ./cmd/...,./pkg/... -coverprofile=coverage.out -covermode=atomic ./cmd/... ./pkg/...
-	@cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/client/kubernetes/apis" | grep -v "github.com/kobsio/kobs/pkg/client/kubernetes/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
+	@cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis" | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 	@go tool cover -html coverage.out -o coverage.html
 
 .PHONY: generate
@@ -41,16 +41,16 @@ generate-mocks:
 .PHONY: generate-crds
 generate-crds:
 	@for crd in $(CRDS); do \
-		./hack/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/client/kubernetes/clients/$$crd github.com/kobsio/kobs/pkg/client/kubernetes/apis $$crd:v1 --go-header-file ./hack/boilerplate.go.txt --output-base ./tmp; \
-		rm -rf ./pkg/client/kubernetes/apis/$$crd/v1/zz_generated.deepcopy.go; \
-		rm -rf ./pkg/client/kubernetes/clients/$$crd/clientset; \
-		rm -rf ./pkg/client/kubernetes/clients/$$crd/informers; \
-		rm -rf ./pkg/client/kubernetes/clients/$$crd/listers; \
-		mkdir -p ./pkg/client/kubernetes/clients/$$crd; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/client/kubernetes/apis/$$crd/v1/zz_generated.deepcopy.go ./pkg/client/kubernetes/apis/$$crd/v1; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/client/kubernetes/clients/$$crd/clientset ./pkg/client/kubernetes/clients/$$crd/clientset; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/client/kubernetes/clients/$$crd/informers ./pkg/client/kubernetes/clients/$$crd/informers; \
-		mv ./tmp/github.com/kobsio/kobs/pkg/client/kubernetes/clients/$$crd/listers ./pkg/client/kubernetes/clients/$$crd/listers; \
+		./hack/generate-groups.sh "deepcopy,client,informer,lister" github.com/kobsio/kobs/pkg/cluster/kubernetes/clients/$$crd github.com/kobsio/kobs/pkg/cluster/kubernetes/apis $$crd:v1 --go-header-file ./hack/boilerplate.go.txt --output-base ./tmp; \
+		rm -rf ./pkg/cluster/kubernetes/apis/$$crd/v1/zz_generated.deepcopy.go; \
+		rm -rf ./pkg/cluster/kubernetes/clients/$$crd/clientset; \
+		rm -rf ./pkg/cluster/kubernetes/clients/$$crd/informers; \
+		rm -rf ./pkg/cluster/kubernetes/clients/$$crd/listers; \
+		mkdir -p ./pkg/cluster/kubernetes/clients/$$crd; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/$$crd/v1/zz_generated.deepcopy.go ./pkg/cluster/kubernetes/apis/$$crd/v1; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/cluster/kubernetes/clients/$$crd/clientset ./pkg/cluster/kubernetes/clients/$$crd/clientset; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/cluster/kubernetes/clients/$$crd/informers ./pkg/cluster/kubernetes/clients/$$crd/informers; \
+		mv ./tmp/github.com/kobsio/kobs/pkg/cluster/kubernetes/clients/$$crd/listers ./pkg/cluster/kubernetes/clients/$$crd/listers; \
 		rm -rf ./tmp; \
 	done
 
