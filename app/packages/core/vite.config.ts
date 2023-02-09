@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
@@ -30,4 +31,7 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  test: {
+    include: ['**/*.{test}.{ts,tsx}'],
+  }
 });
