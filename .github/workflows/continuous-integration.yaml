@@ -44,6 +44,7 @@ jobs:
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
+          flags: go
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.out
 
@@ -95,11 +96,13 @@ jobs:
       - name: Upload Coverage "packages/app"
         uses: codecov/codecov-action@v2
         with:
+          flags: node-app
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: packages/app/coverage
 
       - name: Upload Coverage "packages/core"
         uses: codecov/codecov-action@v2
         with:
+          flags: node-core
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: packages/core/coverage
