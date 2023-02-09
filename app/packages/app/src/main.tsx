@@ -1,9 +1,8 @@
-import theme from './theme';
+import { App } from '@kobsio/core';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { App } from '@kobsio/core';
-
-import { StrictMode } from 'react';
+import theme from './theme';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

@@ -50,16 +50,21 @@
       "import/order": [
         "error",
         {
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          },
           "groups": [
+            "external",
+            "object",
+            "type",
+            "builtin",
             "index",
             "sibling",
             "parent",
-            "internal",
-            "external",
-            "builtin",
-            "object",
-            "type"
-          ]
+            "internal"
+          ],
+          "newlines-between": "always"
         }
       ],
       "@typescript-eslint/explicit-function-return-type": "error",
