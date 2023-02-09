@@ -81,7 +81,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm ci
+          npm clean-install
 
       - name: Lint
         run: |
