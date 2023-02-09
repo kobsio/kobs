@@ -17,27 +17,34 @@ import (
 	"go.uber.org/zap"
 )
 
-type Config struct {
-	Clusters clusters.Config `json:"clusters"`
-}
-
 type Cmd struct {
-	Log      log.Config     `embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
-	Tracer   tracer.Config  `embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
-	Metrics  metrics.Config `embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
-	Database db.Config      `embed:"" prefix:"database." envprefix:"KOBS_DATABASE_"`
-	Watcher  watcher.Config `embed:"" prefix:"watcher." envprefix:"KOBS_WATCHER_"`
-	Config   string         `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the hub."`
+	Config string `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the watcher."`
+
+	Log      log.Config     `json:"log" embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
+	Tracer   tracer.Config  `json:"tracer" embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
+	Metrics  metrics.Config `json:"metrics" embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
+	Database db.Config      `json:"database" embed:"" prefix:"database." envprefix:"KOBS_DATABASE_"`
+
+	Watcher struct {
+		Watcher  watcher.Config  `json:"watcher" embed:"" prefix:"watcher." envprefix:"WATCHER_"`
+		Clusters clusters.Config `json:"clusters" json:"clusters" kong:"-"`
+	} `json:"watcher" embed:"" prefix:"watcher." envprefix:"KOBS_WATCHER_"`
 }
 
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
-	logger, err := log.Setup(r.Log)
+	cfg, err := config.Load(r.Config, *r)
+	if err != nil {
+		log.Error(nil, "Could not load configuration", zap.Error(err))
+		return err
+	}
+
+	logger, err := log.Setup(cfg.Log)
 	if err != nil {
 		return err
 	}
 	defer logger.Sync()
 
-	tracerClient, err := tracer.Setup(r.Tracer)
+	tracerClient, err := tracer.Setup(cfg.Tracer)
 	if err != nil {
 		return err
 	}
@@ -45,28 +52,22 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		defer tracerClient.Shutdown()
 	}
 
-	metricsServer := metrics.New(r.Metrics)
+	metricsServer := metrics.New(cfg.Metrics)
 	go metricsServer.Start()
 	defer metricsServer.Stop()
 
-	cfg, err := config.Load[Config](r.Config)
-	if err != nil {
-		log.Error(nil, "Could not load configuration", zap.Error(err))
-		return err
-	}
-
-	clustersClient, err := clusters.NewClient(cfg.Clusters)
+	clustersClient, err := clusters.NewClient(cfg.Watcher.Clusters)
 	if err != nil {
 		log.Error(nil, "Could not create clusters client", zap.Error(err))
 		return err
 	}
 
-	dbClient, err := db.NewClient(r.Database)
+	dbClient, err := db.NewClient(cfg.Database)
 	if err != nil {
 		log.Error(nil, "Could not create database client", zap.Error(err))
 	}
 
-	watcherClient, err := watcher.NewClient(r.Watcher, clustersClient, dbClient)
+	watcherClient, err := watcher.NewClient(cfg.Watcher.Watcher, clustersClient, dbClient)
 	if err != nil {
 		log.Error(nil, "Could not create watcher", zap.Error(err))
 		return err

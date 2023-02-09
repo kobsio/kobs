@@ -16,7 +16,7 @@ import (
 // Config is the configuration required to create a new metrics server. Currently we only need the address where the
 // server should listen on.
 type Config struct {
-	Address string `env:"ADDRESS" default:":15222" help:"Set the address where the metrics server is listen on."`
+	Address string `json:"address" env:"ADDRESS" default:":15222" help:"Set the address where the metrics server is listen on."`
 }
 
 // Server is the interface of a metrics service, which provides the options to start and stop the underlying http

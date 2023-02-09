@@ -21,30 +21,37 @@ import (
 	"go.uber.org/zap"
 )
 
-type Config struct {
-	Clusters clusters.Config   `json:"clusters"`
-	Plugins  []plugin.Instance `json:"plugins"`
-}
-
 type Cmd struct {
-	Log      log.Config     `embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
-	Tracer   tracer.Config  `embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
-	Metrics  metrics.Config `embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
-	Database db.Config      `embed:"" prefix:"database." envprefix:"KOBS_DATABASE_"`
-	API      api.Config     `embed:"" prefix:"api." envprefix:"KOBS_API_"`
-	Auth     auth.Config    `embed:"" prefix:"auth." envprefix:"KOBS_AUTH_"`
-	App      app.Config     `embed:"" prefix:"app." envprefix:"KOBS_APP_"`
-	Config   string         `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the hub."`
+	Config string `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the hub."`
+
+	Log      log.Config     `json:"log" embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
+	Tracer   tracer.Config  `json:"tracer" embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
+	Metrics  metrics.Config `json:"metrics" embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
+	Database db.Config      `json:"database" embed:"" prefix:"database." envprefix:"KOBS_DATABASE_"`
+
+	Hub struct {
+		API      api.Config        `json:"api" embed:"" prefix:"api." envprefix:"API_"`
+		Auth     auth.Config       `json:"auth" embed:"" prefix:"auth." envprefix:"AUTH_"`
+		App      app.Config        `json:"app" embed:"" prefix:"app." envprefix:"APP_"`
+		Clusters clusters.Config   `json:"clusters" kong:"-"`
+		Plugins  []plugin.Instance `json:"plugins" kong:"-"`
+	} `json:"hub" embed:"" prefix:"hub." envprefix:"KOBS_HUB_"`
 }
 
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
-	logger, err := log.Setup(r.Log)
+	cfg, err := config.Load(r.Config, *r)
+	if err != nil {
+		log.Error(nil, "Could not load configuration", zap.Error(err))
+		return err
+	}
+
+	logger, err := log.Setup(cfg.Log)
 	if err != nil {
 		return err
 	}
 	defer logger.Sync()
 
-	tracerClient, err := tracer.Setup(r.Tracer)
+	tracerClient, err := tracer.Setup(cfg.Tracer)
 	if err != nil {
 		return err
 	}
@@ -52,48 +59,42 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		defer tracerClient.Shutdown()
 	}
 
-	metricsServer := metrics.New(r.Metrics)
+	metricsServer := metrics.New(cfg.Metrics)
 	go metricsServer.Start()
 	defer metricsServer.Stop()
 
-	cfg, err := config.Load[Config](r.Config)
-	if err != nil {
-		log.Error(nil, "Could not load configuration", zap.Error(err))
-		return err
-	}
-
-	clustersClient, err := clusters.NewClient(cfg.Clusters)
+	clustersClient, err := clusters.NewClient(cfg.Hub.Clusters)
 	if err != nil {
 		log.Error(nil, "Could not create clusters client", zap.Error(err))
 		return err
 	}
 
-	dbClient, err := db.NewClient(r.Database)
+	dbClient, err := db.NewClient(cfg.Database)
 	if err != nil {
 		log.Error(nil, "Could not create database client", zap.Error(err))
 		return err
 	}
 
-	pluginsClient, err := hubPlugins.NewClient(plugins, cfg.Plugins, clustersClient, dbClient)
+	pluginsClient, err := hubPlugins.NewClient(plugins, cfg.Hub.Plugins, clustersClient, dbClient)
 	if err != nil {
 		log.Error(nil, "Could not create plugins client", zap.Error(err))
 		return err
 	}
 
-	authClient, err := auth.NewClient(r.Auth, dbClient)
+	authClient, err := auth.NewClient(cfg.Hub.Auth, dbClient)
 	if err != nil {
 		log.Error(nil, "Could not create auth client", zap.Error(err))
 		return err
 	}
 
-	apiServer, err := api.New(r.API, authClient, clustersClient, dbClient, pluginsClient)
+	apiServer, err := api.New(cfg.Hub.API, authClient, clustersClient, dbClient, pluginsClient)
 	if err != nil {
 		log.Error(nil, "Could not create client server", zap.Error(err))
 		return err
 	}
 	go apiServer.Start()
 
-	appServer, err := app.New(r.App, r.API)
+	appServer, err := app.New(cfg.Hub.App, cfg.Hub.API)
 	if err != nil {
 		log.Error(nil, "Could not create Application server", zap.Error(err))
 		return err

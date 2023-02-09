@@ -22,8 +22,8 @@ import (
 )
 
 type Config struct {
-	Address   string `env:"ADDRESS" default:":15219" help:"The address where the app server should listen on."`
-	AssetsDir string `env:"ASSETS_DIR" default:"app" help:"The directory for the frontend assets, which should be served via the app server."`
+	Address   string `json:"address" env:"ADDRESS" default:":15219" help:"The address where the app server should listen on."`
+	AssetsDir string `json:"assetsDir" env:"ASSETS_DIR" default:"app" help:"The directory for the frontend assets, which should be served via the app server."`
 }
 
 // Server is the interface of a app service, which provides the options to start and stop the underlying http server.

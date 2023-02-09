@@ -25,13 +25,13 @@ import (
 )
 
 type Config struct {
-	Applications applications.Config `embed:"" prefix:"applications." envprefix:"APPLICATIONS_"`
-	Dashboards   dashboards.Config   `embed:"" prefix:"dashboards." envprefix:"DASHBOARDS_"`
-	Resources    resources.Config    `embed:"" prefix:"resources." envprefix:"RESOURCES_"`
-	Teams        teams.Config        `embed:"" prefix:"teams." envprefix:"TEAMS_"`
-	Users        users.Config        `embed:"" prefix:"users." envprefix:"USERS_"`
-	Address      string              `env:"ADDRESS" default:":15221" help:"The address where the client API should listen on."`
-	Token        string              `env:"TOKEN" default:"" help:"The token which is used to protect the client API."`
+	Applications applications.Config `json:"applications" kong:"-"`
+	Dashboards   dashboards.Config   `json:"dashboards" kong:"-"`
+	Resources    resources.Config    `json:"resources" kong:"-"`
+	Teams        teams.Config        `json:"teams" kong:"-"`
+	Users        users.Config        `json:"users" kong:"-"`
+	Address      string              `json:"address" env:"ADDRESS" default:":15221" help:"The address where the client API should listen on."`
+	Token        string              `json:"token" env:"TOKEN" default:"" help:"The token which is used to protect the client API."`
 }
 
 // Server is the interface of a client service, which provides the options to start and stop the underlying http

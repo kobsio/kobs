@@ -14,20 +14,22 @@ type TestConfig struct {
 }
 
 func TestLoad(t *testing.T) {
+	var testConfig TestConfig
+
 	t.Run("should load config", func(t *testing.T) {
-		config, err := Load[TestConfig]("mocks/config-valid.yaml")
+		config, err := Load("mocks/config-valid.yaml", testConfig)
 		require.NoError(t, err)
 		require.NotEmpty(t, config)
 	})
 
 	t.Run("should fail because file doesn't exists", func(t *testing.T) {
-		config, err := Load[TestConfig]("mocks/config.yaml")
+		config, err := Load("mocks/config.yaml", testConfig)
 		require.Error(t, err)
 		require.Empty(t, config)
 	})
 
 	t.Run("should fail because config file is invalid", func(t *testing.T) {
-		config, err := Load[TestConfig]("mocks/config-invalid.yaml")
+		config, err := Load("mocks/config-invalid.yaml", testConfig)
 		require.Error(t, err)
 		require.Empty(t, config)
 	})

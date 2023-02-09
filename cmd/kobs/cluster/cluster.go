@@ -17,27 +17,34 @@ import (
 	"go.uber.org/zap"
 )
 
-type Config struct {
-	Plugins []plugin.Instance `json:"plugins"`
-}
-
 type Cmd struct {
-	Log        log.Config        `embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
-	Tracer     tracer.Config     `embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
-	Metrics    metrics.Config    `embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
-	Kubernetes kubernetes.Config `embed:"" prefix:"kubernetes." envprefix:"KOBS_KUBERNETES_"`
-	API        api.Config        `embed:"" prefix:"api." envprefix:"KOBS_API_"`
-	Config     string            `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the cluster."`
+	Config string `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the cluster."`
+
+	Log     log.Config     `json:"log" embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
+	Tracer  tracer.Config  `json:"tracer" embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
+	Metrics metrics.Config `json:"metrics" embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
+
+	Cluster struct {
+		Kubernetes kubernetes.Config `json:"kubernetes" embed:"" prefix:"kubernetes." envprefix:"KUBERNETES_"`
+		API        api.Config        `json:"api" embed:"" prefix:"api." envprefix:"API_"`
+		Plugins    []plugin.Instance `json:"plugins" kong:"-"`
+	} `json:"cluster" embed:"" prefix:"cluster." envprefix:"KOBS_CLUSTER_"`
 }
 
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
-	logger, err := log.Setup(r.Log)
+	cfg, err := config.Load(r.Config, *r)
+	if err != nil {
+		log.Error(nil, "Could not load configuration", zap.Error(err))
+		return err
+	}
+
+	logger, err := log.Setup(cfg.Log)
 	if err != nil {
 		return err
 	}
 	defer logger.Sync()
 
-	tracerClient, err := tracer.Setup(r.Tracer)
+	tracerClient, err := tracer.Setup(cfg.Tracer)
 	if err != nil {
 		return err
 	}
@@ -45,29 +52,23 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		defer tracerClient.Shutdown()
 	}
 
-	metricsServer := metrics.New(r.Metrics)
+	metricsServer := metrics.New(cfg.Metrics)
 	go metricsServer.Start()
 	defer metricsServer.Stop()
 
-	cfg, err := config.Load[Config](r.Config)
-	if err != nil {
-		log.Error(nil, "Could not load configuration", zap.Error(err))
-		return err
-	}
-
-	kubernetesClient, err := kubernetes.NewClient(r.Kubernetes)
+	kubernetesClient, err := kubernetes.NewClient(cfg.Cluster.Kubernetes)
 	if err != nil {
 		log.Error(nil, "Could not create Kubernetes client", zap.Error(err))
 		return err
 	}
 
-	pluginsClient, err := clusterPlugins.NewClient(plugins, cfg.Plugins, kubernetesClient)
+	pluginsClient, err := clusterPlugins.NewClient(plugins, cfg.Cluster.Plugins, kubernetesClient)
 	if err != nil {
 		log.Error(nil, "Could not create plugins client", zap.Error(err))
 		return err
 	}
 
-	apiServer, err := api.New(r.API, kubernetesClient, pluginsClient)
+	apiServer, err := api.New(cfg.Cluster.API, kubernetesClient, pluginsClient)
 	if err != nil {
 		log.Error(nil, "Could not create client server", zap.Error(err))
 		return err

@@ -8,8 +8,8 @@ import (
 // Config is the configuration for the log package. Within the configuration it is possible to set the log level and
 // log format for our logging package.
 type Config struct {
-	Format string `env:"FORMAT" enum:"console,json" default:"console" help:"Set the output format of the logs. Must be \"console\" or \"json\"."`
-	Level  string `env:"LEVEL" enum:"debug,info,warn,error,fatal,panic" default:"info" help:"Set the log level. Must be \"debug\", \"info\", \"warn\", \"error\", \"fatal\" or \"panic\"."`
+	Format string `json:"format" env:"FORMAT" enum:"console,json" default:"console" help:"Set the output format of the logs. Must be \"console\" or \"json\"."`
+	Level  string `json:"level" env:"LEVEL" enum:"debug,info,warn,error,fatal,panic" default:"info" help:"Set the log level. Must be \"debug\", \"info\", \"warn\", \"error\", \"fatal\" or \"panic\"."`
 }
 
 // Setup our logging library. The logs can be written in console format (the console format is compatible with

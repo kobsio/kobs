@@ -26,8 +26,8 @@ func (r task) Do() {
 }
 
 type Config struct {
-	Interval time.Duration `env:"INTERVAL" default:"300s" help:"Set the interval to sync all resources from the clusters to the hub."`
-	Workers  int64         `env:"WORKERS" default:"10" help:"The number of workers (goroutines) to spawn for the sync process."`
+	Interval time.Duration `json:"interval" env:"INTERVAL" default:"300s" help:"Set the interval to sync all resources from the clusters to the hub."`
+	Workers  int64         `json:"workers" env:"WORKERS" default:"10" help:"The number of workers (goroutines) to spawn for the sync process."`
 }
 
 // Client is the interface which must be implemented by a watcher client.

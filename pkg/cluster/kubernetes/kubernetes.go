@@ -49,7 +49,7 @@ import (
 )
 
 type Config struct {
-	Provider provider.Config `embed:"" prefix:"provider." envprefix:"PROVIDER_"`
+	Provider provider.Config `json:"provider" embed:"" prefix:"provider." envprefix:"PROVIDER_"`
 }
 
 // Client is the interface to interact with an Kubernetes cluster.

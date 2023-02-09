@@ -27,7 +27,7 @@ import (
 )
 
 type Config struct {
-	URI string `env:"URI" default:"mongodb://localhost:27017" help:"The connection uri for MongoDB"`
+	URI string `json:"uri" env:"URI" default:"mongodb://localhost:27017" help:"The connection uri for MongoDB"`
 }
 
 // Client is the interface with all the methods to interact with the store.
@@ -73,7 +73,7 @@ type client struct {
 //	docker stop mongodb
 //	docker rm mongodb
 func NewClient(config Config) (Client, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	db, err := mongo.Connect(ctx, options.Client().ApplyURI(config.URI))

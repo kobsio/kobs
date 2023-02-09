@@ -22,10 +22,10 @@ import (
 // Config is the configuration for our tracer. Via the configuration we can enable / disable the tracing. If the tracing
 // is enabled we need the service name and the tracing provider and address.
 type Config struct {
-	Enabled  bool   `env:"ENABLED" enum:"true,false" default:"false" help:"Enable tracing."`
-	Service  string `env:"SERVICE" default:"feeddeck" help:"The name of the service which should be used for tracing."`
-	Provider string `env:"PROVIDER" enum:"jaeger,zipkin" default:"jaeger" help:"The tracing provider which should be used. Must be \"jaeger\" or \"zipkin\"."`
-	Address  string `env:"ADDRESS" default:"http://localhost:14268/api/traces" help:"The address of the tracing provider instance."`
+	Enabled  bool   `json:"enabled" env:"ENABLED" enum:"true,false" default:"false" help:"Enable tracing."`
+	Service  string `json:"service" env:"SERVICE" default:"kobs" help:"The name of the service which should be used for tracing."`
+	Provider string `json:"provider" env:"PROVIDER" enum:"jaeger,zipkin" default:"jaeger" help:"The tracing provider which should be used. Must be \"jaeger\" or \"zipkin\"."`
+	Address  string `json:"address" env:"ADDRESS" default:"http://localhost:14268/api/traces" help:"The address of the tracing provider instance."`
 }
 
 // Client is the interface for our tracer. It contains the underlying tracer provider and a Shutdown method to perform a

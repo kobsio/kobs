@@ -21,7 +21,7 @@ import (
 )
 
 type Config struct {
-	Address string `env:"ADDRESS" default:":15220" help:"The address where the hub API should listen on."`
+	Address string `json:"address" env:"ADDRESS" default:":15220" help:"The address where the hub API should listen on."`
 }
 
 // Server is the interface of a hub service, which provides the options to start and stop the underlying http server.

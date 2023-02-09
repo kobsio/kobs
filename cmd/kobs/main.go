@@ -8,7 +8,6 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins"
 
 	"github.com/alecthomas/kong"
-	"github.com/joho/godotenv"
 )
 
 var cli struct {
@@ -19,7 +18,6 @@ var cli struct {
 }
 
 func main() {
-	godotenv.Load()
 	ctx := kong.Parse(&cli)
 
 	registeredPlugins := []plugins.Plugin{}
