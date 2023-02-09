@@ -1,9 +1,9 @@
-import { Box } from '@mui/material';
-import React from 'react';
+import { Box, Typography } from '@mui/material';
 
 const Home: React.FunctionComponent = () => {
   return (
     <Box sx={{ my: 2 }}>
+      <Typography variant="h6">Home</Typography>
       {[...new Array(100)]
         .map(
           () => `Cras mattis consectetur purus sit amet fermentum.

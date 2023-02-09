@@ -1,0 +1,9 @@
+name: "custom codeql config"
+
+disable-default-queries: false
+
+query-filters:
+  - exclude:
+      # false positive for logs in go. it shouldn't be possible to inject new lines into the structured logs.
+      # the json formatted logs should escape new line characters
+      id: go/log-injection

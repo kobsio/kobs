@@ -1,6 +1,10 @@
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
+
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import react from '@vitejs/plugin-react';
+
 import { resolve } from 'path';
 
 export default defineConfig({
@@ -30,4 +34,13 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  test: {
+    coverage: {
+      all: true,
+    },
+    environment: 'jsdom',
+    globals: true,
+    include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: './src/test/setup.ts',
+  },
 });

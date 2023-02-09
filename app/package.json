@@ -9,11 +9,14 @@
     "dev": "lerna run dev",
     "build": "lerna run build",
     "preview": "lerna run preview",
-    "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'"
+    "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'",
+    "test": "lerna run test",
+    "test:coverage": "lerna run test:coverage"
   },
   "eslintConfig": {
     "plugins": [
-      "react-hooks"
+      "react-hooks",
+      "import"
     ],
     "extends": [
       "react-app",
@@ -24,24 +27,10 @@
     ],
     "rules": {
       "react-hooks/exhaustive-deps": "error",
+      "react/react-in-jsx-scope": "off",
       "react/jsx-boolean-value": [
         "error",
         "always"
-      ],
-      "sort-imports": [
-        "error",
-        {
-          "ignoreCase": false,
-          "ignoreDeclarationSort": false,
-          "ignoreMemberSort": false,
-          "memberSyntaxSortOrder": [
-            "none",
-            "all",
-            "multiple",
-            "single"
-          ],
-          "allowSeparatedGroups": true
-        }
       ],
       "sort-keys": [
         "error",
@@ -56,6 +45,26 @@
         "error",
         {
           "ignoreCase": false
+        }
+      ],
+      "import/order": [
+        "error",
+        {
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          },
+          "groups": [
+            "external",
+            "object",
+            "type",
+            "builtin",
+            "index",
+            "sibling",
+            "parent",
+            "internal"
+          ],
+          "newlines-between": "always"
         }
       ],
       "@typescript-eslint/explicit-function-return-type": "error",

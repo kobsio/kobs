@@ -44,6 +44,7 @@ jobs:
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
+          flags: go
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.out
 
@@ -51,39 +52,57 @@ jobs:
         run: |
           make build
 
-  # node:
-  #   name: Node.js
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
+  node:
+    name: Node.js
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-  #     - name: Setup
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '16.x'
+      - name: Setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
 
-  #     - name: Cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: |
-  #           node_modules
-  #           */node_modules
-  #           */*/node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            */node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-  #     - name: Install Dependencies
-  #       run: |
-  #         yarn install
+      - name: Install Dependencies
+        run: |
+          npm clean-install
 
-  #     - name: Lint
-  #       run: |
-  #         yarn lint
+      - name: Lint
+        run: |
+          npm run lint
 
-  #     - name: Build
-  #       run: |
-  #         make generate-assets
+      - name: Test
+        run: |
+          npm run test:coverage
+
+      # todo: use matrix to simplify this
+      - name: Upload Coverage "packages/app"
+        uses: codecov/codecov-action@v2
+        with:
+          flags: node-app
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: app/packages/app/coverage
+
+      - name: Upload Coverage "packages/core"
+        uses: codecov/codecov-action@v2
+        with:
+          flags: node-core
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: app/packages/core/coverage
