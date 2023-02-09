@@ -89,7 +89,7 @@ jobs:
 
       - name: Test
         run: |
-          npm run test:cov
+          npm run test:coverage
 
       # todo: use matrix to simplify this
       - name: Upload Coverage "packages/app"
