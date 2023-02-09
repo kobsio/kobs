@@ -15,7 +15,8 @@
   },
   "eslintConfig": {
     "plugins": [
-      "react-hooks"
+      "react-hooks",
+      "import"
     ],
     "extends": [
       "react-app",
@@ -31,21 +32,6 @@
         "error",
         "always"
       ],
-      "sort-imports": [
-        "error",
-        {
-          "ignoreCase": false,
-          "ignoreDeclarationSort": false,
-          "ignoreMemberSort": false,
-          "memberSyntaxSortOrder": [
-            "none",
-            "all",
-            "multiple",
-            "single"
-          ],
-          "allowSeparatedGroups": true
-        }
-      ],
       "sort-keys": [
         "error",
         "asc",
@@ -59,6 +45,21 @@
         "error",
         {
           "ignoreCase": false
+        }
+      ],
+      "import/order": [
+        "error",
+        {
+          "groups": [
+            "index",
+            "sibling",
+            "parent",
+            "internal",
+            "external",
+            "builtin",
+            "object",
+            "type"
+          ]
         }
       ],
       "@typescript-eslint/explicit-function-return-type": "error",
