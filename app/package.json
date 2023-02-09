@@ -119,6 +119,14 @@
           "format": [
             "PascalCase"
           ],
+          "selector": "class",
+          "leadingUnderscore": "forbid",
+          "trailingUnderscore": "forbid"
+        },
+        {
+          "format": [
+            "PascalCase"
+          ],
           "selector": "typeAlias",
           "leadingUnderscore": "forbid",
           "trailingUnderscore": "forbid"
