@@ -5,6 +5,7 @@ node_modules
 
 # testing
 /coverage
+coverage
 coverage.out
 coverage.html
 

@@ -16,6 +16,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "test": "vitest run",
+    "test:cov": "vitest run --coverage",
     "test:watch": "vitest"
   },
   "peerDependencies": {
@@ -36,6 +37,7 @@
     "@types/react-dom": "^18.0.10",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^3.1.0",
+    "@vitest/coverage-c8": "^0.28.4",
     "@vitest/ui": "^0.28.4",
     "typescript": "^4.9.3",
     "vite": "^4.1.0",

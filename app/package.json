@@ -11,7 +11,7 @@
     "preview": "lerna run preview",
     "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'",
     "test": "lerna run test",
-    "test:watch": "lerna run test"
+    "test:cov": "lerna run test:cov"
   },
   "eslintConfig": {
     "plugins": [
