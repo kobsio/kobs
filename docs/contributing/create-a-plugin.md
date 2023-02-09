@@ -86,8 +86,6 @@ export interface IPluginInstanceOptions {
 ```
 
 ```tsx
-import React from 'react';
-
 import { IPluginInstance, PluginInstance } from '@kobsio/shared';
 
 import { defaultDescription } from '../../utils/constants';
@@ -125,7 +123,6 @@ To have a unified look across all plugins, we recommend to use a `PageHeaderSect
 
 ```tsx
 import { Card, CardBody } from '@patternfly/react-core';
-import React from 'react';
 
 import { IPluginPageProps, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
 import { defaultDescription } from '../../utils/constants';
@@ -171,8 +168,6 @@ export interface IPluginPanelProps {
 You can create a custom interface which extends the `IPluginPanelProps` interface, so that you can define the options for your plugin. Please always validate the options passed to your plugin, since we can not validate them with the Custom Resource Definition.
 
 ```tsx
-import React from 'react';
-
 import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/shared';
 
 interface IHelloWorldPluginPanelProps extends IPluginPanelProps {

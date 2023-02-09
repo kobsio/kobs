@@ -1,6 +1,6 @@
-import React from 'react';
+import { FunctionComponent } from 'react';
 
-const SignIn: React.FunctionComponent = () => {
+const SignIn: FunctionComponent = () => {
   return <div>Signin</div>;
 };
 

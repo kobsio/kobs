@@ -9,7 +9,9 @@
     "dev": "lerna run dev",
     "build": "lerna run build",
     "preview": "lerna run preview",
-    "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'"
+    "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'",
+    "test": "lerna run test",
+    "test:watch": "lerna run test"
   },
   "eslintConfig": {
     "plugins": [
@@ -24,6 +26,7 @@
     ],
     "rules": {
       "react-hooks/exhaustive-deps": "error",
+      "react/react-in-jsx-scope": "off",
       "react/jsx-boolean-value": [
         "error",
         "always"
