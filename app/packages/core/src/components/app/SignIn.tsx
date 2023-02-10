@@ -1,7 +1,13 @@
+import { Box, TextField } from '@mui/material';
 import { FunctionComponent } from 'react';
 
-const SignIn: FunctionComponent = () => {
-  return <div>Signin</div>;
+const Signin: FunctionComponent = () => {
+  return (
+    <Box>
+      <TextField required={true} id="email" label="E-Mail" />
+      <TextField required={true} id="password" label="Password" />
+    </Box>
+  );
 };
 
-export default SignIn;
+export default Signin;

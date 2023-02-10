@@ -1,7 +1,7 @@
-import React from 'react';
+import { FunctionComponent } from 'react';
 
-const SignInCallback: React.FunctionComponent = () => {
-  return <div>SigninCallback</div>;
+const SignInCallback: FunctionComponent = () => {
+  return <></>;
 };
 
 export default SignInCallback;
