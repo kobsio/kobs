@@ -1,4 +1,4 @@
-type RequestOptions = Omit<RequestInit, 'method'>;
+type RequestOptions = Omit<RequestInit, 'method' | 'body'> & { body: unknown };
 
 export interface IAPI {
   get: <T>(path: string, opts?: RequestOptions) => Promise<T>;
@@ -8,8 +8,6 @@ export interface IAPI {
 }
 
 export default class Client implements IAPI {
-  constructor(private bearerToken?: string) {}
-
   get<T>(path: string, opts?: RequestOptions): Promise<T> {
     return this.do(path, 'get', opts) as Promise<T>;
   }
@@ -25,12 +23,7 @@ export default class Client implements IAPI {
   }
 
   private async do(path: string, method: 'get' | 'post' | 'put' | 'patch', opts?: RequestOptions): Promise<unknown> {
-    if (!this.bearerToken) {
-      throw new Error('no token found, not signed in?');
-    }
-
-    const headers = { ...((opts && opts.headers) || {}), Authorization: `Bearer ${this.bearerToken}` };
-    const response = await fetch(path, { ...opts, headers, method: method });
+    const response = await fetch(path, { ...opts, body: JSON.stringify(opts?.body), method: method });
     const json = await response.json();
 
     if (response.status >= 200 && response.status < 300) {
