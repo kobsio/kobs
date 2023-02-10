@@ -24,8 +24,11 @@ export default class Client implements IAPI {
 
   private async do(path: string, method: 'get' | 'post' | 'put' | 'patch', opts?: RequestOptions): Promise<unknown> {
     const response = await fetch(path, { ...opts, body: JSON.stringify(opts?.body), method: method });
-    const json = await response.json();
+    if (response.status === 204) {
+      return null;
+    }
 
+    const json = await response.json();
     if (response.status >= 200 && response.status < 300) {
       return json;
     } else {
