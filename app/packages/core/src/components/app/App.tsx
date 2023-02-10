@@ -1,5 +1,4 @@
-import { Theme, ThemeProvider } from '@emotion/react';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -7,6 +6,8 @@ import Home from './Home';
 import Layout from './Layout';
 import SignIn from './SignIn';
 import SignInCallback from './SignInCallback';
+
+import theme from '../../theme/theme';
 
 // Create a global queryClient, which is used for @tanstack/react-query.
 const queryClient = new QueryClient({
@@ -22,12 +23,11 @@ const queryClient = new QueryClient({
 });
 
 interface IAppProps {
-  theme: Theme;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   plugins: any;
 }
 
-export const App: React.FunctionComponent<IAppProps> = ({ theme, plugins }: IAppProps) => {
+export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

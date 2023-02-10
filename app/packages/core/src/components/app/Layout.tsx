@@ -15,7 +15,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 
-const drawerWidth = 240;
+const drawerWidth = 258;
 
 const SidebarItems: { name: string; path: string; icon: React.ReactNode }[] = [
   {
