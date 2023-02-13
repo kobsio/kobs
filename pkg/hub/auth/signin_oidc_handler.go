@@ -22,7 +22,7 @@ import (
 func (c *client) oidcHandler(w http.ResponseWriter, r *http.Request) {
 	if c.oidcConfig == nil || c.oidcProvider == nil {
 		log.Warn(r.Context(), "OIDC provider is not configured")
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("oIDC provider is not configured"))
+		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("oidc provider is not configured"))
 		return
 	}
 
