@@ -105,8 +105,8 @@ func NewClient(config Config, storeClient db.Client) (Client, error) {
 	// c.router.Get("/", c.userHandler)
 	c.router.Post("/signin", c.signinHandler)
 	// c.router.Get("/signout", c.signoutHandler)
-	// c.router.Get("/oidc", c.oidcHandler)
-	// c.router.Get("/oidc/callback", c.oidcCallbackHandler)
+	c.router.Get("/oidc", c.oidcHandler)
+	c.router.Get("/oidc/callback", c.oidcCallbackHandler)
 
 	return c, nil
 }

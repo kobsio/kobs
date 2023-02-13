@@ -1,5 +1,11 @@
 type RequestOptions = Omit<RequestInit, 'method' | 'body'> & { body: unknown };
 
+export class APIError extends Error {
+  constructor(message: string, public statusCode?: number) {
+    super(message);
+  }
+}
+
 export interface IAPI {
   get: <T>(path: string, opts?: RequestOptions) => Promise<T>;
   post: <T>(path: string, opts?: RequestOptions) => Promise<T>;
@@ -28,15 +34,19 @@ export default class Client implements IAPI {
       return null;
     }
 
-    const json = await response.json();
-    if (response.status >= 200 && response.status < 300) {
-      return json;
-    } else {
-      if (json.error) {
-        throw new Error(json.error);
+    try {
+      const json = await response.json();
+      if (response.status >= 200 && response.status < 300) {
+        return json;
       } else {
-        throw new Error('An unknown error occured');
+        if (json.error) {
+          throw new APIError(json.error, response.status);
+        } else {
+          throw new APIError(json.error);
+        }
       }
+    } catch (error: unknown) {
+      throw new APIError(`unexpected error ${error}`, response.status);
     }
   }
 }

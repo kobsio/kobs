@@ -9,6 +9,7 @@ import SignInCallback from './SignInCallback';
 import SigninOIDC from './SignInOIDC';
 
 import theme from '../../theme/theme';
+import APIContext from '../api/context';
 
 // Create a global queryClient, which is used for @tanstack/react-query.
 const queryClient = new QueryClient({
@@ -33,26 +34,26 @@ export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) 
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
-        {/* TODO: APIContext */}
         <BrowserRouter>
-          <Routes>
-            {/* TODO: Auth */}
-            <Route path="/auth" element={<SignIn />} />
-            <Route path="/auth/oidc" element={<SigninOIDC />} />
-            <Route path="/auth/callback" element={<SignInCallback />} />
-            <Route
-              path="*"
-              element={
-                <Layout>
-                  {/* TODO: APPContext */}
-                  {/* TODO: PluginContext */}
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                  </Routes>
-                </Layout>
-              }
-            />
-          </Routes>
+          <APIContext.Wrapper>
+            <Routes>
+              <Route path="/auth" element={<SignIn />} />
+              <Route path="/auth/oidc" element={<SigninOIDC />} />
+              <Route path="/auth/callback" element={<SignInCallback />} />
+              <Route
+                path="*"
+                element={
+                  <Layout>
+                    {/* TODO: APPContext */}
+                    {/* TODO: PluginContext */}
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                    </Routes>
+                  </Layout>
+                }
+              />
+            </Routes>
+          </APIContext.Wrapper>
         </BrowserRouter>
       </QueryClientProvider>
     </ThemeProvider>

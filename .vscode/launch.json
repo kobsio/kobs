@@ -7,11 +7,11 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
-      "args": [
-        "--log.level=debug",
-        "--hub.config=../../deploy/docker/kobs/hub.yaml",
-        "--app.assets=''"
-      ]
+      "args": [ "hub" ],
+      "env": {
+        "KOBS_CONFIG": "../../deploy/docker/kobs/hub.yaml"
+      },
+      "envFile": ".env"
     },
     {
       "name": "satellite",
@@ -41,6 +41,5 @@
       "webRoot": "${workspaceFolder}/plugins",
       "sourceMaps": true
     }
-
   ]
 }

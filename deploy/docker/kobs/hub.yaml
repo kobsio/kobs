@@ -2,3 +2,22 @@ satellites:
   - name: kobs
     address: http://kobs-satellite:15221
     token: unsecuretoken
+hub:
+  auth:
+    enabled: true
+    oidc: 
+      enabled: true
+      issuer: $ISSUER
+      clientID: $AUTH_CLIENT_ID
+      clientSecret: $AUTH_CLIENT_SECRET
+      redirectURL: $REDIRECT_URL
+      state: $AUTH_STATE
+      scopes: ["openid", "profile", "email", "groups", "offline_access"]
+    session:
+      token: $AUTH_SESSION_TOKEN
+      interval: 24h
+    users:
+      - email: admin
+        # password is "1234" (please change!)
+        password: "$$2a$$12$$O2De9.rJziCaifafSrSCbuMVnVjAXzSiXAxtsuQPTJJi6p69t7acW"
+        groups: ["a", "b"]
