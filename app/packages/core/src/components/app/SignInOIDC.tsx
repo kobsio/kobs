@@ -1,38 +1,36 @@
-import { Button, Divider } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import React, { useContext } from 'react';
+import { Box, Button, Divider, Paper, Stack, Typography } from '@mui/material';
+import { FunctionComponent, FormEvent, useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 import { APIContext } from '../api/context';
-// import { useQuery } from '@tanstack/react-query';
 
-interface ISigninOIDCProps {
-  isLoading: boolean;
-}
-
-const SigninOIDC: React.FunctionComponent<ISigninOIDCProps> = ({ isLoading }: ISigninOIDCProps) => {
+const SigninOIDC: FunctionComponent = () => {
   const { api } = useContext(APIContext);
-  const { data } = useQuery<string, Error>(['app/signin/oidc'], async () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const redirect = searchParams.get('redirect');
-
-    return api.get<string>(
-      `/api/auth/oidc?redirect=${encodeURIComponent(
-        redirect && redirect.startsWith(window.location.origin) ? redirect.replace(window.location.origin, '') : '',
-      )}`,
-    );
-  });
-
-  if (!data) {
-    return null;
-  }
+  const handleSubmit = (e: FormEvent): void => {
+    e.preventDefault();
+    api.post('/app/signin/oidc').catch((e) => {
+      // TODO handle error
+      console.error(e);
+    });
+  };
 
   return (
-    <React.Fragment>
-      <Divider />
-      <Button variant="contained" component="a" href={data}>
-        Sign in via OIDC provider
-      </Button>
-    </React.Fragment>
+    <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+      <Paper component="form" sx={{ display: 'inline-flex', mx: 'auto', p: 10 }} onSubmit={handleSubmit}>
+        <Stack display="inline-flex" flexDirection="column" spacing={2}>
+          <Typography variant="h6" mb={2}>
+            Sign in with OIDC
+          </Typography>
+          <Button type="submit" variant="contained">
+            Sign In
+          </Button>
+          <Divider />
+          <Button variant="outlined" component={Link} to="/auth">
+            Sign in via Credentials
+          </Button>
+        </Stack>
+      </Paper>
+    </Box>
   );
 };
 

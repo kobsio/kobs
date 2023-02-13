@@ -1,6 +1,7 @@
 import { Alert, Box, Button, Divider, Paper, TextField, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { FormEvent, FunctionComponent, useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { APIContext } from '../api/context';
 
@@ -87,7 +88,9 @@ const Signin: FunctionComponent = () => {
             <Alert severity="warning">The credentials are not correct.</Alert>
           )}
           <Divider />
-          <Button variant="outlined">Sign in via OIDC</Button>
+          <Button variant="outlined" component={Link} to="/auth/oidc">
+            Sign in via OIDC
+          </Button>
         </Stack>
       </Paper>
     </Box>

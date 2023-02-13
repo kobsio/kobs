@@ -6,6 +6,7 @@ import Home from './Home';
 import Layout from './Layout';
 import SignIn from './SignIn';
 import SignInCallback from './SignInCallback';
+import SigninOIDC from './SignInOIDC';
 
 import theme from '../../theme/theme';
 
@@ -37,6 +38,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) 
           <Routes>
             {/* TODO: Auth */}
             <Route path="/auth" element={<SignIn />} />
+            <Route path="/auth/oidc" element={<SigninOIDC />} />
             <Route path="/auth/callback" element={<SignInCallback />} />
             <Route
               path="*"

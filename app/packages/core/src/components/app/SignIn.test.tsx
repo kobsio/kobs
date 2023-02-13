@@ -1,5 +1,6 @@
 import { render as _render, screen, RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import Signin from './SignIn';
@@ -15,16 +16,18 @@ describe('SignIn', () => {
     vi.restoreAllMocks();
   });
 
-  const setup = (): RenderResult => {
+  const render = (): RenderResult => {
     return _render(
-      <APIContext.Provider value={{ api: apiClient }}>
-        <Signin />
-      </APIContext.Provider>,
+      <MemoryRouter>
+        <APIContext.Provider value={{ api: apiClient }}>
+          <Signin />
+        </APIContext.Provider>
+      </MemoryRouter>,
     );
   };
 
   it('can sign in with credentials', async () => {
-    setup();
+    render();
 
     const emailInput = screen.getByLabelText(/E-Mail/);
     await userEvent.type(emailInput, 'test@test.test');
@@ -41,14 +44,14 @@ describe('SignIn', () => {
   });
 
   it('shows error message when email is empty', async () => {
-    setup();
+    render();
     await userEvent.click(screen.getByText(/Sign In/));
 
     expect(screen.getByText(/please fill in your e-mail/)).toBeInTheDocument();
   });
 
   it('shows error message when password is empty', async () => {
-    setup();
+    render();
     const emailInput = screen.getByLabelText(/E-Mail/);
     await userEvent.type(emailInput, 'test@test.test');
     await userEvent.click(screen.getByText(/Sign In/));
@@ -57,7 +60,7 @@ describe('SignIn', () => {
   });
 
   it('shows warning when credentials are invalid', async () => {
-    setup();
+    render();
 
     spy.mockRejectedValue({ error: 'invalid credentials' });
 
