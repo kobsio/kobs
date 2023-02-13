@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { createContext, FunctionComponent, ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
