@@ -61,7 +61,7 @@ const Signin: FunctionComponent = () => {
                 setState(state | SigninState.NO_EMAIL);
               }
             }}
-            helperText={(state & SigninState.NO_EMAIL && 'please fill in your email') || ' '}
+            helperText={(state & SigninState.NO_EMAIL && 'please fill in your e-mail') || ' '}
           />
           <TextField
             error={(state & SigninState.NO_PASSWORD) === SigninState.NO_PASSWORD}
