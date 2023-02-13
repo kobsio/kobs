@@ -31,7 +31,7 @@ describe('SignIn', () => {
 
   it('can sign in with credentials', async () => {
     render();
-    spy.mockResolvedValue(undefined);
+    spy.mockResolvedValueOnce(undefined);
 
     const emailInput = screen.getByLabelText(/E-Mail/);
     await userEvent.type(emailInput, 'test@test.test');
