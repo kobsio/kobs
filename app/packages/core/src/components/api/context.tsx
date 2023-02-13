@@ -56,15 +56,11 @@ const Provider: FunctionComponent<IProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    data: user,
-    isError,
-    error,
-  } = useQuery<IUser | undefined, Error>(['/app/api/me'], () => {
+  const { data: user } = useQuery<IUser | undefined, Error>(['/app/api/me'], async () => {
     try {
-      return client.get<IUser>('/api/me');
+      return await client.get<IUser>('/api/auth/me');
     } catch (error) {
-      if (error instanceof APIError && error.statusCode === 404) {
+      if (error instanceof APIError && error.statusCode === 401) {
         navigate(`/auth/oidc?redirect=${encodeURIComponent(location.pathname)}`);
         return;
       }
@@ -72,10 +68,6 @@ const Provider: FunctionComponent<IProps> = ({ children }) => {
       throw error;
     }
   });
-
-  if (isError && error) {
-    return <Box>{error.message}</Box>;
-  }
 
   return <APIContext.Provider value={{ api: new Client(), user }}>{children}</APIContext.Provider>;
 };

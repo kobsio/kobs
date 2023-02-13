@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Divider, Paper, TextField, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { FormEvent, FunctionComponent, useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { APIContext } from '../api/context';
 
@@ -13,10 +13,14 @@ enum SigninState {
 }
 
 const Signin: FunctionComponent = () => {
+  const { api } = useContext(APIContext);
+  const { search } = useLocation();
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [state, setState] = useState<SigninState>(SigninState.OK);
-  const { api } = useContext(APIContext);
 
   const handleSubmit = (e: FormEvent): void => {
     e.preventDefault();
@@ -36,8 +40,9 @@ const Signin: FunctionComponent = () => {
       })
       .then(() => {
         setState(SigninState.OK);
+        navigate(params.get('redirect') || '/');
       })
-      .catch((e) => {
+      .catch(() => {
         setState(state | SigninState.INVALID_CREDENTIALS);
       });
   };
@@ -88,7 +93,7 @@ const Signin: FunctionComponent = () => {
             <Alert severity="warning">The credentials are not correct.</Alert>
           )}
           <Divider />
-          <Button variant="outlined" component={Link} to="/auth/oidc">
+          <Button variant="outlined" component={Link} to={`/auth/oidc${search}`}>
             Sign in via OIDC
           </Button>
         </Stack>

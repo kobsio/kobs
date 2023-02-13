@@ -8,7 +8,7 @@ import { APIContext } from '../api/context';
 const SigninOIDCInternal: FunctionComponent = () => {
   const { api } = useContext(APIContext);
   const [params] = useSearchParams();
-  const { pathname } = useLocation();
+  const { search } = useLocation();
   const { data, isLoading, isError, error } = useQuery<{ url: string }, Error>(['app/signin/oidc'], () => {
     const redirect = params.get('redirect');
     const path = `/api/auth/oidc?redirect=${encodeURIComponent(
@@ -35,7 +35,7 @@ const SigninOIDCInternal: FunctionComponent = () => {
         Sign In
       </Button>
       <Divider />
-      <Button variant="outlined" component={Link} to="/auth">
+      <Button variant="outlined" component={Link} to={`/auth${search}`}>
         Sign in via Credentials
       </Button>
     </Stack>

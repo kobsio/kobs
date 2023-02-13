@@ -1,6 +1,6 @@
-import { render as _render, screen, RenderResult } from '@testing-library/react';
+import { render as _render, screen, RenderResult, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import Signin from './SignIn';
@@ -18,9 +18,12 @@ describe('SignIn', () => {
 
   const render = (): RenderResult => {
     return _render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[`/?redirect=${encodeURIComponent('/redirect/path')}`]}>
         <APIContext.Provider value={{ api: apiClient }}>
-          <Signin />
+          <Routes>
+            <Route path="/" element={<Signin />} />
+            <Route path="/redirect/path" element={<>login successful</>} />
+          </Routes>
         </APIContext.Provider>
       </MemoryRouter>,
     );
@@ -28,6 +31,7 @@ describe('SignIn', () => {
 
   it('can sign in with credentials', async () => {
     render();
+    spy.mockResolvedValue(undefined);
 
     const emailInput = screen.getByLabelText(/E-Mail/);
     await userEvent.type(emailInput, 'test@test.test');
@@ -41,6 +45,8 @@ describe('SignIn', () => {
     expect(spy).toHaveBeenCalledWith('/api/auth/signin', {
       body: { email: 'test@test.test', password: 'supersecret' },
     });
+
+    expect(await waitFor(() => screen.getByText(/login successful/))).toBeInTheDocument();
   });
 
   it('shows error message when email is empty', async () => {

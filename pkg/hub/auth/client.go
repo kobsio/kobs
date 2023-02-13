@@ -51,7 +51,6 @@ type client struct {
 	dbClient     db.Client
 	oidcConfig   *oauth2.Config
 	oidcProvider *oidc.Provider
-	storeClient  db.Client
 }
 
 // Mount returns the router of the auth client, which can be used within another chi router to mount the authentication
@@ -63,7 +62,7 @@ func (c *client) Mount() chi.Router {
 // NewClient returns a new auth client for handling authentication and authorization within the kobs hub. The auth
 // client exports two mount function, one for mounting the middleware to verify requests and one for mounting the router
 // for all auth related API endpoints.
-func NewClient(config Config, storeClient db.Client) (Client, error) {
+func NewClient(config Config, dbClient db.Client) (Client, error) {
 	sessionInterval := time.Duration(48 * time.Hour)
 	if parsedSessionInterval, err := time.ParseDuration(config.Session.Interval); err == nil {
 		sessionInterval = parsedSessionInterval
@@ -99,10 +98,10 @@ func NewClient(config Config, storeClient db.Client) (Client, error) {
 		router:       chi.NewRouter(),
 		oidcConfig:   oidcConfig,
 		oidcProvider: oidcProvider,
-		storeClient:  storeClient,
+		dbClient:     dbClient,
 	}
 
-	// c.router.Get("/", c.userHandler)
+	c.router.Get("/me", c.userHandler)
 	c.router.Post("/signin", c.signinHandler)
 	// c.router.Get("/signout", c.signoutHandler)
 	c.router.Get("/oidc", c.oidcHandler)
