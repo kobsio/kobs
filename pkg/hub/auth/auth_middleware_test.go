@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/golang/mock/gomock"
 	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
@@ -30,7 +29,6 @@ func TestAuthMiddleware(t *testing.T) {
 		handler := client.MiddlewareHandler(nxt)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
 		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
 		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/", nil)
 		w := httptest.NewRecorder()
@@ -67,7 +65,6 @@ func TestAuthMiddleware(t *testing.T) {
 		handler := client.MiddlewareHandler(nxt)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
 		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/", nil)
 
 		accessToken, err := jwt.CreateToken(&session{Email: user.ID, Teams: user.Permissions.Teams}, client.config.Session.Token, time.Hour)
@@ -96,7 +93,6 @@ func TestAuthMiddleware(t *testing.T) {
 		handler := client.MiddlewareHandler(nxt)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
 		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/", nil)
 
 		w := httptest.NewRecorder()
@@ -112,7 +108,6 @@ func TestAuthMiddleware(t *testing.T) {
 		handler := client.MiddlewareHandler(nxt)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
 		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/", nil)
 		accessToken, err := jwt.CreateToken(&session{Email: "test@kobs.io"}, client.config.Session.Token+"to make signature invalid", time.Hour)
 		require.NoError(t, err)
