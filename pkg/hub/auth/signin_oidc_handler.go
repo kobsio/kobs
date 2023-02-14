@@ -10,6 +10,7 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-chi/render"
 	"github.com/kobsio/kobs/pkg/hub/auth/jwt"
+	"github.com/kobsio/kobs/pkg/hub/auth/refreshtoken"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"go.uber.org/zap"
@@ -90,16 +91,27 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.CreateToken(&Session{Email: claims.Email, Teams: claims.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
+	accessToken, err := jwt.CreateToken(&Session{Email: claims.Email, Teams: claims.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
 	if err != nil {
 		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
 		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not create jwt token"))
 		return
 	}
 
+	refreshToken, err := refreshtoken.Token{
+		Type:   refreshtoken.OIDC,
+		Value:  oauth2Token.RefreshToken,
+		UserID: claims.Email,
+	}.Encode()
+	if err != nil {
+		log.Error(r.Context(), "couldn't parse refreshtoken", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("couldn't parse refreshtoken"))
+		return
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "kobs.accesstoken",
-		Value:    token,
+		Value:    accessToken,
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
@@ -108,7 +120,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "kobs.refreshtoken",
-		Value:    oauth2Token.RefreshToken,
+		Value:    refreshToken,
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,

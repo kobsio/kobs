@@ -17,7 +17,7 @@ type CustomClaims[T any] struct {
 func ValidateToken[T any](tokenString, sessionToken string) (*T, error) {
 	token, err := goJWT.ParseWithClaims(tokenString, &CustomClaims[T]{}, func(token *goJWT.Token) (any, error) {
 		if _, ok := token.Method.(*goJWT.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return []byte(sessionToken), nil

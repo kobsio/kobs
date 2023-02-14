@@ -1,7 +1,11 @@
 package auth
 
+//go:generate mockgen -source=client.go -destination=./client_mock.go -package=auth Client
+
 import (
 	"context"
+	"crypto/md5"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -28,6 +32,11 @@ type userConfig struct {
 	Email    string   `json:"email"`
 	Password string   `json:"password"`
 	Groups   []string `json:"groups"`
+}
+
+func (u *userConfig) getHash() string {
+	hash := md5.Sum([]byte(u.Password))
+	return fmt.Sprintf("%x", hash)
 }
 
 type OIDCConfig struct {
@@ -103,6 +112,7 @@ func NewClient(config Config, dbClient db.Client) (Client, error) {
 
 	c.router.Get("/me", c.userHandler)
 	c.router.Post("/signin", c.signinHandler)
+	c.router.Post("/refresh", c.refreshTokenHandler)
 	// c.router.Get("/signout", c.signoutHandler)
 	c.router.Get("/oidc", c.oidcHandler)
 	c.router.Get("/oidc/callback", c.oidcCallbackHandler)
