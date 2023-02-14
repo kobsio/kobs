@@ -72,7 +72,7 @@ export default class Client implements IAPI {
     const diff = expiryInSeconds - Date.now();
 
     if (diff >= 300) {
-      await fetch('/api/auth/signin', { method: 'POST' });
+      await fetch('/api/auth/refresh', { method: 'POST' });
     }
   }
 }
