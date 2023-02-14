@@ -156,7 +156,7 @@ func handleInstrumentation(reqInfo *RequestInfo) func(next http.Handler) http.Ha
 					zap.String("requestAddr", r.RemoteAddr),
 					zap.String("requestUserAgent", strings.Replace(strings.Replace(r.UserAgent(), "\n", "", -1), "\r", "", -1)),
 					zap.String("requestURI", fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)),
-					zap.Int("responseStatus", 500),
+					zap.Int("responseStatus", status),
 				}
 
 				if status >= 500 {
