@@ -14,7 +14,12 @@ export interface IAPI {
 }
 
 export interface IAccessToken {
-  claims: { expiry: number };
+  data: {
+    email: string;
+    teams: string[];
+  };
+  exp: number;
+  iss: string;
 }
 
 export interface IUser {
@@ -103,7 +108,7 @@ export default class Client implements IAPI {
     }
 
     // user is defined, but need to check if accesstoken is expired
-    if (this.accessToken.claims.expiry - Date.now() < 300 * 1000) {
+    if (this.accessToken.exp - Date.now() < 300 * 1000) {
       return this.me(true);
     }
 
@@ -122,10 +127,21 @@ export default class Client implements IAPI {
       },
     )) as {
       user: IUser;
-      accessToken: IAccessToken;
+      accessToken: string;
     };
 
-    this.accessToken = result.accessToken;
+    this.accessToken = this.parseToken(result.accessToken);
     this.user = result.user;
+    console.log({ t: this });
+  }
+
+  private parseToken(token: string): IAccessToken {
+    const parts = token.split('.');
+    if (parts.length < 2) {
+      throw new Error(`token has fewer parts than expected, got: ${parts}`);
+    }
+
+    const decoded = atob(parts[1]);
+    return JSON.parse(decoded);
   }
 }
