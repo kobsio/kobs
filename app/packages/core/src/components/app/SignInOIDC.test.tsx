@@ -52,6 +52,8 @@ describe('SignInOIDC', () => {
     });
     await userEvent.click(signInButton);
     expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith(`/api/auth/oidc?redirect=${encodeURIComponent('/applications')}`);
+    expect(spy).toHaveBeenCalledWith(`/api/auth/oidc?redirect=${encodeURIComponent('/applications')}`, {
+      disableAutorefresh: true,
+    });
   });
 });

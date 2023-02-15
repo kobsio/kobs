@@ -44,6 +44,7 @@ describe('SignIn', () => {
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith('/api/auth/signin', {
       body: { email: 'test@test.test', password: 'supersecret' },
+      disableAutorefresh: true,
     });
 
     expect(await waitFor(() => screen.getByText(/login successful/))).toBeInTheDocument();
