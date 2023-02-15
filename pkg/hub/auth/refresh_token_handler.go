@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/hub/auth/jwt"
 	"github.com/kobsio/kobs/pkg/hub/auth/refreshtoken"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
@@ -31,9 +32,11 @@ func (c *client) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var newRefreshToken string
+	var teams []string
 	if refreshToken.Type == refreshtoken.Credentials {
+		userConf := c.getUserFromConfig(refreshToken.UserID)
 		oldPasswordHash := refreshToken.Value
-		newPasswordHash := c.getUserFromConfig(refreshToken.UserID).getHash()
+		newPasswordHash := userConf.getHash()
 
 		if oldPasswordHash != newPasswordHash {
 			errresponse.Render(w, r, http.StatusUnauthorized, fmt.Errorf("password has changed, please sign in again"))
@@ -41,6 +44,7 @@ func (c *client) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		newRefreshToken = cookie.Value
+		teams = userConf.Groups
 	}
 
 	if refreshToken.Type == refreshtoken.OIDC {
@@ -61,6 +65,8 @@ func (c *client) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 			errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("unexpected error when encoding refreshtoken"))
 			return
 		}
+
+		// TODO: reload the groups here, but how?
 	}
 
 	if newRefreshToken == "" {
@@ -69,9 +75,16 @@ func (c *client) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	accessToken, err := jwt.CreateToken(&session{Email: refreshToken.UserID, Teams: teams}, c.config.Session.Token, c.config.Session.ParsedInterval)
+	if err != nil {
+		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not create jwt token"))
+		return
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "kobs.accesstoken",
-		Value:    "", // TODO parsed jwt
+		Value:    accessToken,
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,

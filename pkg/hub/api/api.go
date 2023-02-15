@@ -81,7 +81,6 @@ func New(config Config, authClient auth.Client, clustersClient clusters.Client, 
 
 	router.Route("/api", func(r chi.Router) {
 		r.Use(instrument.Handler())
-		r.Use(authClient.MiddlewareHandler)
 		r.Mount("/auth", authClient.Mount())
 
 		r.Group(func(r chi.Router) {
