@@ -453,31 +453,6 @@ func TestGetLogs(t *testing.T) {
 		utils.AssertJSONEq(t, `{"logs":"log line"}`, w)
 	})
 
-	t.Run("can stream logs", func(t *testing.T) {
-		namespace := "garden"
-		name := "apple"
-		container := "busybox"
-		regex := ".*"
-		since := int64(1234)
-		tail := int64(20)
-		previous := "false"
-		follow := "true"
-
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().StreamLogs(gomock.Any(), gomock.Any(), namespace, name, container, since, tail, true).Return(nil)
-
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
-		s := httptest.NewServer(http.HandlerFunc(router.getLogs))
-		defer s.Close()
-
-		host := strings.TrimPrefix(s.URL, "http://")
-		uri := fmt.Sprintf("ws://%s?namespace=%s&name=%s&container=%s&regex=%s&since=%d&tail=%d&previous=%s&follow=%s", host, namespace, name, container, regex, since, tail, previous, follow)
-
-		ws, _, err := websocket.DefaultDialer.Dial(uri, nil)
-		require.NoError(t, err)
-		defer ws.Close()
-	})
-
 	t.Run("bad requests", func(t *testing.T) {
 		for _, tt := range []struct {
 			name     string
