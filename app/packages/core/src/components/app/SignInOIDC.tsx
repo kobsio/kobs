@@ -15,7 +15,7 @@ const SigninOIDCInternal: FunctionComponent = () => {
       redirect && redirect.startsWith(window.location.origin) ? redirect.replace(window.location.origin, '') : '',
     )}`;
 
-    return api.get<{ url: string }>(path);
+    return api.get<{ url: string }>(path, { disableAutorefresh: true });
   });
 
   if (isError) {

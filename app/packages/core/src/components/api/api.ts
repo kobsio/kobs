@@ -1,4 +1,4 @@
-type RequestOptions = Omit<RequestInit, 'method' | 'body'> & { body: unknown };
+type RequestOptions = Omit<RequestInit, 'method' | 'body'> & { body?: unknown; disableAutorefresh?: boolean };
 
 export class APIError extends Error {
   constructor(message: string, public statusCode?: number) {
@@ -13,8 +13,46 @@ export interface IAPI {
   put: <T>(path: string, opts?: RequestOptions) => Promise<T>;
 }
 
+export interface IAccessToken {
+  claims: { expiry: number };
+}
+
+export interface IUser {
+  email: string;
+  teams?: string[];
+  permissions?: IPermissions;
+}
+
+export interface IPermissions {
+  applications?: IApplicationPermission[];
+  teams?: string[];
+  plugins?: IPluginPermission[];
+  resources?: IResourcesPermission[];
+}
+
+export interface IApplicationPermission {
+  type: string;
+  satellites?: string[];
+  clusters?: string[];
+  namespaces?: string[];
+}
+
+export interface IPluginPermission {
+  satellite: string;
+  name: string;
+  type: string;
+  // permissions: any; TODO: types
+}
+
+export interface IResourcesPermission {
+  clusters: string[];
+  namespaces: string[];
+  resources: string[];
+}
+
 export default class Client implements IAPI {
-  private expiry?: Date;
+  private user?: IUser;
+  private accessToken?: IAccessToken; // TODO (also has claims)
 
   get<T>(path: string, opts?: RequestOptions): Promise<T> {
     return this.do(path, 'get', opts) as Promise<T>;
@@ -31,48 +69,63 @@ export default class Client implements IAPI {
   }
 
   private async do(path: string, method: 'get' | 'post' | 'put' | 'patch', opts?: RequestOptions): Promise<unknown> {
-    await this.refreshToken();
-    const response = await fetch(path, { ...opts, body: JSON.stringify(opts?.body), method: method });
-    if (response.status === 204) {
+    if (!opts?.disableAutorefresh) {
+      await this.refreshSession();
+    }
+    const res = await fetch(path, { ...opts, body: JSON.stringify(opts?.body), method: method });
+    if (res.status === 204) {
       return null;
     }
 
-    this.updateExpiry(response.headers.get('x-kobs-token-expiry'));
     try {
-      const json = await response.json();
-      if (response.status >= 200 && response.status < 300) {
+      const json = await res.json();
+      if (res.status >= 200 && res.status < 300) {
         return json;
       } else {
         if (json.error) {
-          throw new APIError(json.error, response.status);
+          throw new APIError(json.error, res.status);
         } else {
           throw new APIError(json.error);
         }
       }
     } catch (error: unknown) {
-      throw new APIError(`unexpected error ${error}`, response.status);
+      throw new APIError(`unexpected error ${error}`, res.status);
     }
   }
 
-  private updateExpiry(raw: string | null): void {
-    if (!raw) {
-      return;
+  private async refreshSession(): Promise<void> {
+    if (!this.user) {
+      return this.me();
     }
 
-    this.expiry = new Date(raw);
+    if (!this.accessToken) {
+      throw new Error('accesstoken is unexpectedly undefined');
+    }
+
+    // user is defined, but need to check if accesstoken is expired
+    if (this.accessToken.claims.expiry - Date.now() < 300 * 1000) {
+      return this.me(true);
+    }
+
+    // all good (accesstoken not expired and user is set)
     return;
   }
 
-  private async refreshToken(): Promise<void> {
-    if (!this.expiry) {
-      return;
-    }
+  private async me(shouldRefresh = false): Promise<void> {
+    const result = (await this.get(`/api/auth/me?refresh="${shouldRefresh}"`, { disableAutorefresh: true }).catch(
+      (err: APIError) => {
+        if (err.statusCode === 401) {
+          window.location.replace(
+            `/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`,
+          );
+        }
+      },
+    )) as {
+      user: IUser;
+      accessToken: IAccessToken;
+    };
 
-    const expiryInSeconds = Math.floor(this.expiry.getTime() / 1000);
-    const diff = expiryInSeconds - Date.now();
-
-    if (diff >= 300) {
-      await fetch('/api/auth/refresh', { method: 'POST' });
-    }
+    this.accessToken = result.accessToken;
+    this.user = result.user;
   }
 }

@@ -110,9 +110,8 @@ func NewClient(config Config, dbClient db.Client) (Client, error) {
 		dbClient:     dbClient,
 	}
 
-	c.router.With((c.MiddlewareHandler)).Get("/me", c.userHandler)
+	c.router.Get("/me", c.meHandler)
 	c.router.Post("/signin", c.signinHandler)
-	c.router.Post("/refresh", c.refreshTokenHandler)
 	// c.router.Get("/signout", c.signoutHandler)
 	c.router.Get("/oidc", c.oidcHandler)
 	c.router.Get("/oidc/callback", c.oidcCallbackHandler)

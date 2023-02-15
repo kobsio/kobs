@@ -19,24 +19,6 @@ import (
 )
 
 func TestAuthMiddleware(t *testing.T) {
-	t.Run("passes when user is set in request context", func(t *testing.T) {
-		client := client{config: Config{}}
-		nxt := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// http.StatusAccepted is used instead of http.StatusOK, to verify that this handler is actually called
-			// http.StatusOK is the default status code
-			w.WriteHeader(http.StatusAccepted)
-		})
-		handler := client.MiddlewareHandler(nxt)
-
-		ctx := context.Background()
-		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
-		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/", nil)
-		w := httptest.NewRecorder()
-
-		handler.ServeHTTP(w, req)
-		utils.AssertStatusEq(t, http.StatusAccepted, w)
-	})
-
 	t.Run("fetches user from db when cookie is valid", func(t *testing.T) {
 		user := &userv1.UserSpec{
 			ID:          "test@kobs.io",

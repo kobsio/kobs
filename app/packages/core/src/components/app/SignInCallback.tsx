@@ -12,6 +12,9 @@ const SigninOIDCCallbackInternal: React.FunctionComponent = () => {
   const { isError, error } = useQuery<boolean, Error>(['app/signin/oidc/callback'], async () => {
     const { url } = await api.get<{ url: string }>(
       `/api/auth/oidc/callback?state=${params.get('state')}&code=${params.get('code')}`,
+      {
+        disableAutorefresh: true,
+      },
     );
     navigate(url || '/');
     return true;

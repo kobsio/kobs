@@ -1,17 +1,32 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import { useContext, useState } from 'react';
+
+import { IUser } from '../api/api';
+import { APIContext } from '../api/context';
 
 const Home: React.FunctionComponent = () => {
+  const [user, setUser] = useState<IUser>();
+  const [isLoading, setIsLoading] = useState(false);
+  const { api } = useContext(APIContext);
+
+  const handleButtonPress = async (): Promise<void> => {
+    setIsLoading(true);
+    api
+      .get<IUser>('/api/auth/me')
+      .then((u) => {
+        setUser(u);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
   return (
     <Box sx={{ my: 2 }}>
       <Typography variant="h6">Home</Typography>
-      {[...new Array(100)]
-        .map(
-          () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
-        )
-        .join('\n')}
+      {JSON.stringify(user, null, 2)}
+      <Button onClick={handleButtonPress} disabled={isLoading}>
+        Reload User
+      </Button>
     </Box>
   );
 };

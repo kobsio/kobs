@@ -37,6 +37,7 @@ const Signin: FunctionComponent = () => {
     api
       .post('/api/auth/signin', {
         body: { email, password },
+        disableAutorefresh: true,
       })
       .then(() => {
         setState(SigninState.OK);

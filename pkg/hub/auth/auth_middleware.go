@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/instrument/log"
@@ -20,7 +19,7 @@ import (
 func (c *client) MiddlewareHandler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		user, expiry, err := c.getUserFromRequest(r)
+		user, err := c.getUserFromRequest(r)
 		if err != nil {
 			log.Error(ctx, "failed to grab user from request", zap.Error(err))
 			errresponse.Render(w, r, http.StatusUnauthorized, fmt.Errorf("unauthorized"))
@@ -32,7 +31,6 @@ func (c *client) MiddlewareHandler(next http.Handler) http.Handler {
 			return
 		}
 
-		w.Header().Set("x-kobs-token-expiry", expiry.Format(time.RFC3339))
 		ctx = context.WithValue(ctx, authContext.UserKey, *user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
