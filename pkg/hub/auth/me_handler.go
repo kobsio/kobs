@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-chi/render"
@@ -20,7 +21,6 @@ import (
 // the store. This is required to get the users permissions, so that we can save them in the auth context.
 func (c *client) getUserFromStore(ctx context.Context, userEmail string, teamGroups []string) (*authContext.User, error) {
 	authContextUser := &authContext.User{ID: userEmail, Teams: teamGroups}
-
 	user, err := c.dbClient.GetUserByID(ctx, userEmail)
 	if err != nil {
 		return authContextUser, err
@@ -86,14 +86,21 @@ type meResponse struct {
 func (c *client) meHandler(w http.ResponseWriter, r *http.Request) {
 	var result meResponse
 	if !c.accessTokenIsSet(r) || r.URL.Query().Get("refresh") == "true" {
-		accessToken, _, err := c.refreshSession(w, r)
+		accessToken, refreshToken, err := c.refreshSession(w, r)
 		if err != nil {
 			log.Warn(r.Context(), "failed to parse accesstoken and failed to refresh the session", zap.Error(err))
 			errresponse.Render(w, r, http.StatusUnauthorized, fmt.Errorf("unauthorized"))
 			return
 		}
 
-		// set cookie for refreshtoken
+		http.SetCookie(w, &http.Cookie{
+			Name:     "kobs.refreshtoken",
+			Value:    refreshToken,
+			Path:     "/",
+			Secure:   true,
+			HttpOnly: true,
+			Expires:  time.Now().Add(365 * 24 * time.Hour),
+		})
 		result.AccessToken = accessToken
 	} else {
 		cookie, err := r.Cookie("kobs.accesstoken")

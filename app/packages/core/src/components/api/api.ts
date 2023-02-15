@@ -107,8 +107,9 @@ export default class Client implements IAPI {
       throw new Error('accesstoken is unexpectedly undefined');
     }
 
-    // user is defined, but need to check if accesstoken is expired
-    if (this.accessToken.exp - Date.now() < 300 * 1000) {
+    // user is defined, but need to check if accesstoken expired
+    const diff = this.accessToken.exp * 1e3 - Date.now();
+    if (diff <= 1000 * 390) {
       return this.me(true);
     }
 
@@ -117,7 +118,7 @@ export default class Client implements IAPI {
   }
 
   private async me(shouldRefresh = false): Promise<void> {
-    const result = (await this.get(`/api/auth/me?refresh="${shouldRefresh}"`, { disableAutorefresh: true }).catch(
+    const result = (await this.get(`/api/auth/me?refresh=${shouldRefresh}`, { disableAutorefresh: true }).catch(
       (err: APIError) => {
         if (err.statusCode === 401) {
           window.location.replace(
