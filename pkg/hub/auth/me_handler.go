@@ -85,13 +85,26 @@ type meResponse struct {
 // is authenticated and we can render the app or if we have to render the login page.
 func (c *client) meHandler(w http.ResponseWriter, r *http.Request) {
 	var result meResponse
-	if !c.accessTokenIsSet(r) || r.URL.Query().Get("refresh") == "true" {
+
+	accessTokenIsSet := c.accessTokenIsSet(r)
+	userWantsRefresh := r.URL.Query().Get("refresh") == "true"
+	if !accessTokenIsSet || userWantsRefresh {
+		log.Debug(r.Context(), "must refresh session", zap.Bool("accessTokenIsExpired", accessTokenIsSet), zap.Bool("userWantsRefresh", userWantsRefresh))
 		accessToken, refreshToken, err := c.refreshSession(w, r)
 		if err != nil {
-			log.Warn(r.Context(), "failed to parse accesstoken and failed to refresh the session", zap.Error(err))
+			log.Error(r.Context(), "failed refresh the session", zap.Error(err))
 			errresponse.Render(w, r, http.StatusUnauthorized, fmt.Errorf("unauthorized"))
 			return
 		}
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "kobs.accesstoken",
+			Value:    accessToken,
+			Path:     "/",
+			Secure:   true,
+			HttpOnly: true,
+			Expires:  time.Now().Add(c.config.Session.ParsedInterval),
+		})
 
 		http.SetCookie(w, &http.Cookie{
 			Name:     "kobs.refreshtoken",
@@ -101,6 +114,7 @@ func (c *client) meHandler(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 			Expires:  time.Now().Add(365 * 24 * time.Hour),
 		})
+
 		result.AccessToken = accessToken
 	} else {
 		cookie, err := r.Cookie("kobs.accesstoken")
