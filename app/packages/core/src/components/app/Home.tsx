@@ -12,9 +12,9 @@ const Home: React.FunctionComponent = () => {
   const handleButtonPress = async (): Promise<void> => {
     setIsLoading(true);
     api
-      .get<IUser>('/api/auth/me')
-      .then((u) => {
-        setUser(u);
+      .get<{ user: IUser }>('/api/auth/me')
+      .then((r) => {
+        setUser(r.user);
       })
       .finally(() => {
         setIsLoading(false);
@@ -23,7 +23,9 @@ const Home: React.FunctionComponent = () => {
   return (
     <Box sx={{ my: 2 }}>
       <Typography variant="h6">Home</Typography>
-      {JSON.stringify(user, null, 2)}
+      <Typography>
+        <pre>{JSON.stringify(user, null, 2)}</pre>
+      </Typography>
       <Button onClick={handleButtonPress} disabled={isLoading}>
         Reload User
       </Button>
