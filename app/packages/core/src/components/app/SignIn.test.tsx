@@ -19,6 +19,7 @@ describe('SignIn', () => {
   });
 
   const render = async (): Promise<RenderResult> => {
+    getSpy.mockResolvedValueOnce({ url: 'http://some-oidc-provider.test' });
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -48,7 +49,6 @@ describe('SignIn', () => {
   };
 
   it('can sign in with credentials', async () => {
-    getSpy.mockResolvedValueOnce({ url: '1234' });
     postSpy.mockResolvedValueOnce(undefined);
     await render();
 
@@ -70,7 +70,6 @@ describe('SignIn', () => {
   });
 
   it('shows error message when email is empty', async () => {
-    getSpy.mockResolvedValueOnce({ url: '1234' });
     await render();
     await userEvent.click(screen.getByText(/Sign In/));
 
@@ -78,7 +77,6 @@ describe('SignIn', () => {
   });
 
   it('shows error message when password is empty', async () => {
-    getSpy.mockResolvedValueOnce({ url: '1234' });
     await render();
     const emailInput = screen.getByLabelText(/E-Mail/);
     await userEvent.type(emailInput, 'test@test.test');
@@ -88,7 +86,6 @@ describe('SignIn', () => {
   });
 
   it('shows warning when credentials are invalid', async () => {
-    getSpy.mockResolvedValueOnce({ url: '1234' });
     await render();
 
     postSpy.mockRejectedValue({ error: 'invalid credentials' });
@@ -105,7 +102,6 @@ describe('SignIn', () => {
   });
 
   it('can sign in with OIDC', async () => {
-    getSpy.mockResolvedValueOnce({ url: '1234' });
     await render();
 
     const signInButton = await waitFor(() => {
