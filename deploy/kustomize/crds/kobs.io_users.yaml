@@ -138,36 +138,40 @@ spec:
                 type: string
               namespace:
                 type: string
-              notifications:
-                properties:
-                  groups:
+              navigation:
+                items:
+                  properties:
                     items:
-                      properties:
-                        plugin:
-                          properties:
-                            cluster:
-                              type: string
-                            name:
-                              type: string
-                            options:
-                              x-kubernetes-preserve-unknown-fields: true
-                            type:
-                              type: string
-                          required:
-                          - cluster
-                          - name
-                          - type
-                          type: object
-                        title:
-                          type: string
-                      required:
-                      - plugin
-                      - title
-                      type: object
-                    type: array
-                required:
-                - groups
-                type: object
+                      items:
+                        properties:
+                          icon:
+                            type: string
+                          items:
+                            items:
+                              properties:
+                                link:
+                                  type: string
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                          link:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - name
+                        type: object
+                      type: array
+                    name:
+                      type: string
+                  required:
+                  - items
+                  - name
+                  type: object
+                type: array
               permissions:
                 properties:
                   applications:

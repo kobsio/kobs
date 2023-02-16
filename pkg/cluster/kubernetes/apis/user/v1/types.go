@@ -29,14 +29,14 @@ type UserList struct {
 }
 
 type UserSpec struct {
-	ID            string                  `json:"id,omitempty" bson:"_id"`
-	UpdatedAt     int64                   `json:"updatedAt,omitempty"`
-	Cluster       string                  `json:"cluster,omitempty"`
-	Namespace     string                  `json:"namespace,omitempty"`
-	Name          string                  `json:"name,omitempty"`
-	Permissions   Permissions             `json:"permissions,omitempty"`
-	Dashboards    []dashboardv1.Reference `json:"dashboards,omitempty"`
-	Notifications Notifications           `json:"notifications,omitempty"`
+	ID          string                  `json:"id,omitempty" bson:"_id"`
+	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
+	Cluster     string                  `json:"cluster,omitempty"`
+	Namespace   string                  `json:"namespace,omitempty"`
+	Name        string                  `json:"name,omitempty"`
+	Permissions Permissions             `json:"permissions,omitempty"`
+	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
+	Navigation  []Navigation            `json:"navigation,omitempty"`
 }
 
 type Permissions struct {
@@ -66,11 +66,19 @@ type Resources struct {
 	Verbs      []string `json:"verbs"`
 }
 
-type Notifications struct {
-	Groups []NotificationsGroup `json:"groups"`
+type Navigation struct {
+	Name  string           `json:"name"`
+	Items []NavigationItem `json:"items"`
 }
 
-type NotificationsGroup struct {
-	Title  string             `json:"title"`
-	Plugin dashboardv1.Plugin `json:"plugin"`
+type NavigationItem struct {
+	Name  string               `json:"name"`
+	Link  string               `json:"link,omitempty"`
+	Icon  string               `json:"icon,omitempty"`
+	Items []NavigationSubItems `json:"items,omitempty"`
+}
+
+type NavigationSubItems struct {
+	Name string `json:"name"`
+	Link string `json:"link,omitempty"`
 }
