@@ -1,17 +1,33 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import { useContext, useState } from 'react';
+
+import { APIContext } from '../api/context';
 
 const Home: React.FunctionComponent = () => {
+  const [ok, setOK] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState(false);
+  const { api } = useContext(APIContext);
+
+  const handleButtonPress = async (): Promise<void> => {
+    setIsLoading(true);
+    api
+      .get<void>('/api/health')
+      .then((r) => {
+        setOK(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
   return (
     <Box sx={{ my: 2 }}>
       <Typography variant="h6">Home</Typography>
-      {[...new Array(100)]
-        .map(
-          () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
-        )
-        .join('\n')}
+      <Typography component="span">
+        <pre>{JSON.stringify({ health: ok }, null, 2)}</pre>
+      </Typography>
+      <Button onClick={handleButtonPress} disabled={isLoading}>
+        Call /health
+      </Button>
     </Box>
   );
 };

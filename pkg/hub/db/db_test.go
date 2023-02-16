@@ -630,6 +630,6 @@ func TestGetGetUserByID(t *testing.T) {
 	require.NotNil(t, storedUser1)
 
 	storedUser2, err := c.GetUserByID(context.Background(), "user4@kobs.io")
-	require.Error(t, err)
+	require.NoError(t, err)
 	require.Nil(t, storedUser2)
 }

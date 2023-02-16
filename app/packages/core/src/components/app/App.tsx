@@ -10,6 +10,8 @@ import SignInCallback from './SignInCallback';
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
 import theme from '../../utils/theme';
+import APIContext from '../api/context';
+import User from '../user/context';
 
 /**
  * `queryClient` is our global query client for `@tanstack/react-query`.
@@ -45,27 +47,27 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          {/* TODO: APIContext */}
           <BrowserRouter>
-            <Routes>
-              {/* TODO: Auth */}
-              <Route path="/auth" element={<SignIn />} />
-              <Route path="/auth/callback" element={<SignInCallback />} />
-              <Route
-                path="*"
-                element={
-                  <PluginContextProvider plugins={plugins}>
-                    <Layout>
-                      {/* TODO: APPContext */}
-                      {/* TODO: PluginContext */}
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                      </Routes>
-                    </Layout>
-                  </PluginContextProvider>
-                }
-              />
-            </Routes>
+            <APIContext.Wrapper>
+              <Routes>
+                <Route path="/auth" element={<SignIn />} />
+                <Route path="/auth/callback" element={<SignInCallback />} />
+                <Route
+                  path="*"
+                  element={
+                    <User.Provider>
+                      <PluginContextProvider plugins={plugins}>
+                        <Layout>
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                          </Routes>
+                        </Layout>
+                      </PluginContextProvider>
+                    </User.Provider>
+                  }
+                />
+              </Routes>
+            </APIContext.Wrapper>
           </BrowserRouter>
         </QueryClientProvider>
       </ThemeProvider>

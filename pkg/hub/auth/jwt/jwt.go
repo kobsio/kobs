@@ -14,10 +14,10 @@ type CustomClaims[T any] struct {
 }
 
 // ValidateToken validates a given jwt token and returns the user from the claims or an error when the validation fails.
-func ValidateToken[T any](tokenString, sessionToken string) (*T, error) {
+func ValidateToken[T any](tokenString, sessionToken string) (*CustomClaims[T], error) {
 	token, err := goJWT.ParseWithClaims(tokenString, &CustomClaims[T]{}, func(token *goJWT.Token) (any, error) {
 		if _, ok := token.Method.(*goJWT.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return []byte(sessionToken), nil
@@ -28,7 +28,7 @@ func ValidateToken[T any](tokenString, sessionToken string) (*T, error) {
 
 	claims, ok := token.Claims.(*CustomClaims[T])
 	if ok && token.Valid {
-		return claims.Data, nil
+		return claims, nil
 	}
 
 	return nil, fmt.Errorf("invalid jwt claims")

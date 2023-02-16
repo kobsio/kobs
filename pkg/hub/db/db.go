@@ -4,6 +4,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -789,6 +790,9 @@ func (c *client) GetUserByID(ctx context.Context, id string) (*userv1.UserSpec, 
 
 	result := c.db.Database("kobs").Collection("users").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, nil
+		}
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		return nil, err
