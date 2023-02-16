@@ -1,17 +1,21 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Home from './Home';
-import Layout from './Layout';
+import Layout from './layout/Layout';
 import SignIn from './SignIn';
 import SignInCallback from './SignInCallback';
 
-import theme from '../../theme/theme';
+import { AppContextProvider, IAppIcons } from '../../context/AppContext';
+import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
+import theme from '../../utils/theme';
 import APIContext from '../api/context';
 import User from '../user/context';
 
-// Create a global queryClient, which is used for @tanstack/react-query.
+/**
+ * `queryClient` is our global query client for `@tanstack/react-query`.
+ */
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -24,46 +28,49 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * `IAppProps` are the properties for our `App` component. Currently we only require a list of `plugins`, so that
+ * plugins can be registered without touching the core of our app.
+ */
 interface IAppProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  plugins: any;
+  icons?: IAppIcons;
+  plugins: IPlugin[];
 }
 
-export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) => {
+/**
+ * The `App` component defines, defines all the contexts and routes we are using in our app. The `App` component is also
+ * responsible for defining our layout and registering the theme.
+ */
+export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IAppProps) => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <APIContext.Wrapper>
-            <Routes>
-              <Route path="/auth" element={<SignIn />} />
-              <Route path="/auth/callback" element={<SignInCallback />} />
-              <Route
-                path="*"
-                element={
-                  <User.Provider>
-                    <Outlet />
-                  </User.Provider>
-                }
-              >
+    <AppContextProvider icons={icons}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <APIContext.Wrapper>
+              <Routes>
+                <Route path="/auth" element={<SignIn />} />
+                <Route path="/auth/callback" element={<SignInCallback />} />
                 <Route
                   path="*"
                   element={
-                    <Layout>
-                      {/* TODO: APPContext */}
-                      {/* TODO: PluginContext */}
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                      </Routes>
-                    </Layout>
+                    <User.Provider>
+                      <PluginContextProvider plugins={plugins}>
+                        <Layout>
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                          </Routes>
+                        </Layout>
+                      </PluginContextProvider>
+                    </User.Provider>
                   }
                 />
-              </Route>
-            </Routes>
-          </APIContext.Wrapper>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </ThemeProvider>
+              </Routes>
+            </APIContext.Wrapper>
+          </BrowserRouter>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </AppContextProvider>
   );
 };

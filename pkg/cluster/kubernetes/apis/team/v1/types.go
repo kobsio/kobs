@@ -29,17 +29,16 @@ type TeamList struct {
 }
 
 type TeamSpec struct {
-	ID            string                  `json:"id,omitempty" bson:"_id"`
-	UpdatedAt     int64                   `json:"updatedAt,omitempty"`
-	Cluster       string                  `json:"cluster,omitempty"`
-	Namespace     string                  `json:"namespace,omitempty"`
-	Name          string                  `json:"name,omitempty"`
-	Description   string                  `json:"description,omitempty"`
-	Links         []Link                  `json:"links,omitempty"`
-	Logo          string                  `json:"logo,omitempty"`
-	Permissions   userv1.Permissions      `json:"permissions,omitempty"`
-	Dashboards    []dashboardv1.Reference `json:"dashboards,omitempty"`
-	Notifications userv1.Notifications    `json:"notifications,omitempty"`
+	ID          string                  `json:"id,omitempty" bson:"_id"`
+	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
+	Cluster     string                  `json:"cluster,omitempty"`
+	Namespace   string                  `json:"namespace,omitempty"`
+	Name        string                  `json:"name,omitempty"`
+	Description string                  `json:"description,omitempty"`
+	Links       []Link                  `json:"links,omitempty"`
+	Logo        string                  `json:"logo,omitempty"`
+	Permissions userv1.Permissions      `json:"permissions,omitempty"`
+	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
 }
 
 type Link struct {

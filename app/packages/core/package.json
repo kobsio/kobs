@@ -14,6 +14,7 @@
     }
   },
   "scripts": {
+    "analyze": "source-map-explorer 'dist/**/*.js' --no-border-checks",
     "dev": "vite build --watch -m development",
     "build": "tsc && vite build",
     "test": "vitest run",
@@ -34,6 +35,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
+    "@types/md5": "^2.3.2",
     "@types/node": "^14.18.36",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
@@ -45,5 +47,8 @@
     "vite": "^4.1.0",
     "vite-plugin-dts": "^1.7.2",
     "vitest": "^0.28.4"
+  },
+  "dependencies": {
+    "md5": "^2.3.0"
   }
 }

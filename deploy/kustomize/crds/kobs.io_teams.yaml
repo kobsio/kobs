@@ -154,36 +154,6 @@ spec:
                 type: string
               namespace:
                 type: string
-              notifications:
-                properties:
-                  groups:
-                    items:
-                      properties:
-                        plugin:
-                          properties:
-                            cluster:
-                              type: string
-                            name:
-                              type: string
-                            options:
-                              x-kubernetes-preserve-unknown-fields: true
-                            type:
-                              type: string
-                          required:
-                          - cluster
-                          - name
-                          - type
-                          type: object
-                        title:
-                          type: string
-                      required:
-                      - plugin
-                      - title
-                      type: object
-                    type: array
-                required:
-                - groups
-                type: object
               permissions:
                 properties:
                   applications:
