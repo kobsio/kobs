@@ -17,7 +17,7 @@ func Load[T any](file string, config T) (T, error) {
 		return config, err
 	}
 
-	configContent = []byte(os.ExpandEnv(string(configContent)))
+	configContent = []byte(expandEnv(string(configContent)))
 	if err := yaml.Unmarshal(configContent, &config); err != nil {
 		return config, err
 	}
