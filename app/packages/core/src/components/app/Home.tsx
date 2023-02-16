@@ -23,7 +23,7 @@ const Home: React.FunctionComponent = () => {
   return (
     <Box sx={{ my: 2 }}>
       <Typography variant="h6">Home</Typography>
-      <Typography>
+      <Typography component="span">
         <pre>{JSON.stringify(user, null, 2)}</pre>
       </Typography>
       <Button onClick={handleButtonPress} disabled={isLoading}>
