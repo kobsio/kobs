@@ -6,7 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "lerna run dev",
+    "analyze": "lerna run analyze",
+    "dev": "lerna run dev --parallel",
     "build": "lerna run build",
     "preview": "lerna run preview",
     "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'",
