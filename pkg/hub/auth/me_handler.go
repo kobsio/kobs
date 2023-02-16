@@ -17,9 +17,9 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// getUserFromStore returns the user information for the currently authenticated user based on his email and groups from
+// getUserFromDB returns the user information for the currently authenticated user based on his email and groups from
 // the store. This is required to get the users permissions, so that we can save them in the auth context.
-func (c *client) getUserFromStore(ctx context.Context, userEmail string, teamGroups []string) (*authContext.User, error) {
+func (c *client) getUserFromDB(ctx context.Context, userEmail string, teamGroups []string) (*authContext.User, error) {
 	authContextUser := &authContext.User{ID: userEmail, Teams: teamGroups}
 	user, err := c.dbClient.GetUserByID(ctx, userEmail)
 	if err != nil {
@@ -68,7 +68,7 @@ func (c *client) getUserFromRequest(r *http.Request) (*authContext.User, error) 
 		return nil, fmt.Errorf("unexpected error when parsing the accesstoken, %w", err)
 	}
 
-	if user, err := c.getUserFromStore(r.Context(), claims.Data.Email, claims.Data.Teams); err != nil {
+	if user, err := c.getUserFromDB(r.Context(), claims.Data.Email, claims.Data.Teams); err != nil {
 		return nil, err
 	} else {
 		return user, nil
@@ -118,8 +118,9 @@ func (c *client) meHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := c.getUserFromStore(r.Context(), claims.Data.Email, claims.Data.Teams)
+	user, err := c.getUserFromDB(r.Context(), claims.Data.Email, claims.Data.Teams)
 	if err != nil {
+		log.Error(r.Context(), "failed to fetch the user from db", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("unexpected error when fetching user"))
 		return
 	}
