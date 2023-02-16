@@ -11,6 +11,7 @@ export interface IAPI {
   post: <T>(path: string, opts?: RequestOptions) => Promise<T>;
   patch: <T>(path: string, opts?: RequestOptions) => Promise<T>;
   put: <T>(path: string, opts?: RequestOptions) => Promise<T>;
+  me: () => Promise<IUser>;
 }
 
 export interface IAccessToken {
@@ -107,7 +108,8 @@ export default class Client implements IAPI {
 
   private async refreshSession(): Promise<void> {
     if (!this.user) {
-      return this.me();
+      await this.me();
+      return;
     }
 
     if (!this.accessToken) {
@@ -117,14 +119,18 @@ export default class Client implements IAPI {
     // user is defined, but need to check if accesstoken expired
     const diff = this.accessToken.exp * 1e3 - Date.now();
     if (diff <= 1000 * 390) {
-      return this.me(true);
+      await this.me(true);
+      return;
     }
 
     // all good (accesstoken not expired and user is set)
     return;
   }
 
-  private async me(shouldRefresh = false): Promise<void> {
+  async me(shouldRefresh = false): Promise<IUser> {
+    if (this.user && !shouldRefresh) {
+      return Promise.resolve(this.user);
+    }
     const result = (await this.get(`/api/auth/me?refresh=${shouldRefresh}`, { disableAutorefresh: true }).catch(
       (err: APIError) => {
         if (err.statusCode === 401) {
@@ -140,6 +146,8 @@ export default class Client implements IAPI {
 
     this.accessToken = this.parseToken(result.accessToken);
     this.user = result.user;
+
+    return result.user;
   }
 
   private parseToken(token: string): IAccessToken {

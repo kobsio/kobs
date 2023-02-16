@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 
 import Home from './Home';
 import Layout from './Layout';
@@ -10,6 +10,7 @@ import SigninOIDC from './SignInOIDC';
 
 import theme from '../../theme/theme';
 import APIContext from '../api/context';
+import User from '../user/context';
 
 // Create a global queryClient, which is used for @tanstack/react-query.
 const queryClient = new QueryClient({
@@ -43,15 +44,24 @@ export const App: React.FunctionComponent<IAppProps> = ({ plugins }: IAppProps) 
               <Route
                 path="*"
                 element={
-                  <Layout>
-                    {/* TODO: APPContext */}
-                    {/* TODO: PluginContext */}
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                    </Routes>
-                  </Layout>
+                  <User.Provider>
+                    <Outlet />
+                  </User.Provider>
                 }
-              />
+              >
+                <Route
+                  path="*"
+                  element={
+                    <Layout>
+                      {/* TODO: APPContext */}
+                      {/* TODO: PluginContext */}
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                      </Routes>
+                    </Layout>
+                  }
+                />
+              </Route>
             </Routes>
           </APIContext.Wrapper>
         </BrowserRouter>

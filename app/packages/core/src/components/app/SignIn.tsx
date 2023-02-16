@@ -91,7 +91,9 @@ const Signin: FunctionComponent = () => {
             Sign In
           </Button>
           {(state & SigninState.INVALID_CREDENTIALS) === SigninState.INVALID_CREDENTIALS && (
-            <Alert severity="warning">The credentials are not correct.</Alert>
+            <Alert severity="error" variant="outlined">
+              The credentials are not correct.
+            </Alert>
           )}
           <Divider />
           <Button variant="outlined" component={Link} to={`/auth/oidc${search}`}>

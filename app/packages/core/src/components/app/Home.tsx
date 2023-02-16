@@ -1,20 +1,19 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useContext, useState } from 'react';
 
-import { IUser } from '../api/api';
 import { APIContext } from '../api/context';
 
 const Home: React.FunctionComponent = () => {
-  const [user, setUser] = useState<IUser>();
+  const [ok, setOK] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { api } = useContext(APIContext);
 
   const handleButtonPress = async (): Promise<void> => {
     setIsLoading(true);
     api
-      .get<{ user: IUser }>('/api/auth/me')
+      .get<void>('/api/health')
       .then((r) => {
-        setUser(r.user);
+        setOK(true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -24,10 +23,10 @@ const Home: React.FunctionComponent = () => {
     <Box sx={{ my: 2 }}>
       <Typography variant="h6">Home</Typography>
       <Typography component="span">
-        <pre>{JSON.stringify(user, null, 2)}</pre>
+        <pre>{JSON.stringify(ok, null, 2)}</pre>
       </Typography>
       <Button onClick={handleButtonPress} disabled={isLoading}>
-        Reload User
+        Call /health
       </Button>
     </Box>
   );
