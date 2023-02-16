@@ -1,4 +1,4 @@
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Paper } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { createContext, FunctionComponent, ReactNode, useContext } from 'react';
 
@@ -22,7 +22,13 @@ const Provider: FunctionComponent<IProps> = ({ children }) => {
   });
 
   if (isLoading) {
-    return <CircularProgress />;
+    return (
+      <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+        <Paper sx={{ display: 'inline-flex', mx: 'auto', p: 10 }}>
+          <CircularProgress />
+        </Paper>
+      </Box>
+    );
   }
 
   return <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>;

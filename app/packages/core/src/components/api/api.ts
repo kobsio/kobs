@@ -74,13 +74,6 @@ export default class Client implements IAPI {
     return this.do(path, 'patch', opts) as Promise<T>;
   }
 
-  getUser(): IUser {
-    if (!this.user) {
-      throw Error('user not set on API class');
-    }
-    return this.user;
-  }
-
   private async do(path: string, method: 'get' | 'post' | 'put' | 'patch', opts?: RequestOptions): Promise<unknown> {
     if (!opts?.disableAutorefresh) {
       await this.refreshSession();
@@ -118,7 +111,7 @@ export default class Client implements IAPI {
 
     // user is defined, but need to check if accesstoken expired
     const diff = this.accessToken.exp * 1e3 - Date.now();
-    if (diff <= 1000 * 390) {
+    if (diff <= 1000 * 300) {
       await this.me(true);
       return;
     }
