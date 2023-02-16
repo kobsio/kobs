@@ -57,7 +57,7 @@ export interface IResourcesPermission {
 
 export default class Client implements IAPI {
   private user?: IUser;
-  private accessToken?: IAccessToken; // TODO (also has claims)
+  private accessToken?: IAccessToken;
 
   get<T>(path: string, opts?: RequestOptions): Promise<T> {
     return this.do(path, 'get', opts) as Promise<T>;
