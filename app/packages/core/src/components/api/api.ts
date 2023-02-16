@@ -135,7 +135,7 @@ export default class Client implements IAPI {
       (err: APIError) => {
         if (err.statusCode === 401) {
           window.location.replace(
-            `/auth/oidc?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`,
+            `/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`,
           );
         }
       },

@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import { APIContext } from '../api/context';
 
 const Home: React.FunctionComponent = () => {
-  const [ok, setOK] = useState(false);
+  const [ok, setOK] = useState<boolean>();
   const [isLoading, setIsLoading] = useState(false);
   const { api } = useContext(APIContext);
 
@@ -23,7 +23,7 @@ const Home: React.FunctionComponent = () => {
     <Box sx={{ my: 2 }}>
       <Typography variant="h6">Home</Typography>
       <Typography component="span">
-        <pre>{JSON.stringify(ok, null, 2)}</pre>
+        <pre>{JSON.stringify({ health: ok }, null, 2)}</pre>
       </Typography>
       <Button onClick={handleButtonPress} disabled={isLoading}>
         Call /health

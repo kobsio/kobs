@@ -1,7 +1,8 @@
-import { Alert, Box, Button, Divider, Paper, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Divider, Paper, TextField, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
+import { useQuery } from '@tanstack/react-query';
 import { FormEvent, FunctionComponent, useContext, useState } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { APIContext } from '../api/context';
 
@@ -14,13 +15,19 @@ enum SigninState {
 
 const Signin: FunctionComponent = () => {
   const { api } = useContext(APIContext);
-  const { search } = useLocation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [state, setState] = useState<SigninState>(SigninState.OK);
+
+  const { data, isLoading, isError, error } = useQuery<{ url: string }, Error>(['app/signin/oidc'], () => {
+    const redirect = params.get('redirect');
+    const path = `/api/auth/oidc?redirect=${encodeURIComponent(redirect || '/')}`;
+
+    return api.get<{ url: string }>(path, { disableAutorefresh: true });
+  });
 
   const handleSubmit = (e: FormEvent): void => {
     e.preventDefault();
@@ -47,6 +54,14 @@ const Signin: FunctionComponent = () => {
         setState(state | SigninState.INVALID_CREDENTIALS);
       });
   };
+
+  if (isError) {
+    return <>{error.message}</>;
+  }
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
@@ -95,10 +110,14 @@ const Signin: FunctionComponent = () => {
               The credentials are not correct.
             </Alert>
           )}
-          <Divider />
-          <Button variant="outlined" component={Link} to={`/auth/oidc${search}`}>
-            Sign in via OIDC
-          </Button>
+          {data && (
+            <>
+              <Divider />
+              <Button type="submit" variant="outlined" component={Link} to={data.url}>
+                Sign in via OIDC
+              </Button>
+            </>
+          )}
         </Stack>
       </Paper>
     </Box>
