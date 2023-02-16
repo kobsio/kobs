@@ -133,7 +133,6 @@ export default class Client implements IAPI {
 
     this.accessToken = this.parseToken(result.accessToken);
     this.user = result.user;
-    console.log({ t: this });
   }
 
   private parseToken(token: string): IAccessToken {
