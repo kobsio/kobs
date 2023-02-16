@@ -31,7 +31,7 @@ type Cmd struct {
 
 	Hub struct {
 		API      api.Config        `json:"api" embed:"" prefix:"api." envprefix:"API_"`
-		Auth     auth.Config       `json:"auth" embed:"" prefix:"auth." envprefix:"AUTH_"`
+		Auth     auth.Config       `json:"auth" embed:"" prefix:"auth." envprefix:"AUTH_" kong:"-"`
 		App      app.Config        `json:"app" embed:"" prefix:"app." envprefix:"APP_"`
 		Clusters clusters.Config   `json:"clusters" kong:"-"`
 		Plugins  []plugin.Instance `json:"plugins" kong:"-"`
