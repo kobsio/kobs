@@ -10,18 +10,20 @@ import (
 
 // ErrResponse renderer type for handling all sorts of errors.
 type ErrResponse struct {
-	Error string `json:"error"`
+	Errors []string `json:"errors"`
 }
 
-// Render sets the given status for the response and then returns the error and message as JSON object.
-func Render(w http.ResponseWriter, r *http.Request, status int, err error) {
-	message := http.StatusText(status)
-	if err != nil {
-		message = err.Error()
+// Render sets the given status for the response and then returns errors as JSON object.
+//
+//	errresponse.Render(w, r, http.StatusInternalServerError)
+//	errresponse.Render(w, r, http.StatusInternalServerError, "First error", "Second error")
+func Render(w http.ResponseWriter, r *http.Request, status int, errors ...string) {
+	if len(errors) == 0 {
+		errors = []string{http.StatusText(status)}
 	}
 
 	errResponse := &ErrResponse{
-		Error: message,
+		Errors: errors,
 	}
 
 	render.Status(r, status)

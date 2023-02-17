@@ -20,12 +20,10 @@ import (
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 )
 
-type Config struct{}
-
 type Router struct {
 	*chi.Mux
-	storeClient db.Client
-	tracer      trace.Tracer
+	dbClient db.Client
+	tracer   trace.Tracer
 }
 
 func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
@@ -55,19 +53,19 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 
 	parsedLimit, err := strconv.Atoi(limit)
 	if err != nil {
-		log.Error(ctx, "Could not parse limit parameter", zap.Error(err))
+		log.Error(ctx, "Failed to parse 'limit' parameter", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not parse limit parameter"))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'limit' parameter")
 		return
 	}
 
 	parsedOffset, err := strconv.Atoi(offset)
 	if err != nil {
-		log.Error(ctx, "Could not parse offset parameter", zap.Error(err))
+		log.Error(ctx, "Failed to parse 'offset' parameter", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not parse offset parameter"))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'offset' parameter")
 		return
 	}
 
@@ -80,19 +78,19 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
 			span.SetStatus(codes.Error, "user is not authorized to view all applications")
-			errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view all applications"))
+			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view all applications")
 			return
 		}
 
 		teams = nil
 	}
 
-	applications, err := router.storeClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, parsedLimit, parsedOffset)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, parsedLimit, parsedOffset)
 	if err != nil {
-		log.Error(ctx, "Could not get applications", zap.Error(err))
+		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get applications"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get applications")
 		return
 	}
 
@@ -129,19 +127,19 @@ func (router *Router) getApplicationsCount(w http.ResponseWriter, r *http.Reques
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
 			span.SetStatus(codes.Error, "user is not authorized to view all applications")
-			errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view all applications"))
+			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view all applications")
 			return
 		}
 
 		teams = nil
 	}
 
-	count, err := router.storeClient.GetApplicationsByFilterCount(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
 	if err != nil {
-		log.Error(ctx, "Could not get applications count", zap.Error(err))
+		log.Error(ctx, "Failed to get applications count", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get applications count"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get applications count")
 		return
 	}
 
@@ -156,12 +154,12 @@ func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 	ctx, span := router.tracer.Start(r.Context(), "getTags")
 	defer span.End()
 
-	tags, err := router.storeClient.GetTags(ctx)
+	tags, err := router.dbClient.GetTags(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not get tags", zap.Error(err))
+		log.Error(ctx, "Failed to get tags", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get tags"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get tags")
 		return
 	}
 
@@ -177,10 +175,10 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 
 	span.SetAttributes(attribute.Key("id").String(id))
 
-	application, err := router.storeClient.GetApplicationByID(ctx, id)
+	application, err := router.dbClient.GetApplicationByID(ctx, id)
 	if err != nil {
-		log.Error(ctx, "Could not get application", zap.Error(err), zap.String("id", id))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get application"))
+		log.Error(ctx, "Failed to get application", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get application")
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		return
@@ -190,7 +188,7 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 		log.Error(ctx, "Application was not found", zap.Error(err), zap.String("id", id))
 		span.RecordError(fmt.Errorf("application was not found"))
 		span.SetStatus(codes.Error, "application was not found")
-		errresponse.Render(w, r, http.StatusNotFound, fmt.Errorf("application was not found"))
+		errresponse.Render(w, r, http.StatusNotFound, "Application was not found")
 		return
 	}
 
@@ -198,7 +196,7 @@ func (router *Router) getApplication(w http.ResponseWriter, r *http.Request) {
 		log.Warn(ctx, "The user is not authorized to view the application", zap.String("id", id))
 		span.RecordError(fmt.Errorf("user is not authorized to view the application"))
 		span.SetStatus(codes.Error, "user is not authorized to view the application")
-		errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view the application"))
+		errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the application")
 		return
 	}
 
@@ -220,19 +218,19 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 
 	parsedLimit, err := strconv.Atoi(limit)
 	if err != nil {
-		log.Error(ctx, "Could not parse limit parameter", zap.Error(err))
+		log.Error(ctx, "Failed to parse 'limit' parameter", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not parse limit parameter"))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'limit' parameter")
 		return
 	}
 
 	parsedOffset, err := strconv.Atoi(offset)
 	if err != nil {
-		log.Error(ctx, "Could not parse offset parameter", zap.Error(err))
+		log.Error(ctx, "Failed to parse 'offset' parameter", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not parse offset parameter"))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'offset' parameter")
 		return
 	}
 
@@ -240,25 +238,25 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 		log.Warn(ctx, "The user is not authorized to view the applications", zap.String("team", team))
 		span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
 		span.SetStatus(codes.Error, "user is not authorized to view all applications")
-		errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view the applications of this team"))
+		errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the applications of this team")
 		return
 	}
 
-	applications, err := router.storeClient.GetApplicationsByFilter(ctx, []string{team}, nil, nil, nil, "", "include", parsedLimit, parsedOffset)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, []string{team}, nil, nil, nil, "", "include", parsedLimit, parsedOffset)
 	if err != nil {
-		log.Error(ctx, "Could not get applications", zap.Error(err))
+		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get applications"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get applications")
 		return
 	}
 
-	count, err := router.storeClient.GetApplicationsByFilterCount(ctx, []string{team}, nil, nil, nil, "", "include")
+	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, []string{team}, nil, nil, nil, "", "include")
 	if err != nil {
-		log.Error(ctx, "Could not get applications", zap.Error(err))
+		log.Error(ctx, "Failed to get applications count", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get applications count"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get applications count")
 		return
 	}
 
@@ -273,10 +271,10 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, data)
 }
 
-func Mount(config Config, storeClient db.Client) chi.Router {
+func Mount(dbClient db.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		storeClient,
+		dbClient,
 		otel.Tracer("applications"),
 	}
 

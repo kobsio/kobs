@@ -10,7 +10,7 @@ import (
 )
 
 func TestAssertStatusEq(t *testing.T) {
-	t.Run("checks if the status matches the status in the response writer", func(t *testing.T) {
+	t.Run("should check if the status matches the status in the response writer", func(t *testing.T) {
 		handle := func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 		}
@@ -19,12 +19,12 @@ func TestAssertStatusEq(t *testing.T) {
 		w := httptest.NewRecorder()
 		handle(w, r)
 
-		AssertStatusEq(t, http.StatusBadRequest, w)
+		AssertStatusEq(t, w, http.StatusBadRequest)
 	})
 }
 
 func TestAssertJSONEq(t *testing.T) {
-	t.Run("checks if the json in the response matches the given json", func(t *testing.T) {
+	t.Run("should check if the json in the response matches the given json", func(t *testing.T) {
 		handle := func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			err := json.NewEncoder(w).Encode(struct {
@@ -37,6 +37,6 @@ func TestAssertJSONEq(t *testing.T) {
 		w := httptest.NewRecorder()
 		handle(w, r)
 
-		AssertJSONEq(t, `{ "ok": true }`, w)
+		AssertJSONEq(t, w, `{ "ok": true }`)
 	})
 }

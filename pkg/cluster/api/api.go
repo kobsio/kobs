@@ -25,13 +25,8 @@ import (
 )
 
 type Config struct {
-	Applications applications.Config `json:"applications" kong:"-"`
-	Dashboards   dashboards.Config   `json:"dashboards" kong:"-"`
-	Resources    resources.Config    `json:"resources" kong:"-"`
-	Teams        teams.Config        `json:"teams" kong:"-"`
-	Users        users.Config        `json:"users" kong:"-"`
-	Address      string              `json:"address" env:"ADDRESS" default:":15221" help:"The address where the client API should listen on."`
-	Token        string              `json:"token" env:"TOKEN" default:"" help:"The token which is used to protect the client API."`
+	Address string `json:"address" env:"ADDRESS" default:":15221" help:"The address where the client API should listen on."`
+	Token   string `json:"token" env:"TOKEN" default:"" help:"The token which is used to protect the client API."`
 }
 
 // Server is the interface of a client service, which provides the options to start and stop the underlying http
@@ -94,11 +89,11 @@ func New(config Config, kubernetesClient kubernetes.Client, pluginsClient plugin
 		r.Use(instrument.Handler())
 		r.Use(tokenauth.Handler(config.Token))
 
-		r.Mount("/applications", applications.Mount(config.Applications, kubernetesClient))
-		r.Mount("/dashboards", dashboards.Mount(config.Dashboards, kubernetesClient))
-		r.Mount("/resources", resources.Mount(config.Resources, kubernetesClient))
-		r.Mount("/teams", teams.Mount(config.Teams, kubernetesClient))
-		r.Mount("/users", users.Mount(config.Users, kubernetesClient))
+		r.Mount("/applications", applications.Mount(kubernetesClient))
+		r.Mount("/dashboards", dashboards.Mount(kubernetesClient))
+		r.Mount("/resources", resources.Mount(kubernetesClient))
+		r.Mount("/teams", teams.Mount(kubernetesClient))
+		r.Mount("/users", users.Mount(kubernetesClient))
 		r.Mount("/plugins", pluginsClient.Mount())
 	})
 

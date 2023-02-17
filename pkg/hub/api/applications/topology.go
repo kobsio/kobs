@@ -165,19 +165,19 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
 			span.SetStatus(codes.Error, "user is not authorized to view all applications")
-			errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view all applications"))
+			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view all applications")
 			return
 		}
 
 		teams = nil
 	}
 
-	applications, err := router.storeClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, 0, 0)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, 0, 0)
 	if err != nil {
-		log.Error(ctx, "Could not get applications", zap.Error(err))
+		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get applications"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get applications")
 		return
 	}
 
@@ -186,21 +186,21 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 		applicationIDs = append(applicationIDs, application.ID)
 	}
 
-	sourceTopology, err := router.storeClient.GetTopologyByIDs(ctx, "SourceID", applicationIDs)
+	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "SourceID", applicationIDs)
 	if err != nil {
-		log.Error(ctx, "Could not get source topology", zap.Error(err))
+		log.Error(ctx, "Failed to get source topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get source topology"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get source topology")
 		return
 	}
 
-	targetTopology, err := router.storeClient.GetTopologyByIDs(ctx, "TargetID", applicationIDs)
+	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "TargetID", applicationIDs)
 	if err != nil {
-		log.Error(ctx, "Could not get target topology", zap.Error(err))
+		log.Error(ctx, "Failed to get target topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get target topology"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get target topology")
 		return
 	}
 
@@ -225,10 +225,10 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 
 	span.SetAttributes(attribute.Key("id").String(id))
 
-	application, err := router.storeClient.GetApplicationByID(ctx, id)
+	application, err := router.dbClient.GetApplicationByID(ctx, id)
 	if err != nil {
-		log.Error(ctx, "Could not get application", zap.Error(err), zap.String("id", id))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get application"))
+		log.Error(ctx, "Failed to get application", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get application")
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		return
@@ -238,7 +238,7 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 		log.Error(ctx, "Application was not found", zap.Error(err), zap.String("id", id))
 		span.RecordError(fmt.Errorf("application was not found"))
 		span.SetStatus(codes.Error, "application was not found")
-		errresponse.Render(w, r, http.StatusNotFound, fmt.Errorf("application was not found"))
+		errresponse.Render(w, r, http.StatusNotFound, "Application was not found")
 		return
 	}
 
@@ -246,25 +246,25 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 		log.Warn(ctx, "The user is not authorized to view the application", zap.String("id", id))
 		span.RecordError(fmt.Errorf("user is not authorized to view the application"))
 		span.SetStatus(codes.Error, "user is not authorized to view the application")
-		errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view the application"))
+		errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the application")
 		return
 	}
 
-	sourceTopology, err := router.storeClient.GetTopologyByIDs(ctx, "SourceID", []string{id})
+	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "SourceID", []string{id})
 	if err != nil {
-		log.Error(ctx, "Could not get source topology", zap.Error(err))
+		log.Error(ctx, "Failed to get source topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get source topology"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get source topology")
 		return
 	}
 
-	targetTopology, err := router.storeClient.GetTopologyByIDs(ctx, "TargetID", []string{id})
+	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "TargetID", []string{id})
 	if err != nil {
-		log.Error(ctx, "Could not get target topology", zap.Error(err))
+		log.Error(ctx, "Failed to get target topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get target topology"))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get target topology")
 		return
 	}
 

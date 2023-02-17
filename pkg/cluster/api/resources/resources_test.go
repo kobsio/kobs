@@ -10,27 +10,26 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
-	"github.com/gorilla/websocket"
-	"go.opentelemetry.io/otel"
-
 	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
+	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel"
 )
 
 func TestGetResources(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can list resources", func(t *testing.T) {
+	t.Run("should list resources", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		resource := "fruit"
@@ -46,10 +45,10 @@ func TestGetResources(t *testing.T) {
 		require.NoError(t, err)
 
 		cluster := "cluster1"
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetResources(gomock.Any(), namespace, name, "", resource, "", "").Return(resourceBytes, nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().GetResources(gomock.Any(), namespace, name, "", resource, "", "").Return(resourceBytes, nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.getResources)
 
 		requestURI := fmt.Sprintf("/resources?cluster=%s&namespace=%s&name=%s&resource=%s", cluster, namespace, name, resource)
@@ -58,15 +57,15 @@ func TestGetResources(t *testing.T) {
 
 		router.getResources(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, string(resourceBytes), w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, string(resourceBytes))
 	})
 
-	t.Run("can handle error", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetResources(gomock.Any(), "", "", "", "", "", "").Return(nil, fmt.Errorf("unexpected error"))
+	t.Run("should handle error from Kubernetes client", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().GetResources(gomock.Any(), "", "", "", "", "", "").Return(nil, fmt.Errorf("unexpected error"))
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.getResources)
 
 		requestURI := fmt.Sprintf("/resources?cluster=%s&namespace=%s&name=%s&resource=%s", "", "", "", "")
@@ -75,15 +74,15 @@ func TestGetResources(t *testing.T) {
 
 		router.getResources(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get resources"]}`)
 	})
 
-	t.Run("can handle unmarshal error", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetResources(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]byte(`{"bad":"json}`), nil)
+	t.Run("should handle unmarshal error", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().GetResources(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]byte(`{"bad":"json}`), nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.getResources)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/resources", nil)
@@ -91,8 +90,8 @@ func TestGetResources(t *testing.T) {
 
 		router.getResources(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "unexpected end of JSON input"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to unmarshal resources"]}`)
 	})
 }
 
@@ -105,13 +104,13 @@ func (badReader) Read(p []byte) (n int, err error) {
 func TestPatchResource(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can patch resource", func(t *testing.T) {
+	t.Run("should patch resource", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		resource := "fruit"
@@ -129,10 +128,10 @@ func TestPatchResource(t *testing.T) {
 		patchJSON, err := json.Marshal(patch)
 		require.NoError(t, err)
 
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().PatchResource(gomock.Any(), namespace, name, path, resource, patchJSON).Return(nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().PatchResource(gomock.Any(), namespace, name, path, resource, patchJSON).Return(nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.patchResource)
 
 		requestURI := fmt.Sprintf("/resources?namespace=%s&name=%s&path=%s&resource=%s", namespace, name, path, resource)
@@ -141,13 +140,13 @@ func TestPatchResource(t *testing.T) {
 
 		router.patchResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `null`)
 	})
 
-	t.Run("handles bad body", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+	t.Run("should handle invalid body", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.patchResource)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodDelete, "/resources", badReader{})
@@ -155,14 +154,14 @@ func TestPatchResource(t *testing.T) {
 
 		router.patchResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
-		utils.AssertJSONEq(t, `{"error":"read failed from badReader{}"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to decode request body"]}`)
 	})
 
-	t.Run("handles client error", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().PatchResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+	t.Run("should handle Kubernetes client error", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().PatchResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.patchResource)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodDelete, "/resources", strings.NewReader(""))
@@ -170,31 +169,31 @@ func TestPatchResource(t *testing.T) {
 
 		router.patchResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to patch resources"]}`)
 	})
 }
 
 func TestDeleteResource(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can delete resource", func(t *testing.T) {
+	t.Run("should delete resource", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		resource := "fruit"
 		path := "path"
 		force := "false"
 
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().DeleteResource(gomock.Any(), namespace, name, path, resource, nil).Return(nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().DeleteResource(gomock.Any(), namespace, name, path, resource, nil).Return(nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.deleteResource)
 
 		requestURI := fmt.Sprintf("/resources?namespace=%s&name=%s&path=%s&resource=%s&force=%s", namespace, name, path, resource, force)
@@ -203,21 +202,21 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `null`)
 	})
 
-	t.Run("can force delete resource", func(t *testing.T) {
+	t.Run("should force delete resource", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		resource := "fruit"
 		path := "path"
 		force := "true"
 
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().DeleteResource(gomock.Any(), namespace, name, path, resource, []byte(`{"gracePeriodSeconds": 0}`)).Return(nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().DeleteResource(gomock.Any(), namespace, name, path, resource, []byte(`{"gracePeriodSeconds": 0}`)).Return(nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.deleteResource)
 
 		requestURI := fmt.Sprintf("/resources?namespace=%s&name=%s&path=%s&resource=%s&force=%s", namespace, name, path, resource, force)
@@ -226,13 +225,13 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `null`)
 	})
 
-	t.Run("can handle invalid force parameter", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+	t.Run("should handle invalid force parameter", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.deleteResource)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodDelete, "/resources?force=1234", nil)
@@ -240,13 +239,14 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to parse 'force' parameter"]}`)
 	})
 
-	t.Run("can handle client error", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().DeleteResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+	t.Run("should handle Kubernetes client error", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().DeleteResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.deleteResource)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodDelete, "/resources?force=true", nil)
@@ -254,21 +254,21 @@ func TestDeleteResource(t *testing.T) {
 
 		router.deleteResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to delete resource"]}`)
 	})
 }
 
 func TestCreateResource(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can create resource", func(t *testing.T) {
+	t.Run("should create resource", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		resource := "fruit"
@@ -295,10 +295,10 @@ func TestCreateResource(t *testing.T) {
 				"status": {}
 			}`
 
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().CreateResource(gomock.Any(), namespace, name, path, resource, subResource, []byte(create)).Return(nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().CreateResource(gomock.Any(), namespace, name, path, resource, subResource, []byte(create)).Return(nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.createResource)
 
 		requestURI := fmt.Sprintf("/resources?namespace=%s&name=%s&path=%s&resource=%s&subResource=%s", namespace, name, path, resource, subResource)
@@ -307,13 +307,13 @@ func TestCreateResource(t *testing.T) {
 
 		router.createResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `null`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `null`)
 	})
 
-	t.Run("handles bad body", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+	t.Run("should handle bad body", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.createResource)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/resources", badReader{})
@@ -321,14 +321,14 @@ func TestCreateResource(t *testing.T) {
 
 		router.createResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
-		utils.AssertJSONEq(t, `{"error":"read failed from badReader{}"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to decode request body"]}`)
 	})
 
-	t.Run("handles client error", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().CreateResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+	t.Run("should handle Kubernetes client error", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().CreateResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.createResource)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/resources", strings.NewReader(""))
@@ -336,31 +336,31 @@ func TestCreateResource(t *testing.T) {
 
 		router.createResource(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to create resource"]}`)
 	})
 }
 
 func TestGetFile(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can get file", func(t *testing.T) {
+	t.Run("should get file", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		container := "busybox"
 		srcPath := "/etc/passwd"
 		w := httptest.NewRecorder()
 
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().CopyFileFromPod(gomock.Any(), w, namespace, name, container, srcPath).Return(nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().CopyFileFromPod(gomock.Any(), w, namespace, name, container, srcPath).Return(nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/file", router.getFile)
 
 		requestURI := fmt.Sprintf("/file?namespace=%s&name=%s&container=%s&srcPath=%s", namespace, name, container, srcPath)
@@ -368,14 +368,14 @@ func TestGetFile(t *testing.T) {
 
 		router.getFile(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
 	})
 
-	t.Run("get file can handle client error", func(t *testing.T) {
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().CopyFileFromPod(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
+	t.Run("should handle Kuberntes client error", func(t *testing.T) {
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().CopyFileFromPod(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/file", router.getFile)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/file", nil)
@@ -383,30 +383,30 @@ func TestGetFile(t *testing.T) {
 
 		router.getFile(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get file"]}`)
 	})
 }
 
 func TestGetTerminal(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can get terminal session", func(t *testing.T) {
+	t.Run("should get terminal session", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		container := "busybox"
 		shell := "/bin/bash"
 
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetTerminal(gomock.Any(), gomock.Any(), namespace, name, container, shell).Return(nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().GetTerminal(gomock.Any(), gomock.Any(), namespace, name, container, shell).Return(nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		s := httptest.NewServer(http.HandlerFunc(router.getTerminal))
 		defer s.Close()
 
@@ -421,13 +421,13 @@ func TestGetTerminal(t *testing.T) {
 func TestGetLogs(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can get logs", func(t *testing.T) {
+	t.Run("should get logs", func(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		container := "busybox"
@@ -437,10 +437,10 @@ func TestGetLogs(t *testing.T) {
 		previous := "false"
 		follow := "false"
 
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetLogs(gomock.Any(), namespace, name, container, regex, since, tail, false).Return("log line", nil)
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().GetLogs(gomock.Any(), namespace, name, container, regex, since, tail, false).Return("log line", nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/logs", router.getLogs)
 
 		path := fmt.Sprintf("/logs?namespace=%s&name=%s&container=%s&regex=%s&since=%d&tail=%d&previous=%s&follow=%s", namespace, name, container, regex, since, tail, previous, follow)
@@ -449,17 +449,18 @@ func TestGetLogs(t *testing.T) {
 
 		router.getLogs(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `{"logs":"log line"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `{"logs":"log line"}`)
 	})
 
-	t.Run("bad requests", func(t *testing.T) {
+	t.Run("should handle bad request query parameters", func(t *testing.T) {
 		for _, tt := range []struct {
 			name     string
 			since    string
 			tail     string
 			previous string
 			follow   string
+			err      string
 		}{
 			{
 				name:     "invalid since",
@@ -467,6 +468,7 @@ func TestGetLogs(t *testing.T) {
 				tail:     "20",
 				previous: "false",
 				follow:   "true",
+				err:      "Failed to parse 'since' parameter",
 			},
 			{
 				name:     "invalid tail",
@@ -474,6 +476,7 @@ func TestGetLogs(t *testing.T) {
 				tail:     "0.5",
 				previous: "false",
 				follow:   "true",
+				err:      "Failed to parse 'tail' parameter",
 			},
 			{
 				name:     "invalid previous",
@@ -481,6 +484,7 @@ func TestGetLogs(t *testing.T) {
 				tail:     "20",
 				previous: "falsee",
 				follow:   "true",
+				err:      "Failed to parse 'previous' parameter",
 			},
 			{
 				name:     "invalid follow",
@@ -488,12 +492,13 @@ func TestGetLogs(t *testing.T) {
 				tail:     "20",
 				previous: "false",
 				follow:   "truee",
+				err:      "Failed to parse 'follow' parameter",
 			},
 		} {
 			t.Run(tt.name, func(t *testing.T) {
-				clusterClient := newClusterClient(t)
+				kubernetesClient := newKubernetesClient(t)
 
-				router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+				router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 				router.Get("/logs", router.getLogs)
 
 				path := fmt.Sprintf("/logs?namespace=%s&name=%s&container=%s&regex=%s&since=%s&tail=%s&previous=%s&follow=%s", "namespace", "name", "container", "regex", tt.since, tt.tail, tt.previous, tt.follow)
@@ -502,13 +507,14 @@ func TestGetLogs(t *testing.T) {
 
 				router.getLogs(w, req)
 
-				utils.AssertStatusEq(t, http.StatusBadRequest, w)
+				utils.AssertStatusEq(t, w, http.StatusBadRequest)
+				utils.AssertJSONEq(t, w, `{"errors":["`+tt.err+`"]}`)
 			})
 		}
 	})
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil)
+	router := Mount(nil)
 	require.NotNil(t, router)
 }

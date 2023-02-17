@@ -468,13 +468,16 @@ const Sidebar: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
   return (
     <Box sx={{ height: '100vh' }}>
-      <Box sx={{
-        height: 'calc(100vh - 62px)',
-        overflowY: 'auto',
-        '&::-webkit-scrollbar': {
-          display: "none"
-        }
-      }}>
+      <Box
+        sx={{
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+          height: 'calc(100vh - 62px)',
+          overflowY: 'auto',
+        }}
+      >
         <SidebarHeader />
         <List disablePadding={true}>
           <Box

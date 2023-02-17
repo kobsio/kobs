@@ -7,33 +7,44 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang/mock/gomock"
-	"go.opentelemetry.io/otel"
-
+	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
 	"github.com/kobsio/kobs/pkg/utils"
 
-	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
-
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel"
 )
 
 func TestGetApplications(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var kubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can handle error", func(t *testing.T) {
-		cluster := "cluster1"
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetApplications(gomock.Any(), cluster, "").Return(nil, fmt.Errorf("unexpected error"))
+	t.Run("should return an error when no cluster paramter is provided", func(t *testing.T) {
+		router := Router{chi.NewRouter(), nil, defaultTracer}
+		router.Get("/applications", router.getApplications)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/applications?cluster=", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplications(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors":["The 'cluster' parameter can not be empty"]}`)
+	})
+
+	t.Run("should handle error from Kubernetes client", func(t *testing.T) {
+		cluster := "cluster1"
+		kubernetesClient := kubernetesClient(t)
+		kubernetesClient.EXPECT().GetApplications(gomock.Any(), cluster, "").Return(nil, fmt.Errorf("unexpected error"))
+
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/applications", router.getApplications)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("/applications?cluster=%s", cluster), nil)
@@ -41,14 +52,14 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get applications"]}`)
 	})
 
-	t.Run("can list applications", func(t *testing.T) {
+	t.Run("should list applications", func(t *testing.T) {
 		cluster := "cluster1"
-		clusterClient := newClusterClient(t)
-		clusterClient.
+		kubernetesClient := kubernetesClient(t)
+		kubernetesClient.
 			EXPECT().
 			GetApplications(gomock.Any(), cluster, "").
 			Return([]applicationv1.ApplicationSpec{
@@ -60,7 +71,7 @@ func TestGetApplications(t *testing.T) {
 				},
 			}, nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/applications", router.getApplications)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("/applications?cluster=%s", cluster), nil)
@@ -68,8 +79,8 @@ func TestGetApplications(t *testing.T) {
 
 		router.getApplications(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `
 			[
 				{
 					"cluster": "cluster1",
@@ -78,12 +89,12 @@ func TestGetApplications(t *testing.T) {
 					"teams": [ "team1" ],
 					"topology": {}
 				}
-			]`,
-			w)
+			]
+		`)
 	})
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil)
+	router := Mount(nil)
 	require.NotNil(t, router)
 }

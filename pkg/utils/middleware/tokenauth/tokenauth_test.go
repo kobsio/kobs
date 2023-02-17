@@ -19,21 +19,21 @@ func TestHandler(t *testing.T) {
 		prepareRequest     func(r *http.Request)
 	}{
 		{
-			name:               "authorization header missing",
+			name:               "should return error when authorization header is missing",
 			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"Unauthorized\"}\n",
+			expectedBody:       "{\"errors\":[\"Unauthorized\"]}\n",
 			prepareRequest:     func(r *http.Request) {},
 		},
 		{
-			name:               "authorization header invalid token",
+			name:               "should return error when authorization header contains wrong token",
 			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"Unauthorized\"}\n",
+			expectedBody:       "{\"errors\":[\"Unauthorized\"]}\n",
 			prepareRequest: func(r *http.Request) {
 				r.Header.Add("Authorization", "Bearer faketoken")
 			},
 		},
 		{
-			name:               "authorization header ok",
+			name:               "should succeed",
 			expectedStatusCode: http.StatusOK,
 			expectedBody:       "null\n",
 			prepareRequest: func(r *http.Request) {

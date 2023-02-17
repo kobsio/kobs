@@ -18,7 +18,7 @@ import (
 )
 
 func TestGetClusters(t *testing.T) {
-	t.Run("can get clusters", func(t *testing.T) {
+	t.Run("should return clusters", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		clusterClient := clusters.NewMockClient(ctrl)
@@ -38,16 +38,13 @@ func TestGetClusters(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getClusters(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t,
-			`{
-				"clusters": ["cluster-1", "cluster-2"]
-			}`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `{"clusters": ["cluster-1", "cluster-2"]}`)
 	})
 }
 
 func TestGetNamespaces(t *testing.T) {
-	t.Run("get namespaces fails", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		cluster := "cluster-1"
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
@@ -62,13 +59,12 @@ func TestGetNamespaces(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getNamespaces(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t,
-			`{"error": "could not get namespaces"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get namespaces"]}`)
 
 	})
 
-	t.Run("get namespaces fails", func(t *testing.T) {
+	t.Run("should return namespaces", func(t *testing.T) {
 		cluster := "cluster-1"
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
@@ -87,15 +83,13 @@ func TestGetNamespaces(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getNamespaces(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t,
-			`["default","kube-system"]`,
-			w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `["default","kube-system"]`)
 	})
 }
 
 func TestGetResources(t *testing.T) {
-	t.Run("get crds fails", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetCRDs(gomock.Any()).Return(nil, fmt.Errorf("could not get crds"))
@@ -108,11 +102,11 @@ func TestGetResources(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.getResources(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get Custom Resource Definitions"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get resources"]}`)
 	})
 
-	t.Run("can get crds", func(t *testing.T) {
+	t.Run("should return resources", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetCRDs(gomock.Any()).Return(nil, nil)
@@ -124,8 +118,8 @@ func TestGetResources(t *testing.T) {
 		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/crds", nil)
 		w := httptest.NewRecorder()
 		router.getResources(w, req)
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONSnapshotEq(t, "crds.json", w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONSnapshotEq(t, w, "clusters_test_resources_snapshot.json")
 	})
 }
 

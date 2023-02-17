@@ -7,33 +7,44 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang/mock/gomock"
-	"go.opentelemetry.io/otel"
-
 	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
+	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
 	"github.com/kobsio/kobs/pkg/utils"
 
-	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
-
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel"
 )
 
 func TestGetTeams(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can handle error", func(t *testing.T) {
-		cluster := "cluster1"
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetTeams(gomock.Any(), cluster, "").Return(nil, fmt.Errorf("unexpected error"))
+	t.Run("should return an error when no cluster paramter is provided", func(t *testing.T) {
+		router := Router{chi.NewRouter(), nil, defaultTracer}
+		router.Get("/teams", router.getTeams)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/teams?cluster=", nil)
+		w := httptest.NewRecorder()
+
+		router.getTeams(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors":["The 'cluster' parameter can not be empty"]}`)
+	})
+
+	t.Run("should handle error from Kubernetes client", func(t *testing.T) {
+		cluster := "cluster1"
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().GetTeams(gomock.Any(), cluster, "").Return(nil, fmt.Errorf("unexpected error"))
+
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/teams", router.getTeams)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("/teams?cluster=%s", cluster), nil)
@@ -41,14 +52,14 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get teams"]}`)
 	})
 
-	t.Run("can list teams", func(t *testing.T) {
+	t.Run("should list teams", func(t *testing.T) {
 		cluster := "cluster1"
-		clusterClient := newClusterClient(t)
-		clusterClient.
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.
 			EXPECT().
 			GetTeams(gomock.Any(), cluster, "").
 			Return([]teamv1.TeamSpec{
@@ -60,7 +71,7 @@ func TestGetTeams(t *testing.T) {
 				},
 			}, nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/teams", router.getTeams)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("/teams?cluster=%s", cluster), nil)
@@ -68,26 +79,22 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `
 			[
 				{
 					"id": "team1@kobs.io",
 					"cluster": "cluster1",
 					"namespace": "namespace1",
 					"name": "name1",
-					"permissions": {},
-						"notifications": {
-							"groups": null
-						}
-					}
+					"permissions": {}
+				}
 			]
-			`,
-			w)
+		`)
 	})
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil)
+	router := Mount(nil)
 	require.NotNil(t, router)
 }

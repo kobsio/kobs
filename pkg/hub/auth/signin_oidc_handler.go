@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -23,7 +22,7 @@ import (
 func (c *client) oidcHandler(w http.ResponseWriter, r *http.Request) {
 	if c.oidcConfig == nil || c.oidcProvider == nil {
 		log.Warn(r.Context(), "OIDC provider is not configured")
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("oidc provider is not configured"))
+		errresponse.Render(w, r, http.StatusBadRequest, "OIDC provider is not configured")
 		return
 	}
 
@@ -45,7 +44,7 @@ type Session struct {
 func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	if c.oidcConfig == nil || c.oidcProvider == nil {
 		log.Warn(r.Context(), "OIDC provider is not configured")
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("oidc provider is not configured"))
+		errresponse.Render(w, r, http.StatusBadRequest, "OIDC provider is not configured")
 		return
 	}
 
@@ -53,7 +52,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	if !strings.HasPrefix(state, c.config.OIDC.State) {
 		log.Warn(r.Context(), "Invalid state", zap.String("state", state))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("invalid state"))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid 'state' parameter")
 		return
 	}
 
@@ -61,22 +60,22 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	oauth2Token, err := c.oidcConfig.Exchange(r.Context(), r.URL.Query().Get("code"), oauth2.AccessTypeOffline)
 	if err != nil {
-		log.Warn(r.Context(), "Could not exchange authorization code into token", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not exchange authorization code into token"))
+		log.Warn(r.Context(), "Failed to exchange authorization code for refresh token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to exchange authorization code for refresh token")
 		return
 	}
 
 	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		log.Warn(r.Context(), "Could not get raw id token")
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not get raw id token"))
+		log.Warn(r.Context(), "Failed to get id token")
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to get id token")
 		return
 	}
 
 	idToken, err := verifier.Verify(r.Context(), rawIDToken)
 	if err != nil {
-		log.Warn(r.Context(), "Could not verify raw id token", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not verify raw id token"))
+		log.Warn(r.Context(), "ID token verification failed", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "ID token verification failed")
 		return
 	}
 
@@ -86,15 +85,15 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		Groups  []string `json:"groups"`
 	}
 	if err := idToken.Claims(&claims); err != nil {
-		log.Warn(r.Context(), "Could not get claims", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not get claims"))
+		log.Warn(r.Context(), "Failed to get claims", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to get claims")
 		return
 	}
 
 	accessToken, err := jwt.CreateToken(&Session{Email: claims.Email, Teams: claims.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
 	if err != nil {
-		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not create jwt token"))
+		log.Warn(r.Context(), "Failed to create jwt token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to create jwt token")
 		return
 	}
 
@@ -104,8 +103,8 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		UserID: claims.Email,
 	}.Encode()
 	if err != nil {
-		log.Error(r.Context(), "couldn't parse refreshtoken", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("couldn't parse refreshtoken"))
+		log.Error(r.Context(), "Failed to parse refresh token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to parse refresh token")
 		return
 	}
 

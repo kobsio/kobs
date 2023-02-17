@@ -62,9 +62,10 @@ func (s *server) Stop() {
 }
 
 // New return a new application server. It creates the underlying http server, with the defined address from the
-// app.address flag.
-// When you haven't build the React app via "yarn build" you can skip serving of the frontend, by passing an empty
-// localtion for the app.assets flag.
+// configuration.
+//
+// When you haven't build the React app via "npm build" you can skip serving of the frontend, by passing an empty
+// localtion for the `assets` configuration.
 func New(config Config, apiConfig api.Config) (Server, error) {
 	router := chi.NewRouter()
 	router.Use(recoverer.Handler)

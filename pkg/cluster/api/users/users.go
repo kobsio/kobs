@@ -1,6 +1,7 @@
 package users
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
@@ -16,15 +17,20 @@ import (
 	"go.uber.org/zap"
 )
 
-type Config struct{}
-
+// Router implements the chi.Router interface, but also contains a tracer and a Kubernetes client which can be used in
+// all API routers.
 type Router struct {
 	*chi.Mux
-	config           Config
 	kubernetesClient kubernetes.Client
 	tracer           trace.Tracer
 }
 
+// getUsers returns all users from the provided Kubernetes client. The API endpoint requires a `cluster`
+// parameter, to set the cluster for all returned users. The `cluster` parameter is required, because the name of
+// the cluster is only configured in the hub.
+//
+// If the `cluster` paramter is missing or if the [kubernetesClient.GetUsers] method returns an error the API
+// endpoint returns an error. If we are able to get all users the users are returned.
 func (router *Router) getUsers(w http.ResponseWriter, r *http.Request) {
 	cluster := r.URL.Query().Get("cluster")
 
@@ -33,12 +39,21 @@ func (router *Router) getUsers(w http.ResponseWriter, r *http.Request) {
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	log.Debug(ctx, "Get users", zap.String("cluster", cluster))
 
+	if cluster == "" {
+		err := fmt.Errorf("cluster parameter is missing")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		log.Error(ctx, "Failed to get users", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "The 'cluster' parameter can not be empty")
+		return
+	}
+
 	users, err := router.kubernetesClient.GetUsers(ctx, cluster, "")
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not get users", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to get users", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get users")
 		return
 	}
 
@@ -47,10 +62,10 @@ func (router *Router) getUsers(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, users)
 }
 
-func Mount(config Config, kubernetesClient kubernetes.Client) chi.Router {
+// Mount returns a chi.Router which handles all user related API endpoints.
+func Mount(kubernetesClient kubernetes.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		config,
 		kubernetesClient,
 		otel.Tracer("users"),
 	}

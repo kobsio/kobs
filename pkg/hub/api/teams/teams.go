@@ -1,7 +1,6 @@
 package teams
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,8 +15,6 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
-
-type Config struct{}
 
 type Router struct {
 	*chi.Mux
@@ -34,26 +31,26 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 	if parsedAll {
 		if !user.HasTeamAccess("*") {
 			log.Warn(r.Context(), "The user is not authorized to view all teams", zap.Error(err))
-			errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view all teams"))
+			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view all teams")
 			return
 		}
 
 		teams, err = router.storeClient.GetTeams(r.Context())
 		if err != nil {
-			log.Error(r.Context(), "Could not get teams", zap.Error(err))
-			errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get teams"))
+			log.Error(r.Context(), "Failed to get teams", zap.Error(err))
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get teams")
 			return
 		}
 	} else {
 		teams, err = router.storeClient.GetTeamsByIDs(r.Context(), user.Teams)
 		if err != nil {
-			log.Error(r.Context(), "Could not get teams", zap.Error(err))
-			errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get teams"))
+			log.Error(r.Context(), "Failed to get teams", zap.Error(err))
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get teams")
 			return
 		}
 	}
 
-	var aggregatedTeams []teamv1.TeamSpec /*  */
+	var aggregatedTeams []teamv1.TeamSpec
 	for _, team := range teams {
 		aggregatedTeams = utils.AppendIf(
 			aggregatedTeams,
@@ -71,21 +68,21 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 
 	if !user.HasTeamAccess(id) {
 		log.Warn(r.Context(), "The user is not authorized to view the team", zap.String("id", id))
-		errresponse.Render(w, r, http.StatusForbidden, fmt.Errorf("you are not allowed to view the team"))
+		errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the team")
 		return
 	}
 
 	team, err := router.storeClient.GetTeamByID(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get team", zap.Error(err), zap.String("id", id))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get team"))
+		log.Error(r.Context(), "Failed to get team", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get team")
 		return
 	}
 
 	render.JSON(w, r, team)
 }
 
-func Mount(config Config, storeClient db.Client) chi.Router {
+func Mount(storeClient db.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
 		storeClient,

@@ -1,8 +1,8 @@
 type RequestOptions = Omit<RequestInit, 'method' | 'body'> & { body?: unknown; disableAutorefresh?: boolean };
 
 export class APIError extends Error {
-  constructor(message: string, public statusCode?: number) {
-    super(message);
+  constructor(errors: string[], public statusCode?: number) {
+    super(errors.join('\n'));
   }
 }
 
@@ -88,14 +88,14 @@ export default class Client implements IAPI {
       if (res.status >= 200 && res.status < 300) {
         return json;
       } else {
-        if (json.error) {
-          throw new APIError(json.error, res.status);
+        if (json.errors) {
+          throw new APIError(json.errors, res.status);
         } else {
-          throw new APIError(json.error);
+          throw new APIError(json.errors);
         }
       }
     } catch (error: unknown) {
-      throw new APIError(`unexpected error ${error}`, res.status);
+      throw new APIError([`unexpected error ${error}`], res.status);
     }
   }
 

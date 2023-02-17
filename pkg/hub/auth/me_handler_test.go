@@ -41,7 +41,7 @@ func TestMeHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		client.meHandler(w, req)
-		utils.AssertStatusEq(t, http.StatusUnauthorized, w)
+		utils.AssertStatusEq(t, w, http.StatusUnauthorized)
 	})
 
 	t.Run("when request has accesstoken", func(t *testing.T) {
@@ -77,8 +77,8 @@ func TestMeHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		client.meHandler(w, req)
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, fmt.Sprintf(`
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, fmt.Sprintf(`
 			{
 				"accessToken": "%s",
 				"user": {
@@ -87,7 +87,7 @@ func TestMeHandler(t *testing.T) {
 					"teams": null
 				}
 			}`, accessToken),
-			w)
+		)
 	})
 
 	t.Run("when request has no accesstoken, but a refreshtoken", func(t *testing.T) {
@@ -120,7 +120,7 @@ func TestMeHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		client.meHandler(w, req)
-		utils.AssertStatusEq(t, http.StatusOK, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
 		var result struct {
 			AccessToken string `json:"accessToken"`
 		}
@@ -153,6 +153,6 @@ func TestMeHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		client.meHandler(w, req)
-		utils.AssertStatusEq(t, http.StatusUnauthorized, w)
+		utils.AssertStatusEq(t, w, http.StatusUnauthorized)
 	})
 }

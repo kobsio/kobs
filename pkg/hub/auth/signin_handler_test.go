@@ -32,7 +32,7 @@ func TestSigninHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		client.signinHandler(w, req)
-		utils.AssertStatusEq(t, http.StatusNoContent, w)
+		utils.AssertStatusEq(t, w, http.StatusNoContent)
 
 		// sets cookie
 		require.NotEmpty(t, w.Result().Cookies())
@@ -48,7 +48,7 @@ func TestSigninHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		client.signinHandler(w, req)
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
 	})
 
 	t.Run("rejects invalid passwords", func(t *testing.T) {
@@ -59,6 +59,6 @@ func TestSigninHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		client.signinHandler(w, req)
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
 	})
 }

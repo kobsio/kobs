@@ -16,7 +16,7 @@ import (
 
 // doRequest runs a http request against the given url with the given client. It decodes the returned result in the
 // specified type and returns it. if the response code is not 200 it returns an error.
-func doRequest[T any](client *http.Client, ctx context.Context, token, method, url string, body io.Reader) (T, error) {
+func doRequest[T any](ctx context.Context, client *http.Client, token, method, url string, body io.Reader) (T, error) {
 	var result T
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -51,5 +51,5 @@ func doRequest[T any](client *http.Client, ctx context.Context, token, method, u
 		return result, err
 	}
 
-	return result, fmt.Errorf("%s", res.Error)
+	return result, fmt.Errorf("%v", res.Errors)
 }
