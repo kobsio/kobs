@@ -8,9 +8,9 @@
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
       "args": [ 
-        "hub", 
-        "--config", 
-        "../../config.yaml" 
+        "hub",
+        "--config",
+        "../../config.yaml"
       ],
       "envFile": ".env"
     },
