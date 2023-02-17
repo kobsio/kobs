@@ -11,6 +11,7 @@ coverage.html
 
 # builds
 dist
+__debug_bin
 
 # misc
 .DS_Store

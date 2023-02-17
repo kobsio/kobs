@@ -112,6 +112,9 @@ func (c *client) save(ctx context.Context, collection string, models []mongo.Wri
 }
 
 func (c *client) SavePlugins(ctx context.Context, cluster string, plugins []plugin.Instance) error {
+	if len(plugins) == 0 {
+		return nil
+	}
 	ctx, span := c.tracer.Start(ctx, "store.SavePlugins")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()

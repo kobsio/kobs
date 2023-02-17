@@ -466,10 +466,15 @@ const SidebarFooter: FunctionComponent = () => {
  */
 const Sidebar: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
-
   return (
     <Box sx={{ height: '100vh' }}>
-      <Box sx={{ height: 'calc(100vh - 62px)', overflowX: 'scroll' }}>
+      <Box sx={{ 
+        height: 'calc(100vh - 62px)', 
+        overflowY: 'auto', 
+        '&::-webkit-scrollbar': {
+          display: "none"
+        }
+      }}>
         <SidebarHeader />
         <List disablePadding={true}>
           <Box
