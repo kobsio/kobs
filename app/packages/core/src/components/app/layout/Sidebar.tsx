@@ -468,9 +468,9 @@ const Sidebar: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
   return (
     <Box sx={{ height: '100vh' }}>
-      <Box sx={{ 
-        height: 'calc(100vh - 62px)', 
-        overflowY: 'auto', 
+      <Box sx={{
+        height: 'calc(100vh - 62px)',
+        overflowY: 'auto',
         '&::-webkit-scrollbar': {
           display: "none"
         }
