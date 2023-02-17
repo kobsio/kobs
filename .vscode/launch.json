@@ -7,23 +7,38 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
-      "args": [ "hub" ],
-      "env": {
-        "KOBS_CONFIG": "../../deploy/docker/kobs/hub.yaml"
-      },
+      "args": [ 
+        "hub", 
+        "--config", 
+        "../../config.yaml" 
+      ],
       "envFile": ".env"
     },
     {
-      "name": "satellite",
+      "name": "cluster",
       "type": "go",
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
       "args": [
-        "--log.level=debug",
-        "--satellite.config=../../deploy/docker/kobs/satellite.yaml",
-        "--satellite.token=unsecuretoken"
-      ]
+        "cluster",
+        "--config",
+        "../../config.yaml"
+      ],
+      "envFile": ".env"
+    },
+    {
+      "name": "watcher",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/kobs",
+      "args": [
+        "watcher",
+        "--config",
+        "../../config.yaml"
+      ],
+      "envFile": ".env"
     },
     {
       "name": "app",
