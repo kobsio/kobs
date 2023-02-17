@@ -8,7 +8,7 @@
   "scripts": {
     "initialize": "npm install && npm run clean && lerna bootstrap",
     "clean": "lerna clean --yes && lerna exec -- rm -rf dist",
-    "dev:app": "lerna run dev --stream --scope=@kobsio/app",
+    "dev": "lerna run dev --stream",
     "analyze": "lerna run analyze",
     "build": "lerna run build",
     "preview": "lerna run preview",
