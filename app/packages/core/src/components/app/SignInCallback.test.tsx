@@ -53,7 +53,7 @@ describe('SignInCallback', () => {
     vi.spyOn(console, 'error').mockImplementationOnce(() => {
       // noop (to supress the error log in test output)
     });
-    spy.mockRejectedValueOnce(new APIError('unexpected error'));
+    spy.mockRejectedValueOnce(new APIError(['unexpected error']));
     render();
     expect(await waitFor(() => screen.getByText(/unexpected error/))).toBeInTheDocument();
   });

@@ -66,7 +66,7 @@ func (c *client) Stop() error {
 }
 
 // watch is the internal watch method of the watcher. It loops through all configured clusters and adds a task for
-// each resource (clusters, plugins, applications, dashboards, teams and users) to the worker pool.
+// each resource (plugins, applications, dashboards, teams and users) to the worker pool.
 func (c *client) watch() {
 	startTime := time.Now()
 	ctx, span := c.tracer.Start(context.Background(), "watcher")
@@ -84,17 +84,17 @@ func (c *client) watch() {
 
 				plugins, err := cl.GetPlugins(ctx)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "plugins", err, len(plugins), startTime)
+					instrument(ctx, span, cl.GetName(), "plugins", err, len(plugins), startTime)
 					return
 				}
 
 				err = c.dbClient.SavePlugins(ctx, cl.GetName(), plugins)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "plugins", err, len(plugins), startTime)
+					instrument(ctx, span, cl.GetName(), "plugins", err, len(plugins), startTime)
 					return
 				}
 
-				instrument(ctx, cl.GetName(), "plugins", nil, len(plugins), startTime)
+				instrument(ctx, span, cl.GetName(), "plugins", nil, len(plugins), startTime)
 			}))
 		}(cl)
 
@@ -109,17 +109,17 @@ func (c *client) watch() {
 
 				namespaces, err := cl.GetNamespaces(ctx)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "namespaces", err, len(namespaces), startTime)
+					instrument(ctx, span, cl.GetName(), "namespaces", err, len(namespaces), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveNamespaces(ctx, cl.GetName(), namespaces)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "namespaces", err, len(namespaces), startTime)
+					instrument(ctx, span, cl.GetName(), "namespaces", err, len(namespaces), startTime)
 					return
 				}
 
-				instrument(ctx, cl.GetName(), "namespaces", nil, len(namespaces), startTime)
+				instrument(ctx, span, cl.GetName(), "namespaces", nil, len(namespaces), startTime)
 			}))
 		}(cl)
 
@@ -134,17 +134,17 @@ func (c *client) watch() {
 
 				crds, err := cl.GetCRDs(ctx)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "crds", err, len(crds), startTime)
+					instrument(ctx, span, cl.GetName(), "crds", err, len(crds), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveCRDs(ctx, crds)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "crds", err, len(crds), startTime)
+					instrument(ctx, span, cl.GetName(), "crds", err, len(crds), startTime)
 					return
 				}
 
-				instrument(ctx, cl.GetName(), "crds", nil, len(crds), startTime)
+				instrument(ctx, span, cl.GetName(), "crds", nil, len(crds), startTime)
 			}))
 		}(cl)
 
@@ -159,29 +159,29 @@ func (c *client) watch() {
 
 				applications, err := cl.GetApplications(ctx)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "applications", err, len(applications), startTime)
+					instrument(ctx, span, cl.GetName(), "applications", err, len(applications), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveApplications(ctx, cl.GetName(), applications)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "applications", err, len(applications), startTime)
+					instrument(ctx, span, cl.GetName(), "applications", err, len(applications), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveTags(ctx, applications)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "tags", err, len(applications), startTime)
+					instrument(ctx, span, cl.GetName(), "tags", err, len(applications), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveTopology(ctx, cl.GetName(), applications)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "tags", err, len(applications), startTime)
+					instrument(ctx, span, cl.GetName(), "tags", err, len(applications), startTime)
 					return
 				}
 
-				instrument(ctx, cl.GetName(), "applications", nil, len(applications), startTime)
+				instrument(ctx, span, cl.GetName(), "applications", nil, len(applications), startTime)
 			}))
 		}(cl)
 
@@ -196,17 +196,17 @@ func (c *client) watch() {
 
 				dashboards, err := cl.GetDashboards(ctx)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "dashboards", err, len(dashboards), startTime)
+					instrument(ctx, span, cl.GetName(), "dashboards", err, len(dashboards), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveDashboards(ctx, cl.GetName(), dashboards)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "dashboards", err, len(dashboards), startTime)
+					instrument(ctx, span, cl.GetName(), "dashboards", err, len(dashboards), startTime)
 					return
 				}
 
-				instrument(ctx, cl.GetName(), "dashboards", nil, len(dashboards), startTime)
+				instrument(ctx, span, cl.GetName(), "dashboards", nil, len(dashboards), startTime)
 			}))
 		}(cl)
 
@@ -221,17 +221,17 @@ func (c *client) watch() {
 
 				teams, err := cl.GetTeams(ctx)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "teams", err, len(teams), startTime)
+					instrument(ctx, span, cl.GetName(), "teams", err, len(teams), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveTeams(ctx, cl.GetName(), teams)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "teams", err, len(teams), startTime)
+					instrument(ctx, span, cl.GetName(), "teams", err, len(teams), startTime)
 					return
 				}
 
-				instrument(ctx, cl.GetName(), "teams", nil, len(teams), startTime)
+				instrument(ctx, span, cl.GetName(), "teams", nil, len(teams), startTime)
 			}))
 		}(cl)
 
@@ -246,17 +246,17 @@ func (c *client) watch() {
 
 				users, err := cl.GetUsers(ctx)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "users", err, len(users), startTime)
+					instrument(ctx, span, cl.GetName(), "users", err, len(users), startTime)
 					return
 				}
 
 				err = c.dbClient.SaveUsers(ctx, cl.GetName(), users)
 				if err != nil {
-					instrument(ctx, cl.GetName(), "users", err, len(users), startTime)
+					instrument(ctx, span, cl.GetName(), "users", err, len(users), startTime)
 					return
 				}
 
-				instrument(ctx, cl.GetName(), "users", nil, len(users), startTime)
+				instrument(ctx, span, cl.GetName(), "users", nil, len(users), startTime)
 			}))
 		}(cl)
 	}

@@ -28,7 +28,7 @@ func TestGetApplicationsTopology(t *testing.T) {
 		return dbClient, router
 	}
 
-	t.Run("handles users who have no access", func(t *testing.T) {
+	t.Run("should return error if user is not allowed to view all applications", func(t *testing.T) {
 		_, router := newRouter(t)
 
 		ctx := context.Background()
@@ -38,11 +38,11 @@ func TestGetApplicationsTopology(t *testing.T) {
 
 		router.getApplicationsTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusForbidden, w)
-		utils.AssertJSONEq(t, `{"error": "you are not allowed to view all applications"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view all applications"]}`)
 	})
 
-	t.Run("handles error in GetApplicationsByFilter", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("get applications by filter failed"))
 
@@ -53,11 +53,11 @@ func TestGetApplicationsTopology(t *testing.T) {
 
 		router.getApplicationsTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get applications"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications"]}`)
 	})
 
-	t.Run("handles error in GetTopologyByIDs (SourceID)", func(t *testing.T) {
+	t.Run("should handle error from db client for SourceID", func(t *testing.T) {
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
 		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for SourceID"))
@@ -69,11 +69,11 @@ func TestGetApplicationsTopology(t *testing.T) {
 
 		router.getApplicationsTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get source topology"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get source topology"]}`)
 	})
 
-	t.Run("handles error in GetTopologyByIDs (TargetID)", func(t *testing.T) {
+	t.Run("should handle error from db client for TargetID", func(t *testing.T) {
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
 		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", gomock.Any()).Return(nil, nil)
@@ -86,11 +86,11 @@ func TestGetApplicationsTopology(t *testing.T) {
 
 		router.getApplicationsTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get target topology"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get target topology"]}`)
 	})
 
-	t.Run("can get Applications Topology", func(t *testing.T) {
+	t.Run("should return applications topology", func(t *testing.T) {
 		all := false
 		clusterIDs := []string{"cluster1"}
 		namespaceIDs := []string{"namespace1"}
@@ -145,8 +145,8 @@ func TestGetApplicationsTopology(t *testing.T) {
 
 		router.getApplicationsTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `{
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `{
 			"edges": [
 					{
 							"data": {
@@ -179,7 +179,7 @@ func TestGetApplicationsTopology(t *testing.T) {
 							}
 					}
 			]
-		}`, w)
+		}`)
 	})
 }
 
@@ -192,7 +192,7 @@ func TestGetApplicationTopology(t *testing.T) {
 		return dbClient, router
 	}
 
-	t.Run("can get ApplicationTopology", func(t *testing.T) {
+	t.Run("should return application topology", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -238,8 +238,8 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		router.getApplicationTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `{
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `{
 			"edges": [
 					{
 							"data": {
@@ -272,10 +272,10 @@ func TestGetApplicationTopology(t *testing.T) {
 							}
 					}
 			]
-		}`, w)
+		}`)
 	})
 
-	t.Run("handles error in GetApplicationByID", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -290,11 +290,11 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		router.getApplicationTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"could not get application"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get application"]}`)
 	})
 
-	t.Run("handles when no applications are returned", func(t *testing.T) {
+	t.Run("should handle application not found error", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -309,11 +309,11 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		router.getApplicationTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusNotFound, w)
-		utils.AssertJSONEq(t, `{"error":"application was not found"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusNotFound)
+		utils.AssertJSONEq(t, w, `{"errors":["Application was not found"]}`)
 	})
 
-	t.Run("handles users without access to application", func(t *testing.T) {
+	t.Run("should return error when user is not authorized to view the application", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -328,11 +328,11 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		router.getApplicationTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusForbidden, w)
-		utils.AssertJSONEq(t, `{"error":"you are not allowed to view the application"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors":["You are not allowed to view the application"]}`)
 	})
 
-	t.Run("handles error in GetTopologyByIDs (SourceID)", func(t *testing.T) {
+	t.Run("should handle error from db client for SourceID", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -355,11 +355,11 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		router.getApplicationTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get source topology"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get source topology"]}`)
 	})
 
-	t.Run("handles error in GetTopologyByIDs (SourceID)", func(t *testing.T) {
+	t.Run("should handle error from db client for TargetID", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -383,7 +383,7 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		router.getApplicationTopology(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get target topology"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get target topology"]}`)
 	})
 }

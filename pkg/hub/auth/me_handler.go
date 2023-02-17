@@ -95,7 +95,7 @@ func (c *client) meHandler(w http.ResponseWriter, r *http.Request) {
 		accessToken, refreshToken, err := c.refreshSession(w, r)
 		if err != nil {
 			log.Error(r.Context(), "failed refresh the session", zap.Error(err))
-			errresponse.Render(w, r, http.StatusUnauthorized, fmt.Errorf("unauthorized"))
+			errresponse.Render(w, r, http.StatusUnauthorized)
 			return
 		}
 
@@ -121,7 +121,7 @@ func (c *client) meHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cookie, err := r.Cookie("kobs.accesstoken")
 		if err != nil {
-			errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("couldn't fetch accesstoken from cookie"))
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get access token from cookie")
 			return
 		}
 
@@ -130,14 +130,14 @@ func (c *client) meHandler(w http.ResponseWriter, r *http.Request) {
 
 	claims, err := jwt.ValidateToken[Session](result.AccessToken, c.config.Session.Token)
 	if err != nil {
-		errresponse.Render(w, r, http.StatusUnauthorized, fmt.Errorf("couldn't validate the accesstoken"))
+		errresponse.Render(w, r, http.StatusUnauthorized, "Failed to validate access token")
 		return
 	}
 
 	user, err := c.getUserFromDB(r.Context(), claims.Data.Email, claims.Data.Teams)
 	if err != nil {
-		log.Error(r.Context(), "failed to fetch the user from db", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("unexpected error when fetching user"))
+		log.Error(r.Context(), "Failed to fetch user", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to fetch user")
 		return
 	}
 	result.User = user

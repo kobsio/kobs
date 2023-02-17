@@ -42,7 +42,7 @@ jobs:
           cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis" | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           flags: go
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -55,6 +55,9 @@ jobs:
   node:
     name: Node.js
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        plugin: [app, core]
     defaults:
       run:
         working-directory: app
@@ -76,9 +79,9 @@ jobs:
             node_modules
             */node_modules
             */*/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ matrix.plugin }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-node-${{ matrix.plugin }}-
 
       - name: Install Dependencies
         run: |
@@ -90,19 +93,11 @@ jobs:
 
       - name: Test
         run: |
-          npm run test:coverage
+          npm run test:coverage --workspace=@kobsio/${{ matrix.plugin }}
 
-      # todo: use matrix to simplify this
       - name: Upload Coverage "packages/app"
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
-          flags: node-app
+          flags: node-${{ matrix.plugin }}
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: app/packages/app/coverage
-
-      - name: Upload Coverage "packages/core"
-        uses: codecov/codecov-action@v2
-        with:
-          flags: node-core
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: app/packages/core/coverage
+          directory: app/packages/${{ matrix.plugin }}/coverage

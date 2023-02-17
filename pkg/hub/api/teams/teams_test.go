@@ -19,7 +19,7 @@ import (
 )
 
 func TestGetTeams(t *testing.T) {
-	t.Run("get all teams fails, because user is not authorized to view all teams", func(t *testing.T) {
+	t.Run("should return error when user is not authorized to view all teams", func(t *testing.T) {
 		user := authContext.User{ID: "foo"}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
@@ -33,11 +33,11 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		utils.AssertStatusEq(t, http.StatusForbidden, w)
-		utils.AssertJSONEq(t, `{"error": "you are not allowed to view all teams"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view all teams"]}`)
 	})
 
-	t.Run("get all teams fails", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		user := authContext.User{ID: "foo", Permissions: userv1.Permissions{Teams: []string{"*"}}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
@@ -52,11 +52,11 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get teams"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get teams"]}`)
 	})
 
-	t.Run("can get all teams", func(t *testing.T) {
+	t.Run("should return all teams", func(t *testing.T) {
 		user := authContext.User{ID: "foo", Permissions: userv1.Permissions{Teams: []string{"*"}}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
@@ -71,11 +71,11 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `[{"id":"team1","permissions":{},"notifications":{"groups":null}},{"id":"team2","permissions":{},"notifications":{"groups":null}},{"id":"team3","permissions":{},"notifications":{"groups":null}}]`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `[{"id":"team1","permissions":{}},{"id":"team2","permissions":{}},{"id":"team3","permissions":{}}]`)
 	})
 
-	t.Run("get own teams fails", func(t *testing.T) {
+	t.Run("should handle error from ", func(t *testing.T) {
 		teamIDs := []string{"team1"}
 		user := authContext.User{ID: "foo", Teams: teamIDs, Permissions: userv1.Permissions{Teams: teamIDs}}
 		ctrl := gomock.NewController(t)
@@ -91,11 +91,11 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get teams"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get teams"]}`)
 	})
 
-	t.Run("can get own teams", func(t *testing.T) {
+	t.Run("should return own teams", func(t *testing.T) {
 		teamIDs := []string{"team1"}
 		user := authContext.User{ID: "foo", Teams: teamIDs, Permissions: userv1.Permissions{Teams: teamIDs}}
 		ctrl := gomock.NewController(t)
@@ -111,13 +111,13 @@ func TestGetTeams(t *testing.T) {
 
 		router.getTeams(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `[{"id":"team1","permissions":{},"notifications":{"groups":null}}]`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `[{"id":"team1","permissions":{}}]`)
 	})
 }
 
 func TestGetTeam(t *testing.T) {
-	t.Run("get team fails, because user is not authorized to view the team", func(t *testing.T) {
+	t.Run("should return error if user is not authorized", func(t *testing.T) {
 		user := authContext.User{ID: "foo"}
 
 		ctrl := gomock.NewController(t)
@@ -131,11 +131,11 @@ func TestGetTeam(t *testing.T) {
 
 		router.getTeam(w, req)
 
-		utils.AssertStatusEq(t, http.StatusForbidden, w)
-		utils.AssertJSONEq(t, `{"error": "you are not allowed to view the team"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view the team"]}`)
 	})
 
-	t.Run("when get team fails", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		teamID := "team1"
 		user := authContext.User{ID: "foo", Permissions: userv1.Permissions{Teams: []string{"*"}}}
 
@@ -152,11 +152,11 @@ func TestGetTeam(t *testing.T) {
 
 		router.getTeam(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error": "could not get team"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get team"]}`)
 	})
 
-	t.Run("can get team", func(t *testing.T) {
+	t.Run("should return team", func(t *testing.T) {
 		teamID := "team1"
 		user := authContext.User{ID: "foo", Permissions: userv1.Permissions{Teams: []string{"*"}}}
 
@@ -173,12 +173,12 @@ func TestGetTeam(t *testing.T) {
 
 		router.getTeam(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `{"id":"team1","permissions":{},"notifications":{"groups":null}}`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `{"id":"team1","permissions":{}}`)
 	})
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil)
+	router := Mount(nil)
 	require.NotNil(t, router)
 }

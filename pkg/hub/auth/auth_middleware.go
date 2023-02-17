@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
@@ -22,12 +21,13 @@ func (c *client) MiddlewareHandler(next http.Handler) http.Handler {
 		user, err := c.getUserFromRequest(r)
 		if err != nil {
 			log.Error(ctx, "failed to grab user from request", zap.Error(err))
-			errresponse.Render(w, r, http.StatusUnauthorized, fmt.Errorf("unauthorized"))
+			errresponse.Render(w, r, http.StatusUnauthorized)
 			return
 		}
+
 		if user == nil {
 			log.Error(ctx, "unexpected error in auth middleware, user is unexpectedly nil")
-			errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("couldn't get user from request"))
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get user from request")
 			return
 		}
 

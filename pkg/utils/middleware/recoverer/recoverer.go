@@ -14,7 +14,7 @@ func Handler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil && err != http.ErrAbortHandler {
-				errresponse.Render(w, r, http.StatusInternalServerError, nil)
+				errresponse.Render(w, r, http.StatusInternalServerError)
 			}
 		}()
 

@@ -18,7 +18,7 @@ import (
 )
 
 func TestGetDashboardsFromReferences(t *testing.T) {
-	t.Run("decode json error", func(t *testing.T) {
+	t.Run("should return error fro invalud request body", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 
@@ -28,11 +28,11 @@ func TestGetDashboardsFromReferences(t *testing.T) {
 
 		router.getDashboardsFromReferences(w, req)
 
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
-		utils.AssertJSONEq(t, `{"error": "could not decode request body"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to decode request body"]}`)
 	})
 
-	t.Run("get dashboard by id error", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetDashboardByID(gomock.Any(), "/cluster/cluster1/namespace/namespace1/name/name1").Return(nil, fmt.Errorf("could not get dashboard"))
@@ -43,11 +43,11 @@ func TestGetDashboardsFromReferences(t *testing.T) {
 
 		router.getDashboardsFromReferences(w, req)
 
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
-		utils.AssertJSONEq(t, `{"error": "could not get dashboard"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get dashboard"]}`)
 	})
 
-	t.Run("can get dashboards", func(t *testing.T) {
+	t.Run("should return dashboards", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetDashboardByID(gomock.Any(), "/cluster/cluster1/namespace/namespace1/name/name1").Return(&dashboardv1.DashboardSpec{}, nil)
@@ -58,13 +58,13 @@ func TestGetDashboardsFromReferences(t *testing.T) {
 
 		router.getDashboardsFromReferences(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `[{"title":"Kubernetes Workloads","panels":null},{"title":"Title 1","panels":null}]`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `[{"title":"Kubernetes Workloads","panels":null},{"title":"Title 1","panels":null}]`)
 	})
 }
 
 func TestGetDashboard(t *testing.T) {
-	t.Run("get dashboard by id error", func(t *testing.T) {
+	t.Run("should handle error from db client", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetDashboardByID(gomock.Any(), "/cluster/cluster1/namespace/namespace1/name/name1").Return(nil, fmt.Errorf("could not get dashboard"))
@@ -76,11 +76,11 @@ func TestGetDashboard(t *testing.T) {
 
 		router.getDashboard(w, req)
 
-		utils.AssertStatusEq(t, http.StatusBadRequest, w)
-		utils.AssertJSONEq(t, `{"error": "could not get dashboard"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get dashboard"]}`)
 	})
 
-	t.Run("can get dashboards", func(t *testing.T) {
+	t.Run("should return dashboards", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetDashboardByID(gomock.Any(), "/cluster/cluster1/namespace/namespace1/name/name1").Return(&dashboardv1.DashboardSpec{Placeholders: []dashboardv1.Placeholder{{Name: "key1"}}}, nil)
@@ -92,12 +92,12 @@ func TestGetDashboard(t *testing.T) {
 
 		router.getDashboard(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `{"placeholders":[{"name":"key1"}],"variables":[{"name":"key1","label":"key1","hide":true,"plugin":{"type":"app","cluster":"","name":"placeholder","options":{"type":"string","value":"value1"}}}],"panels":null}`, w)
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `{"placeholders":[{"name":"key1"}],"variables":[{"name":"key1","label":"key1","hide":true,"plugin":{"type":"app","cluster":"","name":"placeholder","options":{"type":"string","value":"value1"}}}],"panels":null}`)
 	})
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil)
+	router := Mount(nil)
 	require.NotNil(t, router)
 }

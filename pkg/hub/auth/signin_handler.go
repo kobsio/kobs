@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -45,8 +44,8 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&signinRequest)
 	if err != nil {
-		log.Warn(r.Context(), "Could not decode request body", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not decode request body"))
+		log.Warn(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
 		return
 	}
 
@@ -58,21 +57,21 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 		bcrypt.CompareHashAndPassword([]byte("$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"), []byte(signinRequest.Password))
 
 		log.Warn(r.Context(), "Invalid email or password")
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid email or password")
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(userConfig.Password), []byte(signinRequest.Password))
 	if err != nil {
 		log.Warn(r.Context(), "Invalid email or password", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid email or password")
 		return
 	}
 
 	accessToken, err := jwt.CreateToken(&session{Email: userConfig.Email, Teams: userConfig.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
 	if err != nil {
-		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not create jwt token"))
+		log.Warn(r.Context(), "Failed to create jwt token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to create jwt token")
 		return
 	}
 
@@ -82,8 +81,8 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 		UserID: userConfig.Email,
 	}.Encode()
 	if err != nil {
-		log.Error(r.Context(), "couldn't parse refreshtoken", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("couldn't parse refreshtoken"))
+		log.Error(r.Context(), "Failed to parse refresh token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to parse refresh token")
 		return
 	}
 

@@ -7,32 +7,44 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang/mock/gomock"
-	"go.opentelemetry.io/otel"
-
 	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	dashboardsv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel"
 )
 
 func TestGetDashboards(t *testing.T) {
 	defaultTracer := otel.Tracer("fakeTracer")
 
-	var newClusterClient = func(t *testing.T) *kubernetes.MockClient {
+	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
 		ctrl := gomock.NewController(t)
-		clusterClient := kubernetes.NewMockClient(ctrl)
-		return clusterClient
+		kubernetesClient := kubernetes.NewMockClient(ctrl)
+		return kubernetesClient
 	}
 
-	t.Run("can handle error", func(t *testing.T) {
-		cluster := "cluster1"
-		clusterClient := newClusterClient(t)
-		clusterClient.EXPECT().GetDashboards(gomock.Any(), cluster, "").Return(nil, fmt.Errorf("unexpected error"))
+	t.Run("should return an error when no cluster paramter is provided", func(t *testing.T) {
+		router := Router{chi.NewRouter(), nil, defaultTracer}
+		router.Get("/dashboards", router.getDashboards)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/dashboards?cluster=", nil)
+		w := httptest.NewRecorder()
+
+		router.getDashboards(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors":["The 'cluster' parameter can not be empty"]}`)
+	})
+
+	t.Run("should handle error from Kubernetes client", func(t *testing.T) {
+		cluster := "cluster1"
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.EXPECT().GetDashboards(gomock.Any(), cluster, "").Return(nil, fmt.Errorf("unexpected error"))
+
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/dashboards", router.getDashboards)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("/dashboards?cluster=%s", cluster), nil)
@@ -40,14 +52,14 @@ func TestGetDashboards(t *testing.T) {
 
 		router.getDashboards(w, req)
 
-		utils.AssertStatusEq(t, http.StatusInternalServerError, w)
-		utils.AssertJSONEq(t, `{"error":"unexpected error"}`, w)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get dashboards"]}`)
 	})
 
-	t.Run("can list dashboards", func(t *testing.T) {
+	t.Run("should list dashboards", func(t *testing.T) {
 		cluster := "cluster1"
-		clusterClient := newClusterClient(t)
-		clusterClient.
+		kubernetesClient := newKubernetesClient(t)
+		kubernetesClient.
 			EXPECT().
 			GetDashboards(gomock.Any(), cluster, "").
 			Return([]dashboardsv1.DashboardSpec{
@@ -55,7 +67,7 @@ func TestGetDashboards(t *testing.T) {
 				{Cluster: "cluster1", Namespace: "namespace1", Name: "dashboard2"},
 			}, nil)
 
-		router := Router{chi.NewRouter(), Config{}, clusterClient, defaultTracer}
+		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/dashboards", router.getDashboards)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("/dashboards?cluster=%s", cluster), nil)
@@ -63,8 +75,8 @@ func TestGetDashboards(t *testing.T) {
 
 		router.getDashboards(w, req)
 
-		utils.AssertStatusEq(t, http.StatusOK, w)
-		utils.AssertJSONEq(t, `
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `
 			[
 				{
 					"cluster": "cluster1",
@@ -78,12 +90,12 @@ func TestGetDashboards(t *testing.T) {
 					"name": "dashboard2",
 					"panels": null
 				}
-			]`,
-			w)
+			]
+		`)
 	})
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil)
+	router := Mount(nil)
 	require.NotNil(t, router)
 }

@@ -57,7 +57,6 @@ func SetApplicationDefaults(application applicationv1.ApplicationSpec, cluster, 
 }
 
 func SetTeamDefaults(team teamv1.TeamSpec, cluster, namespace, name string) teamv1.TeamSpec {
-	team.ID = fmt.Sprintf("/cluster/%s/namespace/%s/name/%s", cluster, namespace, name)
 	team.Cluster = cluster
 	team.Namespace = namespace
 	team.Name = name
@@ -89,6 +88,7 @@ func SetTeamDefaults(team teamv1.TeamSpec, cluster, namespace, name string) team
 }
 
 func SetDashboardDefaults(dashboard dashboardv1.DashboardSpec, cluster, namespace, name string) dashboardv1.DashboardSpec {
+	dashboard.ID = fmt.Sprintf("/cluster/%s/namespace/%s/name/%s", cluster, namespace, name)
 	dashboard.Cluster = cluster
 	dashboard.Namespace = namespace
 	dashboard.Name = name

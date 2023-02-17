@@ -146,7 +146,7 @@ func TestProxy(t *testing.T) {
 
 		require.NoError(t, err)
 		require.Equal(t, http.StatusBadGateway, resp.StatusCode)
-		require.Equal(t, "{\"error\":\"EOF\"}\n", string(body))
+		require.Equal(t, "{\"errors\":[\"Bad Gateway\"]}\n", string(body))
 	})
 
 	t.Run("request ok", func(t *testing.T) {

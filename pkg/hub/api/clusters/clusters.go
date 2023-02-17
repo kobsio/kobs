@@ -1,7 +1,6 @@
 package clusters
 
 import (
-	"fmt"
 	"net/http"
 	"sort"
 
@@ -44,8 +43,8 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 
 	namespaces, err := router.storeClient.GetNamespacesByClusters(r.Context(), clusterIDs)
 	if err != nil {
-		log.Error(r.Context(), "Could not get namespaces", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get namespaces"))
+		log.Error(r.Context(), "Failed to get namespaces", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get namespaces")
 		return
 	}
 
@@ -62,8 +61,8 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	crds, err := router.storeClient.GetCRDs(r.Context())
 	if err != nil {
-		log.Error(r.Context(), "Could not get Custom Resource Definitions", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, fmt.Errorf("could not get Custom Resource Definitions"))
+		log.Error(r.Context(), "Failed to get resources", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get resources")
 		return
 	}
 

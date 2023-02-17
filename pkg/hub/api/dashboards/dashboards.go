@@ -15,11 +15,9 @@ import (
 	"go.uber.org/zap"
 )
 
-type Config struct{}
-
 type Router struct {
 	*chi.Mux
-	storeClient db.Client
+	dbClient db.Client
 }
 
 func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http.Request) {
@@ -27,8 +25,8 @@ func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http
 
 	err := json.NewDecoder(r.Body).Decode(&references)
 	if err != nil {
-		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not decode request body"))
+		log.Error(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
 		return
 	}
 
@@ -47,10 +45,10 @@ func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http
 				Panels:      reference.Inline.Panels,
 			})
 		} else {
-			dashboard, err := router.storeClient.GetDashboardByID(r.Context(), fmt.Sprintf("/cluster/%s/namespace/%s/name/%s", reference.Cluster, reference.Namespace, reference.Name))
+			dashboard, err := router.dbClient.GetDashboardByID(r.Context(), fmt.Sprintf("/cluster/%s/namespace/%s/name/%s", reference.Cluster, reference.Namespace, reference.Name))
 			if err != nil {
-				log.Error(r.Context(), "Could not get dashboard", zap.Error(err))
-				errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not get dashboard"))
+				log.Error(r.Context(), "Failed to get dashboard", zap.Error(err))
+				errresponse.Render(w, r, http.StatusBadRequest, "Failed to get dashboard")
 				return
 			}
 
@@ -75,10 +73,10 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	dashboard, err := router.storeClient.GetDashboardByID(r.Context(), id)
+	dashboard, err := router.dbClient.GetDashboardByID(r.Context(), id)
 	if err != nil {
-		log.Error(r.Context(), "Could not get dashboard", zap.Error(err), zap.String("dashboard", id))
-		errresponse.Render(w, r, http.StatusBadRequest, fmt.Errorf("could not get dashboard"))
+		log.Error(r.Context(), "Failed to get dashboard", zap.Error(err), zap.String("dashboard", id))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to get dashboard")
 		return
 	}
 
@@ -86,10 +84,10 @@ func (router *Router) getDashboard(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, dashboard)
 }
 
-func Mount(config Config, storeClient db.Client) chi.Router {
+func Mount(dbClient db.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		storeClient,
+		dbClient,
 	}
 
 	router.Post("/", router.getDashboardsFromReferences)

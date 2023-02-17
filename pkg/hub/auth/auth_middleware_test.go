@@ -64,7 +64,7 @@ func TestAuthMiddleware(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		handler.ServeHTTP(w, req)
-		utils.AssertStatusEq(t, http.StatusAccepted, w)
+		utils.AssertStatusEq(t, w, http.StatusAccepted)
 	})
 
 	t.Run("fails when cookie isn't set", func(t *testing.T) {
@@ -79,7 +79,7 @@ func TestAuthMiddleware(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		handler.ServeHTTP(w, req)
-		utils.AssertStatusEq(t, http.StatusUnauthorized, w)
+		utils.AssertStatusEq(t, w, http.StatusUnauthorized)
 	})
 
 	t.Run("fails when cookie value is invalid", func(t *testing.T) {
@@ -106,6 +106,6 @@ func TestAuthMiddleware(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		handler.ServeHTTP(w, req)
-		utils.AssertStatusEq(t, http.StatusUnauthorized, w)
+		utils.AssertStatusEq(t, w, http.StatusUnauthorized)
 	})
 }

@@ -62,17 +62,16 @@ func NewClient(plugins []plugins.Plugin, instances []plugin.Instance, clustersCl
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		plugins, err := dbClient.GetPlugins(r.Context())
 		if err != nil {
-			errresponse.Render(w, r, http.StatusInternalServerError, err)
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get plugins")
 			return
 		}
 
 		render.JSON(w, r, plugins)
 	})
 
-	// In the last step we are using the user defined "pluginMounts" to mount the plugin routes at the formerly
-	// created router. For that we are looping over the defined mount functions, call them and mount the returned
-	// router. If an error is returned from one of the calls we return this error, to stop the starting process of the
-	// client.
+	// In the last step we are using the user defined `plugins` to mount the plugin routes at the formerly created
+	// router. For that we are looping over the defined mount functions, call them and mount the returned router. If an
+	// error is returned from one of the calls we return this error, to stop the starting process of the client.
 	for _, plugin := range plugins {
 		filteredInstances := filterInstances(plugin.Type(), instances)
 

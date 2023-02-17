@@ -28,11 +28,8 @@ var (
 	pingPeriod = 30 * time.Second
 )
 
-type Config struct{}
-
 type Router struct {
 	*chi.Mux
-	config           Config
 	kubernetesClient kubernetes.Client
 	tracer           trace.Tracer
 }
@@ -61,8 +58,8 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not get resource", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to get resources", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get resources")
 		return
 	}
 
@@ -71,8 +68,8 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not unmarshal resources", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to unmarshal resources", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to unmarshal resources")
 		return
 	}
 
@@ -81,6 +78,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 
 // deleteResource handles the deletion of a resource. The resource can be identified by the given cluster, namespace,
 // name, resource and path.
+//
 // When the user sets the "force" parameter to "true" we will set a body on the delete request, where we set the
 // "gracePeriodSeconds" to 0. This will cause the same behaviour as "kubectl delete --force --grace-period 0".
 func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
@@ -103,8 +101,8 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not parse force parameter", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to parse 'force' parameter", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'force' parameter")
 		return
 	}
 
@@ -117,8 +115,8 @@ func (router *Router) deleteResource(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not delete resource", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to delete resource", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to delete resource")
 		return
 	}
 
@@ -145,8 +143,8 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not decode request body", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
 		return
 	}
 
@@ -154,8 +152,8 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not patch resource", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to patch resources", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to patch resources")
 		return
 	}
 
@@ -183,8 +181,8 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not decode request body", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
 		return
 	}
 
@@ -192,8 +190,8 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not create resource", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to create resource", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to create resource")
 		return
 	}
 
@@ -228,8 +226,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not parse since parameter", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to parse 'since' parameter", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'since' parameter")
 		return
 	}
 
@@ -237,8 +235,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not parse tail parameter", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to parse 'tail' parameter", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'tail' parameter")
 		return
 	}
 
@@ -246,8 +244,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not parse previous parameter", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to parse 'previous' parameter", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'previous' parameter")
 		return
 	}
 
@@ -255,8 +253,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not parse follow parameter", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to parse 'follow' parameter", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'follow' parameter")
 		return
 	}
 
@@ -271,7 +269,7 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			span.RecordError(err)
 			span.SetStatus(codes.Error, err.Error())
-			log.Error(ctx, "Could not upgrade connection", zap.Error(err))
+			log.Error(ctx, "Failed to upgrade connection", zap.Error(err))
 			return
 		}
 		defer c.Close()
@@ -296,8 +294,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			span.RecordError(err)
 			span.SetStatus(codes.Error, err.Error())
-			log.Error(ctx, "Could not stream logs", zap.Error(err))
-			c.WriteMessage(websocket.TextMessage, []byte("Could not stream logs: "+err.Error()))
+			log.Error(ctx, "Failed to stream logs", zap.Error(err))
+			c.WriteMessage(websocket.TextMessage, []byte("Failed to stream logs"))
 			return
 		}
 
@@ -309,8 +307,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not get logs", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadGateway, err)
+		log.Error(ctx, "Failed to get logs", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadGateway, "Failed to get logs")
 		return
 	}
 
@@ -345,7 +343,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not upgrade connection", zap.Error(err))
+		log.Error(ctx, "Failed to upgrade connection", zap.Error(err))
 		return
 	}
 	defer c.Close()
@@ -370,10 +368,10 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not create terminal", zap.Error(err))
+		log.Error(ctx, "Failed to create terminal", zap.Error(err))
 		msg, _ := json.Marshal(terminal.Message{
 			Op:   "stdout",
-			Data: fmt.Sprintf("Could not create terminal: %s", err.Error()),
+			Data: fmt.Sprintf("Failed to create terminal"),
 		})
 		c.WriteMessage(websocket.TextMessage, msg)
 		return
@@ -402,8 +400,8 @@ func (router *Router) getFile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not copy file", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to copy file", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get file")
 		return
 	}
 }
@@ -428,8 +426,8 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not read file", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, err)
+		log.Error(ctx, "Failed to read file", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to read file")
 		return
 	}
 	defer f.Close()
@@ -440,8 +438,8 @@ func (router *Router) postFile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not copy file", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to copy file", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to copy file")
 		return
 	}
 
@@ -457,8 +455,8 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not get namespaces", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to get namespaces", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get namespaces")
 		return
 	}
 
@@ -474,18 +472,17 @@ func (router *Router) getCRDs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not get CRDs", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, err)
+		log.Error(ctx, "Failed to get Custom Resource Definitions", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get Custom Resource Definitions")
 		return
 	}
 
 	render.JSON(w, r, crds)
 }
 
-func Mount(config Config, kubernetesClient kubernetes.Client) chi.Router {
+func Mount(kubernetesClient kubernetes.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		config,
 		kubernetesClient,
 		otel.Tracer("resources"),
 	}
