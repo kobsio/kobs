@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /* eslint-disable */
 const { readFile, writeFile, copy } = require('fs-extra');
 
