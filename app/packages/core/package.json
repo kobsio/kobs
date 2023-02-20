@@ -5,8 +5,9 @@
   "module": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
-    "test": "vitest run",
+    "analyze": "source-map-explorer 'dist/*.mjs' --no-border-checks",
     "build": "vite build && ./scripts/dist.js",
+    "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
   },
@@ -32,6 +33,7 @@
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/coverage-c8": "^0.28.4",
     "@vitest/ui": "^0.28.4",
+    "source-map-explorer": "^2.5.3",
     "typescript": "^4.9.3",
     "vite": "^4.1.0",
     "vite-plugin-dts": "^1.7.2",
