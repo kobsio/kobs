@@ -19,6 +19,7 @@ import {
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
 import theme from '../../utils/theme';
+import Plugins from './Plugins';
 
 /**
  * `queryClient` is our global query client for `@tanstack/react-query`.
@@ -115,6 +116,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                         <Layout>
                           <Routes>
                             <Route path="/" element={<Home />} />
+                            <Route path="/plugins" element={<Plugins />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>

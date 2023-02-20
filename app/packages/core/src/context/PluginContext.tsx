@@ -1,5 +1,8 @@
+import { Alert, Box, CircularProgress, Paper } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { createContext, ReactNode } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
+
+import { APIContext } from '../components/api/context';
 
 /**
  * `IPluginPageProps` is the interface which defines the properties which are passed to the `page` component of a plugin.
@@ -53,6 +56,8 @@ export interface IPluginInstance {
  * all plugin instances, and two methods to get and instance by it's `id` and to get a plugin by it's `type`.
  */
 export interface IPluginContext {
+  getAvailableClusters(): string[];
+  getAvailablePluginTypes(): string[];
   getInstance: (id: string) => IPluginInstance | undefined;
   getPlugin: (type: string) => IPlugin | undefined;
   instances: IPluginInstance[];
@@ -64,6 +69,8 @@ export interface IPluginContext {
  * `id` and a method (`getPlugin`) to get a plugin by it's `type`.
  */
 export const PluginContext = createContext<IPluginContext>({
+  getAvailableClusters: () => [],
+  getAvailablePluginTypes: () => [],
   getInstance: (id: string) => undefined,
   getPlugin: (type: string) => undefined,
   instances: [],
@@ -92,9 +99,47 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   plugins,
   children,
 }: IPluginContextProviderProps) => {
-  const { isError, isLoading, data } = useQuery<IPluginInstance[], Error>(['core/plugincontext'], async () => {
-    return [];
+  const { api } = useContext(APIContext);
+  const { isError, error, isLoading, data } = useQuery<IPluginInstance[], Error>(['core/plugincontext'], async () => {
+    const plugins = await api.get<IPluginInstance[] | null>('/api/plugins');
+    if (plugins == null) {
+      return [];
+    }
+
+    return plugins;
   });
+
+  /**
+   * `getAvailableClusters` lists the available clusters
+   */
+  const getAvailableClusters = (): string[] => {
+    if (!data) {
+      return [];
+    }
+
+    const clusters = new Set<string>();
+    for (const instance of data) {
+      clusters.add(instance.cluster);
+    }
+
+    return Array.from(clusters);
+  };
+
+  /**
+   * `getAvailablePluginTypes` lists the available plugin types
+   */
+  const getAvailablePluginTypes = (): string[] => {
+    if (!data) {
+      return [];
+    }
+
+    const plugins = new Set<string>();
+    for (const instance of data) {
+      plugins.add(instance.type);
+    }
+
+    return Array.from(plugins);
+  };
 
   /**
    * `getInstance` returns a `IPluginInstance` with the provided `id`. If we can not found a instance with the provided
@@ -113,18 +158,34 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   };
 
   if (isLoading) {
-    return <div></div>;
+    return (
+      <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+        <Paper sx={{ display: 'inline-flex', mx: 'auto', p: 10 }}>
+          <CircularProgress />
+        </Paper>
+      </Box>
+    );
   }
 
   if (isError) {
-    return <div></div>;
+    return (
+      <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+        <Box sx={{ display: 'inline-flex', mx: 'auto', p: 10 }}>
+          <Alert severity="error" variant="outlined">
+            {error.message}
+          </Alert>
+        </Box>
+      </Box>
+    );
   }
 
   return (
     <PluginContext.Provider
       value={{
-        getInstance: getInstance,
-        getPlugin: getPlugin,
+        getAvailableClusters,
+        getAvailablePluginTypes,
+        getInstance,
+        getPlugin,
         instances: data,
       }}
     >
