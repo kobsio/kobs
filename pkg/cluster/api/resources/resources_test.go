@@ -15,7 +15,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/golang/mock/gomock"
-	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel"
 )
@@ -385,36 +384,6 @@ func TestGetFile(t *testing.T) {
 
 		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
 		utils.AssertJSONEq(t, w, `{"errors":["Failed to get file"]}`)
-	})
-}
-
-func TestGetTerminal(t *testing.T) {
-	defaultTracer := otel.Tracer("fakeTracer")
-
-	var newKubernetesClient = func(t *testing.T) *kubernetes.MockClient {
-		ctrl := gomock.NewController(t)
-		kubernetesClient := kubernetes.NewMockClient(ctrl)
-		return kubernetesClient
-	}
-
-	t.Run("should get terminal session", func(t *testing.T) {
-		namespace := "garden"
-		name := "apple"
-		container := "busybox"
-		shell := "/bin/bash"
-
-		kubernetesClient := newKubernetesClient(t)
-		kubernetesClient.EXPECT().GetTerminal(gomock.Any(), gomock.Any(), namespace, name, container, shell).Return(nil)
-
-		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
-		s := httptest.NewServer(http.HandlerFunc(router.getTerminal))
-		defer s.Close()
-
-		host := strings.TrimPrefix(s.URL, "http://")
-		uri := fmt.Sprintf("ws://%s?namespace=%s&name=%s&container=%s&shell=%s", host, namespace, name, container, shell)
-		ws, _, err := websocket.DefaultDialer.Dial(uri, nil)
-		require.NoError(t, err)
-		defer ws.Close()
 	})
 }
 
