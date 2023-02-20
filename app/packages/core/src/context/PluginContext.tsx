@@ -101,12 +101,12 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
 }: IPluginContextProviderProps) => {
   const { api } = useContext(APIContext);
   const { isError, error, isLoading, data } = useQuery<IPluginInstance[], Error>(['core/plugincontext'], async () => {
-    const plugins = await api.get<IPluginInstance[] | null>('/api/plugins');
-    if (plugins == null) {
+    const instances = await api.get<IPluginInstance[] | null>('/api/plugins');
+    if (instances == null) {
       return [];
     }
 
-    return plugins;
+    return instances;
   });
 
   /**

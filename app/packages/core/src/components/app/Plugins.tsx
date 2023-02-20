@@ -73,7 +73,7 @@ const Plugins: FunctionComponent = () => {
       <List>
         {getPlugins().map((item, i) => (
           <ListItem key={i} disablePadding={true}>
-            <ListItemButton component={Link} to={`${item.cluster}/${item.type}`}>
+            <ListItemButton component={Link} to={'.' + item.id}>
               <ListItemText primary={item.name} secondary={item.description} />
             </ListItemButton>
           </ListItem>

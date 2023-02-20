@@ -67,12 +67,20 @@ describe('PluginContext', () => {
         name: 'foo instance 1',
         type: 'foo',
       },
+      {
+        cluster: 'prod',
+        id: 'foo-2',
+        name: 'foo instance 2 on prod',
+        type: 'bar',
+      },
     ]);
 
     const Test: FunctionComponent = () => {
-      const { getInstance, getPlugin } = useContext(PluginContext);
+      const { getAvailableClusters, getAvailablePluginTypes, getInstance, getPlugin } = useContext(PluginContext);
       expect(getInstance('foo-1')).toBeDefined();
       expect(getPlugin('foo')).toBeDefined();
+      expect(getAvailableClusters()).toEqual(['dev', 'prod']);
+      expect(getAvailablePluginTypes()).toEqual(['foo', 'bar']);
       return <>has been rendered</>;
     };
 
