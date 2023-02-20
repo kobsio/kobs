@@ -18,8 +18,8 @@ describe('SignIn', () => {
     vi.restoreAllMocks();
   });
 
-  const render = async (): Promise<RenderResult> => {
-    getSpy.mockResolvedValueOnce({ url: 'http://some-oidc-provider.test' });
+  const render = async (oidcURL = '/oidc/redirect'): Promise<RenderResult> => {
+    getSpy.mockResolvedValueOnce({ url: oidcURL });
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -37,6 +37,7 @@ describe('SignIn', () => {
           <APIContext.Provider value={{ api: apiClient }}>
             <Routes>
               <Route path="/auth" element={<Signin />} />
+              <Route path="/oidc/redirect" element={<>sign in page of the oidc provider</>} />
               <Route path="/redirect/path" element={<>login successful</>} />
             </Routes>
           </APIContext.Provider>
@@ -71,6 +72,7 @@ describe('SignIn', () => {
 
   it('shows error message when email is empty', async () => {
     await render();
+
     await userEvent.click(screen.getByText(/Sign In/));
 
     expect(screen.getByText(/please fill in your e-mail/)).toBeInTheDocument();
@@ -78,6 +80,7 @@ describe('SignIn', () => {
 
   it('shows error message when password is empty', async () => {
     await render();
+
     const emailInput = screen.getByLabelText(/E-Mail/);
     await userEvent.type(emailInput, 'test@test.test');
     await userEvent.click(screen.getByText(/Sign In/));
@@ -88,14 +91,13 @@ describe('SignIn', () => {
   it('shows warning when credentials are invalid', async () => {
     await render();
 
-    postSpy.mockRejectedValue({ error: 'invalid credentials' });
-
     const emailInput = screen.getByLabelText(/E-Mail/);
     await userEvent.type(emailInput, 'test@test.test');
 
     const passwordInput = screen.getByLabelText(/Password/);
     await userEvent.type(passwordInput, 'supersecret');
 
+    postSpy.mockRejectedValue({ error: 'invalid credentials' });
     await userEvent.click(screen.getByText(/Sign In/));
 
     expect(screen.getByText(/The credentials are not correct./)).toBeInTheDocument();
@@ -105,12 +107,21 @@ describe('SignIn', () => {
     await render();
 
     const signInButton = await waitFor(() => {
-      return screen.getByText(/Sign In/);
+      return screen.getByText(/Sign in via OIDC/);
     });
     await userEvent.click(signInButton);
+
     expect(getSpy).toHaveBeenCalled();
     expect(getSpy).toHaveBeenCalledWith(`/api/auth/oidc?redirect=${encodeURIComponent('/redirect/path')}`, {
       disableAutorefresh: true,
     });
+
+    expect(screen.getByText(/sign in page of the oidc provider/)).toBeInTheDocument();
+  });
+
+  it('hides sign in via OIDC when url is empty', async () => {
+    await render('');
+
+    expect(screen.queryByText(/Sign in via OIDC/)).toBeNull();
   });
 });

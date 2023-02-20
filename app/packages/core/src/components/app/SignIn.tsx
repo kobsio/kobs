@@ -110,7 +110,7 @@ const Signin: FunctionComponent = () => {
               The credentials are not correct.
             </Alert>
           )}
-          {data && (
+          {data?.url && (
             <>
               <Divider />
               <Button type="submit" variant="outlined" component={Link} to={data.url}>

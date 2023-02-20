@@ -20,6 +20,13 @@ import (
 // the configured provider. If no OIDC provider is configured this will return an error.
 // the result of this handler includes the redirect url, which helps us to direct the user to the desired uri after the sign-in is completed
 func (c *client) oidcHandler(w http.ResponseWriter, r *http.Request) {
+	if !c.config.OIDC.Enabled {
+		render.JSON(w, r, struct {
+			URL string `json:"url"`
+		}{URL: ""})
+		return
+	}
+
 	if c.oidcConfig == nil || c.oidcProvider == nil {
 		log.Warn(r.Context(), "OIDC provider is not configured")
 		errresponse.Render(w, r, http.StatusBadRequest, "OIDC provider is not configured")
