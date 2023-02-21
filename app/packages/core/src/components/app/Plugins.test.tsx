@@ -51,6 +51,27 @@ describe('Plugins', () => {
     expect(screen.getByText(/bar instance/)).toBeInTheDocument();
   });
 
+  it('should only render the first 10 plugins', async () => {
+    await render([
+      ...Array.from({ length: 10 }, (v, i) => ({
+        cluster: 'dev',
+        id: `foo-${i}`,
+        name: `foo-instance-${i}`,
+        type: 'foo',
+      })),
+      {
+        cluster: 'prod',
+        id: 'bar',
+        name: 'item on the second page',
+        type: 'bar',
+      },
+    ]);
+
+    expect(screen.getByText(/foo-instance-0/)).toBeInTheDocument();
+    expect(screen.getByText(/foo-instance-1/)).toBeInTheDocument();
+    expect(screen.queryByText(/bar instance/)).toBeNull();
+  });
+
   it('should filter by cluster', async () => {
     await render([
       {
@@ -124,5 +145,13 @@ describe('Plugins', () => {
 
     expect(screen.getByText(/foo instance/)).toBeInTheDocument();
     expect(screen.queryByText(/bar instance/)).toBeNull();
+  });
+
+  it.todo('should handle a change of the items per page', () => {
+    // todo: write test that changes the perPage option and assert that enough items are shown
+  });
+
+  it.todo('should persist the search state in URLSearchParams', () => {
+    // todo: write test that checks the search params in the url after the user selected a bunch of filters
   });
 });
