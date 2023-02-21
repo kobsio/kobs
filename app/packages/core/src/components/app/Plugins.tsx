@@ -1,3 +1,4 @@
+import { Engineering } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -36,14 +37,14 @@ const optionsFromSearch = (params: URLSearchParams): IOptions => {
   return {
     clusters: clusters ? clusters.split(',') : [],
     page: page ? parseInt(page) : 1,
-    perPage: perPage ? parseInt(perPage) : 10,
+    perPage: perPage ? parseInt(perPage) : 8,
     pluginTypes: pluginTypes ? pluginTypes.split(',') : [],
     search: search ?? '',
   };
 };
 
 const Plugins: FunctionComponent = () => {
-  const { getAvailableClusters, getAvailablePluginTypes, instances } = useContext(PluginContext);
+  const { getAvailableClusters, getAvailablePluginTypes, getPlugin, instances } = useContext(PluginContext);
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const options = optionsFromSearch(params);
@@ -71,15 +72,15 @@ const Plugins: FunctionComponent = () => {
 
   return (
     <Stack minHeight="100%" minWidth="100%" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-      <Box pt={6}>
+      <Box pt={6} minWidth="100%">
         <Typography variant="h3" mb={2}>
           Plugins
         </Typography>
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle1" mb={2}>
           A list of all available plugins, which can be used within your applications, dashboards, teams and users. You
           can also select a plugin to directly interact with the underlying service.
         </Typography>
-        <Stack spacing={8} my={6} direction="row">
+        <Stack direction={{ lg: 'row', xs: 'column' }} spacing={{ lg: 4, xs: 2 }}>
           <Autocomplete
             multiple={true}
             id="cluster"
@@ -119,14 +120,19 @@ const Plugins: FunctionComponent = () => {
           <Grid item={true} xs={12} lg={12}>
             <Grid container={true} spacing={6}>
               {items.map((item) => (
-                <Grid key={item.id} item={true} xs={12} sm={12} md={3}>
+                <Grid key={item.id} item={true} xs={12} sm={6} md={3} lg={3} xl={3}>
                   <Card>
                     <CardActionArea component={Link} to={'.' + item.id}>
                       <CardContent sx={{ p: 6 }}>
-                        <Typography variant="h6" mb={6}>
-                          {item.name}
-                        </Typography>
-                        <Typography>{item.description}</Typography>
+                        <Stack spacing={8}>
+                          <Stack direction="row" justifyContent="center">
+                            {getPlugin(item.type)?.icon || <Engineering sx={{ fontSize: 64, ml: '16px' }} />}
+                          </Stack>
+                          <Typography variant="h6" mb={6} textAlign="center">
+                            {item.name}
+                          </Typography>
+                          <Typography textAlign="center">{item.description}</Typography>
+                        </Stack>
                       </CardContent>
                     </CardActionArea>
                   </Card>
@@ -136,7 +142,6 @@ const Plugins: FunctionComponent = () => {
           </Grid>
         </Grid>
       </Box>
-
       <Stack direction="row" justifyContent="flex-end" minWidth="100%" spacing={4}>
         <Select
           id="per-page-select"
@@ -144,7 +149,7 @@ const Plugins: FunctionComponent = () => {
           value={options.perPage}
           variant="standard"
         >
-          {[10, 20, 50, 100].map((i) => (
+          {[8, 16, 64, 128].map((i) => (
             <MenuItem key={i} value={i}>
               {i} per page
             </MenuItem>
@@ -152,6 +157,7 @@ const Plugins: FunctionComponent = () => {
         </Select>
         <Pagination
           count={pages}
+          page={options.page}
           onChange={(e, value): void => {
             handleChange({ page: value });
           }}

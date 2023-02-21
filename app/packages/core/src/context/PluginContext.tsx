@@ -2,7 +2,7 @@ import { Alert, Box, CircularProgress, Paper } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext } from 'react';
 
-import { APIContext } from '../components/api/context';
+import { APIContext } from './APIContext';
 
 /**
  * `IPluginPageProps` is the interface which defines the properties which are passed to the `page` component of a plugin.
@@ -99,9 +99,9 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   plugins,
   children,
 }: IPluginContextProviderProps) => {
-  const { api } = useContext(APIContext);
+  const { client } = useContext(APIContext);
   const { isError, error, isLoading, data } = useQuery<IPluginInstance[], Error>(['core/plugincontext'], async () => {
-    const instances = await api.get<IPluginInstance[] | null>('/api/plugins');
+    const instances = await client.get<IPluginInstance[] | null>('/api/plugins');
     if (instances == null) {
       return [];
     }

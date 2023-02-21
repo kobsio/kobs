@@ -51,9 +51,9 @@ describe('Plugins', () => {
     expect(screen.getByText(/bar instance/)).toBeInTheDocument();
   });
 
-  it('should only render the first 10 plugins', async () => {
+  it('should only render the first 8 plugins', async () => {
     await render([
-      ...Array.from({ length: 10 }, (v, i) => ({
+      ...Array.from({ length: 8 }, (v, i) => ({
         cluster: 'dev',
         id: `foo-${i}`,
         name: `foo-instance-${i}`,
@@ -68,7 +68,7 @@ describe('Plugins', () => {
     ]);
 
     expect(screen.getByText(/foo-instance-0/)).toBeInTheDocument();
-    expect(screen.getByText(/foo-instance-1/)).toBeInTheDocument();
+    expect(screen.getByText(/foo-instance-7/)).toBeInTheDocument();
     expect(screen.queryByText(/bar instance/)).toBeNull();
   });
 

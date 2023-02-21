@@ -4,18 +4,17 @@ import { vi } from 'vitest';
 
 import { PluginContext, PluginContextProvider } from './PluginContext';
 
-import Client from '../components/api/api';
-import { APIContext } from '../components/api/context';
+import {APIClient, APIContext} from './APIContext';
 import QueryClientProvider from '../utils/QueryClientProvider';
 
 describe('PluginContext', () => {
-  const apiClient: Client = new Client();
+  const apiClient = new APIClient();
   const getSpy = vi.spyOn(apiClient, 'get');
 
   const render = (children: ReactNode): RenderResult => {
     return _render(
       <QueryClientProvider>
-        <APIContext.Provider value={{ api: apiClient }}>
+        <APIContext.Provider value={{ client: apiClient, getUser: () => undefined }}>
           <PluginContextProvider plugins={[{ type: 'foo' }]}>{children}</PluginContextProvider>
         </APIContext.Provider>
       </QueryClientProvider>,
