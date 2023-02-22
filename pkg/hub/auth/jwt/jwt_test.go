@@ -25,8 +25,7 @@ func TestCreateToken(t *testing.T) {
 	session, err := ValidateToken[authContext.User](token, "sessionToken")
 	require.NoError(t, err)
 	require.NotNil(t, session)
-	require.NotNil(t, session.Data)
-	require.Equal(t, authContext.User{ID: "user1@kobs.io"}, *session.Data)
+	require.Equal(t, authContext.User{ID: "user1@kobs.io"}, *session)
 
 	_, err = CreateToken(&authContext.User{ID: "user1@kobs.io"}, "sessionToken", time.Duration(-48*time.Hour))
 	require.Error(t, err)

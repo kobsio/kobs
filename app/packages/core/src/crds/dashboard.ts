@@ -1,57 +1,57 @@
 export interface IDashboard {
-  id: string;
-  updatedAt: number;
   cluster: string;
-  namespace: string;
-  name: string;
-  title: string;
   description?: string;
   hideToolbar?: boolean;
-  placeholders?: IPlaceholder[];
-  variables?: IVariable[];
+  id: string;
+  name: string;
+  namespace: string;
   panels: IPanel[];
+  placeholders?: IPlaceholder[];
+  title: string;
+  updatedAt: number;
+  variables?: IVariable[];
 }
 
 export interface IPlaceholder {
-  name: string;
-  description?: string;
   default?: string;
+  description?: string;
+  name: string;
   type?: string;
 }
 
 export interface IVariable {
-  name: string;
-  label?: string;
   hide?: boolean;
+  label?: string;
+  name: string;
   plugin: IPlugin;
 }
 
 export interface IPanel {
-  title: string;
   description?: string;
-  x?: number;
-  y?: number;
-  w?: number;
   h?: number;
   plugin: IPlugin;
+  title: string;
+  w?: number;
+  x?: number;
+  y?: number;
 }
 
 export interface IPlugin {
-  type: string;
   cluster: string;
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
+  type: string;
 }
 
 export interface IReference {
   cluster: string;
-  namespace: string;
-  name: string;
-  title: string;
   description?: string;
-  placeholders?: IPlaceholders;
   inline?: IReferenceInline;
+  name: string;
+  namespace: string;
+  placeholders?: IPlaceholders;
+  title: string;
 }
 
 export interface IPlaceholders {
@@ -60,8 +60,8 @@ export interface IPlaceholders {
 
 export interface IReferenceInline {
   hideToolbar?: boolean;
-  variables?: IVariable[];
   panels: IPanel[];
+  variables?: IVariable[];
 }
 
 export interface IVariableValues extends IVariable {

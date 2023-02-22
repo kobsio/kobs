@@ -186,7 +186,7 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 		applicationIDs = append(applicationIDs, application.ID)
 	}
 
-	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "SourceID", applicationIDs)
+	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "sourceID", applicationIDs)
 	if err != nil {
 		log.Error(ctx, "Failed to get source topology", zap.Error(err))
 		span.RecordError(err)
@@ -195,7 +195,7 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "TargetID", applicationIDs)
+	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "targetID", applicationIDs)
 	if err != nil {
 		log.Error(ctx, "Failed to get target topology", zap.Error(err))
 		span.RecordError(err)
@@ -250,7 +250,7 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "SourceID", []string{id})
+	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "sourceID", []string{id})
 	if err != nil {
 		log.Error(ctx, "Failed to get source topology", zap.Error(err))
 		span.RecordError(err)
@@ -259,7 +259,7 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "TargetID", []string{id})
+	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "targetID", []string{id})
 	if err != nil {
 		log.Error(ctx, "Failed to get target topology", zap.Error(err))
 		span.RecordError(err)

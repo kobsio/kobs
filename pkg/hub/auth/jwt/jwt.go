@@ -14,7 +14,7 @@ type CustomClaims[T any] struct {
 }
 
 // ValidateToken validates a given jwt token and returns the user from the claims or an error when the validation fails.
-func ValidateToken[T any](tokenString, sessionToken string) (*CustomClaims[T], error) {
+func ValidateToken[T any](tokenString, sessionToken string) (*T, error) {
 	token, err := goJWT.ParseWithClaims(tokenString, &CustomClaims[T]{}, func(token *goJWT.Token) (any, error) {
 		if _, ok := token.Method.(*goJWT.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -28,22 +28,22 @@ func ValidateToken[T any](tokenString, sessionToken string) (*CustomClaims[T], e
 
 	claims, ok := token.Claims.(*CustomClaims[T])
 	if ok && token.Valid {
-		return claims, nil
+		return claims.Data, nil
 	}
 
 	return nil, fmt.Errorf("invalid jwt claims")
 }
 
 // CreateToken creates a new signed jwt token with the user information saved in the claims.
-func CreateToken[T any](data *T, sessionToken string, sessionInterval time.Duration) (string, error) {
-	if sessionInterval < 0 {
-		return "", fmt.Errorf("invalid session interval")
+func CreateToken[T any](data *T, sessionToken string, sessionDuration time.Duration) (string, error) {
+	if sessionDuration < 0 {
+		return "", fmt.Errorf("invalid session duration")
 	}
 
 	claims := CustomClaims[T]{
 		data,
 		goJWT.RegisteredClaims{
-			ExpiresAt: goJWT.NewNumericDate(time.Now().Add(sessionInterval)),
+			ExpiresAt: goJWT.NewNumericDate(time.Now().Add(sessionDuration)),
 			Issuer:    "kobs.io",
 		},
 	}

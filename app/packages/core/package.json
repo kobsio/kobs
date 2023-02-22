@@ -15,7 +15,6 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'dist/**/*.js' --no-border-checks",
-    "dev": "vite build --watch -m development",
     "build": "tsc && vite build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

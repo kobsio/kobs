@@ -2,18 +2,18 @@ import { IReference } from './dashboard';
 
 // The ITeam interface implements the Team CRD.
 export interface ITeam {
-  id: string;
-  updatedAt: number;
   cluster: string;
-  namespace: string;
-  name: string;
+  dashboards?: IReference[];
   description?: string;
+  id: string;
   links?: ILink[];
   logo?: string;
-  dashboards?: IReference[];
+  name: string;
+  namespace: string;
+  updatedAt: number;
 }
 
 export interface ILink {
-  title: string;
   link: string;
+  title: string;
 }

@@ -28,61 +28,61 @@ type DashboardList struct {
 
 type DashboardSpec struct {
 	ID           string        `json:"id,omitempty" bson:"_id"`
-	UpdatedAt    int64         `json:"updatedAt,omitempty"`
-	Cluster      string        `json:"cluster,omitempty"`
-	Namespace    string        `json:"namespace,omitempty"`
-	Name         string        `json:"name,omitempty"`
-	Title        string        `json:"title,omitempty"`
-	Description  string        `json:"description,omitempty"`
-	HideToolbar  bool          `json:"hideToolbar,omitempty"`
-	Placeholders []Placeholder `json:"placeholders,omitempty"`
-	Variables    []Variable    `json:"variables,omitempty"`
-	Panels       []Panel       `json:"panels"`
+	UpdatedAt    int64         `json:"updatedAt,omitempty" bson:"updatedAt"`
+	Cluster      string        `json:"cluster,omitempty" bson:"cluster"`
+	Namespace    string        `json:"namespace,omitempty" bson:"namespace"`
+	Name         string        `json:"name,omitempty" bson:"name"`
+	Title        string        `json:"title,omitempty" bson:"title"`
+	Description  string        `json:"description,omitempty" bson:"description"`
+	HideToolbar  bool          `json:"hideToolbar,omitempty" bson:"hideToolbar"`
+	Placeholders []Placeholder `json:"placeholders,omitempty" bson:"placeholders"`
+	Variables    []Variable    `json:"variables,omitempty" bson:"variables"`
+	Panels       []Panel       `json:"panels" bson:"panels"`
 }
 
 type Placeholder struct {
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
-	Default     string `json:"default,omitempty"`
-	Type        string `json:"type,omitempty"`
+	Name        string `json:"name" bson:"name"`
+	Description string `json:"description,omitempty" bson:"description"`
+	Default     string `json:"default,omitempty" bson:"default"`
+	Type        string `json:"type,omitempty" bson:"type"`
 }
 
 type Variable struct {
-	Name   string `json:"name"`
-	Label  string `json:"label,omitempty"`
-	Hide   bool   `json:"hide,omitempty"`
-	Plugin Plugin `json:"plugin"`
+	Name   string `json:"name" bson:"name"`
+	Label  string `json:"label,omitempty" bson:"label"`
+	Hide   bool   `json:"hide,omitempty" bson:"hide"`
+	Plugin Plugin `json:"plugin" bson:"plugin"`
 }
 
 type Panel struct {
-	Title       string `json:"title"`
-	Description string `json:"description,omitempty"`
-	X           int64  `json:"x,omitempty"`
-	Y           int64  `json:"y,omitempty"`
-	W           int64  `json:"w,omitempty"`
-	H           int64  `json:"h,omitempty"`
-	Plugin      Plugin `json:"plugin"`
+	Title       string `json:"title" bson:"title"`
+	Description string `json:"description,omitempty" bson:"description"`
+	X           int64  `json:"x,omitempty" bson:"x"`
+	Y           int64  `json:"y,omitempty" bson:"y"`
+	W           int64  `json:"w,omitempty" bson:"w"`
+	H           int64  `json:"h,omitempty" bson:"h"`
+	Plugin      Plugin `json:"plugin" bson:"plugin"`
 }
 
 type Plugin struct {
-	Type    string                `json:"type"`
-	Cluster string                `json:"cluster"`
-	Name    string                `json:"name"`
-	Options *apiextensionsv1.JSON `json:"options,omitempty"`
+	Type    string                `json:"type" bson:"type"`
+	Cluster string                `json:"cluster" bson:"cluster"`
+	Name    string                `json:"name" bson:"name"`
+	Options *apiextensionsv1.JSON `json:"options,omitempty" bson:"options"`
 }
 
 type Reference struct {
-	Cluster      string            `json:"cluster,omitempty"`
-	Namespace    string            `json:"namespace,omitempty"`
-	Name         string            `json:"name,omitempty"`
-	Title        string            `json:"title"`
-	Description  string            `json:"description,omitempty"`
-	Placeholders map[string]string `json:"placeholders,omitempty"`
-	Inline       *ReferenceInline  `json:"inline,omitempty"`
+	Cluster      string            `json:"cluster,omitempty" bson:"cluster"`
+	Namespace    string            `json:"namespace,omitempty" bson:"namespace"`
+	Name         string            `json:"name,omitempty" bson:"name"`
+	Title        string            `json:"title" bson:"title"`
+	Description  string            `json:"description,omitempty" bson:"description"`
+	Placeholders map[string]string `json:"placeholders,omitempty" bson:"placeholders"`
+	Inline       *ReferenceInline  `json:"inline,omitempty" bson:"inline"`
 }
 
 type ReferenceInline struct {
-	HideToolbar bool       `json:"hideToolbar,omitempty"`
-	Variables   []Variable `json:"variables,omitempty"`
-	Panels      []Panel    `json:"panels"`
+	HideToolbar bool       `json:"hideToolbar,omitempty" bson:"hideToolbar"`
+	Variables   []Variable `json:"variables,omitempty" bson:"variables"`
+	Panels      []Panel    `json:"panels" bson:"panels"`
 }

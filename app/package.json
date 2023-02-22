@@ -6,8 +6,10 @@
     "packages/*"
   ],
   "scripts": {
+    "init": "npm install && npm run clean && lerna bootstrap",
+    "clean": "lerna clean --yes && lerna exec -- rm -rf dist",
+    "dev": "lerna run dev --stream",
     "analyze": "lerna run analyze",
-    "dev": "lerna run dev --parallel",
     "build": "lerna run build",
     "preview": "lerna run preview",
     "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'",
@@ -17,7 +19,8 @@
   "eslintConfig": {
     "plugins": [
       "react-hooks",
-      "import"
+      "import",
+      "typescript-sort-keys"
     ],
     "extends": [
       "react-app",
@@ -48,6 +51,15 @@
           "ignoreCase": false
         }
       ],
+      "typescript-sort-keys/interface": [
+        "error",
+        "asc",
+        {
+          "caseSensitive": true,
+          "natural": false,
+          "requiredFirst": false
+        }
+      ],
       "import/order": [
         "error",
         {
@@ -68,7 +80,6 @@
           "newlines-between": "always"
         }
       ],
-      "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/no-empty-function": "error",
       "@typescript-eslint/no-empty-interface": "error",
       "@typescript-eslint/no-explicit-any": "error",
@@ -79,29 +90,11 @@
         "error",
         {
           "format": [
-            "camelCase"
-          ],
-          "selector": "default",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
             "camelCase",
             "UPPER_CASE",
             "PascalCase"
           ],
           "selector": "variable",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "camelCase",
-            "UPPER_CASE",
-            "PascalCase"
-          ],
-          "selector": "property",
           "leadingUnderscore": "forbid",
           "trailingUnderscore": "forbid"
         },
@@ -177,6 +170,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "lerna": "^6.4.1",
     "prettier": "^2.8.3"
   }

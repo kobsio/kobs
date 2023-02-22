@@ -14,7 +14,9 @@ import (
 	v10 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	v11 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
 	v12 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
+	context0 "github.com/kobsio/kobs/pkg/hub/auth/context"
 	plugin "github.com/kobsio/kobs/pkg/plugins/plugin"
+	primitive "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // MockClient is a mock of Client interface.
@@ -38,6 +40,50 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
+}
+
+// CreateSession mocks base method.
+func (m *MockClient) CreateSession(ctx context.Context, user context0.User) (*Session, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateSession", ctx, user)
+	ret0, _ := ret[0].(*Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateSession indicates an expected call of CreateSession.
+func (mr *MockClientMockRecorder) CreateSession(ctx, user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*MockClient)(nil).CreateSession), ctx, user)
+}
+
+// DeleteSession mocks base method.
+func (m *MockClient) DeleteSession(ctx context.Context, sessionID primitive.ObjectID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteSession", ctx, sessionID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteSession indicates an expected call of DeleteSession.
+func (mr *MockClientMockRecorder) DeleteSession(ctx, sessionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSession", reflect.TypeOf((*MockClient)(nil).DeleteSession), ctx, sessionID)
+}
+
+// GetAndUpdateSession mocks base method.
+func (m *MockClient) GetAndUpdateSession(ctx context.Context, sessionID primitive.ObjectID) (*Session, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAndUpdateSession", ctx, sessionID)
+	ret0, _ := ret[0].(*Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAndUpdateSession indicates an expected call of GetAndUpdateSession.
+func (mr *MockClientMockRecorder) GetAndUpdateSession(ctx, sessionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAndUpdateSession", reflect.TypeOf((*MockClient)(nil).GetAndUpdateSession), ctx, sessionID)
 }
 
 // GetApplicationByID mocks base method.
@@ -203,6 +249,21 @@ func (m *MockClient) GetPlugins(ctx context.Context) ([]plugin.Instance, error) 
 func (mr *MockClientMockRecorder) GetPlugins(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPlugins", reflect.TypeOf((*MockClient)(nil).GetPlugins), ctx)
+}
+
+// GetSession mocks base method.
+func (m *MockClient) GetSession(ctx context.Context, sessionID primitive.ObjectID) (*Session, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSession", ctx, sessionID)
+	ret0, _ := ret[0].(*Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSession indicates an expected call of GetSession.
+func (mr *MockClientMockRecorder) GetSession(ctx, sessionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSession", reflect.TypeOf((*MockClient)(nil).GetSession), ctx, sessionID)
 }
 
 // GetTags mocks base method.

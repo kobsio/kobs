@@ -18,7 +18,7 @@ import (
 
 type Router struct {
 	*chi.Mux
-	storeClient db.Client
+	dbClient db.Client
 }
 
 func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
@@ -35,14 +35,14 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		teams, err = router.storeClient.GetTeams(r.Context())
+		teams, err = router.dbClient.GetTeams(r.Context())
 		if err != nil {
 			log.Error(r.Context(), "Failed to get teams", zap.Error(err))
 			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get teams")
 			return
 		}
 	} else {
-		teams, err = router.storeClient.GetTeamsByIDs(r.Context(), user.Teams)
+		teams, err = router.dbClient.GetTeamsByIDs(r.Context(), user.Teams)
 		if err != nil {
 			log.Error(r.Context(), "Failed to get teams", zap.Error(err))
 			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get teams")
@@ -72,7 +72,7 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	team, err := router.storeClient.GetTeamByID(r.Context(), id)
+	team, err := router.dbClient.GetTeamByID(r.Context(), id)
 	if err != nil {
 		log.Error(r.Context(), "Failed to get team", zap.Error(err), zap.String("id", id))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get team")
@@ -82,10 +82,10 @@ func (router *Router) getTeam(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, team)
 }
 
-func Mount(storeClient db.Client) chi.Router {
+func Mount(dbClient db.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		storeClient,
+		dbClient,
 	}
 
 	router.Get("/", router.getTeams)

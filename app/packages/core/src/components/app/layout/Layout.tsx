@@ -41,7 +41,7 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutPro
   const isLgUp = useIsWidthUp('lg');
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleDrawerToggle = (): void => {
+  const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
@@ -53,7 +53,6 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutPro
             variant="temporary"
             PaperProps={{ style: { width: drawerWidth } }}
             sx={{
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               '> div': { borderRight: 0 },
             }}
             open={mobileOpen}
@@ -67,7 +66,6 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutPro
             variant="permanent"
             PaperProps={{ style: { width: drawerWidth } }}
             sx={{
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               '> div': { borderRight: 0 },
             }}
             onClose={handleDrawerToggle}
@@ -91,10 +89,10 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutPro
 
         <Box
           component="main"
-          sx={{
-            background: 'palette.background.default',
+          sx={(theme) => ({
+            background: theme.palette.background.default,
             flex: 1,
-          }}
+          })}
           p={isLgUp ? 12 : 5}
         >
           {children}

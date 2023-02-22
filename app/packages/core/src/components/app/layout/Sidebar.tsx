@@ -11,17 +11,18 @@ import {
   MenuItem,
   Typography,
   useTheme,
+  Box,
+  List,
+  ListItemText,
+  Stack,
+  Toolbar,
 } from '@mui/material';
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import ListItemText from '@mui/material/ListItemText';
-import Stack from '@mui/material/Stack';
-import Toolbar from '@mui/material/Toolbar';
 import md5 from 'md5';
 import { FunctionComponent, forwardRef, useContext, useState, MouseEvent } from 'react';
-import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation } from 'react-router-dom';
+import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation, useNavigate } from 'react-router-dom';
 
 import logo from '../../../assets/logo.svg';
+import { APIContext, IAPIContext } from '../../../context/APIContext';
 import { AppContext, IAppContext } from '../../../context/AppContext';
 import { INavigation, INavigationItem, INavigationSubItem } from '../../../crds/user';
 import { ITheme } from '../../../utils/theme';
@@ -82,7 +83,7 @@ const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebar
    * `toggleItem` is used to add / remove the provided `item` from the `items` state. If the provided `item` is empty,
    * all items are removed from the state.
    */
-  const toggleItem = (item: string): void => {
+  const toggleItem = (item: string) => {
     if (item === '') {
       setItems([]);
     } else {
@@ -98,12 +99,14 @@ const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebar
     <Stack>
       <Box
         sx={{
-          color: 'sidebar.color',
+          color: theme.sidebar.color,
           display: 'block',
           fontSize: theme.typography.caption.fontSize,
           fontWeight: theme.typography.fontWeightMedium,
           opacity: 0.4,
-          padding: theme.spacing(4, 7, 1),
+          pb: 1,
+          pt: 4,
+          px: 7,
           textTransform: 'uppercase',
         }}
       >
@@ -131,8 +134,8 @@ const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebar
  * show / hide the sub items.
  */
 interface ISidebarItemProps {
-  item: INavigationItem;
   isOpen: boolean;
+  item: INavigationItem;
   toggleOpen: (item: string) => void;
 }
 
@@ -152,19 +155,17 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
   if (item.items && item.items.length > 0) {
     return (
       <ListItemButton
-        onClick={(): void => toggleOpen(item.name)}
+        onClick={() => toggleOpen(item.name)}
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             background: 'rgba(0, 0, 0, 0.08)',
           },
           fontWeight: theme.typography.fontWeightRegular,
-          paddingBottom: theme.spacing(3),
-          paddingLeft: theme.spacing(8),
-          paddingRight: theme.spacing(7),
-          paddingTop: theme.spacing(3),
+          pl: 8,
+          pr: 7,
+          py: 3,
           svg: {
-            color: 'sidebar.color',
+            color: theme.sidebar.color,
             fontSize: '20px',
             height: '20px',
             opacity: 0.5,
@@ -175,23 +176,21 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
         {appContext.getIcon(item.icon)}
         <ListItemText
           sx={{
-            margin: 0,
+            m: 0,
             span: {
-              color: 'sidebar.color',
+              color: theme.sidebar.color,
               fontSize: 'typography.body1.fontSize',
-              paddingBottom: 0,
-              paddingLeft: theme.spacing(4),
-              paddingRight: theme.spacing(4),
-              paddingTop: 0,
+              px: 4,
+              py: 0,
             },
           }}
         >
           {item.name}
         </ListItemText>
         {isOpen ? (
-          <ExpandLess sx={{ color: 'rgba(sidebar.color, 0.5)' }} />
+          <ExpandLess sx={{ color: `rgba(${theme.sidebar.color}, 0.5)` }} />
         ) : (
-          <ExpandMore sx={{ color: 'rgba(sidebar.color, 0.5)' }} />
+          <ExpandMore sx={{ color: `rgba(${theme.sidebar.color}, 0.5)` }} />
         )}
       </ListItemButton>
     );
@@ -203,18 +202,16 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
         component={Link}
         to={item.link}
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             background: isActive ? darken(theme.sidebar.background, 0.13) : 'rgba(0, 0, 0, 0.08)',
           },
           background: isActive ? darken(theme.sidebar.background, 0.13) : undefined,
           fontWeight: theme.typography.fontWeightRegular,
-          paddingBottom: theme.spacing(3),
-          paddingLeft: theme.spacing(8),
-          paddingRight: theme.spacing(7),
-          paddingTop: theme.spacing(3),
+          pl: 8,
+          pr: 7,
+          py: 3,
           svg: {
-            color: 'sidebar.color',
+            color: theme.sidebar.color,
             fontSize: '20px',
             height: '20px',
             opacity: 0.5,
@@ -225,14 +222,12 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
         {appContext.getIcon(item.icon)}
         <ListItemText
           sx={{
-            margin: 0,
+            m: 0,
             span: {
-              color: 'sidebar.color',
-              fontSize: 'typography.body1.fontSize',
-              paddingBottom: 0,
-              paddingLeft: theme.spacing(4),
-              paddingRight: theme.spacing(4),
-              paddingTop: 0,
+              color: theme.sidebar.color,
+              fontSize: theme.typography.body1.fontSize,
+              px: 4,
+              py: 0,
             },
           }}
         >
@@ -269,16 +264,15 @@ const SidebarSubItem: FunctionComponent<ISidebarSubItemProps> = ({ item }: ISide
         component={Link}
         to={item.link}
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             background: isActive ? darken(theme.sidebar.background, 0.13) : 'rgba(0, 0, 0, 0.08)',
           },
           background: isActive ? darken(theme.sidebar.background, 0.13) : undefined,
-          color: 'sidebar.color',
+          color: theme.sidebar.color,
           opacity: isActive ? 1 : 0.7,
-          paddingBottom: theme.spacing(2),
-          paddingLeft: theme.spacing(17.5),
-          paddingTop: theme.spacing(2),
+          pb: 2,
+          pl: 17.5,
+          pt: 2,
         }}
       >
         {item.name}
@@ -302,7 +296,6 @@ const SidebarHeader: FunctionComponent = () => {
         component={Link}
         to="/"
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             backgroundColor: theme.sidebar.header.background,
           },
@@ -313,8 +306,8 @@ const SidebarHeader: FunctionComponent = () => {
           fontWeight: theme.typography.fontWeightMedium,
           justifyContent: 'center',
           minHeight: '56px',
-          paddingLeft: theme.spacing(6),
-          paddingRight: theme.spacing(6),
+          pl: 6,
+          pr: 6,
         }}
       >
         <Box
@@ -327,7 +320,7 @@ const SidebarHeader: FunctionComponent = () => {
         >
           <img src={logo} alt="" />
         </Box>
-        <Box sx={{ marginLeft: 1 }}>kobs</Box>
+        <Box sx={{ ml: 1 }}>kobs</Box>
       </ListItemButton>
     </Toolbar>
   );
@@ -340,19 +333,21 @@ const SidebarHeader: FunctionComponent = () => {
  */
 const SidebarFooter: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
+  const navigate = useNavigate();
+  const apiContext = useContext<IAPIContext>(APIContext);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
 
   /**
    * `toggleMenu` toggles the menu, which contains the sign out button.
    */
-  const toggleMenu = (event: MouseEvent<HTMLDivElement>): void => {
+  const toggleMenu = (event: MouseEvent<HTMLDivElement>) => {
     setAnchorMenu(event.currentTarget);
   };
 
   /**
    * `closeMenu` closes the menu, which contains the sign out button.
    */
-  const closeMenu = (): void => {
+  const closeMenu = () => {
     setAnchorMenu(null);
   };
 
@@ -360,8 +355,11 @@ const SidebarFooter: FunctionComponent = () => {
    * `handleSignOut` handles the sign out of the user. To sign out a user we have to delete all stored tokens and
    * cokkies. When this is done we can redirect the user to the login page.
    */
-  const handleSignOut = async (): Promise<void> => {
-    // TODO: Add sign out logic
+  const handleSignOut = async () => {
+    try {
+      await apiContext.client.signout();
+      navigate(`/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+    } catch (_) {}
   };
 
   /**
@@ -383,18 +381,16 @@ const SidebarFooter: FunctionComponent = () => {
           bottom: 0,
           cursor: 'pointer',
           minWidth: '100%',
-          paddingBottom: theme.spacing(2.75),
-          paddingLeft: theme.spacing(4),
-          paddingRight: theme.spacing(4),
-          paddingTop: theme.spacing(2.75),
           position: 'absolute',
+          px: 4,
+          py: 2.75,
         }}
       >
         <Grid container={true} spacing={2}>
           <Grid item={true}>
             <Badge
               sx={{
-                marginRight: theme.spacing(1),
+                mr: 1,
                 span: {
                   backgroundColor: theme.sidebar.footer.online.background,
                   border: `1.5px solid ${theme.palette.common.white}`,
@@ -410,23 +406,23 @@ const SidebarFooter: FunctionComponent = () => {
               overlap="circular"
               variant="dot"
             >
-              <Avatar alt="Lucy Lavender" src={getProfileImageURL('admin@kobs.io')} />
+              <Avatar alt="Lucy Lavender" src={getProfileImageURL(apiContext.getUser()?.id ?? '')} />
             </Badge>
           </Grid>
           <Grid item={true}>
             <Typography sx={{ color: theme.sidebar.footer.color }} variant="body2">
-              user name
+              {apiContext.getUser()?.name || 'Unknown'}
             </Typography>
             <Typography
               sx={{
                 color: theme.sidebar.footer.color,
                 display: 'block',
                 fontSize: '0.7rem',
-                padding: '1px',
+                p: '1px',
               }}
               variant="caption"
             >
-              user email
+              {apiContext.getUser()?.id || 'Unknown'}
             </Typography>
           </Grid>
         </Grid>
@@ -465,12 +461,12 @@ const SidebarFooter: FunctionComponent = () => {
  * the navigation by substracting the height of the footer from the view height.
  */
 const Sidebar: FunctionComponent = () => {
-  const theme = useTheme<ITheme>();
+  const apiContext = useContext<IAPIContext>(APIContext);
+
   return (
     <Box sx={{ height: '100vh' }}>
       <Box
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&::-webkit-scrollbar': {
             display: 'none',
           },
@@ -480,30 +476,8 @@ const Sidebar: FunctionComponent = () => {
       >
         <SidebarHeader />
         <List disablePadding={true}>
-          <Box
-            sx={{
-              paddingY: theme.spacing(2.5),
-            }}
-          >
-            {[
-              {
-                items: [
-                  { icon: 'home', link: '/', name: 'Home' },
-                  { icon: 'search', link: '/search', name: 'Search' },
-                ],
-                name: 'Home',
-              },
-              {
-                items: [
-                  { icon: 'apps', link: '/applications', name: 'Applications' },
-                  { icon: 'topology', link: '/topology', name: 'Topology' },
-                  { icon: 'team', link: '/teams', name: 'Teams' },
-                  { icon: 'kubernetes', link: '/resources', name: 'Kubernetes Resources' },
-                  { icon: 'plugin', link: '/plugins', name: 'Plugins' },
-                ],
-                name: 'Resources',
-              },
-            ].map((group) => (
+          <Box sx={{ py: 2.5 }}>
+            {apiContext.getUser()?.navigation.map((group) => (
               <SidebarGroup key={group.name} group={group} />
             ))}
           </Box>

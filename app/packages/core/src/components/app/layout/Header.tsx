@@ -1,6 +1,8 @@
 import { Menu } from '@mui/icons-material';
-import { AppBar, IconButton, Toolbar } from '@mui/material';
+import { AppBar, IconButton, Toolbar, useTheme } from '@mui/material';
 import { FunctionComponent } from 'react';
+
+import { ITheme } from '../../../utils/theme';
 
 /**
  * `IHeaderProps` are the properties for the `Header` component. We just need a `handleDrawerToggle` function to toggle
@@ -15,13 +17,15 @@ interface IHeaderProps {
  * screens the sidebar is always visible and the header is only used to toggle the sidebar.
  */
 const Header: FunctionComponent<IHeaderProps> = ({ handleDrawerToggle }: IHeaderProps) => {
+  const theme = useTheme<ITheme>();
+
   return (
     <AppBar
       position="sticky"
       elevation={0}
       sx={{
-        backgroundColor: 'header.background',
-        color: 'header.color',
+        backgroundColor: theme.header.background,
+        color: theme.header.color,
       }}
     >
       <Toolbar>
