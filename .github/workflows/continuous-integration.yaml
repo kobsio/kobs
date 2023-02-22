@@ -1,23 +1,7 @@
 name: Continuous Integration
 
 on:
-  push:
-    paths-ignore:
-      - '.github/**'
-      - '.vscode/**'
-      - 'cmd/kobs/Dockerfile'
-      - 'deploy/**'
-      - 'docs/**'
-      - 'hack/**'
-      - '.dockerignore'
-      - '.editorconfig'
-      - '.gitignore'
-      - 'CHANGELOG.md'
-      - 'CODE_OF_CONDUCT.md'
-      - 'CONTRIBUTING.md'
-      - 'LICENSE'
-      - 'mkdocs.yml'
-      - 'README.md'
+  pull_request:
 
 jobs:
   go:
@@ -55,11 +39,12 @@ jobs:
       - name: Test
         run: |
           make test-coverage
-          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/kube/apis" | grep -v "github.com/kobsio/kobs/pkg/kube/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
+          cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis" | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
+          flags: go
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.out
 
@@ -70,6 +55,12 @@ jobs:
   node:
     name: Node.js
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        plugin: [app, core]
+    defaults:
+      run:
+        working-directory: app
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -88,18 +79,25 @@ jobs:
             node_modules
             */node_modules
             */*/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install Dependencies
         run: |
-          yarn install
+          npm clean-install
 
       - name: Lint
         run: |
-          yarn lint
+          npm run lint
 
-      - name: Build
+      - name: Test
         run: |
-          make generate-assets
+          npm run test:coverage --workspace=@kobsio/${{ matrix.plugin }}
+
+      - name: Upload Coverage "packages/app"
+        uses: codecov/codecov-action@v3
+        with:
+          flags: node-${{ matrix.plugin }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: app/packages/${{ matrix.plugin }}/coverage

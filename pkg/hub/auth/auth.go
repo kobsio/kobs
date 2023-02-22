@@ -1,19 +1,22 @@
 package auth
 
+//go:generate mockgen -source=auth.go -destination=./auth_mock.go -package=auth Client
+
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/hub/app/settings"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/auth/jwt"
-	"github.com/kobsio/kobs/pkg/hub/store"
-	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
-	"github.com/kobsio/kobs/pkg/log"
-	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/hub/db"
+	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-chi/chi/v5"
@@ -30,10 +33,11 @@ type Client interface {
 
 type client struct {
 	config       Config
+	appSettings  settings.Settings
 	router       *chi.Mux
+	dbClient     db.Client
 	oidcConfig   *oauth2.Config
 	oidcProvider *oidc.Provider
-	storeClient  store.Client
 }
 
 // MiddlewareHandler implements a middleware for the chi router, to check if the user is authorized to access kobs. If
@@ -43,15 +47,27 @@ func (c *client) MiddlewareHandler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		user, err := c.getUserFromRequest(r)
-		if err != nil || user == nil {
-			log.Error(ctx, "Could not get user from request", zap.Error(err))
-			errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
+		token, err := r.Cookie("kobs.token")
+		if err != nil {
+			log.Warn(ctx, "Failed to get token from cookie", zap.Error(err))
+			errresponse.Render(w, r, http.StatusUnauthorized, "Failed to get token from cookie")
 			return
 		}
 
-		ctx = context.WithValue(ctx, authContext.UserKey, *user)
+		tokenClaims, err := jwt.ValidateToken[Token](token.Value, c.config.Session.Token)
+		if err != nil {
+			log.Warn(ctx, "Failed to validate token", zap.Error(err))
+			errresponse.Render(w, r, http.StatusUnauthorized, "Failed to validate token")
+			return
+		}
 
+		session, err := c.dbClient.GetSession(ctx, tokenClaims.SessionID)
+		if err != nil {
+			errresponse.Render(w, r, http.StatusUnauthorized)
+			return
+		}
+
+		ctx = context.WithValue(ctx, authContext.UserKey, session.User)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 
@@ -64,27 +80,107 @@ func (c *client) Mount() chi.Router {
 	return c.router
 }
 
-// getUserFromStore returns the user information for the currently authenticated user based on his email and groups from
-// the store. This is required to get the users permissions, so that we can save them in the auth context.
-func (c *client) getUserFromStore(ctx context.Context, userEmail string, teamGroups []string) (*authContext.User, error) {
-	authContextUser := &authContext.User{Email: userEmail, Teams: teamGroups}
+// authHandler is the request handler for authenticated users, which is called as soon as the user opens the app. If the
+// user already has a valid token / session we return the user object stored within the users session. If we are not
+// able to verify the token or to find a corresponding session in our database we return an unauthorized error, so that
+// the user must be re-authenticated.
+func (c *client) authHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 
-	users, err := c.storeClient.GetUsersByEmail(ctx, userEmail)
+	token, err := r.Cookie("kobs.token")
 	if err != nil {
-		return authContextUser, err
+		log.Warn(ctx, "Failed to get token from cookie", zap.Error(err))
+		errresponse.Render(w, r, http.StatusUnauthorized, "Failed to get token from cookie")
+		return
 	}
 
-	for _, user := range users {
-		authContextUser.Permissions.Applications = append(authContextUser.Permissions.Applications, user.Permissions.Applications...)
-		authContextUser.Permissions.Teams = append(authContextUser.Permissions.Teams, user.Permissions.Teams...)
-		authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, user.Permissions.Plugins...)
-		authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, user.Permissions.Resources...)
+	tokenClaims, err := jwt.ValidateToken[Token](token.Value, c.config.Session.Token)
+	if err != nil {
+		log.Warn(ctx, "Failed to validate token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusUnauthorized, "Failed to validate token")
+		return
 	}
 
-	if teamGroups != nil {
-		teams, err := c.storeClient.GetTeamsByGroups(ctx, teamGroups)
+	session, err := c.dbClient.GetAndUpdateSession(ctx, tokenClaims.SessionID)
+	if err != nil {
+		if errors.Is(err, db.ErrSessionNotFound) {
+			log.Warn(ctx, "Session not found", zap.Error(err))
+			errresponse.Render(w, r, http.StatusUnauthorized)
+			return
+		}
+
+		log.Warn(ctx, "Failed to update session", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to update session")
+		return
+	}
+
+	user, err := c.dbClient.GetUserByID(ctx, session.User.ID)
+	if err != nil {
+		log.Warn(ctx, "Failed to get user from database", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get user from database")
+		return
+	}
+
+	render.JSON(w, r, userResponse{
+		User:       session.User,
+		Dashboards: c.appSettings.GetDashboards(user),
+		Navigation: c.appSettings.GetNavigation(user),
+	})
+}
+
+// signinHandler is the request handler for handling the sign in of a user. To sign in a user we have to check if that
+// the user has a User CR. If this is the case we check if the provided password matches the password from the CR.
+// Finally we create a new user for the auth context and a new session / token, which is saved in a cookie and can be
+// used in the following requests to validate the user.
+func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var signinRequestData signinRequest
+
+	err := json.NewDecoder(r.Body).Decode(&signinRequestData)
+	if err != nil {
+		log.Warn(ctx, "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
+		return
+	}
+
+	user, err := c.dbClient.GetUserByID(ctx, signinRequestData.Username)
+	if err != nil {
+		log.Warn(ctx, "Failed to get user from database", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get user from database")
+		return
+	}
+
+	if user == nil {
+		// When no user is found for the provided email address, we use a fixed password hash to prevent user
+		// enumeration by timing requests. Here we are comparing the bcrypt-hashed version of "fakepassword" against
+		// the user provided password.
+		bcrypt.CompareHashAndPassword([]byte("$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"), []byte(signinRequestData.Password))
+
+		log.Warn(ctx, "Invalid username or password")
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid username or password")
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(signinRequestData.Password))
+	if err != nil {
+		log.Warn(ctx, "Invalid username or password", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid username or password")
+		return
+	}
+
+	authContextUser := authContext.User{
+		ID:          user.ID,
+		Name:        user.DisplayName,
+		Teams:       user.Teams,
+		Permissions: user.Permissions,
+	}
+
+	if user.Teams != nil {
+		teams, err := c.dbClient.GetTeamsByIDs(ctx, user.Teams)
 		if err != nil {
-			return authContextUser, err
+			log.Warn(ctx, "Failed to get teams from database", zap.Error(err))
+			errresponse.Render(w, r, http.StatusBadRequest, "Failed to get teams from database")
+			return
 		}
 
 		for _, team := range teams {
@@ -95,147 +191,86 @@ func (c *client) getUserFromStore(ctx context.Context, userEmail string, teamGro
 		}
 	}
 
-	return authContextUser, nil
-}
-
-// getUserFromConfig returns a user with the given email from the configured users.
-func (c *client) getUserFromConfig(email string) *UserConfig {
-	for _, user := range c.config.Users {
-		if user.Email == email {
-			return &user
-		}
-	}
-
-	return nil
-}
-
-// getUserFromRequest returns a user from the current request. For that we are checking if the auth cookie is present.
-// If the cookie is present and contains a value auth token we return the user information in all other cases we are
-// returning an error. If auth is not enabled we return a default user, with all permissions, so that we do not have to
-// handle this within other API calls, because we will always have a valid user object there.
-func (c *client) getUserFromRequest(r *http.Request) (*authContext.User, error) {
-	if c.config.Enabled {
-		cookie, err := r.Cookie("kobs")
-		if err != nil {
-			return nil, err
-		}
-
-		user, err := jwt.ValidateToken[Session](cookie.Value, c.config.Session.Token)
-		if err != nil {
-			return nil, err
-		}
-
-		return c.getUserFromStore(r.Context(), user.Email, user.Teams)
-	}
-
-	return &authContext.User{
-		Email: "",
-		Teams: nil,
-		Permissions: userv1.Permissions{
-			Applications: []userv1.ApplicationPermissions{{Type: "all"}},
-			Teams:        []string{"*"},
-			Plugins:      []userv1.Plugin{{Satellite: "*", Type: "*", Name: "*"}},
-			Resources:    []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"*"}, Verbs: []string{"*"}}},
-		},
-	}, nil
-}
-
-// userHandler returns the current user. For that we try to get the user from the request if this fails we return an
-// error. This method is indented to be used within the AuthContext in the React app, so that we can check if the user
-// is authenticated and we can render the app or if we have to render the login page.
-func (c *client) userHandler(w http.ResponseWriter, r *http.Request) {
-	user, err := c.getUserFromRequest(r)
-	if err != nil || user == nil {
-		log.Error(r.Context(), "Could not get user from request", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusUnauthorized, "Unauthorized")
-		return
-	}
-
-	render.JSON(w, r, user)
-}
-
-// signinHandler handles the login of users, which are provided via the configuration file of the hub. For that we have
-// to check if the user from the request is present in the configuration and if the provided password matches the
-// configured password. If this is the case we are are creating a session object with all the users email and teams. The
-// session can then be used to get the users permissions in the authentication middleware.
-func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
-	var signinRequest SigninRequest
-
-	err := json.NewDecoder(r.Body).Decode(&signinRequest)
+	session, err := c.dbClient.CreateSession(ctx, authContextUser)
 	if err != nil {
-		log.Warn(r.Context(), "Could not decode request body", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not decode request body")
+		log.Warn(ctx, "Failed to create session", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to create session")
 		return
 	}
 
-	userConfig := c.getUserFromConfig(signinRequest.Email)
-	if userConfig == nil {
-		// When no user is found for the provided email address, we use a fixed password hash to prevent user
-		// enumeration by timing requests. Here we are comparing the bcrypt-hashed version of "fakepassword" against
-		// the user provided password.
-		bcrypt.CompareHashAndPassword([]byte("$2y$10$UPPBv.HThEllgJZINbFwYOsru62d.LT0EqG3XLug2pG81IvemopH2"), []byte(signinRequest.Password))
-
-		log.Warn(r.Context(), "Invalid email or password")
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid email or password")
-		return
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(userConfig.Password), []byte(signinRequest.Password))
+	token, err := jwt.CreateToken(&Token{SessionID: session.ID}, c.config.Session.Token, c.config.Session.Duration)
 	if err != nil {
-		log.Warn(r.Context(), "Invalid email or password", zap.Error(err))
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid email or password")
-		return
-	}
-
-	token, err := jwt.CreateToken(&Session{Email: userConfig.Email, Teams: userConfig.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
-	if err != nil {
-		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create jwt token")
+		log.Warn(ctx, "Failed to create token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to create token")
 		return
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "kobs",
+		Name:     "kobs.token",
 		Value:    token,
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
-		Expires:  time.Now().Add(c.config.Session.ParsedInterval),
+		Expires:  time.Now().Add(c.config.Session.Duration),
 	})
 
-	render.JSON(w, r, nil)
+	render.JSON(w, r, userResponse{
+		User:       authContextUser,
+		Dashboards: c.appSettings.GetDashboards(user),
+		Navigation: c.appSettings.GetNavigation(user),
+	})
 }
 
-// signoutHandler handles the logout for an user. For this we are setting the value of the auth cookie to an empty
-// string and we adjust the expiration date of the cookie.
+// signoutHandler handle the sign out of a user. For that we have to get the token for the users current session, to
+// delete this session from the database. When the session was deleted we also delete the coookie with the users token.
+//
+// If we are not able to get the token, to validate the token or to delete the corresponding session from the database
+// we return an internal server error or bad request error.
 func (c *client) signoutHandler(w http.ResponseWriter, r *http.Request) {
-	cookies := r.Cookies()
+	ctx := r.Context()
 
-	for _, cookie := range cookies {
-		if strings.HasPrefix(cookie.Name, "kobs") {
-			http.SetCookie(w, &http.Cookie{
-				Name:     cookie.Name,
-				Value:    "",
-				Path:     "/",
-				Secure:   true,
-				HttpOnly: true,
-				Expires:  time.Unix(0, 0),
-			})
-		}
+	token, err := r.Cookie("kobs.token")
+	if err != nil {
+		log.Warn(ctx, "Failed to get token from cookie", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to get token from cookie")
+		return
 	}
 
+	tokenClaims, err := jwt.ValidateToken[Token](token.Value, c.config.Session.Token)
+	if err != nil {
+		log.Warn(ctx, "Failed to validate token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to validate token")
+		return
+	}
+
+	err = c.dbClient.DeleteSession(ctx, tokenClaims.SessionID)
+	if err != nil {
+		log.Warn(ctx, "Failed to delete session", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to delete session")
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "kobs.token",
+		Value:    "",
+		Path:     "/",
+		Secure:   true,
+		HttpOnly: true,
+		Expires:  time.Unix(0, 0),
+	})
+
+	render.Status(r, http.StatusNoContent)
 	render.JSON(w, r, nil)
 }
 
-// oidcRedirectHandler returns the login for the OIDC provider, which can then be used by the user to authenticate via
-// the configured provider. If no OIDC provider is configured this will return an error.
-//
-// We also "abusing" the state parameter by adding a redirect url, so that we have access to this url in the
-// oidcCallbackHandler and that we can redirect the user to this url.
+// oidcHandler returns the login url which must be opened by a user to authenticate via the OIDC provider. If no OIDC
+// provider is configured an error is returned, so that we do not show a sign in via OIDC button in the React app.
 func (c *client) oidcHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	if c.oidcConfig == nil || c.oidcProvider == nil {
-		log.Warn(r.Context(), "OIDC provider is not configured")
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "OIDC provider is not configured")
+		log.Debug(ctx, "OIDC provider is not configured")
+		errresponse.Render(w, r, http.StatusBadRequest, "OIDC provider is not configured")
 		return
 	}
 
@@ -248,77 +283,126 @@ func (c *client) oidcHandler(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
-// oidcCallbackHandler handles the callback from the OIDC login flow. Once we finished the OIDC flow and retrieved the
-// user claims, we get the user object for the auth context and save the object in a cookie.
 func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	if c.oidcConfig == nil || c.oidcProvider == nil {
-		log.Warn(r.Context(), "OIDC provider is not configured")
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "OIDC provider is not configured")
+		log.Warn(ctx, "OIDC provider is not configured")
+		errresponse.Render(w, r, http.StatusBadRequest, "OIDC provider is not configured")
 		return
 	}
 
 	state := r.URL.Query().Get("state")
 
 	if !strings.HasPrefix(state, c.config.OIDC.State) {
-		log.Warn(r.Context(), "Invalid state", zap.String("state", state))
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Invalid state")
+		log.Warn(ctx, "Invalid 'state' parameter", zap.String("state", state))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid 'state' parameter")
 		return
 	}
 
 	verifier := c.oidcProvider.Verifier(&oidc.Config{ClientID: c.config.OIDC.ClientID})
 
-	oauth2Token, err := c.oidcConfig.Exchange(r.Context(), r.URL.Query().Get("code"))
+	oauth2Token, err := c.oidcConfig.Exchange(ctx, r.URL.Query().Get("code"))
 	if err != nil {
-		log.Warn(r.Context(), "Could not exchange authorization code into token", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not exchange authorization code into token")
+		log.Warn(ctx, "Failed to exchange authorization code into token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to exchange authorization code into token")
 		return
 	}
 
 	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		log.Warn(r.Context(), "Could not get raw id token")
-		errresponse.Render(w, r, nil, http.StatusBadRequest, "Could not get raw id token")
+		log.Warn(ctx, "Faile to get raw id token")
+		errresponse.Render(w, r, http.StatusBadRequest, "Faile to get raw id token")
 		return
 	}
 
-	idToken, err := verifier.Verify(r.Context(), rawIDToken)
+	idToken, err := verifier.Verify(ctx, rawIDToken)
 	if err != nil {
-		log.Warn(r.Context(), "Could not verify raw id token", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not verify raw id token")
+		log.Warn(ctx, "Failed to verify raw id token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to verify raw id token")
 		return
 	}
 
 	var claims struct {
-		Email   string   `json:"email"`
-		Picture string   `json:"picture"`
-		Groups  []string `json:"groups"`
+		Email  string   `json:"email"`
+		Name   string   `json:"name"`
+		Groups []string `json:"groups"`
 	}
 	if err := idToken.Claims(&claims); err != nil {
-		log.Warn(r.Context(), "Could not get claims", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not get claims")
+		log.Warn(ctx, "Failed to get claims", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to get claims")
 		return
 	}
 
-	token, err := jwt.CreateToken(&Session{Email: claims.Email, Teams: claims.Groups}, c.config.Session.Token, c.config.Session.ParsedInterval)
+	authContextUser := &authContext.User{
+		ID:    claims.Email,
+		Name:  claims.Name,
+		Teams: claims.Groups,
+	}
+
+	user, err := c.dbClient.GetUserByID(ctx, authContextUser.ID)
 	if err != nil {
-		log.Warn(r.Context(), "Could not create jwt token", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Could not create jwt token")
+		log.Warn(ctx, "Failed to get user from database", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to get user from database")
+		return
+	}
+
+	if user != nil {
+		authContextUser.Permissions.Applications = append(authContextUser.Permissions.Applications, user.Permissions.Applications...)
+		authContextUser.Permissions.Teams = append(authContextUser.Permissions.Teams, user.Permissions.Teams...)
+		authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, user.Permissions.Plugins...)
+		authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, user.Permissions.Resources...)
+	}
+
+	if authContextUser.Teams != nil {
+		teams, err := c.dbClient.GetTeamsByIDs(ctx, authContextUser.Teams)
+		if err != nil {
+			log.Warn(ctx, "Failed to get teams from database", zap.Error(err))
+			errresponse.Render(w, r, http.StatusBadRequest, "Failed to get teams from database")
+			return
+		}
+
+		for _, team := range teams {
+			authContextUser.Permissions.Applications = append(authContextUser.Permissions.Applications, team.Permissions.Applications...)
+			authContextUser.Permissions.Teams = append(authContextUser.Permissions.Teams, team.Permissions.Teams...)
+			authContextUser.Permissions.Plugins = append(authContextUser.Permissions.Plugins, team.Permissions.Plugins...)
+			authContextUser.Permissions.Resources = append(authContextUser.Permissions.Resources, team.Permissions.Resources...)
+		}
+	}
+
+	session, err := c.dbClient.CreateSession(ctx, *authContextUser)
+	if err != nil {
+		log.Warn(ctx, "Failed to create session", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to create session")
+		return
+	}
+
+	token, err := jwt.CreateToken(&Token{SessionID: session.ID}, c.config.Session.Token, c.config.Session.Duration)
+	if err != nil {
+		log.Warn(ctx, "Failed to create token", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to create token")
 		return
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "kobs",
+		Name:     "kobs.token",
 		Value:    token,
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
-		Expires:  time.Now().Add(c.config.Session.ParsedInterval),
+		Expires:  time.Now().Add(c.config.Session.Duration),
 	})
 
 	data := struct {
-		URL string `json:"url"`
+		User userResponse `json:"user"`
+		URL  string       `json:"url"`
 	}{
-		strings.TrimPrefix(state, c.config.OIDC.State),
+		User: userResponse{
+			User:       *authContextUser,
+			Dashboards: c.appSettings.GetDashboards(user),
+			Navigation: c.appSettings.GetNavigation(user),
+		},
+		URL: strings.TrimPrefix(state, c.config.OIDC.State),
 	}
 
 	render.JSON(w, r, data)
@@ -327,22 +411,11 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 // NewClient returns a new auth client for handling authentication and authorization within the kobs hub. The auth
 // client exports two mount function, one for mounting the middleware to verify requests and one for mounting the router
 // for all auth related API endpoints.
-func NewClient(config Config, storeClient store.Client) (Client, error) {
-	sessionInterval := time.Duration(48 * time.Hour)
-	if parsedSessionInterval, err := time.ParseDuration(config.Session.Interval); err == nil {
-		sessionInterval = parsedSessionInterval
-	}
-
-	config.Session.ParsedInterval = sessionInterval
-
+func NewClient(config Config, appSettings settings.Settings, dbClient db.Client) (Client, error) {
 	var oidcConfig *oauth2.Config
 	var oidcProvider *oidc.Provider
-	if config.OIDC.Enabled {
-		oidcScopes := []string{"openid", "profile", "email", "groups"}
-		if len(config.OIDC.Scopes) > 0 {
-			oidcScopes = config.OIDC.Scopes
-		}
 
+	if config.OIDC.Enabled {
 		provider, err := oidc.NewProvider(context.Background(), config.OIDC.Issuer)
 		if err != nil {
 			return nil, err
@@ -354,19 +427,20 @@ func NewClient(config Config, storeClient store.Client) (Client, error) {
 			ClientSecret: config.OIDC.ClientSecret,
 			RedirectURL:  config.OIDC.RedirectURL,
 			Endpoint:     provider.Endpoint(),
-			Scopes:       oidcScopes,
+			Scopes:       config.OIDC.Scopes,
 		}
 	}
 
 	c := &client{
 		config:       config,
+		appSettings:  appSettings,
 		router:       chi.NewRouter(),
 		oidcConfig:   oidcConfig,
 		oidcProvider: oidcProvider,
-		storeClient:  storeClient,
+		dbClient:     dbClient,
 	}
 
-	c.router.Get("/", c.userHandler)
+	c.router.Get("/", c.authHandler)
 	c.router.Post("/signin", c.signinHandler)
 	c.router.Get("/signout", c.signoutHandler)
 	c.router.Get("/oidc", c.oidcHandler)

@@ -4,34 +4,30 @@ import (
 	"context"
 	"testing"
 
-	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 
 	"github.com/stretchr/testify/require"
 )
-
-func TestToString(t *testing.T) {
-	u := User{Email: "test1"}
-	require.Equal(t, "{\"email\":\"test1\",\"teams\":null,\"permissions\":{}}", u.ToString())
-}
 
 func TestHasApplicationAccess(t *testing.T) {
 	for _, tt := range []struct {
 		user              User
 		expectedHasAccess bool
 	}{
-		{user: User{Email: "user1@kobs.io", Teams: []string{"*"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user2@kobs.io", Teams: []string{"team1"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user3@kobs.io", Teams: []string{"team2"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user4@kobs.io", Teams: []string{"*"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}, expectedHasAccess: false},
-		{user: User{Email: "user5@kobs.io", Teams: []string{"team1"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user6@kobs.io", Teams: []string{"team2"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}, expectedHasAccess: false},
-		{user: User{Email: "user7@kobs.io", Teams: []string{"team1"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom", Satellites: []string{"satellite"}}}}}, expectedHasAccess: false},
-		{user: User{Email: "user8@kobs.io", Teams: []string{"team1"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom", Satellites: []string{"test-satellite"}, Clusters: []string{"stage-de1"}}}}}, expectedHasAccess: false},
-		{user: User{Email: "user9@kobs.io", Teams: []string{"team1"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom", Satellites: []string{"test-satellite"}, Clusters: []string{"dev-de1"}, Namespaces: []string{"kube-system"}}}}}, expectedHasAccess: false},
-		{user: User{Email: "user10@kobs.io", Teams: []string{"team1"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom", Satellites: []string{"test-satellite"}, Clusters: []string{"dev-de1"}, Namespaces: []string{"default"}}}}}, expectedHasAccess: true},
+		{user: User{Teams: []string{"*"}, ID: "user1@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}, expectedHasAccess: true},
+		{user: User{Teams: []string{"team1"}, ID: "user2@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}, expectedHasAccess: true},
+		{user: User{Teams: []string{"team2"}, ID: "user3@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}, expectedHasAccess: true},
+		{user: User{Teams: []string{"*"}, ID: "user4@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}, expectedHasAccess: false},
+		{user: User{Teams: []string{"team1"}, ID: "user5@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}, expectedHasAccess: true},
+		{user: User{Teams: []string{"team2"}, ID: "user6@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}, expectedHasAccess: false},
+		{user: User{Teams: []string{"team1"}, ID: "user7@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom"}}}}, expectedHasAccess: false},
+		{user: User{Teams: []string{"team1"}, ID: "user8@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom", Clusters: []string{"stage-de1"}}}}}, expectedHasAccess: false},
+		{user: User{Teams: []string{"team1"}, ID: "user9@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom", Clusters: []string{"dev-de1"}, Namespaces: []string{"kube-system"}}}}}, expectedHasAccess: false},
+		{user: User{Teams: []string{"team1"}, ID: "user10@kobs.io", Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "custom", Clusters: []string{"dev-de1"}, Namespaces: []string{"default"}}}}}, expectedHasAccess: true},
 	} {
-		t.Run(tt.user.Email, func(t *testing.T) {
-			actualHasAccess := tt.user.HasApplicationAccess("test-satellite", "dev-de1", "default", []string{"team1"})
+		t.Run(tt.user.ID, func(t *testing.T) {
+			actualHasAccess := tt.user.HasApplicationAccess(&applicationv1.ApplicationSpec{Cluster: "dev-de1", Namespace: "default", Teams: []string{"team1"}})
 			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
 		})
 	}
@@ -42,13 +38,13 @@ func TestHasTeamAccess(t *testing.T) {
 		user              User
 		expectedHasAccess bool
 	}{
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"*"}}}, expectedHasAccess: true},
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team1"}}}, expectedHasAccess: true},
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2", "team1"}}}, expectedHasAccess: true},
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2", "*"}}}, expectedHasAccess: true},
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2"}}}, expectedHasAccess: false},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"*"}}}, expectedHasAccess: true},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team1"}}}, expectedHasAccess: true},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2", "team1"}}}, expectedHasAccess: true},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2", "*"}}}, expectedHasAccess: true},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Teams: []string{"team2"}}}, expectedHasAccess: false},
 	} {
-		t.Run(tt.user.Email, func(t *testing.T) {
+		t.Run(tt.user.ID, func(t *testing.T) {
 			actualHasAccess := tt.user.HasTeamAccess("team1")
 			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
 		})
@@ -60,18 +56,18 @@ func TestHasPluginAccess(t *testing.T) {
 		user              User
 		expectedHasAccess bool
 	}{
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user2@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin1"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user3@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin1"}, {Satellite: "*", Type: "prometheus", Name: "plugin2"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user4@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin2"}}}}, expectedHasAccess: false},
-		{user: User{Email: "user5@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "prometheus", Name: "plugin2"}, {Satellite: "*", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user6@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "test-satellite1", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
-		{user: User{Email: "user7@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "test-satellite2", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: false},
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "klogs", Name: "*"}}}}, expectedHasAccess: false},
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Type: "*", Name: "*"}}}}, expectedHasAccess: true},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
+		{user: User{ID: "user2@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Type: "prometheus", Name: "plugin1"}}}}, expectedHasAccess: true},
+		{user: User{ID: "user3@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Type: "prometheus", Name: "plugin1"}, {Cluster: "*", Type: "prometheus", Name: "plugin2"}}}}, expectedHasAccess: true},
+		{user: User{ID: "user4@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Type: "prometheus", Name: "plugin2"}}}}, expectedHasAccess: false},
+		{user: User{ID: "user5@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Type: "prometheus", Name: "plugin2"}, {Cluster: "*", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
+		{user: User{ID: "user6@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "test-cluster1", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: true},
+		{user: User{ID: "user7@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "test-cluster2", Type: "prometheus", Name: "*"}}}}, expectedHasAccess: false},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Type: "klogs", Name: "*"}}}}, expectedHasAccess: false},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Type: "*", Name: "*"}}}}, expectedHasAccess: true},
 	} {
-		t.Run(tt.user.Email, func(t *testing.T) {
-			actualHasAccess := tt.user.HasPluginAccess("test-satellite1", "prometheus", "plugin1")
+		t.Run(tt.user.ID, func(t *testing.T) {
+			actualHasAccess := tt.user.HasPluginAccess("test-cluster1", "prometheus", "plugin1")
 			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
 		})
 	}
@@ -82,32 +78,29 @@ func TestHasResourceAccess(t *testing.T) {
 		user              User
 		expectedHasAccess bool
 	}{
-		{user: User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user2@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user3@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
-		{user: User{Email: "user2@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user2@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user3@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user2@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"*"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
 
-		{user: User{Email: "user4@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user5@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user6@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
-		{user: User{Email: "user6@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user4@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user5@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user6@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user6@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource2"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
 
-		{user: User{Email: "user7@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
-		{user: User{Email: "user8@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
-		{user: User{Email: "user9@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user7@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user8@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user9@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
 
-		{user: User{Email: "user10@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user11@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user12@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user10@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user11@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"namespace1"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user12@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"namespace2"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
 
-		{user: User{Email: "user13@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"*"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user14@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user15@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"*"}, Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Satellites: []string{"*"}, Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"patch"}}}}}, expectedHasAccess: false},
-
-		{user: User{Email: "user16@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"test-satellite1"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
-		{user: User{Email: "user16@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Satellites: []string{"test-satellite2"}, Clusters: []string{"*"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: false},
+		{user: User{ID: "user13@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"*"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user14@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"get"}}}}}, expectedHasAccess: true},
+		{user: User{ID: "user15@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"patch"}}}}}, expectedHasAccess: false},
 	} {
-		t.Run(tt.user.Email, func(t *testing.T) {
+		t.Run(tt.user.ID, func(t *testing.T) {
 			actualHasAccess := tt.user.HasResourceAccess("test-satellite1", "cluster1", "namespace1", "resource1", "get")
 			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
 		})
@@ -115,7 +108,7 @@ func TestHasResourceAccess(t *testing.T) {
 }
 
 func TestGetPluginPermissions(t *testing.T) {
-	user := User{Email: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Satellite: "*", Name: "plugin1"}}}}
+	user := User{ID: "user1@kobs.io", Permissions: userv1.Permissions{Plugins: []userv1.Plugin{{Cluster: "*", Name: "plugin1"}}}}
 	res1 := user.GetPluginPermissions("plugin1")
 	require.Equal(t, 1, len(res1))
 
@@ -142,4 +135,17 @@ func TestGetUser(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestMustGetUser(t *testing.T) {
+	t.Run("should return user", func(t *testing.T) {
+		user := MustGetUser(context.WithValue(context.Background(), UserKey, User{}))
+		require.NotNil(t, user)
+	})
+
+	t.Run("should panic when no user is present in the context", func(t *testing.T) {
+		require.Panics(t, func() {
+			MustGetUser(nil)
+		})
+	})
 }

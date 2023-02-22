@@ -17,7 +17,7 @@ type CustomClaims[T any] struct {
 func ValidateToken[T any](tokenString, sessionToken string) (*T, error) {
 	token, err := goJWT.ParseWithClaims(tokenString, &CustomClaims[T]{}, func(token *goJWT.Token) (any, error) {
 		if _, ok := token.Method.(*goJWT.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return []byte(sessionToken), nil
@@ -35,15 +35,15 @@ func ValidateToken[T any](tokenString, sessionToken string) (*T, error) {
 }
 
 // CreateToken creates a new signed jwt token with the user information saved in the claims.
-func CreateToken[T any](data *T, sessionToken string, sessionInterval time.Duration) (string, error) {
-	if sessionInterval < 0 {
-		return "", fmt.Errorf("invalid session interval")
+func CreateToken[T any](data *T, sessionToken string, sessionDuration time.Duration) (string, error) {
+	if sessionDuration < 0 {
+		return "", fmt.Errorf("invalid session duration")
 	}
 
 	claims := CustomClaims[T]{
 		data,
 		goJWT.RegisteredClaims{
-			ExpiresAt: goJWT.NewNumericDate(time.Now().Add(sessionInterval)),
+			ExpiresAt: goJWT.NewNumericDate(time.Now().Add(sessionDuration)),
 			Issuer:    "kobs.io",
 		},
 	}

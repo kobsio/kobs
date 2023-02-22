@@ -4,10 +4,12 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/kobsio/kobs/pkg/hub/store"
-	"github.com/kobsio/kobs/pkg/hub/store/shared"
-	"github.com/kobsio/kobs/pkg/log"
-	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/hub/api/shared"
+	"github.com/kobsio/kobs/pkg/hub/clusters"
+	"github.com/kobsio/kobs/pkg/hub/db"
+	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -18,45 +20,38 @@ type Config struct{}
 
 type Router struct {
 	*chi.Mux
-	storeClient store.Client
+	dbClient      db.Client
+	clusterClient clusters.Client
 }
 
 func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
-	clusters, err := router.storeClient.GetClusters(r.Context())
-	if err != nil {
-		log.Error(r.Context(), "Could not get clusters", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get clusters")
-		return
+	clients := router.clusterClient.GetClusters()
+	result := struct {
+		Clusters []string `json:"clusters"`
+	}{
+		Clusters: make([]string, len(clients)),
+	}
+	for i, client := range clients {
+		result.Clusters[i] = client.GetName()
 	}
 
-	var groupedClusters map[string][]shared.Cluster
-	groupedClusters = make(map[string][]shared.Cluster)
-
-	for _, cluster := range clusters {
-		if _, ok := groupedClusters[cluster.Satellite]; ok {
-			groupedClusters[cluster.Satellite] = append(groupedClusters[cluster.Satellite], cluster)
-		} else {
-			groupedClusters[cluster.Satellite] = []shared.Cluster{cluster}
-		}
-	}
-
-	render.JSON(w, r, groupedClusters)
+	render.JSON(w, r, result)
 }
 
 func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	clusterIDs := r.URL.Query()["clusterID"]
 
-	namespaces, err := router.storeClient.GetNamespacesByClusterIDs(r.Context(), clusterIDs)
+	namespaces, err := router.dbClient.GetNamespacesByClusters(r.Context(), clusterIDs)
 	if err != nil {
-		log.Error(r.Context(), "Could not get namespaces", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get namespaces")
+		log.Error(r.Context(), "Failed to get namespaces", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get namespaces")
 		return
 	}
 
 	var uniqueNamespaces []string
 
 	for _, namespace := range namespaces {
-		uniqueNamespaces = appendIfMissing(uniqueNamespaces, namespace.Namespace)
+		uniqueNamespaces = utils.AppendIfStringIsMissing(uniqueNamespaces, namespace.Namespace)
 	}
 
 	sort.Strings(uniqueNamespaces)
@@ -64,20 +59,21 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 }
 
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
-	crds, err := router.storeClient.GetCRDs(r.Context())
+	crds, err := router.dbClient.GetCRDs(r.Context())
 	if err != nil {
-		log.Error(r.Context(), "Could not get Custom Resource Definitions", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get Custom Resource Definitions")
+		log.Error(r.Context(), "Failed to get resources", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get resources")
 		return
 	}
 
 	render.JSON(w, r, shared.GetResources(crds))
 }
 
-func Mount(config Config, storeClient store.Client) chi.Router {
+func Mount(config Config, dbClient db.Client, clusterClient clusters.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		storeClient,
+		dbClient,
+		clusterClient,
 	}
 
 	router.Get("/", router.getClusters)

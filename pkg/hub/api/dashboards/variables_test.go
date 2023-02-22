@@ -3,8 +3,7 @@ package dashboards
 import (
 	"testing"
 
-	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
-
+	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	"github.com/stretchr/testify/require"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )

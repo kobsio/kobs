@@ -36,8 +36,6 @@ spec:
             properties:
               cluster:
                 type: string
-              clusterID:
-                type: string
               description:
                 type: string
               hideToolbar:
@@ -48,8 +46,45 @@ spec:
                 type: string
               namespace:
                 type: string
-              namespaceID:
-                type: string
+              panels:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    h:
+                      format: int64
+                      type: integer
+                    plugin:
+                      properties:
+                        cluster:
+                          type: string
+                        name:
+                          type: string
+                        options:
+                          x-kubernetes-preserve-unknown-fields: true
+                        type:
+                          type: string
+                      required:
+                      - cluster
+                      - name
+                      - type
+                      type: object
+                    title:
+                      type: string
+                    w:
+                      format: int64
+                      type: integer
+                    x:
+                      format: int64
+                      type: integer
+                    "y":
+                      format: int64
+                      type: integer
+                  required:
+                  - plugin
+                  - title
+                  type: object
+                type: array
               placeholders:
                 items:
                   properties:
@@ -65,54 +100,6 @@ spec:
                   - name
                   type: object
                 type: array
-              rows:
-                items:
-                  properties:
-                    description:
-                      type: string
-                    panels:
-                      items:
-                        properties:
-                          colSpan:
-                            format: int64
-                            type: integer
-                          description:
-                            type: string
-                          plugin:
-                            properties:
-                              name:
-                                type: string
-                              options:
-                                x-kubernetes-preserve-unknown-fields: true
-                              satellite:
-                                type: string
-                              type:
-                                type: string
-                            required:
-                            - name
-                            - type
-                            type: object
-                          rowSpan:
-                            format: int64
-                            type: integer
-                          title:
-                            type: string
-                        required:
-                        - plugin
-                        - title
-                        type: object
-                      type: array
-                    size:
-                      format: int64
-                      type: integer
-                    title:
-                      type: string
-                  required:
-                  - panels
-                  type: object
-                type: array
-              satellite:
-                type: string
               title:
                 type: string
               updatedAt:
@@ -129,15 +116,16 @@ spec:
                       type: string
                     plugin:
                       properties:
+                        cluster:
+                          type: string
                         name:
                           type: string
                         options:
                           x-kubernetes-preserve-unknown-fields: true
-                        satellite:
-                          type: string
                         type:
                           type: string
                       required:
+                      - cluster
                       - name
                       - type
                       type: object
@@ -147,7 +135,7 @@ spec:
                   type: object
                 type: array
             required:
-            - rows
+            - panels
             type: object
         type: object
     served: true

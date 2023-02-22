@@ -7,481 +7,388 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
-	"github.com/kobsio/kobs/pkg/hub/store"
-	applicationv1 "github.com/kobsio/kobs/pkg/kube/apis/application/v1"
-	userv1 "github.com/kobsio/kobs/pkg/kube/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/hub/db"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/stretchr/testify/mock"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel"
 )
 
 func TestGetApplications(t *testing.T) {
-	for _, tt := range []struct {
-		name               string
-		url                string
-		expectedStatusCode int
-		expectedBody       string
-		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
-		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
-	}{
-		{
-			name:               "no user context",
-			url:                "/applications",
-			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"You are not authorized to access the applications: Unauthorized\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				router.getApplications(w, req)
-			},
-		},
-		{
-			name:               "parse limit fails",
-			url:                "/applications",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not parse limit parameter: strconv.Atoi: parsing \\\"\\\": invalid syntax\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
-				router.getApplications(w, req)
-			},
-		},
-		{
-			name:               "parse offset fails",
-			url:                "/applications?limit=10",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not parse offset parameter: strconv.Atoi: parsing \\\"\\\": invalid syntax\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
-				router.getApplications(w, req)
-			},
-		},
-		{
-			name:               "get all applications fails, because user is not authorized to view all applications",
-			url:                "/applications?all=true&limit=10&offset=0",
-			expectedStatusCode: http.StatusForbidden,
-			expectedBody:       "{\"error\":\"You are not allowed to view all applications\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
-				router.getApplications(w, req)
-			},
-		},
-		{
-			name:               "get all applications fails",
-			url:                "/applications?all=true&limit=10&offset=0",
-			expectedStatusCode: http.StatusInternalServerError,
-			expectedBody:       "{\"error\":\"Could not get applications: could not get applications\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get applications"))
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplications(w, req)
-			},
-		},
-		{
-			name:               "get all applications",
-			url:                "/applications?all=true&limit=10&offset=0",
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "null\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, nil)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplications(w, req)
-			},
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			mockStoreClient := &store.MockClient{}
-			tt.prepare(t, mockStoreClient)
+	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
 
-			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
-
-			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
-			rctx := chi.NewRouteContext()
-			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-
-			w := httptest.NewRecorder()
-			tt.do(router, w, req)
-
-			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-			mockStoreClient.AssertExpectations(t)
-		})
+		return dbClient, router
 	}
+
+	t.Run("should fail for invalid limit", func(t *testing.T) {
+		_, router := newRouter(t)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplications(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to parse 'limit' parameter"]}`)
+	})
+
+	t.Run("should fail for invalid offset", func(t *testing.T) {
+		_, router := newRouter(t)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications?limit=10", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplications(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to parse 'offset' parameter"]}`)
+	})
+
+	t.Run("should fail when user is not authorized to view all applications", func(t *testing.T) {
+		_, router := newRouter(t)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications?all=true&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplications(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view all applications"]}`)
+	})
+
+	t.Run("should handle error from db client", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get applications"))
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications?all=true&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplications(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications"]}`)
+	})
+
+	t.Run("should return all applications", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{
+			{
+				Name:      "foo",
+				Namespace: "bar",
+			},
+		}, nil)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications?all=true&limit=10&offset=0", nil)
+
+		w := httptest.NewRecorder()
+		router.getApplications(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `[{"name":"foo", "namespace":"bar", "topology": {}}]`)
+	})
 }
 
 func TestGetApplicationsCount(t *testing.T) {
-	for _, tt := range []struct {
-		name               string
-		url                string
-		expectedStatusCode int
-		expectedBody       string
-		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
-		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
-	}{
-		{
-			name:               "no user context",
-			url:                "/count",
-			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"You are not authorized to access the applications: Unauthorized\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				router.getApplicationsCount(w, req)
-			},
-		},
-		{
-			name:               "get all applications fails, because user is not authorized to view all applications",
-			url:                "/count?all=true&limit=10&offset=0",
-			expectedStatusCode: http.StatusForbidden,
-			expectedBody:       "{\"error\":\"You are not allowed to view all applications\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
-				router.getApplicationsCount(w, req)
-			},
-		},
-		{
-			name:               "get all applications fails",
-			url:                "/count?all=true&limit=10&offset=0",
-			expectedStatusCode: http.StatusInternalServerError,
-			expectedBody:       "{\"error\":\"Could not get applications count: could not get applications\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationsByFilterCount", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(0, fmt.Errorf("could not get applications"))
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplicationsCount(w, req)
-			},
-		},
-		{
-			name:               "get all applications",
-			url:                "/count?all=true&limit=10&offset=0",
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"count\":5}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationsByFilterCount", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(5, nil)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplicationsCount(w, req)
-			},
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			mockStoreClient := &store.MockClient{}
-			tt.prepare(t, mockStoreClient)
+	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
 
-			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
-
-			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
-			rctx := chi.NewRouteContext()
-			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-
-			w := httptest.NewRecorder()
-			tt.do(router, w, req)
-
-			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-			mockStoreClient.AssertExpectations(t)
-		})
+		return dbClient, router
 	}
+
+	t.Run("should fail when user is not authorized to view all applications", func(t *testing.T) {
+		_, router := newRouter(t)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/count?all=true&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplicationsCount(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view all applications"]}`)
+	})
+
+	t.Run("should handle error from db client", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get count"))
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/count?all=true&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplicationsCount(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications count"]}`)
+
+	})
+
+	t.Run("should return count", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(100, nil)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/count?all=true&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplicationsCount(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `{"count": 100}`)
+	})
 }
 
 func TestGetTags(t *testing.T) {
-	for _, tt := range []struct {
-		name               string
-		url                string
-		expectedStatusCode int
-		expectedBody       string
-		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
-		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
-	}{
-		{
-			name:               "get tags fails",
-			url:                "/tags",
-			expectedStatusCode: http.StatusInternalServerError,
-			expectedBody:       "{\"error\":\"Could not get tags: could not get tags\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetTags", mock.Anything).Return(nil, fmt.Errorf("could not get tags"))
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				router.getTags(w, req)
-			},
-		},
-		{
-			name:               "get tags",
-			url:                "/tags",
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "null\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetTags", mock.Anything).Return(nil, nil)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				router.getTags(w, req)
-			},
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			mockStoreClient := &store.MockClient{}
-			tt.prepare(t, mockStoreClient)
+	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
 
-			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
-
-			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
-			rctx := chi.NewRouteContext()
-			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-
-			w := httptest.NewRecorder()
-			tt.do(router, w, req)
-
-			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-			mockStoreClient.AssertExpectations(t)
-		})
+		return dbClient, router
 	}
+
+	t.Run("should handle error from db client", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetTags(gomock.Any()).Return(nil, fmt.Errorf("could not get tags"))
+
+		ctx := context.Background()
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/tags", nil)
+		w := httptest.NewRecorder()
+
+		router.getTags(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get tags"]}`)
+	})
+
+	t.Run("should return tags", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		tags := []db.Tag{{
+			ID:        "foo",
+			Tag:       "some tag",
+			UpdatedAt: 0,
+		}}
+
+		dbClient.EXPECT().GetTags(gomock.Any()).Return(tags, nil)
+
+		ctx := context.Background()
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/tags", nil)
+		w := httptest.NewRecorder()
+
+		router.getTags(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `[{"id":"foo", "tag":"some tag", "updatedAt":0}]`)
+	})
 }
 
 func TestGetApplication(t *testing.T) {
-	for _, tt := range []struct {
-		name               string
-		url                string
-		expectedStatusCode int
-		expectedBody       string
-		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
-		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
-	}{
-		{
-			name:               "no user context",
-			url:                "/applications/application",
-			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"You are not authorized to access the application: Unauthorized\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationByID", mock.Anything, mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				router.getApplication(w, req)
-			},
-		},
-		{
-			name:               "get application fails",
-			url:                "/applications/application?id=id1",
-			expectedStatusCode: http.StatusInternalServerError,
-			expectedBody:       "{\"error\":\"Could not get application: could not get application\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationByID", mock.Anything, "id1").Return(nil, fmt.Errorf("could not get application"))
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplication(w, req)
-			},
-		},
-		{
-			name:               "application not found",
-			url:                "/applications/application?id=id1",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Application was not found\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationByID", mock.Anything, mock.Anything).Return(nil, nil)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplication(w, req)
-			},
-		},
-		{
-			name:               "user does not have permissions to view application",
-			url:                "/applications/application?id=id1",
-			expectedStatusCode: http.StatusForbidden,
-			expectedBody:       "{\"error\":\"You are not allowed to view the application\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationByID", mock.Anything, mock.Anything).Return(&applicationv1.ApplicationSpec{Satellite: "satellite1", Cluster: "cluster1", Namespace: "namespace1"}, nil)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}}))
-				router.getApplication(w, req)
-			},
-		},
-		{
-			name:               "get application succeeds",
-			url:                "/applications/application?id=id1",
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"satellite\":\"satellite1\",\"cluster\":\"cluster1\",\"namespace\":\"namespace1\",\"topology\":{}}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationByID", mock.Anything, mock.Anything).Return(&applicationv1.ApplicationSpec{Satellite: "satellite1", Cluster: "cluster1", Namespace: "namespace1"}, nil)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplication(w, req)
-			},
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			mockStoreClient := &store.MockClient{}
-			tt.prepare(t, mockStoreClient)
+	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
 
-			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
-
-			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
-			rctx := chi.NewRouteContext()
-			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-
-			w := httptest.NewRecorder()
-			tt.do(router, w, req)
-
-			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-			mockStoreClient.AssertExpectations(t)
-		})
+		return dbClient, router
 	}
+
+	t.Run("should handle error from db client", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationByID(gomock.Any(), "id1").Return(nil, fmt.Errorf("could not get application"))
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications/application?id=id1", nil)
+		w := httptest.NewRecorder()
+		router.getApplication(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get application"]}`)
+	})
+
+	t.Run("should return error when application was not found", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationByID(gomock.Any(), "id1").Return(nil, nil)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications/application?id=id1", nil)
+		w := httptest.NewRecorder()
+		router.getApplication(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusNotFound)
+		utils.AssertJSONEq(t, w, `{"errors": ["Application was not found"]}`)
+	})
+
+	t.Run("should return error when user does not have the permissions to view an application", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationByID(gomock.Any(), "id1").Return(&applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1"}, nil)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications/application?id=id1", nil)
+		w := httptest.NewRecorder()
+		router.getApplication(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view the application"]}`)
+	})
+
+	t.Run("should return application", func(t *testing.T) {
+		application := &applicationv1.ApplicationSpec{Cluster: "cluster1", Namespace: "namespace1", Teams: []string{"myteam"}}
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationByID(gomock.Any(), "id1").Return(application, nil)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Teams: []string{"myteam"}, Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "own"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications/application?id=id1", nil)
+		w := httptest.NewRecorder()
+		router.getApplication(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w,
+			fmt.Sprintf(`{
+				"cluster": "%s",
+				"namespace": "%s",
+				"topology": {},
+				"teams": ["%s"]
+			}`, application.Cluster, application.Namespace, application.Teams[0]),
+		)
+	})
 }
 
 func TestGetApplicationsByTeam(t *testing.T) {
-	for _, tt := range []struct {
-		name               string
-		url                string
-		expectedStatusCode int
-		expectedBody       string
-		prepare            func(t *testing.T, mockStoreClient *store.MockClient)
-		do                 func(router Router, w *httptest.ResponseRecorder, req *http.Request)
-	}{
-		{
-			name:               "no user context",
-			url:                "/team",
-			expectedStatusCode: http.StatusUnauthorized,
-			expectedBody:       "{\"error\":\"You are not authorized to access the applications: Unauthorized\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				router.getApplicationsByTeam(w, req)
-			},
-		},
-		{
-			name:               "parse limit fails",
-			url:                "/team",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not parse limit parameter: strconv.Atoi: parsing \\\"\\\": invalid syntax\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
-				router.getApplicationsByTeam(w, req)
-			},
-		},
-		{
-			name:               "parse offset fails",
-			url:                "/team?limit=10",
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       "{\"error\":\"Could not parse offset parameter: strconv.Atoi: parsing \\\"\\\": invalid syntax\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
-				router.getApplicationsByTeam(w, req)
-			},
-		},
-		{
-			name:               "get team applications fails, because user is not authorized",
-			url:                "/team?team=team1&limit=10&offset=0",
-			expectedStatusCode: http.StatusForbidden,
-			expectedBody:       "{\"error\":\"You are not allowed to view the applications of this team\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilter", mock.Anything)
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{}))
-				router.getApplicationsByTeam(w, req)
-			},
-		},
-		{
-			name:               "get team applications fails",
-			url:                "/team?team=team1&limit=10&offset=0",
-			expectedStatusCode: http.StatusInternalServerError,
-			expectedBody:       "{\"error\":\"Could not get applications: could not get applications\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("could not get applications"))
-				mockStoreClient.AssertNotCalled(t, "GetApplicationsByFilterCount", mock.Anything)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplicationsByTeam(w, req)
-			},
-		},
-		{
-			name:               "get all applications count fails",
-			url:                "/team?team=team1&limit=10&offset=0",
-			expectedStatusCode: http.StatusInternalServerError,
-			expectedBody:       "{\"error\":\"Could not get applications: could not get applications count\"}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, nil)
-				mockStoreClient.On("GetApplicationsByFilterCount", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(0, fmt.Errorf("could not get applications count"))
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplicationsByTeam(w, req)
-			},
-		},
-		{
-			name:               "get all applications",
-			url:                "/team?team=team1&limit=10&offset=0",
-			expectedStatusCode: http.StatusOK,
-			expectedBody:       "{\"count\":0,\"applications\":null}\n",
-			prepare: func(t *testing.T, mockStoreClient *store.MockClient) {
-				mockStoreClient.On("GetApplicationsByFilter", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, nil)
-				mockStoreClient.On("GetApplicationsByFilterCount", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(0, nil)
-			},
-			do: func(router Router, w *httptest.ResponseRecorder, req *http.Request) {
-				req = req.WithContext(context.WithValue(req.Context(), authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}}))
-				router.getApplicationsByTeam(w, req)
-			},
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			mockStoreClient := &store.MockClient{}
-			tt.prepare(t, mockStoreClient)
+	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
 
-			router := Router{chi.NewRouter(), mockStoreClient, otel.Tracer("applications")}
-
-			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, tt.url, nil)
-			rctx := chi.NewRouteContext()
-			req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-
-			w := httptest.NewRecorder()
-			tt.do(router, w, req)
-
-			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
-			mockStoreClient.AssertExpectations(t)
-		})
+		return dbClient, router
 	}
+
+	t.Run("should fail for invalid limit", func(t *testing.T) {
+		_, router := newRouter(t)
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/team", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationsByTeam(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to parse 'limit' parameter"]}`)
+	})
+
+	t.Run("should fail for invalid offset", func(t *testing.T) {
+		_, router := newRouter(t)
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/team?limit=10", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationsByTeam(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to parse 'offset' parameter"]}`)
+	})
+
+	t.Run("should fail when user is not authorized to view applications for a team", func(t *testing.T) {
+		_, router := newRouter(t)
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/team?team=team1&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationsByTeam(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view the applications of this team"]}`)
+	})
+
+	t.Run("should handle error from db client", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get applications"))
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/team?team=team1&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationsByTeam(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications"]}`)
+	})
+
+	t.Run("should handle error from db client for applications count", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get applications count"))
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/team?team=team1&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationsByTeam(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications count"]}`)
+	})
+
+	t.Run("should return applications", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		application := applicationv1.ApplicationSpec{
+			Cluster:   "cluster1",
+			Namespace: "namespace1",
+			Teams:     []string{"team1"},
+		}
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{application}, nil)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(20, nil)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/team?team=team1&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationsByTeam(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, fmt.Sprintf(`{
+				"count": 20,
+				"applications": [{
+					"cluster": "%s",
+					"namespace": "%s",
+					"topology": {},
+					"teams": ["%s"]
+				}]
+			}`, application.Cluster, application.Namespace, application.Teams[0]),
+		)
+	})
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil)
+	router := Mount(nil)
 	require.NotNil(t, router)
 }

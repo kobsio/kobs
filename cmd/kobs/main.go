@@ -1,62 +1,27 @@
 package main
 
 import (
-	"github.com/kobsio/kobs/cmd/kobs/root"
-	"github.com/kobsio/kobs/pkg/log"
-	"github.com/kobsio/kobs/pkg/satellite/plugins/plugin"
+	"github.com/kobsio/kobs/cmd/kobs/cluster"
+	"github.com/kobsio/kobs/cmd/kobs/hub"
+	"github.com/kobsio/kobs/cmd/kobs/version"
+	"github.com/kobsio/kobs/cmd/kobs/watcher"
+	"github.com/kobsio/kobs/pkg/plugins"
 
-	azure "github.com/kobsio/kobs/plugins/plugin-azure/cmd"
-	datadog "github.com/kobsio/kobs/plugins/plugin-datadog/cmd"
-	elasticsearch "github.com/kobsio/kobs/plugins/plugin-elasticsearch/cmd"
-	flux "github.com/kobsio/kobs/plugins/plugin-flux/cmd"
-	github "github.com/kobsio/kobs/plugins/plugin-github/cmd"
-	grafana "github.com/kobsio/kobs/plugins/plugin-grafana/cmd"
-	harbor "github.com/kobsio/kobs/plugins/plugin-harbor/cmd"
-	helm "github.com/kobsio/kobs/plugins/plugin-helm/cmd"
-	istio "github.com/kobsio/kobs/plugins/plugin-istio/cmd"
-	jaeger "github.com/kobsio/kobs/plugins/plugin-jaeger/cmd"
-	jira "github.com/kobsio/kobs/plugins/plugin-jira/cmd"
-	kiali "github.com/kobsio/kobs/plugins/plugin-kiali/cmd"
-	klogs "github.com/kobsio/kobs/plugins/plugin-klogs/cmd"
-	mongodb "github.com/kobsio/kobs/plugins/plugin-mongodb/cmd"
-	opsgenie "github.com/kobsio/kobs/plugins/plugin-opsgenie/cmd"
-	prometheus "github.com/kobsio/kobs/plugins/plugin-prometheus/cmd"
-	rss "github.com/kobsio/kobs/plugins/plugin-rss/cmd"
-	signalsciences "github.com/kobsio/kobs/plugins/plugin-signalsciences/cmd"
-	sonarqube "github.com/kobsio/kobs/plugins/plugin-sonarqube/cmd"
-	sql "github.com/kobsio/kobs/plugins/plugin-sql/cmd"
-	techdocs "github.com/kobsio/kobs/plugins/plugin-techdocs/cmd"
-
-	"go.uber.org/zap"
+	"github.com/alecthomas/kong"
 )
 
+var cli struct {
+	Hub     hub.Cmd     `cmd:"hub" help:"Start the hub."`
+	Watcher watcher.Cmd `cmd:"watcher" help:"Start the watcher."`
+	Cluster cluster.Cmd `cmd:"cluster" help:"Start the cluster."`
+	Version version.Cmd `cmd:"version" help:"Show version information."`
+}
+
 func main() {
-	var pluginMounts map[string]plugin.MountFn
-	pluginMounts = make(map[string]plugin.MountFn)
+	ctx := kong.Parse(&cli)
 
-	pluginMounts[azure.PluginType] = azure.Mount
-	pluginMounts[datadog.PluginType] = datadog.Mount
-	pluginMounts[elasticsearch.PluginType] = elasticsearch.Mount
-	pluginMounts[flux.PluginType] = flux.Mount
-	pluginMounts[github.PluginType] = github.Mount
-	pluginMounts[grafana.PluginType] = grafana.Mount
-	pluginMounts[harbor.PluginType] = harbor.Mount
-	pluginMounts[helm.PluginType] = helm.Mount
-	pluginMounts[istio.PluginType] = istio.Mount
-	pluginMounts[jaeger.PluginType] = jaeger.Mount
-	pluginMounts[jira.PluginType] = jira.Mount
-	pluginMounts[kiali.PluginType] = kiali.Mount
-	pluginMounts[klogs.PluginType] = klogs.Mount
-	pluginMounts[mongodb.PluginType] = mongodb.Mount
-	pluginMounts[opsgenie.PluginType] = opsgenie.Mount
-	pluginMounts[prometheus.PluginType] = prometheus.Mount
-	pluginMounts[rss.PluginType] = rss.Mount
-	pluginMounts[signalsciences.PluginType] = signalsciences.Mount
-	pluginMounts[sonarqube.PluginType] = sonarqube.Mount
-	pluginMounts[sql.PluginType] = sql.Mount
-	pluginMounts[techdocs.PluginType] = techdocs.Mount
+	registeredPlugins := []plugins.Plugin{}
 
-	if err := root.Command(pluginMounts).Execute(); err != nil {
-		log.Fatal(nil, "Failed to initialize kobs", zap.Error(err))
-	}
+	err := ctx.Run(registeredPlugins)
+	ctx.FatalIfErrorf(err)
 }

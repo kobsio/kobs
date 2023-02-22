@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dashboardv1 "github.com/kobsio/kobs/pkg/kube/apis/dashboard/v1"
+	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )

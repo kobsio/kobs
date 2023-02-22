@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
-	"github.com/kobsio/kobs/pkg/hub/store/shared"
-	"github.com/kobsio/kobs/pkg/log"
-	"github.com/kobsio/kobs/pkg/middleware/errresponse"
+	"github.com/kobsio/kobs/pkg/hub/db"
+	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 
 	"github.com/go-chi/render"
 	"go.opentelemetry.io/otel/attribute"
@@ -56,7 +57,7 @@ type EdgeData struct {
 	Description     string `json:"description"`
 }
 
-func createTopologyGraph(topology []shared.Topology) Topology {
+func createTopologyGraph(topology []db.Topology) Topology {
 	var edges []Edge
 	var nodes []Node
 
@@ -65,11 +66,11 @@ func createTopologyGraph(topology []shared.Topology) Topology {
 			Data: EdgeData{
 				ID:              t.ID,
 				Source:          t.SourceID,
-				SourceCluster:   fmt.Sprintf("%s (%s)", t.SourceCluster, t.SourceSatellite),
+				SourceCluster:   t.SourceCluster,
 				SourceNamespace: t.SourceNamespace,
 				SourceName:      t.SourceName,
 				Target:          t.TargetID,
-				TargetCluster:   fmt.Sprintf("%s (%s)", t.TargetCluster, t.TargetSatellite),
+				TargetCluster:   t.TargetCluster,
 				TargetNamespace: t.TargetNamespace,
 				TargetName:      t.TargetName,
 				Description:     t.TopologyDescription,
@@ -85,7 +86,7 @@ func createTopologyGraph(topology []shared.Topology) Topology {
 			Data: NodeData{
 				ID:        t.SourceID,
 				Label:     fmt.Sprintf("%s (%s / %s)", t.SourceName, t.SourceName, t.SourceCluster),
-				Cluster:   fmt.Sprintf("%s (%s)", t.SourceCluster, t.SourceSatellite),
+				Cluster:   t.SourceCluster,
 				Namespace: t.SourceNamespace,
 				Name:      t.SourceName,
 				External:  external,
@@ -98,7 +99,7 @@ func createTopologyGraph(topology []shared.Topology) Topology {
 			Data: NodeData{
 				ID:        t.TargetID,
 				Label:     fmt.Sprintf("%s (%s / %s)", t.TargetName, t.TargetName, t.TargetCluster),
-				Cluster:   fmt.Sprintf("%s (%s)", t.TargetCluster, t.TargetSatellite),
+				Cluster:   t.TargetCluster,
 				Namespace: t.TargetNamespace,
 				Name:      t.TargetName,
 				External:  "",
@@ -113,7 +114,7 @@ func createTopologyGraph(topology []shared.Topology) Topology {
 }
 
 // appendTopologyIfMissing appends a an topology item to a list of topology items, when the item doesn't already exists.
-func appendTopologyIfMissing(items []shared.Topology, item shared.Topology) []shared.Topology {
+func appendTopologyIfMissing(items []db.Topology, item db.Topology) []db.Topology {
 	for _, i := range items {
 		if i.ID == item.ID {
 			return items
@@ -138,13 +139,7 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 	ctx, span := router.tracer.Start(r.Context(), "getApplicationsTopology")
 	defer span.End()
 
-	user, err := authContext.GetUser(ctx)
-	if err != nil {
-		log.Warn(ctx, "The user is not authorized to access the applications", zap.Error(err))
-		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the applications")
-		return
-	}
-
+	user := authContext.MustGetUser(ctx)
 	teams := user.Teams
 	all := r.URL.Query().Get("all")
 	clusterIDs := r.URL.Query()["clusterID"]
@@ -165,24 +160,24 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 	// so. If a team isn't part of any teams "user.Teams" is "nil" we handle it the same ways as he wants to see all
 	// applications.
 	parsedAll, _ := strconv.ParseBool(all)
-	if parsedAll == true || teams == nil {
-		if !user.HasApplicationAccess("", "", "", []string{""}) {
+	if parsedAll || teams == nil {
+		if !user.HasApplicationAccess(&applicationv1.ApplicationSpec{}) {
 			log.Warn(ctx, "The user is not authorized to view all applications")
 			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
 			span.SetStatus(codes.Error, "user is not authorized to view all applications")
-			errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view all applications")
+			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view all applications")
 			return
 		}
 
 		teams = nil
 	}
 
-	applications, err := router.storeClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, 0, 0)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, 0, 0)
 	if err != nil {
-		log.Error(ctx, "Could not get applications", zap.Error(err))
+		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get applications")
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get applications")
 		return
 	}
 
@@ -191,25 +186,25 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 		applicationIDs = append(applicationIDs, application.ID)
 	}
 
-	sourceTopology, err := router.storeClient.GetTopologyByIDs(ctx, "SourceID", applicationIDs)
+	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "sourceID", applicationIDs)
 	if err != nil {
-		log.Error(ctx, "Could not get source topology", zap.Error(err))
+		log.Error(ctx, "Failed to get source topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get source topology")
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get source topology")
 		return
 	}
 
-	targetTopology, err := router.storeClient.GetTopologyByIDs(ctx, "TargetID", applicationIDs)
+	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "targetID", applicationIDs)
 	if err != nil {
-		log.Error(ctx, "Could not get target topology", zap.Error(err))
+		log.Error(ctx, "Failed to get target topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get target topology")
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get target topology")
 		return
 	}
 
-	var topology []shared.Topology
+	var topology []db.Topology
 	for _, t := range sourceTopology {
 		topology = appendTopologyIfMissing(topology, t)
 	}
@@ -225,23 +220,15 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 	ctx, span := router.tracer.Start(r.Context(), "getApplicationTopology")
 	defer span.End()
 
-	user, err := authContext.GetUser(ctx)
-	if err != nil {
-		log.Warn(ctx, "The user is not authorized to access the application", zap.Error(err))
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, err, http.StatusUnauthorized, "You are not authorized to access the application")
-		return
-	}
-
+	user := authContext.MustGetUser(ctx)
 	id := r.URL.Query().Get("id")
 
 	span.SetAttributes(attribute.Key("id").String(id))
 
-	application, err := router.storeClient.GetApplicationByID(ctx, id)
+	application, err := router.dbClient.GetApplicationByID(ctx, id)
 	if err != nil {
-		log.Error(ctx, "Could not get application", zap.Error(err), zap.String("id", id))
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get application")
+		log.Error(ctx, "Failed to get application", zap.Error(err), zap.String("id", id))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get application")
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		return
@@ -251,37 +238,37 @@ func (router *Router) getApplicationTopology(w http.ResponseWriter, r *http.Requ
 		log.Error(ctx, "Application was not found", zap.Error(err), zap.String("id", id))
 		span.RecordError(fmt.Errorf("application was not found"))
 		span.SetStatus(codes.Error, "application was not found")
-		errresponse.Render(w, r, err, http.StatusBadRequest, "Application was not found")
+		errresponse.Render(w, r, http.StatusNotFound, "Application was not found")
 		return
 	}
 
-	if !user.HasApplicationAccess(application.Satellite, application.Cluster, application.Namespace, application.Teams) {
+	if !user.HasApplicationAccess(application) {
 		log.Warn(ctx, "The user is not authorized to view the application", zap.String("id", id))
 		span.RecordError(fmt.Errorf("user is not authorized to view the application"))
 		span.SetStatus(codes.Error, "user is not authorized to view the application")
-		errresponse.Render(w, r, nil, http.StatusForbidden, "You are not allowed to view the application")
+		errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the application")
 		return
 	}
 
-	sourceTopology, err := router.storeClient.GetTopologyByIDs(ctx, "SourceID", []string{id})
+	sourceTopology, err := router.dbClient.GetTopologyByIDs(ctx, "sourceID", []string{id})
 	if err != nil {
-		log.Error(ctx, "Could not get source topology", zap.Error(err))
+		log.Error(ctx, "Failed to get source topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get source topology")
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get source topology")
 		return
 	}
 
-	targetTopology, err := router.storeClient.GetTopologyByIDs(ctx, "TargetID", []string{id})
+	targetTopology, err := router.dbClient.GetTopologyByIDs(ctx, "targetID", []string{id})
 	if err != nil {
-		log.Error(ctx, "Could not get target topology", zap.Error(err))
+		log.Error(ctx, "Failed to get target topology", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		errresponse.Render(w, r, err, http.StatusInternalServerError, "Could not get target topology")
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get target topology")
 		return
 	}
 
-	var topology []shared.Topology
+	var topology []db.Topology
 	for _, t := range sourceTopology {
 		topology = appendTopologyIfMissing(topology, t)
 	}
