@@ -1,7 +1,5 @@
-import { Components } from '@mui/material';
+import { Components, createTheme, Theme, TypographyVariantsOptions } from '@mui/material';
 import { green, grey } from '@mui/material/colors';
-import { createTheme, Theme } from '@mui/material/styles';
-import { TypographyOptions } from '@mui/material/styles/createTypography';
 
 /**
  * `breakpoints` defines the breakpoints which should be used in our Material UI theme.
@@ -71,7 +69,7 @@ const components: Components<Omit<Theme, 'components'>> = {
 /**
  * `typography` defines the typography options (`TypographyOptions`) for our Material UI theme.
  */
-const typography: TypographyOptions = {
+const typography: TypographyVariantsOptions = {
   body1: {
     fontSize: 13,
   },

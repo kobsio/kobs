@@ -5,6 +5,7 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 	"strings"
@@ -102,7 +103,7 @@ func (c *client) authHandler(w http.ResponseWriter, r *http.Request) {
 
 	session, err := c.dbClient.GetAndUpdateSession(ctx, tokenClaims.SessionID)
 	if err != nil {
-		if err == db.ErrSessionNotFound {
+		if errors.Is(err, db.ErrSessionNotFound) {
 			log.Warn(ctx, "Session not found", zap.Error(err))
 			errresponse.Render(w, r, http.StatusUnauthorized)
 			return
