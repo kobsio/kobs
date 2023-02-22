@@ -1,18 +1,15 @@
-# For most projects, this workflow file will not need changing; you simply need
-# to commit it to your repository.
-#
-# You may wish to alter this file to override the set of languages analyzed,
-# or to provide custom queries or build logic.
 name: "CodeQL"
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [main]
+    branches:
+      - main
   schedule:
-    - cron: '21 16 * * 3'
+    - cron: '0 7 * * 1'
 
 env:
   CODEQL_EXTRACTOR_GO_BUILD_TRACING: 'on'

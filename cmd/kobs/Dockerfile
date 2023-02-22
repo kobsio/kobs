@@ -1,4 +1,4 @@
-FROM node:16.19.0 as app
+FROM node:18.14.1 as app
 WORKDIR /kobs
 COPY app /kobs/
 RUN npm clean-install

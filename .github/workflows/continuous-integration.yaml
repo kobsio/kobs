@@ -1,12 +1,17 @@
 name: Continuous Integration
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   go:
     name: Go
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -54,7 +59,7 @@ jobs:
 
   node:
     name: Node.js
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         plugin: [app, core]
@@ -70,7 +75,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       - name: Cache
         uses: actions/cache@v3
