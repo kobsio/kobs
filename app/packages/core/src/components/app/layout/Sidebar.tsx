@@ -334,6 +334,7 @@ const SidebarHeader: FunctionComponent = () => {
 const SidebarFooter: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
   const navigate = useNavigate();
+  const location = useLocation()
   const apiContext = useContext<IAPIContext>(APIContext);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
 
@@ -358,7 +359,7 @@ const SidebarFooter: FunctionComponent = () => {
   const handleSignOut = async () => {
     try {
       await apiContext.client.signout();
-      navigate(`/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      navigate(`/auth?redirect=${encodeURIComponent(location.pathname + location.search)}`);
     } catch (_) {}
   };
 

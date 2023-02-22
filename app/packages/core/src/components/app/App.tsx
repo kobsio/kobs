@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactNode, useContext } from 'react';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Home from './Home';
 import Layout from './layout/Layout';
@@ -41,6 +41,7 @@ interface IAuthWrapper {
  */
 const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthWrapper) => {
   const navigate = useNavigate();
+  const location = useLocation()
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, isError, error } = useQuery<IAPIUser, APIError>(['core/authwrapper'], async () => {
@@ -59,7 +60,7 @@ const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthW
 
   if (isError) {
     if (error.statusCode === 401) {
-      navigate(`/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      navigate(`/auth?redirect=${encodeURIComponent(location.pathname + location.search)}`);
 
       return (
         <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">

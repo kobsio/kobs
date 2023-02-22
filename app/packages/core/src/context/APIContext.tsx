@@ -169,6 +169,7 @@ export class APIClient implements IAPIClient {
    */
   async signout(): Promise<void> {
     await this.get('/api/auth/signout');
+    this.user = undefined;
   }
 
   /**
