@@ -1,9 +1,9 @@
 package v1
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // +genclient
@@ -29,40 +29,40 @@ type ApplicationList struct {
 
 type ApplicationSpec struct {
 	ID          string                  `json:"id,omitempty" bson:"_id"`
-	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
-	Cluster     string                  `json:"cluster,omitempty"`
-	Namespace   string                  `json:"namespace,omitempty"`
-	Name        string                  `json:"name,omitempty"`
-	Description string                  `json:"description,omitempty"`
-	Tags        []string                `json:"tags,omitempty"`
-	Links       []Link                  `json:"links,omitempty"`
-	Teams       []string                `json:"teams,omitempty"`
-	Topology    Topology                `json:"topology,omitempty"`
-	Insights    []Insight               `json:"insights,omitempty"`
-	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
+	UpdatedAt   int64                   `json:"updatedAt,omitempty" bson:"updatedAt"`
+	Cluster     string                  `json:"cluster,omitempty" bson:"cluster"`
+	Namespace   string                  `json:"namespace,omitempty" bson:"namespace"`
+	Name        string                  `json:"name,omitempty" bson:"name"`
+	Description string                  `json:"description,omitempty" bson:"description"`
+	Tags        []string                `json:"tags,omitempty" bson:"tags"`
+	Links       []Link                  `json:"links,omitempty" bson:"links"`
+	Teams       []string                `json:"teams,omitempty" bson:"teams"`
+	Topology    Topology                `json:"topology,omitempty" bson:"topology"`
+	Insights    []Insight               `json:"insights,omitempty" bson:"insights"`
+	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty" bson:"dashboards"`
 }
 
 type Link struct {
-	Title string `json:"title"`
-	Link  string `json:"link"`
+	Title string `json:"title" bson:"title"`
+	Link  string `json:"link" bson:"link"`
 }
 
 type Topology struct {
-	External     bool         `json:"external,omitempty"`
-	Dependencies []Dependency `json:"dependencies,omitempty"`
+	External     bool         `json:"external,omitempty" bson:"external"`
+	Dependencies []Dependency `json:"dependencies,omitempty" bson:"dependencies"`
 }
 
 type Dependency struct {
-	Cluster     string `json:"cluster,omitempty"`
-	Namespace   string `json:"namespace,omitempty"`
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
+	Cluster     string `json:"cluster,omitempty" bson:"cluster"`
+	Namespace   string `json:"namespace,omitempty" bson:"namespace"`
+	Name        string `json:"name" bson:"name"`
+	Description string `json:"description,omitempty" bson:"description"`
 }
 
 type Insight struct {
-	Title    string             `json:"title"`
-	Type     string             `json:"type"`
-	Unit     string             `json:"unit,omitempty"`
-	Mappings map[string]string  `json:"mappings,omitempty"`
-	Plugin   dashboardv1.Plugin `json:"plugin"`
+	Title    string             `json:"title" bson:"title"`
+	Type     string             `json:"type" bson:"type"`
+	Unit     string             `json:"unit,omitempty" bson:"unit"`
+	Mappings map[string]string  `json:"mappings,omitempty" bson:"mappings"`
+	Plugin   dashboardv1.Plugin `json:"plugin" bson:"plugin"`
 }

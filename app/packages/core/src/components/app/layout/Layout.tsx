@@ -53,7 +53,6 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutPro
             variant="temporary"
             PaperProps={{ style: { width: drawerWidth } }}
             sx={{
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               '> div': { borderRight: 0 },
             }}
             open={mobileOpen}
@@ -67,7 +66,6 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutPro
             variant="permanent"
             PaperProps={{ style: { width: drawerWidth } }}
             sx={{
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               '> div': { borderRight: 0 },
             }}
             onClose={handleDrawerToggle}

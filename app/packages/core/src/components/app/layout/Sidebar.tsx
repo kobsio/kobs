@@ -22,6 +22,7 @@ import { FunctionComponent, forwardRef, useContext, useState, MouseEvent } from 
 import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation } from 'react-router-dom';
 
 import logo from '../../../assets/logo.svg';
+import { APIContext, IAPIContext } from '../../../context/APIContext';
 import { AppContext, IAppContext } from '../../../context/AppContext';
 import { INavigation, INavigationItem, INavigationSubItem } from '../../../crds/user';
 import { ITheme } from '../../../utils/theme';
@@ -154,7 +155,6 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
       <ListItemButton
         onClick={(): void => toggleOpen(item.name)}
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             background: 'rgba(0, 0, 0, 0.08)',
           },
@@ -203,7 +203,6 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
         component={Link}
         to={item.link}
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             background: isActive ? darken(theme.sidebar.background, 0.13) : 'rgba(0, 0, 0, 0.08)',
           },
@@ -269,7 +268,6 @@ const SidebarSubItem: FunctionComponent<ISidebarSubItemProps> = ({ item }: ISide
         component={Link}
         to={item.link}
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             background: isActive ? darken(theme.sidebar.background, 0.13) : 'rgba(0, 0, 0, 0.08)',
           },
@@ -302,7 +300,6 @@ const SidebarHeader: FunctionComponent = () => {
         component={Link}
         to="/"
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&:hover': {
             backgroundColor: theme.sidebar.header.background,
           },
@@ -340,6 +337,7 @@ const SidebarHeader: FunctionComponent = () => {
  */
 const SidebarFooter: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
+  const apiContext = useContext<IAPIContext>(APIContext);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
 
   /**
@@ -361,7 +359,9 @@ const SidebarFooter: FunctionComponent = () => {
    * cokkies. When this is done we can redirect the user to the login page.
    */
   const handleSignOut = async (): Promise<void> => {
-    // TODO: Add sign out logic
+    try {
+      await apiContext.client.signout();
+    } catch (_) {}
   };
 
   /**
@@ -410,12 +410,12 @@ const SidebarFooter: FunctionComponent = () => {
               overlap="circular"
               variant="dot"
             >
-              <Avatar alt="Lucy Lavender" src={getProfileImageURL('admin@kobs.io')} />
+              <Avatar alt="Lucy Lavender" src={getProfileImageURL(apiContext.getUser()?.id ?? '')} />
             </Badge>
           </Grid>
           <Grid item={true}>
             <Typography sx={{ color: theme.sidebar.footer.color }} variant="body2">
-              user name
+              {apiContext.getUser()?.name || 'Unknown'}
             </Typography>
             <Typography
               sx={{
@@ -426,7 +426,7 @@ const SidebarFooter: FunctionComponent = () => {
               }}
               variant="caption"
             >
-              user email
+              {apiContext.getUser()?.id || 'Unknown'}
             </Typography>
           </Grid>
         </Grid>
@@ -466,11 +466,12 @@ const SidebarFooter: FunctionComponent = () => {
  */
 const Sidebar: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
+  const apiContext = useContext<IAPIContext>(APIContext);
+
   return (
     <Box sx={{ height: '100vh' }}>
       <Box
         sx={{
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '&::-webkit-scrollbar': {
             display: 'none',
           },
@@ -485,25 +486,7 @@ const Sidebar: FunctionComponent = () => {
               paddingY: theme.spacing(2.5),
             }}
           >
-            {[
-              {
-                items: [
-                  { icon: 'home', link: '/', name: 'Home' },
-                  { icon: 'search', link: '/search', name: 'Search' },
-                ],
-                name: 'Home',
-              },
-              {
-                items: [
-                  { icon: 'apps', link: '/applications', name: 'Applications' },
-                  { icon: 'topology', link: '/topology', name: 'Topology' },
-                  { icon: 'team', link: '/teams', name: 'Teams' },
-                  { icon: 'kubernetes', link: '/resources', name: 'Kubernetes Resources' },
-                  { icon: 'plugin', link: '/plugins', name: 'Plugins' },
-                ],
-                name: 'Resources',
-              },
-            ].map((group) => (
+            {apiContext.getUser()?.navigation.map((group) => (
               <SidebarGroup key={group.name} group={group} />
             ))}
           </Box>

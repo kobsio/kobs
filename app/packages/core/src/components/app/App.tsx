@@ -1,32 +1,63 @@
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { ReactNode, useContext } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Home from './Home';
 import Layout from './layout/Layout';
-import SignIn from './SignIn';
-import SignInCallback from './SignInCallback';
+import Signin from './signin/Signin';
+import SigninOIDCCallback from './signin/SigninOIDCCallback';
 
+import {
+  APIContextProvider,
+  APIContext,
+  IAPIContext,
+  APIError,
+  IAPIUser,
+  queryClientOptions,
+} from '../../context/APIContext';
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
 import theme from '../../utils/theme';
-import APIContext from '../api/context';
-import User from '../user/context';
 
 /**
  * `queryClient` is our global query client for `@tanstack/react-query`.
  */
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      refetchOnWindowFocus: false,
-      retry: false,
-      staleTime: Infinity,
-    },
-  },
-});
+const queryClient = new QueryClient(queryClientOptions);
+
+/**
+ * `IAuthWrapper` is the interface which defines the properties for the `AuthWrapper` component. We only have to provide
+ * a `children` which should be protected by the `AuthWrapper` component.
+ */
+interface IAuthWrapper {
+  children: ReactNode;
+}
+
+/**
+ * The `AuthWrapper` component is used to protect the provided `children`. This means that the provided `children` can
+ * only be accessed when the user is authenticated. For this we are calling the `auth` method of our API client which
+ * returns the authenticated user. If we can not get a user within the `auth` method and our API returns a unauthorized
+ * error we automatically redirecting the user to the sign in page.
+ */
+const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthWrapper) => {
+  const apiContext = useContext<IAPIContext>(APIContext);
+
+  const { data } = useQuery<IAPIUser, APIError>(['core/authwrapper'], async () => {
+    return apiContext.client.auth();
+  });
+
+  if (!data) {
+    return (
+      <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+        <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
+          <CircularProgress />
+        </Box>
+      </Box>
+    );
+  }
+
+  return <>{children}</>;
+};
 
 /**
  * `IAppProps` are the properties for our `App` component. Currently we only require a list of `plugins`, so that
@@ -43,19 +74,19 @@ interface IAppProps {
  */
 export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IAppProps) => {
   return (
-    <AppContextProvider icons={icons}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <APIContext.Wrapper>
+    <QueryClientProvider client={queryClient}>
+      <AppContextProvider icons={icons}>
+        <APIContextProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>
               <Routes>
-                <Route path="/auth" element={<SignIn />} />
-                <Route path="/auth/callback" element={<SignInCallback />} />
+                <Route path="/auth" element={<Signin />} />
+                <Route path="/auth/callback" element={<SigninOIDCCallback />} />
                 <Route
                   path="*"
                   element={
-                    <User.Provider>
+                    <AuthWrapper>
                       <PluginContextProvider plugins={plugins}>
                         <Layout>
                           <Routes>
@@ -63,14 +94,14 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                           </Routes>
                         </Layout>
                       </PluginContextProvider>
-                    </User.Provider>
+                    </AuthWrapper>
                   }
                 />
               </Routes>
-            </APIContext.Wrapper>
-          </BrowserRouter>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </AppContextProvider>
+            </BrowserRouter>
+          </ThemeProvider>
+        </APIContextProvider>
+      </AppContextProvider>
+    </QueryClientProvider>
   );
 };

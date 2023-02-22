@@ -20,7 +20,7 @@ type Config struct{}
 
 type Router struct {
 	*chi.Mux
-	storeClient   db.Client
+	dbClient      db.Client
 	clusterClient clusters.Client
 }
 
@@ -41,7 +41,7 @@ func (router *Router) getClusters(w http.ResponseWriter, r *http.Request) {
 func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	clusterIDs := r.URL.Query()["clusterID"]
 
-	namespaces, err := router.storeClient.GetNamespacesByClusters(r.Context(), clusterIDs)
+	namespaces, err := router.dbClient.GetNamespacesByClusters(r.Context(), clusterIDs)
 	if err != nil {
 		log.Error(r.Context(), "Failed to get namespaces", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get namespaces")
@@ -59,7 +59,7 @@ func (router *Router) getNamespaces(w http.ResponseWriter, r *http.Request) {
 }
 
 func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
-	crds, err := router.storeClient.GetCRDs(r.Context())
+	crds, err := router.dbClient.GetCRDs(r.Context())
 	if err != nil {
 		log.Error(r.Context(), "Failed to get resources", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get resources")
@@ -69,10 +69,10 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, shared.GetResources(crds))
 }
 
-func Mount(config Config, storeClient db.Client, clusterClient clusters.Client) chi.Router {
+func Mount(config Config, dbClient db.Client, clusterClient clusters.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
-		storeClient,
+		dbClient,
 		clusterClient,
 	}
 

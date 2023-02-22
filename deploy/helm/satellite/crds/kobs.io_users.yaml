@@ -132,6 +132,8 @@ spec:
                   - title
                   type: object
                 type: array
+              displayName:
+                type: string
               id:
                 type: string
               name:
@@ -172,6 +174,8 @@ spec:
                   - name
                   type: object
                 type: array
+              password:
+                type: string
               permissions:
                 properties:
                   applications:
@@ -239,6 +243,10 @@ spec:
                       type: string
                     type: array
                 type: object
+              teams:
+                items:
+                  type: string
+                type: array
               updatedAt:
                 format: int64
                 type: integer

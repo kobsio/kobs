@@ -57,10 +57,10 @@ func TestGetApplicationsTopology(t *testing.T) {
 		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications"]}`)
 	})
 
-	t.Run("should handle error from db client for SourceID", func(t *testing.T) {
+	t.Run("should handle error from db client for sourceID", func(t *testing.T) {
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for SourceID"))
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "sourceID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for sourceID"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Teams: []string{"team@test.test"}})
@@ -73,11 +73,11 @@ func TestGetApplicationsTopology(t *testing.T) {
 		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get source topology"]}`)
 	})
 
-	t.Run("should handle error from db client for TargetID", func(t *testing.T) {
+	t.Run("should handle error from db client for targetID", func(t *testing.T) {
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", gomock.Any()).Return(nil, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "TargetID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for TargetID"))
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "sourceID", gomock.Any()).Return(nil, nil)
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "targetID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for targetID"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Teams: []string{"team@test.test"}})
@@ -117,7 +117,7 @@ func TestGetApplicationsTopology(t *testing.T) {
 				TargetCluster:       "target Cluster",
 			},
 		}
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", []string{application.ID}).Return(sourceTopology, nil)
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "sourceID", []string{application.ID}).Return(sourceTopology, nil)
 		targetTopology := []db.Topology{
 			{
 				SourceID:        "target ID",
@@ -126,7 +126,7 @@ func TestGetApplicationsTopology(t *testing.T) {
 				TargetID:        "source ID",
 			},
 		}
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "TargetID", []string{application.ID}).Return(targetTopology, nil)
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "targetID", []string{application.ID}).Return(targetTopology, nil)
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
@@ -228,8 +228,8 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationByID(gomock.Any(), application.ID).Return(application, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", []string{application.ID}).Return(sourceTopology, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "TargetID", []string{application.ID}).Return(targetTopology, nil)
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "sourceID", []string{application.ID}).Return(sourceTopology, nil)
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "targetID", []string{application.ID}).Return(targetTopology, nil)
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, user)
@@ -332,7 +332,7 @@ func TestGetApplicationTopology(t *testing.T) {
 		utils.AssertJSONEq(t, w, `{"errors":["You are not allowed to view the application"]}`)
 	})
 
-	t.Run("should handle error from db client for SourceID", func(t *testing.T) {
+	t.Run("should handle error from db client for sourceID", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -346,7 +346,7 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationByID(gomock.Any(), application.ID).Return(&applicationv1.ApplicationSpec{}, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for SourceID"))
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "sourceID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for sourceID"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, user)
@@ -359,7 +359,7 @@ func TestGetApplicationTopology(t *testing.T) {
 		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get source topology"]}`)
 	})
 
-	t.Run("should handle error from db client for TargetID", func(t *testing.T) {
+	t.Run("should handle error from db client for targetID", func(t *testing.T) {
 		application := &applicationv1.ApplicationSpec{
 			ID: "application-id",
 		}
@@ -373,8 +373,8 @@ func TestGetApplicationTopology(t *testing.T) {
 
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationByID(gomock.Any(), application.ID).Return(&applicationv1.ApplicationSpec{}, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "SourceID", gomock.Any()).Return(nil, nil)
-		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "TargetID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for TargetID"))
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "sourceID", gomock.Any()).Return(nil, nil)
+		dbClient.EXPECT().GetTopologyByIDs(gomock.Any(), "targetID", gomock.Any()).Return(nil, fmt.Errorf("get topology by ids failed for targetID"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, user)

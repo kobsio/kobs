@@ -316,11 +316,11 @@ func TestSaveAndGetTopology(t *testing.T) {
 	err := c.SaveTopology(context.Background(), "test-cluster", applications)
 	require.NoError(t, err)
 
-	storedTopology1, err := c.GetTopologyByIDs(context.Background(), "TargetID", []string{"/cluster/test-cluster/namespace/default/name/application2"})
+	storedTopology1, err := c.GetTopologyByIDs(context.Background(), "targetID", []string{"/cluster/test-cluster/namespace/default/name/application2"})
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTopology1))
 
-	storedTopology2, err := c.GetTopologyByIDs(context.Background(), "SourceID", []string{"/cluster/test-cluster/namespace/default/name/application1"})
+	storedTopology2, err := c.GetTopologyByIDs(context.Background(), "sourceID", []string{"/cluster/test-cluster/namespace/default/name/application1"})
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTopology2))
 }

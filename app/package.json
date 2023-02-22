@@ -6,8 +6,10 @@
     "packages/*"
   ],
   "scripts": {
+    "init": "npm install && npm run clean && lerna bootstrap",
+    "clean": "lerna clean --yes && lerna exec -- rm -rf dist",
+    "dev": "lerna run dev --stream",
     "analyze": "lerna run analyze",
-    "dev": "lerna run dev --parallel",
     "build": "lerna run build",
     "preview": "lerna run preview",
     "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'",
@@ -79,29 +81,11 @@
         "error",
         {
           "format": [
-            "camelCase"
-          ],
-          "selector": "default",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
             "camelCase",
             "UPPER_CASE",
             "PascalCase"
           ],
           "selector": "variable",
-          "leadingUnderscore": "forbid",
-          "trailingUnderscore": "forbid"
-        },
-        {
-          "format": [
-            "camelCase",
-            "UPPER_CASE",
-            "PascalCase"
-          ],
-          "selector": "property",
           "leadingUnderscore": "forbid",
           "trailingUnderscore": "forbid"
         },

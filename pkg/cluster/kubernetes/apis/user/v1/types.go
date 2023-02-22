@@ -1,10 +1,10 @@
 package v1
 
 import (
+	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
+
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 )
 
 // +genclient
@@ -30,55 +30,58 @@ type UserList struct {
 
 type UserSpec struct {
 	ID          string                  `json:"id,omitempty" bson:"_id"`
-	UpdatedAt   int64                   `json:"updatedAt,omitempty"`
-	Cluster     string                  `json:"cluster,omitempty"`
-	Namespace   string                  `json:"namespace,omitempty"`
-	Name        string                  `json:"name,omitempty"`
-	Permissions Permissions             `json:"permissions,omitempty"`
-	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty"`
-	Navigation  []Navigation            `json:"navigation,omitempty"`
+	UpdatedAt   int64                   `json:"updatedAt,omitempty" bson:"updatedAt"`
+	Cluster     string                  `json:"cluster,omitempty" bson:"cluster"`
+	Namespace   string                  `json:"namespace,omitempty" bson:"namespace"`
+	Name        string                  `json:"name,omitempty" bson:"name"`
+	DisplayName string                  `json:"displayName,omitempty" bson:"displayName"`
+	Password    string                  `json:"password,omitempty" bson:"password"`
+	Teams       []string                `json:"teams,omitempty" bson:"teams"`
+	Permissions Permissions             `json:"permissions,omitempty" bson:"permissions"`
+	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty" bson:"dashboards"`
+	Navigation  []Navigation            `json:"navigation,omitempty" bson:"navigation"`
 }
 
 type Permissions struct {
-	Applications []ApplicationPermissions `json:"applications,omitempty"`
-	Teams        []string                 `json:"teams,omitempty"`
-	Plugins      []Plugin                 `json:"plugins,omitempty"`
-	Resources    []Resources              `json:"resources,omitempty"`
+	Applications []ApplicationPermissions `json:"applications,omitempty" bson:"applications"`
+	Teams        []string                 `json:"teams,omitempty" bson:"teams"`
+	Plugins      []Plugin                 `json:"plugins,omitempty" bson:"plugins"`
+	Resources    []Resources              `json:"resources,omitempty" bson:"resources"`
 }
 
 type ApplicationPermissions struct {
-	Type       string   `json:"type"`
-	Clusters   []string `json:"clusters,omitempty"`
-	Namespaces []string `json:"namespaces,omitempty"`
+	Type       string   `json:"type" bson:"type"`
+	Clusters   []string `json:"clusters,omitempty" bson:"clusters"`
+	Namespaces []string `json:"namespaces,omitempty" bson:"namespaces"`
 }
 
 type Plugin struct {
-	Cluster     string               `json:"cluster"`
-	Name        string               `json:"name"`
-	Type        string               `json:"type"`
-	Permissions apiextensionsv1.JSON `json:"permissions,omitempty"`
+	Cluster     string               `json:"cluster" bson:"cluster"`
+	Name        string               `json:"name" bson:"name"`
+	Type        string               `json:"type" bson:"type"`
+	Permissions apiextensionsv1.JSON `json:"permissions,omitempty" bson:"permissions"`
 }
 
 type Resources struct {
-	Clusters   []string `json:"clusters"`
-	Namespaces []string `json:"namespaces"`
-	Resources  []string `json:"resources"`
-	Verbs      []string `json:"verbs"`
+	Clusters   []string `json:"clusters" bson:"clusters"`
+	Namespaces []string `json:"namespaces" bson:"namespaces"`
+	Resources  []string `json:"resources" bson:"resources"`
+	Verbs      []string `json:"verbs" bson:"verbs"`
 }
 
 type Navigation struct {
-	Name  string           `json:"name"`
-	Items []NavigationItem `json:"items"`
+	Name  string           `json:"name" bson:"name"`
+	Items []NavigationItem `json:"items" bson:"items"`
 }
 
 type NavigationItem struct {
-	Name  string               `json:"name"`
-	Link  string               `json:"link,omitempty"`
-	Icon  string               `json:"icon,omitempty"`
-	Items []NavigationSubItems `json:"items,omitempty"`
+	Name  string               `json:"name" bson:"name"`
+	Link  string               `json:"link,omitempty" bson:"link"`
+	Icon  string               `json:"icon,omitempty" bson:"icon"`
+	Items []NavigationSubItems `json:"items,omitempty" bson:"items"`
 }
 
 type NavigationSubItems struct {
-	Name string `json:"name"`
-	Link string `json:"link,omitempty"`
+	Name string `json:"name" bson:"name"`
+	Link string `json:"link,omitempty" bson:"link"`
 }

@@ -31,7 +31,7 @@ type Cmd struct {
 
 	Hub struct {
 		API      api.Config        `json:"api" embed:"" prefix:"api." envprefix:"API_"`
-		Auth     auth.Config       `json:"auth" embed:"" prefix:"auth." envprefix:"AUTH_" kong:"-"`
+		Auth     auth.Config       `json:"auth" embed:"" prefix:"auth." envprefix:"AUTH_"`
 		App      app.Config        `json:"app" embed:"" prefix:"app." envprefix:"APP_"`
 		Clusters clusters.Config   `json:"clusters" kong:"-"`
 		Plugins  []plugin.Instance `json:"plugins" kong:"-"`
@@ -81,7 +81,7 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		return err
 	}
 
-	authClient, err := auth.NewClient(cfg.Hub.Auth, dbClient)
+	authClient, err := auth.NewClient(cfg.Hub.Auth, cfg.Hub.App.Settings, dbClient)
 	if err != nil {
 		log.Error(nil, "Could not create auth client", zap.Error(err))
 		return err

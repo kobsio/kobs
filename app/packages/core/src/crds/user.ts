@@ -6,8 +6,36 @@ export interface IUser {
   cluster: string;
   namespace: string;
   name: string;
+  permissions: IPermissions;
   dashboards?: IReference[];
-  navigation?: INavigation;
+  navigation?: INavigation[];
+}
+
+export interface IPermissions {
+  applications?: IApplicationPermissions[];
+  teams?: string[];
+  plugins?: IPluginPermissions[];
+  resources?: IResourcesPermissions[];
+}
+
+export interface IApplicationPermissions {
+  type: string;
+  clusters?: string[];
+  namespaces?: string[];
+}
+
+export interface IPluginPermissions {
+  cluster: string;
+  name: string;
+  type: string;
+  permissions?: unknown;
+}
+
+export interface IResourcesPermissions {
+  clusters: string[];
+  namespaces: string[];
+  resources: string[];
+  verbs: string[];
 }
 
 export interface INavigation {

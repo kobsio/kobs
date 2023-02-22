@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
@@ -14,6 +13,7 @@ import (
 	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -31,7 +31,7 @@ type Config struct {
 	URI string `json:"uri" env:"URI" default:"mongodb://localhost:27017" help:"The connection uri for MongoDB"`
 }
 
-// Client is the interface with all the methods to interact with the store.
+// Client is the interface with all the methods to interact with the db.
 type Client interface {
 	SavePlugins(ctx context.Context, cluster string, plugins []plugin.Instance) error
 	SaveNamespaces(ctx context.Context, cluster string, namespaces []string) error
@@ -60,6 +60,11 @@ type Client interface {
 	GetUserByID(ctx context.Context, id string) (*userv1.UserSpec, error)
 	GetTags(ctx context.Context) ([]Tag, error)
 	GetTopologyByIDs(ctx context.Context, field string, ids []string) ([]Topology, error)
+
+	CreateSession(ctx context.Context, user authContext.User) (*Session, error)
+	GetSession(ctx context.Context, sessionID primitive.ObjectID) (*Session, error)
+	GetAndUpdateSession(ctx context.Context, sessionID primitive.ObjectID) (*Session, error)
+	DeleteSession(ctx context.Context, sessionID primitive.ObjectID) error
 }
 
 type client struct {
@@ -67,8 +72,9 @@ type client struct {
 	tracer trace.Tracer
 }
 
-// NewClient creates a new MongoDB client which implements our store interface and can be used instead of Bolt. To
-// create a local MongoDB for testing the following commands can be used:
+// NewClient creates a new MongoDB client which implements our database interface.
+//
+// To create a local MongoDB for testing the following commands can be used:
 //
 //	docker run --name mongodb -d -p 27017:27017 mongo
 //	docker stop mongodb
@@ -98,7 +104,7 @@ func (c *client) save(ctx context.Context, collection string, models []mongo.Wri
 		return err
 	}
 
-	filter := bson.D{{Key: "updatedat", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}
+	filter := bson.D{{Key: "updatedAt", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}
 	if cluster != "" {
 		filter = bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "cluster", Value: bson.D{{Key: "$eq", Value: cluster}}}}, filter}}}
 	}
@@ -115,7 +121,8 @@ func (c *client) SavePlugins(ctx context.Context, cluster string, plugins []plug
 	if len(plugins) == 0 {
 		return nil
 	}
-	ctx, span := c.tracer.Start(ctx, "store.SavePlugins")
+
+	ctx, span := c.tracer.Start(ctx, "db.SavePlugins")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
 
@@ -140,7 +147,7 @@ func (c *client) SavePlugins(ctx context.Context, cluster string, plugins []plug
 }
 
 func (c *client) SaveNamespaces(ctx context.Context, cluster string, namespaces []string) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveNamespaces")
+	ctx, span := c.tracer.Start(ctx, "db.SaveNamespaces")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
 
@@ -169,7 +176,7 @@ func (c *client) SaveNamespaces(ctx context.Context, cluster string, namespaces 
 }
 
 func (c *client) SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveCRDs")
+	ctx, span := c.tracer.Start(ctx, "db.SaveCRDs")
 	defer span.End()
 
 	var models []mongo.WriteModel
@@ -192,7 +199,7 @@ func (c *client) SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error {
 }
 
 func (c *client) SaveApplications(ctx context.Context, cluster string, applications []applicationv1.ApplicationSpec) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveApplications")
+	ctx, span := c.tracer.Start(ctx, "db.SaveApplications")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
 
@@ -215,7 +222,7 @@ func (c *client) SaveApplications(ctx context.Context, cluster string, applicati
 }
 
 func (c *client) SaveDashboards(ctx context.Context, cluster string, dashboards []dashboardv1.DashboardSpec) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveDashboards")
+	ctx, span := c.tracer.Start(ctx, "db.SaveDashboards")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
 
@@ -238,7 +245,7 @@ func (c *client) SaveDashboards(ctx context.Context, cluster string, dashboards 
 }
 
 func (c *client) SaveTeams(ctx context.Context, cluster string, teams []teamv1.TeamSpec) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveTeams")
+	ctx, span := c.tracer.Start(ctx, "db.SaveTeams")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
 
@@ -261,7 +268,7 @@ func (c *client) SaveTeams(ctx context.Context, cluster string, teams []teamv1.T
 }
 
 func (c *client) SaveUsers(ctx context.Context, cluster string, users []userv1.UserSpec) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveUsers")
+	ctx, span := c.tracer.Start(ctx, "db.SaveUsers")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
 
@@ -284,7 +291,7 @@ func (c *client) SaveUsers(ctx context.Context, cluster string, users []userv1.U
 }
 
 func (c *client) SaveTags(ctx context.Context, applications []applicationv1.ApplicationSpec) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveTags")
+	ctx, span := c.tracer.Start(ctx, "db.SaveTags")
 	defer span.End()
 
 	var models []mongo.WriteModel
@@ -314,7 +321,7 @@ func (c *client) SaveTags(ctx context.Context, applications []applicationv1.Appl
 }
 
 func (c *client) SaveTopology(ctx context.Context, cluster string, applications []applicationv1.ApplicationSpec) error {
-	ctx, span := c.tracer.Start(ctx, "store.SaveTopology")
+	ctx, span := c.tracer.Start(ctx, "db.SaveTopology")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
 
@@ -363,7 +370,7 @@ func (c *client) SaveTopology(ctx context.Context, cluster string, applications 
 }
 
 func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
-	_, span := c.tracer.Start(ctx, "store.GetPlugins")
+	_, span := c.tracer.Start(ctx, "db.GetPlugins")
 	defer span.End()
 
 	var plugins []plugin.Instance
@@ -386,7 +393,7 @@ func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 }
 
 func (c *client) GetNamespaces(ctx context.Context) ([]Namespace, error) {
-	_, span := c.tracer.Start(ctx, "store.GetNamespaces")
+	_, span := c.tracer.Start(ctx, "db.GetNamespaces")
 	defer span.End()
 
 	var namespaces []Namespace
@@ -409,7 +416,7 @@ func (c *client) GetNamespaces(ctx context.Context) ([]Namespace, error) {
 }
 
 func (c *client) GetNamespacesByClusters(ctx context.Context, clusters []string) ([]Namespace, error) {
-	_, span := c.tracer.Start(ctx, "store.GetNamespacesByClusters")
+	_, span := c.tracer.Start(ctx, "db.GetNamespacesByClusters")
 	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
 	defer span.End()
 
@@ -437,7 +444,7 @@ func (c *client) GetNamespacesByClusters(ctx context.Context, clusters []string)
 }
 
 func (c *client) GetCRDs(ctx context.Context) ([]kubernetes.CRD, error) {
-	_, span := c.tracer.Start(ctx, "store.GetCRDs")
+	_, span := c.tracer.Start(ctx, "db.GetCRDs")
 	defer span.End()
 
 	var crds []kubernetes.CRD
@@ -460,7 +467,7 @@ func (c *client) GetCRDs(ctx context.Context) ([]kubernetes.CRD, error) {
 }
 
 func (c *client) GetCRDByID(ctx context.Context, id string) (*kubernetes.CRD, error) {
-	_, span := c.tracer.Start(ctx, "store.GetCRDByID")
+	_, span := c.tracer.Start(ctx, "db.GetCRDByID")
 	span.SetAttributes(attribute.Key("id").String(id))
 	defer span.End()
 
@@ -484,7 +491,7 @@ func (c *client) GetCRDByID(ctx context.Context, id string) (*kubernetes.CRD, er
 }
 
 func (c *client) GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetApplications")
+	_, span := c.tracer.Start(ctx, "db.GetApplications")
 	defer span.End()
 
 	var applications []applicationv1.ApplicationSpec
@@ -507,7 +514,7 @@ func (c *client) GetApplications(ctx context.Context) ([]applicationv1.Applicati
 }
 
 func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetApplicationsByFilter")
+	_, span := c.tracer.Start(ctx, "db.GetApplicationsByFilter")
 	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
 	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
 	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
@@ -567,7 +574,7 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, n
 }
 
 func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string) (int, error) {
-	_, span := c.tracer.Start(ctx, "store.GetApplicationsByFilterCount")
+	_, span := c.tracer.Start(ctx, "db.GetApplicationsByFilterCount")
 	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
 	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
 	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
@@ -616,7 +623,7 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 }
 
 func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicationv1.ApplicationSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetApplicationByID")
+	_, span := c.tracer.Start(ctx, "db.GetApplicationByID")
 	span.SetAttributes(attribute.Key("id").String(id))
 	defer span.End()
 
@@ -640,7 +647,7 @@ func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicatio
 }
 
 func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetDashboards")
+	_, span := c.tracer.Start(ctx, "db.GetDashboards")
 	defer span.End()
 
 	var dashboards []dashboardv1.DashboardSpec
@@ -663,7 +670,7 @@ func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec
 }
 
 func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.DashboardSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetDashboardByID")
+	_, span := c.tracer.Start(ctx, "db.GetDashboardByID")
 	span.SetAttributes(attribute.Key("id").String(id))
 	defer span.End()
 
@@ -687,7 +694,7 @@ func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.
 }
 
 func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetTeams")
+	_, span := c.tracer.Start(ctx, "db.GetTeams")
 	defer span.End()
 
 	var teams []teamv1.TeamSpec
@@ -710,7 +717,7 @@ func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
 }
 
 func (c *client) GetTeamsByIDs(ctx context.Context, ids []string) ([]teamv1.TeamSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetTeamsByIDs")
+	_, span := c.tracer.Start(ctx, "db.GetTeamsByIDs")
 	span.SetAttributes(attribute.Key("ids").StringSlice(ids))
 	defer span.End()
 
@@ -738,7 +745,7 @@ func (c *client) GetTeamsByIDs(ctx context.Context, ids []string) ([]teamv1.Team
 }
 
 func (c *client) GetTeamByID(ctx context.Context, id string) (*teamv1.TeamSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetTeamByID")
+	_, span := c.tracer.Start(ctx, "db.GetTeamByID")
 	span.SetAttributes(attribute.Key("id").String(id))
 	defer span.End()
 
@@ -762,7 +769,7 @@ func (c *client) GetTeamByID(ctx context.Context, id string) (*teamv1.TeamSpec, 
 }
 
 func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetUsers")
+	_, span := c.tracer.Start(ctx, "db.GetUsers")
 	defer span.End()
 
 	var users []userv1.UserSpec
@@ -785,7 +792,7 @@ func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
 }
 
 func (c *client) GetUserByID(ctx context.Context, id string) (*userv1.UserSpec, error) {
-	_, span := c.tracer.Start(ctx, "store.GetUserByID")
+	_, span := c.tracer.Start(ctx, "db.GetUserByID")
 	span.SetAttributes(attribute.Key("id").String(id))
 	defer span.End()
 
@@ -812,7 +819,7 @@ func (c *client) GetUserByID(ctx context.Context, id string) (*userv1.UserSpec, 
 }
 
 func (c *client) GetTags(ctx context.Context) ([]Tag, error) {
-	_, span := c.tracer.Start(ctx, "store.GetTags")
+	_, span := c.tracer.Start(ctx, "db.GetTags")
 	defer span.End()
 
 	var tags []Tag
@@ -835,14 +842,14 @@ func (c *client) GetTags(ctx context.Context) ([]Tag, error) {
 }
 
 func (c *client) GetTopologyByIDs(ctx context.Context, field string, ids []string) ([]Topology, error) {
-	_, span := c.tracer.Start(ctx, "store.GetTopologyByIDs")
+	_, span := c.tracer.Start(ctx, "db.GetTopologyByIDs")
 	span.SetAttributes(attribute.Key("field").String(field))
 	span.SetAttributes(attribute.Key("ids").StringSlice(ids))
 	defer span.End()
 
 	var topology []Topology
 
-	cursor, err := c.db.Database("kobs").Collection("topology").Find(ctx, bson.D{{Key: strings.ToLower(field), Value: bson.D{{Key: "$in", Value: ids}}}})
+	cursor, err := c.db.Database("kobs").Collection("topology").Find(ctx, bson.D{{Key: field, Value: bson.D{{Key: "$in", Value: ids}}}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())

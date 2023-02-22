@@ -77,7 +77,7 @@ func TestGetTeams(t *testing.T) {
 
 	t.Run("should handle error from ", func(t *testing.T) {
 		teamIDs := []string{"team1"}
-		user := authContext.User{ID: "foo", Teams: teamIDs, Permissions: userv1.Permissions{Teams: teamIDs}}
+		user := authContext.User{Teams: teamIDs, ID: "foo", Permissions: userv1.Permissions{Teams: teamIDs}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), teamIDs).Return(nil, fmt.Errorf("could not get teams"))
@@ -97,7 +97,7 @@ func TestGetTeams(t *testing.T) {
 
 	t.Run("should return own teams", func(t *testing.T) {
 		teamIDs := []string{"team1"}
-		user := authContext.User{ID: "foo", Teams: teamIDs, Permissions: userv1.Permissions{Teams: teamIDs}}
+		user := authContext.User{Teams: teamIDs, ID: "foo", Permissions: userv1.Permissions{Teams: teamIDs}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), teamIDs).Return([]teamv1.TeamSpec{{ID: "team1"}, {ID: "team1"}}, nil)
