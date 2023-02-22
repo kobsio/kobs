@@ -99,7 +99,7 @@ const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebar
     <Stack>
       <Box
         sx={{
-          color: 'sidebar.color',
+          color: theme.sidebar.color,
           display: 'block',
           fontSize: theme.typography.caption.fontSize,
           fontWeight: theme.typography.fontWeightMedium,
@@ -164,7 +164,7 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
           paddingRight: theme.spacing(7),
           paddingTop: theme.spacing(3),
           svg: {
-            color: 'sidebar.color',
+            color: theme.sidebar.color,
             fontSize: '20px',
             height: '20px',
             opacity: 0.5,
@@ -177,7 +177,7 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
           sx={{
             margin: 0,
             span: {
-              color: 'sidebar.color',
+              color: theme.sidebar.color,
               fontSize: 'typography.body1.fontSize',
               paddingBottom: 0,
               paddingLeft: theme.spacing(4),
@@ -189,9 +189,9 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
           {item.name}
         </ListItemText>
         {isOpen ? (
-          <ExpandLess sx={{ color: 'rgba(sidebar.color, 0.5)' }} />
+          <ExpandLess sx={{ color: `rgba(${theme.sidebar.color}, 0.5)` }} />
         ) : (
-          <ExpandMore sx={{ color: 'rgba(sidebar.color, 0.5)' }} />
+          <ExpandMore sx={{ color: `rgba(${theme.sidebar.color}, 0.5)` }} />
         )}
       </ListItemButton>
     );
@@ -213,7 +213,7 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
           paddingRight: theme.spacing(7),
           paddingTop: theme.spacing(3),
           svg: {
-            color: 'sidebar.color',
+            color: theme.sidebar.color,
             fontSize: '20px',
             height: '20px',
             opacity: 0.5,
@@ -226,7 +226,7 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
           sx={{
             margin: 0,
             span: {
-              color: 'sidebar.color',
+              color: theme.sidebar.color,
               fontSize: 'typography.body1.fontSize',
               paddingBottom: 0,
               paddingLeft: theme.spacing(4),
@@ -272,7 +272,7 @@ const SidebarSubItem: FunctionComponent<ISidebarSubItemProps> = ({ item }: ISide
             background: isActive ? darken(theme.sidebar.background, 0.13) : 'rgba(0, 0, 0, 0.08)',
           },
           background: isActive ? darken(theme.sidebar.background, 0.13) : undefined,
-          color: 'sidebar.color',
+          color: theme.sidebar.color,
           opacity: isActive ? 1 : 0.7,
           paddingBottom: theme.spacing(2),
           paddingLeft: theme.spacing(17.5),

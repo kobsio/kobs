@@ -38,6 +38,7 @@ interface ILayoutProps {
  * area where the contains of all routes is rendered.
  */
 export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutProps) => {
+  const theme = useTheme<ITheme>();
   const isLgUp = useIsWidthUp('lg');
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -90,7 +91,7 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutPro
         <Box
           component="main"
           sx={{
-            background: 'palette.background.default',
+            background: theme.palette.background.default,
             flex: 1,
           }}
           p={isLgUp ? 12 : 5}
