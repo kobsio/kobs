@@ -42,8 +42,8 @@ const components: Components<Omit<Theme, 'components'>> = {
     },
     styleOverrides: {
       action: {
-        marginRight: '-4px',
-        marginTop: '-4px',
+        mr: '-4px',
+        mt: '-4px',
       },
     },
   },

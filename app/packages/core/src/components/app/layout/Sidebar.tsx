@@ -104,7 +104,7 @@ const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebar
           fontSize: theme.typography.caption.fontSize,
           fontWeight: theme.typography.fontWeightMedium,
           opacity: 0.4,
-          padding: theme.spacing(4, 7, 1),
+          p: theme.spacing(4, 7, 1),
           textTransform: 'uppercase',
         }}
       >
@@ -159,10 +159,9 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
             background: 'rgba(0, 0, 0, 0.08)',
           },
           fontWeight: theme.typography.fontWeightRegular,
-          paddingBottom: theme.spacing(3),
-          paddingLeft: theme.spacing(8),
-          paddingRight: theme.spacing(7),
-          paddingTop: theme.spacing(3),
+          pl: theme.spacing(8),
+          pr: theme.spacing(7),
+          py: theme.spacing(3),
           svg: {
             color: theme.sidebar.color,
             fontSize: '20px',
@@ -175,14 +174,12 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
         {appContext.getIcon(item.icon)}
         <ListItemText
           sx={{
-            margin: 0,
+            m: 0,
             span: {
               color: theme.sidebar.color,
               fontSize: 'typography.body1.fontSize',
-              paddingBottom: 0,
-              paddingLeft: theme.spacing(4),
-              paddingRight: theme.spacing(4),
-              paddingTop: 0,
+              px: theme.spacing(4),
+              py: 0,
             },
           }}
         >
@@ -208,10 +205,9 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
           },
           background: isActive ? darken(theme.sidebar.background, 0.13) : undefined,
           fontWeight: theme.typography.fontWeightRegular,
-          paddingBottom: theme.spacing(3),
-          paddingLeft: theme.spacing(8),
-          paddingRight: theme.spacing(7),
-          paddingTop: theme.spacing(3),
+          pl: theme.spacing(8),
+          pr: theme.spacing(7),
+          py: theme.spacing(3),
           svg: {
             color: theme.sidebar.color,
             fontSize: '20px',
@@ -224,14 +220,12 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
         {appContext.getIcon(item.icon)}
         <ListItemText
           sx={{
-            margin: 0,
+            m: 0,
             span: {
               color: theme.sidebar.color,
-              fontSize: 'typography.body1.fontSize',
-              paddingBottom: 0,
-              paddingLeft: theme.spacing(4),
-              paddingRight: theme.spacing(4),
-              paddingTop: 0,
+              fontSize: theme.typography.body1.fontSize,
+              px: theme.spacing(4),
+              py: 0,
             },
           }}
         >
@@ -274,9 +268,9 @@ const SidebarSubItem: FunctionComponent<ISidebarSubItemProps> = ({ item }: ISide
           background: isActive ? darken(theme.sidebar.background, 0.13) : undefined,
           color: theme.sidebar.color,
           opacity: isActive ? 1 : 0.7,
-          paddingBottom: theme.spacing(2),
-          paddingLeft: theme.spacing(17.5),
-          paddingTop: theme.spacing(2),
+          pb: theme.spacing(2),
+          pl: theme.spacing(17.5),
+          pt: theme.spacing(2),
         }}
       >
         {item.name}
@@ -310,8 +304,8 @@ const SidebarHeader: FunctionComponent = () => {
           fontWeight: theme.typography.fontWeightMedium,
           justifyContent: 'center',
           minHeight: '56px',
-          paddingLeft: theme.spacing(6),
-          paddingRight: theme.spacing(6),
+          pl: theme.spacing(6),
+          pr: theme.spacing(6),
         }}
       >
         <Box
@@ -324,7 +318,7 @@ const SidebarHeader: FunctionComponent = () => {
         >
           <img src={logo} alt="" />
         </Box>
-        <Box sx={{ marginLeft: 1 }}>kobs</Box>
+        <Box sx={{ ml: theme.spacing(1) }}>kobs</Box>
       </ListItemButton>
     </Toolbar>
   );
@@ -383,18 +377,16 @@ const SidebarFooter: FunctionComponent = () => {
           bottom: 0,
           cursor: 'pointer',
           minWidth: '100%',
-          paddingBottom: theme.spacing(2.75),
-          paddingLeft: theme.spacing(4),
-          paddingRight: theme.spacing(4),
-          paddingTop: theme.spacing(2.75),
           position: 'absolute',
+          px: theme.spacing(4),
+          py: theme.spacing(2.75),
         }}
       >
         <Grid container={true} spacing={2}>
           <Grid item={true}>
             <Badge
               sx={{
-                marginRight: theme.spacing(1),
+                mr: theme.spacing(1),
                 span: {
                   backgroundColor: theme.sidebar.footer.online.background,
                   border: `1.5px solid ${theme.palette.common.white}`,
@@ -422,7 +414,7 @@ const SidebarFooter: FunctionComponent = () => {
                 color: theme.sidebar.footer.color,
                 display: 'block',
                 fontSize: '0.7rem',
-                padding: '1px',
+                p: '1px',
               }}
               variant="caption"
             >
@@ -483,7 +475,7 @@ const Sidebar: FunctionComponent = () => {
         <List disablePadding={true}>
           <Box
             sx={{
-              paddingY: theme.spacing(2.5),
+              py: theme.spacing(2.5),
             }}
           >
             {apiContext.getUser()?.navigation.map((group) => (

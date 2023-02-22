@@ -57,7 +57,7 @@ const Signin: FunctionComponent = () => {
                   height: '92px',
                   width: '92px',
                 },
-                margin: '0 auto',
+                m: '0 auto',
                 pb: 2,
                 textAlign: 'center',
               }}
