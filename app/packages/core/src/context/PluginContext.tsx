@@ -26,10 +26,10 @@ export interface IPluginPanelProps {
  * which is rendered as a `page` and a component for a `panel` in a dashboard.
  */
 export interface IPlugin {
-  type: string;
   icon?: ReactNode;
   page?: React.FunctionComponent<IPluginPageProps>;
   panel?: React.FunctionComponent<IPluginPanelProps>;
+  type: string;
 }
 
 /**
@@ -39,13 +39,13 @@ export interface IPlugin {
  * field from the Go struct becomes the `options` field in the `IPluginInstance` interface.
  */
 export interface IPluginInstance {
-  id: string;
   cluster: string;
-  type: string;
-  name: string;
   description?: string;
+  id: string;
+  name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: Record<string, any>;
+  type: string;
 }
 
 /**
@@ -80,8 +80,8 @@ export const PluginContextConsumer = PluginContext.Consumer;
  * we have to pass a list of `plugins` to the component. All the provided `children` can then subscribe to the context.
  */
 interface IPluginContextProviderProps {
-  plugins: IPlugin[];
   children: ReactNode;
+  plugins: IPlugin[];
 }
 
 /**

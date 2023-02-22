@@ -24,7 +24,7 @@ const Signin: FunctionComponent = () => {
   const [password, setPassword] = useState<string>();
   const [state, setState] = useState<SigninState>(SigninState.OK);
 
-  const handleSubmit = async (e: FormEvent): Promise<void> => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!username) {
@@ -76,7 +76,7 @@ const Signin: FunctionComponent = () => {
               id="username"
               name="username"
               label="Username"
-              onChange={(e): void => {
+              onChange={(e) => {
                 const newUsername = e.target.value;
                 if (newUsername) {
                   setUsername(newUsername);
@@ -94,7 +94,7 @@ const Signin: FunctionComponent = () => {
               name="password"
               type="password"
               label="Password"
-              onChange={(e): void => {
+              onChange={(e) => {
                 const newPassword = e.target.value;
                 if (newPassword) {
                   setPassword(newPassword);

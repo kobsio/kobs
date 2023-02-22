@@ -103,9 +103,9 @@ describe('Signin', () => {
     expect(screen.getByText(/sign in page of the oidc provider/)).toBeInTheDocument();
   });
 
-  it('should hide sign in via OIDC button when not configured', async () => {
+  it('should disable sign in via OIDC button when not configured', async () => {
     await render('');
 
-    expect(screen.queryByText(/Sign in via OIDC/)).toBeNull();
+    expect(screen.getByText(/Sign in via OIDC/)).toHaveAttribute('aria-disabled', 'true');
   });
 });

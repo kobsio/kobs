@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactNode, useContext } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
 import Home from './Home';
 import Layout from './layout/Layout';
@@ -40,13 +40,36 @@ interface IAuthWrapper {
  * error we automatically redirecting the user to the sign in page.
  */
 const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthWrapper) => {
+  const navigate = useNavigate();
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { data } = useQuery<IAPIUser, APIError>(['core/authwrapper'], async () => {
+  const { isLoading, isError, error } = useQuery<IAPIUser, APIError>(['core/authwrapper'], async () => {
     return apiContext.client.auth();
   });
 
-  if (!data) {
+  if (isLoading) {
+    return (
+      <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+        <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
+          <CircularProgress />
+        </Box>
+      </Box>
+    );
+  }
+
+  if (isError) {
+    if (error.statusCode === 401) {
+      navigate(`/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+
+      return (
+        <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+          <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
+            <CircularProgress />
+          </Box>
+        </Box>
+      );
+    }
+
     return (
       <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
         <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
@@ -74,11 +97,11 @@ interface IAppProps {
  */
 export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IAppProps) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContextProvider icons={icons}>
-        <APIContextProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <QueryClientProvider client={queryClient}>
+        <AppContextProvider icons={icons}>
+          <APIContextProvider>
             <BrowserRouter>
               <Routes>
                 <Route path="/auth" element={<Signin />} />
@@ -99,9 +122,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                 />
               </Routes>
             </BrowserRouter>
-          </ThemeProvider>
-        </APIContextProvider>
-      </AppContextProvider>
-    </QueryClientProvider>
+          </APIContextProvider>
+        </AppContextProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };

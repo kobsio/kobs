@@ -82,8 +82,8 @@ export const AppContextConsumer = AppContext.Consumer;
  * optional map of `icons` can be passed to the component. All the provided `children` can then subscribe to the context.
  */
 interface IAppContextProviderProps {
-  icons?: IAppIcons;
   children: ReactNode;
+  icons?: IAppIcons;
 }
 
 /**

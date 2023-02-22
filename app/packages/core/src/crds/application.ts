@@ -1,41 +1,41 @@
 import { IPlugin, IReference } from './dashboard';
 
 export interface IApplication {
-  id: string;
-  updatedAt: number;
   cluster: string;
-  namespace: string;
-  name: string;
+  dashboards?: IReference[];
   description?: string;
-  tags?: string[];
+  id: string;
+  insights?: IInsight[];
   links?: ILink[];
+  name: string;
+  namespace: string;
+  tags?: string[];
   teams?: string[];
   topology?: ITopology;
-  insights?: IInsight[];
-  dashboards?: IReference[];
+  updatedAt: number;
 }
 
 export interface IInsight {
+  mappings?: { [key: string]: string };
+  plugin: IPlugin;
   title: string;
   type: string;
   unit?: string;
-  mappings?: { [key: string]: string };
-  plugin: IPlugin;
 }
 
 export interface ILink {
-  title: string;
   link: string;
+  title: string;
 }
 
 export interface ITopology {
-  external?: boolean;
   dependencies?: IDependency[];
+  external?: boolean;
 }
 
 export interface IDependency {
   cluster: string;
-  namespace: string;
-  name: string;
   description?: string;
+  name: string;
+  namespace: string;
 }

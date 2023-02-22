@@ -17,14 +17,10 @@ const SigninOIDC: FunctionComponent = () => {
     return url;
   });
 
-  if (!data) {
-    return null;
-  }
-
   return (
     <>
       <Divider />
-      <Button variant="contained" component={Link} to={data}>
+      <Button variant="contained" disabled={!data} component={Link} to={data || ''}>
         Sign in via OIDC
       </Button>
     </>

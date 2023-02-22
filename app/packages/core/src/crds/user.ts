@@ -1,34 +1,34 @@
 import { IReference } from './dashboard';
 
 export interface IUser {
-  id: string;
-  updatedAt: number;
   cluster: string;
-  namespace: string;
-  name: string;
-  permissions: IPermissions;
   dashboards?: IReference[];
+  id: string;
+  name: string;
+  namespace: string;
   navigation?: INavigation[];
+  permissions: IPermissions;
+  updatedAt: number;
 }
 
 export interface IPermissions {
   applications?: IApplicationPermissions[];
-  teams?: string[];
   plugins?: IPluginPermissions[];
   resources?: IResourcesPermissions[];
+  teams?: string[];
 }
 
 export interface IApplicationPermissions {
-  type: string;
   clusters?: string[];
   namespaces?: string[];
+  type: string;
 }
 
 export interface IPluginPermissions {
   cluster: string;
   name: string;
-  type: string;
   permissions?: unknown;
+  type: string;
 }
 
 export interface IResourcesPermissions {
@@ -39,18 +39,18 @@ export interface IResourcesPermissions {
 }
 
 export interface INavigation {
-  name: string;
   items: INavigationItem[];
+  name: string;
 }
 
 export interface INavigationItem {
-  name: string;
-  link?: string;
   icon?: string;
   items?: INavigationSubItem[];
+  link?: string;
+  name: string;
 }
 
 export interface INavigationSubItem {
-  name: string;
   link?: string;
+  name: string;
 }

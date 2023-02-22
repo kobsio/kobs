@@ -19,7 +19,7 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import md5 from 'md5';
 import { FunctionComponent, forwardRef, useContext, useState, MouseEvent } from 'react';
-import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation } from 'react-router-dom';
+import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation, useNavigate } from 'react-router-dom';
 
 import logo from '../../../assets/logo.svg';
 import { APIContext, IAPIContext } from '../../../context/APIContext';
@@ -83,7 +83,7 @@ const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebar
    * `toggleItem` is used to add / remove the provided `item` from the `items` state. If the provided `item` is empty,
    * all items are removed from the state.
    */
-  const toggleItem = (item: string): void => {
+  const toggleItem = (item: string) => {
     if (item === '') {
       setItems([]);
     } else {
@@ -132,8 +132,8 @@ const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebar
  * show / hide the sub items.
  */
 interface ISidebarItemProps {
-  item: INavigationItem;
   isOpen: boolean;
+  item: INavigationItem;
   toggleOpen: (item: string) => void;
 }
 
@@ -153,7 +153,7 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
   if (item.items && item.items.length > 0) {
     return (
       <ListItemButton
-        onClick={(): void => toggleOpen(item.name)}
+        onClick={() => toggleOpen(item.name)}
         sx={{
           '&:hover': {
             background: 'rgba(0, 0, 0, 0.08)',
@@ -331,20 +331,21 @@ const SidebarHeader: FunctionComponent = () => {
  */
 const SidebarFooter: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
+  const navigate = useNavigate();
   const apiContext = useContext<IAPIContext>(APIContext);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
 
   /**
    * `toggleMenu` toggles the menu, which contains the sign out button.
    */
-  const toggleMenu = (event: MouseEvent<HTMLDivElement>): void => {
+  const toggleMenu = (event: MouseEvent<HTMLDivElement>) => {
     setAnchorMenu(event.currentTarget);
   };
 
   /**
    * `closeMenu` closes the menu, which contains the sign out button.
    */
-  const closeMenu = (): void => {
+  const closeMenu = () => {
     setAnchorMenu(null);
   };
 
@@ -352,9 +353,10 @@ const SidebarFooter: FunctionComponent = () => {
    * `handleSignOut` handles the sign out of the user. To sign out a user we have to delete all stored tokens and
    * cokkies. When this is done we can redirect the user to the login page.
    */
-  const handleSignOut = async (): Promise<void> => {
+  const handleSignOut = async () => {
     try {
       await apiContext.client.signout();
+      navigate(`/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
     } catch (_) {}
   };
 

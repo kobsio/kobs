@@ -42,27 +42,27 @@ export class APIError extends Error {
  * teams, permissions, dashboards and navigation items.
  */
 export interface IAPIUser {
+  dashboards: IReference[];
   id: string;
   name: string;
-  teams: string[];
-  permissions: IPermissions;
   navigation: INavigation[];
-  dashboards: IReference[];
+  permissions: IPermissions;
+  teams: string[];
 }
 
 /**
  * `IAPIClient` defines the interface which must be implemented by our `APIClient`.
  */
 interface IAPIClient {
+  auth: () => Promise<IAPIUser>;
+  delete: <T>(path: string, opts?: RequestOptions) => Promise<T>;
   get: <T>(path: string, opts?: RequestOptions) => Promise<T>;
+  getUser: () => IAPIUser | undefined;
   post: <T>(path: string, opts?: RequestOptions) => Promise<T>;
   put: <T>(path: string, opts?: RequestOptions) => Promise<T>;
-  delete: <T>(path: string, opts?: RequestOptions) => Promise<T>;
   signin: (username: string, password: string) => Promise<IAPIUser>;
   signinOIDC: (state: string, code: string) => Promise<{ url: string; user: IAPIUser }>;
   signout: () => Promise<void>;
-  auth: () => Promise<IAPIUser>;
-  getUser: () => IAPIUser | undefined;
 }
 
 /**
@@ -169,7 +169,6 @@ export class APIClient implements IAPIClient {
    */
   async signout(): Promise<void> {
     await this.get('/api/auth/signout');
-    window.location.replace(`/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
   }
 
   /**
@@ -182,20 +181,9 @@ export class APIClient implements IAPIClient {
     if (this.user) {
       return this.user;
     }
-
-    try {
-      const user = await this.get<IAPIUser>('/api/auth');
-      this.user = user;
-      return user;
-    } catch (err: unknown) {
-      if (err instanceof APIError && err.statusCode === 401) {
-        window.location.replace(
-          `/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`,
-        );
-      }
-
-      throw err;
-    }
+    const user = await this.get<IAPIUser>('/api/auth');
+    this.user = user;
+    return user;
   }
 }
 

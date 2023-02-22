@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Box, Button, CircularProgress } from '@mui/material';
-import { useQuery, QueryObserverResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -23,11 +23,7 @@ const SigninOIDCCallback: FunctionComponent = () => {
           <Alert
             severity="error"
             action={
-              <Button
-                color="inherit"
-                size="small"
-                onClick={(): Promise<QueryObserverResult<IAPIUser, APIError>> => refetch()}
-              >
+              <Button color="inherit" size="small" onClick={() => refetch()}>
                 RETRY
               </Button>
             }
