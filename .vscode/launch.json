@@ -7,12 +7,11 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/kobs",
-      "args": [ 
+      "args": [
         "hub",
         "--config",
         "../../config.yaml"
-      ],
-      "envFile": ".env"
+      ]
     },
     {
       "name": "cluster",
@@ -24,8 +23,7 @@
         "cluster",
         "--config",
         "../../config.yaml"
-      ],
-      "envFile": ".env"
+      ]
     },
     {
       "name": "watcher",
@@ -37,23 +35,14 @@
         "watcher",
         "--config",
         "../../config.yaml"
-      ],
-      "envFile": ".env"
+      ]
     },
     {
       "name": "app",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/plugins/app",
-      "sourceMaps": true
-    },
-    {
-      "name": "plugin",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:3001",
-      "webRoot": "${workspaceFolder}/plugins",
+      "webRoot": "${workspaceFolder}/app/packages/app",
       "sourceMaps": true
     }
   ]
