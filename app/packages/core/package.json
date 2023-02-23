@@ -48,6 +48,7 @@
     "vitest": "^0.28.4"
   },
   "dependencies": {
-    "md5": "^2.3.0"
+    "md5": "^2.3.0",
+    "query-string": "^8.1.0"
   }
 }
