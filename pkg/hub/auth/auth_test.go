@@ -592,7 +592,7 @@ func TestNewClient(t *testing.T) {
 	})
 
 	t.Run("should return new client with oidc", func(t *testing.T) {
-		client, err := NewClient(Config{OIDC: OIDCConfig{Enabled: true, Issuer: "https://accounts.google.com", Scopes: []string{"openid", "profile", "email"}}, Session: SessionConfig{Duration: 5 * time.Hour}}, settings.Settings{}, nil)
+		client, err := NewClient(Config{OIDC: OIDCConfig{Enabled: true, Issuer: "https://accounts.google.com", Scopes: []string{"openid", "profile", "email"}}, Session: SessionConfig{Duration: Duration{5 * time.Hour}}}, settings.Settings{}, nil)
 		require.NotNil(t, client)
 		require.NoError(t, err)
 	})

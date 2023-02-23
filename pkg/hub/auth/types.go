@@ -54,9 +54,8 @@ type OIDCConfig struct {
 }
 
 type SessionConfig struct {
-	Token       string        `json:"token" env:"TOKEN" help:"The signing token for the session."`
-	Duration    time.Duration `json:"duration" env:"DURATION" default:"168h" help:"The duration for how long a user session is valid."`
-	DurationNew Duration      `json:"durationnew" env:"DURATIONNEW" default:"168h" help:"The duration for how long a user session is valid."`
+	Token    string   `json:"token" env:"TOKEN" help:"The signing token for the session."`
+	Duration Duration `json:"duration" env:"DURATION" default:"168h" help:"The duration for how long a user session is valid."`
 }
 
 type Token struct {

@@ -198,7 +198,7 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.CreateToken(&Token{SessionID: session.ID}, c.config.Session.Token, c.config.Session.Duration)
+	token, err := jwt.CreateToken(&Token{SessionID: session.ID}, c.config.Session.Token, c.config.Session.Duration.Duration)
 	if err != nil {
 		log.Warn(ctx, "Failed to create token", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to create token")
@@ -211,7 +211,7 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
-		Expires:  time.Now().Add(c.config.Session.Duration),
+		Expires:  time.Now().Add(c.config.Session.Duration.Duration),
 	})
 
 	render.JSON(w, r, userResponse{
@@ -377,7 +377,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.CreateToken(&Token{SessionID: session.ID}, c.config.Session.Token, c.config.Session.Duration)
+	token, err := jwt.CreateToken(&Token{SessionID: session.ID}, c.config.Session.Token, c.config.Session.Duration.Duration)
 	if err != nil {
 		log.Warn(ctx, "Failed to create token", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to create token")
@@ -390,7 +390,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
-		Expires:  time.Now().Add(c.config.Session.Duration),
+		Expires:  time.Now().Add(c.config.Session.Duration.Duration),
 	})
 
 	data := struct {
