@@ -5,21 +5,20 @@ import { vi } from 'vitest';
 
 import Plugins from './Plugins';
 
+import { APIClient, APIContext } from '../../context/APIContext';
 import { PluginContextProvider, IPluginInstance } from '../../context/PluginContext';
 import QueryClientProvider from '../../utils/QueryClientProvider';
-import Client from '../api/api';
-import { APIContext } from '../api/context';
 
 describe('Plugins', () => {
   const render = (instances: IPluginInstance[]): Promise<RenderResult> => {
-    const apiClient: Client = new Client();
-    const getSpy = vi.spyOn(apiClient, 'get');
+    const client = new APIClient();
+    const getSpy = vi.spyOn(client, 'get');
     getSpy.mockResolvedValueOnce(instances);
 
     const result = _render(
       <MemoryRouter>
         <QueryClientProvider>
-          <APIContext.Provider value={{ api: apiClient }}>
+          <APIContext.Provider value={{ client: client, getUser: () => undefined }}>
             <PluginContextProvider plugins={[]}>
               <Plugins />
             </PluginContextProvider>
