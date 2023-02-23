@@ -170,6 +170,7 @@ describe('Plugins', () => {
   });
 
   it('should persist the search state in URLSearchParams', async () => {
+    // there is no window, therefore we just render the url search params into the DOM
     const RenderQueryString = () => {
       const [params] = useSearchParams();
       return <>{`${params}`}</>;
