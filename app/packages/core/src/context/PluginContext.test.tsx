@@ -2,9 +2,9 @@ import { render as _render, RenderResult, screen, waitFor } from '@testing-libra
 import { Fragment, FunctionComponent, ReactNode, useContext } from 'react';
 import { vi } from 'vitest';
 
+import { APIClient, APIContext } from './APIContext';
 import { PluginContext, PluginContextProvider } from './PluginContext';
 
-import {APIClient, APIContext} from './APIContext';
 import QueryClientProvider from '../utils/QueryClientProvider';
 
 describe('PluginContext', () => {

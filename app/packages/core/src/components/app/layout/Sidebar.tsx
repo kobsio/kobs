@@ -334,7 +334,7 @@ const SidebarHeader: FunctionComponent = () => {
 const SidebarFooter: FunctionComponent = () => {
   const theme = useTheme<ITheme>();
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   const apiContext = useContext<IAPIContext>(APIContext);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
 

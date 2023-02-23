@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-ro
 
 import Home from './Home';
 import Layout from './layout/Layout';
+import Plugin from './Plugin';
+import Plugins from './Plugins';
 import Signin from './signin/Signin';
 import SigninOIDCCallback from './signin/SigninOIDCCallback';
 
@@ -19,8 +21,6 @@ import {
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
 import theme from '../../utils/theme';
-import Plugins from './Plugins';
-import Plugin from './Plugin';
 
 /**
  * `queryClient` is our global query client for `@tanstack/react-query`.
@@ -43,7 +43,7 @@ interface IAuthWrapper {
  */
 const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthWrapper) => {
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, isError, error } = useQuery<IAPIUser, APIError>(['core/authwrapper'], async () => {
