@@ -1,4 +1,4 @@
-import { Alert, Box, CircularProgress, Paper } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, CircularProgress } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext } from 'react';
 
@@ -56,10 +56,10 @@ export interface IPluginInstance {
  * all plugin instances, and two methods to get and instance by it's `id` and to get a plugin by it's `type`.
  */
 export interface IPluginContext {
-  getAvailableClusters(): string[];
-  getAvailablePluginTypes(): string[];
+  getClusters(): string[];
   getInstance: (id: string) => IPluginInstance | undefined;
   getPlugin: (type: string) => IPlugin | undefined;
+  getPluginTypes(): string[];
   instances: IPluginInstance[];
 }
 
@@ -69,10 +69,10 @@ export interface IPluginContext {
  * `id` and a method (`getPlugin`) to get a plugin by it's `type`.
  */
 export const PluginContext = createContext<IPluginContext>({
-  getAvailableClusters: () => [],
-  getAvailablePluginTypes: () => [],
+  getClusters: () => [],
   getInstance: (id: string) => undefined,
   getPlugin: (type: string) => undefined,
+  getPluginTypes: () => [],
   instances: [],
 });
 
@@ -100,19 +100,16 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   children,
 }: IPluginContextProviderProps) => {
   const { client } = useContext(APIContext);
-  const { isError, error, isLoading, data } = useQuery<IPluginInstance[], Error>(['core/plugincontext'], async () => {
-    const instances = await client.get<IPluginInstance[] | null>('/api/plugins');
-    if (instances == null) {
-      return [];
-    }
-
-    return instances;
-  });
+  const { isError, error, isLoading, data, refetch } = useQuery<IPluginInstance[] | null, Error>(
+    ['core/plugincontext'],
+    () => client.get<IPluginInstance[] | null>('/api/plugins'),
+  );
 
   /**
-   * `getAvailableClusters` lists the available clusters
+   * getClusters lists the cluster-names of all plugins
+   * when /api/plugins responds with no plugins, this method will return an empty array
    */
-  const getAvailableClusters = (): string[] => {
+  const getClusters = (): string[] => {
     if (!data) {
       return [];
     }
@@ -126,9 +123,10 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   };
 
   /**
-   * `getAvailablePluginTypes` lists the available plugin types
+   * getPluginTypes lists the pluginType-names of all plugins
+   * when /api/plugins responds with no plugins, this method will return an empty array
    */
-  const getAvailablePluginTypes = (): string[] => {
+  const getPluginTypes = (): string[] => {
     if (!data) {
       return [];
     }
@@ -160,9 +158,9 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   if (isLoading) {
     return (
       <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
-        <Paper sx={{ display: 'inline-flex', mx: 'auto', p: 10 }}>
+        <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
           <CircularProgress />
-        </Paper>
+        </Box>
       </Box>
     );
   }
@@ -170,8 +168,16 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   if (isError) {
     return (
       <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
-        <Box sx={{ display: 'inline-flex', mx: 'auto', p: 10 }}>
-          <Alert severity="error" variant="outlined">
+        <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
+          <Alert
+            severity="error"
+            action={
+              <Button color="inherit" size="small" onClick={() => refetch()}>
+                RETRY
+              </Button>
+            }
+          >
+            <AlertTitle>Loading the Plugin Context failed.</AlertTitle>
             {error.message}
           </Alert>
         </Box>
@@ -182,11 +188,11 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   return (
     <PluginContext.Provider
       value={{
-        getAvailableClusters,
-        getAvailablePluginTypes,
-        getInstance,
-        getPlugin,
-        instances: data,
+        getClusters: getClusters,
+        getInstance: getInstance,
+        getPlugin: getPlugin,
+        getPluginTypes: getPluginTypes,
+        instances: data || [],
       }}
     >
       {children}

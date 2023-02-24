@@ -16,8 +16,7 @@ type QueryState = Record<string, any>;
  * across all our components.
  */
 const useQueryState = <S extends QueryState = QueryState>(initialState?: S | (() => S)) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type State = Partial<{ [key in keyof S]: any }>;
+  type State = Partial<{ [key in keyof S]: string }>;
 
   const location = useLocation();
   const navigate = useNavigate();

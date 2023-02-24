@@ -4,6 +4,11 @@ import { useParams } from 'react-router-dom';
 
 import { PluginContext } from '../../context/PluginContext';
 
+/**
+ * Plugin renders a single plugin page depending on the route params
+ * the different plugins are defined inside packages/* and
+ * must be added to the main.tsx file inside packages/app/src/main.tsx
+ */
 const Plugin: FunctionComponent = () => {
   const params = useParams();
   const { getInstance, getPlugin } = useContext(PluginContext);

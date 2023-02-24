@@ -1,8 +1,9 @@
 import { render as _render, RenderResult, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Fragment, FunctionComponent, ReactNode, useContext } from 'react';
 import { vi } from 'vitest';
 
-import { APIClient, APIContext } from './APIContext';
+import { APIClient, APIContext, APIError } from './APIContext';
 import { PluginContext, PluginContextProvider } from './PluginContext';
 
 import QueryClientProvider from '../utils/QueryClientProvider';
@@ -75,7 +76,12 @@ describe('PluginContext', () => {
     ]);
 
     const Test: FunctionComponent = () => {
-      const { getAvailableClusters, getAvailablePluginTypes, getInstance, getPlugin } = useContext(PluginContext);
+      const {
+        getClusters: getAvailableClusters,
+        getPluginTypes: getAvailablePluginTypes,
+        getInstance,
+        getPlugin,
+      } = useContext(PluginContext);
       expect(getInstance('foo-1')).toBeDefined();
       expect(getPlugin('foo')).toBeDefined();
       expect(getAvailableClusters()).toEqual(['dev', 'prod']);
@@ -85,5 +91,20 @@ describe('PluginContext', () => {
 
     render(<Test />);
     await waitFor(() => expect(screen.getByText(/has been rendered/)).toBeInTheDocument());
+  });
+
+  it('should be able to retry the request', async () => {
+    vi.spyOn(console, 'error').mockImplementationOnce(() => {
+      // noop (to supress the error log in test output)
+    });
+    getSpy.mockRejectedValueOnce(new APIError(['unexpected error when loading the plugins']));
+    getSpy.mockResolvedValueOnce([{ name: 'plugin that loads after retry' }]);
+
+    render(<PluginConsumer />);
+    await waitFor(() => expect(screen.getByText(/Loading the Plugin Context failed./)).toBeInTheDocument());
+    const retryButton = screen.getByRole('button', { name: 'RETRY' });
+
+    await userEvent.click(retryButton);
+    expect(screen.getByText(/plugin that loads after retry/)).toBeInTheDocument();
   });
 });

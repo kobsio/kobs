@@ -226,6 +226,10 @@ describe('Plugins', () => {
     const nextPage = screen.getByLabelText('Go to next page');
     await userEvent.click(nextPage);
 
-    expect(screen.getByText('page=2&perPage=16&clusters=other&pluginTypes=foobar&search=instance')).toBeInTheDocument();
+    expect(screen.getByText(/clusters=other/)).toBeInTheDocument();
+    expect(screen.getByText(/page=2/)).toBeInTheDocument();
+    expect(screen.getByText(/perPage=16/)).toBeInTheDocument();
+    expect(screen.getByText(/pluginTypes=foobar/)).toBeInTheDocument();
+    expect(screen.getByText(/search=instance/)).toBeInTheDocument();
   });
 });

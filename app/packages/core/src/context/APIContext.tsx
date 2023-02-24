@@ -1,24 +1,7 @@
-import { QueryClientConfig } from '@tanstack/react-query';
 import { createContext, ReactNode } from 'react';
 
 import { IReference } from '../crds/dashboard';
 import { IPermissions, INavigation } from '../crds/user';
-
-/**
- * `queryClientOptions` are the options for the query client created via '@tanstack/react-query'. These options are
- * defined here so that we can reuse them in our tests.
- */
-export const queryClientOptions: QueryClientConfig = {
-  defaultOptions: {
-    queries: {
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      refetchOnWindowFocus: false,
-      retry: false,
-      staleTime: Infinity,
-    },
-  },
-};
 
 /**
  * `RequestOptions` defines the type for the options which can be passed to an API call. These can be an object for

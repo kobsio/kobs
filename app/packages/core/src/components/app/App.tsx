@@ -1,5 +1,5 @@
 import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { ReactNode, useContext } from 'react';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
@@ -10,22 +10,11 @@ import Plugins from './Plugins';
 import Signin from './signin/Signin';
 import SigninOIDCCallback from './signin/SigninOIDCCallback';
 
-import {
-  APIContextProvider,
-  APIContext,
-  IAPIContext,
-  APIError,
-  IAPIUser,
-  queryClientOptions,
-} from '../../context/APIContext';
+import { APIContextProvider, APIContext, IAPIContext, APIError, IAPIUser } from '../../context/APIContext';
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
+import QueryClientProvider from '../../utils/QueryClientProvider';
 import theme from '../../utils/theme';
-
-/**
- * `queryClient` is our global query client for `@tanstack/react-query`.
- */
-const queryClient = new QueryClient(queryClientOptions);
 
 /**
  * `IAuthWrapper` is the interface which defines the properties for the `AuthWrapper` component. We only have to provide
@@ -102,7 +91,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider>
         <AppContextProvider icons={icons}>
           <APIContextProvider>
             <BrowserRouter>

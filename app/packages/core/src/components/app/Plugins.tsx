@@ -15,9 +15,10 @@ import {
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { FunctionComponent, useContext } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { PluginContext } from '../../context/PluginContext';
+import useQueryState from '../../utils/hooks/useQueryState';
 
 interface IOptions {
   clusters: string[];
@@ -27,37 +28,35 @@ interface IOptions {
   search: string;
 }
 
-const optionsFromSearch = (params: URLSearchParams): IOptions => {
-  const clusters = params.get('clusters');
-  const page = params.get('page');
-  const perPage = params.get('perPage');
-  const pluginTypes = params.get('pluginTypes');
-  const search = params.get('search');
-
-  return {
-    clusters: clusters ? clusters.split(',') : [],
-    page: page ? parseInt(page) : 1,
-    perPage: perPage ? parseInt(perPage) : 8,
-    pluginTypes: pluginTypes ? pluginTypes.split(',') : [],
-    search: search ?? '',
-  };
-};
-
+/**
+ * Plugins renders a galary of the available plugins
+ * the component allows users to filter plugins by cluster, plugin-type and search
+ */
 const Plugins: FunctionComponent = () => {
-  const { getAvailableClusters, getAvailablePluginTypes, getPlugin, instances } = useContext(PluginContext);
-  const navigate = useNavigate();
-  const [params] = useSearchParams();
-  const options = optionsFromSearch(params);
+  const {
+    getClusters: getAvailableClusters,
+    getPluginTypes: getAvailablePluginTypes,
+    getPlugin,
+    instances,
+  } = useContext(PluginContext);
+  const [searchOptions, setSearchOptions] = useQueryState<IOptions>();
+  const options: IOptions = {
+    clusters: searchOptions.clusters ? searchOptions.clusters.split(',') : [],
+    page: searchOptions.page ? parseInt(searchOptions.page) : 1,
+    perPage: searchOptions.perPage ? parseInt(searchOptions.perPage) : 8,
+    pluginTypes: searchOptions.pluginTypes ? searchOptions.pluginTypes.split(',') : [],
+    search: searchOptions.search ?? '',
+  };
 
-  const handleChange = (update: Partial<IOptions>): void => {
-    const updatedOptions = { ...options, ...update };
-    const newParams = new URLSearchParams();
-    newParams.append('page', `${updatedOptions.page}`);
-    newParams.append('perPage', `${updatedOptions.perPage}`);
-    newParams.append('clusters', updatedOptions.clusters.join(','));
-    newParams.append('pluginTypes', updatedOptions.pluginTypes.join(','));
-    newParams.append('search', updatedOptions.search);
-    navigate(`.?${newParams}`);
+  const handleChange = (update: Partial<IOptions>) => {
+    const newOptions = { ...options, ...update };
+    setSearchOptions({
+      clusters: newOptions.clusters.join(','),
+      page: `${newOptions.page}`,
+      perPage: `${newOptions.perPage}`,
+      pluginTypes: newOptions.pluginTypes.join(','),
+      search: newOptions.search,
+    });
   };
 
   const filteredItems = instances
@@ -76,7 +75,7 @@ const Plugins: FunctionComponent = () => {
         <Typography variant="h3" mb={2}>
           Plugins
         </Typography>
-        <Typography variant="subtitle1" mb={2}>
+        <Typography variant="subtitle1" mb={4}>
           A list of all available plugins, which can be used within your applications, dashboards, teams and users. You
           can also select a plugin to directly interact with the underlying service.
         </Typography>
@@ -88,6 +87,7 @@ const Plugins: FunctionComponent = () => {
             getOptionLabel={(option): string => option}
             defaultValue={[]}
             value={options.clusters}
+            size="small"
             onChange={(e, value): void => handleChange({ clusters: value, page: 1 })}
             renderInput={(params): React.ReactNode => (
               <TextField sx={{ minWidth: '320px' }} {...params} id="cluster" label="Cluster" />
@@ -100,6 +100,7 @@ const Plugins: FunctionComponent = () => {
             getOptionLabel={(option): string => option}
             defaultValue={[]}
             value={options.pluginTypes}
+            size="small"
             onChange={(e, value): void => handleChange({ page: 1, pluginTypes: value })}
             renderInput={(params): React.ReactNode => (
               <TextField sx={{ minWidth: '320px' }} {...params} id="plugin" label="Plugin" />
@@ -109,6 +110,7 @@ const Plugins: FunctionComponent = () => {
             id="search"
             label="Search"
             sx={{ width: '100%' }}
+            size="small"
             onChange={(e): void => {
               handleChange({ page: 1, search: e.target.value });
             }}
