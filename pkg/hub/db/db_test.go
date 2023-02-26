@@ -216,7 +216,7 @@ func TestSaveAndGetTeams(t *testing.T) {
 	err := c.SaveTeams(context.Background(), "test-cluster", teams)
 	require.NoError(t, err)
 
-	storedTeams1, err := c.GetTeams(context.Background())
+	storedTeams1, err := c.GetTeams(context.Background(), "")
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedTeams1))
 
@@ -225,7 +225,7 @@ func TestSaveAndGetTeams(t *testing.T) {
 	err = c.SaveTeams(context.Background(), "test-cluster", teams[0:1])
 	require.NoError(t, err)
 
-	storedTeams2, err := c.GetTeams(context.Background())
+	storedTeams2, err := c.GetTeams(context.Background(), "")
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTeams2))
 }
@@ -345,11 +345,11 @@ func TestGetNamespacesByClusters(t *testing.T) {
 
 	storedNamespaces3, err := c.GetNamespacesByClusters(context.Background(), []string{})
 	require.NoError(t, err)
-	require.Equal(t, 0, len(storedNamespaces3))
+	require.Equal(t, 5, len(storedNamespaces3))
 
 	storedNamespaces4, err := c.GetNamespacesByClusters(context.Background(), nil)
 	require.NoError(t, err)
-	require.Equal(t, 0, len(storedNamespaces4))
+	require.Equal(t, 5, len(storedNamespaces4))
 }
 
 func TestGetCRDByID(t *testing.T) {
@@ -541,25 +541,29 @@ func TestGetTeamsByIDs(t *testing.T) {
 	err := c.SaveTeams(context.Background(), "test-cluster", teams)
 	require.NoError(t, err)
 
-	storedTeams1, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io"})
+	storedTeams1, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io"}, "")
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTeams1))
 
-	storedTeams2, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io", "team2@kobs.io"})
+	storedTeams2, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io", "team2@kobs.io"}, "")
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedTeams2))
 
-	storedTeams3, err := c.GetTeamsByIDs(context.Background(), []string{})
+	storedTeams3, err := c.GetTeamsByIDs(context.Background(), []string{}, "")
 	require.NoError(t, err)
 	require.Equal(t, 0, len(storedTeams3))
 
-	storedTeams4, err := c.GetTeamsByIDs(context.Background(), nil)
+	storedTeams4, err := c.GetTeamsByIDs(context.Background(), nil, "")
 	require.NoError(t, err)
 	require.Equal(t, 0, len(storedTeams4))
 
-	storedTeams5, err := c.GetTeamsByIDs(context.Background(), []string{"team3@kobs.io"})
+	storedTeams5, err := c.GetTeamsByIDs(context.Background(), []string{"team3@kobs.io"}, "")
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTeams5))
+
+	storedTeams6, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io", "team2@kobs.io"}, "team2")
+	require.NoError(t, err)
+	require.Equal(t, 1, len(storedTeams6))
 }
 
 func TestGetTeamByID(t *testing.T) {

@@ -1,25 +1,16 @@
-import { useTheme, Hidden, Box, Drawer, useMediaQuery, Breakpoint } from '@mui/material';
+import { Hidden, Box, Drawer } from '@mui/material';
 import { useState, FunctionComponent, ReactNode } from 'react';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
 
-import { ITheme } from '../../../utils/theme';
+import useIsWidthUp from '../../../utils/hooks/useIsWidthUp';
 
 /**
  * `drawerWidth` defines the width of the drawer, which contains a `Sidebar` component to render the navigation for the
  * app.
  */
 const drawerWidth = 258;
-
-/**
- * `useIsWidthUp` is a helper function to check if the current screen width is larger the then the one defined in the
- * provided `breakpoint`.
- */
-const useIsWidthUp = (breakpoint: Breakpoint): boolean => {
-  const theme = useTheme<ITheme>();
-  return useMediaQuery(theme.breakpoints.up(breakpoint));
-};
 
 /**
  * `ILayoutProps` are the properties of the `Layout` component. The component only needs a `children`, which should be

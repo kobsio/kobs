@@ -19,6 +19,11 @@ import {
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
 import theme from '../../utils/theme';
+import ApplicationPage from '../applications/ApplicationPage';
+import ApplicationsPage from '../applications/ApplicationsPage';
+import TopologyPage from '../applications/TopologyPage';
+import TeamPage from '../teams/TeamPage';
+import TeamsPage from '../teams/TeamsPage';
 
 /**
  * `queryClient` is our global query client for `@tanstack/react-query`.
@@ -114,6 +119,14 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                         <Layout>
                           <Routes>
                             <Route path="/" element={<Home />} />
+                            <Route path="/applications" element={<ApplicationsPage />} />
+                            <Route
+                              path="/applications/cluster/:cluster/namespace/:namespace/name/:name"
+                              element={<ApplicationPage />}
+                            />
+                            <Route path="/topology" element={<TopologyPage />} />
+                            <Route path="/teams" element={<TeamsPage />} />
+                            <Route path="/teams/:id" element={<TeamPage />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>

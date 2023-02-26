@@ -176,7 +176,7 @@ func (c *client) signinHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if user.Teams != nil {
-		teams, err := c.dbClient.GetTeamsByIDs(ctx, user.Teams)
+		teams, err := c.dbClient.GetTeamsByIDs(ctx, user.Teams, "")
 		if err != nil {
 			log.Warn(ctx, "Failed to get teams from database", zap.Error(err))
 			errresponse.Render(w, r, http.StatusBadRequest, "Failed to get teams from database")
@@ -355,7 +355,7 @@ func (c *client) oidcCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if authContextUser.Teams != nil {
-		teams, err := c.dbClient.GetTeamsByIDs(ctx, authContextUser.Teams)
+		teams, err := c.dbClient.GetTeamsByIDs(ctx, authContextUser.Teams, "")
 		if err != nil {
 			log.Warn(ctx, "Failed to get teams from database", zap.Error(err))
 			errresponse.Render(w, r, http.StatusBadRequest, "Failed to get teams from database")

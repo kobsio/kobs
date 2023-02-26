@@ -495,8 +495,8 @@ func Mount(kubernetesClient kubernetes.Client) chi.Router {
 	router.HandleFunc("/terminal", router.getTerminal)
 	router.Get("/file", router.getFile)
 	router.Post("/file", router.postFile)
-	router.Post("/namespaces", router.getNamespaces)
-	router.Post("/crds", router.getCRDs)
+	router.Get("/namespaces", router.getNamespaces)
+	router.Get("/crds", router.getCRDs)
 
 	return router
 }

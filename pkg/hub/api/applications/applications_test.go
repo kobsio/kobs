@@ -73,7 +73,7 @@ func TestGetApplications(t *testing.T) {
 		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view all applications"]}`)
 	})
 
-	t.Run("should handle error from db client", func(t *testing.T) {
+	t.Run("should handle error from db client for applications", func(t *testing.T) {
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get applications"))
 
@@ -89,6 +89,28 @@ func TestGetApplications(t *testing.T) {
 		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications"]}`)
 	})
 
+	t.Run("should handle error from db client for count", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{
+			{
+				Name:      "foo",
+				Namespace: "bar",
+			},
+		}, nil)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get applications count"))
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/applications?all=true&limit=10&offset=0", nil)
+		w := httptest.NewRecorder()
+
+		router.getApplications(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications count"]}`)
+	})
+
 	t.Run("should return all applications", func(t *testing.T) {
 		dbClient, router := newRouter(t)
 		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{
@@ -97,6 +119,7 @@ func TestGetApplications(t *testing.T) {
 				Namespace: "bar",
 			},
 		}, nil)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(1, nil)
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
@@ -107,62 +130,7 @@ func TestGetApplications(t *testing.T) {
 		router.getApplications(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `[{"name":"foo", "namespace":"bar", "topology": {}}]`)
-	})
-}
-
-func TestGetApplicationsCount(t *testing.T) {
-	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
-		ctrl := gomock.NewController(t)
-		dbClient := db.NewMockClient(ctrl)
-		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
-
-		return dbClient, router
-	}
-
-	t.Run("should fail when user is not authorized to view all applications", func(t *testing.T) {
-		_, router := newRouter(t)
-
-		ctx := context.Background()
-		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{})
-		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/count?all=true&limit=10&offset=0", nil)
-		w := httptest.NewRecorder()
-
-		router.getApplicationsCount(w, req)
-
-		utils.AssertStatusEq(t, w, http.StatusForbidden)
-		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view all applications"]}`)
-	})
-
-	t.Run("should handle error from db client", func(t *testing.T) {
-		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get count"))
-
-		ctx := context.Background()
-		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
-		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/count?all=true&limit=10&offset=0", nil)
-		w := httptest.NewRecorder()
-
-		router.getApplicationsCount(w, req)
-
-		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
-		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get applications count"]}`)
-
-	})
-
-	t.Run("should return count", func(t *testing.T) {
-		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(100, nil)
-
-		ctx := context.Background()
-		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
-		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/count?all=true&limit=10&offset=0", nil)
-		w := httptest.NewRecorder()
-
-		router.getApplicationsCount(w, req)
-
-		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"count": 100}`)
+		utils.AssertJSONEq(t, w, `{"applications": [{"name":"foo", "namespace":"bar", "topology": {}}], "count": 1}`)
 	})
 }
 
@@ -206,7 +174,7 @@ func TestGetTags(t *testing.T) {
 		router.getTags(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `[{"id":"foo", "tag":"some tag", "updatedAt":0}]`)
+		utils.AssertJSONEq(t, w, `["some tag"]`)
 	})
 }
 

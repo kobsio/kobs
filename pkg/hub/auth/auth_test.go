@@ -402,7 +402,7 @@ func TestSigninHandler(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetUserByID(gomock.Any(), "admin").Return(&userv1.UserSpec{ID: "admin", Password: "$2y$10$o2AokncpHCowCvDJ2rOp.e18ThDg0mlaLj5QMsjtwEEBtrEn7IYRS", Teams: []string{"team"}}, nil)
-		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), []string{"team"}).Return(nil, fmt.Errorf("unexpected error"))
+		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), []string{"team"}, gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
 
 		client := client{config: Config{Session: SessionConfig{Token: "1234"}}, dbClient: dbClient}
 
@@ -418,7 +418,7 @@ func TestSigninHandler(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetUserByID(gomock.Any(), "admin").Return(&userv1.UserSpec{ID: "admin", Password: "$2y$10$o2AokncpHCowCvDJ2rOp.e18ThDg0mlaLj5QMsjtwEEBtrEn7IYRS", Teams: []string{"team"}}, nil)
-		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), []string{"team"}).Return([]teamv1.TeamSpec{{ID: "team"}}, nil)
+		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), []string{"team"}, gomock.Any()).Return([]teamv1.TeamSpec{{ID: "team"}}, nil)
 		dbClient.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
 
 		client := client{config: Config{Session: SessionConfig{Token: "1234"}}, dbClient: dbClient}
@@ -435,7 +435,7 @@ func TestSigninHandler(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 		dbClient.EXPECT().GetUserByID(gomock.Any(), "admin").Return(&userv1.UserSpec{ID: "admin", Password: "$2y$10$o2AokncpHCowCvDJ2rOp.e18ThDg0mlaLj5QMsjtwEEBtrEn7IYRS", Teams: []string{"team"}}, nil)
-		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), []string{"team"}).Return([]teamv1.TeamSpec{{ID: "team"}}, nil)
+		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), []string{"team"}, gomock.Any()).Return([]teamv1.TeamSpec{{ID: "team"}}, nil)
 		dbClient.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(&db.Session{ID: primitive.NewObjectID()}, nil)
 
 		client := client{config: Config{Session: SessionConfig{Token: "1234"}}, dbClient: dbClient}
