@@ -9,17 +9,17 @@ import { IPluginContext, IPluginInstance, PluginContext } from '../../context/Pl
 describe('Plugin', () => {
   const render = (path: string, pluginContext: Partial<IPluginContext>): RenderResult => {
     const defaultPluginContext = {
-      getAvailableClusters: () => [],
-      getAvailablePluginTypes: () => [],
+      getClusters: () => [],
       getInstance: (id: string) => undefined,
       getPlugin: (type: string) => undefined,
+      getPluginTypes: () => [],
       instances: [],
     };
     return _render(
       <MemoryRouter initialEntries={[path]}>
         <PluginContext.Provider value={{ ...defaultPluginContext, ...pluginContext }}>
           <Routes>
-            <Route path="/plugins/cluster/:cluster/type/:type/name/:id" element={<Plugin />} />
+            <Route path="/plugins/:cluster/:type/:name" element={<Plugin />} />
           </Routes>
         </PluginContext.Provider>
       </MemoryRouter>,
@@ -37,12 +37,12 @@ describe('Plugin', () => {
 
     const instance = {
       cluster: 'dev',
-      id: '/cluster/dev/type/bar/name/bar-instance',
+      id: '/cluster/dev/bar/bar-instance',
       name: 'bar-instance',
       type: 'bar',
     };
 
-    render('/plugins/cluster/dev/type/bar/name/bar-instance', {
+    render('/plugins/dev/bar/bar-instance', {
       getInstance: () => instance,
       getPlugin: () => ({
         page: TestPage,

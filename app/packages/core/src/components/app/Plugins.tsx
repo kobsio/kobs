@@ -1,9 +1,10 @@
-import { Engineering } from '@mui/icons-material';
+import { Extension } from '@mui/icons-material';
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
+  CardMedia,
   Divider,
   Grid,
   MenuItem,
@@ -17,7 +18,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { FunctionComponent, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import { PluginContext } from '../../context/PluginContext';
+import { IPluginInstance, PluginContext } from '../../context/PluginContext';
 import useQueryState from '../../utils/hooks/useQueryState';
 
 interface IOptions {
@@ -27,6 +28,14 @@ interface IOptions {
   pluginTypes: string[];
   search: string;
 }
+
+const defaultOptions: IOptions = {
+  clusters: [],
+  page: 1,
+  perPage: 8,
+  pluginTypes: [],
+  search: '',
+};
 
 /**
  * Plugins renders a galary of the available plugins
@@ -41,22 +50,12 @@ const Plugins: FunctionComponent = () => {
   } = useContext(PluginContext);
   const [searchOptions, setSearchOptions] = useQueryState<IOptions>();
   const options: IOptions = {
-    clusters: searchOptions.clusters ? searchOptions.clusters.split(',') : [],
-    page: searchOptions.page ? parseInt(searchOptions.page) : 1,
-    perPage: searchOptions.perPage ? parseInt(searchOptions.perPage) : 8,
-    pluginTypes: searchOptions.pluginTypes ? searchOptions.pluginTypes.split(',') : [],
-    search: searchOptions.search ?? '',
+    ...defaultOptions,
+    ...searchOptions,
   };
 
   const handleChange = (update: Partial<IOptions>) => {
-    const newOptions = { ...options, ...update };
-    setSearchOptions({
-      clusters: newOptions.clusters.join(','),
-      page: `${newOptions.page}`,
-      perPage: `${newOptions.perPage}`,
-      pluginTypes: newOptions.pluginTypes.join(','),
-      search: newOptions.search,
-    });
+    setSearchOptions({ ...options, ...update });
   };
 
   const filteredItems = instances
@@ -124,11 +123,24 @@ const Plugins: FunctionComponent = () => {
               {items.map((item) => (
                 <Grid key={item.id} item={true} xs={12} sm={6} md={3} lg={3} xl={3}>
                   <Card>
-                    <CardActionArea component={Link} to={'.' + item.id}>
+                    <CardActionArea component={Link} to={`./${item.cluster}/${item.type}/${item.name}`}>
                       <CardContent sx={{ p: 6 }}>
                         <Stack spacing={8}>
                           <Stack direction="row" justifyContent="center">
-                            {getPlugin(item.type)?.icon || <Engineering sx={{ fontSize: 64, ml: '16px' }} />}
+                            {((instance: IPluginInstance) => {
+                              const icon = getPlugin(instance.type)?.icon;
+                              if (!icon) {
+                                return <Extension sx={{ fontSize: 64 }} />;
+                              }
+                              return (
+                                <CardMedia
+                                  sx={{ height: 64, width: 64 }}
+                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                  image={icon as any}
+                                  title={`${instance.name}-icon`}
+                                />
+                              );
+                            })(item)}
                           </Stack>
                           <Typography variant="h6" mb={6} textAlign="center">
                             {item.name}

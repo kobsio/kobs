@@ -173,7 +173,7 @@ describe('Plugins', () => {
     // there is no window, therefore we just render the url search params into the DOM
     const RenderQueryString = () => {
       const [params] = useSearchParams();
-      return <>{`${params}`}</>;
+      return <>{decodeURI(`${params}`)}</>;
     };
 
     await render(
@@ -226,10 +226,10 @@ describe('Plugins', () => {
     const nextPage = screen.getByLabelText('Go to next page');
     await userEvent.click(nextPage);
 
-    expect(screen.getByText(/clusters=other/)).toBeInTheDocument();
+    expect(screen.getByText(/clusters\[\]=other/)).toBeInTheDocument();
     expect(screen.getByText(/page=2/)).toBeInTheDocument();
     expect(screen.getByText(/perPage=16/)).toBeInTheDocument();
-    expect(screen.getByText(/pluginTypes=foobar/)).toBeInTheDocument();
+    expect(screen.getByText(/pluginTypes\[\]=foobar/)).toBeInTheDocument();
     expect(screen.getByText(/search=instance/)).toBeInTheDocument();
   });
 });

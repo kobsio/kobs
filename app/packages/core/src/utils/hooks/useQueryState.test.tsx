@@ -1,6 +1,5 @@
 import { act } from '@testing-library/react';
 import { render } from '@testing-library/react';
-import React from 'react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import type { MemoryRouterProps } from 'react-router-dom';
@@ -36,7 +35,7 @@ describe('useQueryState', () => {
         search: '?count=1',
       },
     ]);
-    expect(res.state).toMatchObject({ count: '1' });
+    expect(res.state).toMatchObject({ count: 1 });
   });
 
   it('shoule change url when setState is used', () => {
@@ -45,7 +44,7 @@ describe('useQueryState', () => {
     act(() => {
       res.setState({ count: 1 });
     });
-    expect(res.state).toMatchObject({ count: '1' });
+    expect(res.state).toMatchObject({ count: 1 });
   });
 
   it('should be work with multiple states', () => {
@@ -56,7 +55,7 @@ describe('useQueryState', () => {
     act(() => {
       res.setState({ pageSize: 10 });
     });
-    expect(res.state).toMatchObject({ page: '1', pageSize: '10' });
+    expect(res.state).toMatchObject({ page: 1, pageSize: 10 });
   });
 
   it('should keep location.state', () => {
@@ -70,7 +69,17 @@ describe('useQueryState', () => {
     act(() => {
       res.setState({ count: 1 });
     });
-    expect(res.state).toMatchObject({ count: '1' });
+    expect(res.state).toMatchObject({ count: 1 });
     expect(res.location.state).toBe('state');
+  });
+
+  it('should work with strings, numbers, booleans and arrays', () => {
+    const res = setup([
+      {
+        pathname: '/index',
+        search: '?string=test&number=1&boolean=true&array[]=1&array[]=2',
+      },
+    ]);
+    expect(res.state).toMatchObject({ array: [1, 2], boolean: true, number: 1, string: 'test' });
   });
 });

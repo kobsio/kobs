@@ -14,8 +14,9 @@ const Plugin: FunctionComponent = () => {
   const { getInstance, getPlugin } = useContext(PluginContext);
   const cluster = params['cluster'];
   const pluginType = params['type'];
-  const pluginID = params['id'];
-  const instance = pluginID ? getInstance(`/cluster/${cluster}/type/${pluginType}/name/${pluginID}`) : undefined;
+  const pluginName = params['name'];
+
+  const instance = pluginName ? getInstance(`/cluster/${cluster}/type/${pluginType}/name/${pluginName}`) : undefined;
   const Page = instance ? getPlugin(instance.type)?.page : undefined;
 
   return <Box pt={6}>{Page && instance && <Page instance={instance} />}</Box>;

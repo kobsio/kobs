@@ -107,7 +107,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                           <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/plugins" element={<Plugins />} />
-                            <Route path="/plugins/cluster/:cluster/type/:type/name/:id" element={<Plugin />} />
+                            <Route path="/plugins/:cluster/:type/:name" element={<Plugin />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>
