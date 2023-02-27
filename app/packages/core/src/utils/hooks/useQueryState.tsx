@@ -26,7 +26,7 @@ const useQueryState = <S extends QueryState = QueryState>(initialState?: S | (()
   const initialStateRef = useRef(typeof initialState === 'function' ? (initialState as () => S)() : initialState || {});
 
   const queryFromUrl = useMemo(() => {
-    return queryString.parse(location.search, { parseBooleans: false, parseNumbers: false });
+    return queryString.parse(location.search, { arrayFormat: 'bracket', parseBooleans: true, parseNumbers: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
@@ -48,7 +48,10 @@ const useQueryState = <S extends QueryState = QueryState>(initialState?: S | (()
         {
           hash: location.hash,
           search:
-            queryString.stringify({ ...queryFromUrl, ...newQuery }, { skipEmptyString: false, skipNull: false }) || '?',
+            queryString.stringify(
+              { ...queryFromUrl, ...newQuery },
+              { arrayFormat: 'bracket', skipEmptyString: false, skipNull: false },
+            ) || '?',
         },
         {
           replace: false,
@@ -58,7 +61,7 @@ const useQueryState = <S extends QueryState = QueryState>(initialState?: S | (()
     }
   };
 
-  return [targetQuery, useMemoizedFn(setState)] as const;
+  return [targetQuery as S, useMemoizedFn(setState)] as const;
 };
 
 export default useQueryState;

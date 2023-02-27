@@ -1,29 +1,20 @@
 import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { ReactNode, useContext } from 'react';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Home from './Home';
 import Layout from './layout/Layout';
+import Plugin from './Plugin';
+import Plugins from './Plugins';
 import Signin from './signin/Signin';
 import SigninOIDCCallback from './signin/SigninOIDCCallback';
 
-import {
-  APIContextProvider,
-  APIContext,
-  IAPIContext,
-  APIError,
-  IAPIUser,
-  queryClientOptions,
-} from '../../context/APIContext';
+import { APIContextProvider, APIContext, IAPIContext, APIError, IAPIUser } from '../../context/APIContext';
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
+import QueryClientProvider from '../../utils/QueryClientProvider';
 import theme from '../../utils/theme';
-
-/**
- * `queryClient` is our global query client for `@tanstack/react-query`.
- */
-const queryClient = new QueryClient(queryClientOptions);
 
 /**
  * `IAuthWrapper` is the interface which defines the properties for the `AuthWrapper` component. We only have to provide
@@ -41,6 +32,7 @@ interface IAuthWrapper {
  */
 const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthWrapper) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, isError, error } = useQuery<IAPIUser, APIError>(['core/authwrapper'], async () => {
@@ -59,7 +51,7 @@ const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthW
 
   if (isError) {
     if (error.statusCode === 401) {
-      navigate(`/auth?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      navigate(`/auth?redirect=${encodeURIComponent(location.pathname + location.search)}`);
 
       return (
         <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
@@ -99,7 +91,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider>
         <AppContextProvider icons={icons}>
           <APIContextProvider>
             <BrowserRouter>
@@ -114,6 +106,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                         <Layout>
                           <Routes>
                             <Route path="/" element={<Home />} />
+                            <Route path="/plugins" element={<Plugins />} />
+                            <Route path="/plugins/:cluster/:type/:name" element={<Plugin />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>

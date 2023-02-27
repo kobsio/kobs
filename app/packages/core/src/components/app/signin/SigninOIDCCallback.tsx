@@ -10,11 +10,15 @@ const SigninOIDCCallback: FunctionComponent = () => {
   const [params] = useSearchParams();
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, error, refetch } = useQuery<IAPIUser, APIError>(['core/signin/oidc/callback'], async () => {
-    const { user, url } = await apiContext.client.signinOIDC(params.get('state') || '', params.get('code') || '');
-    navigate(url || '/');
-    return user;
-  });
+  const { isError, error, refetch } = useQuery<IAPIUser, APIError>(
+    ['core/signin/oidc/callback'],
+    async () => {
+      const { user, url } = await apiContext.client.signinOIDC(params.get('state') || '', params.get('code') || '');
+      navigate(url || '/');
+      return user;
+    },
+    { cacheTime: 0 },
+  );
 
   if (isError) {
     return (
