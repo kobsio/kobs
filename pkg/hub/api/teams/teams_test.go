@@ -41,7 +41,7 @@ func TestGetTeams(t *testing.T) {
 		user := authContext.User{ID: "foo", Permissions: userv1.Permissions{Teams: []string{"*"}}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
-		dbClient.EXPECT().GetTeams(gomock.Any()).Return(nil, fmt.Errorf("could not get teams"))
+		dbClient.EXPECT().GetTeams(gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get teams"))
 
 		router := Router{chi.NewRouter(), dbClient}
 		ctx := context.Background()
@@ -60,7 +60,7 @@ func TestGetTeams(t *testing.T) {
 		user := authContext.User{ID: "foo", Permissions: userv1.Permissions{Teams: []string{"*"}}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
-		dbClient.EXPECT().GetTeams(gomock.Any()).Return([]teamv1.TeamSpec{{ID: "team1"}, {ID: "team2"}, {ID: "team3"}, {ID: "team1"}, {ID: "team2"}}, nil)
+		dbClient.EXPECT().GetTeams(gomock.Any(), gomock.Any()).Return([]teamv1.TeamSpec{{ID: "team1"}, {ID: "team2"}, {ID: "team3"}, {ID: "team1"}, {ID: "team2"}}, nil)
 
 		router := Router{chi.NewRouter(), dbClient}
 		ctx := context.Background()
@@ -80,7 +80,7 @@ func TestGetTeams(t *testing.T) {
 		user := authContext.User{Teams: teamIDs, ID: "foo", Permissions: userv1.Permissions{Teams: teamIDs}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
-		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), teamIDs).Return(nil, fmt.Errorf("could not get teams"))
+		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), teamIDs, gomock.Any()).Return(nil, fmt.Errorf("could not get teams"))
 
 		router := Router{chi.NewRouter(), dbClient}
 		ctx := context.Background()
@@ -100,7 +100,7 @@ func TestGetTeams(t *testing.T) {
 		user := authContext.User{Teams: teamIDs, ID: "foo", Permissions: userv1.Permissions{Teams: teamIDs}}
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
-		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), teamIDs).Return([]teamv1.TeamSpec{{ID: "team1"}, {ID: "team1"}}, nil)
+		dbClient.EXPECT().GetTeamsByIDs(gomock.Any(), teamIDs, gomock.Any()).Return([]teamv1.TeamSpec{{ID: "team1"}, {ID: "team1"}}, nil)
 
 		router := Router{chi.NewRouter(), dbClient}
 		ctx := context.Background()

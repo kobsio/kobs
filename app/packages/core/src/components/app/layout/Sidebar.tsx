@@ -61,6 +61,27 @@ const initItems = (path: string, group: INavigation): string[] => {
 };
 
 /**
+ * `checkIsActive` can be used to mark a item in the sidebar as active. For that we need the `link` of the item and the
+ * current `path`. If the link matches the path, the item is marked as active.
+ *
+ * If the link is `/applications`, `/topology`, `/teams`, `/resources` we also mark it as active when the path just
+ * starts with the same string. This allows us to also highlight the sidebar item which starts with one of these strings
+ * when the user is on a sub page of this resource (e.g. `/application/:id` path will also hightlight the item with the
+ * link `/applications`).
+ */
+const checkIsActive = (link: string | undefined, path: string): boolean => {
+  if (link === path) {
+    return true;
+  }
+
+  if (link && ['/applications', '/topology', '/teams', '/resources'].includes(link) && path.startsWith(link)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
  * `ISidebarGroupProps` are the properties for the `SidebarGroup`. The component only requires a `group` which
  * implements the `INavigation` interface.
  */
@@ -150,7 +171,7 @@ const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggl
   const theme = useTheme<ITheme>();
   const location = useLocation();
   const appContext = useContext<IAppContext>(AppContext);
-  const isActive = location.pathname === item.link;
+  const isActive = checkIsActive(item.link, location.pathname);
 
   if (item.items && item.items.length > 0) {
     return (
@@ -256,7 +277,7 @@ interface ISidebarSubItemProps {
 const SidebarSubItem: FunctionComponent<ISidebarSubItemProps> = ({ item }: ISidebarSubItemProps) => {
   const theme = useTheme<ITheme>();
   const location = useLocation();
-  const isActive = location.pathname === item.link;
+  const isActive = checkIsActive(item.link, location.pathname);
 
   if (item.link) {
     return (

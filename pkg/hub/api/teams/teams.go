@@ -22,10 +22,15 @@ type Router struct {
 }
 
 func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	all := r.URL.Query().Get("all")
+	searchTerm := r.URL.Query().Get("searchTerm")
 	user := authContext.MustGetUser(r.Context())
+
+	log.Debug(ctx, "Get teams parameters", zap.String("all", all), zap.String("searchTerm", searchTerm))
+
 	var teams []teamv1.TeamSpec
 	var err error
-	all := r.URL.Query().Get("all")
 
 	parsedAll, _ := strconv.ParseBool(all)
 	if parsedAll {
@@ -35,14 +40,14 @@ func (router *Router) getTeams(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		teams, err = router.dbClient.GetTeams(r.Context())
+		teams, err = router.dbClient.GetTeams(r.Context(), searchTerm)
 		if err != nil {
 			log.Error(r.Context(), "Failed to get teams", zap.Error(err))
 			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get teams")
 			return
 		}
 	} else {
-		teams, err = router.dbClient.GetTeamsByIDs(r.Context(), user.Teams)
+		teams, err = router.dbClient.GetTeamsByIDs(r.Context(), user.Teams, searchTerm)
 		if err != nil {
 			log.Error(r.Context(), "Failed to get teams", zap.Error(err))
 			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get teams")

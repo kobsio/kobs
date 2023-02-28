@@ -39,7 +39,7 @@ func TestGetClusters(t *testing.T) {
 		router.getClusters(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"clusters": ["cluster-1", "cluster-2"]}`)
+		utils.AssertJSONEq(t, w, `["cluster-1", "cluster-2"]`)
 	})
 }
 
@@ -54,7 +54,7 @@ func TestGetNamespaces(t *testing.T) {
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
-		path := fmt.Sprintf("/namespaces?clusterID=%s", cluster)
+		path := fmt.Sprintf("/namespaces?cluster=%s", cluster)
 		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, path, nil)
 		w := httptest.NewRecorder()
 		router.getNamespaces(w, req)
@@ -78,7 +78,7 @@ func TestGetNamespaces(t *testing.T) {
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
-		path := fmt.Sprintf("/namespaces?clusterID=%s", cluster)
+		path := fmt.Sprintf("/namespaces?cluster=%s", cluster)
 		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, path, nil)
 		w := httptest.NewRecorder()
 		router.getNamespaces(w, req)
@@ -124,6 +124,6 @@ func TestGetResources(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router := Mount(Config{}, nil, nil)
+	router := Mount(nil, nil)
 	require.NotNil(t, router)
 }

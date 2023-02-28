@@ -93,7 +93,7 @@ func TestGetDashboard(t *testing.T) {
 		router.getDashboard(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"placeholders":[{"name":"key1"}],"variables":[{"name":"key1","label":"key1","hide":true,"plugin":{"type":"app","cluster":"","name":"placeholder","options":{"type":"string","value":"value1"}}}],"panels":null}`)
+		utils.AssertJSONEq(t, w, `{"placeholders":[{"name":"key1"}],"variables":[{"name":"key1","label":"key1","hide":true,"plugin":{"type":"app","name":"placeholder","options":{"type":"string","value":"value1"}}}],"panels":null}`)
 	})
 }
 

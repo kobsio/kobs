@@ -53,8 +53,8 @@ type Client interface {
 	GetApplicationByID(ctx context.Context, id string) (*applicationv1.ApplicationSpec, error)
 	GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error)
 	GetDashboardByID(ctx context.Context, id string) (*dashboardv1.DashboardSpec, error)
-	GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error)
-	GetTeamsByIDs(ctx context.Context, ids []string) ([]teamv1.TeamSpec, error)
+	GetTeams(ctx context.Context, searchTerm string) ([]teamv1.TeamSpec, error)
+	GetTeamsByIDs(ctx context.Context, ids []string, searchTerm string) ([]teamv1.TeamSpec, error)
 	GetTeamByID(ctx context.Context, id string) (*teamv1.TeamSpec, error)
 	GetUsers(ctx context.Context) ([]userv1.UserSpec, error)
 	GetUserByID(ctx context.Context, id string) (*userv1.UserSpec, error)
@@ -147,6 +147,10 @@ func (c *client) SavePlugins(ctx context.Context, cluster string, plugins []plug
 }
 
 func (c *client) SaveNamespaces(ctx context.Context, cluster string, namespaces []string) error {
+	if len(namespaces) == 0 {
+		return nil
+	}
+
 	ctx, span := c.tracer.Start(ctx, "db.SaveNamespaces")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
@@ -176,6 +180,10 @@ func (c *client) SaveNamespaces(ctx context.Context, cluster string, namespaces 
 }
 
 func (c *client) SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error {
+	if len(crds) == 0 {
+		return nil
+	}
+
 	ctx, span := c.tracer.Start(ctx, "db.SaveCRDs")
 	defer span.End()
 
@@ -199,6 +207,10 @@ func (c *client) SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error {
 }
 
 func (c *client) SaveApplications(ctx context.Context, cluster string, applications []applicationv1.ApplicationSpec) error {
+	if len(applications) == 0 {
+		return nil
+	}
+
 	ctx, span := c.tracer.Start(ctx, "db.SaveApplications")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
@@ -222,6 +234,10 @@ func (c *client) SaveApplications(ctx context.Context, cluster string, applicati
 }
 
 func (c *client) SaveDashboards(ctx context.Context, cluster string, dashboards []dashboardv1.DashboardSpec) error {
+	if len(dashboards) == 0 {
+		return nil
+	}
+
 	ctx, span := c.tracer.Start(ctx, "db.SaveDashboards")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
@@ -245,6 +261,10 @@ func (c *client) SaveDashboards(ctx context.Context, cluster string, dashboards 
 }
 
 func (c *client) SaveTeams(ctx context.Context, cluster string, teams []teamv1.TeamSpec) error {
+	if len(teams) == 0 {
+		return nil
+	}
+
 	ctx, span := c.tracer.Start(ctx, "db.SaveTeams")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
@@ -268,6 +288,10 @@ func (c *client) SaveTeams(ctx context.Context, cluster string, teams []teamv1.T
 }
 
 func (c *client) SaveUsers(ctx context.Context, cluster string, users []userv1.UserSpec) error {
+	if len(users) == 0 {
+		return nil
+	}
+
 	ctx, span := c.tracer.Start(ctx, "db.SaveUsers")
 	span.SetAttributes(attribute.Key("cluster").String(cluster))
 	defer span.End()
@@ -308,6 +332,10 @@ func (c *client) SaveTags(ctx context.Context, applications []applicationv1.Appl
 
 			models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: tag.ID}}).SetReplacement(tag).SetUpsert(true))
 		}
+	}
+
+	if len(models) == 0 {
+		return nil
 	}
 
 	err := c.save(ctx, "tags", models, "", updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix())
@@ -352,6 +380,10 @@ func (c *client) SaveTopology(ctx context.Context, cluster string, applications 
 		}
 	}
 
+	if len(models) == 0 {
+		return nil
+	}
+
 	_, err := c.db.Database("kobs").Collection("topology").BulkWrite(ctx, models)
 	if err != nil {
 		span.RecordError(err)
@@ -359,7 +391,7 @@ func (c *client) SaveTopology(ctx context.Context, cluster string, applications 
 		return err
 	}
 
-	_, err = c.db.Database("kobs").Collection("topology").DeleteMany(ctx, bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "sourcecluster", Value: bson.D{{Key: "$eq", Value: cluster}}}}, bson.D{{Key: "updatedat", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}}}})
+	_, err = c.db.Database("kobs").Collection("topology").DeleteMany(ctx, bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "sourceCluster", Value: bson.D{{Key: "$eq", Value: cluster}}}}, bson.D{{Key: "updatedAt", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}}}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -420,13 +452,15 @@ func (c *client) GetNamespacesByClusters(ctx context.Context, clusters []string)
 	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
 	defer span.End()
 
+	filter := bson.D{{Key: "cluster", Value: bson.D{{Key: "$in", Value: clusters}}}}
+
 	if len(clusters) == 0 {
-		return nil, nil
+		filter = bson.D{}
 	}
 
 	var namespaces []Namespace
 
-	cursor, err := c.db.Database("kobs").Collection("namespaces").Find(ctx, bson.D{{Key: "cluster", Value: bson.D{{Key: "$in", Value: clusters}}}}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.db.Database("kobs").Collection("namespaces").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -693,13 +727,18 @@ func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.
 	return &dashboard, nil
 }
 
-func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
+func (c *client) GetTeams(ctx context.Context, searchTerm string) ([]teamv1.TeamSpec, error) {
 	_, span := c.tracer.Start(ctx, "db.GetTeams")
 	defer span.End()
 
 	var teams []teamv1.TeamSpec
 
-	cursor, err := c.db.Database("kobs").Collection("teams").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "group", Value: 1}}))
+	filter := bson.D{}
+	if searchTerm != "" {
+		filter = bson.D{{Key: "_id", Value: bson.M{"$regex": primitive.Regex{Pattern: searchTerm, Options: "i"}}}}
+	}
+
+	cursor, err := c.db.Database("kobs").Collection("teams").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -716,7 +755,7 @@ func (c *client) GetTeams(ctx context.Context) ([]teamv1.TeamSpec, error) {
 	return teams, nil
 }
 
-func (c *client) GetTeamsByIDs(ctx context.Context, ids []string) ([]teamv1.TeamSpec, error) {
+func (c *client) GetTeamsByIDs(ctx context.Context, ids []string, searchTerm string) ([]teamv1.TeamSpec, error) {
 	_, span := c.tracer.Start(ctx, "db.GetTeamsByIDs")
 	span.SetAttributes(attribute.Key("ids").StringSlice(ids))
 	defer span.End()
@@ -727,7 +766,12 @@ func (c *client) GetTeamsByIDs(ctx context.Context, ids []string) ([]teamv1.Team
 
 	var teams []teamv1.TeamSpec
 
-	cursor, err := c.db.Database("kobs").Collection("teams").Find(ctx, bson.D{{Key: "_id", Value: bson.D{{Key: "$in", Value: ids}}}}, options.Find().SetSort(bson.D{{Key: "group", Value: 1}}))
+	filter := bson.D{{Key: "_id", Value: bson.D{{Key: "$in", Value: ids}}}}
+	if searchTerm != "" {
+		filter = bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "_id", Value: bson.D{{Key: "$in", Value: ids}}}}, bson.D{{Key: "_id", Value: bson.M{"$regex": primitive.Regex{Pattern: searchTerm, Options: "i"}}}}}}}
+	}
+
+	cursor, err := c.db.Database("kobs").Collection("teams").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())

@@ -33,8 +33,8 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	user := authContext.MustGetUser(ctx)
 	teams := user.Teams
 	all := r.URL.Query().Get("all")
-	clusterIDs := r.URL.Query()["clusterID"]
-	namespaceIDs := r.URL.Query()["namespaceID"]
+	clusters := r.URL.Query()["cluster"]
+	namespaces := r.URL.Query()["namespace"]
 	tags := r.URL.Query()["tag"]
 	searchTerm := r.URL.Query().Get("searchTerm")
 	external := r.URL.Query().Get("external")
@@ -43,8 +43,8 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 
 	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
 	span.SetAttributes(attribute.Key("all").String(all))
-	span.SetAttributes(attribute.Key("clusterIDs").StringSlice(clusterIDs))
-	span.SetAttributes(attribute.Key("namespaceIDs").StringSlice(namespaceIDs))
+	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
+	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
 	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
 	span.SetAttributes(attribute.Key("external").String(external))
@@ -85,7 +85,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		teams = nil
 	}
 
-	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, parsedLimit, parsedOffset)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, external, parsedLimit, parsedOffset)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
@@ -94,47 +94,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, applications)
-}
-
-func (router *Router) getApplicationsCount(w http.ResponseWriter, r *http.Request) {
-	ctx, span := router.tracer.Start(r.Context(), "getApplicationsCount")
-	defer span.End()
-
-	user := authContext.MustGetUser(ctx)
-	teams := user.Teams
-	all := r.URL.Query().Get("all")
-	clusterIDs := r.URL.Query()["clusterID"]
-	namespaceIDs := r.URL.Query()["namespaceID"]
-	tags := r.URL.Query()["tag"]
-	searchTerm := r.URL.Query().Get("searchTerm")
-	external := r.URL.Query().Get("external")
-
-	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
-	span.SetAttributes(attribute.Key("all").String(all))
-	span.SetAttributes(attribute.Key("clusterIDs").StringSlice(clusterIDs))
-	span.SetAttributes(attribute.Key("namespaceIDs").StringSlice(namespaceIDs))
-	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
-	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
-	span.SetAttributes(attribute.Key("external").String(external))
-
-	// Check if the user requested to see all applications, if this is the case we have to check if he is alowed to do
-	// so. If a team isn't part of any teams "user.Teams" is "nil" we handle it the same ways as he wants to see all
-	// applications.
-	parsedAll, _ := strconv.ParseBool(all)
-	if parsedAll || teams == nil {
-		if !user.HasApplicationAccess(&applicationv1.ApplicationSpec{}) {
-			log.Warn(ctx, "The user is not authorized to view all applications")
-			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
-			span.SetStatus(codes.Error, "user is not authorized to view all applications")
-			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view all applications")
-			return
-		}
-
-		teams = nil
-	}
-
-	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, clusters, namespaces, tags, searchTerm, external)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications count", zap.Error(err))
 		span.RecordError(err)
@@ -144,8 +104,12 @@ func (router *Router) getApplicationsCount(w http.ResponseWriter, r *http.Reques
 	}
 
 	data := struct {
-		Count int `json:"count"`
-	}{count}
+		Applications []applicationv1.ApplicationSpec `json:"applications"`
+		Count        int                             `json:"count"`
+	}{
+		Applications: applications,
+		Count:        count,
+	}
 
 	render.JSON(w, r, data)
 }
@@ -154,13 +118,18 @@ func (router *Router) getTags(w http.ResponseWriter, r *http.Request) {
 	ctx, span := router.tracer.Start(r.Context(), "getTags")
 	defer span.End()
 
-	tags, err := router.dbClient.GetTags(ctx)
+	tagObjects, err := router.dbClient.GetTags(ctx)
 	if err != nil {
 		log.Error(ctx, "Failed to get tags", zap.Error(err))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get tags")
 		return
+	}
+
+	tags := []string{}
+	for _, tag := range tagObjects {
+		tags = append(tags, tag.Tag)
 	}
 
 	render.JSON(w, r, tags)
@@ -279,7 +248,6 @@ func Mount(dbClient db.Client) chi.Router {
 	}
 
 	router.Get("/", router.getApplications)
-	router.Get("/count", router.getApplicationsCount)
 	router.Get("/tags", router.getTags)
 	router.Get("/application", router.getApplication)
 	router.Get("/team", router.getApplicationsByTeam)

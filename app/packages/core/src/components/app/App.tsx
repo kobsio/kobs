@@ -15,6 +15,11 @@ import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
 import QueryClientProvider from '../../utils/QueryClientProvider';
 import theme from '../../utils/theme';
+import ApplicationPage from '../applications/ApplicationPage';
+import ApplicationsPage from '../applications/ApplicationsPage';
+import TopologyPage from '../applications/TopologyPage';
+import TeamPage from '../teams/TeamPage';
+import TeamsPage from '../teams/TeamsPage';
 
 /**
  * `IAuthWrapper` is the interface which defines the properties for the `AuthWrapper` component. We only have to provide
@@ -106,6 +111,14 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                         <Layout>
                           <Routes>
                             <Route path="/" element={<Home />} />
+                            <Route path="/applications" element={<ApplicationsPage />} />
+                            <Route
+                              path="/applications/cluster/:cluster/namespace/:namespace/name/:name"
+                              element={<ApplicationPage />}
+                            />
+                            <Route path="/topology" element={<TopologyPage />} />
+                            <Route path="/teams" element={<TeamsPage />} />
+                            <Route path="/teams/:id" element={<TeamPage />} />
                             <Route path="/plugins" element={<Plugins />} />
                             <Route path="/plugins/:cluster/:type/:name" element={<Plugin />} />
                           </Routes>

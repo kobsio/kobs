@@ -66,7 +66,7 @@ type Panel struct {
 
 type Plugin struct {
 	Type    string                `json:"type" bson:"type"`
-	Cluster string                `json:"cluster" bson:"cluster"`
+	Cluster string                `json:"cluster,omitempty" bson:"cluster"`
 	Name    string                `json:"name" bson:"name"`
 	Options *apiextensionsv1.JSON `json:"options,omitempty" bson:"options"`
 }

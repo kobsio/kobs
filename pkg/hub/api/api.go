@@ -5,6 +5,10 @@ import (
 	"net/http"
 	"time"
 
+	applicationsAPI "github.com/kobsio/kobs/pkg/hub/api/applications"
+	clustersAPI "github.com/kobsio/kobs/pkg/hub/api/clusters"
+	dashboardsAPI "github.com/kobsio/kobs/pkg/hub/api/dashboards"
+	teamsAPI "github.com/kobsio/kobs/pkg/hub/api/teams"
 	"github.com/kobsio/kobs/pkg/hub/auth"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
@@ -85,6 +89,10 @@ func New(config Config, authClient auth.Client, clustersClient clusters.Client, 
 
 		r.Group(func(r chi.Router) {
 			r.Use(authClient.MiddlewareHandler)
+			r.Mount("/clusters", clustersAPI.Mount(dbClient, clustersClient))
+			r.Mount("/applications", applicationsAPI.Mount(dbClient))
+			r.Mount("/teams", teamsAPI.Mount(dbClient))
+			r.Mount("/dashboards", dashboardsAPI.Mount(dbClient))
 			r.Mount("/plugins", pluginsClient.Mount())
 		})
 

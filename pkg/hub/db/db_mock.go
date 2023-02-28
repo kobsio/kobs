@@ -297,33 +297,33 @@ func (mr *MockClientMockRecorder) GetTeamByID(ctx, id interface{}) *gomock.Call 
 }
 
 // GetTeams mocks base method.
-func (m *MockClient) GetTeams(ctx context.Context) ([]v11.TeamSpec, error) {
+func (m *MockClient) GetTeams(ctx context.Context, searchTerm string) ([]v11.TeamSpec, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTeams", ctx)
+	ret := m.ctrl.Call(m, "GetTeams", ctx, searchTerm)
 	ret0, _ := ret[0].([]v11.TeamSpec)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetTeams indicates an expected call of GetTeams.
-func (mr *MockClientMockRecorder) GetTeams(ctx interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) GetTeams(ctx, searchTerm interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTeams", reflect.TypeOf((*MockClient)(nil).GetTeams), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTeams", reflect.TypeOf((*MockClient)(nil).GetTeams), ctx, searchTerm)
 }
 
 // GetTeamsByIDs mocks base method.
-func (m *MockClient) GetTeamsByIDs(ctx context.Context, ids []string) ([]v11.TeamSpec, error) {
+func (m *MockClient) GetTeamsByIDs(ctx context.Context, ids []string, searchTerm string) ([]v11.TeamSpec, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTeamsByIDs", ctx, ids)
+	ret := m.ctrl.Call(m, "GetTeamsByIDs", ctx, ids, searchTerm)
 	ret0, _ := ret[0].([]v11.TeamSpec)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetTeamsByIDs indicates an expected call of GetTeamsByIDs.
-func (mr *MockClientMockRecorder) GetTeamsByIDs(ctx, ids interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) GetTeamsByIDs(ctx, ids, searchTerm interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTeamsByIDs", reflect.TypeOf((*MockClient)(nil).GetTeamsByIDs), ctx, ids)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTeamsByIDs", reflect.TypeOf((*MockClient)(nil).GetTeamsByIDs), ctx, ids, searchTerm)
 }
 
 // GetTopologyByIDs mocks base method.

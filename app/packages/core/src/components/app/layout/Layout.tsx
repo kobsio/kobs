@@ -1,25 +1,14 @@
-import { useTheme, Hidden, Box, Drawer, useMediaQuery, Breakpoint } from '@mui/material';
+import { useTheme, Hidden, Box, Drawer, useMediaQuery } from '@mui/material';
 import { useState, FunctionComponent, ReactNode } from 'react';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
-
-import { ITheme } from '../../../utils/theme';
 
 /**
  * `drawerWidth` defines the width of the drawer, which contains a `Sidebar` component to render the navigation for the
  * app.
  */
 const drawerWidth = 258;
-
-/**
- * `useIsWidthUp` is a helper function to check if the current screen width is larger the then the one defined in the
- * provided `breakpoint`.
- */
-const useIsWidthUp = (breakpoint: Breakpoint): boolean => {
-  const theme = useTheme<ITheme>();
-  return useMediaQuery(theme.breakpoints.up(breakpoint));
-};
 
 /**
  * `ILayoutProps` are the properties of the `Layout` component. The component only needs a `children`, which should be
@@ -38,7 +27,8 @@ interface ILayoutProps {
  * area where the contains of all routes is rendered.
  */
 export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutProps) => {
-  const isLgUp = useIsWidthUp('lg');
+  const theme = useTheme();
+  const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
