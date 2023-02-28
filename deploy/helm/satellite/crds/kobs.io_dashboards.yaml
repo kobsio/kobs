@@ -48,44 +48,6 @@ spec:
                 type: string
               namespace:
                 type: string
-              panels:
-                items:
-                  properties:
-                    description:
-                      type: string
-                    h:
-                      format: int64
-                      type: integer
-                    plugin:
-                      properties:
-                        cluster:
-                          type: string
-                        name:
-                          type: string
-                        options:
-                          x-kubernetes-preserve-unknown-fields: true
-                        type:
-                          type: string
-                      required:
-                      - name
-                      - type
-                      type: object
-                    title:
-                      type: string
-                    w:
-                      format: int64
-                      type: integer
-                    x:
-                      format: int64
-                      type: integer
-                    "y":
-                      format: int64
-                      type: integer
-                  required:
-                  - plugin
-                  - title
-                  type: object
-                type: array
               placeholders:
                 items:
                   properties:
