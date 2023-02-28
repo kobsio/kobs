@@ -1,7 +1,5 @@
-import { Edit } from '@mui/icons-material';
-import { Button } from '@mui/material';
 import { FunctionComponent } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { IReference } from '../../crds/dashboard';
 import Dashboards from '../dashboards/Dashboards';
@@ -26,16 +24,7 @@ const DashboardsPage: FunctionComponent = () => {
   const page: IPage | undefined = params.page ? JSON.parse(atob(params.page)) : undefined;
 
   return (
-    <Page
-      title={page?.title ?? 'Unknown'}
-      description={page?.description ?? ''}
-      hasTabs={true}
-      actions={
-        <Button variant="contained" color="primary" size="small" startIcon={<Edit />} component={Link} to="/todo">
-          Edit
-        </Button>
-      }
-    >
+    <Page title={page?.title ?? 'Unknown'} description={page?.description ?? ''} hasTabs={true}>
       {page?.dashboards && page.dashboards.length > 0 ? (
         <Dashboards manifest={page} references={page?.dashboards} />
       ) : null}
