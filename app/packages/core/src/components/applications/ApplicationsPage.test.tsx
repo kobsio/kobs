@@ -1,15 +1,15 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render as _render, RenderResult, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import ApplicationsPage from './ApplicationsPage';
 
-import { APIContextProvider, queryClientOptions } from '../../context/APIContext';
+import { APIContextProvider } from '../../context/APIContext';
+import QueryClientProvider from '../../utils/QueryClientProvider';
 
 describe('ApplicationsPage', () => {
   const render = (): RenderResult => {
     return _render(
-      <QueryClientProvider client={new QueryClient(queryClientOptions)}>
+      <QueryClientProvider>
         <APIContextProvider>
           <MemoryRouter>
             <Routes>

@@ -1,5 +1,8 @@
+import { Alert, AlertTitle, Box, Button, CircularProgress } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { createContext, ReactNode } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
+
+import { APIContext } from './APIContext';
 
 /**
  * `IPluginPageProps` is the interface which defines the properties which are passed to the `page` component of a plugin.
@@ -53,8 +56,10 @@ export interface IPluginInstance {
  * all plugin instances, and two methods to get and instance by it's `id` and to get a plugin by it's `type`.
  */
 export interface IPluginContext {
+  getClusters(): string[];
   getInstance: (id: string) => IPluginInstance | undefined;
   getPlugin: (type: string) => IPlugin | undefined;
+  getPluginTypes(): string[];
   instances: IPluginInstance[];
 }
 
@@ -64,8 +69,10 @@ export interface IPluginContext {
  * `id` and a method (`getPlugin`) to get a plugin by it's `type`.
  */
 export const PluginContext = createContext<IPluginContext>({
+  getClusters: () => [],
   getInstance: (id: string) => undefined,
   getPlugin: (type: string) => undefined,
+  getPluginTypes: () => [],
   instances: [],
 });
 
@@ -92,9 +99,45 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   plugins,
   children,
 }: IPluginContextProviderProps) => {
-  const { isError, isLoading, data } = useQuery<IPluginInstance[], Error>(['core/plugincontext'], async () => {
-    return [];
-  });
+  const { client } = useContext(APIContext);
+  const { isError, error, isLoading, data, refetch } = useQuery<IPluginInstance[] | null, Error>(
+    ['core/plugincontext'],
+    () => client.get<IPluginInstance[] | null>('/api/plugins'),
+  );
+
+  /**
+   * getClusters lists the cluster-names of all plugins
+   * when /api/plugins responds with no plugins, this method will return an empty array
+   */
+  const getClusters = (): string[] => {
+    if (!data) {
+      return [];
+    }
+
+    const clusters = new Set<string>();
+    for (const instance of data) {
+      clusters.add(instance.cluster);
+    }
+
+    return Array.from(clusters);
+  };
+
+  /**
+   * getPluginTypes lists the pluginType-names of all plugins
+   * when /api/plugins responds with no plugins, this method will return an empty array
+   */
+  const getPluginTypes = (): string[] => {
+    if (!data) {
+      return [];
+    }
+
+    const plugins = new Set<string>();
+    for (const instance of data) {
+      plugins.add(instance.type);
+    }
+
+    return Array.from(plugins);
+  };
 
   /**
    * `getInstance` returns a `IPluginInstance` with the provided `id`. If we can not found a instance with the provided
@@ -113,19 +156,43 @@ export const PluginContextProvider: React.FunctionComponent<IPluginContextProvid
   };
 
   if (isLoading) {
-    return <div></div>;
+    return (
+      <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+        <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
+          <CircularProgress />
+        </Box>
+      </Box>
+    );
   }
 
   if (isError) {
-    return <div></div>;
+    return (
+      <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
+        <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
+          <Alert
+            severity="error"
+            action={
+              <Button color="inherit" size="small" onClick={() => refetch()}>
+                RETRY
+              </Button>
+            }
+          >
+            <AlertTitle>Loading the Plugin Context failed.</AlertTitle>
+            {error.message}
+          </Alert>
+        </Box>
+      </Box>
+    );
   }
 
   return (
     <PluginContext.Provider
       value={{
+        getClusters: getClusters,
         getInstance: getInstance,
         getPlugin: getPlugin,
-        instances: data,
+        getPluginTypes: getPluginTypes,
+        instances: data || [],
       }}
     >
       {children}

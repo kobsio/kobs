@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render as _render, screen, RenderResult, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -6,7 +5,8 @@ import { vi } from 'vitest';
 
 import Signin from './Signin';
 
-import { APIClient, APIContext, queryClientOptions } from '../../../context/APIContext';
+import { APIClient, APIContext } from '../../../context/APIContext';
+import QueryClientProvider from '../../../utils/QueryClientProvider';
 
 describe('Signin', () => {
   const apiClient: APIClient = new APIClient();
@@ -21,7 +21,7 @@ describe('Signin', () => {
     getSpy.mockResolvedValueOnce({ url: oidcURL });
 
     const renderResult = _render(
-      <QueryClientProvider client={new QueryClient(queryClientOptions)}>
+      <QueryClientProvider>
         <APIContext.Provider value={{ client: apiClient, getUser: apiClient.getUser }}>
           <MemoryRouter initialEntries={[`/auth?redirect=${encodeURIComponent('/redirect/path')}`]}>
             <Routes>

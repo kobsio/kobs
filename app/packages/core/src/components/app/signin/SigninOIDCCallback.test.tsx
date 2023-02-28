@@ -1,11 +1,11 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render as _render, screen, RenderResult, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import SigninOIDCCallback from './SigninOIDCCallback';
 
-import { APIClient, APIContext, APIError, queryClientOptions } from '../../../context/APIContext';
+import { APIClient, APIContext, APIError } from '../../../context/APIContext';
+import QueryClientProvider from '../../../utils/QueryClientProvider';
 
 describe('SigninOIDCCallback', () => {
   const apiClient = new APIClient();
@@ -13,7 +13,7 @@ describe('SigninOIDCCallback', () => {
 
   const render = (): RenderResult => {
     return _render(
-      <QueryClientProvider client={new QueryClient(queryClientOptions)}>
+      <QueryClientProvider>
         <MemoryRouter initialEntries={['/?state=state&code=code']}>
           <APIContext.Provider value={{ client: apiClient, getUser: apiClient.getUser }}>
             <Routes>

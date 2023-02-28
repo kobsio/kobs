@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render as _render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -6,7 +5,8 @@ import { vi } from 'vitest';
 
 import ResourcesClusters from './ResourcesClusters';
 
-import { APIClient, APIContext, queryClientOptions } from '../../context/APIContext';
+import { APIClient, APIContext } from '../../context/APIContext';
+import QueryClientProvider from '../../utils/QueryClientProvider';
 
 describe('ResourcesClusters', () => {
   const render = async (
@@ -19,7 +19,7 @@ describe('ResourcesClusters', () => {
     getSpy.mockResolvedValueOnce(clusters);
 
     const result = _render(
-      <QueryClientProvider client={new QueryClient(queryClientOptions)}>
+      <QueryClientProvider>
         <APIContext.Provider value={{ client: client, getUser: () => undefined }}>
           <ResourcesClusters selectClusters={selectClusters} selectedClusters={selectedClusters} />
         </APIContext.Provider>
