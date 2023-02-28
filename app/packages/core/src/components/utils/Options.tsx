@@ -82,7 +82,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
    * change the start and end time to the new values. If the string couldn't be parsed, the user will see an error below
    * the corresponding input field.
    */
-  const apply = (): void => {
+  const apply = () => {
     // If the time wasn't changed by the user, we keep the selected time interval and only refresh the time for the
     // selected interval and change the additional fields. This allows a user to adjust an additional field without
     // switching to a custom time interval.
@@ -139,7 +139,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
    * `quick` is the function for the quick select option. We always use the current time in seconds and substract the
    * seconds specified in the quick select option.
    */
-  const quick = (t: TTime): void => {
+  const quick = (t: TTime) => {
     setOptions(
       {
         time: t,
@@ -154,7 +154,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
   /**
    * `changeAdditionalField` changes one of the given addtional fields.
    */
-  const changeAdditionalField = (index: number, value: string): void => {
+  const changeAdditionalField = (index: number, value: string) => {
     if (additionalFields && additionalFields.length > 0) {
       const tmpAdditionalField = [...additionalFields];
       tmpAdditionalField[index].value = value;
@@ -166,7 +166,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
    * `refreshTimes` is used to refresh the start and end time, when the user selected a time range from the quick
    * selection list.
    */
-  const refreshTimes = (): void => {
+  const refreshTimes = () => {
     if (times.time !== 'custom') {
       setOptions(
         {
@@ -238,7 +238,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
                       ),
                     }}
                     value={customTimeStart}
-                    onChange={(e): void => setCustomTimeStart(e.target.value)}
+                    onChange={(e) => setCustomTimeStart(e.target.value)}
                     helperText={customTimeStartError}
                     error={customTimeStartError ? true : false}
                   />
@@ -255,30 +255,30 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
                       ),
                     }}
                     value={customTimeEnd}
-                    onChange={(e): void => setCustomTimeEnd(e.target.value)}
+                    onChange={(e) => setCustomTimeEnd(e.target.value)}
                     helperText={customTimeEndError}
                     error={customTimeEndError ? true : false}
                   />
                 </Stack>
 
                 <MenuList>
-                  <MenuItem onClick={(): void => quick('last5Minutes')}>{timeOptions['last5Minutes'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last15Minutes')}>{timeOptions['last15Minutes'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last30Minutes')}>{timeOptions['last30Minutes'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last1Hour')}>{timeOptions['last1Hour'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last3Hours')}>{timeOptions['last3Hours'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last6Hours')}>{timeOptions['last6Hours'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last12Hours')}>{timeOptions['last12Hours'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last5Minutes')}>{timeOptions['last5Minutes'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last15Minutes')}>{timeOptions['last15Minutes'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last30Minutes')}>{timeOptions['last30Minutes'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last1Hour')}>{timeOptions['last1Hour'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last3Hours')}>{timeOptions['last3Hours'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last6Hours')}>{timeOptions['last6Hours'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last12Hours')}>{timeOptions['last12Hours'].label}</MenuItem>
                 </MenuList>
 
                 <MenuList>
-                  <MenuItem onClick={(): void => quick('last1Day')}>{timeOptions['last1Day'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last2Days')}>{timeOptions['last2Days'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last7Days')}>{timeOptions['last7Days'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last30Days')}>{timeOptions['last30Days'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last90Days')}>{timeOptions['last90Days'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last6Months')}>{timeOptions['last6Months'].label}</MenuItem>
-                  <MenuItem onClick={(): void => quick('last1Year')}>{timeOptions['last1Year'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last1Day')}>{timeOptions['last1Day'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last2Days')}>{timeOptions['last2Days'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last7Days')}>{timeOptions['last7Days'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last30Days')}>{timeOptions['last30Days'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last90Days')}>{timeOptions['last90Days'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last6Months')}>{timeOptions['last6Months'].label}</MenuItem>
+                  <MenuItem onClick={() => quick('last1Year')}>{timeOptions['last1Year'].label}</MenuItem>
                 </MenuList>
 
                 {internalAdditionalFields && internalAdditionalFields.length > 0 ? (
@@ -291,7 +291,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
                             labelId={field.name}
                             label={field.name}
                             value={field.value}
-                            onChange={(e): void => changeAdditionalField(index, e.target.value)}
+                            onChange={(e) => changeAdditionalField(index, e.target.value)}
                           >
                             {field.values
                               ? field.values.map((value) => (
@@ -311,7 +311,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
                           placeholder={field.placeholder}
                           fullWidth={true}
                           value={field.value}
-                          onChange={(e): void => changeAdditionalField(index, e.target.value)}
+                          onChange={(e) => changeAdditionalField(index, e.target.value)}
                         />
                       ),
                     )}
