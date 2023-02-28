@@ -59,7 +59,7 @@ func TestGetDashboardsFromReferences(t *testing.T) {
 		router.getDashboardsFromReferences(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `[{"title":"Kubernetes Workloads","panels":null},{"title":"Title 1","panels":null}]`)
+		utils.AssertJSONEq(t, w, `[{"title":"Kubernetes Workloads","rows":[{"panels":[{"title":"Workloads","plugin":{"type":"","name":"resources","options":[{"namespaces":["test-service"],"resources":["pods","deployments"],"selector":"app=test-service"}]}}]}]},{"title":"Title 1","rows":null}]`)
 	})
 }
 
@@ -93,7 +93,7 @@ func TestGetDashboard(t *testing.T) {
 		router.getDashboard(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"placeholders":[{"name":"key1"}],"variables":[{"name":"key1","label":"key1","hide":true,"plugin":{"type":"app","name":"placeholder","options":{"type":"string","value":"value1"}}}],"panels":null}`)
+		utils.AssertJSONEq(t, w, `{"placeholders":[{"name":"key1"}],"variables":[{"name":"key1","label":"key1","hide":true,"plugin":{"type":"app","name":"placeholder","options":{"type":"string","value":"value1"}}}],"rows":null}`)
 	})
 }
 

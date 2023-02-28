@@ -18,6 +18,7 @@ import theme from '../../utils/theme';
 import ApplicationPage from '../applications/ApplicationPage';
 import ApplicationsPage from '../applications/ApplicationsPage';
 import TopologyPage from '../applications/TopologyPage';
+import DashboardsPage from '../dashboards/DashboardsPage';
 import TeamPage from '../teams/TeamPage';
 import TeamsPage from '../teams/TeamsPage';
 
@@ -119,6 +120,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                             <Route path="/topology" element={<TopologyPage />} />
                             <Route path="/teams" element={<TeamsPage />} />
                             <Route path="/teams/:id" element={<TeamPage />} />
+                            <Route path="/dashboards/:page" element={<DashboardsPage />} />
                             <Route path="/plugins" element={<Plugins />} />
                             <Route path="/plugins/:cluster/:type/:name" element={<Plugin />} />
                           </Routes>

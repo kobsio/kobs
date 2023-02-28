@@ -76,12 +76,20 @@ type Navigation struct {
 
 type NavigationItem struct {
 	Name  string               `json:"name" bson:"name"`
-	Link  string               `json:"link,omitempty" bson:"link"`
 	Icon  string               `json:"icon,omitempty" bson:"icon"`
+	Link  string               `json:"link,omitempty" bson:"link"`
+	Page  *NavigationPage      `json:"page,omitempty" bson:"page"`
 	Items []NavigationSubItems `json:"items,omitempty" bson:"items"`
 }
 
 type NavigationSubItems struct {
-	Name string `json:"name" bson:"name"`
-	Link string `json:"link,omitempty" bson:"link"`
+	Name string          `json:"name" bson:"name"`
+	Link string          `json:"link,omitempty" bson:"link"`
+	Page *NavigationPage `json:"page,omitempty" bson:"page"`
+}
+
+type NavigationPage struct {
+	Title       string                  `json:"title,omitempty" bson:"title"`
+	Description string                  `json:"description,omitempty" bson:"description"`
+	Dashboards  []dashboardv1.Reference `json:"dashboards,omitempty" bson:"dashboards"`
 }

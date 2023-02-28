@@ -8,6 +8,7 @@ import ApplicationLabels from './ApplicationLabels';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
+import Dashboards from '../dashboards/Dashboards';
 import Page from '../utils/Page';
 import UseQueryWrapper from '../utils/UseQueryWrapper';
 
@@ -60,6 +61,9 @@ const ApplicationPage: FunctionComponent = () => {
           </Button>
         }
       >
+        {data?.dashboards && data.dashboards.length > 0 ? (
+          <Dashboards manifest={data} references={data?.dashboards} />
+        ) : null}
         <Box>TODO: Show Dashboards</Box>
       </Page>
     </UseQueryWrapper>

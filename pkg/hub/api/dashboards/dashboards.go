@@ -42,7 +42,7 @@ func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http
 				Description: reference.Description,
 				HideToolbar: reference.Inline.HideToolbar,
 				Variables:   addPlaceholdersAsVariables(nil, reference.Inline.Variables, reference.Placeholders),
-				Panels:      reference.Inline.Panels,
+				Rows:        reference.Inline.Rows,
 			})
 		} else {
 			dashboard, err := router.dbClient.GetDashboardByID(r.Context(), fmt.Sprintf("/cluster/%s/namespace/%s/name/%s", reference.Cluster, reference.Namespace, reference.Name))

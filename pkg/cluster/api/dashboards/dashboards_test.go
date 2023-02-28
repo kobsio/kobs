@@ -82,13 +82,13 @@ func TestGetDashboards(t *testing.T) {
 					"cluster": "cluster1",
 					"namespace": "namespace1",
 					"name": "dashboard1",
-					"panels": null
+					"rows": null
 				},
 				{
 					"cluster": "cluster1",
 					"namespace": "namespace1",
 					"name": "dashboard2",
-					"panels": null
+					"rows": null
 				}
 			]
 		`)
