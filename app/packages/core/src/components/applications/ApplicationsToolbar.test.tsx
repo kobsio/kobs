@@ -43,7 +43,6 @@ describe('ApplicationsToolbar', () => {
 
     expect(screen.getByText(/Owned/)).toBeInTheDocument();
     expect(screen.getByText(/All/)).toBeInTheDocument();
-    expect(screen.getByText(/Search/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Clusters/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Namespaces/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Tags/)).toBeInTheDocument();
@@ -60,8 +59,6 @@ describe('ApplicationsToolbar', () => {
     const tagOption = screen.getByRole('option', { name: 'tag1' });
     await userEvent.click(tagOption);
 
-    await userEvent.click(screen.getByText(/Search/));
-
     expect(setOptions).toHaveBeenCalledTimes(1);
     expect(setOptions).toHaveBeenCalledWith({ page: 1, perPage: 10, tags: ['tag1'] });
   });
@@ -77,19 +74,14 @@ describe('ApplicationsToolbar', () => {
     const tag1Option = screen.getByRole('option', { name: 'tag1' });
     await userEvent.click(tag1Option);
 
-    const tag2Option = screen.getByRole('option', { name: 'tag2' });
-    await userEvent.click(tag2Option);
-
-    await userEvent.click(screen.getByText(/Search/));
-
     expect(setOptions).toHaveBeenCalledTimes(1);
-    expect(setOptions).toHaveBeenCalledWith({
+    expect(setOptions).toHaveBeenLastCalledWith({
       all: false,
       clusters: ['cluster1'],
       namespaces: ['namespace1'],
       page: 1,
       perPage: 10,
-      tags: ['tag1'],
+      tags: ['tag2', 'tag1'],
     });
   });
 });

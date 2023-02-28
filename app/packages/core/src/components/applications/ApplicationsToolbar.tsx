@@ -5,7 +5,6 @@ import {
   Chip,
   TextField,
   Box,
-  Button,
   InputAdornment,
   ToggleButton,
   ToggleButtonGroup,
@@ -53,7 +52,7 @@ const ApplicationsToolbarTags: FunctionComponent<IApplicationsToolbarTagsProps> 
       disableCloseOnSelect={true}
       loading={isLoading}
       options={data ?? []}
-      getOptionLabel={(option) => option}
+      getOptionLabel={(option) => option ?? ''}
       value={selectedTags}
       onChange={(e, value) => selectTags(value)}
       renderTags={(value) => <Chip size="small" label={value.length} />}
@@ -83,17 +82,20 @@ interface IApplicationsToolbarProps {
  * cluster, namespace and tags.
  */
 const ApplicationsToolbar: FunctionComponent<IApplicationsToolbarProps> = ({ options, setOptions }) => {
-  const [state, setState] = useState<IApplicationOptions>(options);
+  const [searchTerm, setSearchTerm] = useState<string>(options.searchTerm ?? '');
 
   /**
    * `handleSubmit` handles the submit of the toolbar. During the submit we call the provided `setOptions` function and
    * set the `page` and `perPage` parameters to their initial values. This is required to pass the users selected
    * filters to the parent component.
    */
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setOptions({ ...options, page: 1, perPage: 10, searchTerm: searchTerm });
+  };
 
-    setOptions({ ...state, page: 1, perPage: 10 });
+  const handleChange = (key: string, value: boolean | string | string[]) => {
+    setOptions({ ...options, [key]: value, page: 1, perPage: 10 });
   };
 
   /**
@@ -101,28 +103,28 @@ const ApplicationsToolbar: FunctionComponent<IApplicationsToolbarProps> = ({ opt
    * when no applications were found) component we have to update the state everytime the options are changed.
    */
   useEffect(() => {
-    setState(options);
+    setSearchTerm(options.searchTerm ?? '');
   }, [options]);
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      <Toolbar>
-        <ToolbarItem>
-          <ToggleButtonGroup
-            size="small"
-            value={state.all}
-            exclusive={true}
-            onChange={(_, value) => setState((prevState) => ({ ...prevState, all: value ?? false }))}
-          >
-            <ToggleButton sx={{ px: 4 }} value={false}>
-              Owned
-            </ToggleButton>
-            <ToggleButton sx={{ px: 4 }} value={true}>
-              All
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </ToolbarItem>
-        <ToolbarItem grow={true}>
+    <Toolbar>
+      <ToolbarItem>
+        <ToggleButtonGroup
+          size="small"
+          value={options.all}
+          exclusive={true}
+          onChange={(_, value) => handleChange('all', value ?? false)}
+        >
+          <ToggleButton sx={{ px: 4 }} value={false}>
+            Owned
+          </ToggleButton>
+          <ToggleButton sx={{ px: 4 }} value={true}>
+            All
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </ToolbarItem>
+      <ToolbarItem grow={true}>
+        <Box component="form" onSubmit={handleSubmit}>
           <TextField
             size="small"
             variant="outlined"
@@ -135,36 +137,28 @@ const ApplicationsToolbar: FunctionComponent<IApplicationsToolbarProps> = ({ opt
                 </InputAdornment>
               ),
             }}
-            value={state.searchTerm}
-            onChange={(e) => setState((prevState) => ({ ...prevState, searchTerm: e.target.value }))}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </ToolbarItem>
-        <ToolbarItem width="200px">
-          <ResourcesClusters
-            selectedClusters={state.clusters ?? []}
-            selectClusters={(clusters) => setState((prevState) => ({ ...prevState, clusters: clusters }))}
-          />
-        </ToolbarItem>
-        <ToolbarItem width="200px">
-          <ResourcesNamespaces
-            selectedClusters={state.clusters ?? []}
-            selectedNamespaces={state.namespaces ?? []}
-            selectNamespaces={(namespaces) => setState((prevState) => ({ ...prevState, namespaces: namespaces }))}
-          />
-        </ToolbarItem>
-        <ToolbarItem width="200px">
-          <ApplicationsToolbarTags
-            selectedTags={state.tags ?? []}
-            selectTags={(tags) => setState((prevState) => ({ ...prevState, tags: tags }))}
-          />
-        </ToolbarItem>
-        <ToolbarItem align="right">
-          <Button type="submit" variant="contained" color="primary" startIcon={<Search />} onClick={handleSubmit}>
-            Search
-          </Button>
-        </ToolbarItem>
-      </Toolbar>
-    </Box>
+        </Box>
+      </ToolbarItem>
+      <ToolbarItem width="200px">
+        <ResourcesClusters
+          selectedClusters={options.clusters ?? []}
+          selectClusters={(clusters) => handleChange('clusters', clusters)}
+        />
+      </ToolbarItem>
+      <ToolbarItem width="200px">
+        <ResourcesNamespaces
+          selectedClusters={options.clusters ?? []}
+          selectedNamespaces={options.namespaces ?? []}
+          selectNamespaces={(namespaces) => handleChange('namespaces', namespaces)}
+        />
+      </ToolbarItem>
+      <ToolbarItem width="200px">
+        <ApplicationsToolbarTags selectedTags={options.tags ?? []} selectTags={(tags) => handleChange('tags', tags)} />
+      </ToolbarItem>
+    </Toolbar>
   );
 };
 
