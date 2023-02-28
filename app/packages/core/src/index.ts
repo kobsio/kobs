@@ -11,7 +11,6 @@ export * from './context/PluginContext';
 
 export * from './utils/hooks/useDebounce';
 export * from './utils/hooks/useDimensions';
-export * from './utils/hooks/useIsWidthUp';
 export * from './utils/hooks/useQueryState';
 export * from './utils/hooks/useQueryState';
 export * from './utils/hooks/useMemoizedFn';

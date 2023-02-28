@@ -101,14 +101,12 @@ const Teams: FunctionComponent<ITeamsProps> = ({ options, setOptions }) => {
         )
       }
       noDataTitle="No teams were found"
-      noDataMessage={
-        options.all
-          ? 'No teams were found for your selected filters.'
-          : 'No teams were found for your selected filters. You can try to search through all teams.'
-      }
+      noDataMessage={`No teams were found for your selected filters.${
+        options.all ? 'You can try to search through all teams.' : ''
+      }`}
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }}>
+      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
         {data?.slice((page - 1) * perPage, page * perPage).map((team, index) => (
           <Fragment key={team.id}>
             <Team team={team} />

@@ -33,8 +33,8 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	user := authContext.MustGetUser(ctx)
 	teams := user.Teams
 	all := r.URL.Query().Get("all")
-	clusterIDs := r.URL.Query()["clusterID"]
-	namespaceIDs := r.URL.Query()["namespaceID"]
+	clusters := r.URL.Query()["cluster"]
+	namespaces := r.URL.Query()["namespace"]
 	tags := r.URL.Query()["tag"]
 	searchTerm := r.URL.Query().Get("searchTerm")
 	external := r.URL.Query().Get("external")
@@ -43,8 +43,8 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 
 	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
 	span.SetAttributes(attribute.Key("all").String(all))
-	span.SetAttributes(attribute.Key("clusterIDs").StringSlice(clusterIDs))
-	span.SetAttributes(attribute.Key("namespaceIDs").StringSlice(namespaceIDs))
+	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
+	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
 	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
 	span.SetAttributes(attribute.Key("external").String(external))
@@ -85,7 +85,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		teams = nil
 	}
 
-	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external, parsedLimit, parsedOffset)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, external, parsedLimit, parsedOffset)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
@@ -94,7 +94,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, clusterIDs, namespaceIDs, tags, searchTerm, external)
+	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, clusters, namespaces, tags, searchTerm, external)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications count", zap.Error(err))
 		span.RecordError(err)

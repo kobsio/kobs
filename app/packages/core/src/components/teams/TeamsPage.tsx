@@ -22,13 +22,13 @@ const TeamsPage: FunctionComponent = () => {
     perPage: 10,
     searchTerm: '',
   });
-  const [searchTerm, setSearchTerm] = useState<string>(options.searchTerm);
+  const [searchTerm, setSearchTerm] = useState<string>(options.searchTerm ?? '');
 
   /**
    * `handleSubmit` handles the submission of the toolbar form, when a user has entered a search term. When the search
    * term changes we also have to set the page options to their initial values.
    */
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setOptions((prevOptions) => ({ ...prevOptions, page: 1, perPage: 10, searchTerm: searchTerm }));
   };
@@ -38,26 +38,26 @@ const TeamsPage: FunctionComponent = () => {
       title="Teams"
       description="A list of your / all teams. You can search for teams by providing the name of the team."
       toolbar={
-        <Box component="form" onSubmit={handleSubmit}>
-          <Toolbar>
-            <ToolbarItem>
-              <ToggleButtonGroup
-                size="small"
-                value={options.all}
-                exclusive={true}
-                onChange={(_, value) =>
-                  setOptions((prevOptions) => ({ ...prevOptions, all: value ?? false, page: 1, perPage: 10 }))
-                }
-              >
-                <ToggleButton sx={{ px: 4 }} value={false}>
-                  Owned
-                </ToggleButton>
-                <ToggleButton sx={{ px: 4 }} value={true}>
-                  All
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </ToolbarItem>
-            <ToolbarItem grow={true}>
+        <Toolbar>
+          <ToolbarItem>
+            <ToggleButtonGroup
+              size="small"
+              value={options.all}
+              exclusive={true}
+              onChange={(_, value) =>
+                setOptions((prevOptions) => ({ ...prevOptions, all: value ?? false, page: 1, perPage: 10 }))
+              }
+            >
+              <ToggleButton sx={{ px: 4 }} value={false}>
+                Owned
+              </ToggleButton>
+              <ToggleButton sx={{ px: 4 }} value={true}>
+                All
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </ToolbarItem>
+          <ToolbarItem grow={true}>
+            <Box component="form" onSubmit={handleSubmit}>
               <TextField
                 size="small"
                 variant="outlined"
@@ -73,9 +73,9 @@ const TeamsPage: FunctionComponent = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-            </ToolbarItem>
-          </Toolbar>
-        </Box>
+            </Box>
+          </ToolbarItem>
+        </Toolbar>
       }
       actions={
         <Button variant="contained" color="primary" size="small" startIcon={<Add />} component={Link} to="/todo">

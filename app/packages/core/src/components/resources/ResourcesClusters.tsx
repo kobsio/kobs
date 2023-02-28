@@ -38,7 +38,7 @@ const ResourcesClusters: FunctionComponent<IResourcesClustersProps> = ({
       disableCloseOnSelect={true}
       loading={isLoading}
       options={data ?? []}
-      getOptionLabel={(option) => option}
+      getOptionLabel={(option) => option ?? ''}
       value={selectedClusters}
       onChange={(e, value) => selectClusters(value)}
       renderTags={(value) => <Chip size="small" label={value.length} />}

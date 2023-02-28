@@ -44,7 +44,7 @@ const ResourcesNamespaces: FunctionComponent<IResourcesNamespacesProps> = ({
       disableCloseOnSelect={true}
       loading={isLoading}
       options={data ?? []}
-      getOptionLabel={(option) => option}
+      getOptionLabel={(option) => option ?? ''}
       value={selectedNamespaces}
       onChange={(e, value) => selectNamespaces(value)}
       renderTags={(value) => <Chip size="small" label={value.length} />}

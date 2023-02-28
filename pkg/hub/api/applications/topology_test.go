@@ -92,8 +92,8 @@ func TestGetApplicationsTopology(t *testing.T) {
 
 	t.Run("should return applications topology", func(t *testing.T) {
 		all := false
-		clusterIDs := []string{"cluster1"}
-		namespaceIDs := []string{"namespace1"}
+		clusters := []string{"cluster1"}
+		namespaces := []string{"namespace1"}
 		tags := []string{"mytag"}
 		searchTerm := "searchterm"
 		external := "false"
@@ -101,7 +101,7 @@ func TestGetApplicationsTopology(t *testing.T) {
 		application := applicationv1.ApplicationSpec{ID: "applicationID"}
 
 		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), teams, clusterIDs, namespaceIDs, tags, searchTerm, "false", 0, 0).Return([]applicationv1.ApplicationSpec{application}, nil)
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), teams, clusters, namespaces, tags, searchTerm, "false", 0, 0).Return([]applicationv1.ApplicationSpec{application}, nil)
 
 		sourceTopology := []db.Topology{
 			{
@@ -132,10 +132,10 @@ func TestGetApplicationsTopology(t *testing.T) {
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
 		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Teams: teams})
 		path := fmt.Sprintf(
-			"/topology?all=%t&clusterID=%s&namespaceID=%s&tag=%s&searchTerm=%s&external=%s",
+			"/topology?all=%t&cluster=%s&namespace=%s&tag=%s&searchTerm=%s&external=%s",
 			all,
-			strings.Join(clusterIDs, ","),
-			strings.Join(namespaceIDs, ","),
+			strings.Join(clusters, ","),
+			strings.Join(namespaces, ","),
 			strings.Join(tags, ","),
 			searchTerm,
 			external,

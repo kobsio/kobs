@@ -1,7 +1,5 @@
-import { Box } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { FunctionComponent, ReactNode } from 'react';
-
-import useIsWidthUp from '../../utils/hooks/useIsWidthUp';
 
 interface IToolbarItemsProps {
   align?: 'left' | 'right';
@@ -38,7 +36,8 @@ interface IToolbarProps {
  * across the app. The component should be used within the `toolbar` property of the `Page` component.
  */
 export const Toolbar: FunctionComponent<IToolbarProps> = ({ children }) => {
-  const isMdUp = useIsWidthUp('md');
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
     <Box sx={{ display: 'flex', flexDirection: isMdUp ? 'row' : 'column', flexWrap: 'wrap', gap: 3 }}>{children}</Box>

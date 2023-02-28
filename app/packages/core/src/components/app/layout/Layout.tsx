@@ -1,10 +1,8 @@
-import { Hidden, Box, Drawer } from '@mui/material';
+import { useTheme, Hidden, Box, Drawer, useMediaQuery } from '@mui/material';
 import { useState, FunctionComponent, ReactNode } from 'react';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
-
-import useIsWidthUp from '../../../utils/hooks/useIsWidthUp';
 
 /**
  * `drawerWidth` defines the width of the drawer, which contains a `Sidebar` component to render the navigation for the
@@ -29,7 +27,8 @@ interface ILayoutProps {
  * area where the contains of all routes is rendered.
  */
 export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutProps) => {
-  const isLgUp = useIsWidthUp('lg');
+  const theme = useTheme();
+  const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {

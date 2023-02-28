@@ -1,5 +1,7 @@
 import { Button } from '@mui/material';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import UseQueryWrapper from './UseQueryWrapper';
 
@@ -61,5 +63,20 @@ describe('UseQueryWrapper', () => {
       </UseQueryWrapper>,
     );
     expect(await waitFor(() => screen.getByText(/Children/))).toBeInTheDocument();
+  });
+
+  it('should be able to retry the request', async () => {
+    const refetch = vi.fn();
+
+    render(
+      <UseQueryWrapper errorTitle="Error Title" isError={true} isLoading={false} isNoData={false} refetch={refetch}>
+        Children
+      </UseQueryWrapper>,
+    );
+    await waitFor(() => expect(screen.getByText(/Error Title/)).toBeInTheDocument());
+    const retryButton = screen.getByRole('button', { name: 'RETRY' });
+
+    await userEvent.click(retryButton);
+    expect(refetch).toBeCalledTimes(1);
   });
 });
