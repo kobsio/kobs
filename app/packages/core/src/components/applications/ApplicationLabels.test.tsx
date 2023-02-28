@@ -17,7 +17,7 @@ describe('ApplicationLabels', () => {
   };
 
   it('should render null when applications does not contain a labels', async () => {
-    render({
+    const { container } = render({
       cluster: '',
       id: '',
       name: '',
@@ -25,7 +25,7 @@ describe('ApplicationLabels', () => {
       updatedAt: 0,
     });
 
-    expect(screen === null);
+    expect(container.firstChild).toBeNull();
   });
 
   it('should render tags', async () => {

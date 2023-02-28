@@ -150,16 +150,16 @@ const Applications: FunctionComponent<IApplicationsProps> = ({ options, setOptio
     { applications?: IApplication[]; count?: number },
     APIError
   >(['core/applications/applications', options], async () => {
-    const c = options.clusters?.map((cluster) => `&cluster=${encodeURIComponent(cluster)}`);
-    const n = options.namespaces?.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`);
-    const t = options.tags?.map((tag) => `&tag=${encodeURIComponent(tag)}`);
+    const join = (v: string[] | undefined): string => (v && v.length > 0 ? v.join('') : '');
+
+    const c = join(options.clusters?.map((cluster) => `&cluster=${encodeURIComponent(cluster)}`));
+    const n = join(options.namespaces?.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`));
+    const t = join(options.tags?.map((tag) => `&tag=${encodeURIComponent(tag)}`));
 
     return apiContext.client.get<{ applications?: IApplication[]; count?: number }>(
       `/api/applications?all=${options.all}&searchTerm=${options.searchTerm}&limit=${options.perPage}&offset=${
         options.page && options.perPage ? (options.page - 1) * options.perPage : 0
-      }${c && c.length > 0 ? c.join('') : ''}${n && n.length > 0 ? n.join('') : ''}${
-        t && t.length > 0 ? t.join('') : ''
-      }`,
+      }${c}${n}${t}`,
     );
   });
 
@@ -178,14 +178,12 @@ const Applications: FunctionComponent<IApplicationsProps> = ({ options, setOptio
         )
       }
       noDataTitle="No applications were found"
-      noDataMessage={
-        options.all
-          ? 'No applications were found for your selected filters.'
-          : 'No applications were found for your selected filters. You can try to search through all applications.'
-      }
+      noDataMessage={`No applications were found for your selected filters.${
+        options.all ? 'You can try to search through all applications.' : ''
+      }`}
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }}>
+      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
         {data?.applications?.map((application, index) => (
           <Fragment key={application.id}>
             <Application application={application} />

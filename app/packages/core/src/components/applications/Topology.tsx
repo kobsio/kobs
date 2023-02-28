@@ -263,14 +263,14 @@ const Topology: FunctionComponent<ITopologyProps> = ({ options, setOptions }) =>
   const { isError, isLoading, error, data, refetch } = useQuery<ITopology, APIError>(
     ['core/applications/topology', options],
     async () => {
-      const c = options.clusters?.map((cluster) => `&cluster=${encodeURIComponent(cluster)}`);
-      const n = options.namespaces?.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`);
-      const t = options.tags?.map((tag) => `&tag=${encodeURIComponent(tag)}`);
+      const join = (v: string[] | undefined): string => (v && v.length > 0 ? v.join('') : '');
+
+      const c = join(options.clusters?.map((cluster) => `&cluster=${encodeURIComponent(cluster)}`));
+      const n = join(options.namespaces?.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`));
+      const t = join(options.tags?.map((tag) => `&tag=${encodeURIComponent(tag)}`));
 
       return apiContext.client.get<ITopology>(
-        `/api/applications/topology?all=${options.all}&searchTerm=${options.searchTerm}${
-          c && c.length > 0 ? c.join('') : ''
-        }${n && n.length > 0 ? n.join('') : ''}${t && t.length > 0 ? t.join('') : ''}`,
+        `/api/applications/topology?all=${options.all}&searchTerm=${options.searchTerm}${c}${n}${t}`,
       );
     },
   );

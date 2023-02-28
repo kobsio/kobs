@@ -19,79 +19,79 @@ interface IApplicationLabelsProps {
  */
 const ApplicationLabels: FunctionComponent<IApplicationLabelsProps> = ({ application }) => {
   if (
-    (application.tags && application.tags.length > 0) ||
-    (application.teams && application.teams.length > 0) ||
-    (application.topology && application.topology.dependencies && application.topology.dependencies.length > 0) ||
-    (application.links && application.links.length > 0)
+    (!application.tags || application.tags.length === 0) &&
+    (!application.teams || application.teams.length === 0) &&
+    (!application.topology || !application.topology.dependencies || application.topology.dependencies.length === 0) &&
+    (!application.links || application.links.length === 0)
   ) {
-    return (
-      <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
-        {application.tags && application.tags.length > 0 && (
-          <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
-            {application.tags.map((tag) => (
-              <Chip
-                key={tag}
-                color="primary"
-                size="small"
-                clickable={true}
-                label={tag}
-                component={Link}
-                to={`/applications?tags[]=${encodeURIComponent(tag)}`}
-              />
-            ))}
-          </Box>
-        )}
-        {application.teams && application.teams.length > 0 && (
-          <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
-            {application.teams.map((team) => (
-              <Chip
-                key={team}
-                size="small"
-                clickable={true}
-                icon={<PeopleOutlined />}
-                label={team}
-                component={Link}
-                to={`/teams/${encodeURIComponent(team)}`}
-              />
-            ))}
-          </Box>
-        )}
-        {application.topology && application.topology.dependencies && application.topology.dependencies.length > 0 && (
-          <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
-            {application.topology.dependencies.map((dependency) => (
-              <Chip
-                key={dependency.cluster + dependency.namespace + dependency.name}
-                size="small"
-                clickable={true}
-                icon={<HubOutlined />}
-                label={dependency.name}
-                component={Link}
-                to={`/applications/cluster/${dependency.cluster}/namespace/${dependency.namespace}/name/${dependency.name}`}
-              />
-            ))}
-          </Box>
-        )}
-        {application.links && application.links.length > 0 && (
-          <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
-            {application.links.map((link) => (
-              <Chip
-                key={link.link}
-                size="small"
-                clickable={true}
-                icon={<OpenInNew />}
-                label={link.title}
-                component="a"
-                target="_blank"
-                href={link.link}
-              />
-            ))}
-          </Box>
-        )}
-      </Box>
-    );
+    return null;
   }
 
-  return null;
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
+      {application.tags && application.tags.length > 0 && (
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
+          {application.tags.map((tag) => (
+            <Chip
+              key={tag}
+              color="primary"
+              size="small"
+              clickable={true}
+              label={tag}
+              component={Link}
+              to={`/applications?tags[]=${encodeURIComponent(tag)}`}
+            />
+          ))}
+        </Box>
+      )}
+      {application.teams && application.teams.length > 0 && (
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
+          {application.teams.map((team) => (
+            <Chip
+              key={team}
+              size="small"
+              clickable={true}
+              icon={<PeopleOutlined />}
+              label={team}
+              component={Link}
+              to={`/teams/${encodeURIComponent(team)}`}
+            />
+          ))}
+        </Box>
+      )}
+      {application.topology && application.topology.dependencies && application.topology.dependencies.length > 0 && (
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
+          {application.topology.dependencies.map((dependency) => (
+            <Chip
+              key={dependency.cluster + dependency.namespace + dependency.name}
+              size="small"
+              clickable={true}
+              icon={<HubOutlined />}
+              label={dependency.name}
+              component={Link}
+              to={`/applications/cluster/${dependency.cluster}/namespace/${dependency.namespace}/name/${dependency.name}`}
+            />
+          ))}
+        </Box>
+      )}
+      {application.links && application.links.length > 0 && (
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
+          {application.links.map((link) => (
+            <Chip
+              key={link.link}
+              size="small"
+              clickable={true}
+              icon={<OpenInNew />}
+              label={link.title}
+              component="a"
+              target="_blank"
+              href={link.link}
+            />
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
 };
 
 export default ApplicationLabels;
