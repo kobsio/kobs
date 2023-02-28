@@ -7,6 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
 import { ITeam } from '../../crds/team';
+import Dashboards from '../dashboards/Dashboards';
 import Page from '../utils/Page';
 import UseQueryWrapper from '../utils/UseQueryWrapper';
 
@@ -68,7 +69,9 @@ const TeamPage: FunctionComponent = () => {
           </Button>
         }
       >
-        <Box>TODO: Show Dashboards</Box>
+        {data?.dashboards && data.dashboards.length > 0 ? (
+          <Dashboards manifest={data} references={data?.dashboards} />
+        ) : null}
       </Page>
     </UseQueryWrapper>
   );

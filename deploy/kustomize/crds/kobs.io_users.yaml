@@ -45,50 +45,65 @@ spec:
                       type: string
                     inline:
                       properties:
+                        defaultTime:
+                          type: string
                         hideToolbar:
                           type: boolean
-                        panels:
+                        rows:
                           items:
                             properties:
                               description:
                                 type: string
-                              h:
-                                format: int64
-                                type: integer
-                              plugin:
-                                properties:
-                                  cluster:
-                                    type: string
-                                  name:
-                                    type: string
-                                  options:
-                                    x-kubernetes-preserve-unknown-fields: true
-                                  type:
-                                    type: string
-                                required:
-                                - name
-                                - type
-                                type: object
+                              panels:
+                                items:
+                                  properties:
+                                    description:
+                                      type: string
+                                    h:
+                                      format: int64
+                                      type: integer
+                                    plugin:
+                                      properties:
+                                        cluster:
+                                          type: string
+                                        name:
+                                          type: string
+                                        options:
+                                          x-kubernetes-preserve-unknown-fields: true
+                                        type:
+                                          type: string
+                                      required:
+                                      - name
+                                      - type
+                                      type: object
+                                    title:
+                                      type: string
+                                    w:
+                                      format: int64
+                                      type: integer
+                                    x:
+                                      format: int64
+                                      type: integer
+                                    "y":
+                                      format: int64
+                                      type: integer
+                                  required:
+                                  - plugin
+                                  - title
+                                  type: object
+                                type: array
                               title:
                                 type: string
-                              w:
-                                format: int64
-                                type: integer
-                              x:
-                                format: int64
-                                type: integer
-                              "y":
-                                format: int64
-                                type: integer
                             required:
-                            - plugin
-                            - title
+                            - panels
                             type: object
                           type: array
                         variables:
                           items:
                             properties:
                               hide:
+                                type: boolean
+                              includeAllOption:
                                 type: boolean
                               label:
                                 type: string
@@ -114,7 +129,7 @@ spec:
                             type: object
                           type: array
                       required:
-                      - panels
+                      - rows
                       type: object
                     name:
                       type: string
@@ -153,6 +168,122 @@ spec:
                                   type: string
                                 name:
                                   type: string
+                                page:
+                                  properties:
+                                    dashboards:
+                                      items:
+                                        properties:
+                                          cluster:
+                                            type: string
+                                          description:
+                                            type: string
+                                          inline:
+                                            properties:
+                                              defaultTime:
+                                                type: string
+                                              hideToolbar:
+                                                type: boolean
+                                              rows:
+                                                items:
+                                                  properties:
+                                                    description:
+                                                      type: string
+                                                    panels:
+                                                      items:
+                                                        properties:
+                                                          description:
+                                                            type: string
+                                                          h:
+                                                            format: int64
+                                                            type: integer
+                                                          plugin:
+                                                            properties:
+                                                              cluster:
+                                                                type: string
+                                                              name:
+                                                                type: string
+                                                              options:
+                                                                x-kubernetes-preserve-unknown-fields: true
+                                                              type:
+                                                                type: string
+                                                            required:
+                                                            - name
+                                                            - type
+                                                            type: object
+                                                          title:
+                                                            type: string
+                                                          w:
+                                                            format: int64
+                                                            type: integer
+                                                          x:
+                                                            format: int64
+                                                            type: integer
+                                                          "y":
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - plugin
+                                                        - title
+                                                        type: object
+                                                      type: array
+                                                    title:
+                                                      type: string
+                                                  required:
+                                                  - panels
+                                                  type: object
+                                                type: array
+                                              variables:
+                                                items:
+                                                  properties:
+                                                    hide:
+                                                      type: boolean
+                                                    includeAllOption:
+                                                      type: boolean
+                                                    label:
+                                                      type: string
+                                                    name:
+                                                      type: string
+                                                    plugin:
+                                                      properties:
+                                                        cluster:
+                                                          type: string
+                                                        name:
+                                                          type: string
+                                                        options:
+                                                          x-kubernetes-preserve-unknown-fields: true
+                                                        type:
+                                                          type: string
+                                                      required:
+                                                      - name
+                                                      - type
+                                                      type: object
+                                                  required:
+                                                  - name
+                                                  - plugin
+                                                  type: object
+                                                type: array
+                                            required:
+                                            - rows
+                                            type: object
+                                          name:
+                                            type: string
+                                          namespace:
+                                            type: string
+                                          placeholders:
+                                            additionalProperties:
+                                              type: string
+                                            type: object
+                                          title:
+                                            type: string
+                                        required:
+                                        - title
+                                        type: object
+                                      type: array
+                                    description:
+                                      type: string
+                                    title:
+                                      type: string
+                                  type: object
                               required:
                               - name
                               type: object
@@ -161,6 +292,122 @@ spec:
                             type: string
                           name:
                             type: string
+                          page:
+                            properties:
+                              dashboards:
+                                items:
+                                  properties:
+                                    cluster:
+                                      type: string
+                                    description:
+                                      type: string
+                                    inline:
+                                      properties:
+                                        defaultTime:
+                                          type: string
+                                        hideToolbar:
+                                          type: boolean
+                                        rows:
+                                          items:
+                                            properties:
+                                              description:
+                                                type: string
+                                              panels:
+                                                items:
+                                                  properties:
+                                                    description:
+                                                      type: string
+                                                    h:
+                                                      format: int64
+                                                      type: integer
+                                                    plugin:
+                                                      properties:
+                                                        cluster:
+                                                          type: string
+                                                        name:
+                                                          type: string
+                                                        options:
+                                                          x-kubernetes-preserve-unknown-fields: true
+                                                        type:
+                                                          type: string
+                                                      required:
+                                                      - name
+                                                      - type
+                                                      type: object
+                                                    title:
+                                                      type: string
+                                                    w:
+                                                      format: int64
+                                                      type: integer
+                                                    x:
+                                                      format: int64
+                                                      type: integer
+                                                    "y":
+                                                      format: int64
+                                                      type: integer
+                                                  required:
+                                                  - plugin
+                                                  - title
+                                                  type: object
+                                                type: array
+                                              title:
+                                                type: string
+                                            required:
+                                            - panels
+                                            type: object
+                                          type: array
+                                        variables:
+                                          items:
+                                            properties:
+                                              hide:
+                                                type: boolean
+                                              includeAllOption:
+                                                type: boolean
+                                              label:
+                                                type: string
+                                              name:
+                                                type: string
+                                              plugin:
+                                                properties:
+                                                  cluster:
+                                                    type: string
+                                                  name:
+                                                    type: string
+                                                  options:
+                                                    x-kubernetes-preserve-unknown-fields: true
+                                                  type:
+                                                    type: string
+                                                required:
+                                                - name
+                                                - type
+                                                type: object
+                                            required:
+                                            - name
+                                            - plugin
+                                            type: object
+                                          type: array
+                                      required:
+                                      - rows
+                                      type: object
+                                    name:
+                                      type: string
+                                    namespace:
+                                      type: string
+                                    placeholders:
+                                      additionalProperties:
+                                        type: string
+                                      type: object
+                                    title:
+                                      type: string
+                                  required:
+                                  - title
+                                  type: object
+                                type: array
+                              description:
+                                type: string
+                              title:
+                                type: string
+                            type: object
                         required:
                         - name
                         type: object

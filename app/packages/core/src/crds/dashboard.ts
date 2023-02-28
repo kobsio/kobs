@@ -1,12 +1,13 @@
 export interface IDashboard {
   cluster: string;
+  defaultTime?: string;
   description?: string;
   hideToolbar?: boolean;
   id: string;
   name: string;
   namespace: string;
-  panels: IPanel[];
   placeholders?: IPlaceholder[];
+  rows?: IRow[];
   title: string;
   updatedAt: number;
   variables?: IVariable[];
@@ -21,9 +22,16 @@ export interface IPlaceholder {
 
 export interface IVariable {
   hide?: boolean;
+  includeAllOption?: boolean;
   label?: string;
   name: string;
   plugin: IPlugin;
+}
+
+export interface IRow {
+  description?: string;
+  panels?: IPanel[];
+  title?: string;
 }
 
 export interface IPanel {
@@ -59,6 +67,7 @@ export interface IPlaceholders {
 }
 
 export interface IReferenceInline {
+  defaultTime?: string;
   hideToolbar?: boolean;
   panels: IPanel[];
   variables?: IVariable[];

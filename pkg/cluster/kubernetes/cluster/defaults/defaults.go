@@ -45,9 +45,11 @@ func SetApplicationDefaults(application applicationv1.ApplicationSpec, cluster, 
 				}
 			}
 
-			for j := 0; j < len(application.Dashboards[i].Inline.Panels); j++ {
-				if application.Dashboards[i].Inline.Panels[j].Plugin.Cluster == "" {
-					application.Dashboards[i].Inline.Panels[j].Plugin.Cluster = cluster
+			for j := 0; j < len(application.Dashboards[i].Inline.Rows); j++ {
+				for k := 0; k < len(application.Dashboards[i].Inline.Rows[j].Panels); k++ {
+					if application.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Cluster == "" {
+						application.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Cluster = cluster
+					}
 				}
 			}
 		}
@@ -76,9 +78,11 @@ func SetTeamDefaults(team teamv1.TeamSpec, cluster, namespace, name string) team
 				}
 			}
 
-			for j := 0; j < len(team.Dashboards[i].Inline.Panels); j++ {
-				if team.Dashboards[i].Inline.Panels[j].Plugin.Cluster == "" {
-					team.Dashboards[i].Inline.Panels[j].Plugin.Cluster = cluster
+			for j := 0; j < len(team.Dashboards[i].Inline.Rows); j++ {
+				for k := 0; k < len(team.Dashboards[i].Inline.Rows[j].Panels); k++ {
+					if team.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Cluster == "" {
+						team.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Cluster = cluster
+					}
 				}
 			}
 		}
@@ -100,9 +104,11 @@ func SetDashboardDefaults(dashboard dashboardv1.DashboardSpec, cluster, namespac
 		}
 	}
 
-	for i := 0; i < len(dashboard.Panels); i++ {
-		if dashboard.Panels[i].Plugin.Cluster == "" {
-			dashboard.Panels[i].Plugin.Cluster = cluster
+	for i := 0; i < len(dashboard.Rows); i++ {
+		for j := 0; j < len(dashboard.Rows[i].Panels); j++ {
+			if dashboard.Rows[i].Panels[j].Plugin.Cluster == "" {
+				dashboard.Rows[i].Panels[j].Plugin.Cluster = cluster
+			}
 		}
 	}
 
@@ -129,9 +135,11 @@ func SetUserDefaults(user userv1.UserSpec, cluster, namespace, name string) user
 				}
 			}
 
-			for j := 0; j < len(user.Dashboards[i].Inline.Panels); j++ {
-				if user.Dashboards[i].Inline.Panels[j].Plugin.Cluster == "" {
-					user.Dashboards[i].Inline.Panels[j].Plugin.Cluster = cluster
+			for j := 0; j < len(user.Dashboards[i].Inline.Rows); j++ {
+				for k := 0; k < len(user.Dashboards[i].Inline.Rows[j].Panels); k++ {
+					if user.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Cluster == "" {
+						user.Dashboards[i].Inline.Rows[j].Panels[k].Plugin.Cluster = cluster
+					}
 				}
 			}
 		}

@@ -26,6 +26,40 @@ func TestGetNavigation(t *testing.T) {
 	t.Run("should return user navigation", func(t *testing.T) {
 		require.Equal(t, []userv1.Navigation{{Name: "user"}}, settings.GetNavigation(&userv1.UserSpec{Navigation: []userv1.Navigation{{Name: "user"}}}))
 	})
+
+	t.Run("should create link for page", func(t *testing.T) {
+		require.Equal(t, []userv1.Navigation{{
+			Name: "default",
+			Items: []userv1.NavigationItem{{
+				Link: "/dashboards/eyJ0aXRsZSI6IlBhZ2UgMSIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24gMSIsImRhc2hib2FyZHMiOlt7InRpdGxlIjoiVGl0bGUgMSJ9XX0=",
+			}, {
+				Items: []userv1.NavigationSubItems{{
+					Name: "subdefault",
+					Link: "/dashboards/eyJ0aXRsZSI6IlBhZ2UgMSIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24gMSIsImRhc2hib2FyZHMiOlt7InRpdGxlIjoiVGl0bGUgMSJ9XX0=",
+				}},
+			}},
+		}}, settings.GetNavigation(&userv1.UserSpec{
+			Navigation: []userv1.Navigation{{
+				Name: "default",
+				Items: []userv1.NavigationItem{{
+					Page: &userv1.NavigationPage{
+						Title:       "Page 1",
+						Description: "Description 1",
+						Dashboards:  []dashboardv1.Reference{{Title: "Title 1"}},
+					},
+				}, {
+					Items: []userv1.NavigationSubItems{{
+						Name: "subdefault",
+						Page: &userv1.NavigationPage{
+							Title:       "Page 1",
+							Description: "Description 1",
+							Dashboards:  []dashboardv1.Reference{{Title: "Title 1"}},
+						},
+					}},
+				}},
+			}},
+		}))
+	})
 }
 
 func TestGetDashboards(t *testing.T) {

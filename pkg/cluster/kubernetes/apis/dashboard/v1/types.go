@@ -35,9 +35,10 @@ type DashboardSpec struct {
 	Title        string        `json:"title,omitempty" bson:"title"`
 	Description  string        `json:"description,omitempty" bson:"description"`
 	HideToolbar  bool          `json:"hideToolbar,omitempty" bson:"hideToolbar"`
+	DefaultTime  string        `json:"defaultTime,omitempty" bson:"defaultTime"`
 	Placeholders []Placeholder `json:"placeholders,omitempty" bson:"placeholders"`
 	Variables    []Variable    `json:"variables,omitempty" bson:"variables"`
-	Panels       []Panel       `json:"panels" bson:"panels"`
+	Rows         []Row         `json:"rows" bson:"rows"`
 }
 
 type Placeholder struct {
@@ -48,10 +49,17 @@ type Placeholder struct {
 }
 
 type Variable struct {
-	Name   string `json:"name" bson:"name"`
-	Label  string `json:"label,omitempty" bson:"label"`
-	Hide   bool   `json:"hide,omitempty" bson:"hide"`
-	Plugin Plugin `json:"plugin" bson:"plugin"`
+	Name             string `json:"name" bson:"name"`
+	Label            string `json:"label,omitempty" bson:"label"`
+	Hide             bool   `json:"hide,omitempty" bson:"hide"`
+	IncludeAllOption bool   `json:"includeAllOption,omitempty" bson:"includeAllOption"`
+	Plugin           Plugin `json:"plugin" bson:"plugin"`
+}
+
+type Row struct {
+	Title       string  `json:"title,omitempty" bson:"title"`
+	Description string  `json:"description,omitempty" bson:"description"`
+	Panels      []Panel `json:"panels" bson:"panels"`
 }
 
 type Panel struct {
@@ -83,6 +91,7 @@ type Reference struct {
 
 type ReferenceInline struct {
 	HideToolbar bool       `json:"hideToolbar,omitempty" bson:"hideToolbar"`
+	DefaultTime string     `json:"defaultTime,omitempty" bson:"defaultTime"`
 	Variables   []Variable `json:"variables,omitempty" bson:"variables"`
-	Panels      []Panel    `json:"panels" bson:"panels"`
+	Rows        []Row      `json:"rows" bson:"rows"`
 }

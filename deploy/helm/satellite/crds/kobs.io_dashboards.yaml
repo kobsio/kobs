@@ -36,6 +36,8 @@ spec:
             properties:
               cluster:
                 type: string
+              defaultTime:
+                type: string
               description:
                 type: string
               hideToolbar:
@@ -46,44 +48,6 @@ spec:
                 type: string
               namespace:
                 type: string
-              panels:
-                items:
-                  properties:
-                    description:
-                      type: string
-                    h:
-                      format: int64
-                      type: integer
-                    plugin:
-                      properties:
-                        cluster:
-                          type: string
-                        name:
-                          type: string
-                        options:
-                          x-kubernetes-preserve-unknown-fields: true
-                        type:
-                          type: string
-                      required:
-                      - name
-                      - type
-                      type: object
-                    title:
-                      type: string
-                    w:
-                      format: int64
-                      type: integer
-                    x:
-                      format: int64
-                      type: integer
-                    "y":
-                      format: int64
-                      type: integer
-                  required:
-                  - plugin
-                  - title
-                  type: object
-                type: array
               placeholders:
                 items:
                   properties:
@@ -99,6 +63,55 @@ spec:
                   - name
                   type: object
                 type: array
+              rows:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    panels:
+                      items:
+                        properties:
+                          description:
+                            type: string
+                          h:
+                            format: int64
+                            type: integer
+                          plugin:
+                            properties:
+                              cluster:
+                                type: string
+                              name:
+                                type: string
+                              options:
+                                x-kubernetes-preserve-unknown-fields: true
+                              type:
+                                type: string
+                            required:
+                            - name
+                            - type
+                            type: object
+                          title:
+                            type: string
+                          w:
+                            format: int64
+                            type: integer
+                          x:
+                            format: int64
+                            type: integer
+                          "y":
+                            format: int64
+                            type: integer
+                        required:
+                        - plugin
+                        - title
+                        type: object
+                      type: array
+                    title:
+                      type: string
+                  required:
+                  - panels
+                  type: object
+                type: array
               title:
                 type: string
               updatedAt:
@@ -108,6 +121,8 @@ spec:
                 items:
                   properties:
                     hide:
+                      type: boolean
+                    includeAllOption:
                       type: boolean
                     label:
                       type: string
@@ -133,7 +148,7 @@ spec:
                   type: object
                 type: array
             required:
-            - panels
+            - rows
             type: object
         type: object
     served: true
