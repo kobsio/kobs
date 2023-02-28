@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render as _render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -6,7 +5,8 @@ import { vi } from 'vitest';
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { IApplicationOptions } from './utils';
 
-import { APIClient, APIContext, queryClientOptions } from '../../context/APIContext';
+import { APIClient, APIContext } from '../../context/APIContext';
+import QueryClientProvider from '../../utils/QueryClientProvider';
 
 describe('ApplicationsToolbar', () => {
   const render = async (
@@ -25,7 +25,7 @@ describe('ApplicationsToolbar', () => {
     });
 
     const result = _render(
-      <QueryClientProvider client={new QueryClient(queryClientOptions)}>
+      <QueryClientProvider>
         <APIContext.Provider value={{ client: client, getUser: () => undefined }}>
           <ApplicationsToolbar options={options} setOptions={setOptions} />
         </APIContext.Provider>

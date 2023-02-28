@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render as _render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -6,7 +5,8 @@ import { vi } from 'vitest';
 
 import ResourcesNamespaces from './ResourcesNamespaces';
 
-import { APIClient, APIContext, queryClientOptions } from '../../context/APIContext';
+import { APIClient, APIContext } from '../../context/APIContext';
+import QueryClientProvider from '../../utils/QueryClientProvider';
 
 describe('ResourcesNamespaces', () => {
   const render = async (
@@ -20,7 +20,7 @@ describe('ResourcesNamespaces', () => {
     getSpy.mockResolvedValueOnce(namespaces);
 
     const result = _render(
-      <QueryClientProvider client={new QueryClient(queryClientOptions)}>
+      <QueryClientProvider>
         <APIContext.Provider value={{ client: client, getUser: () => undefined }}>
           <ResourcesNamespaces
             selectNamespaces={selectNamespaces}
