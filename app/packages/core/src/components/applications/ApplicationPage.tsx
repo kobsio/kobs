@@ -1,5 +1,5 @@
 import { Edit } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -64,6 +64,7 @@ const ApplicationPage: FunctionComponent = () => {
         {data?.dashboards && data.dashboards.length > 0 ? (
           <Dashboards manifest={data} references={data?.dashboards} />
         ) : null}
+        <Box>TODO: Show Dashboards</Box>
       </Page>
     </UseQueryWrapper>
   );
