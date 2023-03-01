@@ -4,14 +4,14 @@ import { ReactNode } from 'react';
 import { MemoryRouter, useSearchParams } from 'react-router-dom';
 import { vi } from 'vitest';
 
-import Plugins from './Plugins';
+import PluginsPage from './PluginsPage';
 
 import { APIClient, APIContext } from '../../context/APIContext';
 import { PluginContextProvider, IPluginInstance } from '../../context/PluginContext';
-import QueryClientProvider from '../../utils/QueryClientProvider';
+import QueryClientProvider from '../../context/QueryClientProvider';
 
-describe('Plugins', () => {
-  const render = (instances: IPluginInstance[], children?: ReactNode): Promise<RenderResult> => {
+describe('PluginsPage', () => {
+  const render = async (instances: IPluginInstance[], children?: ReactNode): Promise<RenderResult> => {
     const client = new APIClient();
     const getSpy = vi.spyOn(client, 'get');
     getSpy.mockResolvedValueOnce(instances);
@@ -21,7 +21,7 @@ describe('Plugins', () => {
         <QueryClientProvider>
           <APIContext.Provider value={{ client: client, getUser: () => undefined }}>
             <PluginContextProvider plugins={[]}>
-              <Plugins />
+              <PluginsPage />
               {children}
             </PluginContextProvider>
           </APIContext.Provider>
@@ -89,7 +89,7 @@ describe('Plugins', () => {
       },
     ]);
 
-    const clusterInput = screen.getByLabelText('Cluster');
+    const clusterInput = screen.getByLabelText('Clusters');
     await userEvent.type(clusterInput, 'dev');
 
     const clusterOption = screen.getByRole('option', { name: 'dev' });
@@ -99,7 +99,7 @@ describe('Plugins', () => {
     expect(screen.queryByText(/bar instance/)).toBeNull();
   });
 
-  it('should filter by plugin type', async () => {
+  it('should filter by plugin types', async () => {
     await render([
       {
         cluster: 'dev',
@@ -115,7 +115,7 @@ describe('Plugins', () => {
       },
     ]);
 
-    const pluginInput = screen.getByLabelText('Plugin');
+    const pluginInput = screen.getByLabelText('Plugin Types');
     await userEvent.type(pluginInput, 'b');
 
     const pluginOption = screen.getByRole('option', { name: 'bar' });
@@ -141,8 +141,8 @@ describe('Plugins', () => {
       },
     ]);
 
-    const searchInput = screen.getByLabelText('Search');
-    await userEvent.type(searchInput, 'unique');
+    const searchInput = screen.getByPlaceholderText('Search');
+    await userEvent.type(searchInput, 'unique{enter}');
 
     expect(screen.getByText(/foo instance/)).toBeInTheDocument();
     expect(screen.queryByText(/bar instance/)).toBeNull();
@@ -160,11 +160,13 @@ describe('Plugins', () => {
 
     expect(screen.getByText(/foo-instance-0/)).toBeInTheDocument();
     expect(screen.getByText(/foo-instance-7/)).toBeInTheDocument();
-    expect(screen.queryByText(/foo-instance-8/)).toBeNull();
-    const perPageButton = screen.getByRole('button', { name: '8 per page' });
+    expect(screen.queryByText(/foo-instance-12/)).toBeNull();
+
+    const perPageButton = screen.getByRole('button', { name: '1 - 10 of 16' });
     await userEvent.click(perPageButton);
-    const sixteenPerPageOption = screen.getByRole('option', { name: '16 per page' });
-    await userEvent.click(sixteenPerPageOption);
+    const twentyPerPageOption = screen.getByText('20 per page');
+    await userEvent.click(twentyPerPageOption);
+
     expect(screen.getByText(/foo-instance-0/)).toBeInTheDocument();
     expect(screen.getByText(/foo-instance-15/)).toBeInTheDocument();
   });
@@ -201,26 +203,26 @@ describe('Plugins', () => {
     );
 
     // cluster input
-    const clusterInput = screen.getByLabelText('Cluster');
+    const clusterInput = screen.getByLabelText('Clusters');
     await userEvent.type(clusterInput, 'oth');
     const clusterOption = screen.getByRole('option', { name: 'other' });
     await userEvent.click(clusterOption);
 
     // plugin type input
-    const pluginInput = screen.getByLabelText('Plugin');
+    const pluginInput = screen.getByLabelText('Plugin Types');
     await userEvent.type(pluginInput, 'b');
     const pluginOption = screen.getByRole('option', { name: 'foobar' });
     await userEvent.click(pluginOption);
 
     // search input
-    const searchInput = screen.getByLabelText('Search');
-    await userEvent.type(searchInput, 'instance');
+    const searchInput = screen.getByPlaceholderText('Search');
+    await userEvent.type(searchInput, 'instance{enter}');
 
     // per page button
-    const perPageButton = screen.getByRole('button', { name: '8 per page' });
+    const perPageButton = screen.getByRole('button', { name: '1 - 10 of 32' });
     await userEvent.click(perPageButton);
-    const sixteenPerPageOption = screen.getByRole('option', { name: '16 per page' });
-    await userEvent.click(sixteenPerPageOption);
+    const twentyPerPageOption = screen.getByText('20 per page');
+    await userEvent.click(twentyPerPageOption);
 
     // page button
     const nextPage = screen.getByLabelText('Go to next page');
@@ -228,8 +230,8 @@ describe('Plugins', () => {
 
     expect(screen.getByText(/clusters\[\]=other/)).toBeInTheDocument();
     expect(screen.getByText(/page=2/)).toBeInTheDocument();
-    expect(screen.getByText(/perPage=16/)).toBeInTheDocument();
+    expect(screen.getByText(/perPage=20/)).toBeInTheDocument();
     expect(screen.getByText(/pluginTypes\[\]=foobar/)).toBeInTheDocument();
-    expect(screen.getByText(/search=instance/)).toBeInTheDocument();
+    expect(screen.getByText(/searchTerm=instance/)).toBeInTheDocument();
   });
 });

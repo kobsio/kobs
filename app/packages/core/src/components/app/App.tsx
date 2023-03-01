@@ -5,20 +5,20 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-ro
 
 import Home from './Home';
 import Layout from './layout/Layout';
-import Plugin from './Plugin';
-import Plugins from './Plugins';
 import Signin from './signin/Signin';
 import SigninOIDCCallback from './signin/SigninOIDCCallback';
 
 import { APIContextProvider, APIContext, IAPIContext, APIError, IAPIUser } from '../../context/APIContext';
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
-import QueryClientProvider from '../../utils/QueryClientProvider';
+import QueryClientProvider from '../../context/QueryClientProvider';
 import theme from '../../utils/theme';
 import ApplicationPage from '../applications/ApplicationPage';
 import ApplicationsPage from '../applications/ApplicationsPage';
 import TopologyPage from '../applications/TopologyPage';
 import DashboardsPage from '../dashboards/DashboardsPage';
+import PluginPage from '../plugins/PluginPage';
+import PluginsPage from '../plugins/PluginsPage';
 import TeamPage from '../teams/TeamPage';
 import TeamsPage from '../teams/TeamsPage';
 
@@ -121,8 +121,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                             <Route path="/teams" element={<TeamsPage />} />
                             <Route path="/teams/:id" element={<TeamPage />} />
                             <Route path="/dashboards/:page" element={<DashboardsPage />} />
-                            <Route path="/plugins" element={<Plugins />} />
-                            <Route path="/plugins/:cluster/:type/:name" element={<Plugin />} />
+                            <Route path="/plugins" element={<PluginsPage />} />
+                            <Route path="/plugins/:cluster/:type/:name" element={<PluginPage />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>
