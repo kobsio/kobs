@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ApplicationsPage from './ApplicationsPage';
 
 import { APIContextProvider } from '../../context/APIContext';
-import QueryClientProvider from '../../utils/QueryClientProvider';
+import QueryClientProvider from '../../context/QueryClientProvider';
 
 describe('ApplicationsPage', () => {
   const render = (): RenderResult => {

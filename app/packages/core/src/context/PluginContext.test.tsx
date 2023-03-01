@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import { APIClient, APIContext, APIError } from './APIContext';
 import { PluginContext, PluginContextProvider } from './PluginContext';
 
-import QueryClientProvider from '../utils/QueryClientProvider';
+import QueryClientProvider from '../context/QueryClientProvider';
 
 describe('PluginContext', () => {
   const apiClient = new APIClient();

@@ -1,4 +1,8 @@
-import { QueryClient, QueryClientConfig, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientConfig,
+  QueryClientProvider as InternalQueryClientProvider,
+} from '@tanstack/react-query';
 import { FunctionComponent, ReactNode } from 'react';
 
 /**
@@ -17,14 +21,18 @@ const queryClientOptions: QueryClientConfig = {
   },
 };
 
-interface IProviderProps {
+interface IQueryClientProviderProps {
   children: ReactNode;
 }
 
-const Provider: FunctionComponent<IProviderProps> = ({ children }) => {
+/**
+ * The `QueryClientProvider` components wraps the `InternalQueryClientProvider` component from the `react-query` package
+ * to apply our app wide `queryClientOptions`.
+ */
+const QueryClientProvider: FunctionComponent<IQueryClientProviderProps> = ({ children }) => {
   const queryClient = new QueryClient(queryClientOptions);
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return <InternalQueryClientProvider client={queryClient}>{children}</InternalQueryClientProvider>;
 };
 
-export default Provider;
+export default QueryClientProvider;
