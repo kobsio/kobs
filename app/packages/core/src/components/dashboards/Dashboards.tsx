@@ -20,15 +20,25 @@ import { getVariableViaPlugin, interpolate, interpolateJSONPath } from './utils'
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { GridContextProvider } from '../../context/GridContext';
 import { IDashboard, IPanel, IReference, IRow, IVariableValues } from '../../crds/dashboard';
-import useQueryState from '../../utils/hooks/useQueryState';
+import { useQueryState } from '../../utils/hooks/useQueryState';
 import { ITimes, timeOptions, times as defaultTimes } from '../../utils/times';
 import PluginPanel from '../plugins/PluginPanel';
 import { IOptionsAdditionalFields, Options } from '../utils/Options';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+
+/**
+ * `evaluateCondition` evaluates the provided condition if it returns `true`, so that we can decide if a row should be
+ * shown in a dashboard or not.
+ */
+const evaluateCondition = (condition: string): boolean => {
+  // eslint-disable-next-line no-new-func
+  const testfunc = new Function('return ' + condition);
+  return testfunc.call(this);
+};
 
 /**
  * The `IDashboardGridProps` is the interface for the `DashboardGrid` component, which requires a list of `panels`.
@@ -284,24 +294,28 @@ const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => {
           },
         })}
       >
-        {rows?.map((row, rowIndex) => (
-          <Fragment key={rowIndex}>
-            {row.title ? (
-              <Typography variant="h6" pb={4} pt={rowIndex === 0 ? 0 : 4}>
-                {row.title}
-              </Typography>
-            ) : null}
-            {row.panels && row.panels.length > 0 ? (
-              <GridContextProvider autoHeight={row.autoHeight ?? false}>
-                {row.autoHeight ? (
-                  <DashboardGridAutoHeight panels={row.panels} times={times} />
-                ) : (
-                  <DashboardGrid panels={row.panels} times={times} />
-                )}
-              </GridContextProvider>
-            ) : null}
-          </Fragment>
-        ))}
+        {rows
+          ?.filter((row) => !row.if || evaluateCondition(row.if))
+          .map((row, rowIndex) => (
+            <Fragment key={rowIndex}>
+              {row.title ? (
+                <Typography variant="h6" pb={4} pt={rowIndex === 0 ? 0 : 4}>
+                  {row.title}
+                </Typography>
+              ) : (
+                <Box pb={4}></Box>
+              )}
+              {row.panels && row.panels.length > 0 ? (
+                <GridContextProvider autoHeight={row.autoHeight ?? false}>
+                  {row.autoHeight ? (
+                    <DashboardGridAutoHeight panels={row.panels} times={times} />
+                  ) : (
+                    <DashboardGrid panels={row.panels} times={times} />
+                  )}
+                </GridContextProvider>
+              ) : null}
+            </Fragment>
+          ))}
       </Box>
     </>
   );

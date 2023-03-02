@@ -2,8 +2,8 @@ import queryString from 'query-string';
 import { useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import useMemoizedFn from './useMemoizedFn';
-import useUpdate from './useUpdate';
+import { useMemoizedFn } from './useMemoizedFn';
+import { useUpdate } from './useUpdate';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryState = Record<string, any>;
@@ -15,7 +15,7 @@ type QueryState = Record<string, any>;
  * Router v6, uses `react-router-dom` instead of `react-router` and removes the options, which should always be the same
  * across all our components.
  */
-const useQueryState = <S extends QueryState = QueryState>(initialState?: S | (() => S)) => {
+export const useQueryState = <S extends QueryState = QueryState>(initialState?: S | (() => S)) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type State = Partial<{ [key in keyof S]: any }>;
 
@@ -63,5 +63,3 @@ const useQueryState = <S extends QueryState = QueryState>(initialState?: S | (()
 
   return [targetQuery as S, useMemoizedFn(setState)] as const;
 };
-
-export default useQueryState;

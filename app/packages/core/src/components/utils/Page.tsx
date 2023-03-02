@@ -17,7 +17,15 @@ interface IPageProps {
  * property is set to true we do not render the diver between the page header and content (`children`), instead the we
  * have to take care that the tabs are rendered within the content and that they contain a divider.
  */
-const Page: FunctionComponent<IPageProps> = ({ actions, children, description, hasTabs, subtitle, title, toolbar }) => {
+export const Page: FunctionComponent<IPageProps> = ({
+  actions,
+  children,
+  description,
+  hasTabs,
+  subtitle,
+  title,
+  toolbar,
+}) => {
   return (
     <Stack minHeight="100%" minWidth="100%">
       <Grid justifyContent="space-between" container={true} spacing={6}>
@@ -58,5 +66,3 @@ const Page: FunctionComponent<IPageProps> = ({ actions, children, description, h
     </Stack>
   );
 };
-
-export default Page;

@@ -7,7 +7,7 @@ import { ITopology } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { PluginPanel, PluginPanelError } from '../utils/PluginPanel';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 /**
  * `ITopologyPanelInternalProps` is the interface for the `TopologyPanelInternal` component.

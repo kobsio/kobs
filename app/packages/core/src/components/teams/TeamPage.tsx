@@ -8,8 +8,8 @@ import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
 import { ITeam } from '../../crds/team';
 import Dashboards from '../dashboards/Dashboards';
-import Page from '../utils/Page';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { Page } from '../utils/Page';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 interface ITeamParams extends Record<string, string | undefined> {
   id?: string;

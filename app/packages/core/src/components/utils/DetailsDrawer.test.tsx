@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 
-import DetailsDrawer from './DetailsDrawer';
+import { DetailsDrawer } from './DetailsDrawer';
 
 describe('Page', () => {
   it('should render title and children', async () => {

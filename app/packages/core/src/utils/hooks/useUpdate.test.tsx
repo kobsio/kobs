@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 
-import useMemoizedFn from './useMemoizedFn';
-import useUpdate from './useUpdate';
+import { useMemoizedFn } from './useMemoizedFn';
+import { useUpdate } from './useUpdate';
 
 describe('useUpdate', () => {
   it('should update', () => {

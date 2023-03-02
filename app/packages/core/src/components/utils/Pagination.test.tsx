@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import Pagination from './Pagination';
+import { Pagination } from './Pagination';
 
 describe('Pagination', () => {
   it('should render pagination', async () => {

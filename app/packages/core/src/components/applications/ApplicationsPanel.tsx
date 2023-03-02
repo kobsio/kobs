@@ -6,10 +6,10 @@ import Application from './Application';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
-import useQueryState from '../../utils/hooks/useQueryState';
-import Pagination from '../utils/Pagination';
+import { useQueryState } from '../../utils/hooks/useQueryState';
+import { Pagination } from '../utils/Pagination';
 import { PluginPanel } from '../utils/PluginPanel';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 interface IApplicationsPanelProps {
   description?: string;

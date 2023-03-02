@@ -27,7 +27,7 @@ interface IUseQueryWrapperProps {
  * the provided `errorTile` and `error`. When the `isNoData` property is `true` it will also render an alert but with
  * the info serverity. When none of these conditions is true it will render the provided `children`.
  */
-const UseQueryWrapper: FunctionComponent<IUseQueryWrapperProps> = ({
+export const UseQueryWrapper: FunctionComponent<IUseQueryWrapperProps> = ({
   children,
   errorTitle,
   error,
@@ -78,5 +78,3 @@ const UseQueryWrapper: FunctionComponent<IUseQueryWrapperProps> = ({
 
   return <>{children}</>;
 };
-
-export default UseQueryWrapper;

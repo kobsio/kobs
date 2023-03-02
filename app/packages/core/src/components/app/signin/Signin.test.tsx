@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import Signin from './Signin';
 
 import { APIClient, APIContext } from '../../../context/APIContext';
-import QueryClientProvider from '../../../context/QueryClientProvider';
+import { QueryClientProvider } from '../../../context/QueryClientProvider';
 
 describe('Signin', () => {
   const apiClient: APIClient = new APIClient();

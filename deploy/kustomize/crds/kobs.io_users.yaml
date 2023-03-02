@@ -56,6 +56,8 @@ spec:
                                 type: string
                               description:
                                 type: string
+                              if:
+                                type: string
                               panels:
                                 items:
                                   properties:
@@ -192,6 +194,8 @@ spec:
                                                       type: string
                                                     description:
                                                       type: string
+                                                    if:
+                                                      type: string
                                                     panels:
                                                       items:
                                                         properties:
@@ -317,6 +321,8 @@ spec:
                                               autoHeight:
                                                 type: string
                                               description:
+                                                type: string
+                                              if:
                                                 type: string
                                               panels:
                                                 items:

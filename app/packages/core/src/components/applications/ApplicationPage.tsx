@@ -9,8 +9,8 @@ import ApplicationLabels from './ApplicationLabels';
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
 import Dashboards from '../dashboards/Dashboards';
-import Page from '../utils/Page';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { Page } from '../utils/Page';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 interface IApplicationParams extends Record<string, string | undefined> {
   cluster?: string;

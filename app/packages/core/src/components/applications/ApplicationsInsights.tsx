@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import ApplicationLabels from './ApplicationLabels';
 
 import { IApplication } from '../../crds/application';
-import DetailsDrawer from '../utils/DetailsDrawer';
+import { DetailsDrawer } from '../utils/DetailsDrawer';
 
 interface IApplicationInsightsProps {
   application: IApplication;

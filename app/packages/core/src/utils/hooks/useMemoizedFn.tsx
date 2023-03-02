@@ -13,7 +13,7 @@ type PickFunction<T extends Noop> = (this: ThisParameterType<T>, ...args: Parame
  *
  * Note: This is required for the `useQueryState` and taken from https://ahooks.js.org/hooks/use-memoized-fn
  */
-function useMemoizedFn<T extends Noop>(fn: T) {
+export const useMemoizedFn = <T extends Noop>(fn: T) => {
   const fnRef = useRef<T>(fn);
 
   fnRef.current = useMemo(() => fn, [fn]);
@@ -26,6 +26,4 @@ function useMemoizedFn<T extends Noop>(fn: T) {
   }
 
   return memoizedFn.current as T;
-}
-
-export default useMemoizedFn;
+};
