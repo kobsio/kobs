@@ -3,6 +3,7 @@ export * from './components/app/App';
 export * from './components/utils/DetailsDrawer';
 export * from './components/utils/Page';
 export * from './components/utils/Pagination';
+export * from './components/utils/PluginPanel';
 export * from './components/utils/Toolbar';
 export * from './components/utils/UseQueryWrapper';
 

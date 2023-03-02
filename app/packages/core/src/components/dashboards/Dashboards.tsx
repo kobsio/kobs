@@ -1,4 +1,16 @@
-import { Box, Card, Divider, FormControl, InputLabel, MenuItem, Select, Tab, Tabs, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  Divider,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext, useMemo, useState } from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
@@ -6,9 +18,11 @@ import { WidthProvider, Responsive } from 'react-grid-layout';
 import { getVariableViaPlugin, interpolate, interpolateJSONPath } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
+import { GridContextProvider } from '../../context/GridContext';
 import { IDashboard, IPanel, IReference, IRow, IVariableValues } from '../../crds/dashboard';
 import useQueryState from '../../utils/hooks/useQueryState';
 import { ITimes, timeOptions, times as defaultTimes, TTime } from '../../utils/times';
+import PluginPanel from '../plugins/PluginPanel';
 import { IOptionsAdditionalFields, Options } from '../utils/Options';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
 import UseQueryWrapper from '../utils/UseQueryWrapper';
@@ -21,13 +35,14 @@ import 'react-resizable/css/styles.css';
  */
 interface IDashboardGridProps {
   panels: IPanel[];
+  times: ITimes;
 }
 
 /**
  * The `DashboardGrid` component is used to render a list of `panels` in a responsive grid layout. We are using the
  * `react-grid-layout` package to render the grid, so that a user can also drage and resize the panels in the app.
  */
-const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels }: IDashboardGridProps) => {
+const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times }: IDashboardGridProps) => {
   const [layouts, setLayouts] = useState<ReactGridLayout.Layouts>();
 
   const ResponsiveReactGridLayout = useMemo(() => WidthProvider(Responsive), []);
@@ -46,21 +61,54 @@ const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels }: IDash
         <div
           key={panel.title}
           data-grid={{
-            h: panel.h ?? 0,
+            h: !panel.h || panel.h < 1 ? 6 : panel.h,
             isBounded: true,
             static: true,
-            w: panel.w ?? 0,
+            w: !panel.w || panel.w < 1 ? 6 : panel.w,
             x: panel.x ?? 0,
             y: panel.y ?? 0,
           }}
         >
-          <Card sx={{ height: '100%', width: '100%' }}>
-            {panel.title}
-            {panel.description}
-          </Card>
+          <PluginPanel
+            cluster={panel.plugin.cluster}
+            name={panel.plugin.name}
+            type={panel.plugin.type}
+            title={panel.title}
+            description={panel.description}
+            options={panel.plugin.options}
+            times={times}
+          />
         </div>
       ))}
     </ResponsiveReactGridLayout>
+  );
+};
+
+/**
+ * The `DashboardGridAutoHeight` provides an alternative grid layout for our dashboards. Where the height of the rows is
+ * dynamically adjusted based on the childrens height. This is necessary because it is not possible to dynamically
+ * adjust the item height in the `DashboardGrid` component.
+ *
+ * This should mainly be used for dashboards which are just containing one component, e.g. just display a logs panel,
+ * traces panel or the documentation for an app.
+ */
+const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, times }: IDashboardGridProps) => {
+  return (
+    <Grid container={true} spacing={4} columns={12}>
+      {panels.map((panel) => (
+        <Grid key={panel.title} item={true} xs={12} md={panel.w}>
+          <PluginPanel
+            cluster={panel.plugin.cluster}
+            name={panel.plugin.name}
+            type={panel.plugin.type}
+            title={panel.title}
+            description={panel.description}
+            options={panel.plugin.options}
+            times={times}
+          />
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 
@@ -246,7 +294,15 @@ const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => {
                 {row.title}
               </Typography>
             ) : null}
-            {row.panels && row.panels.length > 0 ? <DashboardGrid panels={row.panels} /> : null}
+            {row.panels && row.panels.length > 0 ? (
+              <GridContextProvider autoHeight={row.autoHeight ?? false}>
+                {row.autoHeight ? (
+                  <DashboardGridAutoHeight panels={row.panels} times={times} />
+                ) : (
+                  <DashboardGrid panels={row.panels} times={times} />
+                )}
+              </GridContextProvider>
+            ) : null}
           </Fragment>
         ))}
       </Box>

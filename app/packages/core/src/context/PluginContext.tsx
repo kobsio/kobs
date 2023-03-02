@@ -4,6 +4,8 @@ import { createContext, ReactNode, useContext } from 'react';
 
 import { APIContext } from './APIContext';
 
+import { ITimes } from '../utils/times';
+
 /**
  * `IPluginPageProps` is the interface which defines the properties which are passed to the `page` component of a plugin.
  * Currently this is only the `instance` for which the plugin page should be shown.
@@ -18,9 +20,11 @@ export interface IPluginPageProps {
  * a dashboard (where the panel is displayed).
  */
 export interface IPluginPanelProps {
+  description?: string;
   instance: IPluginInstance;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  times?: any;
+  options?: unknown;
+  times: ITimes;
+  title: string;
 }
 
 /**

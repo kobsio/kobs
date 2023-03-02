@@ -146,7 +146,6 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 	namespaces := r.URL.Query()["namespace"]
 	tags := r.URL.Query()["tag"]
 	searchTerm := r.URL.Query().Get("searchTerm")
-	external := r.URL.Query().Get("external")
 
 	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
 	span.SetAttributes(attribute.Key("all").String(all))
@@ -154,7 +153,6 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
 	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
-	span.SetAttributes(attribute.Key("external").String(external))
 
 	// Check if the user requested to see all applications, if this is the case we have to check if he is alowed to do
 	// so. If a team isn't part of any teams "user.Teams" is "nil" we handle it the same ways as he wants to see all
@@ -172,7 +170,7 @@ func (router *Router) getApplicationsTopology(w http.ResponseWriter, r *http.Req
 		teams = nil
 	}
 
-	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, external, 0, 0)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, 0, 0)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)

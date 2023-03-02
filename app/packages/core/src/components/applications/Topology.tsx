@@ -1,17 +1,16 @@
-import { Box, Button, Theme, useTheme, darken } from '@mui/material';
+import { Box, Theme, useTheme, darken } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
-import { FunctionComponent, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, useCallback, useContext, useEffect, useRef } from 'react';
 
 import ApplicationInsights from './ApplicationsInsights';
-import { IApplicationOptions, IEdge, INode, INodeData, ITopology } from './utils';
+import { IEdge, INode, INodeData } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
 import { useDimensions } from '../../utils/hooks/useDimensions';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
 
 /**
  * `dagreLayout` is the layout for the topology graph.
@@ -108,7 +107,7 @@ interface ITopologyGraphProps {
  * The `selectApplication` is triggered when a user clicks on a node in the topology graph to display the applications
  * insights for this node.
  */
-const TopologyGraph: FunctionComponent<ITopologyGraphProps> = ({ edges, nodes, selectApplication }) => {
+export const TopologyGraph: FunctionComponent<ITopologyGraphProps> = ({ edges, nodes, selectApplication }) => {
   const theme = useTheme();
   const wrapper = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
@@ -223,7 +222,11 @@ interface IApplicationsInsightsWrapperProps {
  * for loading the application with the provided `id`. The loaded application will then be used to display the insights
  * in a drawer via the `ApplicationsInsights` component.
  */
-const ApplicationsInsightsWrapper: FunctionComponent<IApplicationsInsightsWrapperProps> = ({ id, open, onClose }) => {
+export const ApplicationsInsightsWrapper: FunctionComponent<IApplicationsInsightsWrapperProps> = ({
+  id,
+  open,
+  onClose,
+}) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { data } = useQuery<IApplication | undefined, APIError>(['core/applications/application', id], async () => {
@@ -239,73 +242,3 @@ const ApplicationsInsightsWrapper: FunctionComponent<IApplicationsInsightsWrappe
 
   return <ApplicationInsights application={data} open={open} onClose={onClose} />;
 };
-
-/**
- * `ITopologyProps` is the interface for the `Topology` component.
- */
-interface ITopologyProps {
-  options: IApplicationOptions;
-  setOptions: (options: IApplicationOptions) => void;
-}
-
-/**
- * The `Topology` component is responsible for loading the data for the topology graph based on the provided options. If
- * the data was loaded we show the topology graph. If we are not able to load the data we use the `UseQueryWrapper`
- * component to handle all types of errors.
- *
- * The `selectedApplicationID` state is used to show the insights of an application, which can be selected by a user by
- * clicking on the corresponding node in the topology graph.
- */
-const Topology: FunctionComponent<ITopologyProps> = ({ options, setOptions }) => {
-  const [selectedApplicationID, setSelectedApplicationID] = useState<string>();
-  const apiContext = useContext<IAPIContext>(APIContext);
-
-  const { isError, isLoading, error, data, refetch } = useQuery<ITopology, APIError>(
-    ['core/applications/topology', options],
-    async () => {
-      const join = (v: string[] | undefined): string => (v && v.length > 0 ? v.join('') : '');
-
-      const c = join(options.clusters?.map((cluster) => `&cluster=${encodeURIComponent(cluster)}`));
-      const n = join(options.namespaces?.map((namespace) => `&namespace=${encodeURIComponent(namespace)}`));
-      const t = join(options.tags?.map((tag) => `&tag=${encodeURIComponent(tag)}`));
-
-      return apiContext.client.get<ITopology>(
-        `/api/applications/topology?all=${options.all}&searchTerm=${options.searchTerm}${c}${n}${t}`,
-      );
-    },
-  );
-
-  return (
-    <UseQueryWrapper
-      error={error}
-      errorTitle="Failed to load topology data"
-      isError={isError}
-      isLoading={isLoading}
-      isNoData={!data || !data.nodes || data.nodes.length === 0 || !data.edges || data.edges.length === 0}
-      noDataActions={
-        options.all ? undefined : (
-          <Button color="inherit" size="small" onClick={() => setOptions({ ...options, all: true })}>
-            RETRY WITH ALL
-          </Button>
-        )
-      }
-      noDataTitle="No topology data was found"
-      noDataMessage={
-        options.all
-          ? 'No topology data was found for your selected filters.'
-          : 'No topology data was found for your selected filters. You can try to search through all applications to generate the topology data.'
-      }
-      refetch={refetch}
-    >
-      <TopologyGraph edges={data?.edges ?? []} nodes={data?.nodes ?? []} selectApplication={setSelectedApplicationID} />
-
-      <ApplicationsInsightsWrapper
-        id={selectedApplicationID}
-        open={selectedApplicationID !== undefined}
-        onClose={() => setSelectedApplicationID(undefined)}
-      />
-    </UseQueryWrapper>
-  );
-};
-
-export default Topology;

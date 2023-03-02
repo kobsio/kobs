@@ -414,27 +414,24 @@ func TestGetApplicationsByFilter(t *testing.T) {
 		namespaces           []string
 		tags                 []string
 		searchTerm           string
-		external             string
 		limit                int
 		offset               int
 		expectedError        bool
 		expectedApplications []string
 		expectedCount        int
 	}{
-		{name: "searchTerm can not be compiled to regexp", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "*", external: "include", limit: 100, offset: 0, expectedError: true, expectedApplications: nil, expectedCount: 0},
-		{name: "no filters", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10", "application2", "application3", "application4", "application5", "application6", "application7", "application8", "application9"}, expectedCount: 10},
-		{name: "no filters but limit", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", external: "include", limit: 5, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10", "application2", "application3", "application4"}, expectedCount: 10},
-		{name: "no filters but limit and offset", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", external: "include", limit: 5, offset: 5, expectedError: false, expectedApplications: []string{"application5", "application6", "application7", "application8", "application9"}, expectedCount: 10},
-		{name: "only searchTerm", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "application1", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10"}, expectedCount: 2},
-		{name: "filter by team", teams: []string{"team2"}, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application2", "application4"}, expectedCount: 2},
-		{name: "filter by teams", teams: []string{"team1", "team3"}, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application3", "application4", "application6", "application8", "application9"}, expectedCount: 7},
-		{name: "filter by cluster and namespace", teams: nil, clusters: []string{"test-cluster1", "test-cluster2"}, namespaces: []string{"default"}, tags: nil, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application3", "application4", "application5"}, expectedCount: 5},
-		{name: "filter by cluster and namespace but exclude external", teams: nil, clusters: []string{"test-cluster1", "test-cluster2"}, namespaces: []string{"default"}, tags: nil, searchTerm: "", external: "exclude", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application4", "application5"}, expectedCount: 4},
-		{name: "filter by cluster and namespace but onyl external", teams: nil, clusters: []string{"test-cluster1", "test-cluster2"}, namespaces: []string{"default"}, tags: nil, searchTerm: "", external: "only", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application3"}, expectedCount: 1},
-		{name: "filter by tags", teams: nil, clusters: nil, namespaces: nil, tags: []string{"logging"}, searchTerm: "", external: "include", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application10"}, expectedCount: 1},
+		{name: "searchTerm can not be compiled to regexp", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "*", limit: 100, offset: 0, expectedError: true, expectedApplications: nil, expectedCount: 0},
+		{name: "no filters", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10", "application2", "application3", "application4", "application5", "application6", "application7", "application8", "application9"}, expectedCount: 10},
+		{name: "no filters but limit", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", limit: 5, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10", "application2", "application3", "application4"}, expectedCount: 10},
+		{name: "no filters but limit and offset", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", limit: 5, offset: 5, expectedError: false, expectedApplications: []string{"application5", "application6", "application7", "application8", "application9"}, expectedCount: 10},
+		{name: "only searchTerm", teams: nil, clusters: nil, namespaces: nil, tags: nil, searchTerm: "application1", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application10"}, expectedCount: 2},
+		{name: "filter by team", teams: []string{"team2"}, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application2", "application4"}, expectedCount: 2},
+		{name: "filter by teams", teams: []string{"team1", "team3"}, clusters: nil, namespaces: nil, tags: nil, searchTerm: "", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application3", "application4", "application6", "application8", "application9"}, expectedCount: 7},
+		{name: "filter by cluster and namespace", teams: nil, clusters: []string{"test-cluster1", "test-cluster2"}, namespaces: []string{"default"}, tags: nil, searchTerm: "", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application1", "application2", "application3", "application4", "application5"}, expectedCount: 5},
+		{name: "filter by tags", teams: nil, clusters: nil, namespaces: nil, tags: []string{"logging"}, searchTerm: "", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application10"}, expectedCount: 1},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			storedApplications, err := c.GetApplicationsByFilter(context.Background(), tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm, tt.external, tt.limit, tt.offset)
+			storedApplications, err := c.GetApplicationsByFilter(context.Background(), tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm, tt.limit, tt.offset)
 			if tt.expectedError {
 				require.Error(t, err)
 			} else {
@@ -442,13 +439,71 @@ func TestGetApplicationsByFilter(t *testing.T) {
 			}
 			require.Equal(t, tt.expectedApplications, getApplicationsNames(storedApplications))
 
-			count, err := c.GetApplicationsByFilterCount(context.Background(), tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm, tt.external)
+			count, err := c.GetApplicationsByFilterCount(context.Background(), tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm)
 			if tt.expectedError {
 				require.Error(t, err)
 			} else {
 				require.NoError(t, err)
 			}
 			require.Equal(t, tt.expectedCount, count)
+		})
+	}
+}
+
+func TestGetApplicationsByGroup(t *testing.T) {
+	applications1 := []applicationv1.ApplicationSpec{
+		{ID: "1", Cluster: "test-cluster1", Namespace: "default", Name: "application1", Teams: []string{"team1"}},
+		{ID: "2", Cluster: "test-cluster1", Namespace: "default", Name: "application2", Teams: []string{"team1"}},
+		{ID: "3", Cluster: "test-cluster1", Namespace: "kube-system", Name: "application3", Teams: []string{"team1"}},
+		{ID: "4", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application4", Teams: []string{"team1"}},
+	}
+	applications2 := []applicationv1.ApplicationSpec{
+		{ID: "5", Cluster: "test-cluster2", Namespace: "default", Name: "application1", Teams: []string{"team1"}},
+		{ID: "6", Cluster: "test-cluster2", Namespace: "default", Name: "application2", Teams: []string{"team1"}},
+		{ID: "7", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application3", Teams: []string{"team1"}},
+		{ID: "8", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application4", Teams: []string{"team1"}},
+		{ID: "9", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application5", Teams: []string{"team1"}},
+		{ID: "10", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application6", Teams: []string{"team1"}},
+	}
+
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+	c, _ := NewClient(Config{URI: uri})
+
+	err := c.SaveApplications(context.Background(), "test-cluster1", applications1)
+	require.NoError(t, err)
+	err = c.SaveApplications(context.Background(), "test-cluster2", applications2)
+	require.NoError(t, err)
+
+	for _, tt := range []struct {
+		name           string
+		teams          []string
+		groups         []string
+		expectedGroups []ApplicationGroup
+	}{
+		{name: "require groups and teams", teams: nil, groups: nil, expectedGroups: nil},
+		{name: "team must be in group", teams: []string{"team2"}, groups: []string{"name", "namespace"}, expectedGroups: nil},
+		{name: "return groups", teams: []string{"team1"}, groups: []string{"name", "namespace"}, expectedGroups: []ApplicationGroup{
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application1"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application1", "application1"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application2"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application2", "application2"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application3"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application3", "application3"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application4"}, Clusters: []string{"test-cluster2", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application4", "application4"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application5"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application5"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application6"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application6"}, Description: "", Teams: []string{"team1"}},
+		}},
+		{name: "return groups for multiple teams", teams: []string{"team1", "team2"}, groups: []string{"name", "namespace"}, expectedGroups: []ApplicationGroup{
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application1"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application1", "application1"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application2"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application2", "application2"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application3"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application3", "application3"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application4"}, Clusters: []string{"test-cluster2", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application4", "application4"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application5"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application5"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application6"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application6"}, Description: "", Teams: []string{"team1"}},
+		}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			storedGroups, err := c.GetApplicationsByGroup(context.Background(), tt.teams, tt.groups)
+			require.NoError(t, err)
+			require.Equal(t, tt.expectedGroups, storedGroups)
 		})
 	}
 }

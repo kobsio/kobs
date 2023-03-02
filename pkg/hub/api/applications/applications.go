@@ -37,7 +37,6 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	namespaces := r.URL.Query()["namespace"]
 	tags := r.URL.Query()["tag"]
 	searchTerm := r.URL.Query().Get("searchTerm")
-	external := r.URL.Query().Get("external")
 	limit := r.URL.Query().Get("limit")
 	offset := r.URL.Query().Get("offset")
 
@@ -47,7 +46,6 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
 	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
-	span.SetAttributes(attribute.Key("external").String(external))
 	span.SetAttributes(attribute.Key("limit").String(limit))
 	span.SetAttributes(attribute.Key("offset").String(offset))
 
@@ -85,7 +83,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		teams = nil
 	}
 
-	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, external, parsedLimit, parsedOffset)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, parsedLimit, parsedOffset)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
@@ -94,7 +92,7 @@ func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, clusters, namespaces, tags, searchTerm, external)
+	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, clusters, namespaces, tags, searchTerm)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications count", zap.Error(err))
 		span.RecordError(err)
@@ -203,15 +201,20 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if !user.HasTeamAccess(team) && !user.HasApplicationAccess(&applicationv1.ApplicationSpec{}) {
-		log.Warn(ctx, "The user is not authorized to view the applications", zap.String("team", team))
-		span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
-		span.SetStatus(codes.Error, "user is not authorized to view all applications")
-		errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the applications of this team")
-		return
+	teams := user.Teams
+	if team != "" {
+		teams = []string{team}
+
+		if !user.HasTeamAccess(team) && !user.HasApplicationAccess(&applicationv1.ApplicationSpec{}) {
+			log.Warn(ctx, "The user is not authorized to view the applications", zap.String("team", team))
+			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
+			span.SetStatus(codes.Error, "user is not authorized to view all applications")
+			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the applications of this team")
+			return
+		}
 	}
 
-	applications, err := router.dbClient.GetApplicationsByFilter(ctx, []string{team}, nil, nil, nil, "", "include", parsedLimit, parsedOffset)
+	applications, err := router.dbClient.GetApplicationsByFilter(ctx, teams, nil, nil, nil, "", parsedLimit, parsedOffset)
 	if err != nil {
 		log.Error(ctx, "Failed to get applications", zap.Error(err))
 		span.RecordError(err)
@@ -220,7 +223,7 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, []string{team}, nil, nil, nil, "", "include")
+	count, err := router.dbClient.GetApplicationsByFilterCount(ctx, teams, nil, nil, nil, "")
 	if err != nil {
 		log.Error(ctx, "Failed to get applications count", zap.Error(err))
 		span.RecordError(err)
@@ -240,6 +243,39 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, data)
 }
 
+func (router *Router) getApplicationGroups(w http.ResponseWriter, r *http.Request) {
+	ctx, span := router.tracer.Start(r.Context(), "getApplicationGroups")
+	defer span.End()
+
+	user := authContext.MustGetUser(ctx)
+	team := r.URL.Query().Get("team")
+	groups := r.URL.Query()["group"]
+
+	teams := user.Teams
+	if team != "" {
+		teams = []string{team}
+
+		if !user.HasTeamAccess(team) && !user.HasApplicationAccess(&applicationv1.ApplicationSpec{}) {
+			log.Warn(ctx, "The user is not authorized to view the application groups", zap.String("team", team))
+			span.RecordError(fmt.Errorf("user is not authorized to view all applications"))
+			span.SetStatus(codes.Error, "user is not authorized to view all applications")
+			errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to view the application groups")
+			return
+		}
+	}
+
+	applicationsGroups, err := router.dbClient.GetApplicationsByGroup(ctx, teams, groups)
+	if err != nil {
+		log.Error(ctx, "Failed to get application groups", zap.Error(err))
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get application groups")
+		return
+	}
+
+	render.JSON(w, r, applicationsGroups)
+}
+
 func Mount(dbClient db.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
@@ -253,6 +289,7 @@ func Mount(dbClient db.Client) chi.Router {
 	router.Get("/team", router.getApplicationsByTeam)
 	router.Get("/topology", router.getApplicationsTopology)
 	router.Get("/topology/application", router.getApplicationTopology)
+	router.Get("/groups", router.getApplicationGroups)
 
 	return router
 }

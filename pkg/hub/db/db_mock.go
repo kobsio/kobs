@@ -117,33 +117,48 @@ func (mr *MockClientMockRecorder) GetApplications(ctx interface{}) *gomock.Call 
 }
 
 // GetApplicationsByFilter mocks base method.
-func (m *MockClient) GetApplicationsByFilter(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string, limit, offset int) ([]v1.ApplicationSpec, error) {
+func (m *MockClient) GetApplicationsByFilter(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm string, limit, offset int) ([]v1.ApplicationSpec, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetApplicationsByFilter", ctx, teams, clusters, namespaces, tags, searchTerm, external, limit, offset)
+	ret := m.ctrl.Call(m, "GetApplicationsByFilter", ctx, teams, clusters, namespaces, tags, searchTerm, limit, offset)
 	ret0, _ := ret[0].([]v1.ApplicationSpec)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetApplicationsByFilter indicates an expected call of GetApplicationsByFilter.
-func (mr *MockClientMockRecorder) GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, external, limit, offset interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) GetApplicationsByFilter(ctx, teams, clusters, namespaces, tags, searchTerm, limit, offset interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplicationsByFilter", reflect.TypeOf((*MockClient)(nil).GetApplicationsByFilter), ctx, teams, clusters, namespaces, tags, searchTerm, external, limit, offset)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplicationsByFilter", reflect.TypeOf((*MockClient)(nil).GetApplicationsByFilter), ctx, teams, clusters, namespaces, tags, searchTerm, limit, offset)
 }
 
 // GetApplicationsByFilterCount mocks base method.
-func (m *MockClient) GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string) (int, error) {
+func (m *MockClient) GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm string) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetApplicationsByFilterCount", ctx, teams, clusters, namespaces, tags, searchTerm, external)
+	ret := m.ctrl.Call(m, "GetApplicationsByFilterCount", ctx, teams, clusters, namespaces, tags, searchTerm)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetApplicationsByFilterCount indicates an expected call of GetApplicationsByFilterCount.
-func (mr *MockClientMockRecorder) GetApplicationsByFilterCount(ctx, teams, clusters, namespaces, tags, searchTerm, external interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) GetApplicationsByFilterCount(ctx, teams, clusters, namespaces, tags, searchTerm interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplicationsByFilterCount", reflect.TypeOf((*MockClient)(nil).GetApplicationsByFilterCount), ctx, teams, clusters, namespaces, tags, searchTerm, external)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplicationsByFilterCount", reflect.TypeOf((*MockClient)(nil).GetApplicationsByFilterCount), ctx, teams, clusters, namespaces, tags, searchTerm)
+}
+
+// GetApplicationsByGroup mocks base method.
+func (m *MockClient) GetApplicationsByGroup(ctx context.Context, teams, groups []string) ([]ApplicationGroup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetApplicationsByGroup", ctx, teams, groups)
+	ret0, _ := ret[0].([]ApplicationGroup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetApplicationsByGroup indicates an expected call of GetApplicationsByGroup.
+func (mr *MockClientMockRecorder) GetApplicationsByGroup(ctx, teams, groups interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplicationsByGroup", reflect.TypeOf((*MockClient)(nil).GetApplicationsByGroup), ctx, teams, groups)
 }
 
 // GetCRDByID mocks base method.
