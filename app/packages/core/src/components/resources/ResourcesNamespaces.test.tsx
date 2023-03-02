@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import ResourcesNamespaces from './ResourcesNamespaces';
 
 import { APIClient, APIContext } from '../../context/APIContext';
-import QueryClientProvider from '../../context/QueryClientProvider';
+import { QueryClientProvider } from '../../context/QueryClientProvider';
 
 describe('ResourcesNamespaces', () => {
   const render = async (

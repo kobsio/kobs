@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { ITopology } from '../../crds/application';
 import { PluginPanel, PluginPanelError } from '../utils/PluginPanel';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 /**
  * `generateLinks` generates the links to all applications in the provided `application` based on the provided `groups`,

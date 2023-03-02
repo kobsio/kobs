@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { IReference } from '../../crds/dashboard';
 import Dashboards from '../dashboards/Dashboards';
-import Page from '../utils/Page';
+import { Page } from '../utils/Page';
 
 interface IPage {
   dashboards: IReference[];

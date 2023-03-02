@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 
-import Page from './Page';
+import { Page } from './Page';
 
 describe('Page', () => {
   it('should render title and children', async () => {

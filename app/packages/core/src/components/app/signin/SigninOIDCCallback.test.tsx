@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import SigninOIDCCallback from './SigninOIDCCallback';
 
 import { APIClient, APIContext, APIError } from '../../../context/APIContext';
-import QueryClientProvider from '../../../context/QueryClientProvider';
+import { QueryClientProvider } from '../../../context/QueryClientProvider';
 
 describe('SigninOIDCCallback', () => {
   const apiClient = new APIClient();

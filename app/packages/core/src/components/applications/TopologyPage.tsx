@@ -7,9 +7,9 @@ import { ApplicationsInsightsWrapper, TopologyGraph } from './Topology';
 import { IApplicationOptions, ITopology } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
-import useQueryState from '../../utils/hooks/useQueryState';
-import Page from '../utils/Page';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { useQueryState } from '../../utils/hooks/useQueryState';
+import { Page } from '../utils/Page';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 /**
  * `ITopologyÜageInternalProps` is the interface for the `Topology` component.

@@ -18,9 +18,9 @@ import { FormEvent, FunctionComponent, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IPluginInstance, PluginContext } from '../../context/PluginContext';
-import useQueryState from '../../utils/hooks/useQueryState';
-import Page from '../utils/Page';
-import Pagination from '../utils/Pagination';
+import { useQueryState } from '../../utils/hooks/useQueryState';
+import { Page } from '../utils/Page';
+import { Pagination } from '../utils/Pagination';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;

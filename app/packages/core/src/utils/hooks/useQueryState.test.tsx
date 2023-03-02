@@ -4,7 +4,7 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import type { MemoryRouterProps } from 'react-router-dom';
 
-import useQueryState from './useQueryState';
+import { useQueryState } from './useQueryState';
 
 describe('useQueryState', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

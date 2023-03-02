@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 import Teams from './Teams';
 import { ITeamOptions } from './utils';
 
-import useQueryState from '../../utils/hooks/useQueryState';
-import Page from '../utils/Page';
+import { useQueryState } from '../../utils/hooks/useQueryState';
+import { Page } from '../utils/Page';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
 
 /**

@@ -19,7 +19,7 @@ interface IDetailsDrawerProps {
  * It is also possible to set a title, subtitle and some action which will be displayed on the left of the close button.
  * Therefor a action should be a `IconButton` where the `edge` property is set to `end`.
  */
-const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
+export const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
   actions,
   children,
   onClose,
@@ -68,5 +68,3 @@ const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
     </Drawer>
   );
 };
-
-export default DetailsDrawer;

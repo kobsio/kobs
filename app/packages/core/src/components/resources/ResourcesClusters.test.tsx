@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import ResourcesClusters from './ResourcesClusters';
 
 import { APIClient, APIContext } from '../../context/APIContext';
-import QueryClientProvider from '../../context/QueryClientProvider';
+import { QueryClientProvider } from '../../context/QueryClientProvider';
 
 describe('ResourcesClusters', () => {
   const render = async (
