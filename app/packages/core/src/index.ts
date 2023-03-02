@@ -6,6 +6,8 @@ export * from './components/utils/Pagination';
 export * from './components/utils/PluginPanel';
 export * from './components/utils/Toolbar';
 export * from './components/utils/UseQueryWrapper';
+export * from './components/utils/Options';
+export * from './utils/times';
 
 export * from './context/APIContext';
 export * from './context/AppContext';

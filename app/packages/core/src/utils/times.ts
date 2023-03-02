@@ -20,6 +20,8 @@ export type TTime =
   | 'last7Days'
   | 'last90Days';
 
+export type TTimeQuick = Exclude<TTime, 'custom'>;
+
 /**
  * `ITimes` is the interface for handling times in kobs. Each time object must have a `time` of type `TTime` and a
  * start and end time. The start and end time is a unix timestamp in seconds.
@@ -34,7 +36,7 @@ export interface ITimes {
  * `times` is an array with all valid options for the `TTime` type. It can be used to validate user provided input, so
  * that we are save that the input matchs the `TTime` type.
  */
-export const times = [
+export const times: TTime[] = [
   'custom',
   'last12Hours',
   'last15Minutes',
@@ -57,12 +59,13 @@ export const times = [
  * The `label` key can be used to show a prettified text for the selected time option, while the `seconds` key is used
  * to calculate the start time based on the selected time (the end time always defaults to now).
  */
-export const timeOptions: {
-  [key: string]: {
+export const timeOptions: Record<
+  TTimeQuick,
+  {
     label: string;
     seconds: number;
-  };
-} = {
+  }
+> = {
   last12Hours: { label: 'Last 12 Hours', seconds: 43200 },
   last15Minutes: { label: 'Last 15 Minutes', seconds: 900 },
   last1Day: { label: 'Last 1 Day', seconds: 86400 },
@@ -120,9 +123,9 @@ export const formatTime = (timestamp: number): string => {
 export const getTimeParams = (
   params: URLSearchParams,
   isInitial: boolean,
-  defaultTime: TTime = 'last15Minutes',
+  defaultTime: TTimeQuick = 'last15Minutes',
 ): ITimes => {
-  const time = params.get('time');
+  const time = params.get('time') as TTime | undefined;
   const timeEnd = params.get('timeEnd');
   const timeStart = params.get('timeStart');
 
