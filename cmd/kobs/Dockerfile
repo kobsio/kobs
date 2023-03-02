@@ -1,6 +1,7 @@
 FROM node:18.14.1 as app
 WORKDIR /kobs
 COPY app /kobs/
+RUN npm config set fetch-timeout 3600000
 RUN npm clean-install
 RUN npm run build
 

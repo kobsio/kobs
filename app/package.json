@@ -12,7 +12,7 @@
     "analyze": "lerna run analyze",
     "build": "lerna run build",
     "preview": "lerna run preview",
-    "lint": "eslint 'packages/*/src/**/*.{js,ts,tsx}'",
+    "lint": "lerna run lint",
     "test": "lerna run test",
     "test:coverage": "lerna run test:coverage"
   },
