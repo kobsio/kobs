@@ -70,6 +70,8 @@ spec:
                       type: string
                     description:
                       type: string
+                    if:
+                      type: string
                     panels:
                       items:
                         properties:
