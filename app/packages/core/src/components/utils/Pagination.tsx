@@ -17,7 +17,13 @@ interface IPaginationProps {
  * The `Pagination` component can be used to show a pagination within another component. It will show a list of pages
  * and a select box to select the items per page.
  */
-const Pagination: FunctionComponent<IPaginationProps> = ({ handleChange, count, page, perPage, size = 'medium' }) => {
+export const Pagination: FunctionComponent<IPaginationProps> = ({
+  handleChange,
+  count,
+  page,
+  perPage,
+  size = 'medium',
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -101,5 +107,3 @@ const Pagination: FunctionComponent<IPaginationProps> = ({ handleChange, count, 
     </Stack>
   );
 };
-
-export default Pagination;

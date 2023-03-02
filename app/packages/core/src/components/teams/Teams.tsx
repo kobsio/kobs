@@ -18,8 +18,8 @@ import { ITeamOptions } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { ITeam } from '../../crds/team';
-import Pagination from '../utils/Pagination';
-import UseQueryWrapper from '../utils/UseQueryWrapper';
+import { Pagination } from '../utils/Pagination';
+import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
 interface ITeamProps {
   team: ITeam;

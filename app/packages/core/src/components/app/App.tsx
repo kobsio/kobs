@@ -11,7 +11,7 @@ import SigninOIDCCallback from './signin/SigninOIDCCallback';
 import { APIContextProvider, APIContext, IAPIContext, APIError, IAPIUser } from '../../context/APIContext';
 import { AppContextProvider, IAppIcons } from '../../context/AppContext';
 import { PluginContextProvider, IPlugin } from '../../context/PluginContext';
-import QueryClientProvider from '../../context/QueryClientProvider';
+import { QueryClientProvider } from '../../context/QueryClientProvider';
 import theme from '../../utils/theme';
 import ApplicationPage from '../applications/ApplicationPage';
 import ApplicationsPage from '../applications/ApplicationsPage';

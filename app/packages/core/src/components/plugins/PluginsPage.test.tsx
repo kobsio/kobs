@@ -8,7 +8,7 @@ import PluginsPage from './PluginsPage';
 
 import { APIClient, APIContext } from '../../context/APIContext';
 import { PluginContextProvider, IPluginInstance } from '../../context/PluginContext';
-import QueryClientProvider from '../../context/QueryClientProvider';
+import { QueryClientProvider } from '../../context/QueryClientProvider';
 
 describe('PluginsPage', () => {
   const render = async (instances: IPluginInstance[], children?: ReactNode): Promise<RenderResult> => {

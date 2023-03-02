@@ -29,10 +29,8 @@ interface IQueryClientProviderProps {
  * The `QueryClientProvider` components wraps the `InternalQueryClientProvider` component from the `react-query` package
  * to apply our app wide `queryClientOptions`.
  */
-const QueryClientProvider: FunctionComponent<IQueryClientProviderProps> = ({ children }) => {
+export const QueryClientProvider: FunctionComponent<IQueryClientProviderProps> = ({ children }) => {
   const queryClient = new QueryClient(queryClientOptions);
 
   return <InternalQueryClientProvider client={queryClient}>{children}</InternalQueryClientProvider>;
 };
-
-export default QueryClientProvider;

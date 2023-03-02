@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-import UseQueryWrapper from './UseQueryWrapper';
+import { UseQueryWrapper } from './UseQueryWrapper';
 
 import { APIError } from '../../context/APIContext';
 

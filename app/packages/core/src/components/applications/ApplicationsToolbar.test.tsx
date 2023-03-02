@@ -6,7 +6,7 @@ import ApplicationsToolbar from './ApplicationsToolbar';
 import { IApplicationOptions } from './utils';
 
 import { APIClient, APIContext } from '../../context/APIContext';
-import QueryClientProvider from '../../context/QueryClientProvider';
+import { QueryClientProvider } from '../../context/QueryClientProvider';
 
 describe('ApplicationsToolbar', () => {
   const render = async (
