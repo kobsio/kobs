@@ -83,7 +83,7 @@ const TeamsPage: FunctionComponent = () => {
         </Button>
       }
     >
-      <Teams options={options} setOptions={setOptions} />
+      <Teams isPanel={false} options={options} setOptions={setOptions} />
     </Page>
   );
 };

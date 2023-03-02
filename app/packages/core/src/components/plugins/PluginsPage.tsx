@@ -178,8 +178,6 @@ const PluginsPage: FunctionComponent = () => {
         </Grid>
       </Grid>
 
-      <Box my={6}></Box>
-
       <Pagination
         page={options.page}
         perPage={options.perPage}

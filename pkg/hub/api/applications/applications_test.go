@@ -75,7 +75,7 @@ func TestGetApplications(t *testing.T) {
 
 	t.Run("should handle error from db client for applications", func(t *testing.T) {
 		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get applications"))
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get applications"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
@@ -91,13 +91,13 @@ func TestGetApplications(t *testing.T) {
 
 	t.Run("should handle error from db client for count", func(t *testing.T) {
 		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{
 			{
 				Name:      "foo",
 				Namespace: "bar",
 			},
 		}, nil)
-		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get applications count"))
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get applications count"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
@@ -113,13 +113,13 @@ func TestGetApplications(t *testing.T) {
 
 	t.Run("should return all applications", func(t *testing.T) {
 		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{
 			{
 				Name:      "foo",
 				Namespace: "bar",
 			},
 		}, nil)
-		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(1, nil)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(1, nil)
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, chi.RouteCtxKey, chi.NewRouteContext())
@@ -299,7 +299,7 @@ func TestGetApplicationsByTeam(t *testing.T) {
 
 	t.Run("should handle error from db client", func(t *testing.T) {
 		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get applications"))
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("could not get applications"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
@@ -313,8 +313,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 
 	t.Run("should handle error from db client for applications count", func(t *testing.T) {
 		dbClient, router := newRouter(t)
-		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
-		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get applications count"))
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(0, fmt.Errorf("could not get applications count"))
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
@@ -333,8 +333,8 @@ func TestGetApplicationsByTeam(t *testing.T) {
 			Namespace: "namespace1",
 			Teams:     []string{"team1"},
 		}
-		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{application}, nil)
-		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(20, nil)
+		dbClient.EXPECT().GetApplicationsByFilter(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]applicationv1.ApplicationSpec{application}, nil)
+		dbClient.EXPECT().GetApplicationsByFilterCount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(20, nil)
 
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Permissions: userv1.Permissions{Applications: []userv1.ApplicationPermissions{{Type: "all"}}}})
@@ -353,6 +353,72 @@ func TestGetApplicationsByTeam(t *testing.T) {
 				}]
 			}`, application.Cluster, application.Namespace, application.Teams[0]),
 		)
+	})
+}
+
+func TestGetApplicationGroups(t *testing.T) {
+	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
+
+		return dbClient, router
+	}
+
+	t.Run("should handle authorization error", func(t *testing.T) {
+		_, router := newRouter(t)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Teams: []string{"team1"}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/groups?team=team1&group=group1&group=group2", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationGroups(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusForbidden)
+		utils.AssertJSONEq(t, w, `{"errors": ["You are not allowed to view the application groups"]}`)
+	})
+
+	t.Run("should handle error from db client", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		dbClient.EXPECT().GetApplicationsByGroup(gomock.Any(), []string{"team1"}, []string{"group1", "group2"}).Return(nil, fmt.Errorf("could not get groups"))
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Teams: []string{"team1"}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/groups?group=group1&group=group2", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationGroups(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get application groups"]}`)
+	})
+
+	t.Run("should return application groups", func(t *testing.T) {
+		dbClient, router := newRouter(t)
+		applicationsGroups := []db.ApplicationGroup{{
+			ID: db.ApplicationGroupID{
+				Name:      "name1",
+				Namespace: "namespace1",
+			},
+			Clusters: []string{"cluster1", "cluster2"},
+		}}
+		dbClient.EXPECT().GetApplicationsByGroup(gomock.Any(), []string{"team1"}, []string{"group1", "group2"}).Return(applicationsGroups, nil)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, authContext.UserKey, authContext.User{Teams: []string{"team1"}})
+		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/groups?group=group1&group=group2", nil)
+		w := httptest.NewRecorder()
+		router.getApplicationGroups(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `[{
+			"id": {
+				"namespace": "namespace1",
+				"name": "name1"
+			},
+			"clusters": ["cluster1", "cluster2"],
+			"description": "",
+			"topology": {}
+		}]`)
 	})
 }
 

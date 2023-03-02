@@ -48,8 +48,9 @@ type Client interface {
 	GetCRDs(ctx context.Context) ([]kubernetes.CRD, error)
 	GetCRDByID(ctx context.Context, id string) (*kubernetes.CRD, error)
 	GetApplications(ctx context.Context) ([]applicationv1.ApplicationSpec, error)
-	GetApplicationsByFilter(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
-	GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string) (int, error)
+	GetApplicationsByFilter(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm string, limit, offset int) ([]applicationv1.ApplicationSpec, error)
+	GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm string) (int, error)
+	GetApplicationsByGroup(ctx context.Context, teams, groups []string) ([]ApplicationGroup, error)
 	GetApplicationByID(ctx context.Context, id string) (*applicationv1.ApplicationSpec, error)
 	GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error)
 	GetDashboardByID(ctx context.Context, id string) (*dashboardv1.DashboardSpec, error)
@@ -547,14 +548,13 @@ func (c *client) GetApplications(ctx context.Context) ([]applicationv1.Applicati
 	return applications, nil
 }
 
-func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
+func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm string, limit, offset int) ([]applicationv1.ApplicationSpec, error) {
 	_, span := c.tracer.Start(ctx, "db.GetApplicationsByFilter")
 	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
 	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
 	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
 	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
-	span.SetAttributes(attribute.Key("external").String(external))
 	span.SetAttributes(attribute.Key("limit").Int(limit))
 	span.SetAttributes(attribute.Key("offset").Int(offset))
 	defer span.End()
@@ -582,12 +582,6 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, n
 		filter["tags"] = bson.M{"$in": tags}
 	}
 
-	if external == "exclude" {
-		filter["topology.external"] = bson.M{"$eq": false}
-	} else if external == "only" {
-		filter["topology.external"] = bson.M{"$eq": true}
-	}
-
 	var applications []applicationv1.ApplicationSpec
 
 	cursor, err := c.db.Database("kobs").Collection("applications").Find(ctx, filter, options.Find().SetSort(bson.M{"name": 1}).SetLimit(int64(limit)).SetSkip(int64(offset)))
@@ -607,14 +601,13 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, n
 	return applications, nil
 }
 
-func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm, external string) (int, error) {
+func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm string) (int, error) {
 	_, span := c.tracer.Start(ctx, "db.GetApplicationsByFilterCount")
 	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
 	span.SetAttributes(attribute.Key("clusters").StringSlice(clusters))
 	span.SetAttributes(attribute.Key("namespaces").StringSlice(namespaces))
 	span.SetAttributes(attribute.Key("tags").StringSlice(tags))
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
-	span.SetAttributes(attribute.Key("external").String(external))
 	defer span.End()
 
 	var filter bson.M
@@ -640,12 +633,6 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 		filter["tags"] = bson.M{"$in": tags}
 	}
 
-	if external == "exclude" {
-		filter["topology.external"] = bson.M{"$eq": false}
-	} else if external == "only" {
-		filter["topology.external"] = bson.M{"$eq": true}
-	}
-
 	count, err := c.db.Database("kobs").Collection("applications").CountDocuments(ctx, filter)
 	if err != nil {
 		span.RecordError(err)
@@ -654,6 +641,57 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 	}
 
 	return int(count), nil
+}
+
+func (c *client) GetApplicationsByGroup(ctx context.Context, teams, groups []string) ([]ApplicationGroup, error) {
+	if len(teams) == 0 || len(groups) == 0 {
+		return nil, nil
+	}
+
+	_, span := c.tracer.Start(ctx, "db.GetApplicationsByGroup")
+	span.SetAttributes(attribute.Key("teams").StringSlice(teams))
+	span.SetAttributes(attribute.Key("groups").StringSlice(groups))
+	defer span.End()
+
+	var mongoGroups bson.D
+	for _, group := range groups {
+		mongoGroups = append(mongoGroups, bson.E{Key: group, Value: fmt.Sprintf("$%s", group)})
+	}
+
+	var applications []ApplicationGroup
+
+	cursor, err := c.db.Database("kobs").Collection("applications").Aggregate(ctx, mongo.Pipeline{
+		bson.D{{Key: "$match", Value: bson.D{{Key: "teams", Value: bson.D{{Key: "$in", Value: teams}}}}}},
+		bson.D{
+			{Key: "$group",
+				Value: bson.D{
+					{Key: "_id", Value: mongoGroups},
+					{Key: "clusters", Value: bson.D{{Key: "$push", Value: "$cluster"}}},
+					{Key: "namespaces", Value: bson.D{{Key: "$push", Value: "$namespace"}}},
+					{Key: "names", Value: bson.D{{Key: "$push", Value: "$name"}}},
+					{Key: "description", Value: bson.D{{Key: "$first", Value: "$description"}}},
+					{Key: "tags", Value: bson.D{{Key: "$first", Value: "$tags"}}},
+					{Key: "teams", Value: bson.D{{Key: "$first", Value: "$teams"}}},
+					{Key: "dependencies", Value: bson.D{{Key: "$first", Value: "$dependencies"}}},
+				},
+			},
+		},
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+	})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	err = cursor.All(ctx, &applications)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	return applications, nil
 }
 
 func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicationv1.ApplicationSpec, error) {

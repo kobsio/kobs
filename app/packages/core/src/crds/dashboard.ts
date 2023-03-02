@@ -29,6 +29,7 @@ export interface IVariable {
 }
 
 export interface IRow {
+  autoHeight?: boolean;
   description?: string;
   panels?: IPanel[];
   title?: string;

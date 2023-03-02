@@ -52,6 +52,8 @@ spec:
                         rows:
                           items:
                             properties:
+                              autoHeight:
+                                type: string
                               description:
                                 type: string
                               panels:

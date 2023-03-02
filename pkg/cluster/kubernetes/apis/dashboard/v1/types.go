@@ -59,6 +59,7 @@ type Variable struct {
 type Row struct {
 	Title       string  `json:"title,omitempty" bson:"title"`
 	Description string  `json:"description,omitempty" bson:"description"`
+	AutoHeight  string  `json:"autoHeight,omitempty" bson:"autoHeight"`
 	Panels      []Panel `json:"panels" bson:"panels"`
 }
 

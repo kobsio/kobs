@@ -1,7 +1,6 @@
 import { People } from '@mui/icons-material';
 import {
   Avatar,
-  Box,
   Button,
   darken,
   Divider,
@@ -62,6 +61,7 @@ const Team: FunctionComponent<ITeamProps> = ({ team }) => {
 };
 
 interface ITeamsProps {
+  isPanel: boolean;
   options: ITeamOptions;
   setOptions: (options: ITeamOptions) => void;
 }
@@ -71,7 +71,7 @@ interface ITeamsProps {
  * list of teams the list will be rendered via the `Team` component. We always load all teams, but to improve the
  * render performance returned teams are paginated.
  */
-const Teams: FunctionComponent<ITeamsProps> = ({ options, setOptions }) => {
+const Teams: FunctionComponent<ITeamsProps> = ({ isPanel, options, setOptions }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<ITeam[], APIError>(
@@ -110,11 +110,15 @@ const Teams: FunctionComponent<ITeamsProps> = ({ options, setOptions }) => {
         {data?.slice((page - 1) * perPage, page * perPage).map((team, index) => (
           <Fragment key={team.id}>
             <Team team={team} />
-            {index + 1 !== data?.length && <Divider variant="inset" component="li" />}
+            {isPanel ? (
+              <Divider variant="inset" component="li" />
+            ) : index + 1 !== data?.length ? (
+              <Divider variant="inset" component="li" />
+            ) : null}
           </Fragment>
         ))}
       </List>
-      <Box my={6}></Box>
+
       <Pagination
         count={data?.length ?? 0}
         page={options.page ?? 1}

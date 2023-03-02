@@ -79,7 +79,7 @@ const Pagination: FunctionComponent<IPaginationProps> = ({ handleChange, count, 
   }
 
   return (
-    <Stack direction="row" justifyContent="flex-end" minWidth="100%" spacing={4}>
+    <Stack direction="row" justifyContent="flex-end" minWidth="100%" spacing={4} pt={6}>
       <Button color="inherit" endIcon={<KeyboardArrowDown />} onClick={handleOpen}>
         {firstIndex} - {lastIndex} of {count}
       </Button>
