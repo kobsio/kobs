@@ -16,6 +16,7 @@
   "scripts": {
     "analyze": "source-map-explorer 'dist/**/*.js' --no-border-checks",
     "build": "tsc && vite build",
+    "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"

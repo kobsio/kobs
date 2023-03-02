@@ -94,7 +94,7 @@ jobs:
 
       - name: Lint
         run: |
-          npm run lint
+          npm run lint --workspace=@kobsio/${{ matrix.plugin }}
 
       - name: Test
         run: |
@@ -106,3 +106,13 @@ jobs:
           flags: node-${{ matrix.plugin }}
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: app/packages/${{ matrix.plugin }}/coverage
+
+      - name: Build (App)
+        if: ${{ matrix.plugin == 'app' }}
+        run: |
+          npm run build
+
+      - name: Build (Plugin)
+        if: ${{ matrix.plugin != 'app' }}
+        run: |
+          npm run build --workspace=@kobsio/${{ matrix.plugin }}
