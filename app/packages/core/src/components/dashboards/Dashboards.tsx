@@ -212,10 +212,7 @@ const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const [times, setTimes] = useState<ITimes>({
-    time:
-      dashboard.defaultTime && dashboard.defaultTime in timeOptions
-        ? (dashboard.defaultTime as TTime)
-        : 'last15Minutes',
+    time: dashboard.defaultTime && dashboard.defaultTime in timeOptions ? dashboard.defaultTime : 'last15Minutes',
     timeEnd: Math.floor(Date.now() / 1000),
     timeStart:
       Math.floor(Date.now() / 1000) -
