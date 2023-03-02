@@ -21,7 +21,7 @@ import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { GridContextProvider } from '../../context/GridContext';
 import { IDashboard, IPanel, IReference, IRow, IVariableValues } from '../../crds/dashboard';
 import useQueryState from '../../utils/hooks/useQueryState';
-import { ITimes, timeOptions, times as defaultTimes, TTime } from '../../utils/times';
+import { ITimes, timeOptions, times as defaultTimes } from '../../utils/times';
 import PluginPanel from '../plugins/PluginPanel';
 import { IOptionsAdditionalFields, Options } from '../utils/Options';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
