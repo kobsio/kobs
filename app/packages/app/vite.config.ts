@@ -6,13 +6,17 @@ import { defineConfig } from 'vite';
 export default defineConfig(({ command, mode, ssrBuild }) => {
   let resolve = undefined;
 
-  // For development we have to set an alias for all packages, to get hot reloading working.
+  // For development we have to set an alias for all packages, to get hot reloading working. Since we also have to
+  // import .css files in the app packages main.tsx file we only allow alphanumberic characters and hyphens as a valid
+  // package name.
+  //
+  // See: https://vitejs.dev/config/shared-options.html#resolve-alias
   if (command === 'serve') {
     resolve = {
       alias: [
         {
-          find: /^@kobsio\/(.*)/,
-          replacement: './../../$1/src/index.ts',
+          find: /^@kobsio\/([a-zA-Z0-9-]*)$/,
+          replacement: __dirname + '/../$1/src/index.ts',
         },
       ],
     };

@@ -93,6 +93,8 @@ tty: true`);
             value={debugContainer}
             onChange={(value) => setDebugContainer(value ?? '')}
             readOnly={false}
+            minimap={true}
+            lineNumbers={true}
           />
         </Box>
       </DialogContent>
