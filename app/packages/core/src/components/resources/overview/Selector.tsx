@@ -11,7 +11,7 @@ interface ISelectorProps {
   selector: V1LabelSelector;
 }
 
-const Selector: FunctionComponent<ISelectorProps> = ({ cluster, namespace, selector }: ISelectorProps) => {
+const Selector: FunctionComponent<ISelectorProps> = ({ cluster, namespace, selector }) => {
   return (
     <DescriptionListGroup>
       <DescriptionListTerm>Selector</DescriptionListTerm>

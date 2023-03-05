@@ -29,7 +29,7 @@ const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamespacesPro
   selectedNamespaces,
   selectedClusters,
   selectNamespaces,
-}: IResourcesSelectNamespacesProps) => {
+}) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, data } = useQuery<string[], Error>(['core/namespaces', selectedClusters], async () => {

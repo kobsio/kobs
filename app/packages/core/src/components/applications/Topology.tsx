@@ -116,8 +116,8 @@ export const TopologyGraph: FunctionComponent<ITopologyGraphProps> = ({ edges, n
   const size = useDimensions(wrapper);
 
   const onTap = useCallback(
-    (event: cytoscape.EventObject): void => {
-      const node = event.target;
+    (e: cytoscape.EventObject): void => {
+      const node = e.target;
       const data: INodeData = node.data();
 
       if (data.id) {

@@ -118,7 +118,7 @@ const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
 
   return (
     <ErrorBoundary
-      fallbackRender={({ error }): React.ReactElement => (
+      fallbackRender={({ error }) => (
         <PluginPanelInternal title={title} description={description}>
           <Alert severity="error">
             <AlertTitle>An unexpected error occured while rendering the plugin</AlertTitle>

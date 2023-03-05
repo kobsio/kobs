@@ -1,6 +1,6 @@
 import { HubOutlined, InsightsOutlined, PeopleOutlined } from '@mui/icons-material';
 import { Box, Chip, IconButton, ListItem, ListItemText, Typography } from '@mui/material';
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import ApplicationInsights from './ApplicationsInsights';
@@ -31,7 +31,7 @@ const Application: FunctionComponent<IApplicationProps> = ({ application }) => {
    * `e.preventDefault()` because the button which uses this function is rendered inside a React Router `Link` and
    * without this the link would be triggered.
    */
-  const showInsights = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const showInsights = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOpen(true);
   };

@@ -16,7 +16,7 @@ interface IHeaderProps {
  * The `Header` component renders the `AppBar` of the app. We only show the header on small screens, because on large
  * screens the sidebar is always visible and the header is only used to toggle the sidebar.
  */
-const Header: FunctionComponent<IHeaderProps> = ({ handleDrawerToggle }: IHeaderProps) => {
+const Header: FunctionComponent<IHeaderProps> = ({ handleDrawerToggle }) => {
   const theme = useTheme<ITheme>();
 
   return (

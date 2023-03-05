@@ -415,7 +415,7 @@ interface IPodProps {
  * This also includes the containers of the Pod and the resource usage of these containers. For that we have to make an
  * API call against the Kubernetes API to get the actual resource usage of the containers.
  */
-const Pod: FunctionComponent<IPodProps> = ({ cluster, namespace, name, pod }: IPodProps) => {
+const Pod: FunctionComponent<IPodProps> = ({ cluster, namespace, name, pod }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const phase = pod.status && pod.status.phase ? pod.status.phase : 'Unknown';

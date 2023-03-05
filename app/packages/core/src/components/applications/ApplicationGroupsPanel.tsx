@@ -1,7 +1,7 @@
 import { HubOutlined, PeopleOutlined } from '@mui/icons-material';
 import { Box, Divider, List, Chip, ListItem, ListItemText, Typography, Button, Menu, MenuItem } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { Fragment, FunctionComponent, useContext, useState } from 'react';
+import { Fragment, FunctionComponent, MouseEvent, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
@@ -135,8 +135,8 @@ const ApplicationGroup: FunctionComponent<IApplicationGroupProps> = ({ groups, a
    * `handleOpen` opens the menu, which is used to display the links to the application in the different environments.
    * The menu can then be closed via the `handleClose` function.
    */
-  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpen = (e: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
   };
 
   /**

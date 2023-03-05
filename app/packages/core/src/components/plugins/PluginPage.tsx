@@ -30,7 +30,7 @@ const PluginPage: FunctionComponent = () => {
 
   return (
     <ErrorBoundary
-      fallbackRender={({ error }): React.ReactElement => (
+      fallbackRender={({ error }) => (
         <Alert severity="error">
           <AlertTitle>An unexpected error occured while rendering the plugin</AlertTitle>
           {error.message}

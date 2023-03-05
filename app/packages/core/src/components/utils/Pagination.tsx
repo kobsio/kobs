@@ -30,8 +30,8 @@ export const Pagination: FunctionComponent<IPaginationProps> = ({
   /**
    * `handleOpen` opens the menu to select the items per page.
    */
-  const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpen = (e: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
   };
 
   /**

@@ -35,10 +35,7 @@ interface IApplicationsToolbarTagsProps {
  * The `ApplicationsToolbarTags` component is used to render a select box, where the user can select a list of tags, to
  * filter the list of applications. The component is also responsible for loading all available tags from our API.
  */
-const ApplicationsToolbarTags: FunctionComponent<IApplicationsToolbarTagsProps> = ({
-  selectedTags,
-  selectTags,
-}: IApplicationsToolbarTagsProps) => {
+const ApplicationsToolbarTags: FunctionComponent<IApplicationsToolbarTagsProps> = ({ selectedTags, selectTags }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, data } = useQuery<string[], Error>(['core/applications/tags'], async () => {

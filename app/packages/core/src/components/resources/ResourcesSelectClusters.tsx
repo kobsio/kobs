@@ -24,7 +24,7 @@ interface IResourcesSelectClustersProps {
 const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClustersProps> = ({
   selectedClusters,
   selectClusters,
-}: IResourcesSelectClustersProps) => {
+}) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, data } = useQuery<string[], Error>(['core/clusters'], async () => {

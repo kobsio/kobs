@@ -13,7 +13,7 @@ interface IDaemonSetProps {
   namespace: string;
 }
 
-const DaemonSet: FunctionComponent<IDaemonSetProps> = ({ cluster, namespace, daemonSet }: IDaemonSetProps) => {
+const DaemonSet: FunctionComponent<IDaemonSetProps> = ({ cluster, namespace, daemonSet }) => {
   return (
     <>
       <DescriptionListGroup>

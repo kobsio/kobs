@@ -38,7 +38,7 @@ export const UseQueryWrapper: FunctionComponent<IUseQueryWrapperProps> = ({
   noDataMessage,
   noDataTitle,
   refetch,
-}: IUseQueryWrapperProps) => {
+}) => {
   if (isLoading) {
     return (
       <Box minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
