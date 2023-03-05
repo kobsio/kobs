@@ -1,12 +1,11 @@
 import { Divider, List } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { Fragment, FunctionComponent, useContext } from 'react';
+import { Fragment, FunctionComponent, useContext, useState } from 'react';
 
 import Application from './Application';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
-import { useQueryState } from '../../utils/hooks/useQueryState';
 import { Pagination } from '../utils/Pagination';
 import { PluginPanel } from '../utils/PluginPanel';
 import { UseQueryWrapper } from '../utils/UseQueryWrapper';
@@ -25,7 +24,7 @@ interface IApplicationsPanelProps {
  */
 const ApplicationsPanel: FunctionComponent<IApplicationsPanelProps> = ({ title, description, options }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
-  const [internalOptions, setInternalOptions] = useQueryState<{ page: number; perPage: number }>({
+  const [internalOptions, setInternalOptions] = useState<{ page: number; perPage: number }>({
     page: 1,
     perPage: 10,
   });

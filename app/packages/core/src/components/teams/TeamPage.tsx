@@ -72,7 +72,6 @@ const TeamPage: FunctionComponent = () => {
         {data?.dashboards && data.dashboards.length > 0 ? (
           <Dashboards manifest={data} references={data?.dashboards} />
         ) : null}
-        <Box>TODO: Show Dashboards</Box>
       </Page>
     </UseQueryWrapper>
   );
