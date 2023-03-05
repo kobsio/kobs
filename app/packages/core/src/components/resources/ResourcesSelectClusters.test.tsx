@@ -1,6 +1,5 @@
 import { render as _render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 import { vi } from 'vitest';
 
 import ResourcesSelectClusters from './ResourcesSelectClusters';
@@ -64,5 +63,35 @@ describe('ResourcesSelectClusters', () => {
 
     expect(selectCluster).toHaveBeenCalledTimes(1);
     expect(selectCluster).toHaveBeenCalledWith(['cluster1']);
+  });
+
+  it('should select all clusters', async () => {
+    const selectCluster = vi.fn();
+
+    await render(['cluster1', 'cluster2'], [], selectCluster);
+
+    const clustersInput = screen.getByLabelText('Clusters');
+    await userEvent.type(clustersInput, 'cluster');
+
+    const cluster1Option = screen.getByRole('option', { name: 'Select all' });
+    await userEvent.click(cluster1Option);
+
+    expect(selectCluster).toHaveBeenCalledTimes(1);
+    expect(selectCluster).toHaveBeenCalledWith(['cluster1', 'cluster2']);
+  });
+
+  it('should unselect all clusters', async () => {
+    const selectCluster = vi.fn();
+
+    await render(['cluster1', 'cluster2'], ['cluster1', 'cluster2'], selectCluster);
+
+    const clustersInput = screen.getByLabelText('Clusters');
+    await userEvent.type(clustersInput, 'cluster');
+
+    const cluster1Option = screen.getByRole('option', { name: 'Select all' });
+    await userEvent.click(cluster1Option);
+
+    expect(selectCluster).toHaveBeenCalledTimes(1);
+    expect(selectCluster).toHaveBeenCalledWith([]);
   });
 });
