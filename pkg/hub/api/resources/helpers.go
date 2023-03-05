@@ -1,4 +1,4 @@
-package shared
+package resources
 
 import (
 	"strings"
@@ -22,7 +22,7 @@ var resources = []Resource{
 		ID:          "cronjobs",
 		Description: "A CronJob creates Jobs on a repeating schedule.",
 		IsCRD:       false,
-		Path:        "/apis/batch/v1beta1",
+		Path:        "/apis/batch/v1",
 		Resource:    "cronjobs",
 		Scope:       "Namespaced",
 		Title:       "CronJobs",
@@ -94,7 +94,7 @@ var resources = []Resource{
 		ID:          "horizontalpodautoscalers",
 		Description: "",
 		IsCRD:       false,
-		Path:        "/apis/autoscaling/v2beta1",
+		Path:        "/apis/autoscaling/v2",
 		Resource:    "horizontalpodautoscalers",
 		Scope:       "Namespaced",
 		Title:       "HorizontalPodAutoscalers",
@@ -103,7 +103,7 @@ var resources = []Resource{
 		ID:          "ingresses",
 		Description: "",
 		IsCRD:       false,
-		Path:        "/apis/extensions/v1beta1",
+		Path:        "/apis/networking.k8s.io/v1",
 		Resource:    "ingresses",
 		Scope:       "Namespaced",
 		Title:       "Ingresses",
@@ -157,7 +157,7 @@ var resources = []Resource{
 		ID:          "poddisruptionbudgets",
 		Description: "",
 		IsCRD:       false,
-		Path:        "/apis/policy/v1beta1",
+		Path:        "/apis/policy/v1",
 		Resource:    "poddisruptionbudgets",
 		Scope:       "Namespaced",
 		Title:       "PodDisruptionBudgets",
@@ -252,15 +252,6 @@ var resources = []Resource{
 		Scope:       "Cluster",
 		Title:       "Nodes",
 	},
-	{
-		ID:          "podsecuritypolicies",
-		Description: "",
-		IsCRD:       false,
-		Path:        "/apis/policy/v1beta1",
-		Resource:    "podsecuritypolicies",
-		Scope:       "Cluster",
-		Title:       "PodSecurityPolicies",
-	},
 }
 
 func GetResources(crds []kubernetes.CRD) []Resource {
@@ -291,7 +282,7 @@ func CRDToResource(crd kubernetes.CRD) Resource {
 	}
 }
 
-func GetResourceByID(id string) Resource {
+func GetResource(id string) Resource {
 	for _, resource := range resources {
 		if id == resource.ID {
 			return resource

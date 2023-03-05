@@ -101,7 +101,7 @@ func TestHasResourceAccess(t *testing.T) {
 		{user: User{ID: "user15@kobs.io", Permissions: userv1.Permissions{Resources: []userv1.Resources{{Clusters: []string{"cluster2"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}}, {Clusters: []string{"cluster1"}, Namespaces: []string{"*"}, Resources: []string{"resource1"}, Verbs: []string{"patch"}}}}}, expectedHasAccess: false},
 	} {
 		t.Run(tt.user.ID, func(t *testing.T) {
-			actualHasAccess := tt.user.HasResourceAccess("test-satellite1", "cluster1", "namespace1", "resource1", "get")
+			actualHasAccess := tt.user.HasResourceAccess("cluster1", "namespace1", "resource1", "get")
 			require.Equal(t, tt.expectedHasAccess, actualHasAccess)
 		})
 	}

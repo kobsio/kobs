@@ -15,8 +15,8 @@ import { useContext, FunctionComponent, useState, FormEvent, useEffect } from 'r
 import { IApplicationOptions } from './utils';
 
 import { APIContext, IAPIContext } from '../../context/APIContext';
-import ResourcesClusters from '../resources/ResourcesClusters';
-import ResourcesNamespaces from '../resources/ResourcesNamespaces';
+import ResourcesSelectClusters from '../resources/ResourcesSelectClusters';
+import ResourcesSelectNamespaces from '../resources/ResourcesSelectNamespaces';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
@@ -143,13 +143,13 @@ const ApplicationsToolbar: FunctionComponent<IApplicationsToolbarProps> = ({ opt
         </Box>
       </ToolbarItem>
       <ToolbarItem width="200px">
-        <ResourcesClusters
+        <ResourcesSelectClusters
           selectedClusters={options.clusters ?? []}
           selectClusters={(clusters) => handleChange('clusters', clusters)}
         />
       </ToolbarItem>
       <ToolbarItem width="200px">
-        <ResourcesNamespaces
+        <ResourcesSelectNamespaces
           selectedClusters={options.clusters ?? []}
           selectedNamespaces={options.namespaces ?? []}
           selectNamespaces={(namespaces) => handleChange('namespaces', namespaces)}

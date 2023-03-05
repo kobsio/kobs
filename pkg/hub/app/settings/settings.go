@@ -12,6 +12,21 @@ import (
 type Settings struct {
 	DefaultNavigation []userv1.Navigation     `json:"defaultNavigation"`
 	DefaultDashboards []dashboardv1.Reference `json:"defaultDashboards"`
+	Integrations      Integrations            `json:"integrations"`
+}
+
+type Integrations struct {
+	ResourcesIntegrations ResourcesIntegrations `json:"resources"`
+}
+
+type ResourcesIntegrations struct {
+	Dashboards []Dashboard `json:"dashboards"`
+}
+
+type Dashboard struct {
+	Resource  string                `json:"resource"`
+	Labels    map[string]string     `json:"labels"`
+	Dashboard dashboardv1.Reference `json:"dashboard"`
 }
 
 // convertNavigation converts the page in a navigation item to a link and removes the page property from the object, so
@@ -56,4 +71,16 @@ func (s *Settings) GetDashboards(user *userv1.UserSpec) []dashboardv1.Reference 
 		return user.Dashboards
 	}
 	return s.DefaultDashboards
+}
+
+func (s *Settings) GetDashboardsFromResourcesIntegrations(resource string) []Dashboard {
+	var dashboards []Dashboard
+
+	for _, dashboard := range s.Integrations.ResourcesIntegrations.Dashboards {
+		if dashboard.Resource == resource {
+			dashboards = append(dashboards, dashboard)
+		}
+	}
+
+	return dashboards
 }

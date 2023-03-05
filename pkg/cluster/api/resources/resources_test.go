@@ -129,7 +129,7 @@ func TestPatchResource(t *testing.T) {
 		require.NoError(t, err)
 
 		kubernetesClient := newKubernetesClient(t)
-		kubernetesClient.EXPECT().PatchResource(gomock.Any(), namespace, name, path, resource, patchJSON).Return(nil)
+		kubernetesClient.EXPECT().PatchResource(gomock.Any(), namespace, name, path, resource, "", patchJSON).Return(nil)
 
 		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.patchResource)
@@ -160,7 +160,7 @@ func TestPatchResource(t *testing.T) {
 
 	t.Run("should handle Kubernetes client error", func(t *testing.T) {
 		kubernetesClient := newKubernetesClient(t)
-		kubernetesClient.EXPECT().PatchResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
+		kubernetesClient.EXPECT().PatchResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.patchResource)
 
@@ -272,7 +272,6 @@ func TestCreateResource(t *testing.T) {
 		namespace := "garden"
 		name := "apple"
 		resource := "fruit"
-		subResource := "subfruit"
 		path := "path"
 		create := `
 			{
@@ -296,12 +295,12 @@ func TestCreateResource(t *testing.T) {
 			}`
 
 		kubernetesClient := newKubernetesClient(t)
-		kubernetesClient.EXPECT().CreateResource(gomock.Any(), namespace, name, path, resource, subResource, []byte(create)).Return(nil)
+		kubernetesClient.EXPECT().CreateResource(gomock.Any(), namespace, name, path, resource, []byte(create)).Return(nil)
 
 		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.createResource)
 
-		requestURI := fmt.Sprintf("/resources?namespace=%s&name=%s&path=%s&resource=%s&subResource=%s", namespace, name, path, resource, subResource)
+		requestURI := fmt.Sprintf("/resources?namespace=%s&name=%s&path=%s&resource=%s", namespace, name, path, resource)
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, requestURI, strings.NewReader(create))
 		w := httptest.NewRecorder()
 
@@ -327,7 +326,7 @@ func TestCreateResource(t *testing.T) {
 
 	t.Run("should handle Kubernetes client error", func(t *testing.T) {
 		kubernetesClient := newKubernetesClient(t)
-		kubernetesClient.EXPECT().CreateResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
+		kubernetesClient.EXPECT().CreateResource(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 		router := Router{chi.NewRouter(), kubernetesClient, defaultTracer}
 		router.Get("/resources", router.createResource)
 

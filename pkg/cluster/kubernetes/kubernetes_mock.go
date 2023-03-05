@@ -72,17 +72,17 @@ func (mr *MockClientMockRecorder) CopyFileToPod(ctx, namespace, name, container,
 }
 
 // CreateResource mocks base method.
-func (m *MockClient) CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
+func (m *MockClient) CreateResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateResource", ctx, namespace, name, path, resource, subResource, body)
+	ret := m.ctrl.Call(m, "CreateResource", ctx, namespace, name, path, resource, body)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CreateResource indicates an expected call of CreateResource.
-func (mr *MockClientMockRecorder) CreateResource(ctx, namespace, name, path, resource, subResource, body interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) CreateResource(ctx, namespace, name, path, resource, body interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateResource", reflect.TypeOf((*MockClient)(nil).CreateResource), ctx, namespace, name, path, resource, subResource, body)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateResource", reflect.TypeOf((*MockClient)(nil).CreateResource), ctx, namespace, name, path, resource, body)
 }
 
 // DeleteResource mocks base method.
@@ -309,17 +309,17 @@ func (mr *MockClientMockRecorder) GetUsers(ctx, cluster, namespace interface{}) 
 }
 
 // PatchResource mocks base method.
-func (m *MockClient) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
+func (m *MockClient) PatchResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PatchResource", ctx, namespace, name, path, resource, body)
+	ret := m.ctrl.Call(m, "PatchResource", ctx, namespace, name, path, resource, subResource, body)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // PatchResource indicates an expected call of PatchResource.
-func (mr *MockClientMockRecorder) PatchResource(ctx, namespace, name, path, resource, body interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) PatchResource(ctx, namespace, name, path, resource, subResource, body interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PatchResource", reflect.TypeOf((*MockClient)(nil).PatchResource), ctx, namespace, name, path, resource, body)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PatchResource", reflect.TypeOf((*MockClient)(nil).PatchResource), ctx, namespace, name, path, resource, subResource, body)
 }
 
 // StreamLogs mocks base method.

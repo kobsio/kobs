@@ -1,4 +1,4 @@
-import { createContext, ReactNode } from 'react';
+import { FunctionComponent, createContext, ReactNode } from 'react';
 
 import { IReference } from '../crds/dashboard';
 import { IPermissions, INavigation } from '../crds/user';
@@ -60,7 +60,7 @@ export class APIClient implements IAPIClient {
    * we return a generic `APIError`. If the request succeeds we return the returned json document or undefined if the
    * response code is 204 (no content).
    */
-  private async do(path: string, method: 'get' | 'post' | 'put' | 'patch', opts?: RequestOptions): Promise<unknown> {
+  private async do(path: string, method: 'get' | 'post' | 'put' | 'delete', opts?: RequestOptions): Promise<unknown> {
     try {
       const res = await fetch(path, { ...opts, body: JSON.stringify(opts?.body), method: method });
 
@@ -113,7 +113,7 @@ export class APIClient implements IAPIClient {
    * `delete` can be used to execute a delete request against our APi.
    */
   delete<T>(path: string, opts?: RequestOptions): Promise<T> {
-    return this.do(path, 'patch', opts) as Promise<T>;
+    return this.do(path, 'delete', opts) as Promise<T>;
   }
 
   /**
@@ -206,7 +206,7 @@ interface IAPIContextProviderProps {
 /**
  * `APIContextProvider` is a provider component that allows us comsuming components to subscribe to the context changes.
  */
-export const APIContextProvider: React.FunctionComponent<IAPIContextProviderProps> = ({
+export const APIContextProvider: FunctionComponent<IAPIContextProviderProps> = ({
   children,
 }: IAPIContextProviderProps) => {
   const client = new APIClient();

@@ -84,7 +84,7 @@ func (u *User) HasPluginAccess(cluster, pluginType, pluginName string) bool {
 }
 
 // HasResourceAccess checks if the user has access to the given resource in the given cluster and namespace.
-func (u *User) HasResourceAccess(satellite, cluster, namespace, name, verb string) bool {
+func (u *User) HasResourceAccess(cluster, namespace, name, verb string) bool {
 	for _, resource := range u.Permissions.Resources {
 		for _, c := range resource.Clusters {
 			if c == cluster || c == "*" {

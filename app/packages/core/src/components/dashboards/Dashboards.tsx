@@ -390,8 +390,18 @@ const Dashboards: FunctionComponent<IDashboardsProps> = ({ manifest, references 
             </Tabs>
           </Box>
           {data?.map((dashboard) => (
-            <Box key={dashboard.title} hidden={dashboard.title !== selectedDashboard.title} sx={{ pt: 6 }}>
-              {dashboard.title === selectedDashboard.title && <Dashboard key={dashboard.title} dashboard={dashboard} />}
+            <Box
+              key={dashboard.title}
+              hidden={
+                selectedDashboard.title
+                  ? dashboard.title !== selectedDashboard.title
+                  : dashboard.title !== data[0].title
+              }
+              sx={{ pt: 6 }}
+            >
+              {(selectedDashboard.title
+                ? dashboard.title === selectedDashboard.title
+                : dashboard.title === data[0].title) && <Dashboard key={dashboard.title} dashboard={dashboard} />}
             </Box>
           ))}
         </>

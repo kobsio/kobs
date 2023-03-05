@@ -64,6 +64,13 @@ const components: Components<Omit<Theme, 'components'>> = {
       },
     },
   },
+  MuiTableCell: {
+    styleOverrides: {
+      root: {
+        borderColor: 'rgba(255, 255, 255, 0.12)',
+      },
+    },
+  },
 };
 
 /**

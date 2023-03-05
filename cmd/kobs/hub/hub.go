@@ -87,7 +87,7 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		return err
 	}
 
-	apiServer, err := api.New(cfg.Hub.API, authClient, clustersClient, dbClient, pluginsClient)
+	apiServer, err := api.New(cfg.Hub.API, cfg.Hub.App.Settings, authClient, clustersClient, dbClient, pluginsClient)
 	if err != nil {
 		log.Error(nil, "Could not create client server", zap.Error(err))
 		return err

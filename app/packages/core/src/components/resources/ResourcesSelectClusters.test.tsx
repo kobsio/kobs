@@ -3,12 +3,12 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { vi } from 'vitest';
 
-import ResourcesClusters from './ResourcesClusters';
+import ResourcesSelectClusters from './ResourcesSelectClusters';
 
 import { APIClient, APIContext } from '../../context/APIContext';
 import { QueryClientProvider } from '../../context/QueryClientProvider';
 
-describe('ResourcesClusters', () => {
+describe('ResourcesSelectClusters', () => {
   const render = async (
     clusters: string[],
     selectedClusters: string[],
@@ -21,7 +21,7 @@ describe('ResourcesClusters', () => {
     const result = _render(
       <QueryClientProvider>
         <APIContext.Provider value={{ client: client, getUser: () => undefined }}>
-          <ResourcesClusters selectClusters={selectClusters} selectedClusters={selectedClusters} />
+          <ResourcesSelectClusters selectClusters={selectClusters} selectedClusters={selectedClusters} />
         </APIContext.Provider>
       </QueryClientProvider>,
     );

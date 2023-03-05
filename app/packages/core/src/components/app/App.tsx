@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { ReactNode, useContext } from 'react';
+import { FunctionComponent, ReactNode, useContext } from 'react';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Home from './Home';
@@ -19,6 +19,9 @@ import TopologyPage from '../applications/TopologyPage';
 import DashboardsPage from '../dashboards/DashboardsPage';
 import PluginPage from '../plugins/PluginPage';
 import PluginsPage from '../plugins/PluginsPage';
+import ResourcesLogsPage from '../resources/ResourcesLogsPage';
+import ResourcesPage from '../resources/ResourcesPage';
+import ResourcesTerminalPage from '../resources/ResourcesTerminalPage';
 import TeamPage from '../teams/TeamPage';
 import TeamsPage from '../teams/TeamsPage';
 
@@ -36,7 +39,7 @@ interface IAuthWrapper {
  * returns the authenticated user. If we can not get a user within the `auth` method and our API returns a unauthorized
  * error we automatically redirecting the user to the sign in page.
  */
-const AuthWrapper: React.FunctionComponent<IAuthWrapper> = ({ children }: IAuthWrapper) => {
+const AuthWrapper: FunctionComponent<IAuthWrapper> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const apiContext = useContext<IAPIContext>(APIContext);
@@ -93,7 +96,7 @@ interface IAppProps {
  * The `App` component defines, defines all the contexts and routes we are using in our app. The `App` component is also
  * responsible for defining our layout and registering the theme.
  */
-export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IAppProps) => {
+export const App: FunctionComponent<IAppProps> = ({ icons, plugins }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -121,6 +124,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ icons, plugins }: IApp
                             <Route path="/teams" element={<TeamsPage />} />
                             <Route path="/teams/:id" element={<TeamPage />} />
                             <Route path="/dashboards/:page" element={<DashboardsPage />} />
+                            <Route path="/resources" element={<ResourcesPage />} />
+                            <Route path="/resources/logs" element={<ResourcesLogsPage />} />
+                            <Route path="/resources/terminal" element={<ResourcesTerminalPage />} />
                             <Route path="/plugins" element={<PluginsPage />} />
                             <Route path="/plugins/:cluster/:type/:name" element={<PluginPage />} />
                           </Routes>

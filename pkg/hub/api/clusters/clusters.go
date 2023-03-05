@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/kobsio/kobs/pkg/hub/api/shared"
+	"github.com/kobsio/kobs/pkg/hub/api/resources"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/instrument/log"
@@ -65,7 +65,7 @@ func (router *Router) getResources(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, shared.GetResources(crds))
+	render.JSON(w, r, resources.GetResources(crds))
 }
 
 func Mount(dbClient db.Client, clusterClient clusters.Client) chi.Router {
