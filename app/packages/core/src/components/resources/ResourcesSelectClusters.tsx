@@ -9,22 +9,22 @@ const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
 
 /**
- * `IResourcesClustersProps` is the interface for the `ResourcesClusters` component, which requires a list of clusters
- * and a function to change the selected clusters.
+ * `IResourcesSelectClustersProps` is the interface for the `ResourcesSelectClusters` component, which requires a list
+ * of clusters and a function to change the selected clusters.
  */
-interface IResourcesClustersProps {
+interface IResourcesSelectClustersProps {
   selectClusters: (clusters: string[]) => void;
   selectedClusters: string[];
 }
 
 /**
- * The `ResourcesClusters` renders a select box, which allows a user to select a list of clusters, to filter the shown
- * resources on a page. The component is also responsible for loading the clusters from our API.
+ * The `ResourcesSelectClusters` renders a select box, which allows a user to select a list of clusters, to filter the
+ * shown resources on a page. The component is also responsible for loading the clusters from our API.
  */
-const ResourcesClusters: FunctionComponent<IResourcesClustersProps> = ({
+const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClustersProps> = ({
   selectedClusters,
   selectClusters,
-}: IResourcesClustersProps) => {
+}: IResourcesSelectClustersProps) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, data } = useQuery<string[], Error>(['core/clusters'], async () => {
@@ -53,4 +53,4 @@ const ResourcesClusters: FunctionComponent<IResourcesClustersProps> = ({
   );
 };
 
-export default ResourcesClusters;
+export default ResourcesSelectClusters;

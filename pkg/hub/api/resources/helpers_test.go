@@ -1,4 +1,4 @@
-package shared
+package resources
 
 import (
 	"testing"
@@ -32,13 +32,13 @@ func TestGetResources(t *testing.T) {
 	})
 }
 
-func TestGetResourceByID(t *testing.T) {
+func TestGetResource(t *testing.T) {
 	t.Run("can get by id", func(t *testing.T) {
 		target := resources[0]
-		require.Equal(t, target, GetResourceByID(target.ID))
+		require.Equal(t, target, GetResource(target.ID))
 	})
 
 	t.Run("returns empty resource, when not found", func(t *testing.T) {
-		require.Equal(t, Resource{}, GetResourceByID("this doesnt exist"))
+		require.Equal(t, Resource{}, GetResource("this doesnt exist"))
 	})
 }

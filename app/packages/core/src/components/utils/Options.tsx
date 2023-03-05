@@ -17,7 +17,7 @@ import {
   Stack,
   ButtonGroup,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 
 import { ToolbarItem } from './Toolbar';
 
@@ -58,13 +58,13 @@ interface IOptionsProps {
  * time range or to trigger the search. It will show a `Dialog` with all available time range options and an optional
  * list of `additionalFields`.
  */
-export const Options: React.FunctionComponent<IOptionsProps> = ({
+export const Options: FunctionComponent<IOptionsProps> = ({
   times,
   additionalFields,
   showOptions,
   showSearchButton,
   setOptions,
-}: IOptionsProps) => {
+}) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -202,13 +202,13 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
       {showOptions && (
         <>
           {showSearchButton ? (
-            <Button variant="contained" color="primary" size="small" onClick={() => setShow(true)}>
+            <Button variant="contained" color="primary" onClick={() => setShow(true)}>
               {times.time === 'custom'
                 ? `${formatTime(times.timeStart)} to ${formatTime(times.timeEnd)}`
                 : timeOptions[times.time].label}
             </Button>
           ) : (
-            <ButtonGroup variant="contained" color="primary" size="small">
+            <ButtonGroup variant="contained" color="primary">
               <Button onClick={() => setShow(true)}>
                 {times.time === 'custom'
                   ? `${formatTime(times.timeStart)} to ${formatTime(times.timeEnd)}`
@@ -221,7 +221,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
           )}
 
           <Dialog open={show} onClose={() => setShow(false)} fullScreen={fullScreen} maxWidth="md">
-            <DialogTitle id="responsive-dialog-title">Options</DialogTitle>
+            <DialogTitle>Options</DialogTitle>
             <DialogContent>
               <Stack direction={{ md: 'row', xs: 'column' }} minWidth="100%" spacing={6}>
                 <Stack direction="column" spacing={6} sx={{ py: '8px' }}>
@@ -331,14 +331,7 @@ export const Options: React.FunctionComponent<IOptionsProps> = ({
         </>
       )}
       {showSearchButton && (
-        <Button
-          sx={{ ml: 3 }}
-          variant="contained"
-          color="primary"
-          size="small"
-          startIcon={<Search />}
-          onClick={refreshTimes}
-        >
+        <Button sx={{ ml: 3 }} variant="contained" color="primary" startIcon={<Search />} onClick={refreshTimes}>
           Search
         </Button>
       )}

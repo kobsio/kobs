@@ -129,6 +129,7 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 	resource := r.URL.Query().Get("resource")
+	subResource := r.URL.Query().Get("subResource")
 	path := r.URL.Query().Get("path")
 
 	ctx, span := router.tracer.Start(r.Context(), "patchResource")
@@ -137,7 +138,7 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 	span.SetAttributes(attribute.Key("name").String(name))
 	span.SetAttributes(attribute.Key("resource").String(resource))
 	span.SetAttributes(attribute.Key("path").String(path))
-	log.Debug(ctx, "Patch resource", zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource), zap.String("path", path))
+	log.Debug(ctx, "Patch resource", zap.String("namespace", namespace), zap.String("name", name), zap.String("resource", resource), zap.String("subResource", subResource), zap.String("path", path))
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -148,7 +149,7 @@ func (router *Router) patchResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = router.kubernetesClient.PatchResource(ctx, namespace, name, path, resource, body)
+	err = router.kubernetesClient.PatchResource(ctx, namespace, name, path, resource, subResource, body)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -166,7 +167,6 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 	namespace := r.URL.Query().Get("namespace")
 	name := r.URL.Query().Get("name")
 	resource := r.URL.Query().Get("resource")
-	subResource := r.URL.Query().Get("subResource")
 	path := r.URL.Query().Get("path")
 
 	ctx, span := router.tracer.Start(r.Context(), "createResource")
@@ -175,7 +175,7 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 	span.SetAttributes(attribute.Key("name").String(name))
 	span.SetAttributes(attribute.Key("resource").String(resource))
 	span.SetAttributes(attribute.Key("path").String(path))
-	log.Debug(ctx, "Create resource", zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
+	log.Debug(ctx, "Create resource", zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -186,7 +186,7 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = router.kubernetesClient.CreateResource(ctx, namespace, name, path, resource, subResource, body)
+	err = router.kubernetesClient.CreateResource(ctx, namespace, name, path, resource, body)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())

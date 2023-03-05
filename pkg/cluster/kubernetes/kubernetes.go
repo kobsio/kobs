@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"sort"
 	"strings"
 
 	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
@@ -43,6 +44,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/version"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
@@ -59,8 +61,8 @@ type Client interface {
 	GetNamespaces(ctx context.Context) ([]string, error)
 	GetResources(ctx context.Context, namespace, name, path, resource, paramName, param string) ([]byte, error)
 	DeleteResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
-	PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
-	CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error
+	PatchResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error
+	CreateResource(ctx context.Context, namespace, name, path, resource string, body []byte) error
 	GetLogs(ctx context.Context, namespace, name, container, regex string, since, tail int64, previous bool) (string, error)
 	StreamLogs(ctx context.Context, conn *websocket.Conn, namespace, name, container string, since, tail int64, follow bool) error
 	GetTerminal(ctx context.Context, conn *websocket.Conn, namespace, name, container, shell string) error
@@ -226,15 +228,27 @@ func (c *client) DeleteResource(ctx context.Context, namespace, name, path, reso
 
 // PatchResource can be used to edit the given resource. The resource is identified by the Kubernetes API path and the
 // name of the resource.
-func (c *client) PatchResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
+func (c *client) PatchResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
 	ctx, span := c.tracer.Start(ctx, "cluster.PatchResource")
 	span.SetAttributes(attribute.Key("namespace").String(namespace))
 	span.SetAttributes(attribute.Key("name").String(name))
 	span.SetAttributes(attribute.Key("path").String(path))
 	span.SetAttributes(attribute.Key("resource").String(resource))
+	span.SetAttributes(attribute.Key("subResource").String(subResource))
 	defer span.End()
 
-	_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
+	if subResource != "" {
+		_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).SubResource(subResource).Body(body).DoRaw(ctx)
+		if err != nil {
+			log.Error(ctx, "Could not patch resources", zap.Error(err), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
+			span.RecordError(err)
+			span.SetStatus(codes.Error, err.Error())
+			return err
+		}
+		return nil
+	}
+
+	_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).SubResource("ephemeralcontainers").Body(body).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not patch resources", zap.Error(err), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		span.RecordError(err)
@@ -247,28 +261,15 @@ func (c *client) PatchResource(ctx context.Context, namespace, name, path, resou
 
 // CreateResource can be used to create the given resource. The resource is identified by the Kubernetes API path and the
 // name of the resource.
-func (c *client) CreateResource(ctx context.Context, namespace, name, path, resource, subResource string, body []byte) error {
+func (c *client) CreateResource(ctx context.Context, namespace, name, path, resource string, body []byte) error {
 	ctx, span := c.tracer.Start(ctx, "cluster.CreateResource")
 	span.SetAttributes(attribute.Key("namespace").String(namespace))
 	span.SetAttributes(attribute.Key("name").String(name))
 	span.SetAttributes(attribute.Key("path").String(path))
 	span.SetAttributes(attribute.Key("resource").String(resource))
-	span.SetAttributes(attribute.Key("subResource").String(subResource))
 	defer span.End()
 
-	if name != "" && subResource != "" {
-		_, err := c.clientset.CoreV1().RESTClient().Put().AbsPath(path).Namespace(namespace).Name(name).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
-		if err != nil {
-			log.Error(ctx, "Could not create resources", zap.Error(err), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
-			span.RecordError(err)
-			span.SetStatus(codes.Error, err.Error())
-			return err
-		}
-
-		return nil
-	}
-
-	_, err := c.clientset.CoreV1().RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).SubResource(subResource).Body(body).DoRaw(ctx)
+	_, err := c.clientset.CoreV1().RESTClient().Post().AbsPath(path).Namespace(namespace).Resource(resource).Body(body).DoRaw(ctx)
 	if err != nil {
 		log.Error(ctx, "Could not create resources", zap.Error(err), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
 		span.RecordError(err)
@@ -672,15 +673,19 @@ func (c *client) GetCRDs(ctx context.Context) ([]CRD, error) {
 	var crds []CRD
 
 	for _, crd := range crdList.Items {
-		for _, version := range crd.Spec.Versions {
+		if len(crd.Spec.Versions) > 0 {
+			sort.Slice(crd.Spec.Versions, func(i, j int) bool {
+				return version.CompareKubeAwareVersionStrings(crd.Spec.Versions[i].Name, crd.Spec.Versions[j].Name) > 0
+			})
+
 			var description string
-			if version.Schema != nil && version.Schema.OpenAPIV3Schema != nil {
-				description = version.Schema.OpenAPIV3Schema.Description
+			if crd.Spec.Versions[0].Schema != nil && crd.Spec.Versions[0].Schema.OpenAPIV3Schema != nil {
+				description = crd.Spec.Versions[0].Schema.OpenAPIV3Schema.Description
 			}
 
 			var columns []CRDColumn
-			if version.AdditionalPrinterColumns != nil {
-				for _, column := range version.AdditionalPrinterColumns {
+			if crd.Spec.Versions[0].AdditionalPrinterColumns != nil {
+				for _, column := range crd.Spec.Versions[0].AdditionalPrinterColumns {
 					if column.Priority == 0 {
 						columns = append(columns, CRDColumn{
 							Description: column.Description,
@@ -693,8 +698,8 @@ func (c *client) GetCRDs(ctx context.Context) ([]CRD, error) {
 			}
 
 			crds = append(crds, CRD{
-				ID:          fmt.Sprintf("%s.%s/%s", crd.Spec.Names.Plural, crd.Spec.Group, version.Name),
-				Path:        fmt.Sprintf("/apis/%s/%s", crd.Spec.Group, version.Name),
+				ID:          fmt.Sprintf("%s.%s", crd.Spec.Names.Plural, crd.Spec.Group),
+				Path:        fmt.Sprintf("/apis/%s/%s", crd.Spec.Group, crd.Spec.Versions[0].Name),
 				Resource:    crd.Spec.Names.Plural,
 				Title:       crd.Spec.Names.Kind,
 				Description: description,

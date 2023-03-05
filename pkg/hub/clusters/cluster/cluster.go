@@ -162,7 +162,7 @@ func (c *client) Request(ctx context.Context, method, url string, body io.Reader
 	span.SetAttributes(attribute.Key("url").String(url))
 	defer span.End()
 
-	res, err := doRequest[map[string]any](ctx, c.httpClient, c.config.Token, method, url, body)
+	res, err := doRequest[map[string]any](ctx, c.httpClient, c.config.Token, method, c.config.Address+url, body)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())

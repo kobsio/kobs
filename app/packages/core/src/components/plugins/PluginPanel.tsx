@@ -8,6 +8,7 @@ import ApplicationGroupsPanel from '../applications/ApplicationGroupsPanel';
 import ApplicationsPanel from '../applications/ApplicationsPanel';
 import TopologyPanel from '../applications/TopologyPanel';
 import DashboardsPanel from '../dashboards/DashboardsPanel';
+import ResourcesPanel from '../resources/ResourcesPanel';
 import TeamsPanel from '../teams/TeamsPanel';
 import { PluginPanel as PluginPanelInternal, PluginPanelError } from '../utils/PluginPanel';
 
@@ -34,14 +35,7 @@ interface ICorePanelProps {
  * - `dashboards`: Render a list of links to dashboard pages
  * - `resources`: Render a list of Kubernetes resources
  */
-const CorePanel: React.FunctionComponent<ICorePanelProps> = ({
-  cluster,
-  name,
-  title,
-  description,
-  options,
-  times,
-}: ICorePanelProps) => {
+const CorePanel: FunctionComponent<ICorePanelProps> = ({ cluster, name, title, description, options, times }) => {
   if (name === 'applications') {
     return <ApplicationsPanel title={title} description={description} options={options} />;
   }
@@ -66,6 +60,7 @@ const CorePanel: React.FunctionComponent<ICorePanelProps> = ({
   }
 
   if (name === 'resources') {
+    return <ResourcesPanel title={title} description={description} options={options} times={times} />;
   }
 
   return (

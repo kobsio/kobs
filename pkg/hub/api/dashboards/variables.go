@@ -2,7 +2,6 @@ package dashboards
 
 import (
 	"encoding/json"
-	"fmt"
 
 	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 
@@ -14,8 +13,6 @@ func addPlaceholdersAsVariables(placeholders []dashboardv1.Placeholder, variable
 	var newVariables []dashboardv1.Variable
 
 	for _, placeholder := range placeholders {
-		fmt.Println(placeholder.Default, placeholder.Type)
-
 		placeholderValue := placeholder.Default
 		if val, ok := placeholderValues[placeholder.Name]; ok {
 			placeholderValue = val

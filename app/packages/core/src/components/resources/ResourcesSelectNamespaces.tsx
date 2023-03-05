@@ -9,27 +9,27 @@ const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
 
 /**
- * `IResourcesNamespacesProps` is the interface for the `ResourcesNamespaces` component, which requires a list of
- * clusters, namespaces and a function to change the selected list of namespaces.
- * and a function to change the selected clusters.
+ * `IResourcesSelectNamespacesProps` is the interface for the `ResourcesSelectNamespaces` component, which requires a
+ * list of clusters, namespaces and a function to change the selected list of namespaces. and a function to change the
+ * selected clusters.
  */
-interface IResourcesNamespacesProps {
+interface IResourcesSelectNamespacesProps {
   selectNamespaces: (namespaces: string[]) => void;
   selectedClusters: string[];
   selectedNamespaces: string[];
 }
 
 /**
- * The `ResourcesNamespaces` renders a select box, which allows a user to select a list of namespaces, to filter the
- * shown resources on a page. The component is also responsible for loading the namespaces from our API. To load the
+ * The `ResourcesSelectNamespaces` renders a select box, which allows a user to select a list of namespaces, to filter
+ * the shown resources on a page. The component is also responsible for loading the namespaces from our API. To load the
  * namespaces from our API we also need a list of namespaces, so that we can only show the namespaces which are relevant
  * for the list of selected clusters.
  */
-const ResourcesNamespaces: FunctionComponent<IResourcesNamespacesProps> = ({
+const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamespacesProps> = ({
   selectedNamespaces,
   selectedClusters,
   selectNamespaces,
-}: IResourcesNamespacesProps) => {
+}: IResourcesSelectNamespacesProps) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isLoading, data } = useQuery<string[], Error>(['core/namespaces', selectedClusters], async () => {
@@ -59,4 +59,4 @@ const ResourcesNamespaces: FunctionComponent<IResourcesNamespacesProps> = ({
   );
 };
 
-export default ResourcesNamespaces;
+export default ResourcesSelectNamespaces;

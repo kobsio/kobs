@@ -10,11 +10,13 @@ interface IDetailsDrawerProps {
   open: boolean;
   subtitle?: string;
   title: string;
+  width?: number;
 }
 
 /**
  * The `DetailsDrawer` component can be used to display details of a resource within a drawer. To display the drawer the
- * `open` property must be set to `true`. When the drawer is closed the `onClose` function is called.
+ * `open` property must be set to `true`. When the drawer is closed the `onClose` function is called. Thw `width`
+ * property defines the width of the drawer. The default width is `450`.
  *
  * It is also possible to set a title, subtitle and some action which will be displayed on the left of the close button.
  * Therefor a action should be a `IconButton` where the `edge` property is set to `end`.
@@ -26,6 +28,7 @@ export const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
   open,
   subtitle,
   title,
+  width = 450,
 }) => {
   return (
     <Drawer
@@ -38,7 +41,7 @@ export const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
         },
       }}
     >
-      <Box sx={{ px: 4, width: { md: 450, xs: '100vw' } }} aria-label="drawer">
+      <Box sx={{ px: 4, width: { md: width, xs: '100vw' } }} aria-label="drawer">
         <Toolbar
           sx={{
             '&.MuiToolbar-root': {

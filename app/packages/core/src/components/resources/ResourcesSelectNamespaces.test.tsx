@@ -3,12 +3,12 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { vi } from 'vitest';
 
-import ResourcesNamespaces from './ResourcesNamespaces';
+import ResourcesSelectNamespaces from './ResourcesSelectNamespaces';
 
 import { APIClient, APIContext } from '../../context/APIContext';
 import { QueryClientProvider } from '../../context/QueryClientProvider';
 
-describe('ResourcesNamespaces', () => {
+describe('ResourcesSelectNamespaces', () => {
   const render = async (
     namespaces: string[],
     selectedClusters: string[],
@@ -22,7 +22,7 @@ describe('ResourcesNamespaces', () => {
     const result = _render(
       <QueryClientProvider>
         <APIContext.Provider value={{ client: client, getUser: () => undefined }}>
-          <ResourcesNamespaces
+          <ResourcesSelectNamespaces
             selectNamespaces={selectNamespaces}
             selectedNamespaces={selectedNamespaces}
             selectedClusters={selectedClusters}

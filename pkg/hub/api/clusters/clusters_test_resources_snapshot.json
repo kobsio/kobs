@@ -2,7 +2,7 @@
     {
         "id": "cronjobs",
         "isCRD": false,
-        "path": "/apis/batch/v1beta1",
+        "path": "/apis/batch/v1",
         "resource": "cronjobs",
         "title": "CronJobs",
         "description": "A CronJob creates Jobs on a repeating schedule.",
@@ -82,7 +82,7 @@
     {
         "id": "horizontalpodautoscalers",
         "isCRD": false,
-        "path": "/apis/autoscaling/v2beta1",
+        "path": "/apis/autoscaling/v2",
         "resource": "horizontalpodautoscalers",
         "title": "HorizontalPodAutoscalers",
         "description": "",
@@ -92,7 +92,7 @@
     {
         "id": "ingresses",
         "isCRD": false,
-        "path": "/apis/extensions/v1beta1",
+        "path": "/apis/networking.k8s.io/v1",
         "resource": "ingresses",
         "title": "Ingresses",
         "description": "",
@@ -152,7 +152,7 @@
     {
         "id": "poddisruptionbudgets",
         "isCRD": false,
-        "path": "/apis/policy/v1beta1",
+        "path": "/apis/policy/v1",
         "resource": "poddisruptionbudgets",
         "title": "PodDisruptionBudgets",
         "description": "",
@@ -255,16 +255,6 @@
         "path": "/api/v1",
         "resource": "nodes",
         "title": "Nodes",
-        "description": "",
-        "scope": "Cluster",
-        "columns": null
-    },
-    {
-        "id": "podsecuritypolicies",
-        "isCRD": false,
-        "path": "/apis/policy/v1beta1",
-        "resource": "podsecuritypolicies",
-        "title": "PodSecurityPolicies",
         "description": "",
         "scope": "Cluster",
         "columns": null
