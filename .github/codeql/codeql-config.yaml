@@ -1,4 +1,4 @@
-name: "custom codeql config"
+name: "CodeQL Config"
 
 disable-default-queries: false
 

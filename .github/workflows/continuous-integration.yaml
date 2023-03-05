@@ -18,20 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup
+      - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
-
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
 
       - name: Download Dependencies
         run: |
@@ -72,21 +64,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
-
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            */node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          node-version: 18
+          cache: npm
+          cache-dependency-path: app/package-lock.json
 
       - name: Install Dependencies
         run: |
@@ -107,12 +90,12 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: app/packages/${{ matrix.plugin }}/coverage
 
-      - name: Build (App)
-        if: ${{ matrix.plugin == 'app' }}
-        run: |
-          npm run build
-
       - name: Build (Plugin)
         if: ${{ matrix.plugin != 'app' }}
         run: |
           npm run build --workspace=@kobsio/${{ matrix.plugin }}
+
+      - name: Build (App)
+        if: ${{ matrix.plugin == 'app' }}
+        run: |
+          npm run build
