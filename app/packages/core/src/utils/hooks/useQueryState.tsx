@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import { useMemo, useRef } from 'react';
+import { SetStateAction, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useMemoizedFn } from './useMemoizedFn';
@@ -38,7 +38,7 @@ export const useQueryState = <S extends QueryState = QueryState>(initialState?: 
     [queryFromUrl],
   );
 
-  const setState = (s: React.SetStateAction<State>) => {
+  const setState = (s: SetStateAction<State>) => {
     const newQuery = typeof s === 'function' ? s(targetQuery) : s;
 
     update();

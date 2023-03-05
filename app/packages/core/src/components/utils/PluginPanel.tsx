@@ -30,12 +30,7 @@ interface IPluginPanelProps {
  * that the panel takes the full height when the `autoHeight` property is `false` and the height of the children when it
  * is set to `true`.
  */
-export const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
-  title,
-  description,
-  children,
-  actions,
-}: IPluginPanelProps) => {
+export const PluginPanel: FunctionComponent<IPluginPanelProps> = ({ title, description, children, actions }) => {
   const gridContext = useContext<IGridContext>(GridContext);
 
   if (!title) {
@@ -104,14 +99,14 @@ interface IPluginPanelErrorProps {
  * This should only be used to render errors, where the validation of the user provided options in a panel are failing,
  * all other errors can be rendered via the `PluginPanel` and `UseQueryWrapper` components.
  */
-export const PluginPanelError: React.FunctionComponent<IPluginPanelErrorProps> = ({
+export const PluginPanelError: FunctionComponent<IPluginPanelErrorProps> = ({
   title,
   description,
   message,
   details,
   documentation,
   example,
-}: IPluginPanelErrorProps) => {
+}) => {
   return (
     <PluginPanel title={title} description={description}>
       <Alert

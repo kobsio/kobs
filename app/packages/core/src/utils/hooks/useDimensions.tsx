@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 
 /**
  * `getResizeObserver` creates a ResizeObserver used to handle resize events for the given containerRef. If
@@ -68,7 +68,7 @@ const debounce = (func: (...args: any[]) => any, wait: number): ((...args: any[]
  * listining to resize events. The change can be delayed by the provided `delay` to improve the render performance.
  */
 export const useDimensions = (
-  targetRef: React.RefObject<HTMLDivElement>,
+  targetRef: RefObject<HTMLDivElement>,
   defaults: IDimensions = { height: 0, width: 0 },
   delay = 500,
 ): IDimensions => {

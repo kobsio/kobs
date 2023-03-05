@@ -36,10 +36,7 @@ interface IGridContextProviderProps {
  * `GridContextProvider` is a provider component that allows us comsuming components to subscribe to the context
  * changes.
  */
-export const GridContextProvider: FunctionComponent<IGridContextProviderProps> = ({
-  autoHeight,
-  children,
-}: IGridContextProviderProps) => {
+export const GridContextProvider: FunctionComponent<IGridContextProviderProps> = ({ autoHeight, children }) => {
   return (
     <GridContext.Provider
       value={{

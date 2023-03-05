@@ -26,7 +26,7 @@ interface ILayoutProps {
  * screens our layout also contains a header with an button to toggle the drawer. Finally the layout defines the main
  * area where the contains of all routes is rendered.
  */
-export const Layout: FunctionComponent<ILayoutProps> = ({ children }: ILayoutProps) => {
+export const Layout: FunctionComponent<ILayoutProps> = ({ children }) => {
   const theme = useTheme();
   const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const [mobileOpen, setMobileOpen] = useState(false);

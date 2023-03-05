@@ -13,7 +13,7 @@ interface IStatefulSetProps {
   statefulSet: V1StatefulSet;
 }
 
-const StatefulSet: FunctionComponent<IStatefulSetProps> = ({ cluster, namespace, statefulSet }: IStatefulSetProps) => {
+const StatefulSet: FunctionComponent<IStatefulSetProps> = ({ cluster, namespace, statefulSet }) => {
   return (
     <>
       <DescriptionListGroup>

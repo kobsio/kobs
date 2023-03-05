@@ -91,12 +91,7 @@ import { IPluginInstance, PluginInstance } from '@kobsio/shared';
 import { defaultDescription } from '../../utils/constants';
 import icon from '../../assets/icon.png';
 
-const Instance: React.FunctionComponent<IPluginInstance> = ({
-  satellite,
-  name,
-  type,
-  description,
-}: IPluginInstance) => {
+const Instance: FunctionComponent<IPluginInstance> = ({ satellite, name, type, description }) => {
   return (
     <PluginInstance
       satellite={satellite}
@@ -127,9 +122,9 @@ import { Card, CardBody } from '@patternfly/react-core';
 import { IPluginPageProps, PageContentSection, PageHeaderSection, PluginPageTitle } from '@kobsio/shared';
 import { defaultDescription } from '../../utils/constants';
 
-const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPageProps) => {
+const Page: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   return (
-    <React.Fragment>
+    <Fragment>
       <PageHeaderSection
         component={
           <PluginPageTitle
@@ -145,7 +140,7 @@ const Page: React.FunctionComponent<IPluginPageProps> = ({ instance }: IPluginPa
           <CardBody>{JSON.stringify(instance)}</CardBody>
         </Card>
       </PageContentSection>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
@@ -161,7 +156,7 @@ export interface IPluginPanelProps {
   options?: any;
   instance: IPluginInstance;
   times?: ITimes;
-  setDetails?: (details: React.ReactNode) => void;
+  setDetails?: (details: ReactNode) => void;
 }
 ```
 
@@ -174,14 +169,7 @@ interface IHelloWorldPluginPanelProps extends IPluginPanelProps {
   options?: any;
 }
 
-const Panel: React.FunctionComponent<IHelloWorldPluginPanelProps> = ({
-  title,
-  description,
-  options,
-  instance,
-  times,
-  setDetails,
-}: IHelloWorldPluginPanelProps) => {
+const Panel: FunctionComponent<IHelloWorldPluginPanelProps> = ({ title, description, options, instance, times, setDetails }) => {
   if (options) {
     return (
       <PluginPanel title={title} description={description}>

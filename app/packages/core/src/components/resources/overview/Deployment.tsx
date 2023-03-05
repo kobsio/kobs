@@ -13,7 +13,7 @@ interface IDeploymentProps {
   namespace: string;
 }
 
-const Deployment: FunctionComponent<IDeploymentProps> = ({ cluster, namespace, deployment }: IDeploymentProps) => {
+const Deployment: FunctionComponent<IDeploymentProps> = ({ cluster, namespace, deployment }) => {
   return (
     <>
       <DescriptionListGroup>

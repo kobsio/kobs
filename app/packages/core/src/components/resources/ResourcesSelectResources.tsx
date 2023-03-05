@@ -20,7 +20,7 @@ const ResourcesSelectResourcesInternal: FunctionComponent<IResourcesSelectResour
   selectedResources,
   selectResources,
   loadedResources,
-}: IResourcesSelectResourcesInternalProps) => {
+}) => {
   const [selectedResourcesInternal, setSelectedResourcesInternal] = useState<IResource[]>(() =>
     loadedResources.filter((r) => selectedResources?.includes(r.id)),
   );
@@ -85,7 +85,7 @@ interface IResourcesSelectResourcesProps {
 const ResourcesSelectResources: FunctionComponent<IResourcesSelectResourcesProps> = ({
   selectedResources,
   selectResources,
-}: IResourcesSelectResourcesProps) => {
+}) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { data } = useQuery<IResource[], Error>(['core/resources'], async () => {

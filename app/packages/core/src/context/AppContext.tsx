@@ -18,7 +18,7 @@ import {
   WidgetsOutlined,
   MenuBookOutlined,
 } from '@mui/icons-material';
-import { createContext, ReactNode } from 'react';
+import { FunctionComponent, createContext, ReactNode } from 'react';
 
 /**
  * `defaultIcons` defines a default set of Material UI icons, which we can use within the app. These are mainly used
@@ -89,10 +89,7 @@ interface IAppContextProviderProps {
 /**
  * `AppContextProvider` is a provider component that allows us comsuming components to subscribe to the context changes.
  */
-export const AppContextProvider: React.FunctionComponent<IAppContextProviderProps> = ({
-  icons,
-  children,
-}: IAppContextProviderProps) => {
+export const AppContextProvider: FunctionComponent<IAppContextProviderProps> = ({ icons, children }) => {
   /**
    * `getIcon` returns a Material UI icon for the provided `icon` string. If a user has specified a list of `icons` via
    * the corresponding property, we will return a icon from this map. If a user hasn't specified a map of `icons` we

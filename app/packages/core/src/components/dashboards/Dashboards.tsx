@@ -52,7 +52,7 @@ interface IDashboardGridProps {
  * The `DashboardGrid` component is used to render a list of `panels` in a responsive grid layout. We are using the
  * `react-grid-layout` package to render the grid, so that a user can also drage and resize the panels in the app.
  */
-const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times }: IDashboardGridProps) => {
+const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times }) => {
   const [layouts, setLayouts] = useState<ReactGridLayout.Layouts>();
 
   const ResponsiveReactGridLayout = useMemo(() => WidthProvider(Responsive), []);
@@ -102,7 +102,7 @@ const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times }
  * This should mainly be used for dashboards which are just containing one component, e.g. just display a logs panel,
  * traces panel or the documentation for an app.
  */
-const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, times }: IDashboardGridProps) => {
+const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, times }) => {
   return (
     <Grid container={true} spacing={4} columns={12}>
       {panels.map((panel) => (
@@ -136,10 +136,7 @@ interface IDashboardToolbarVariableProps {
  * select box we trigger the `selectValue` function with the selected value to reflect the users change in the
  * dashboard.
  */
-const DashboardToolbarVariable: FunctionComponent<IDashboardToolbarVariableProps> = ({
-  variable,
-  selectValue,
-}: IDashboardToolbarVariableProps) => {
+const DashboardToolbarVariable: FunctionComponent<IDashboardToolbarVariableProps> = ({ variable, selectValue }) => {
   return (
     <FormControl size="small" fullWidth={true}>
       <InputLabel id={variable.name}>{variable.label}</InputLabel>

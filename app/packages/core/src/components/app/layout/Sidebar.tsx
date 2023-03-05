@@ -95,7 +95,7 @@ interface ISidebarGroupProps {
  * which contains other items, open the sub items menu and add the `name` of the item to the `items` state. When a item
  * is present in the state it is marked as open.
  */
-const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }: ISidebarGroupProps) => {
+const SidebarGroup: FunctionComponent<ISidebarGroupProps> = ({ group }) => {
   const theme = useTheme<ITheme>();
   const location = useLocation();
   const [items, setItems] = useState<string[]>(() => initItems(location.pathname, group));
@@ -167,7 +167,7 @@ interface ISidebarItemProps {
  * the sidebar. If the item contains a link we render `ListItemButton` which the user can click to go to the
  * corresponding page. If the current location matches the provided link we will mark the item as active.
  */
-const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggleOpen }: ISidebarItemProps) => {
+const SidebarItem: FunctionComponent<ISidebarItemProps> = ({ item, isOpen, toggleOpen }) => {
   const theme = useTheme<ITheme>();
   const location = useLocation();
   const appContext = useContext<IAppContext>(AppContext);
@@ -274,7 +274,7 @@ interface ISidebarSubItemProps {
  * item, but can only contain a link to a page an no other items. The link is rendered via the `ListItemButton`
  * component. If the current location matches the provided link we will mark the item as active.
  */
-const SidebarSubItem: FunctionComponent<ISidebarSubItemProps> = ({ item }: ISidebarSubItemProps) => {
+const SidebarSubItem: FunctionComponent<ISidebarSubItemProps> = ({ item }) => {
   const theme = useTheme<ITheme>();
   const location = useLocation();
   const isActive = checkIsActive(item.link, location.pathname);
@@ -362,8 +362,8 @@ const SidebarFooter: FunctionComponent = () => {
   /**
    * `toggleMenu` toggles the menu, which contains the sign out button.
    */
-  const toggleMenu = (event: MouseEvent<HTMLDivElement>) => {
-    setAnchorMenu(event.currentTarget);
+  const toggleMenu = (e: MouseEvent<HTMLDivElement>) => {
+    setAnchorMenu(e.currentTarget);
   };
 
   /**

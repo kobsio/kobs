@@ -5,6 +5,10 @@ import { Link, useSearchParams } from 'react-router-dom';
 
 import { APIContext, IAPIContext, APIError } from '../../../context/APIContext';
 
+/**
+ * The `SigninOIDC` component displays a button, which lets the user sign in via a configured OIDC provider. If no OIDC
+ * provider is configured the returned url will be empty and the button is disabled.
+ */
 const SigninOIDC: FunctionComponent = () => {
   const [params] = useSearchParams();
   const apiContext = useContext<IAPIContext>(APIContext);

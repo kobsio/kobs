@@ -1,4 +1,4 @@
-import { Stack, Alert, Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { Stack, Alert, Box, Paper, TextField, Typography, Button } from '@mui/material';
 import { FormEvent, FunctionComponent, useContext, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -14,15 +14,25 @@ enum SigninState {
   INVALID_CREDENTIALS = 1 << 2,
 }
 
+/**
+ * The `Signin` component displays the sing in form, which lets the user sing in via his username and password. It also
+ * shows the `SigninOIDC` component so that a user can sign in via a configured OIDC provider.
+ */
 const Signin: FunctionComponent = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const apiContext = useContext<IAPIContext>(APIContext);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [username, setUsername] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [state, setState] = useState<SigninState>(SigninState.OK);
 
+  /**
+   * `handleSubmit` handle the submission of the sing in form. If the sign in succeeds the user is redirect to the home
+   * page or the page he visits last (this is saved in the `redirect` parameter). If the sign in fails an error message
+   * is displayed or the missing form value is marked as missing.
+   */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -37,10 +47,13 @@ const Signin: FunctionComponent = () => {
     }
 
     try {
+      setIsLoading(true);
       await apiContext.client.signin(username, password);
+      setIsLoading(false);
       setState(SigninState.OK);
       navigate(params.get('redirect') || '/');
     } catch (_) {
+      setIsLoading(false);
       setState(state | SigninState.INVALID_CREDENTIALS);
     }
   };
@@ -105,7 +118,7 @@ const Signin: FunctionComponent = () => {
               helperText={(state & SigninState.NO_PASSWORD && 'Password is required') || ' '}
             />
 
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" disabled={isLoading}>
               Sign In
             </Button>
 

@@ -13,7 +13,7 @@ interface IJobProps {
   namespace: string;
 }
 
-const Job: FunctionComponent<IJobProps> = ({ cluster, namespace, job }: IJobProps) => {
+const Job: FunctionComponent<IJobProps> = ({ cluster, namespace, job }) => {
   return (
     <>
       <DescriptionListGroup>

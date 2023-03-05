@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Button, CircularProgress } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { createContext, ReactNode, useContext } from 'react';
+import { FunctionComponent, createContext, ReactNode, useContext } from 'react';
 
 import { APIContext } from './APIContext';
 
@@ -34,8 +34,8 @@ export interface IPluginPanelProps {
  */
 export interface IPlugin {
   icon?: ReactNode;
-  page?: React.FunctionComponent<IPluginPageProps>;
-  panel?: React.FunctionComponent<IPluginPanelProps>;
+  page?: FunctionComponent<IPluginPageProps>;
+  panel?: FunctionComponent<IPluginPanelProps>;
   type: string;
 }
 
@@ -99,10 +99,7 @@ interface IPluginContextProviderProps {
  * `PluginContextProvider` is a provider component that allows us comsuming components to subscribe to the context
  * changes.
  */
-export const PluginContextProvider: React.FunctionComponent<IPluginContextProviderProps> = ({
-  plugins,
-  children,
-}: IPluginContextProviderProps) => {
+export const PluginContextProvider: FunctionComponent<IPluginContextProviderProps> = ({ plugins, children }) => {
   const { client } = useContext(APIContext);
   const { isError, error, isLoading, data, refetch } = useQuery<IPluginInstance[] | null, Error>(
     ['core/plugincontext'],

@@ -206,9 +206,7 @@ interface IAPIContextProviderProps {
 /**
  * `APIContextProvider` is a provider component that allows us comsuming components to subscribe to the context changes.
  */
-export const APIContextProvider: FunctionComponent<IAPIContextProviderProps> = ({
-  children,
-}: IAPIContextProviderProps) => {
+export const APIContextProvider: FunctionComponent<IAPIContextProviderProps> = ({ children }) => {
   const client = new APIClient();
 
   return (
