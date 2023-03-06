@@ -16,7 +16,7 @@ describe('PluginContext', () => {
     return _render(
       <QueryClientProvider>
         <APIContext.Provider value={{ client: apiClient, getUser: () => undefined }}>
-          <PluginContextProvider plugins={[{ type: 'foo' }]}>{children}</PluginContextProvider>
+          <PluginContextProvider plugins={[{ description: '', type: 'foo' }]}>{children}</PluginContextProvider>
         </APIContext.Provider>
       </QueryClientProvider>,
     );

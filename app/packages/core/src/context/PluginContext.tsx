@@ -33,6 +33,7 @@ export interface IPluginPanelProps {
  * which is rendered as a `page` and a component for a `panel` in a dashboard.
  */
 export interface IPlugin {
+  description: string;
   icon?: ReactNode;
   page?: FunctionComponent<IPluginPageProps>;
   panel?: FunctionComponent<IPluginPanelProps>;

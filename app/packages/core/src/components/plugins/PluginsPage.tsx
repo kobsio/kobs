@@ -147,28 +147,36 @@ const PluginsPage: FunctionComponent = () => {
                 <Card>
                   <CardActionArea component={Link} to={`./${item.cluster}/${item.type}/${item.name}`}>
                     <CardContent sx={{ p: 6 }}>
-                      <Stack spacing={8}>
-                        <Stack direction="row" justifyContent="center">
-                          {((instance: IPluginInstance) => {
-                            const icon = getPlugin(instance.type)?.icon;
-                            if (!icon) {
-                              return <Extension sx={{ fontSize: 64 }} />;
-                            }
-                            return (
-                              <CardMedia
-                                sx={{ height: 64, width: 64 }}
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                image={icon as any}
-                                title={`${instance.name}-icon`}
-                              />
-                            );
-                          })(item)}
-                        </Stack>
-                        <Typography variant="h6" mb={6} textAlign="center">
-                          {item.name}
-                        </Typography>
-                        <Typography textAlign="center">{item.description}</Typography>
-                      </Stack>
+                      {((instance: IPluginInstance) => {
+                        const plugin = getPlugin(instance.type);
+                        const icon = plugin?.icon;
+
+                        return (
+                          <Stack spacing={8}>
+                            <Stack direction="row" justifyContent="center">
+                              {!icon ? (
+                                <Extension sx={{ fontSize: 64 }} />
+                              ) : (
+                                <CardMedia
+                                  sx={{ height: 64, width: 64 }}
+                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                  image={icon as any}
+                                  title={`${instance.name}-icon`}
+                                />
+                              )}
+                            </Stack>
+                            <Box textAlign="center">
+                              <Typography variant="h6">{item.name}</Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                ({item.cluster} / {item.type})
+                              </Typography>
+                            </Box>
+                            <Typography textAlign="center">
+                              {item.description ? item.description : plugin?.description}
+                            </Typography>
+                          </Stack>
+                        );
+                      })(item)}
                     </CardContent>
                   </CardActionArea>
                 </Card>
