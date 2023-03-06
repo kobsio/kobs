@@ -45,7 +45,7 @@ export const Chart: FunctionComponent<IEChartProps> = ({ option, settings }) => 
     // Update chart
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
-      chart?.setOption({ ...option }, settings);
+      chart?.setOption(option, settings);
     }
   }, [option, settings]); // Whenever theme changes we need to add option and setting due to it being deleted in cleanup function
 
