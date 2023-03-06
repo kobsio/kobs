@@ -46,6 +46,7 @@ export const Editor: FunctionComponent<IEditorProps> = ({
       onMount={handleOnMount}
       onChange={onChange}
       options={{
+        fontFamily: 'monospace',
         lineNumbers: lineNumbers ? 'on' : 'off',
         minimap: {
           enabled: minimap,
