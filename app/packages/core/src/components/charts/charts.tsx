@@ -15,7 +15,7 @@ export interface IEChartProps {
 
 // Chart is a wrapper around apaches echart
 // https://dev.to/manufac/using-apache-echarts-with-react-and-typescript-353k
-const Chart: FunctionComponent<IEChartProps> = ({ option, settings }) => {
+export const Chart: FunctionComponent<IEChartProps> = ({ option, settings }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dimensions = useDimensions(wrapperRef);
