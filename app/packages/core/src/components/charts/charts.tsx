@@ -51,9 +51,9 @@ const Chart: FunctionComponent<IEChartProps> = ({ option, settings }) => {
   }, [option, settings]); // Whenever theme changes we need to add option and setting due to it being deleted in cleanup function
 
   return (
-    <div ref={wrapperRef} style={{ height: '100%', width: '100%' }}>
+    <Box ref={wrapperRef} style={{ height: '100%', width: '100%' }}>
       <Box ref={chartRef} sx={{ height: dimensions.height, width: dimensions.width }} />
-    </div>
+    </Box>
   );
 };
 
