@@ -22,7 +22,6 @@ export const Chart: FunctionComponent<IEChartProps> = ({ option, settings }) => 
 
   useEffect(() => {
     if (chartRef.current !== null) {
-      console.log(dimensions);
       const chart = getInstanceByDom(chartRef.current);
       chart?.resize();
     }
