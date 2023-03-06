@@ -57,4 +57,3 @@ export const Chart: FunctionComponent<IEChartProps> = ({ option, settings }) => 
   );
 };
 
-export default Chart;
