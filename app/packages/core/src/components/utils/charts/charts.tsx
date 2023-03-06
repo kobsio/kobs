@@ -6,7 +6,7 @@ import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
 
 import theme from './chart-theme';
 
-import { useDimensions } from '../../utils/hooks/useDimensions';
+import { useDimensions } from '../../../utils/hooks/useDimensions';
 
 export interface IEChartProps {
   option: EChartsOption;
@@ -56,4 +56,3 @@ export const Chart: FunctionComponent<IEChartProps> = ({ option, settings }) => 
     </Box>
   );
 };
-
