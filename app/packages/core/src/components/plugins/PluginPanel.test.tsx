@@ -1,5 +1,6 @@
 import { render as _render, RenderResult, screen } from '@testing-library/react';
 import { FunctionComponent } from 'react';
+import { vi } from 'vitest';
 
 import PluginPanel from './PluginPanel';
 
@@ -12,6 +13,49 @@ describe('PluginPanel', () => {
     type: string,
     pluginContext: Partial<IPluginContext>,
   ): RenderResult => {
+    vi.mock('../applications/ApplicationGroupsPanel', () => {
+      return {
+        default: () => {
+          return <>mocked applicationgroups panel</>;
+        },
+      };
+    });
+    vi.mock('../applications/ApplicationsPanel', () => {
+      return {
+        default: () => {
+          return <>mocked applications panel</>;
+        },
+      };
+    });
+    vi.mock('../applications/TopologyPanel', () => {
+      return {
+        default: () => {
+          return <>mocked topology panel</>;
+        },
+      };
+    });
+    vi.mock('../dashboards/DashboardsPanel', () => {
+      return {
+        default: () => {
+          return <>mocked dashboards panel</>;
+        },
+      };
+    });
+    vi.mock('../resources/ResourcesPanel', () => {
+      return {
+        default: () => {
+          return <>mocked resources panel</>;
+        },
+      };
+    });
+    vi.mock('../teams/TeamsPanel', () => {
+      return {
+        default: () => {
+          return <>mocked teams panel</>;
+        },
+      };
+    });
+
     const defaultPluginContext = {
       getClusters: () => [],
       getInstance: (id: string) => undefined,
@@ -117,5 +161,40 @@ describe('PluginPanel', () => {
     });
 
     expect(screen.getByText('An unexpected error occured while rendering the plugin')).toBeInTheDocument();
+  });
+
+  it('should handle core panels - applications', async () => {
+    render('', 'applications', 'core', {});
+    expect(screen.getByText('mocked applications panel')).toBeInTheDocument();
+  });
+
+  it('should handle core panels - applicationgroups', async () => {
+    render('', 'applicationgroups', 'core', {});
+    expect(screen.getByText('mocked applicationgroups panel')).toBeInTheDocument();
+  });
+
+  it('should handle core panels - topology', async () => {
+    render('', 'topology', 'core', {});
+    expect(screen.getByText('mocked topology panel')).toBeInTheDocument();
+  });
+
+  it('should handle core panels - teams', async () => {
+    render('', 'teams', 'core', {});
+    expect(screen.getByText('mocked teams panel')).toBeInTheDocument();
+  });
+
+  it('should handle core panels - dashboards', async () => {
+    render('', 'dashboards', 'core', {});
+    expect(screen.getByText('mocked dashboards panel')).toBeInTheDocument();
+  });
+
+  it('should handle core panels - resources', async () => {
+    render('', 'resources', 'core', {});
+    expect(screen.getByText('mocked resources panel')).toBeInTheDocument();
+  });
+
+  it('should handle error in core panels', async () => {
+    render('', 'fake', 'core', {});
+    expect(screen.getByText('Invalid plugin name')).toBeInTheDocument();
   });
 });

@@ -11,8 +11,12 @@
   "exports": {
     ".": {
       "import": "./dist/index.js"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css"
     }
   },
+  "style": "./dist/style.css",
   "scripts": {
     "analyze": "source-map-explorer 'dist/**/*.js' --no-border-checks",
     "build": "tsc && vite build",
@@ -24,10 +28,13 @@
   "peerDependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@monaco-editor/react": "^4.4.6",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.121",
     "@mui/material": "^5.11.7",
     "@tanstack/react-query": "^4.24.4",
+    "monaco-editor": "^0.36.1",
+    "monaco-yaml": "^4.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0"
@@ -56,7 +63,6 @@
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.18.1",
-    "@monaco-editor/react": "^4.4.6",
     "cytoscape": "^3.23.0",
     "cytoscape-dagre": "^2.5.0",
     "cytoscape-node-html-label": "^1.2.2",
