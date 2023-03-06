@@ -46,6 +46,7 @@ describe('PluginPage', () => {
     render('/plugins/dev/bar/bar-instance', {
       getInstance: () => instance,
       getPlugin: () => ({
+        description: '',
         page: TestPage,
         type: 'bar',
       }),
@@ -69,6 +70,7 @@ describe('PluginPage', () => {
     render('/plugins/dev/bar/bar-instance', {
       getInstance: () => instance,
       getPlugin: () => ({
+        description: '',
         page: undefined,
         type: 'bar',
       }),
@@ -101,6 +103,7 @@ describe('PluginPage', () => {
     render('/plugins/dev/bar/bar-instance', {
       getInstance: () => instance,
       getPlugin: () => ({
+        description: '',
         page: TestPage,
         type: 'bar',
       }),

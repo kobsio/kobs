@@ -100,6 +100,7 @@ describe('PluginPanel', () => {
     render('dev', 'bar-instance', 'bar', {
       getInstance: () => instance,
       getPlugin: () => ({
+        description: '',
         panel: TestPanel,
         type: 'bar',
       }),
@@ -123,6 +124,7 @@ describe('PluginPanel', () => {
     render('dev', 'bar-instance', 'bar', {
       getInstance: () => instance,
       getPlugin: () => ({
+        description: '',
         panel: undefined,
         type: 'bar',
       }),
@@ -155,6 +157,7 @@ describe('PluginPanel', () => {
     render('dev', 'bar-instance', 'bar', {
       getInstance: () => instance,
       getPlugin: () => ({
+        description: '',
         panel: TestPanel,
         type: 'bar',
       }),
