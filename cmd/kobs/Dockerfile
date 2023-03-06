@@ -1,6 +1,7 @@
 FROM --platform=linux/amd64 node:18.14.2 as app
 WORKDIR /kobs
 COPY app /kobs/
+RUN export NODE_OPTIONS=--max-old-space-size=6144
 RUN npm config set fetch-timeout 3600000
 RUN npm clean-install
 RUN npm run build
