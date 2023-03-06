@@ -196,7 +196,9 @@ const DashboardToolbar: FunctionComponent<IDashboardToolbarProps> = ({ setTimes,
           ),
         )}
 
-        <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
+        <ToolbarItem align="right" grow={true}>
+          <Options times={times} showOptions={true} showSearchButton={false} setOptions={changeOptions} />
+        </ToolbarItem>
       </Toolbar>
     </Card>
   );

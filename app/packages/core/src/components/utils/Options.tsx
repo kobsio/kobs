@@ -19,8 +19,6 @@ import {
 } from '@mui/material';
 import { FunctionComponent, useEffect, useState } from 'react';
 
-import { ToolbarItem } from './Toolbar';
-
 import { ITimes, TTime, formatTime, timeOptions } from '../../utils/times';
 
 export type TOptionsAdditionalFields = 'text' | 'select';
@@ -198,7 +196,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
   }, [times, additionalFields]);
 
   return (
-    <ToolbarItem align="right" grow={true}>
+    <>
       {showOptions && (
         <>
           {showSearchButton ? (
@@ -335,6 +333,6 @@ export const Options: FunctionComponent<IOptionsProps> = ({
           Search
         </Button>
       )}
-    </ToolbarItem>
+    </>
   );
 };
