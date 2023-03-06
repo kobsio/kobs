@@ -23,8 +23,11 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
   }
 
   return {
+    // Source maps are disabled for now to avoid Javascript heap out of memory errors during the build process.
+    //
+    // See: https://github.com/vitejs/vite/issues/2433
     build: {
-      sourcemap: true,
+      sourcemap: false,
     },
     plugins: [react()],
     resolve: resolve,
