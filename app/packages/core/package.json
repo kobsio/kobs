@@ -64,6 +64,7 @@
     "cytoscape": "^3.23.0",
     "cytoscape-dagre": "^2.5.0",
     "cytoscape-node-html-label": "^1.2.2",
+    "echarts": "^5.4.1",
     "fast-json-patch": "^3.1.1",
     "js-yaml": "^4.1.0",
     "jsonpath-plus": "^7.2.0",
