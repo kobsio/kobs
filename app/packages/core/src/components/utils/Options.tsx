@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { FunctionComponent, useEffect, useState } from 'react';
 
-import { ITimes, TTime, formatTime, timeOptions } from '../../utils/times';
+import { ITimes, TTime, formatTimestamp, timeOptions } from '../../utils/times';
 
 export type TOptionsAdditionalFields = 'text' | 'select';
 
@@ -70,8 +70,8 @@ export const Options: FunctionComponent<IOptionsProps> = ({
   const [internalAdditionalFields, setInternalAdditionalFields] = useState<IOptionsAdditionalFields[] | undefined>(
     additionalFields,
   );
-  const [customTimeEnd, setCustomTimeEnd] = useState<string>(formatTime(times.timeEnd));
-  const [customTimeStart, setCustomTimeStart] = useState<string>(formatTime(times.timeStart));
+  const [customTimeEnd, setCustomTimeEnd] = useState<string>(formatTimestamp(times.timeEnd));
+  const [customTimeStart, setCustomTimeStart] = useState<string>(formatTimestamp(times.timeStart));
   const [customTimeEndError, setCustomTimeEndError] = useState<string>('');
   const [customTimeStartError, setCustomTimeStartError] = useState<string>('');
 
@@ -85,8 +85,8 @@ export const Options: FunctionComponent<IOptionsProps> = ({
     // selected interval and change the additional fields. This allows a user to adjust an additional field without
     // switching to a custom time interval.
     if (
-      customTimeEnd === formatTime(times.timeEnd) &&
-      customTimeStart === formatTime(times.timeStart) &&
+      customTimeEnd === formatTimestamp(times.timeEnd) &&
+      customTimeStart === formatTimestamp(times.timeStart) &&
       times.time !== 'custom'
     ) {
       setOptions(
@@ -191,8 +191,8 @@ export const Options: FunctionComponent<IOptionsProps> = ({
    */
   useEffect(() => {
     setInternalAdditionalFields(additionalFields);
-    setCustomTimeEnd(formatTime(times.timeEnd));
-    setCustomTimeStart(formatTime(times.timeStart));
+    setCustomTimeEnd(formatTimestamp(times.timeEnd));
+    setCustomTimeStart(formatTimestamp(times.timeStart));
   }, [times, additionalFields]);
 
   return (
@@ -202,14 +202,14 @@ export const Options: FunctionComponent<IOptionsProps> = ({
           {showSearchButton ? (
             <Button variant="contained" color="primary" onClick={() => setShow(true)}>
               {times.time === 'custom'
-                ? `${formatTime(times.timeStart)} to ${formatTime(times.timeEnd)}`
+                ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
                 : timeOptions[times.time].label}
             </Button>
           ) : (
             <ButtonGroup variant="contained" color="primary">
               <Button onClick={() => setShow(true)}>
                 {times.time === 'custom'
-                  ? `${formatTime(times.timeStart)} to ${formatTime(times.timeEnd)}`
+                  ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
                   : timeOptions[times.time].label}
               </Button>
               <Button onClick={refreshTimes}>
@@ -305,7 +305,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
                           key={field.name}
                           size="small"
                           variant="outlined"
-                          label={field.name}
+                          label={field.label}
                           placeholder={field.placeholder}
                           fullWidth={true}
                           value={field.value}

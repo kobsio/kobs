@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        plugin: [app, core]
+        plugin: [app, core, prometheus]
     defaults:
       run:
         working-directory: app
@@ -90,12 +90,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: app/packages/${{ matrix.plugin }}/coverage
 
-      - name: Build (Plugin)
-        if: ${{ matrix.plugin != 'app' }}
-        run: |
-          npm run build --workspace=@kobsio/${{ matrix.plugin }}
-
-      - name: Build (App)
+      - name: Build
         if: ${{ matrix.plugin == 'app' }}
         run: |
           npm run build

@@ -79,6 +79,7 @@ interface IPluginPanelProps {
   description?: string;
   name: string;
   options?: unknown;
+  setTimes: (times: ITimes) => void;
   times: ITimes;
   title: string;
   type: string;
@@ -97,6 +98,7 @@ const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
   description,
   options,
   times,
+  setTimes,
 }) => {
   const { getInstance, getPlugin } = useContext(PluginContext);
 
@@ -128,7 +130,14 @@ const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
       )}
     >
       {Panel && instance ? (
-        <Panel instance={instance} title={title} description={description} options={options} times={times} />
+        <Panel
+          instance={instance}
+          title={title}
+          description={description}
+          options={options}
+          times={times}
+          setTimes={setTimes}
+        />
       ) : (
         <PluginPanelInternal title={title} description={description}>
           <Alert severity="info">

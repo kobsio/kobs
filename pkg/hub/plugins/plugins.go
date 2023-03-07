@@ -17,7 +17,8 @@ import (
 	"github.com/go-chi/render"
 )
 
-const hubClusterName = "hub"
+// HubClusterName is the name which represents the hub as cluster.
+const HubClusterName = "hub"
 
 // Client is the interface which must be implemented by a plugins client. The plugins client must only be export a
 // router with all plugin routes mounted.
@@ -51,7 +52,7 @@ func NewClient(plugins []plugins.Plugin, instances []plugin.Instance, clustersCl
 			Options:     instance.FrontendOptions,
 		})
 	}
-	err := dbClient.SavePlugins(context.Background(), hubClusterName, frontendInstances)
+	err := dbClient.SavePlugins(context.Background(), HubClusterName, frontendInstances)
 	if err != nil {
 		return nil, err
 	}
@@ -75,13 +76,11 @@ func NewClient(plugins []plugins.Plugin, instances []plugin.Instance, clustersCl
 	for _, plugin := range plugins {
 		filteredInstances := filterInstances(plugin.Type(), instances)
 
-		if len(filteredInstances) > 0 {
-			pluginRouter, err := plugin.MountHub(filteredInstances, clustersClient, dbClient)
-			if err != nil {
-				return nil, err
-			}
-			router.Mount(fmt.Sprintf("/%s", plugin.Type()), pluginRouter)
+		pluginRouter, err := plugin.MountHub(filteredInstances, clustersClient, dbClient)
+		if err != nil {
+			return nil, err
 		}
+		router.Mount(fmt.Sprintf("/%s", plugin.Type()), pluginRouter)
 	}
 
 	return &client{

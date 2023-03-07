@@ -7,11 +7,6 @@ import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
 
 export default defineConfig({
-  // The definition of the "base" property is required, so that the workers from monaco are added to the assets of the
-  // production build of the "app" package.
-  //
-  // See: https://github.com/vitejs/vite/issues/11943
-  base: './',
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
@@ -23,6 +18,7 @@ export default defineConfig({
       external: [
         '@emotion/react',
         '@emotion/styled',
+        '@kobsio/core',
         '@mui/icons-material',
         '@mui/lab',
         '@mui/material',

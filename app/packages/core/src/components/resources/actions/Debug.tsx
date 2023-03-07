@@ -88,14 +88,7 @@ tty: true`);
       <DialogTitle>Create Debug Container</DialogTitle>
       <DialogContent sx={{ minWidth: '50vw' }}>
         <Box height="50vh">
-          <Editor
-            language="yaml"
-            value={debugContainer}
-            onChange={(value) => setDebugContainer(value ?? '')}
-            readOnly={false}
-            minimap={true}
-            lineNumbers={true}
-          />
+          <Editor language="yaml" value={debugContainer} onChange={(value) => setDebugContainer(value ?? '')} />
         </Box>
       </DialogContent>
       <DialogActions>

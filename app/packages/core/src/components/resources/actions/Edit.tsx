@@ -69,14 +69,7 @@ const Edit: FunctionComponent<IEditProps> = ({ resource, cluster, namespace, nam
       <DialogTitle>Edit {name}</DialogTitle>
       <DialogContent sx={{ minWidth: '50vw' }}>
         <Box height="50vh">
-          <Editor
-            language="yaml"
-            value={value}
-            onChange={(value) => setValue(value ?? '')}
-            readOnly={false}
-            minimap={true}
-            lineNumbers={true}
-          />
+          <Editor language="yaml" value={value} onChange={(value) => setValue(value ?? '')} />
         </Box>
       </DialogContent>
       <DialogActions>

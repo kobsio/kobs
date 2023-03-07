@@ -105,13 +105,21 @@ export const timeDifference = (current: number, previous: number, long?: boolean
 };
 
 /**
- * `formatTime` formats an given timestamp in a uniform way accross the kobs UI.
+ * `formatTime` formats an given `time` in a uniform way accross the kobs UI.
  */
-export const formatTime = (timestamp: number): string => {
+export const formatTime = (time: Date): string => {
+  return `${time.getFullYear()}-${('0' + (time.getMonth() + 1)).slice(-2)}-${('0' + time.getDate()).slice(-2)} ${(
+    '0' + time.getHours()
+  ).slice(-2)}:${('0' + time.getMinutes()).slice(-2)}:${('0' + time.getSeconds()).slice(-2)}`;
+};
+
+/**
+ * `formatTimestamp` formats an given `timestamp` in a uniform way accross the kobs UI. It creates a new date from the
+ * provided timestamp and calls the `formatTime` function.
+ */
+export const formatTimestamp = (timestamp: number): string => {
   const d = new Date(timestamp * 1000);
-  return `${d.getFullYear()}-${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${(
-    '0' + d.getHours()
-  ).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`;
+  return formatTime(d);
 };
 
 /**

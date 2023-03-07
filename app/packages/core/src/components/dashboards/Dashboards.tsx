@@ -45,6 +45,7 @@ const evaluateCondition = (condition: string): boolean => {
  */
 interface IDashboardGridProps {
   panels: IPanel[];
+  setTimes: (times: ITimes) => void;
   times: ITimes;
 }
 
@@ -52,7 +53,7 @@ interface IDashboardGridProps {
  * The `DashboardGrid` component is used to render a list of `panels` in a responsive grid layout. We are using the
  * `react-grid-layout` package to render the grid, so that a user can also drage and resize the panels in the app.
  */
-const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times }) => {
+const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times, setTimes }) => {
   const [layouts, setLayouts] = useState<ReactGridLayout.Layouts>();
 
   const ResponsiveReactGridLayout = useMemo(() => WidthProvider(Responsive), []);
@@ -87,6 +88,7 @@ const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times }
             description={panel.description}
             options={panel.plugin.options}
             times={times}
+            setTimes={setTimes}
           />
         </div>
       ))}
@@ -102,7 +104,7 @@ const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times }
  * This should mainly be used for dashboards which are just containing one component, e.g. just display a logs panel,
  * traces panel or the documentation for an app.
  */
-const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, times }) => {
+const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, times, setTimes }) => {
   return (
     <Grid container={true} spacing={4} columns={12}>
       {panels.map((panel) => (
@@ -115,6 +117,7 @@ const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panel
             description={panel.description}
             options={panel.plugin.options}
             times={times}
+            setTimes={setTimes}
           />
         </Grid>
       ))}
@@ -289,7 +292,7 @@ const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => {
         <DashboardToolbar variables={data ?? []} setVariables={setVariables} times={times} setTimes={setTimes} />
       )}
       <Box
-        pt={6}
+        pt={dashboard.hideToolbar === true ? 0 : 6}
         sx={(theme) => ({
           '.react-grid-item.react-grid-placeholder': {
             backgroundColor: 'background.paper',
@@ -310,9 +313,9 @@ const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => {
               {row.panels && row.panels.length > 0 ? (
                 <GridContextProvider autoHeight={row.autoHeight ?? false}>
                   {row.autoHeight ? (
-                    <DashboardGridAutoHeight panels={row.panels} times={times} />
+                    <DashboardGridAutoHeight panels={row.panels} times={times} setTimes={setTimes} />
                   ) : (
-                    <DashboardGrid panels={row.panels} times={times} />
+                    <DashboardGrid panels={row.panels} times={times} setTimes={setTimes} />
                   )}
                 </GridContextProvider>
               ) : null}

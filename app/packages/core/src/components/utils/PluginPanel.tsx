@@ -5,16 +5,23 @@ import {
   Box,
   Button,
   Card,
+  CircularProgress,
   IconButton,
   IconButtonProps,
+  Menu,
+  MenuItem,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { FunctionComponent, ReactNode, useContext } from 'react';
+import { FunctionComponent, ReactNode, MouseEvent, useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { GridContext, IGridContext } from '../../context/GridContext';
 
+/**
+ * `IPluginPanelProps` is the interface for the properties of the `PluginPanel` component.
+ */
 interface IPluginPanelProps {
   actions?: ReactNode;
   children: ReactNode;
@@ -66,6 +73,9 @@ export const PluginPanel: FunctionComponent<IPluginPanelProps> = ({ title, descr
   );
 };
 
+/**
+ * `IPluginPanelActionButtonProps` is the interface for the properties of the `PluginPanelActionButton` component.
+ */
 interface IPluginPanelActionButtonProps {
   props?: IconButtonProps;
 }
@@ -83,6 +93,63 @@ export const PluginPanelActionButton: FunctionComponent<IPluginPanelActionButton
   );
 };
 
+/**
+ * `IPluginPanelActionLinksProps` is the interface for the properties of the `PluginPanelActionLinks` component.
+ */
+interface IPluginPanelActionLinksProps {
+  isFetching: boolean;
+  links: {
+    link: string;
+    title: string;
+  }[];
+}
+
+/**
+ * The `PluginPanelActionLinks` renders an action menu with the provided list of `links`. If the `isFetching` property
+ * is `true` a circular progress indicator will be rendered instead of the menu.
+ */
+export const PluginPanelActionLinks: FunctionComponent<IPluginPanelActionLinksProps> = ({ isFetching, links }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  /**
+   * `handleOpenMenu` opens the menu, which is used to display the link.
+   */
+  const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  /**
+   * `handleCloseMenu` closes the menu, wich displays the link.
+   */
+  const handleCloseMenu = (e: Event) => {
+    setAnchorEl(null);
+  };
+
+  if (isFetching) {
+    return <CircularProgress size="16px" role="loading-indicator" />;
+  }
+
+  return (
+    <>
+      <IconButton size="small" sx={{ m: 0, p: 0 }} disableRipple={true} onClick={handleOpenMenu}>
+        <MoreVert />
+      </IconButton>
+
+      <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
+        {links.map((link) => (
+          <MenuItem key={link.link} component={Link} to={link.link}>
+            {link.title}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
+  );
+};
+
+/**
+ * `IPluginPanelErrorProps` is the interface for the properties of the `PluginPanelError` component.
+ */
 interface IPluginPanelErrorProps {
   description?: string;
   details: string;

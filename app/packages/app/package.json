@@ -18,13 +18,15 @@
     "@emotion/styled": "^11.10.5",
     "@fontsource/roboto": "^4.5.8",
     "@kobsio/core": "*",
+    "@kobsio/prometheus": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.121",
     "@mui/material": "^5.11.7",
     "@tanstack/react-query": "^4.24.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.0"
+    "react-router-dom": "^6.8.0",
+    "victory": "^36.6.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

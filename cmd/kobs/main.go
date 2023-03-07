@@ -7,6 +7,8 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/watcher"
 	"github.com/kobsio/kobs/pkg/plugins"
 
+	"github.com/kobsio/kobs/pkg/plugins/prometheus"
+
 	"github.com/alecthomas/kong"
 )
 
@@ -20,7 +22,9 @@ var cli struct {
 func main() {
 	ctx := kong.Parse(&cli)
 
-	registeredPlugins := []plugins.Plugin{}
+	registeredPlugins := []plugins.Plugin{
+		prometheus.New(),
+	}
 
 	err := ctx.Run(registeredPlugins)
 	ctx.FatalIfErrorf(err)
