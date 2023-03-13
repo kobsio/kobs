@@ -312,7 +312,7 @@ const ApplicationGroupsPanel: FunctionComponent<IApplicationGroupsPanelProps> = 
 name: applicationgroups
 type: core
 options:
-  group: ["namespace", "name"]`}
+  groups: ["namespace", "name"]`}
         documentation="https://kobs.io/main/plugins/#topology"
       />
     );

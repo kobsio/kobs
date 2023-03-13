@@ -1812,7 +1812,7 @@ const rowWithCustomColumns = (cluster: string | undefined, manifest: any, column
       const values = JSONPath<string[]>({ json: manifest, path: column.jsonPath });
 
       if (column.type === 'date' && values.length === 1) {
-        cells.push(formatTime(Math.floor(new Date(values[0]).getTime() / 1000)));
+        cells.push(formatTime(new Date(values[0])));
       } else if (values.length === 1) {
         cells.push(values[0]);
       } else {

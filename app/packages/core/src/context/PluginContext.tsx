@@ -19,10 +19,11 @@ export interface IPluginPageProps {
  * plugin. This is the `instance` for which the panel should be shown and the `times` for a user selected time range in
  * a dashboard (where the panel is displayed).
  */
-export interface IPluginPanelProps {
+export interface IPluginPanelProps<T> {
   description?: string;
   instance: IPluginInstance;
-  options?: unknown;
+  options?: T;
+  setTimes: (times: ITimes) => void;
   times: ITimes;
   title: string;
 }
@@ -36,7 +37,8 @@ export interface IPlugin {
   description: string;
   icon?: ReactNode;
   page?: FunctionComponent<IPluginPageProps>;
-  panel?: FunctionComponent<IPluginPanelProps>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  panel?: FunctionComponent<IPluginPanelProps<any>>;
   type: string;
 }
 
@@ -200,4 +202,21 @@ export const PluginContextProvider: FunctionComponent<IPluginContextProviderProp
       {children}
     </PluginContext.Provider>
   );
+};
+
+/**
+ * `pluginBasePath` can be used to get the base path to a plugin page based on the provided `instance`.
+ */
+export const pluginBasePath = (instance: IPluginInstance): string => {
+  return `/plugins/${encodeURIComponent(instance.cluster)}/${encodeURIComponent(instance.type)}/${encodeURIComponent(
+    instance.name,
+  )}`;
+};
+
+/**
+ * `pluginBasePath` can be used to get the base path to a plugin page based on the provided `cluster`, `type` and
+ * `name`.
+ */
+export const pluginBasePathAlt = (cluster: string, type: string, name: string): string => {
+  return `/plugins/${encodeURIComponent(cluster)}/${encodeURIComponent(type)}/${encodeURIComponent(name)}`;
 };

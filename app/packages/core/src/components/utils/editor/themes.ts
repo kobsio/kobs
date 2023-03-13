@@ -1130,3 +1130,25 @@ export const nordTheme: monaco.editor.IStandaloneThemeData = {
   ],
   encodedTokensColors: [],
 };
+
+/**
+ * `muiTheme` implements a theme for monaco based on our MUI theme. The theme is used in the `MUIEditor` component were
+ * we want to have a similar style as for a normal MUI `Textfield` component.
+ */
+export const muiTheme: monaco.editor.IStandaloneThemeData = {
+  inherit: true,
+  base: 'vs-dark',
+  colors: {
+    'editor.background': '#1b2635',
+    'editor.foreground': '#ffffff',
+    'editorCursor.foreground': '#ffffff',
+    'editorSuggestWidget.background': '#233044',
+    'editorSuggestWidget.border': '#233044',
+    'editorSuggestWidget.foreground': '#ffffff',
+    'editorSuggestWidget.focusHighlightForeground': '#407ad6',
+    'editorSuggestWidget.highlightForeground': '#407ad6',
+    'editorSuggestWidget.selectedBackground': '#1e293b',
+    'editorSuggestWidget.selectedForeground': '#ffffff',
+  },
+  rules: [],
+};

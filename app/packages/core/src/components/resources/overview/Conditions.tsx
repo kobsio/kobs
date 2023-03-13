@@ -41,7 +41,7 @@ const Conditions: FunctionComponent<IConditionsProps> = ({ conditions }) => {
             title={
               <div>
                 {condition.lastTransitionTime
-                  ? formatTime(Math.floor(new Date(condition.lastTransitionTime).getTime() / 1000))
+                  ? formatTime(new Date(condition.lastTransitionTime))
                   : 'Last Transition Time not found'}
                 {condition.reason ? ` - ${condition.reason}` : ''}
                 {condition.message ? <div>{condition.message}</div> : ''}

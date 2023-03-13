@@ -268,7 +268,7 @@ const ResourceDetails: FunctionComponent<IResourceDetailsProps> = ({
       <Box key="yaml" hidden={activeTab !== 'yaml'} py={6}>
         {activeTab === 'yaml' && (
           <Box height="calc(100vh - 161px)">
-            <Editor language="yaml" readOnly={true} value={yaml.dump(manifest)} minimap={true} lineNumbers={true} />
+            <Editor language="yaml" readOnly={true} value={yaml.dump(manifest)} />
           </Box>
         )}
       </Box>

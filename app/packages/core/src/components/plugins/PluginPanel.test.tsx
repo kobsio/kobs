@@ -76,13 +76,16 @@ describe('PluginPanel', () => {
             timeEnd: Math.floor(Date.now() / 1000),
             timeStart: Math.floor(Date.now() / 1000) - 900,
           }}
+          setTimes={() => {
+            // nothing
+          }}
         />
       </PluginContext.Provider>,
     );
   };
 
   it('should render the plugin panel with the given instance props', async () => {
-    const TestPanel: FunctionComponent<IPluginPanelProps> = ({ instance, title }) => {
+    const TestPanel: FunctionComponent<IPluginPanelProps<unknown>> = ({ instance, title }) => {
       return (
         <>
           my plugin with props cluster={instance.cluster} id={instance.id} name={instance.name} type={instance.type}
@@ -134,7 +137,7 @@ describe('PluginPanel', () => {
   });
 
   it('should handle errors from plugin', async () => {
-    const TestPanel: FunctionComponent<IPluginPanelProps> = ({ instance, title }) => {
+    const TestPanel: FunctionComponent<IPluginPanelProps<unknown>> = ({ instance, title }) => {
       const test: string[] | undefined = undefined;
 
       return (

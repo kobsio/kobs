@@ -12,8 +12,10 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/websocket v1.4.2
+	github.com/mitchellh/mapstructure v1.4.1
 	github.com/orlangure/gnomock v0.24.0
 	github.com/prometheus/client_golang v1.14.0
+	github.com/prometheus/common v0.37.0
 	github.com/stretchr/testify v1.8.1
 	go.mongodb.org/mongo-driver v1.11.1
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.35.0
@@ -78,7 +80,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
-	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

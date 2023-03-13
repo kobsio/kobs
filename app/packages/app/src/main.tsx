@@ -1,4 +1,5 @@
 import { App } from '@kobsio/core';
+import Prometheus from '@kobsio/prometheus';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -11,6 +12,6 @@ import '@kobsio/core/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <App plugins={[]} />
+    <App plugins={[Prometheus]} />
   </StrictMode>,
 );

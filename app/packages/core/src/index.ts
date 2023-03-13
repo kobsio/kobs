@@ -1,6 +1,6 @@
 export * from './components/app/App';
 
-export * from './components/utils/charts/charts';
+export * from './components/utils/editor/Editor';
 export * from './components/utils/DetailsDrawer';
 export * from './components/utils/Options';
 export * from './components/utils/Page';
@@ -11,13 +11,18 @@ export * from './components/utils/UseQueryWrapper';
 
 export * from './context/APIContext';
 export * from './context/AppContext';
+export * from './context/GridContext';
 export * from './context/PluginContext';
 export * from './context/QueryClientProvider';
 
 export * from './utils/hooks/useDebounce';
 export * from './utils/hooks/useDimensions';
+export * from './utils/hooks/useLatest';
 export * from './utils/hooks/useQueryState';
 export * from './utils/hooks/useMemoizedFn';
 export * from './utils/hooks/useUpdate';
 
+export * from './utils/charts';
+export * from './utils/fileDownload';
+export * from './utils/numbers';
 export * from './utils/times';
