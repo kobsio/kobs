@@ -60,7 +60,7 @@ type Row struct {
 	Title       string  `json:"title,omitempty" bson:"title"`
 	Description string  `json:"description,omitempty" bson:"description"`
 	If          string  `json:"if,omitempty" bson:"if"`
-	AutoHeight  string  `json:"autoHeight,omitempty" bson:"autoHeight"`
+	AutoHeight  bool    `json:"autoHeight,omitempty" bson:"autoHeight"`
 	Panels      []Panel `json:"panels" bson:"panels"`
 }
 
