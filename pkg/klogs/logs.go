@@ -18,7 +18,6 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	var buckets []Bucket
 	var documents []map[string]any
 	var timeConditions string
-	var interval int64
 
 	fields := i.defaultFields
 	queryStartTime := time.Now()
@@ -44,17 +43,9 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 		return nil, nil, 0, 0, nil, fmt.Errorf("invalid time range")
 	}
 
-	// We have to define the interval for the selected time range. By default we are creating 30 buckets in the
-	// following SQL query, but for time ranges with less then 30 seconds we have to create less buckets.
-	switch seconds := timeEnd - timeStart; {
-	case seconds <= 2:
-		interval = (timeEnd - timeStart) / 1
-	case seconds <= 10:
-		interval = (timeEnd - timeStart) / 5
-	case seconds <= 30:
-		interval = (timeEnd - timeStart) / 10
-	default:
-		interval = (timeEnd - timeStart) / 30
+	var interval int64 = 1
+	if seconds := timeEnd - timeStart; seconds >= 30 {
+		interval = seconds / 30
 	}
 
 	// Now we are creating 30 buckets for the selected time range and count the documents in each bucket. This is used
