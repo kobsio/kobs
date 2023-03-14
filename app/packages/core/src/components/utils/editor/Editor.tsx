@@ -40,6 +40,9 @@ export const Editor: FunctionComponent<IEditorProps> = ({ language, readOnly = f
         fontFamily: 'monospace',
         readOnly: readOnly,
         scrollBeyondLastLine: false,
+        scrollbar: {
+          alwaysConsumeMouseWheel: false,
+        },
       }}
     />
   );

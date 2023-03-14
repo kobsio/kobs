@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { FunctionComponent, useEffect, useState } from 'react';
 
-import { ITimes, TTime, formatTimestamp, timeOptions } from '../../utils/times';
+import { ITimes, TTimeQuick, formatTimestamp, timeOptions } from '../../utils/times';
 
 export type TOptionsAdditionalFields = 'text' | 'select';
 
@@ -137,7 +137,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
    * `quick` is the function for the quick select option. We always use the current time in seconds and substract the
    * seconds specified in the quick select option.
    */
-  const quick = (t: TTime) => {
+  const quick = (t: TTimeQuick) => {
     setOptions(
       {
         time: t,

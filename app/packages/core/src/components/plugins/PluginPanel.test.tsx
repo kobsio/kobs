@@ -71,13 +71,11 @@ describe('PluginPanel', () => {
           name={name}
           type={type}
           title=""
+          setTimes={vi.fn()}
           times={{
             time: 'last15Minutes',
             timeEnd: Math.floor(Date.now() / 1000),
             timeStart: Math.floor(Date.now() / 1000) - 900,
-          }}
-          setTimes={() => {
-            // nothing
           }}
         />
       </PluginContext.Provider>,

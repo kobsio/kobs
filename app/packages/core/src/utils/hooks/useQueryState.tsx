@@ -1,14 +1,19 @@
-import queryString from 'query-string';
+import queryString, { ParsedQuery } from 'query-string';
 import { SetStateAction, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useMemoizedFn } from './useMemoizedFn';
 import { useUpdate } from './useUpdate';
 
-import { timeOptions, times } from '../times';
+import { timeOptions, times, TTime, TTimeQuick } from '../times';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryState = Record<string, any>;
+type PQ = ParsedQuery<string | number | boolean>;
+
+const queryStringHasTime = (q: PQ): q is { time: TTimeQuick } & PQ => {
+  return 'time' in q && typeof q.time === 'string' && times.includes(q.time as TTime) && q.time !== 'custom';
+};
 
 /**
  * `useQueryState` is a React hook, which allows us to store the state into a url query.
@@ -52,12 +57,7 @@ export const useQueryState = <S extends QueryState = QueryState>(initialState?: 
     // parameter contains a valid time, so that we are really using the "last 15 minutes" and not the times from the
     // `timeEnd` and `timeStart` parameters.
     if (initialQueryFromUrl.current === true) {
-      if (
-        'time' in parsedQueryString &&
-        typeof parsedQueryString.time === 'string' &&
-        times.includes(parsedQueryString.time) &&
-        parsedQueryString.time !== 'custom'
-      ) {
+      if (queryStringHasTime(parsedQueryString)) {
         parsedQueryString.timeEnd = Math.floor(Date.now() / 1000);
         parsedQueryString.timeStart = Math.floor(Date.now() / 1000) - timeOptions[parsedQueryString.time].seconds;
       }
@@ -99,5 +99,5 @@ export const useQueryState = <S extends QueryState = QueryState>(initialState?: 
     }
   };
 
-  return [targetQuery as S, useMemoizedFn(setState)] as const;
+  return [targetQuery as S, useMemoizedFn(setState) as (s: React.SetStateAction<Partial<S>>) => void] as const;
 };

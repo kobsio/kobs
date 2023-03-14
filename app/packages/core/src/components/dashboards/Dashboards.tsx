@@ -53,7 +53,7 @@ interface IDashboardGridProps {
  * The `DashboardGrid` component is used to render a list of `panels` in a responsive grid layout. We are using the
  * `react-grid-layout` package to render the grid, so that a user can also drage and resize the panels in the app.
  */
-const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times, setTimes }) => {
+const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, setTimes, times }) => {
   const [layouts, setLayouts] = useState<ReactGridLayout.Layouts>();
 
   const ResponsiveReactGridLayout = useMemo(() => WidthProvider(Responsive), []);
@@ -87,8 +87,8 @@ const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times, 
             title={panel.title}
             description={panel.description}
             options={panel.plugin.options}
-            times={times}
             setTimes={setTimes}
+            times={times}
           />
         </div>
       ))}
@@ -104,7 +104,7 @@ const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, times, 
  * This should mainly be used for dashboards which are just containing one component, e.g. just display a logs panel,
  * traces panel or the documentation for an app.
  */
-const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, times, setTimes }) => {
+const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, setTimes, times }) => {
   return (
     <Grid container={true} spacing={4} columns={12}>
       {panels.map((panel) => (
@@ -116,8 +116,8 @@ const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panel
             title={panel.title}
             description={panel.description}
             options={panel.plugin.options}
-            times={times}
             setTimes={setTimes}
+            times={times}
           />
         </Grid>
       ))}

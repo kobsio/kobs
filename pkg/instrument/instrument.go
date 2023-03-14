@@ -19,7 +19,9 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/propagation"
-	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
+
+	"go.opentelemetry.io/otel/semconv/v1.17.0/httpconv"
+	"go.opentelemetry.io/otel/semconv/v1.17.0/netconv"
 	oteltrace "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -84,9 +86,10 @@ func handleInstrumentation(reqInfo *RequestInfo) func(next http.Handler) http.Ha
 				// In go-chi/chi, full route pattern could only be extracted once the request is executed
 				// See: https://github.com/go-chi/chi/issues/150#issuecomment-278850733
 				routeStr := strings.Join(chi.RouteContext(r.Context()).RoutePatterns, "")
-				span.SetAttributes(semconv.HTTPServerAttributesFromHTTPRequest("http.server", routeStr, r)...)
-				span.SetAttributes(semconv.NetAttributesFromHTTPRequest("tcp", r)...)
-				span.SetAttributes(semconv.EndUserAttributesFromHTTPRequest(r)...)
+				span.SetAttributes(httpconv.ServerRequest(routeStr, r)...)
+				span.SetAttributes(netconv.Transport("tcp"))
+				span.SetAttributes(httpconv.ClientRequest(r)...)
+				span.SetAttributes(httpconv.ServerRequest("", r)...)
 				span.SetAttributes(otelhttp.ReadBytesKey.Int64(r.ContentLength))
 
 				if requestID := middleware.GetReqID(ctx); requestID != "" {
@@ -96,8 +99,7 @@ func handleInstrumentation(reqInfo *RequestInfo) func(next http.Handler) http.Ha
 				span.SetName(fmt.Sprintf("%s:%s", r.Method, routeStr))
 
 				if err := recover(); err != nil {
-					span.SetAttributes(semconv.HTTPAttributesFromHTTPStatusCode(500)...)
-					span.SetStatus(semconv.SpanStatusFromHTTPStatusCode(500))
+					span.SetAttributes(httpconv.ClientResponse(&http.Response{StatusCode: 500})...)
 					span.AddEvent("panic", oteltrace.WithAttributes(
 						attribute.String("kind", "panic"),
 						attribute.String("message", fmt.Sprintf("%v", err)),
@@ -141,8 +143,7 @@ func handleInstrumentation(reqInfo *RequestInfo) func(next http.Handler) http.Ha
 				respSizeSum.WithLabelValues(strconv.Itoa(status), r.Method, path).Observe(float64(written))
 
 				span.SetAttributes(otelhttp.WroteBytesKey.Int64(written))
-				span.SetAttributes(semconv.HTTPAttributesFromHTTPStatusCode(status)...)
-				span.SetStatus(semconv.SpanStatusFromHTTPStatusCode(status))
+				span.SetAttributes(httpconv.ClientResponse(&http.Response{StatusCode: status})...)
 
 				scheme := "http"
 				if r.TLS != nil {

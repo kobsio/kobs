@@ -1,6 +1,8 @@
+import { TTimeQuick } from '../utils/times';
+
 export interface IDashboard {
   cluster: string;
-  defaultTime?: string;
+  defaultTime?: TTimeQuick;
   description?: string;
   hideToolbar?: boolean;
   id: string;

@@ -34,7 +34,7 @@ export interface ITimes {
  * `times` is an array with all valid options for the `TTime` type. It can be used to validate user provided input, so
  * that we are save that the input matchs the `TTime` type.
  */
-export const times = [
+export const times: TTime[] = [
   'custom',
   'last12Hours',
   'last15Minutes',
@@ -52,17 +52,20 @@ export const times = [
   'last90Days',
 ];
 
+export type TTimeQuick = Exclude<TTime, 'custom'>;
+
 /**
  * `timeOptions` is an object with all `TTime` options as key and an object with a `label` and `seconds` key as value.
  * The `label` key can be used to show a prettified text for the selected time option, while the `seconds` key is used
  * to calculate the start time based on the selected time (the end time always defaults to now).
  */
-export const timeOptions: {
-  [key: string]: {
+export const timeOptions: Record<
+  TTimeQuick,
+  {
     label: string;
     seconds: number;
-  };
-} = {
+  }
+> = {
   last12Hours: { label: 'Last 12 Hours', seconds: 43200 },
   last15Minutes: { label: 'Last 15 Minutes', seconds: 900 },
   last1Day: { label: 'Last 1 Day', seconds: 86400 },
@@ -128,4 +131,42 @@ export const formatTimestamp = (timestamp: number): string => {
  */
 export const formatTimeString = (time: string): string => {
   return formatTime(new Date(time));
+};
+
+/**
+ * getTimeParams returns a times object for the parsed time parameters from a URL.
+ */
+export const getTimeParams = (
+  params: URLSearchParams,
+  isInitial: boolean,
+  defaultTime: TTimeQuick = 'last15Minutes',
+): ITimes => {
+  const time = params.get('time') as TTime | undefined;
+  const timeEnd = params.get('timeEnd');
+  const timeStart = params.get('timeStart');
+
+  if (time && times.includes(time) && time !== 'custom') {
+    if (isInitial) {
+      return {
+        time: time as TTime,
+        timeEnd: Math.floor(Date.now() / 1000),
+        timeStart: Math.floor(Date.now() / 1000) - timeOptions[time].seconds,
+      };
+    }
+
+    return {
+      time: time as TTime,
+      timeEnd: timeEnd ? parseInt(timeEnd) : Math.floor(Date.now() / 1000),
+      timeStart: timeStart ? parseInt(timeStart) : Math.floor(Date.now() / 1000) - timeOptions[time].seconds,
+    };
+  }
+
+  const defaultTimeEnd = Math.floor(Date.now() / 1000);
+  const defaultTimeStart = Math.floor(Date.now() / 1000) - timeOptions[defaultTime].seconds;
+
+  return {
+    time: time && times.includes(time) ? (time as TTime) : defaultTime,
+    timeEnd: timeEnd ? parseInt(timeEnd as string) : defaultTimeEnd,
+    timeStart: timeStart ? parseInt(timeStart as string) : defaultTimeStart,
+  };
 };
