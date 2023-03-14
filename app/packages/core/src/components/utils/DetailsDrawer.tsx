@@ -8,9 +8,9 @@ interface IDetailsDrawerProps {
   children: ReactNode;
   onClose: () => void;
   open: boolean;
+  size: 'small' | 'large';
   subtitle?: string;
   title: string;
-  width?: number;
 }
 
 /**
@@ -28,7 +28,7 @@ export const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
   open,
   subtitle,
   title,
-  width = 450,
+  size,
 }) => {
   return (
     <Drawer
@@ -41,7 +41,7 @@ export const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
         },
       }}
     >
-      <Box sx={{ px: 4, width: { md: width, xs: '100vw' } }} aria-label="drawer">
+      <Box sx={{ px: 4, width: { md: size === 'small' ? 450 : 750, xs: '100vw' } }} aria-label="drawer">
         <Toolbar
           sx={{
             '&.MuiToolbar-root': {

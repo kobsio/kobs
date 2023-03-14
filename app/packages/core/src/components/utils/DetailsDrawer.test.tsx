@@ -6,6 +6,7 @@ describe('Page', () => {
   it('should render title and children', async () => {
     render(
       <DetailsDrawer
+        size="small"
         open={true}
         onClose={() => {
           // noop
@@ -23,6 +24,7 @@ describe('Page', () => {
   it('should render subtitle', async () => {
     render(
       <DetailsDrawer
+        size="small"
         open={true}
         onClose={() => {
           // noop
@@ -42,6 +44,7 @@ describe('Page', () => {
   it('should render actions', async () => {
     render(
       <DetailsDrawer
+        size="small"
         open={true}
         onClose={() => {
           // noop

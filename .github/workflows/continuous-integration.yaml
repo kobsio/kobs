@@ -54,7 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        plugin: [app, core, prometheus]
+        plugin:
+          - app
+          - core
+          - harbor
+          - prometheus
     defaults:
       run:
         working-directory: app

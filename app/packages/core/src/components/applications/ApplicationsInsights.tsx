@@ -22,6 +22,7 @@ interface IApplicationInsightsProps {
 const ApplicationInsights: FunctionComponent<IApplicationInsightsProps> = ({ application, onClose, open }) => {
   return (
     <DetailsDrawer
+      size="small"
       open={open}
       onClose={onClose}
       title={application.name}

@@ -123,6 +123,14 @@ export const formatTimestamp = (timestamp: number): string => {
 };
 
 /**
+ * `formatTimeString` formats an given `time` in a uniform way accross the kobs UI. It creates a new date from the
+ * provided time string and calls the `formatTime` function.
+ */
+export const formatTimeString = (time: string): string => {
+  return formatTime(new Date(time));
+};
+
+/**
  * getTimeParams returns a times object for the parsed time parameters from a URL.
  */
 export const getTimeParams = (
