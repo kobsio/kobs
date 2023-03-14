@@ -226,7 +226,7 @@ const ResourceDetails: FunctionComponent<IResourceDetailsProps> = ({
 
   return (
     <DetailsDrawer
-      width={750}
+      size="large"
       open={open}
       onClose={onClose}
       title={name}

@@ -61,8 +61,14 @@ export const UseQueryWrapper: FunctionComponent<IUseQueryWrapperProps> = ({
           )
         }
       >
-        <AlertTitle>{errorTitle}</AlertTitle>
-        {error?.message ?? ''}
+        {error?.message ? (
+          <>
+            <AlertTitle>{errorTitle}</AlertTitle>
+            {error.message}
+          </>
+        ) : (
+          errorTitle
+        )}
       </Alert>
     );
   }
@@ -70,8 +76,14 @@ export const UseQueryWrapper: FunctionComponent<IUseQueryWrapperProps> = ({
   if (isNoData) {
     return (
       <Alert severity="info" action={noDataActions}>
-        <AlertTitle>{noDataTitle}</AlertTitle>
-        {noDataMessage}
+        {noDataMessage ? (
+          <>
+            <AlertTitle>{noDataTitle}</AlertTitle>
+            {noDataMessage}
+          </>
+        ) : (
+          noDataTitle
+        )}
       </Alert>
     );
   }

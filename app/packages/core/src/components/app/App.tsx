@@ -128,7 +128,7 @@ export const App: FunctionComponent<IAppProps> = ({ icons, plugins }) => {
                             <Route path="/resources/logs" element={<ResourcesLogsPage />} />
                             <Route path="/resources/terminal" element={<ResourcesTerminalPage />} />
                             <Route path="/plugins" element={<PluginsPage />} />
-                            <Route path="/plugins/:cluster/:type/:name" element={<PluginPage />} />
+                            <Route path="/plugins/:cluster/:type/:name/*" element={<PluginPage />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>
