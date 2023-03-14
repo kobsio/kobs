@@ -93,12 +93,12 @@ const TopologyPanel: FunctionComponent<ITopologyPanelProps> = ({ title, descript
         message="Invalid options for topology plugin"
         details="One of the required options: cluster, namespace or name is missing"
         example={`plugin:
-name: topology
-type: core
-options:
-  cluster: "<% $.cluster %>"
-  namespace: "<% $.namespace %>"
-  name: "<% $.name %>"`}
+  name: topology
+  type: core
+  options:
+    cluster: "<% $.cluster %>"
+    namespace: "<% $.namespace %>"
+    name: "<% $.name %>"`}
         documentation="https://kobs.io/main/plugins/#topology"
       />
     );

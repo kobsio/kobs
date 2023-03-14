@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/kobsio/kobs/pkg/hub/clusters"
-	"github.com/kobsio/kobs/pkg/hub/plugins"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/plugins/prometheus/instance"
@@ -23,8 +22,7 @@ import (
 // the instances which were configured by a user.
 type Router struct {
 	*chi.Mux
-	clustersClient clusters.Client
-	instances      []instance.Instance
+	instances []instance.Instance
 }
 
 // getVariableRequest is the format of the request body for the getVariable request. The request body must contain a
@@ -74,27 +72,11 @@ func (router *Router) getInstance(name string) instance.Instance {
 // required to set the time range in which we should use for the values. The Prometheus instance which should be used is
 // defined via the `x-kobs-plugin` header. All values are then passed to this instance via the GetVariable method.
 func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
-	cluster := r.Header.Get("x-kobs-cluster")
 	name := r.Header.Get("x-kobs-plugin")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.Debug(r.Context(), "getVariable", zap.String("cluster", cluster), zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
-
-	// If the `clustersClient` is not nil and the provided cluster name does not matche the name of the hub, we proxy
-	// the request to the corresponding cluster. If the hub cluster was selected the request will be directly handled
-	// within the hub and the configured Prometheus instances.
-	if router.clustersClient != nil && cluster != plugins.HubClusterName {
-		c := router.clustersClient.GetCluster(cluster)
-		if c == nil {
-			log.Error(r.Context(), "Invalid cluster name", zap.String("name", name))
-			errresponse.Render(w, r, http.StatusBadRequest, "Invalid cluster name")
-			return
-		}
-
-		c.Proxy(w, r)
-		return
-	}
+	log.Debug(r.Context(), "getVariable", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -140,27 +122,11 @@ func (router *Router) getVariable(w http.ResponseWriter, r *http.Request) {
 // getInsight returns the datapoints to render a insight chart for an application using the specified Prometheus
 // instance and query.
 func (router *Router) getInsight(w http.ResponseWriter, r *http.Request) {
-	cluster := r.Header.Get("x-kobs-cluster")
 	name := r.Header.Get("x-kobs-plugin")
 	timeStart := r.URL.Query().Get("timeStart")
 	timeEnd := r.URL.Query().Get("timeEnd")
 
-	log.Debug(r.Context(), "getInsight", zap.String("cluster", cluster), zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
-
-	// If the `clustersClient` is not nil and the provided cluster name does not matche the name of the hub, we proxy
-	// the request to the corresponding cluster. If the hub cluster was selected the request will be directly handled
-	// within the hub and the configured Prometheus instances.
-	if router.clustersClient != nil && cluster != plugins.HubClusterName {
-		c := router.clustersClient.GetCluster(cluster)
-		if c == nil {
-			log.Error(r.Context(), "Invalid cluster name", zap.String("name", name))
-			errresponse.Render(w, r, http.StatusBadRequest, "Invalid cluster name")
-			return
-		}
-
-		c.Proxy(w, r)
-		return
-	}
+	log.Debug(r.Context(), "getInsight", zap.String("name", name), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -213,25 +179,9 @@ func (router *Router) getInsight(w http.ResponseWriter, r *http.Request) {
 // select the correct Prometheus instance, by the name path paramter. After that we can use the GetMetrics function of
 // the instance to get a list of metrics.
 func (router *Router) getRange(w http.ResponseWriter, r *http.Request) {
-	cluster := r.Header.Get("x-kobs-cluster")
 	name := r.Header.Get("x-kobs-plugin")
 
-	log.Debug(r.Context(), "getMetrics", zap.String("cluster", cluster), zap.String("name", name))
-
-	// If the `clustersClient` is not nil and the provided cluster name does not matche the name of the hub, we proxy
-	// the request to the corresponding cluster. If the hub cluster was selected the request will be directly handled
-	// within the hub and the configured Prometheus instances.
-	if router.clustersClient != nil && cluster != plugins.HubClusterName {
-		c := router.clustersClient.GetCluster(cluster)
-		if c == nil {
-			log.Error(r.Context(), "Invalid cluster name", zap.String("name", name))
-			errresponse.Render(w, r, http.StatusBadRequest, "Invalid cluster name")
-			return
-		}
-
-		c.Proxy(w, r)
-		return
-	}
+	log.Debug(r.Context(), "getMetrics", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -264,25 +214,9 @@ func (router *Router) getRange(w http.ResponseWriter, r *http.Request) {
 // parameter. After we got the Prometheus instance, we are calling the GetInstant function of this instance to get a
 // map of rows, which is then returned to the user.
 func (router *Router) getInstant(w http.ResponseWriter, r *http.Request) {
-	cluster := r.Header.Get("x-kobs-cluster")
 	name := r.Header.Get("x-kobs-plugin")
 
 	log.Debug(r.Context(), "getTable", zap.String("name", name))
-
-	// If the `clustersClient` is not nil and the provided cluster name does not matche the name of the hub, we proxy
-	// the request to the corresponding cluster. If the hub cluster was selected the request will be directly handled
-	// within the hub and the configured Prometheus instances.
-	if router.clustersClient != nil && cluster != plugins.HubClusterName {
-		c := router.clustersClient.GetCluster(cluster)
-		if c == nil {
-			log.Error(r.Context(), "Invalid cluster name", zap.String("name", name))
-			errresponse.Render(w, r, http.StatusBadRequest, "Invalid cluster name")
-			return
-		}
-
-		c.Proxy(w, r)
-		return
-	}
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -314,25 +248,9 @@ func (router *Router) getInstant(w http.ResponseWriter, r *http.Request) {
 // getCompletions returns a list of completions for the Prometheus query editor. Currently it only returns all available
 // metrics.
 func (router *Router) getCompletions(w http.ResponseWriter, r *http.Request) {
-	cluster := r.Header.Get("x-kobs-cluster")
 	name := r.Header.Get("x-kobs-plugin")
 
-	log.Debug(r.Context(), "getCompletions", zap.String("cluster", cluster), zap.String("name", name))
-
-	// If the `clustersClient` is not nil and the provided cluster name does not matche the name of the hub, we proxy
-	// the request to the corresponding cluster. If the hub cluster was selected the request will be directly handled
-	// within the hub and the configured Prometheus instances.
-	if router.clustersClient != nil && cluster != plugins.HubClusterName {
-		c := router.clustersClient.GetCluster(cluster)
-		if c == nil {
-			log.Error(r.Context(), "Invalid cluster name", zap.String("name", name))
-			errresponse.Render(w, r, http.StatusBadRequest, "Invalid cluster name")
-			return
-		}
-
-		c.Proxy(w, r)
-		return
-	}
+	log.Debug(r.Context(), "getCompletions", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -367,7 +285,6 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 
 	router := Router{
 		chi.NewRouter(),
-		clustersClient,
 		prometheusInstances,
 	}
 

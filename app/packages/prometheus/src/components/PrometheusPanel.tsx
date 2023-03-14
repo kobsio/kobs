@@ -533,13 +533,13 @@ const PrometheusPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
         message="Invalid options for Prometheus plugin"
         details="One of the required options: 'type' or 'queries' is missing"
         example={`plugin:
-name: prometheus
-type: prometheus
-options:
-  type: line
-  queries:
-    - label: "{% .instance %}"
-      query: sum(node_load1) by (instance)`}
+  name: prometheus
+  type: prometheus
+  options:
+    type: line
+    queries:
+      - label: "{% .instance %}"
+        query: sum(node_load1) by (instance)`}
         documentation="https://kobs.io/main/plugins/prometheus"
       />
     );

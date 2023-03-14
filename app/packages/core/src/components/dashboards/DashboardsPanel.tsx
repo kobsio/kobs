@@ -29,20 +29,20 @@ const DashboardsPanel: FunctionComponent<IDashboardsPanelProps> = ({ title, desc
         message="Invalid options for dashboards plugin"
         details="One of the required options is missing"
         example={`plugin:
-name: dashboards
-type: core
-options:
-  - title: My Dashboards Page
-    description: My Dashboards Page Description
-    dashboards:
-      - title: Dashboard 1
-        cluster: cluster1
-        namespace: namespace1
-        name: name1
-      - title: Dashboard 2
-        cluster: cluster2
-        namespace: namespace2
-        name: name2`}
+  name: dashboards
+  type: core
+  options:
+    - title: My Dashboards Page
+      description: My Dashboards Page Description
+      dashboards:
+        - title: Dashboard 1
+          cluster: cluster1
+          namespace: namespace1
+          name: name1
+        - title: Dashboard 2
+          cluster: cluster2
+          namespace: namespace2
+          name: name2`}
         documentation="https://kobs.io/main/plugins/#topology"
       />
     );

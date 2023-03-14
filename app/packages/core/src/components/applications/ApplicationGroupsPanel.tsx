@@ -309,10 +309,10 @@ const ApplicationGroupsPanel: FunctionComponent<IApplicationGroupsPanelProps> = 
         message="Invalid options for application groups plugin"
         details="The groups option is invalid"
         example={`plugin:
-name: applicationgroups
-type: core
-options:
-  groups: ["namespace", "name"]`}
+  name: applicationgroups
+  type: core
+  options:
+    groups: ["namespace", "name"]`}
         documentation="https://kobs.io/main/plugins/#topology"
       />
     );
