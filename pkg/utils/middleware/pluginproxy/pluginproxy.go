@@ -9,10 +9,9 @@ import (
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 )
 
-// New creates a middleware for directing requests to the desired cluster target
-// if the target is the hub, the request is handled internally
-// if the target is anything else, the request is proxied
-// to the instance specified in the header 'x-kobs-cluster'
+// New creates a middleware for directing requests to the desired cluster:
+//   - If the cluster is the hub, the request is handled internally
+//   - If the cluster is anything else, the request is proxied to the instance specified in the header 'x-kobs-cluster'
 func New(clustersClient clusters.Client) func(http.Handler) http.Handler {
 	proxy := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
