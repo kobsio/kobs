@@ -2,7 +2,7 @@ import MonacoEditorReact, { Monaco } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { FunctionComponent, useState } from 'react';
 
-import { setupPromQL, setupMonaco, setupSignalSciences } from './monaco';
+import { setupPromQL, setupMonaco, setupKlogs, setupSignalSciences } from './monaco';
 import { muiTheme, nordTheme } from './themes';
 
 import { useLatest } from '../../../utils/hooks/useLatest';
@@ -89,6 +89,10 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
         break;
       default:
         break;
+    }
+
+    if (language === 'klogs') {
+      setupKlogs(monaco, loadCompletionItems);
     }
   };
 

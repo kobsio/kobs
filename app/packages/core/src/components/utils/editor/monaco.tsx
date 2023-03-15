@@ -10,6 +10,7 @@ import CompletionItem = monaco.languages.CompletionItem;
 import ProviderResult = monaco.languages.ProviderResult;
 import CompletionList = monaco.languages.CompletionList;
 
+import { klogsLanguageDefinition } from './klogs';
 import { signalsciencesLanguageDefinition } from './languages/signalsciences';
 import yamlWorker from './yaml.worker.js?worker';
 
@@ -122,5 +123,51 @@ export const setupSignalSciences = (monaco: Monaco, loadCompletionItems?: () => 
     monaco.languages.setMonarchTokensProvider(signalsciencesLanguageDefinition.id, mod.language);
     monaco.languages.setLanguageConfiguration(signalsciencesLanguageDefinition.id, mod.languageConfiguration);
     monaco.languages.registerCompletionItemProvider(signalsciencesLanguageDefinition.id, mod.completionItemProvider);
+  }
+};
+
+/**
+ * `KLOGS_SETUP_STARTED` is a constants which allows us to check if the `setup` functions was already run, so
+ * that the setup function is only run once.
+ */
+let KLOGS_SETUP_STARTED = false;
+
+/**
+ * `setupKlogs` runs the setup for the klogs query language support.
+ * It adds syntax highlighting and autocompletion.
+ */
+export const setupKlogs = (monaco: Monaco, loadCompletionItems?: () => Promise<string[]>) => {
+  if (KLOGS_SETUP_STARTED === false) {
+    KLOGS_SETUP_STARTED = true;
+
+    const mod = klogsLanguageDefinition.loader();
+    monaco.languages.register({
+      aliases: klogsLanguageDefinition.aliases,
+      extensions: klogsLanguageDefinition.extensions,
+      id: klogsLanguageDefinition.id,
+      mimetypes: klogsLanguageDefinition.mimetypes,
+    });
+
+    monaco.languages.setMonarchTokensProvider(klogsLanguageDefinition.id, mod.language);
+    monaco.languages.setLanguageConfiguration(klogsLanguageDefinition.id, mod.languageConfiguration);
+    monaco.languages.registerCompletionItemProvider(klogsLanguageDefinition.id, mod.completionItemProvider);
+    monaco.languages.registerCompletionItemProvider(klogsLanguageDefinition.id, {
+      provideCompletionItems: async (model, position, context, token) => {
+        if (loadCompletionItems) {
+          const columns = await loadCompletionItems();
+
+          const suggestions = columns.map((value) => {
+            return {
+              insertText: value,
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              kind: monaco.languages.CompletionItemKind.Value,
+              label: value,
+            } as CompletionItem;
+          });
+
+          return { suggestions } as ProviderResult<CompletionList>;
+        }
+      },
+    });
   }
 };

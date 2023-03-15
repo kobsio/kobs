@@ -148,7 +148,13 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       title="klogs"
       description="Fast, scalable and reliable logging using Fluent Bit and ClickHouse."
       subtitle={instance.cluster}
-      toolbar={<LogsToolbar {...search} handlers={{ onChangeTime: handleChangeTime, onSearch: handleSearch }} />}
+      toolbar={
+        <LogsToolbar
+          {...search}
+          handlers={{ onChangeTime: handleChangeTime, onSearch: handleSearch }}
+          instance={instance}
+        />
+      }
       actions={
         <Tooltip title="Documentation">
           <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">

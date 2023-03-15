@@ -1,6 +1,34 @@
-import { ITimes, Options } from '@kobsio/core';
-import { Stack, TextField } from '@mui/material';
-import { FormEvent, FunctionComponent, useEffect, useState } from 'react';
+import { APIContext, IPluginInstance, ITimes, MUIEditor, Options } from '@kobsio/core';
+import { InputBaseComponentProps, Stack, TextField } from '@mui/material';
+import { FormEvent, forwardRef, FunctionComponent, useContext, useEffect, useState } from 'react';
+
+import memo from '../utils/memo';
+
+/**
+ * The `InternalEditor` component is a wrapper around our `MUIEditor` component, which allows us to use the editor
+ * within a `TextField` component of MUI.
+ */
+const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function InternalEditor(props, ref) {
+  const { loadCompletionItems, callSubmit, value, onChange } = props;
+
+  const handleOnChange = (value: string | undefined) => {
+    if (onChange) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      onChange({ target: { value: value ?? '' } });
+    }
+  };
+
+  return (
+    <MUIEditor
+      value={value}
+      onChange={handleOnChange}
+      language="klogs"
+      loadCompletionItems={loadCompletionItems}
+      callSubmit={callSubmit}
+    />
+  );
+});
 
 interface ILogsToolbarHandlers {
   onChangeTime: (times: ITimes) => void;
@@ -8,6 +36,7 @@ interface ILogsToolbarHandlers {
 }
 interface ILogsToolbar extends ITimes {
   handlers: ILogsToolbarHandlers;
+  instance: IPluginInstance;
   query: string;
 }
 
@@ -15,8 +44,16 @@ interface ILogsToolbar extends ITimes {
  * The `LogsToolbar` renders a text field and
  * a date selector for querying logs with the klogs plugin.
  */
-const LogsToolbar: FunctionComponent<ILogsToolbar> = ({ handlers, query: initialQuery, time, timeEnd, timeStart }) => {
+const LogsToolbar: FunctionComponent<ILogsToolbar> = ({
+  handlers,
+  instance,
+  query: initialQuery,
+  time,
+  timeEnd,
+  timeStart,
+}) => {
   const [query, setQuery] = useState<string>(initialQuery);
+  const { client } = useContext(APIContext);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     return handlers.onSearch(query);
@@ -26,6 +63,21 @@ const LogsToolbar: FunctionComponent<ILogsToolbar> = ({ handlers, query: initial
     handlers.onChangeTime(times);
   };
 
+  /**
+   * `loadColumns` loads columns for a specific query
+   * columns are stored in memory, because we want to run this request only a single time
+   * we can't memoize the columns in react state,
+   * because we only have a single chance to pass the loadCompletions func to the MUIEditor.
+   */
+  const loadCompletions = memo(() =>
+    client.get<string[]>(`/api/plugins/klogs/fields?filter=content`, {
+      headers: {
+        'x-kobs-cluster': instance.cluster,
+        'x-kobs-plugin': instance.name,
+      },
+    }),
+  );
+
   useEffect(() => {
     setQuery(initialQuery);
   }, [initialQuery]);
@@ -33,16 +85,18 @@ const LogsToolbar: FunctionComponent<ILogsToolbar> = ({ handlers, query: initial
   return (
     <Stack direction="row" component="form" onSubmit={handleSubmit} spacing={4} alignItems="center">
       <TextField
-        id="query"
-        name="query"
-        label="Query"
-        placeholder="namespace = 'kube-system'"
-        onChange={(e) => {
-          setQuery(e.target.value);
-        }}
         value={query}
-        size="small"
-        sx={{ width: '100%' }}
+        onChange={(e) => setQuery(e.target.value)}
+        InputProps={{
+          inputComponent: InternalEditor,
+          inputProps: {
+            callSubmit: () => {
+              handlers.onSearch(query);
+            },
+            loadCompletionItems: loadCompletions,
+          },
+        }}
+        fullWidth={true}
       />
       <Options
         times={{ time, timeEnd, timeStart }}
