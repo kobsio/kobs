@@ -35,6 +35,8 @@ const TabPanel: FunctionComponent<ITabPanelProps> = ({ index, value, children })
   );
 };
 
+// utility for creating a uri that directs the user to the correct klogs instance, where
+// both the query and fields are already selected
 const uriFromQuery = (instance: IPluginInstance, query: IQuery) => {
   const path = `/plugins/${instance.cluster}/klogs/${instance.name}`;
   const search = queryString.stringify(
@@ -48,8 +50,11 @@ const uriFromQuery = (instance: IPluginInstance, query: IQuery) => {
   return [path, search].join('?');
 };
 
+// shorthand for typeof comparison
 const isString = (v: unknown) => typeof v === 'string';
 
+// type guard for options
+// in future this could be checked with zod (https://zod.dev/)
 const isValid = (options?: IOptions): options is IOptions => {
   if (!options) {
     return false;
@@ -81,6 +86,12 @@ const isValid = (options?: IOptions): options is IOptions => {
   return true;
 };
 
+/**
+ * Panel implements the panel for the klogs plugin
+ * it renders the queries in a table format
+ * depending on the queries, this component will either show a single table
+ * or display tabs, where one tab represents one query of the queries array
+ */
 const Panel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
   description,
   instance,

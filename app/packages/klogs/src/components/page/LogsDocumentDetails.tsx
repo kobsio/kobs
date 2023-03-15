@@ -40,7 +40,6 @@ const DocumentDetailsTableView: FunctionComponent<IDocumentDetailsTableViewProps
                         opacity: 0,
                       }}
                     >
-                      {/* TODO: not all fields are strings */}
                       <IconButton
                         aria-label="add EQ field filter"
                         size="small"
@@ -80,7 +79,7 @@ const DocumentDetailsTableView: FunctionComponent<IDocumentDetailsTableViewProps
                 <TableCell>
                   <Typography sx={{ wordBreak: 'break-all' }}>{value}</Typography>
                 </TableCell>
-                <TableCell /> {/* empty col for action item */}
+                <TableCell />
               </TableRow>
             ))}
         </TableBody>

@@ -1,34 +1,10 @@
-import { APIContext, IPluginInstance, ITimes, MUIEditor, Options } from '@kobsio/core';
-import { InputBaseComponentProps, Stack, TextField } from '@mui/material';
-import { FormEvent, forwardRef, FunctionComponent, useContext, useEffect, useState } from 'react';
+import { APIContext, IPluginInstance, ITimes, Options } from '@kobsio/core';
+import { Stack, TextField } from '@mui/material';
+import { FormEvent, FunctionComponent, useContext, useEffect, useState } from 'react';
+
+import InternalEditor from './InternalEditor';
 
 import memo from '../utils/memo';
-
-/**
- * The `InternalEditor` component is a wrapper around our `MUIEditor` component, which allows us to use the editor
- * within a `TextField` component of MUI.
- */
-const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function InternalEditor(props, ref) {
-  const { loadCompletionItems, callSubmit, value, onChange } = props;
-
-  const handleOnChange = (value: string | undefined) => {
-    if (onChange) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      onChange({ target: { value: value ?? '' } });
-    }
-  };
-
-  return (
-    <MUIEditor
-      value={value}
-      onChange={handleOnChange}
-      language="klogs"
-      loadCompletionItems={loadCompletionItems}
-      callSubmit={callSubmit}
-    />
-  );
-});
 
 interface ILogsToolbarHandlers {
   onChangeTime: (times: ITimes) => void;
@@ -65,12 +41,12 @@ const LogsToolbar: FunctionComponent<ILogsToolbar> = ({
 
   /**
    * `loadColumns` loads columns for a specific query
-   * columns are stored in memory, because we want to run this request only a single time
-   * we can't memoize the columns in react state,
+   * columns are stored in memory, because we want to run this request only once per page load.
+   * columns can't be memoized in react state (useQuery or useState),
    * because we only have a single chance to pass the loadCompletions func to the MUIEditor.
    */
   const loadCompletions = memo(() =>
-    client.get<string[]>(`/api/plugins/klogs/fields?filter=content`, {
+    client.get<string[]>(`/api/plugins/klogs/fields`, {
       headers: {
         'x-kobs-cluster': instance.cluster,
         'x-kobs-plugin': instance.name,

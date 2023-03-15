@@ -16,6 +16,7 @@ import {
   Select,
   Stack,
   ButtonGroup,
+  Typography,
 } from '@mui/material';
 import { FunctionComponent, useEffect, useState } from 'react';
 
@@ -201,16 +202,20 @@ export const Options: FunctionComponent<IOptionsProps> = ({
         <>
           {showSearchButton ? (
             <Button variant="contained" color="primary" onClick={() => setShow(true)}>
-              {times.time === 'custom'
-                ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
-                : timeOptions[times.time].label}
+              <Typography noWrap={true}>
+                {times.time === 'custom'
+                  ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
+                  : timeOptions[times.time].label}
+              </Typography>
             </Button>
           ) : (
             <ButtonGroup variant="contained" color="primary">
               <Button onClick={() => setShow(true)}>
-                {times.time === 'custom'
-                  ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
-                  : timeOptions[times.time].label}
+                <Typography noWrap={true}>
+                  {times.time === 'custom'
+                    ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
+                    : timeOptions[times.time].label}
+                </Typography>
               </Button>
               <Button onClick={refreshTimes}>
                 <Refresh />

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/kobsio/kobs/pkg/utils"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
@@ -29,7 +30,7 @@ func (i *instance) parseOrder(order, orderBy string) string {
 	}
 
 	orderBy = strings.TrimSpace(orderBy)
-	if contains(i.defaultFields, orderBy) || contains(i.materializedColumns, orderBy) {
+	if utils.Contains(i.defaultFields, orderBy) || utils.Contains(i.materializedColumns, orderBy) {
 		return fmt.Sprintf("%s %s", orderBy, order)
 	}
 
@@ -48,27 +49,4 @@ func getBucketTimes(interval, bucketTime, timeStart, timeEnd int64) (int64, int6
 	}
 
 	return bucketTime, bucketTime + interval
-}
-
-// appendIfMissing appends a value to a slice, when this values doesn't exist in the slice already.
-func appendIfMissing(items []string, item string) []string {
-	for _, ele := range items {
-		if ele == item {
-			return items
-		}
-	}
-
-	return append(items, item)
-}
-
-// contains checks if the given slice of string contains the given item. It returns true when the slice contains the
-// given item.
-func contains(items []string, item string) bool {
-	for _, ele := range items {
-		if ele == item {
-			return true
-		}
-	}
-
-	return false
 }

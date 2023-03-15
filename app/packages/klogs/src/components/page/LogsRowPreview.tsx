@@ -24,6 +24,7 @@ const RowPreview: FunctionComponent<IRowPreviewProps> = ({ row }) => {
           WebkitBoxOrient: 'vertical',
           WebkitLineClamp: '2',
           display: '-webkit-box',
+          maxWidth: '100%',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
         }}

@@ -1,6 +1,6 @@
 package klogs
 
-//go:generate mockgen -source=instance.go -destination=./querier_mock.go -package=klogs Querier, Rows
+//go:generate mockgen -source=instance.go -destination=./querier_mock.go -package=klogs Instance, Querier, Rows
 
 import (
 	"context"
@@ -11,6 +11,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/klogs/parser"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/mitchellh/mapstructure"
@@ -36,7 +37,6 @@ type Instance interface {
 	refreshCachedFields() []string
 	GetFields(filter string, fieldType string) []string
 	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error)
-	GetRawQueryResults(ctx context.Context, query string) ([][]any, []string, error)
 	GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]any, []string, error)
 }
 
@@ -134,11 +134,11 @@ func (i *instance) refreshCachedFields() []string {
 				log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
 
 				for _, field := range fields.String {
-					i.cachedFields.String = appendIfMissing(i.cachedFields.String, field)
+					i.cachedFields.String = utils.AppendIfStringIsMissing(i.cachedFields.String, field)
 				}
 
 				for _, field := range fields.Number {
-					i.cachedFields.Number = appendIfMissing(i.cachedFields.Number, field)
+					i.cachedFields.Number = utils.AppendIfStringIsMissing(i.cachedFields.Number, field)
 				}
 			}
 		}
@@ -168,45 +168,6 @@ func (i *instance) GetFields(filter string, fieldType string) []string {
 	}
 
 	return fields
-}
-
-// GetRawQueryResults returns all rows for the user provided SQL query. This function should only be used by other
-// plugins. If users should be able to directly access a Clickhouse instance you can expose the instance using the SQL
-// plugin.
-func (i *instance) GetRawQueryResults(ctx context.Context, query string) ([][]any, []string, error) {
-	log.Debug(ctx, "Raw SQL query", zap.String("query", query))
-
-	rows, err := i.querier.QueryContext(ctx, query)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer rows.Close()
-
-	var columns []string
-	columns, err = rows.Columns()
-	if err != nil {
-		return nil, nil, err
-	}
-	columnsLen := len(columns)
-
-	var result [][]any
-
-	for rows.Next() {
-		var r []any
-		r = make([]any, columnsLen)
-
-		for i := 0; i < columnsLen; i++ {
-			r[i] = new(any)
-		}
-
-		if err := rows.Scan(r...); err != nil {
-			return nil, nil, err
-		}
-
-		result = append(result, r)
-	}
-
-	return result, columns, nil
 }
 
 type sqlQuerier struct {

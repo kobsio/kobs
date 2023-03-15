@@ -97,22 +97,6 @@ func (mr *MockInstanceMockRecorder) GetName() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetName", reflect.TypeOf((*MockInstance)(nil).GetName))
 }
 
-// GetRawQueryResults mocks base method.
-func (m *MockInstance) GetRawQueryResults(ctx context.Context, query string) ([][]any, []string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRawQueryResults", ctx, query)
-	ret0, _ := ret[0].([][]any)
-	ret1, _ := ret[1].([]string)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// GetRawQueryResults indicates an expected call of GetRawQueryResults.
-func (mr *MockInstanceMockRecorder) GetRawQueryResults(ctx, query interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRawQueryResults", reflect.TypeOf((*MockInstance)(nil).GetRawQueryResults), ctx, query)
-}
-
 // getFields mocks base method.
 func (m *MockInstance) getFields(ctx context.Context) (Fields, error) {
 	m.ctrl.T.Helper()

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	"go.uber.org/zap"
 )
@@ -32,7 +33,7 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 			return nil, nil, 0, 0, nil, err
 		}
 
-		conditions = fmt.Sprintf("AND %s", parsedQuery)
+		conditions = fmt.Sprintf("AND ( %s )", parsedQuery)
 	}
 
 	parsedOrder := i.parseOrder(order, orderBy)
@@ -175,12 +176,12 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 
 		for k, v := range r.FieldsNumber {
 			document[k] = v
-			fields = appendIfMissing(fields, k)
+			fields = utils.AppendIfStringIsMissing(fields, k)
 		}
 
 		for k, v := range r.FieldsString {
 			document[k] = v
-			fields = appendIfMissing(fields, k)
+			fields = utils.AppendIfStringIsMissing(fields, k)
 		}
 
 		documents = append(documents, document)

@@ -19,10 +19,8 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
   return (
     <List
       sx={{
-        maxWidth: '300px',
-        minWidth: '300px',
         position: 'relative',
-        width: '100%',
+        width: '250px',
         wordBreak: 'break-all',
       }}
       dense={true}
@@ -39,9 +37,23 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
       {selectedFields
         .filter((field) => field !== 'timestamp')
         .map((field, i) => (
-          <ListItem key={field} disablePadding={true} aria-label={field}>
+          <ListItem
+            key={field}
+            disablePadding={true}
+            aria-label={field}
+            sx={{
+              '&:hover .fields-action-items': { opacity: 1 },
+            }}
+          >
             <ListItemText primary={field} sx={{ mx: 4 }} />
-            <Stack className="row-action-icons" direction="row" sx={{ mr: 2 }}>
+            <Stack
+              className="fields-action-items"
+              direction="row"
+              sx={{
+                mr: 2,
+                opacity: 0,
+              }}
+            >
               <IconButton
                 aria-label="move down"
                 sx={{ p: 0 }}

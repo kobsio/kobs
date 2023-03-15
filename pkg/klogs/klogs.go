@@ -203,7 +203,7 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 	rows, columns, err := i.GetAggregation(r.Context(), aggregationData)
 	if err != nil {
 		log.Error(r.Context(), "Error while running aggregation", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, "Error while running aggregation")
+		errresponse.Render(w, r, http.StatusInternalServerError, "Error while running aggregation")
 		return
 	}
 

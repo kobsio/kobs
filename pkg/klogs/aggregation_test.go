@@ -86,7 +86,7 @@ func TestGetAggregation(t *testing.T) {
 		rows.EXPECT().Err().Return(nil)
 
 		// TODO: fix whitespace in this query
-		wantQuery := fmt.Sprintf("SELECT app, count(app) as count_data FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND namespace = 'foo' AND container_name = 'bar' GROUP BY app   SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
+		wantQuery := fmt.Sprintf("SELECT app, count(app) as count_data FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND ( namespace = 'foo' AND container_name = 'bar' ) GROUP BY app   SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
 		querier.EXPECT().QueryContext(gomock.Any(), wantQuery).Return(rows, nil)
 
 		results, cols, err := instance.GetAggregation(context.Background(), aggregation)
@@ -164,7 +164,7 @@ func TestGetAggregation(t *testing.T) {
 		rows.EXPECT().Scan(gomock.Any()).Return(nil)
 		rows.EXPECT().Next().Return(false)
 		rows.EXPECT().Err().Return(nil)
-		query := fmt.Sprintf("SELECT fields_string['timestamp'], count(fields_number['timestamp']) as count_data FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND namespace = 'foo' AND container_name = 'bar' GROUP BY fields_string['timestamp'] ORDER BY count_data ASC  SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
+		query := fmt.Sprintf("SELECT fields_string['timestamp'], count(fields_number['timestamp']) as count_data FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND ( namespace = 'foo' AND container_name = 'bar' ) GROUP BY fields_string['timestamp'] ORDER BY count_data ASC  SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
 		querier.EXPECT().QueryContext(gomock.Any(), query).Return(rows, nil)
 
 		_, _, err := instance.GetAggregation(context.Background(), aggregation)
@@ -231,7 +231,7 @@ func TestGetAggregation(t *testing.T) {
 		rows.EXPECT().Scan(gomock.Any()).Return(nil)
 		rows.EXPECT().Next().Return(false)
 		rows.EXPECT().Err().Return(nil)
-		query := fmt.Sprintf("SELECT timestamp, app, count(timestamp) as count_data FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND namespace = 'foo' AND container_name = 'bar' GROUP BY timestamp, app ORDER BY count_data ASC  SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
+		query := fmt.Sprintf("SELECT timestamp, app, count(timestamp) as count_data FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND ( namespace = 'foo' AND container_name = 'bar' ) GROUP BY timestamp, app ORDER BY count_data ASC  SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
 		querier.EXPECT().QueryContext(gomock.Any(), query).Return(rows, nil)
 
 		_, _, err := instance.GetAggregation(context.Background(), aggregation)
@@ -271,7 +271,7 @@ func TestGetAggregation(t *testing.T) {
 		rows.EXPECT().Scan(gomock.Any()).Return(nil)
 		rows.EXPECT().Next().Return(false)
 		rows.EXPECT().Err().Return(nil)
-		query := fmt.Sprintf("SELECT timestamp, app, countIf(app ILIKE 'hello') as count_data_filter0 FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND namespace = 'foo' AND container_name = 'bar' GROUP BY timestamp, app   SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
+		query := fmt.Sprintf("SELECT timestamp, app, countIf(app ILIKE 'hello') as count_data_filter0 FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND ( namespace = 'foo' AND container_name = 'bar' ) GROUP BY timestamp, app   SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
 		querier.EXPECT().QueryContext(gomock.Any(), query).Return(rows, nil)
 
 		_, _, err := instance.GetAggregation(context.Background(), aggregation)
@@ -311,7 +311,7 @@ func TestGetAggregation(t *testing.T) {
 		rows.EXPECT().Scan(gomock.Any()).Return(nil)
 		rows.EXPECT().Next().Return(false)
 		rows.EXPECT().Err().Return(nil)
-		query := fmt.Sprintf("SELECT toStartOfInterval(timestamp, INTERVAL 36 second) AS time, app, avgIf(fields_number['request_duration'], app ILIKE 'prefix-%%') as avg_data_filter0 FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND namespace = 'foo' AND container_name = 'bar' GROUP BY time, app ORDER BY time  SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
+		query := fmt.Sprintf("SELECT toStartOfInterval(timestamp, INTERVAL 36 second) AS time, app, avgIf(fields_number['request_duration'], app ILIKE 'prefix-%%') as avg_data_filter0 FROM logs.logs WHERE timestamp >= FROM_UNIXTIME(%d) AND timestamp <= FROM_UNIXTIME(%d) AND ( namespace = 'foo' AND container_name = 'bar' ) GROUP BY time, app ORDER BY time  SETTINGS skip_unavailable_shards = 1", aggregation.Times.TimeStart, aggregation.Times.TimeEnd)
 		querier.EXPECT().QueryContext(gomock.Any(), query).Return(rows, nil)
 
 		_, _, err := instance.GetAggregation(context.Background(), aggregation)

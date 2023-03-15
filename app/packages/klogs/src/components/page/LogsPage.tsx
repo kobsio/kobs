@@ -170,7 +170,7 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
         noDataTitle="No logs found"
         noDataMessage="There were no logs found for your search query"
       >
-        <Stack direction="row" spacing={2} alignItems="flex-start">
+        <Stack direction="row" spacing={2} sx={{ maxWidth: '100%' }}>
           <Paper>
             <LogsFieldsList
               selectedFields={search.fields}

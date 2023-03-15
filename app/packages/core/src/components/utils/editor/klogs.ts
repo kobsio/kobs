@@ -88,16 +88,16 @@ export const language: IMonarchLanguage = {
   operators: operators.map((op) => op.op),
   symbols: /[=><!~]+/,
 
-  // the following block tokenizes klogs queries. The query is converted into spans with class-names.
-  // the default classes can be found here: https://microsoft.github.io/monaco-editor/monarch-static.html
+  // the following block tokenizes klogs queries. The monaco editor converts these tokens into spans with class-names for styling.
+  // The default classes can be found here: https://microsoft.github.io/monaco-editor/monarch-static.html
   // the token debug view is useful for verifying the validity of rules. It can be enabled with:
-  // `F1` inside the editor and pick `Developer: Inspect Tokens` (make sure to enable the keybind inside Editor.tsx)
+  // press `F1` inside the editor and pick `Developer: Inspect Tokens` (make sure to enable the keybind inside Editor.tsx)
   tokenizer: {
     root: [
       { include: '@whitespace' },
       { include: '@numbers' },
       [/'/, 'string', '@string'],
-      // double quoted strings are not recognized
+      // double quoted strings are not recognized in our parser
       // therefore they're marked with the `invalid` class
       [/"/, 'invalid', '@stringDouble'],
       // some characters which shouldn't be used in the editor
@@ -149,6 +149,7 @@ export const klogsLanguageDefinition = {
       language: language,
       completionItemProvider: {
         provideCompletionItems: () => {
+          // completions should incldue both logical operators and comparison operators
           const operatorSuggestions = [
             ...operators.map((op) => ({
               ...op,
@@ -160,8 +161,6 @@ export const klogsLanguageDefinition = {
             })),
           ];
 
-          // To simplify, we made the choice to never create automatically the parenthesis behind keywords
-          // It is because in PromQL, some keywords need parenthesis behind, some don't, some can have but it's optional.
           const suggestions = operatorSuggestions.map(({ op, label, kind }) => {
             return {
               label: label,

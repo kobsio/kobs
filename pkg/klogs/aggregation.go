@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils"
 
 	"go.uber.org/zap"
 )
@@ -52,7 +53,7 @@ type AggregationTimes struct {
 // We can also directly say that the passed in field must be a number field, e.g. aggregation with the min, max, sum or
 // avg operation can only run against number fields.
 func (i *instance) generateFieldName(fieldName string, materializedColumns []string, customFields Fields, mustNumber bool) string {
-	if contains(i.defaultFields, fieldName) || contains(materializedColumns, fieldName) {
+	if utils.Contains(i.defaultFields, fieldName) || utils.Contains(materializedColumns, fieldName) {
 		return fieldName
 	}
 
@@ -302,7 +303,7 @@ func (i *instance) GetAggregation(ctx context.Context, aggregation Aggregation) 
 			return nil, nil, err
 		}
 
-		conditions = fmt.Sprintf("AND %s", parsedQuery)
+		conditions = fmt.Sprintf("AND ( %s )", parsedQuery)
 	}
 
 	// Now we are building the final query and then we execute the query. We are saving all returned rows in the result

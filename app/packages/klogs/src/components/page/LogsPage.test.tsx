@@ -15,6 +15,14 @@ vi.mock('./LogsBucketChart', () => {
   };
 });
 
+vi.mock('./InternalEditor', () => {
+  return {
+    default: () => {
+      return <>mock editor</>;
+    },
+  };
+});
+
 describe('LogsPage', () => {
   const apiClient = new APIClient();
   const getSpy = vi.spyOn(apiClient, 'get');

@@ -127,8 +127,8 @@ export const setupSignalSciences = (monaco: Monaco, loadCompletionItems?: () => 
 };
 
 /**
- * `KLOGS_SETUP_STARTED` is a constants which allows us to check if the `setup` functions was already run, so
- * that the setup function is only run once.
+ * `KLOGS_SETUP_STARTED` is set to true once the setup method ran for the first time.
+ * It allows us to not re-run the setup function, when react re-renders the editor.
  */
 let KLOGS_SETUP_STARTED = false;
 

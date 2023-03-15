@@ -15,13 +15,13 @@
 - [x] bucket graph - use victory charts
 - [x] bucket graph - zoom
 - [ ] aggregation view
-- [ ] test coverage
+- [x] test coverage
 - [-] comparing fields with each other (type conversions)
 - [x] improved query editor
 - [x] suggest column names
 - [ ] add theme option so that operators (=, !=, ...) are highlighted
 - [ ] add theme option so that identifiers are highlighted
-- [ ] hide icons in selected fields view
+- [x] hide icons in selected fields view
 - [x] panel view
 - [x] panel view - hide download icons
 - [x] show selected fields on top of fields list
