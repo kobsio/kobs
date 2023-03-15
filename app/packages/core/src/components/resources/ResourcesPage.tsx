@@ -3,9 +3,9 @@ import { Alert, AlertTitle, Box, Button, FormControl, InputLabel, MenuItem, Sele
 import { FormEvent, FunctionComponent, useState } from 'react';
 
 import Resources from './Resources';
-import ResourcesClusters from './ResourcesSelectClusters';
-import ResourcesNamespaces from './ResourcesSelectNamespaces';
-import ResourcesSelectResources from './ResourcesSelectResources';
+import { ResourcesSelectClusters } from './ResourcesSelectClusters';
+import { ResourcesSelectNamespaces } from './ResourcesSelectNamespaces';
+import { ResourcesSelectResources } from './ResourcesSelectResources';
 import { IOptions } from './utils';
 
 import { useQueryState } from '../../utils/hooks/useQueryState';
@@ -37,13 +37,13 @@ const ResourcesPage: FunctionComponent = () => {
       toolbar={
         <Toolbar>
           <ToolbarItem width="250px">
-            <ResourcesClusters
+            <ResourcesSelectClusters
               selectedClusters={options.clusters ?? []}
               selectClusters={(clusters) => setOptions((prevOptions) => ({ ...prevOptions, clusters: clusters }))}
             />
           </ToolbarItem>
           <ToolbarItem width="250px">
-            <ResourcesNamespaces
+            <ResourcesSelectNamespaces
               selectedClusters={options.clusters ?? []}
               selectedNamespaces={options.namespaces ?? []}
               selectNamespaces={(namespaces) =>

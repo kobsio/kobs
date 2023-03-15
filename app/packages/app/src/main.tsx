@@ -1,4 +1,5 @@
 import { App } from '@kobsio/core';
+import Flux from '@kobsio/flux';
 import Harbor from '@kobsio/harbor';
 import Prometheus from '@kobsio/prometheus';
 import { StrictMode } from 'react';
@@ -13,6 +14,6 @@ import '@kobsio/core/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <App plugins={[Harbor, Prometheus]} />
+    <App plugins={[Flux, Harbor, Prometheus]} />
   </StrictMode>,
 );
