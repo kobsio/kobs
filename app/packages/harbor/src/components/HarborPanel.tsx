@@ -22,7 +22,7 @@ export interface IOptionsArtifacts {
   repositoryName?: string;
 }
 
-const Panel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, description, options, instance }) => {
+const HarborPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, description, options, instance }) => {
   if (options && options.type === 'projects') {
     return (
       <PluginPanel title={title} description={description}>
@@ -98,4 +98,4 @@ plugin:
   );
 };
 
-export default Panel;
+export default HarborPanel;

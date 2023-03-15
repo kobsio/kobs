@@ -1,6 +1,10 @@
 export * from './components/app/App';
 
+export * from './components/resources/ResourcesSelectClusters';
+export * from './components/resources/ResourcesSelectNamespaces';
+
 export * from './components/utils/editor/Editor';
+export * from './components/utils/DescriptionList';
 export * from './components/utils/DetailsDrawer';
 export * from './components/utils/Options';
 export * from './components/utils/Page';

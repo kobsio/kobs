@@ -240,7 +240,7 @@ func (c *client) PatchResource(ctx context.Context, namespace, name, path, resou
 	if subResource != "" {
 		_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).SubResource(subResource).Body(body).DoRaw(ctx)
 		if err != nil {
-			log.Error(ctx, "Could not patch resources", zap.Error(err), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
+			log.Error(ctx, "Could not patch resources", zap.Error(err), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource), zap.String("subResource", subResource))
 			span.RecordError(err)
 			span.SetStatus(codes.Error, err.Error())
 			return err
@@ -248,9 +248,9 @@ func (c *client) PatchResource(ctx context.Context, namespace, name, path, resou
 		return nil
 	}
 
-	_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).SubResource("ephemeralcontainers").Body(body).DoRaw(ctx)
+	_, err := c.clientset.CoreV1().RESTClient().Patch(types.JSONPatchType).AbsPath(path).Namespace(namespace).Resource(resource).Name(name).Body(body).DoRaw(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not patch resources", zap.Error(err), zap.String("namespace", namespace), zap.String("path", path), zap.String("resource", resource))
+		log.Error(ctx, "Could not patch resources", zap.Error(err), zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		return err

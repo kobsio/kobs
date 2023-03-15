@@ -57,6 +57,7 @@ jobs:
         plugin:
           - app
           - core
+          - flux
           - harbor
           - prometheus
     defaults:

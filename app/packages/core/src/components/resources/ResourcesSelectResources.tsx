@@ -82,7 +82,7 @@ interface IResourcesSelectResourcesProps {
  * The `ResourcesSelectResources` renders a select box, which allows a user to select a list of resources, to filter the
  * shown resources on a page. The component is also responsible for loading the resources from our API.
  */
-const ResourcesSelectResources: FunctionComponent<IResourcesSelectResourcesProps> = ({
+export const ResourcesSelectResources: FunctionComponent<IResourcesSelectResourcesProps> = ({
   selectedResources,
   selectResources,
 }) => {
@@ -104,5 +104,3 @@ const ResourcesSelectResources: FunctionComponent<IResourcesSelectResourcesProps
     />
   );
 };
-
-export default ResourcesSelectResources;

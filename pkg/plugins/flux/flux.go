@@ -1,4 +1,4 @@
-package harbor
+package flux
 
 import (
 	"net/http"
@@ -20,17 +20,25 @@ func New() plugins.Plugin {
 }
 
 func (p *Plugin) Type() string {
-	return "harbor"
+	return "flux"
 }
 
 func (p *Plugin) MountCluster(instances []plugin.Instance, kubernetesClient kubernetes.Client) (chi.Router, error) {
-	router := chi.NewRouter()
-	router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
-		errresponse.Render(w, r, http.StatusNotFound)
-	})
-	return router, nil
+	return Mount(kubernetesClient)
 }
 
 func (p *Plugin) MountHub(instances []plugin.Instance, clustersClient clusters.Client, dbClient db.Client) (chi.Router, error) {
-	return Mount(instances)
+	router := chi.NewRouter()
+	router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
+		cluster := r.Header.Get("x-kobs-cluster")
+
+		c := clustersClient.GetCluster(cluster)
+		if c == nil {
+			errresponse.Render(w, r, http.StatusBadRequest, "Invalid cluster name")
+			return
+		}
+
+		c.Proxy(w, r)
+	})
+	return router, nil
 }

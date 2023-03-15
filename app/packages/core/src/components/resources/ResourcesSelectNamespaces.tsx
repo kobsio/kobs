@@ -25,7 +25,7 @@ interface IResourcesSelectNamespacesProps {
  * namespaces from our API we also need a list of namespaces, so that we can only show the namespaces which are relevant
  * for the list of selected clusters.
  */
-const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamespacesProps> = ({
+export const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamespacesProps> = ({
   selectedNamespaces,
   selectedClusters,
   selectNamespaces,
@@ -58,5 +58,3 @@ const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamespacesPro
     />
   );
 };
-
-export default ResourcesSelectNamespaces;

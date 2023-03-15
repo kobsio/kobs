@@ -15,8 +15,8 @@ import { useContext, FunctionComponent, useState, FormEvent, useEffect } from 'r
 import { IApplicationOptions } from './utils';
 
 import { APIContext, IAPIContext } from '../../context/APIContext';
-import ResourcesSelectClusters from '../resources/ResourcesSelectClusters';
-import ResourcesSelectNamespaces from '../resources/ResourcesSelectNamespaces';
+import { ResourcesSelectClusters } from '../resources/ResourcesSelectClusters';
+import { ResourcesSelectNamespaces } from '../resources/ResourcesSelectNamespaces';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;

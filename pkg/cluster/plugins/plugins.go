@@ -60,13 +60,11 @@ func NewClient(plugins []plugins.Plugin, instances []plugin.Instance, kubernetes
 	for _, plugin := range plugins {
 		filteredInstances := filterInstances(plugin.Type(), instances)
 
-		if len(filteredInstances) > 0 {
-			pluginRouter, err := plugin.MountCluster(filteredInstances, kubernetesClient)
-			if err != nil {
-				return nil, err
-			}
-			router.Mount(fmt.Sprintf("/%s", plugin.Type()), pluginRouter)
+		pluginRouter, err := plugin.MountCluster(filteredInstances, kubernetesClient)
+		if err != nil {
+			return nil, err
 		}
+		router.Mount(fmt.Sprintf("/%s", plugin.Type()), pluginRouter)
 	}
 
 	return &client{

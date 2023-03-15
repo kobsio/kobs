@@ -226,6 +226,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
                   <TextField
                     size="small"
                     variant="outlined"
+                    label="Start Time"
                     placeholder="Start Time"
                     fullWidth={true}
                     InputProps={{
@@ -243,6 +244,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
                   <TextField
                     size="small"
                     variant="outlined"
+                    label="End Time"
                     placeholder="End Time"
                     fullWidth={true}
                     InputProps={{

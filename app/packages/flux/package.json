@@ -1,26 +1,30 @@
 {
-  "name": "@kobsio/app",
+  "name": "@kobsio/flux",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "analyze": "source-map-explorer 'dist/**/*.js' --no-border-checks",
-    "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@fontsource/roboto": "^4.5.8",
     "@kobsio/core": "*",
-    "@kobsio/flux": "*",
-    "@kobsio/harbor": "*",
-    "@kobsio/prometheus": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.121",
     "@mui/material": "^5.11.7",
@@ -33,15 +37,22 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@types/node": "^18.11.19",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/node": "^14.18.36",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/coverage-c8": "^0.28.4",
-    "source-map-explorer": "^2.5.3",
+    "@vitest/ui": "^0.28.4",
+    "jsdom": "^21.1.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0",
+    "vite-plugin-dts": "^1.7.2",
     "vitest": "^0.28.4"
+  },
+  "dependencies": {
+    "@kubernetes/client-node": "^0.18.1",
+    "jsonpath-plus": "^7.2.0"
   }
 }

@@ -30,7 +30,7 @@ interface IResourcesSelectClustersProps {
  * The `ResourcesSelectClusters` renders a select box, which allows a user to select a list of clusters, to filter the
  * shown resources on a page. The component is also responsible for loading the clusters from our API.
  */
-const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClustersProps> = ({
+export const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClustersProps> = ({
   selectedClusters,
   selectClusters,
 }) => {
@@ -107,5 +107,3 @@ const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClustersProps> 
     />
   );
 };
-
-export default ResourcesSelectClusters;

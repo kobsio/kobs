@@ -2,7 +2,7 @@ import { render as _render, RenderResult, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-import ResourcesSelectClusters from './ResourcesSelectClusters';
+import { ResourcesSelectClusters } from './ResourcesSelectClusters';
 
 import { APIClient, APIContext } from '../../context/APIContext';
 import { QueryClientProvider } from '../../context/QueryClientProvider';

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { vi } from 'vitest';
 
-import ResourcesSelectNamespaces from './ResourcesSelectNamespaces';
+import { ResourcesSelectNamespaces } from './ResourcesSelectNamespaces';
 
 import { APIClient, APIContext } from '../../context/APIContext';
 import { QueryClientProvider } from '../../context/QueryClientProvider';

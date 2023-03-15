@@ -7,6 +7,7 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/watcher"
 	"github.com/kobsio/kobs/pkg/plugins"
 
+	"github.com/kobsio/kobs/pkg/plugins/flux"
 	"github.com/kobsio/kobs/pkg/plugins/harbor"
 	"github.com/kobsio/kobs/pkg/plugins/prometheus"
 
@@ -24,8 +25,9 @@ func main() {
 	ctx := kong.Parse(&cli)
 
 	registeredPlugins := []plugins.Plugin{
-		prometheus.New(),
+		flux.New(),
 		harbor.New(),
+		prometheus.New(),
 	}
 
 	err := ctx.Run(registeredPlugins)
