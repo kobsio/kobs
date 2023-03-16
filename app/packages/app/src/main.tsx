@@ -1,5 +1,6 @@
 import { App } from '@kobsio/core';
 import Flux from '@kobsio/flux';
+import Grafana from '@kobsio/grafana';
 import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
 import Prometheus from '@kobsio/prometheus';
@@ -16,6 +17,6 @@ import '@kobsio/core/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <App plugins={[Flux, Harbor, Helm, Prometheus, RSS]} />
+    <App plugins={[Flux, Grafana, Harbor, Helm, Prometheus, RSS]} />
   </StrictMode>,
 );
