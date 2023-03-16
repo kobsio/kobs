@@ -66,7 +66,7 @@ interface IDescriptionListTermProps {
 export const DescriptionListTerm: FunctionComponent<IDescriptionListTermProps> = ({ children }) => {
   return (
     <TableCell sx={{ verticalAlign: 'top' }}>
-      <Typography component="div" variant="body1">
+      <Typography component="div" variant="body1" noWrap={true}>
         <b>{children}</b>
       </Typography>
     </TableCell>

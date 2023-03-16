@@ -59,6 +59,7 @@ jobs:
           - core
           - flux
           - harbor
+          - helm
           - prometheus
     defaults:
       run:

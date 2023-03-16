@@ -5,19 +5,19 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
+	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
-
-	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
-	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 )
 
 type Router struct {
