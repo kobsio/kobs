@@ -61,6 +61,7 @@ jobs:
           - harbor
           - helm
           - prometheus
+          - rss
     defaults:
       run:
         working-directory: app

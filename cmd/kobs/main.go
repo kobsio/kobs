@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/harbor"
 	"github.com/kobsio/kobs/pkg/plugins/helm"
 	"github.com/kobsio/kobs/pkg/plugins/prometheus"
+	"github.com/kobsio/kobs/pkg/plugins/rss"
 
 	"github.com/alecthomas/kong"
 )
@@ -30,6 +31,7 @@ func main() {
 		harbor.New(),
 		helm.New(),
 		prometheus.New(),
+		rss.New(),
 	}
 
 	err := ctx.Run(registeredPlugins)
