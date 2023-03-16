@@ -75,7 +75,9 @@ const Releases: FunctionComponent<{
             'x-kobs-cluster': cluster,
           },
         });
-        releases.push(...tmpReleases);
+        if (tmpReleases) {
+          releases.push(...tmpReleases);
+        }
       }
       return releases;
     },

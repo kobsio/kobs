@@ -12,7 +12,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       fileName: 'index',
       formats: ['es'],
-      name: 'core',
+      name: 'prometheus',
     },
     rollupOptions: {
       external: [
