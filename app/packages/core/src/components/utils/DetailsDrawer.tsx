@@ -49,15 +49,25 @@ export const DetailsDrawer: FunctionComponent<IDetailsDrawerProps> = ({
             },
           }}
         >
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {title}
+          <Box
+            sx={{
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: '2',
+              display: '-webkit-box',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              {title}
 
-            {subtitle && (
-              <Typography pl={2} color="text.secondary" variant="caption">
-                {subtitle}
-              </Typography>
-            )}
-          </Typography>
+              {subtitle && (
+                <Typography pl={2} color="text.secondary" variant="caption">
+                  {subtitle}
+                </Typography>
+              )}
+            </Typography>
+          </Box>
 
           {actions}
 
