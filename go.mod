@@ -15,11 +15,13 @@ require (
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.2
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/kiali/kiali v1.65.0
 	github.com/minio/minio-go/v7 v7.0.50
+	github.com/lib/pq v1.10.7
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mmcdole/gofeed v1.2.1
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.14
