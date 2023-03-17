@@ -34,7 +34,8 @@ yarn-error.log*
 # temporary files
 /tmp
 
-# test config, manifests and values file
+# test config, manifests aconfig.yaml
+nd values file
 /config*.yaml
 /test.yaml
 /values.yaml
