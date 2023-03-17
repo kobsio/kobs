@@ -5,6 +5,7 @@ import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
 import Prometheus from '@kobsio/prometheus';
 import RSS from '@kobsio/rss';
+import SonarQube from '@kobsio/sonarqube';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -17,6 +18,6 @@ import '@kobsio/core/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <App plugins={[Flux, Grafana, Harbor, Helm, Prometheus, RSS]} />
+    <App plugins={[Flux, Grafana, Harbor, Helm, Prometheus, RSS, SonarQube]} />
   </StrictMode>,
 );
