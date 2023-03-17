@@ -32,7 +32,7 @@ func TestGetDashboards(t *testing.T) {
 			client:  ts.Client(),
 		}
 
-		_, err := instance.GetDashboards(context.Background(), "/")
+		_, err := instance.GetDashboards(context.Background(), "")
 		require.Error(t, err)
 	})
 

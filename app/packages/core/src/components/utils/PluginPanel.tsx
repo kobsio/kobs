@@ -97,16 +97,18 @@ export const PluginPanelActionButton: FunctionComponent<IPluginPanelActionButton
  * `IPluginPanelActionLinksProps` is the interface for the properties of the `PluginPanelActionLinks` component.
  */
 interface IPluginPanelActionLinksProps {
-  isFetching: boolean;
+  isFetching?: boolean;
   links: {
     link: string;
+    targetBlank?: boolean;
     title: string;
   }[];
 }
 
 /**
  * The `PluginPanelActionLinks` renders an action menu with the provided list of `links`. If the `isFetching` property
- * is `true` a circular progress indicator will be rendered instead of the menu.
+ * is `true` a circular progress indicator will be rendered instead of the menu. When the `targetBlank` property is set
+ * to `true` the link will be opened in a new window / tab.
  */
 export const PluginPanelActionLinks: FunctionComponent<IPluginPanelActionLinksProps> = ({ isFetching, links }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -138,7 +140,7 @@ export const PluginPanelActionLinks: FunctionComponent<IPluginPanelActionLinksPr
 
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
         {links.map((link) => (
-          <MenuItem key={link.link} component={Link} to={link.link}>
+          <MenuItem key={link.link} component={Link} to={link.link} target={link.targetBlank ? '_blank' : undefined}>
             {link.title}
           </MenuItem>
         ))}
