@@ -1,4 +1,4 @@
-import { IPluginPanelProps, PluginPanelError } from '@kobsio/core';
+import { IPluginPanelProps, pluginBasePath, PluginPanel, PluginPanelActionLinks, PluginPanelError } from '@kobsio/core';
 import { FunctionComponent } from 'react';
 
 import Resources from './Resources';
@@ -36,16 +36,30 @@ const FluxPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       options.type === 'kustomizations' ||
       options.type === 'helmreleases')
   ) {
+    const join = (v: string[] | undefined): string => (v && v.length > 0 ? v.join('') : '');
+    const c = join(options.clusters?.map((cluster) => `&clusters[]=${encodeURIComponent(cluster)}`));
+    const n = join(options.namespaces?.map((namespace) => `&namespaces[]=${encodeURIComponent(namespace)}`));
+
     return (
-      <Resources
-        instance={instance}
-        clusters={options.clusters}
-        namespaces={options.namespaces ?? []}
-        resource={options.type}
-        paramName={options.paramName ?? ''}
-        param={options.param ?? ''}
-        times={times}
-      />
+      <PluginPanel
+        title={title}
+        description={description}
+        actions={
+          <PluginPanelActionLinks
+            links={[{ link: `${pluginBasePath(instance)}?&type=${options.type}${c}${n}`, title: 'Explore' }]}
+          />
+        }
+      >
+        <Resources
+          instance={instance}
+          clusters={options.clusters}
+          namespaces={options.namespaces ?? []}
+          resource={options.type}
+          paramName={options.paramName ?? ''}
+          param={options.param ?? ''}
+          times={times}
+        />
+      </PluginPanel>
     );
   }
 
@@ -59,7 +73,7 @@ const FluxPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
   name: flux
   type: flux
   options:
-    # Type must be gitrepositories, helmrepositories, buckets, kustomizations or helmreleases
+    # Type must be "gitrepositories", "helmrepositories", "buckets", "kustomizations" or "helmreleases"
     type: kustomizations
     clusters:
       - mycluster`}
