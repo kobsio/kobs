@@ -11,7 +11,6 @@ import {
   Alert,
   AlertTitle,
   Button,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -19,6 +18,7 @@ import {
   TableHead,
   TableRow,
   Box,
+  Card,
 } from '@mui/material';
 import { useQuery, QueryObserverResult } from '@tanstack/react-query';
 import { JSONPath } from 'jsonpath-plus';
@@ -332,11 +332,11 @@ const Resources: FunctionComponent<{
       noDataMessage="No Flux resources were found for your selected filters."
       refetch={refetch}
     >
-      <Paper>
+      <Card>
         {data && data.length === 1 && (
           <Resource instance={instance} resource={data[0]} fluxResource={fluxResource} refetch={refetch} />
         )}
-      </Paper>
+      </Card>
     </UseQueryWrapper>
   );
 };
