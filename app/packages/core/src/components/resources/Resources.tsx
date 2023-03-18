@@ -2,7 +2,6 @@ import {
   Alert,
   AlertTitle,
   Button,
-  Paper,
   Tab,
   Table,
   TableBody,
@@ -12,6 +11,7 @@ import {
   TableRow,
   Tabs,
   Box,
+  Card,
 } from '@mui/material';
 import { useQuery, QueryObserverResult } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
@@ -255,7 +255,7 @@ const Resources: FunctionComponent<IResourcesProps> = ({ options, times }) => {
       noDataMessage="No Kubernetes resources were found for your selected filters."
       refetch={refetch}
     >
-      <Paper>
+      <Card>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs
             variant="scrollable"
@@ -285,7 +285,7 @@ const Resources: FunctionComponent<IResourcesProps> = ({ options, times }) => {
             )}
           </Box>
         ))}
-      </Paper>
+      </Card>
     </UseQueryWrapper>
   );
 };

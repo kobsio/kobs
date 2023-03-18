@@ -1,4 +1,4 @@
-import { Stack, Alert, Box, Paper, TextField, Typography, Button } from '@mui/material';
+import { Stack, Alert, Box, TextField, Typography, Button, Card } from '@mui/material';
 import { FormEvent, FunctionComponent, useContext, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -61,7 +61,7 @@ const Signin: FunctionComponent = () => {
   return (
     <Box minHeight="100vh" minWidth="100%" display="flex" flexDirection="column" justifyContent="center">
       <Box sx={{ display: 'inline-flex', mx: 'auto' }}>
-        <Paper sx={{ p: 10 }} component="form" onSubmit={handleSubmit}>
+        <Card sx={{ p: 10 }} component="form" onSubmit={handleSubmit}>
           <Stack display="inline-flex" flexDirection="column" spacing={2}>
             <Box
               sx={{
@@ -128,7 +128,7 @@ const Signin: FunctionComponent = () => {
 
             <SigninOIDC />
           </Stack>
-        </Paper>
+        </Card>
       </Box>
     </Box>
   );
