@@ -7,7 +7,7 @@ import {
   ITimes,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
 
@@ -94,7 +94,7 @@ const Releases: FunctionComponent<{
       noDataMessage="No Helm releases were found for your selected filters."
       refetch={refetch}
     >
-      <Paper>
+      <Card>
         {data && (
           <TableContainer>
             <Table size="small">
@@ -123,7 +123,7 @@ const Releases: FunctionComponent<{
             </Table>
           </TableContainer>
         )}
-      </Paper>
+      </Card>
     </UseQueryWrapper>
   );
 };

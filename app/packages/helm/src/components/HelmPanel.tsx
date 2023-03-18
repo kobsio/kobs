@@ -1,4 +1,4 @@
-import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/core';
+import { IPluginPanelProps, pluginBasePath, PluginPanel, PluginPanelActionLinks, PluginPanelError } from '@kobsio/core';
 import { FunctionComponent } from 'react';
 
 import History from './History';
@@ -34,8 +34,18 @@ const HelmPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
     options.type === 'releases' &&
     times
   ) {
+    const join = (v: string[] | undefined): string => (v && v.length > 0 ? v.join('') : '');
+    const c = join(options.clusters?.map((cluster) => `&clusters[]=${encodeURIComponent(cluster)}`));
+    const n = join(options.namespaces?.map((namespace) => `&namespaces[]=${encodeURIComponent(namespace)}`));
+
     return (
-      <PluginPanel title={title} description={description}>
+      <PluginPanel
+        title={title}
+        description={description}
+        actions={
+          <PluginPanelActionLinks links={[{ link: `${pluginBasePath(instance)}?${c}${n}`, title: 'Explore' }]} />
+        }
+      >
         <Releases instance={instance} clusters={options.clusters} namespaces={options.namespaces ?? []} times={times} />
       </PluginPanel>
     );
@@ -54,7 +64,22 @@ const HelmPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
     times
   ) {
     return (
-      <PluginPanel title={title} description={description}>
+      <PluginPanel
+        title={title}
+        description={description}
+        actions={
+          <PluginPanelActionLinks
+            links={[
+              {
+                link: `${pluginBasePath(instance)}?&clusters[]=${encodeURIComponent(
+                  options.clusters[0],
+                )}&namespaces[]=${encodeURIComponent(options.namespaces[0])}`,
+                title: 'Explore',
+              },
+            ]}
+          />
+        }
+      >
         <History
           instance={instance}
           cluster={options.clusters[0]}
