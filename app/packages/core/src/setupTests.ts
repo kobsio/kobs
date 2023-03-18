@@ -47,5 +47,6 @@ class LocalStorageMock {
 global.localStorage = new LocalStorageMock();
 
 afterEach(() => {
+  global.localStorage.clear();
   cleanup();
 });

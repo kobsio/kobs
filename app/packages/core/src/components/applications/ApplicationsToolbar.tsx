@@ -88,11 +88,11 @@ const ApplicationsToolbar: FunctionComponent<IApplicationsToolbarProps> = ({ opt
    */
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setOptions({ ...options, page: 1, perPage: 10, searchTerm: searchTerm });
+    setOptions({ ...options, page: 1, searchTerm: searchTerm });
   };
 
   const handleChange = (key: string, value: boolean | string | string[]) => {
-    setOptions({ ...options, [key]: value, page: 1, perPage: 10 });
+    setOptions({ ...options, [key]: value, page: 1 });
   };
 
   /**

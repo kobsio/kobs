@@ -101,7 +101,7 @@ const SonarQubePageToolbar: FunctionComponent<{ options: IOptions; setOptions: (
    */
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setOptions({ page: 1, perPage: 10, query: query });
+    setOptions({ ...options, page: 1, query: query });
   };
 
   useEffect(() => {
