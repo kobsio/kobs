@@ -14,8 +14,10 @@ import {
   APIError,
   UseQueryWrapper,
   getChartColor,
+  getStateHistory,
+  addStateHistoryItems,
 } from '@kobsio/core';
-import { Add, Remove } from '@mui/icons-material';
+import { Add, ManageSearch, Remove } from '@mui/icons-material';
 import {
   Alert,
   AlertTitle,
@@ -23,13 +25,16 @@ import {
   Card,
   IconButton,
   InputBaseComponentProps,
+  Menu,
+  MenuItem,
   Stack,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { forwardRef, FunctionComponent, useContext, useEffect, useState } from 'react';
+import { forwardRef, FunctionComponent, MouseEvent, useContext, useEffect, useState } from 'react';
 
 import Chart from './Chart';
 import Legend from './Legend';
@@ -241,6 +246,63 @@ const PrometheusWrapper: FunctionComponent<{
 };
 
 /**
+ * The `PrometheusHistory` can be used to display a button next to a query field, which allows a user to access the
+ * queries he run in the past. When the user clicks on the button, a menu with a list of the queries saved in the
+ * history is shown. When a user clicks on a query the `setQuery` function is triggered for this query and should
+ * replace the current value in the query field.
+ */
+const PrometheusHistory: FunctionComponent<{ setQuery: (query: string) => void }> = ({ setQuery }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const queries = getStateHistory('kobs-prometheus-queryhistory');
+
+  /**
+   * `handleOpen` opens the menu, which is used to display the history, with all queries which were executed by a user
+   * in the past.
+   */
+  const handleOpen = (e: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  /**
+   * `handleClose` closes the menu, wich displays the history, with all queries which were executed by a user in the
+   * past.
+   */
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  /**
+   * `handleSelect` handles the selection of a query in the history menu. The query will be passed to the `setQuery`
+   * function and the menu will be closed.
+   */
+  const handleSelect = (query: string) => {
+    handleClose();
+    setQuery(query);
+  };
+
+  if (queries.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <IconButton size="small" onClick={handleOpen}>
+        <ManageSearch />
+      </IconButton>
+
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        {queries.map((query, index) => (
+          <MenuItem key={index} onClick={() => handleSelect(query)}>
+            <Typography noWrap={true}>{query}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
+  );
+};
+
+/**
  * The `InternalEditor` component is a wrapper around our `MUIEditor` component, which allows us to use the editor
  * within a `TextField` component of MUI.
  */
@@ -326,9 +388,13 @@ const PrometheusToolbar: FunctionComponent<{
   /**
    * `changeOptions` is the function which is passed to the `Options` component, to call the `setOptions` function when
    * a user clicks on the search button, changes the selected time range or sets a resolution.
+   *
+   * We also add all the queries to the history of Prometheus queries when the function is triggered, so that a user has
+   * easy access to the last 10 queries he run.
    */
   const changeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined) => {
     if (additionalFields && additionalFields.length === 1) {
+      addStateHistoryItems('kobs-prometheus-queryhistory', queries);
       setOptions({ ...times, queries: queries, resolution: additionalFields[0].value });
     }
   };
@@ -336,8 +402,12 @@ const PrometheusToolbar: FunctionComponent<{
   /**
    * `callSubmit` is the function we pass to our `MUIEditor` component so that we can submit the provided query by
    * calling the `setOptions` function when a user presses `Shift + Enter`.
+   *
+   * We also add all the queries to the history of Prometheus queries when the function is triggered, so that a user has
+   * easy access to the last 10 queries he run.
    */
   const callSubmit = () => {
+    addStateHistoryItems('kobs-prometheus-queryhistory', queries);
     setOptions({ ...options, queries: queries });
   };
 
@@ -363,13 +433,19 @@ const PrometheusToolbar: FunctionComponent<{
                   />
                 </Box>
                 {index === 0 ? (
-                  <IconButton size="small" onClick={addQuery}>
-                    <Add />
-                  </IconButton>
+                  <>
+                    <PrometheusHistory setQuery={(query) => changeQuery(index, query)} />
+                    <IconButton size="small" onClick={addQuery}>
+                      <Add />
+                    </IconButton>
+                  </>
                 ) : (
-                  <IconButton size="small" onClick={(): void => removeQuery(index)}>
-                    <Remove />
-                  </IconButton>
+                  <>
+                    <PrometheusHistory setQuery={(query) => changeQuery(index, query)} />
+                    <IconButton size="small" onClick={(): void => removeQuery(index)}>
+                      <Remove />
+                    </IconButton>
+                  </>
                 )}
               </Box>
             </Box>
