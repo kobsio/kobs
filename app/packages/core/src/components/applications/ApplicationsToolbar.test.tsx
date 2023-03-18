@@ -60,7 +60,7 @@ describe('ApplicationsToolbar', () => {
     await userEvent.click(tagOption);
 
     expect(setOptions).toHaveBeenCalledTimes(1);
-    expect(setOptions).toHaveBeenCalledWith({ page: 1, perPage: 10, tags: ['tag1'] });
+    expect(setOptions).toHaveBeenCalledWith({ page: 1, tags: ['tag1'] });
   });
 
   it('should preserve default options', async () => {
@@ -80,7 +80,6 @@ describe('ApplicationsToolbar', () => {
       clusters: ['cluster1'],
       namespaces: ['namespace1'],
       page: 1,
-      perPage: 10,
       tags: ['tag2', 'tag1'],
     });
   });

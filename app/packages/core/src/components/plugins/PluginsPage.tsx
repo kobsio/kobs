@@ -55,7 +55,7 @@ const PluginsPage: FunctionComponent = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setOptions((prevOptions) => ({ ...prevOptions, page: 1, perPage: 10, searchTerm: searchTerm }));
+    setOptions((prevOptions) => ({ ...prevOptions, page: 1, searchTerm: searchTerm }));
   };
 
   const filteredItems = instances
@@ -83,9 +83,7 @@ const PluginsPage: FunctionComponent = () => {
               options={getClusters()}
               getOptionLabel={(option) => option ?? ''}
               value={options.clusters}
-              onChange={(e, value) =>
-                setOptions((prevOptions) => ({ ...prevOptions, clusters: value, page: 1, perPage: 10 }))
-              }
+              onChange={(e, value) => setOptions((prevOptions) => ({ ...prevOptions, clusters: value, page: 1 }))}
               renderTags={(value) => <Chip size="small" label={value.length} />}
               renderOption={(props, option, { selected }) => (
                 <li {...props} style={{ padding: 1 }}>
@@ -104,9 +102,7 @@ const PluginsPage: FunctionComponent = () => {
               options={getPluginTypes()}
               getOptionLabel={(option) => option ?? ''}
               value={options.pluginTypes}
-              onChange={(e, value) =>
-                setOptions((prevOptions) => ({ ...prevOptions, page: 1, perPage: 10, pluginTypes: value }))
-              }
+              onChange={(e, value) => setOptions((prevOptions) => ({ ...prevOptions, page: 1, pluginTypes: value }))}
               renderTags={(value) => <Chip size="small" label={value.length} />}
               renderOption={(props, option, { selected }) => (
                 <li {...props} style={{ padding: 1 }}>

@@ -30,7 +30,7 @@ const TeamsPage: FunctionComponent = () => {
    */
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setOptions((prevOptions) => ({ ...prevOptions, page: 1, perPage: 10, searchTerm: searchTerm }));
+    setOptions((prevOptions) => ({ ...prevOptions, page: 1, searchTerm: searchTerm }));
   };
 
   return (
@@ -44,9 +44,7 @@ const TeamsPage: FunctionComponent = () => {
               size="small"
               value={options.all}
               exclusive={true}
-              onChange={(_, value) =>
-                setOptions((prevOptions) => ({ ...prevOptions, all: value ?? false, page: 1, perPage: 10 }))
-              }
+              onChange={(_, value) => setOptions((prevOptions) => ({ ...prevOptions, all: value ?? false, page: 1 }))}
             >
               <ToggleButton sx={{ px: 4 }} value={false}>
                 Owned
