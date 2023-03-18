@@ -24,9 +24,29 @@ export const useQueryState = <S extends QueryState = QueryState>(initialState?: 
   const update = useUpdate();
 
   const initialStateRef = useRef(typeof initialState === 'function' ? (initialState as () => S)() : initialState || {});
+  const initialQueryFromUrl = useRef(true);
 
   const queryFromUrl = useMemo(() => {
-    return queryString.parse(location.search, { arrayFormat: 'bracket', parseBooleans: true, parseNumbers: true });
+    const parsedQueryString = queryString.parse(location.search, {
+      arrayFormat: 'bracket',
+      parseBooleans: true,
+      parseNumbers: true,
+    });
+
+    // When the `queryFromUrl` function is run for the first time we want to use the `initialStateRef` in the
+    // `targetQuery`, but if the function runs again, we want to be able to overwrite an array value in the
+    // `initialStateRef` with an empty array. Without this "hack" this would not be possible and we are not able to use
+    // empty arrays.
+    if (initialQueryFromUrl.current === false) {
+      Object.entries(initialStateRef.current).forEach(([key, value]) => {
+        if (Array.isArray(value) && !(key in parsedQueryString)) {
+          parsedQueryString[key] = [];
+        }
+      });
+    }
+
+    initialQueryFromUrl.current = false;
+    return parsedQueryString;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 

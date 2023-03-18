@@ -22,6 +22,7 @@ export * from './context/QueryClientProvider';
 export * from './utils/hooks/useDebounce';
 export * from './utils/hooks/useDimensions';
 export * from './utils/hooks/useLatest';
+export * from './utils/hooks/useLocalStorageState';
 export * from './utils/hooks/useQueryState';
 export * from './utils/hooks/useMemoizedFn';
 export * from './utils/hooks/useUpdate';

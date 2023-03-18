@@ -1,6 +1,6 @@
 import { Refresh } from '@mui/icons-material';
 import { Alert, AlertTitle, Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { FormEvent, FunctionComponent, useState } from 'react';
+import { FormEvent, FunctionComponent, useEffect, useState } from 'react';
 
 import Resources from './Resources';
 import { ResourcesSelectClusters } from './ResourcesSelectClusters';
@@ -8,6 +8,7 @@ import { ResourcesSelectNamespaces } from './ResourcesSelectNamespaces';
 import { ResourcesSelectResources } from './ResourcesSelectResources';
 import { IOptions } from './utils';
 
+import { useLocalStorageState } from '../../utils/hooks/useLocalStorageState';
 import { useQueryState } from '../../utils/hooks/useQueryState';
 import { useUpdate } from '../../utils/hooks/useUpdate';
 import { Page } from '../utils/Page';
@@ -15,11 +16,12 @@ import { Toolbar, ToolbarItem } from '../utils/Toolbar';
 
 const ResourcesPage: FunctionComponent = () => {
   const update = useUpdate();
-  const [options, setOptions] = useQueryState<IOptions>({
+  const [persistedOptions, setPersistedOptions] = useLocalStorageState<IOptions>('kobs-core-resourcespage-options', {
     clusters: [],
     namespaces: [],
     resources: [],
   });
+  const [options, setOptions] = useQueryState<IOptions>(persistedOptions);
   const [param, setParam] = useState<string>(options.param ?? '');
 
   /**
@@ -29,6 +31,13 @@ const ResourcesPage: FunctionComponent = () => {
     e.preventDefault();
     setOptions((prevOptions) => ({ ...prevOptions, param: param }));
   };
+
+  /**
+   * `useEffect` is used to persist the options, when they are changed by a user.
+   */
+  useEffect(() => {
+    setPersistedOptions(options);
+  }, [options, setPersistedOptions]);
 
   return (
     <Page

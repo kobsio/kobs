@@ -52,7 +52,7 @@ const Signin: FunctionComponent = () => {
       setIsLoading(false);
       setState(SigninState.OK);
       navigate(params.get('redirect') || '/');
-    } catch (_) {
+    } catch {
       setIsLoading(false);
       setState(state | SigninState.INVALID_CREDENTIALS);
     }
