@@ -1,4 +1,4 @@
-import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/core';
+import { IPluginPanelProps, pluginBasePath, PluginPanel, PluginPanelActionLinks, PluginPanelError } from '@kobsio/core';
 import { FunctionComponent } from 'react';
 
 import Artifacts from './Artifacts';
@@ -25,7 +25,11 @@ export interface IOptionsArtifacts {
 const HarborPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, description, options, instance }) => {
   if (options && options.type === 'projects') {
     return (
-      <PluginPanel title={title} description={description}>
+      <PluginPanel
+        title={title}
+        description={description}
+        actions={<PluginPanelActionLinks links={[{ link: `${pluginBasePath(instance)}`, title: 'Explore' }]} />}
+      >
         <Projects instance={instance} />
       </PluginPanel>
     );
@@ -33,7 +37,22 @@ const HarborPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
 
   if (options && options.type === 'repositories' && options.repositories && options.repositories.projectName) {
     return (
-      <PluginPanel title={title} description={description}>
+      <PluginPanel
+        title={title}
+        description={description}
+        actions={
+          <PluginPanelActionLinks
+            links={[
+              {
+                link: `${pluginBasePath(instance)}/${options.repositories.projectName}?query=${
+                  options.repositories.query || ''
+                }`,
+                title: 'Explore',
+              },
+            ]}
+          />
+        }
+      >
         <Repositories
           instance={instance}
           projectName={options.repositories.projectName}
@@ -51,7 +70,22 @@ const HarborPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
     options.artifacts.repositoryName
   ) {
     return (
-      <PluginPanel title={title} description={description}>
+      <PluginPanel
+        title={title}
+        description={description}
+        actions={
+          <PluginPanelActionLinks
+            links={[
+              {
+                link: `${pluginBasePath(instance)}/${options.artifacts.projectName}/${
+                  options.artifacts.repositoryName
+                }?query=${options.artifacts.query || ''}`,
+                title: 'Explore',
+              },
+            ]}
+          />
+        }
+      >
         <Artifacts
           instance={instance}
           projectName={options.artifacts.projectName}
