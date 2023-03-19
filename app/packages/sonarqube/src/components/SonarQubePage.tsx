@@ -11,12 +11,13 @@ import {
   useQueryState,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { ExpandMore, Search } from '@mui/icons-material';
+import { Clear, ExpandMore, Search } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
+  IconButton,
   InputAdornment,
   TextField,
   Typography,
@@ -104,6 +105,15 @@ const SonarQubePageToolbar: FunctionComponent<{ options: IOptions; setOptions: (
     setOptions({ ...options, page: 1, query: query });
   };
 
+  /**
+   * `handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * action is executed we set the search term to an empty string and we adjust the options accordingly.
+   */
+  const handleClear = () => {
+    setQuery('');
+    setOptions({ ...options, page: 1, query: '' });
+  };
+
   useEffect(() => {
     setQuery(options.query);
   }, [options.query]);
@@ -118,6 +128,13 @@ const SonarQubePageToolbar: FunctionComponent<{ options: IOptions; setOptions: (
             placeholder="Search"
             fullWidth={true}
             InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClear}>
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
               startAdornment: (
                 <InputAdornment position="start">
                   <Search />

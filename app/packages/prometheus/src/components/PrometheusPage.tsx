@@ -24,6 +24,7 @@ import {
   Box,
   Card,
   IconButton,
+  InputAdornment,
   InputBaseComponentProps,
   Menu,
   MenuItem,
@@ -423,6 +424,20 @@ const PrometheusToolbar: FunctionComponent<{
                     value={query}
                     onChange={(e) => changeQuery(index, e.target.value)}
                     InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <PrometheusHistory setQuery={(query) => changeQuery(index, query)} />
+                          {index === 0 ? (
+                            <IconButton size="small" onClick={addQuery}>
+                              <Add />
+                            </IconButton>
+                          ) : (
+                            <IconButton size="small" onClick={(): void => removeQuery(index)}>
+                              <Remove />
+                            </IconButton>
+                          )}
+                        </InputAdornment>
+                      ),
                       inputComponent: InternalEditor,
                       inputProps: {
                         callSubmit: callSubmit,
@@ -432,21 +447,6 @@ const PrometheusToolbar: FunctionComponent<{
                     fullWidth={true}
                   />
                 </Box>
-                {index === 0 ? (
-                  <>
-                    <PrometheusHistory setQuery={(query) => changeQuery(index, query)} />
-                    <IconButton size="small" onClick={addQuery}>
-                      <Add />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <PrometheusHistory setQuery={(query) => changeQuery(index, query)} />
-                    <IconButton size="small" onClick={(): void => removeQuery(index)}>
-                      <Remove />
-                    </IconButton>
-                  </>
-                )}
               </Box>
             </Box>
           ))}

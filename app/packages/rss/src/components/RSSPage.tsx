@@ -1,6 +1,6 @@
 import { IPluginPageProps, Page, Toolbar, ToolbarItem, useQueryState } from '@kobsio/core';
-import { Search } from '@mui/icons-material';
-import { Alert, AlertTitle, Box, InputAdornment, TextField } from '@mui/material';
+import { Clear, Search } from '@mui/icons-material';
+import { Alert, AlertTitle, Box, IconButton, InputAdornment, TextField } from '@mui/material';
 import { FormEvent, FunctionComponent, useEffect, useState } from 'react';
 
 import Feed from './Feed';
@@ -25,6 +25,15 @@ const RSSPageToolbar: FunctionComponent<{ options: IOptions; setOptions: (option
     setOptions({ url: url });
   };
 
+  /**
+   * `handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * action is executed we set the search term to an empty string and we adjust the options accordingly.
+   */
+  const handleClear = () => {
+    setURL('');
+    setOptions({ url: '' });
+  };
+
   useEffect(() => {
     setURL(options.url);
   }, [options.url]);
@@ -39,6 +48,13 @@ const RSSPageToolbar: FunctionComponent<{ options: IOptions; setOptions: (option
             placeholder="Search"
             fullWidth={true}
             InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClear}>
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
               startAdornment: (
                 <InputAdornment position="start">
                   <Search />
