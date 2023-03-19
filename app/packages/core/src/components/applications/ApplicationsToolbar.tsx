@@ -1,4 +1,4 @@
-import { Search, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
+import { Search, CheckBox, CheckBoxOutlineBlank, Clear } from '@mui/icons-material';
 import {
   Autocomplete,
   Checkbox,
@@ -8,6 +8,7 @@ import {
   InputAdornment,
   ToggleButton,
   ToggleButtonGroup,
+  IconButton,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useContext, FunctionComponent, useState, FormEvent, useEffect } from 'react';
@@ -96,6 +97,15 @@ const ApplicationsToolbar: FunctionComponent<IApplicationsToolbarProps> = ({ opt
   };
 
   /**
+   * `handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * action is executed we set the search term to an empty string and we adjust the options accordingly.
+   */
+  const handleClear = () => {
+    setSearchTerm('');
+    setOptions({ ...options, page: 1, searchTerm: '' });
+  };
+
+  /**
    * Since the options can also be updated outside of the `ApplicationsToolbar` (e.g. set the `all` option to `true`,
    * when no applications were found) component we have to update the state everytime the options are changed.
    */
@@ -128,6 +138,13 @@ const ApplicationsToolbar: FunctionComponent<IApplicationsToolbarProps> = ({ opt
             placeholder="Search"
             fullWidth={true}
             InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClear}>
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
               startAdornment: (
                 <InputAdornment position="start">
                   <Search />

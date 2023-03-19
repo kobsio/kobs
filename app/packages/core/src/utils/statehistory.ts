@@ -31,12 +31,14 @@ export const addStateHistoryItems = (key: string, items: string[]) => {
   try {
     const storedItems = localStorage.getItem(key);
     if (!storedItems) {
-      localStorage.setItem(key, JSON.stringify([...new Set(items.filter((item) => item !== ''))].slice(0, 10)));
+      localStorage.setItem(key, JSON.stringify([...new Set(items.filter((item) => item.trim() !== ''))].slice(0, 10)));
     } else {
       const storedItemsParsed: string[] = JSON.parse(storedItems);
       storedItemsParsed.unshift(...items);
-      storedItemsParsed.filter((item) => item !== '');
-      localStorage.setItem(key, JSON.stringify([...new Set(storedItemsParsed)].slice(0, 10)));
+      localStorage.setItem(
+        key,
+        JSON.stringify([...new Set(storedItemsParsed.filter((item) => item.trim() !== ''))].slice(0, 10)),
+      );
     }
   } catch {}
 };
