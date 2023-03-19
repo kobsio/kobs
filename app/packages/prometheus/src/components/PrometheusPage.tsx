@@ -35,7 +35,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { forwardRef, FunctionComponent, MouseEvent, useContext, useEffect, useState } from 'react';
+import { forwardRef, FunctionComponent, MouseEvent, useContext, useEffect, useMemo, useState } from 'react';
 
 import Chart from './Chart';
 import Legend from './Legend';
@@ -251,11 +251,26 @@ const PrometheusWrapper: FunctionComponent<{
  * queries he run in the past. When the user clicks on the button, a menu with a list of the queries saved in the
  * history is shown. When a user clicks on a query the `setQuery` function is triggered for this query and should
  * replace the current value in the query field.
+ *
+ * `optionsQueries` must be the list of queries from the `options` in the `PrometheusPage` component.
  */
-const PrometheusHistory: FunctionComponent<{ setQuery: (query: string) => void }> = ({ setQuery }) => {
+const PrometheusHistory: FunctionComponent<{ optionsQueries: string[]; setQuery: (query: string) => void }> = ({
+  optionsQueries,
+  setQuery,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const queries = getStateHistory('kobs-prometheus-queryhistory');
+
+  /**
+   * `queries` is a list of queries which are saved in the history. We refresh the list of queries each time the
+   * provided `optionsQueries` (from the `options.queries` property) are changed, because this means that the user
+   * executed a new request and a new query was added to the history. This way we can save some unnecessary calls to the
+   * `getStateHistory` function.
+   */
+  const queries = useMemo(() => {
+    return getStateHistory('kobs-prometheus-queryhistory');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [optionsQueries]);
 
   /**
    * `handleOpen` opens the menu, which is used to display the history, with all queries which were executed by a user
@@ -426,7 +441,10 @@ const PrometheusToolbar: FunctionComponent<{
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <PrometheusHistory setQuery={(query) => changeQuery(index, query)} />
+                          <PrometheusHistory
+                            optionsQueries={options.queries}
+                            setQuery={(query) => changeQuery(index, query)}
+                          />
                           {index === 0 ? (
                             <IconButton size="small" onClick={addQuery}>
                               <Add />
