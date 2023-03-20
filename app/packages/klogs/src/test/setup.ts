@@ -14,6 +14,12 @@ vi.mock('monaco-yaml', () => {
   };
 });
 
+// xterm uses HTMLCanvas inside of core.
+// The lib throws errors in our test output, when this isn't defined
+HTMLCanvasElement.prototype.getContext = () => {
+  return null;
+};
+
 afterEach(() => {
   cleanup();
 });

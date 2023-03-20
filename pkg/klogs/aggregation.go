@@ -35,7 +35,6 @@ type AggregationOptions struct {
 	VerticalAxisOperation string `json:"verticalAxisOperation"`
 	VerticalAxisField     string `json:"verticalAxisField"`
 
-	BreakDownBy        string   `json:"breakDownBy"`
 	BreakDownByFields  []string `json:"breakDownByFields"`
 	BreakDownByFilters []string `json:"breakDownByFilters"`
 }

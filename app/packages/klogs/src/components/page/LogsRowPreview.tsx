@@ -31,7 +31,10 @@ const RowPreview: FunctionComponent<IRowPreviewProps> = ({ row }) => {
       >
         {[...knownColumns, ...contentColumns].map((col) => (
           <Fragment key={col}>
-            <Box component="span" sx={{ backgroundColor: alpha(grey[600], 0.3), mx: 1, px: 2, py: 1 }}>
+            <Box
+              component="span"
+              sx={{ backgroundColor: alpha(grey[600], 0.3), mx: 1, px: 2, py: 1, wordBreak: 'break-all' }}
+            >
               {col}
             </Box>
             <Box

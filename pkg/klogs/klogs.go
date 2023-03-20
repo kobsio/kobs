@@ -168,7 +168,6 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var aggregationData Aggregation
-
 	err := json.NewDecoder(r.Body).Decode(&aggregationData)
 	if err != nil {
 		log.Error(r.Context(), "Could not decode request body", zap.Error(err))

@@ -40,7 +40,7 @@ const LogsToolbar: FunctionComponent<ILogsToolbar> = ({
   };
 
   /**
-   * `loadColumns` loads columns for a specific query
+   * `loadCompletions` loads the column names for autocompletion purposes
    * columns are stored in memory, because we want to run this request only once per page load.
    * columns can't be memoized in react state (useQuery or useState),
    * because we only have a single chance to pass the loadCompletions func to the MUIEditor.

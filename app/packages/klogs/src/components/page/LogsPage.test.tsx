@@ -1,5 +1,7 @@
 import { APIClient, APIContext, QueryClientProvider } from '@kobsio/core';
+import { InputBaseComponentProps } from '@mui/material';
 import { render as _render, screen, waitFor } from '@testing-library/react';
+import { forwardRef } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
@@ -17,9 +19,9 @@ vi.mock('./LogsBucketChart', () => {
 
 vi.mock('./InternalEditor', () => {
   return {
-    default: () => {
+    default: forwardRef<HTMLInputElement, InputBaseComponentProps>(function InternalEditor(props, ref) {
       return <>mock editor</>;
-    },
+    }),
   };
 });
 

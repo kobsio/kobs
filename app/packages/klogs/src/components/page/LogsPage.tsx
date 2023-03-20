@@ -4,6 +4,7 @@ import {
   fileDownload,
   IPluginPageProps,
   ITimes,
+  Link,
   Page,
   Pagination,
   timeOptions,
@@ -11,11 +12,12 @@ import {
   useQueryState,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Description } from '@mui/icons-material';
+import { Description, PieChart } from '@mui/icons-material';
 import { Box, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext } from 'react';
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import LogsBucketChart, { IChangeTimeframePayload } from './LogsBucketChart';
 import LogsDownload from './LogsDownload';
@@ -25,7 +27,7 @@ import LogsToolbar from './LogsToolbar';
 
 import { ILogsData } from '../common/types';
 
-interface ISearch {
+export interface ISearch {
   fields: string[];
   order: 'asc' | 'desc';
   orderBy: string;
@@ -38,11 +40,9 @@ interface ISearch {
 }
 
 // now in seconds
-const now = () => Math.floor(Date.now() / 1000);
+export const now = () => Math.floor(Date.now() / 1000);
 
-const orderMapping = { asc: 'ascending', desc: 'descending' } as const;
-
-const defaultSearch: ISearch = {
+export const defaultSearch: ISearch = {
   fields: [],
   order: 'desc',
   orderBy: 'timestamp',
@@ -54,12 +54,15 @@ const defaultSearch: ISearch = {
   timeStart: now() - 900,
 };
 
+const orderMapping = { asc: 'ascending', desc: 'descending' } as const;
+
 /**
  * LogsPage displays the klogs plugin page that allows the user to search for logs
  * and compose a table with custom columns
  */
 const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);
+  const { search: rawSearch } = useLocation();
   const [search, setSearch] = useQueryState<ISearch>(defaultSearch);
   // lastSearch is required, to enable reloading of log results
   // when the user has selected one of the quick time-range options
@@ -67,7 +70,7 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const queryResult = useQuery<ILogsData, APIError>(
     [search.query, search.time, search.timeEnd, search.timeStart, search.order, search.orderBy, lastSearch],
     () => {
-      let timeEnd: number, timeStart;
+      let timeEnd: number, timeStart: number;
       if (search.time === 'custom') {
         timeEnd = search.timeEnd;
         timeStart = search.timeStart;
@@ -156,11 +159,18 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
         />
       }
       actions={
-        <Tooltip title="Documentation">
-          <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
-            <Description />
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Documentation">
+            <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
+              <Description />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Aggregation view">
+            <IconButton component={Link} to={`./aggregation${rawSearch}`}>
+              <PieChart />
+            </IconButton>
+          </Tooltip>
+        </>
       }
     >
       <UseQueryWrapper

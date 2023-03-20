@@ -19,8 +19,6 @@
 - [-] comparing fields with each other (type conversions)
 - [x] improved query editor
 - [x] suggest column names
-- [ ] add theme option so that operators (=, !=, ...) are highlighted
-- [ ] add theme option so that identifiers are highlighted
 - [x] hide icons in selected fields view
 - [x] panel view
 - [x] panel view - hide download icons
@@ -28,7 +26,9 @@
 - [x] add actions for field list
 - [x] panel view - explore query
 - [x] make the spans in the log preview gray (no border)
-- [x] handle '_exists_ "kubernetes_annotations_kubectl_kubernetes_io/default-container"'
+- [x] handle '_exists_ "kubernetes_annotations_kubectl_kubernetes_io/default-container"''
+- [ ] add theme option so that operators (=, !=, ...) are highlighted
+- [ ] add theme option so that identifiers are highlighted
 - [ ] improve loading behavior, when logs are already visible, there shouldn't be a loading spinner
 - [ ] make fields searchable
 - [ ] copy table in YAML format (so that it can be used as a panel)

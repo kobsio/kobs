@@ -18,22 +18,15 @@ import {
   Toolbar,
 } from '@mui/material';
 import md5 from 'md5';
-import { FunctionComponent, forwardRef, useContext, useState, MouseEvent } from 'react';
-import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation, useNavigate } from 'react-router-dom';
+import { FunctionComponent, useContext, useState, MouseEvent } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import logo from '../../../assets/logo.svg';
 import { APIContext, IAPIContext } from '../../../context/APIContext';
 import { AppContext, IAppContext } from '../../../context/AppContext';
 import { INavigation, INavigationItem, INavigationSubItem } from '../../../crds/user';
 import { ITheme } from '../../../utils/theme';
-
-/**
- * `Link` is a helper function, which we need to use the `Link` (imported as `RouterLink`) component from React Router
- * within the `ListItem` component from Material UI.
- */
-const Link = forwardRef<HTMLAnchorElement, RouterLinkProps>(function link(itemProps, ref) {
-  return <RouterLink ref={ref} {...itemProps} role={undefined} />;
-});
+import { Link } from '../../utils/Link';
 
 /**
  * `initItems` is a helper function to initialize the `items` state in the `SidebarGroup` component. It returns a list
