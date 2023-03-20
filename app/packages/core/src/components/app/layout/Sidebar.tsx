@@ -381,7 +381,7 @@ const SidebarFooter: FunctionComponent = () => {
     try {
       await apiContext.client.signout();
       navigate(`/auth?redirect=${encodeURIComponent(location.pathname + location.search)}`);
-    } catch (_) {}
+    } catch {}
   };
 
   /**

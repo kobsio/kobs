@@ -5,12 +5,13 @@ import {
   ResourcesSelectNamespaces,
   Toolbar,
   ToolbarItem,
+  useLocalStorageState,
   useQueryState,
   useUpdate,
 } from '@kobsio/core';
 import { Refresh } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 
 import Resources from './Resources';
 
@@ -35,13 +36,21 @@ interface IOptions {
  */
 const FluxPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const update = useUpdate();
-  const [options, setOptions] = useQueryState<IOptions>({
+  const [persistedOptions, setPersistedOptions] = useLocalStorageState<IOptions>('kobs-flux-fluxpage-options', {
     clusters: [],
     namespaces: [],
     param: '',
     paramName: '',
     type: 'kustomizations',
   });
+  const [options, setOptions] = useQueryState<IOptions>(persistedOptions);
+
+  /**
+   * `useEffect` is used to persist the options, when they are changed by a user.
+   */
+  useEffect(() => {
+    setPersistedOptions(options);
+  }, [options, setPersistedOptions]);
 
   return (
     <Page

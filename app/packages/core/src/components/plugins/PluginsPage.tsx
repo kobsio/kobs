@@ -15,10 +15,11 @@ import {
   Typography,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import { FormEvent, FunctionComponent, useContext, useState } from 'react';
+import { FormEvent, FunctionComponent, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IPluginInstance, PluginContext } from '../../context/PluginContext';
+import { useLocalStorageState } from '../../utils/hooks/useLocalStorageState';
 import { useQueryState } from '../../utils/hooks/useQueryState';
 import { Page } from '../utils/Page';
 import { Pagination } from '../utils/Pagination';
@@ -45,13 +46,14 @@ interface IOptions {
 const PluginsPage: FunctionComponent = () => {
   const { getClusters, getPluginTypes, getPlugin, instances } = useContext(PluginContext);
 
-  const [options, setOptions] = useQueryState<IOptions>({
+  const [persistedOptions, setPersistedOptions] = useLocalStorageState<IOptions>('kobs-core-pluginspage-options', {
     clusters: [],
     page: 1,
     perPage: 10,
     pluginTypes: [],
     searchTerm: '',
   });
+  const [options, setOptions] = useQueryState<IOptions>(() => persistedOptions);
   const [searchTerm, setSearchTerm] = useState<string>(options.searchTerm ?? '');
 
   /**
@@ -82,6 +84,13 @@ const PluginsPage: FunctionComponent = () => {
     );
 
   const items = filteredItems.slice((options.page - 1) * options.perPage, options.page * options.perPage);
+
+  /**
+   * `useEffect` is used to persist the options, when they are changed by a user.
+   */
+  useEffect(() => {
+    setPersistedOptions(options);
+  }, [options, setPersistedOptions]);
 
   return (
     <Page

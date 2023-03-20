@@ -1,12 +1,13 @@
 import { Alert, AlertTitle, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { FunctionComponent, useContext, useState } from 'react';
+import { FunctionComponent, useContext, useEffect, useState } from 'react';
 
 import ApplicationsToolbar from './ApplicationsToolbar';
 import { ApplicationsInsightsWrapper, TopologyGraph } from './Topology';
 import { IApplicationOptions, ITopology } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
+import { useLocalStorageState } from '../../utils/hooks/useLocalStorageState';
 import { useQueryState } from '../../utils/hooks/useQueryState';
 import { Page } from '../utils/Page';
 import { UseQueryWrapper } from '../utils/UseQueryWrapper';
@@ -84,15 +85,26 @@ const TopologyInternal: FunctionComponent<ITopologyÜageInternalProps> = ({ opti
  * can be filtered by the same options as the applications on the `ApplicationsPage`.
  */
 const TopologyPage: FunctionComponent = () => {
-  const [options, setOptions] = useQueryState<IApplicationOptions>({
-    all: false,
-    clusters: [],
-    namespaces: [],
-    page: undefined,
-    perPage: undefined,
-    searchTerm: '',
-    tags: [],
-  });
+  const [persistedOptions, setPersistedOptions] = useLocalStorageState<IApplicationOptions>(
+    'kobs-core-topologypage-options',
+    {
+      all: false,
+      clusters: [],
+      namespaces: [],
+      page: undefined,
+      perPage: undefined,
+      searchTerm: '',
+      tags: [],
+    },
+  );
+  const [options, setOptions] = useQueryState<IApplicationOptions>(persistedOptions);
+
+  /**
+   * `useEffect` is used to persist the options, when they are changed by a user.
+   */
+  useEffect(() => {
+    setPersistedOptions(options);
+  }, [options, setPersistedOptions]);
 
   return (
     <Page

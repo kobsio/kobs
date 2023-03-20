@@ -1,11 +1,12 @@
 import { Add, Clear, Search } from '@mui/icons-material';
 import { Box, Button, IconButton, InputAdornment, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { FormEvent, FunctionComponent, useState } from 'react';
+import { FormEvent, FunctionComponent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Teams from './Teams';
 import { ITeamOptions } from './utils';
 
+import { useLocalStorageState } from '../../utils/hooks/useLocalStorageState';
 import { useQueryState } from '../../utils/hooks/useQueryState';
 import { Page } from '../utils/Page';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
@@ -16,12 +17,13 @@ import { Toolbar, ToolbarItem } from '../utils/Toolbar';
  * The teams can also be filtered by a search team, which should match the teams id.
  */
 const TeamsPage: FunctionComponent = () => {
-  const [options, setOptions] = useQueryState<ITeamOptions>({
+  const [persistedOptions, setPersistedOptions] = useLocalStorageState<ITeamOptions>('kobs-core-teamspage-options', {
     all: false,
     page: 1,
     perPage: 10,
     searchTerm: '',
   });
+  const [options, setOptions] = useQueryState<ITeamOptions>(persistedOptions);
   const [searchTerm, setSearchTerm] = useState<string>(options.searchTerm ?? '');
 
   /**
@@ -34,13 +36,20 @@ const TeamsPage: FunctionComponent = () => {
   };
 
   /**
-   * `handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
    * action is executed we set the search term to an empty string and we adjust the options accordingly.
    */
   const handleClear = () => {
     setSearchTerm('');
     setOptions((prevOptions) => ({ ...prevOptions, page: 1, searchTerm: '' }));
   };
+
+  /**
+   * `useEffect` is used to persist the options, when they are changed by a user.
+   */
+  useEffect(() => {
+    setPersistedOptions(options);
+  }, [options, setPersistedOptions]);
 
   return (
     <Page

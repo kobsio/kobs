@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { Button, Divider, List } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { Fragment, FunctionComponent, useContext } from 'react';
+import { Fragment, FunctionComponent, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import Application from './Application';
@@ -10,6 +10,7 @@ import { IApplicationOptions } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
+import { useLocalStorageState } from '../../utils/hooks/useLocalStorageState';
 import { useQueryState } from '../../utils/hooks/useQueryState';
 import { Page } from '../utils/Page';
 import { Pagination } from '../utils/Pagination';
@@ -94,15 +95,26 @@ const Applications: FunctionComponent<IApplicationsProps> = ({ options, setOptio
  * applications are then loaded and shown via the `Applications` component.
  */
 const ApplicationsPage: FunctionComponent = () => {
-  const [options, setOptions] = useQueryState<IApplicationOptions>({
-    all: false,
-    clusters: [],
-    namespaces: [],
-    page: 1,
-    perPage: 10,
-    searchTerm: '',
-    tags: [],
-  });
+  const [persistedOptions, setPersistedOptions] = useLocalStorageState<IApplicationOptions>(
+    'kobs-core-applicationspage-options',
+    {
+      all: false,
+      clusters: [],
+      namespaces: [],
+      page: 1,
+      perPage: 10,
+      searchTerm: '',
+      tags: [],
+    },
+  );
+  const [options, setOptions] = useQueryState<IApplicationOptions>(persistedOptions);
+
+  /**
+   * `useEffect` is used to persist the options, when they are changed by a user.
+   */
+  useEffect(() => {
+    setPersistedOptions(options);
+  }, [options, setPersistedOptions]);
 
   return (
     <Page
