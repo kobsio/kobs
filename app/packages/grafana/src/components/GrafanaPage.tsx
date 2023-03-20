@@ -10,8 +10,18 @@ import {
   useQueryState,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Search } from '@mui/icons-material';
-import { Box, Divider, InputAdornment, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Clear, Search } from '@mui/icons-material';
+import {
+  Box,
+  Divider,
+  IconButton,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FormEvent, Fragment, FunctionComponent, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -92,6 +102,15 @@ const GrafanaPageToolbar: FunctionComponent<{ options: IOptions; setOptions: (op
     setOptions({ query: query });
   };
 
+  /**
+   * `handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * action is executed we set the search term to an empty string and we adjust the options accordingly.
+   */
+  const handleClear = () => {
+    setQuery('');
+    setOptions({ query: '' });
+  };
+
   useEffect(() => {
     setQuery(options.query);
   }, [options.query]);
@@ -106,6 +125,13 @@ const GrafanaPageToolbar: FunctionComponent<{ options: IOptions; setOptions: (op
             placeholder="Search"
             fullWidth={true}
             InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClear}>
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
               startAdornment: (
                 <InputAdornment position="start">
                   <Search />

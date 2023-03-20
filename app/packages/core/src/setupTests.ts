@@ -7,7 +7,7 @@ expect.extend(matchers);
 
 /**
  * `LocalStorageMock` implements the `localStorage` interface, so that we can use it in our app for testing the
- * `useLocalStorageState` hook.
+ * `useLocalStorageState` hook and the state history.
  */
 class LocalStorageMock {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

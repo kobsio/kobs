@@ -1,4 +1,4 @@
-import { CheckBox, CheckBoxOutlineBlank, Extension, Search } from '@mui/icons-material';
+import { CheckBox, CheckBoxOutlineBlank, Clear, Extension, Search } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -8,6 +8,7 @@ import {
   Checkbox,
   Chip,
   Grid,
+  IconButton,
   InputAdornment,
   Stack,
   TextField,
@@ -55,9 +56,22 @@ const PluginsPage: FunctionComponent = () => {
   const [options, setOptions] = useQueryState<IOptions>(() => persistedOptions);
   const [searchTerm, setSearchTerm] = useState<string>(options.searchTerm ?? '');
 
+  /**
+   * `handleSubmit` handles the submission of the toolbar form, when a user has entered a search term. When the search
+   * term changes we also have to set the page options to their initial values.
+   */
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setOptions((prevOptions) => ({ ...prevOptions, page: 1, searchTerm: searchTerm }));
+  };
+
+  /**
+   * `handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * action is executed we set the search term to an empty string and we adjust the options accordingly.
+   */
+  const handleClear = () => {
+    setSearchTerm('');
+    setOptions((prevOptions) => ({ ...prevOptions, page: 1, searchTerm: '' }));
   };
 
   const filteredItems = instances
@@ -130,6 +144,13 @@ const PluginsPage: FunctionComponent = () => {
                 placeholder="Search"
                 fullWidth={true}
                 InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={handleClear}>
+                        <Clear />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                   startAdornment: (
                     <InputAdornment position="start">
                       <Search />

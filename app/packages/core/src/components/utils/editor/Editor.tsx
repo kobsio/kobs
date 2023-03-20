@@ -32,8 +32,8 @@ export const Editor: FunctionComponent<IEditorProps> = ({ language, readOnly = f
     <MonacoEditorReact
       theme="nord"
       height="100%"
-      defaultLanguage={language}
-      defaultValue={value}
+      language={language}
+      value={value}
       beforeMount={handleBeforeMount}
       onChange={onChange}
       options={{
@@ -108,8 +108,8 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
     <MonacoEditorReact
       theme="mui"
       height={height}
-      defaultLanguage={language}
-      defaultValue={value}
+      language={language}
+      value={value}
       beforeMount={handleBeforeMount}
       onMount={handleOnMount}
       onChange={onChange}

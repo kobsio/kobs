@@ -1,5 +1,5 @@
-import { Add, Search } from '@mui/icons-material';
-import { Box, Button, InputAdornment, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Add, Clear, Search } from '@mui/icons-material';
+import { Box, Button, IconButton, InputAdornment, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { FormEvent, FunctionComponent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -33,6 +33,15 @@ const TeamsPage: FunctionComponent = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setOptions((prevOptions) => ({ ...prevOptions, page: 1, searchTerm: searchTerm }));
+  };
+
+  /**
+   * handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * action is executed we set the search term to an empty string and we adjust the options accordingly.
+   */
+  const handleClear = () => {
+    setSearchTerm('');
+    setOptions((prevOptions) => ({ ...prevOptions, page: 1, searchTerm: '' }));
   };
 
   /**
@@ -71,6 +80,13 @@ const TeamsPage: FunctionComponent = () => {
                 placeholder="Search"
                 fullWidth={true}
                 InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={handleClear}>
+                        <Clear />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                   startAdornment: (
                     <InputAdornment position="start">
                       <Search />

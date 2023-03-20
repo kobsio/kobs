@@ -1,6 +1,6 @@
 import { IPluginPageProps, Page, Toolbar, ToolbarItem, useQueryState } from '@kobsio/core';
-import { Search } from '@mui/icons-material';
-import { Box, InputAdornment, TextField } from '@mui/material';
+import { Clear, Search } from '@mui/icons-material';
+import { Box, IconButton, InputAdornment, TextField } from '@mui/material';
 import { FormEvent, FunctionComponent, useState } from 'react';
 import { Route, Routes, useParams } from 'react-router-dom';
 
@@ -29,6 +29,15 @@ const PageToolbar: FunctionComponent<{ options: IOptions; setOptions: (data: IOp
     setOptions({ query: query });
   };
 
+  /**
+   * `handleClear` is the action which is executed when a user clicks the clear button in the search field. When the
+   * action is executed we set the search term to an empty string and we adjust the options accordingly.
+   */
+  const handleClear = () => {
+    setQuery('');
+    setOptions({ ...options, query: '' });
+  };
+
   return (
     <Toolbar>
       <ToolbarItem grow={true}>
@@ -39,6 +48,13 @@ const PageToolbar: FunctionComponent<{ options: IOptions; setOptions: (data: IOp
             placeholder="Search"
             fullWidth={true}
             InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClear}>
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
               startAdornment: (
                 <InputAdornment position="start">
                   <Search />
