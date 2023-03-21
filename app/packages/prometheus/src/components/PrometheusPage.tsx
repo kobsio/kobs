@@ -1,5 +1,4 @@
 import {
-  MUIEditor,
   IOptionsAdditionalFields,
   IPluginPageProps,
   ITimes,
@@ -25,7 +24,6 @@ import {
   Card,
   IconButton,
   InputAdornment,
-  InputBaseComponentProps,
   Menu,
   MenuItem,
   Stack,
@@ -35,9 +33,10 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { forwardRef, FunctionComponent, MouseEvent, useContext, useEffect, useMemo, useState } from 'react';
+import { FunctionComponent, MouseEvent, useContext, useEffect, useMemo, useState } from 'react';
 
 import Chart from './Chart';
+import Editor from './Editor';
 import Legend from './Legend';
 
 import { description, IMetric, IMetrics, IOrder, TOrderBy } from '../utils/utils';
@@ -319,32 +318,6 @@ const PrometheusHistory: FunctionComponent<{ optionsQueries: string[]; setQuery:
 };
 
 /**
- * The `InternalEditor` component is a wrapper around our `MUIEditor` component, which allows us to use the editor
- * within a `TextField` component of MUI.
- */
-const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function InternalEditor(props, ref) {
-  const { loadCompletionItems, callSubmit, value, onChange } = props;
-
-  const handleOnChange = (value: string | undefined) => {
-    if (onChange) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      onChange({ target: { value: value ?? '' } });
-    }
-  };
-
-  return (
-    <MUIEditor
-      value={value}
-      onChange={handleOnChange}
-      language="promql"
-      loadCompletionItems={loadCompletionItems}
-      callSubmit={callSubmit}
-    />
-  );
-});
-
-/**
  * The `PrometheusToolbar` component is used to render the toolbar for the Prometheus plugin. It allows a user to
  * provide a list of PromQL queries, to change the time interval and to set the resolution for the metrics he wants to
  * view.
@@ -456,7 +429,7 @@ const PrometheusToolbar: FunctionComponent<{
                           )}
                         </InputAdornment>
                       ),
-                      inputComponent: InternalEditor,
+                      inputComponent: Editor,
                       inputProps: {
                         callSubmit: callSubmit,
                         loadCompletionItems: loadCompletionItems,
