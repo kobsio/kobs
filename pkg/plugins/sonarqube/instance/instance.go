@@ -43,7 +43,12 @@ func (i *instance) GetName() string {
 
 // GetProjects returns a list of projects from SonarQube.
 func (i *instance) GetProjects(ctx context.Context, query, page, perPage string) (*ResponseProjects, error) {
-	projects, err := doRequest[ResponseProjects](ctx, i.client, fmt.Sprintf("%s/api/projects/search?organization=%s&p=%s&ps=%s&q=%s", i.address, i.organization, page, perPage, query))
+	url := fmt.Sprintf("%s/api/components/search?organization=%s&p=%s&ps=%s&q=%s", i.address, i.organization, page, perPage, query)
+	if strings.TrimSpace(query) == "" {
+		url = fmt.Sprintf("%s/api/components/search?organization=%s&p=%s&ps=%s", i.address, i.organization, page, perPage)
+	}
+
+	projects, err := doRequest[ResponseProjects](ctx, i.client, url)
 	if err != nil {
 		return nil, err
 	}

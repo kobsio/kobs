@@ -20,21 +20,17 @@ describe('SonarQubePage', () => {
           components: [
             {
               key: 'project-key-1',
-              lastAnalysisDate: '2017-03-01T11:39:03+0300',
               name: 'Project Name 1',
-              organization: 'my-org-1',
+              organization: 'myorg',
+              project: 'myproject1',
               qualifier: 'TRK',
-              revision: 'cfb82f55c6ef32e61828c4cb3db2da12795fd767',
-              visibility: 'public',
             },
             {
               key: 'project-key-2',
-              lastAnalysisDate: '2017-03-02T15:21:47+0300',
               name: 'Project Name 2',
-              organization: 'my-org-1',
+              organization: 'myorg',
+              project: 'myproject2',
               qualifier: 'TRK',
-              revision: '7be96a94ac0c95a61ee6ee0ef9c6f808d386a355',
-              visibility: 'private',
             },
           ],
           paging: {
@@ -234,6 +230,6 @@ describe('SonarQubePage', () => {
 
     await userEvent.click(screen.getByText(/Project Name 1/));
     screen.debug();
-    expect(await waitFor(() => screen.getAllByText(/Quality Gate Status/).length)).toBe(2);
+    expect(await waitFor(() => screen.getAllByText(/Quality Gate Status/).length)).toBe(1);
   });
 });
