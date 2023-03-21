@@ -10,6 +10,7 @@ import CompletionItem = monaco.languages.CompletionItem;
 import ProviderResult = monaco.languages.ProviderResult;
 import CompletionList = monaco.languages.CompletionList;
 
+import { signalsciencesLanguageDefinition } from './languages/signalsciences';
 import yamlWorker from './yaml.worker.js?worker';
 
 /**
@@ -94,5 +95,32 @@ export const setupPromQL = (monaco: Monaco, loadCompletionItems?: () => Promise<
         },
       });
     });
+  }
+};
+
+/**
+ * `SIGNALSCIENCES_SETUP_STARTED` is a constants which allows us to check if the `setupSignalSciences` functions was
+ * already run, so that the setup function is only run once.
+ */
+let SIGNALSCIENCES_SETUP_STARTED = false;
+
+/**
+ * `setupSignalSciences` runs the setup for SignalSciences support. It adds syntax highlighting and autocompletion.
+ */
+export const setupSignalSciences = (monaco: Monaco, loadCompletionItems?: () => Promise<string[]>) => {
+  if (SIGNALSCIENCES_SETUP_STARTED === false) {
+    SIGNALSCIENCES_SETUP_STARTED = true;
+
+    const mod = signalsciencesLanguageDefinition.loader();
+    monaco.languages.register({
+      aliases: signalsciencesLanguageDefinition.aliases,
+      extensions: signalsciencesLanguageDefinition.extensions,
+      id: signalsciencesLanguageDefinition.id,
+      mimetypes: signalsciencesLanguageDefinition.mimetypes,
+    });
+
+    monaco.languages.setMonarchTokensProvider(signalsciencesLanguageDefinition.id, mod.language);
+    monaco.languages.setLanguageConfiguration(signalsciencesLanguageDefinition.id, mod.languageConfiguration);
+    monaco.languages.registerCompletionItemProvider(signalsciencesLanguageDefinition.id, mod.completionItemProvider);
   }
 };

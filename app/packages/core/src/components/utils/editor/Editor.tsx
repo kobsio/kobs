@@ -2,7 +2,7 @@ import MonacoEditorReact, { Monaco } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { FunctionComponent, useState } from 'react';
 
-import { setupPromQL, setupMonaco } from './monaco';
+import { setupPromQL, setupMonaco, setupSignalSciences } from './monaco';
 import { muiTheme, nordTheme } from './themes';
 
 import { useLatest } from '../../../utils/hooks/useLatest';
@@ -77,8 +77,15 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
   const handleBeforeMount = (monaco: Monaco) => {
     monaco.editor.defineTheme('mui', muiTheme);
 
-    if (language === 'promql') {
-      setupPromQL(monaco, loadCompletionItems);
+    switch (language) {
+      case 'promql':
+        setupPromQL(monaco, loadCompletionItems);
+        break;
+      case 'signalsciences':
+        setupSignalSciences(monaco, loadCompletionItems);
+        break;
+      default:
+        break;
     }
   };
 

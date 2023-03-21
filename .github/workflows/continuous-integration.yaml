@@ -63,6 +63,7 @@ jobs:
           - helm
           - prometheus
           - rss
+          - signalsciences
           - sonarqube
     defaults:
       run:

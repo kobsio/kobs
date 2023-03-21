@@ -13,6 +13,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/helm"
 	"github.com/kobsio/kobs/pkg/plugins/prometheus"
 	"github.com/kobsio/kobs/pkg/plugins/rss"
+	"github.com/kobsio/kobs/pkg/plugins/signalsciences"
 	"github.com/kobsio/kobs/pkg/plugins/sonarqube"
 
 	"github.com/alecthomas/kong"
@@ -35,6 +36,7 @@ func main() {
 		helm.New(),
 		prometheus.New(),
 		rss.New(),
+		signalsciences.New(),
 		sonarqube.New(),
 	}
 
