@@ -16,11 +16,10 @@ export interface IPaging {
 
 export interface IProject {
   key: string;
-  lastAnalysisDate: string;
   name: string;
+  organization: string;
+  project: string;
   qualifier: string;
-  revision: string;
-  visibility: string;
 }
 
 /**

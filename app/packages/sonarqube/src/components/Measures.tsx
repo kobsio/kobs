@@ -147,7 +147,7 @@ const Measures: FunctionComponent<{
       noDataTitle="No measures were found"
       refetch={refetch}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
         {data?.component?.measures?.map((measure) => (
           <Measure key={measure.metric} measure={measure} metrics={data.metrics} />
         ))}

@@ -20,7 +20,7 @@ func TestGetName(t *testing.T) {
 func TestGetProjects(t *testing.T) {
 	t.Run("should return request error", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/api/projects/search" {
+			if r.URL.Path == "/api/components/search" {
 				w.WriteHeader(http.StatusBadRequest)
 			}
 		}))
@@ -38,7 +38,7 @@ func TestGetProjects(t *testing.T) {
 
 	t.Run("should return error for invalid json", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/api/projects/search" {
+			if r.URL.Path == "/api/components/search" {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte(`[]`))
@@ -58,7 +58,7 @@ func TestGetProjects(t *testing.T) {
 
 	t.Run("should return projects", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/api/projects/search" {
+			if r.URL.Path == "/api/components/search" {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte(`{"paging": {"pageIndex": 1, "pageSize": 1, "total": 1}}`))

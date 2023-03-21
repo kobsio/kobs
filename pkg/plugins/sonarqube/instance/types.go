@@ -19,12 +19,11 @@ type Paging struct {
 }
 
 type Project struct {
-	Key              string `json:"key"`
-	Name             string `json:"name"`
-	Qualifier        string `json:"qualifier"`
-	Visibility       string `json:"visibility"`
-	LastAnalysisDate string `json:"lastAnalysisDate"`
-	Revision         string `json:"revision"`
+	Organization string `json:"organization"`
+	Key          string `json:"key"`
+	Qualifier    string `json:"qualifier"`
+	Name         string `json:"name"`
+	Project      string `json:"project"`
 }
 
 type ResponseProjectMeasures struct {

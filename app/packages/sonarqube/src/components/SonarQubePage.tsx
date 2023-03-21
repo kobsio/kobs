@@ -71,7 +71,7 @@ const Projects: FunctionComponent<{
       refetch={refetch}
     >
       {data?.components?.map((component, index) => (
-        <Accordion key={component.key}>
+        <Accordion key={component.key} TransitionProps={{ unmountOnExit: true }}>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Typography>{component.name}</Typography>
           </AccordionSummary>
