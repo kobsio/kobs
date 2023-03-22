@@ -27,7 +27,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
           'react-router-dom',
         ],
       },
-      sourcemap: true,
+      sourcemap: false,
     },
     plugins: [
       react(),
