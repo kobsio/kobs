@@ -13,7 +13,19 @@ interface IPieChartOptions {
 
 interface IBarChartOptions {
   chart: 'bar';
-  horizontalAxisOperation: 'time' | 'top';
+  horizontalAxisOperation: 'time';
+  verticalAxisOperation: AxisOp;
+  verticalAxisField: string;
+  breakDownByFields: string[];
+  breakDownByFilters: string[];
+}
+
+interface ITopBarChartOptions {
+  chart: 'bar';
+  horizontalAxisOperation: 'top';
+  horizontalAxisField: string;
+  horizontalAxisOrder: 'ascending' | 'descending';
+  horizontalAxisLimit: string;
   verticalAxisOperation: AxisOp;
   verticalAxisField: string;
   breakDownByFields: string[];
@@ -38,7 +50,7 @@ interface IAreaChartOptions {
   breakDownByFilters: string[];
 }
 
-type IChartOptions = IBarChartOptions | IPieChartOptions | ILineChartOptions | IAreaChartOptions;
+type IChartOptions = IBarChartOptions | ITopBarChartOptions | IPieChartOptions | ILineChartOptions | IAreaChartOptions;
 
 interface IBaseSearch {
   query: string;

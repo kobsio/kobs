@@ -77,10 +77,22 @@ export const convertToTimeseriesChartData = (data: IAggregationData, filters: st
   return series;
 };
 
+interface IBarTopChartLegend {
+  legend: { name: string }[];
+}
+interface IBarChartTopData {
+  metrics: {
+    label: string;
+    name: string;
+    x: string;
+    y: number;
+  }[][];
+}
+
 export const convertToBarChartTopData = (
   data: IAggregationData,
   filters: string[],
-): { legend: { name: string }[]; metrics: { name: string; x: string; y: number }[][] } => {
+): IBarTopChartLegend & IBarChartTopData => {
   const labelColumns = data.columns.filter((column) => !column.includes('_data'));
   const dataColumns = data.columns.filter((column) => column.includes('_data'));
 
@@ -94,6 +106,7 @@ export const convertToBarChartTopData = (
     metrics: dataColumns.map((column) =>
       data.rows.map((row) => {
         return {
+          label: getLabel(row, labelColumns) + ' - ' + row[column],
           name: formatFilter(getLabel(row, labelColumns) + ' ' + column, filters),
           x: formatFilter(getLabel(row, labelColumns) + ' ' + column, filters),
           y: row[column] as number,

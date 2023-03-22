@@ -1,4 +1,4 @@
-import { ITimes, useDimensions, chartTheme, chartColors } from '@kobsio/core';
+import { useDimensions, chartTheme, chartColors } from '@kobsio/core';
 import { Box, useTheme } from '@mui/material';
 import React, { useRef } from 'react';
 import {
@@ -39,7 +39,6 @@ const makeColormap = (series: ISeries[]) => {
 interface IAggregationChartTimeseriesProps {
   data: IAggregationData;
   filters: string[];
-  times: ITimes;
   type: 'line' | 'area' | 'bar';
 }
 
@@ -47,7 +46,6 @@ const AggregationChartTimeseries: React.FunctionComponent<IAggregationChartTimes
   data,
   type,
   filters,
-  times,
 }: IAggregationChartTimeseriesProps) => {
   const refChart = useRef<HTMLDivElement>(null);
   const chartSize = useDimensions(refChart);
