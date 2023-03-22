@@ -14,7 +14,9 @@
 - [ ] improve readme
 - [x] bucket graph - use victory charts
 - [x] bucket graph - zoom
-- [ ] aggregation view
+- [x] aggregation view
+- [ ] aggregation panel view
+- [ ] aggregation chart - improve tooltips
 - [x] test coverage
 - [-] comparing fields with each other (type conversions)
 - [x] improved query editor

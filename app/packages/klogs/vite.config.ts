@@ -4,55 +4,55 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
-import { resolve as _resolve } from 'path';
+import { resolve } from 'path';
 
-export default defineConfig(({ command, mode, ssrBuild }) => {
-  return {
-    build: {
-      lib: {
-        entry: _resolve(__dirname, 'src/index.ts'),
-        fileName: 'index',
-        formats: ['es'],
-        name: 'klogs',
-      },
-      rollupOptions: {
-        external: [
-          '@emotion/react',
-          '@emotion/styled',
-          '@mui/icons-material',
-          '@mui/material',
-          '@tanstack/react-query',
-          'react',
-          'react-dom',
-          'react-router-dom',
-        ],
-      },
-      sourcemap: false,
+export default defineConfig({
+  build: {
+    lib: {
+      entry: resolve(__dirname, 'src/index.ts'),
+      fileName: 'index',
+      formats: ['es'],
+      name: 'klogs',
     },
-    plugins: [
-      react(),
-      dts({
-        insertTypesEntry: true,
-      }),
-    ],
-    test: {
-      alias: [
-        {
-          find: /^@kobsio\/(.*)/,
-          replacement: __dirname + '/../$1/src/index.ts',
-        },
-        {
-          find: /^monaco-editor$/,
-          replacement: __dirname + '../../../node_modules/monaco-editor/esm/vs/editor/editor.api',
-        },
+    rollupOptions: {
+      external: [
+        '@emotion/react',
+        '@emotion/styled',
+        '@kobsio/core',
+        '@mui/icons-material',
+        '@mui/lab',
+        '@mui/material',
+        '@tanstack/react-query',
+        'react',
+        'react-dom',
+        'react-router-dom',
       ],
-      coverage: {
-        all: true,
-      },
-      environment: 'jsdom',
-      globals: true,
-      include: ['src/**/*.test.{ts,tsx}'],
-      setupFiles: './src/test/setup.ts',
     },
-  };
+    sourcemap: false,
+  },
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
+  test: {
+    alias: [
+      {
+        find: /^@kobsio\/(.*)/,
+        replacement: __dirname + '/../$1/src/index.ts',
+      },
+      {
+        find: /^monaco-editor$/,
+        replacement: __dirname + '../../../node_modules/monaco-editor/esm/vs/editor/editor.api',
+      },
+    ],
+    coverage: {
+      all: true,
+    },
+    environment: 'jsdom',
+    globals: true,
+    include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: './src/setupTests.ts',
+  },
 });
