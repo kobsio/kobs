@@ -36,24 +36,38 @@ describe('LogsPanel', () => {
     );
   };
 
+  const data: ILogsData = {
+    count: 1,
+    documents: [
+      {
+        app: 'my-app-name',
+        timestamp: new Date().toISOString(),
+      },
+    ],
+    offset: 0,
+    timeStart: 0,
+    took: 1,
+  };
+
   it('should render the panel', async () => {
-    const data: ILogsData = {
-      count: 1,
-      documents: [
-        {
-          app: 'my-app-name',
-          timestamp: new Date().toISOString(),
-        },
-      ],
-      offset: 0,
-      timeStart: 0,
-      took: 1,
-    };
     getSpy.mockResolvedValueOnce(data);
     await render({ queries: [{ fields: ['app'], name: 'my-query', query: "namespace='kube-system'" }] });
     await waitFor(() => expect(screen.getByText(/\d+ documents in \d+ milliseconds/)).toBeInTheDocument());
     expect(screen.getByText('my panel')).toBeInTheDocument();
     expect(screen.getByText('my-app-name')).toBeInTheDocument();
+  });
+
+  it('should render tabs, when multiple queries are given', async () => {
+    getSpy.mockResolvedValueOnce(data);
+    await render({
+      queries: [
+        { fields: ['app'], name: 'my-query', query: "namespace='kube-system'" },
+        { fields: ['foo'], name: 'my-other-query', query: "namespace='foo'" },
+      ],
+    });
+    await waitFor(() => expect(screen.getByText(/\d+ documents in \d+ milliseconds/)).toBeInTheDocument());
+    expect(screen.getByText('my-query')).toBeInTheDocument();
+    expect(screen.getByText('my-other-query')).toBeInTheDocument();
   });
 
   it('should render error message when queries is not an array', async () => {

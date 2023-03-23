@@ -9,14 +9,6 @@ import LogsPage from './LogsPage';
 
 import { ILogsData } from '../common/types';
 
-vi.mock('./LogsBucketChart', () => {
-  return {
-    default: () => {
-      return <>mock bucket chart</>;
-    },
-  };
-});
-
 vi.mock('./InternalEditor', () => {
   return {
     default: forwardRef<HTMLInputElement, InputBaseComponentProps>(function InternalEditor(props, ref) {

@@ -18,6 +18,7 @@
 - [x] aggregation panel view
 - [ ] aggregation chart - improve tooltips
 - [ ] aggregation chart - break down by filters shows incorrect tooltips
+- [ ] aggregation chart - explore query link
 - [x] test coverage
 - [-] comparing fields with each other (type conversions)
 - [x] improved query editor

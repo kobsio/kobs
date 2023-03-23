@@ -12,6 +12,10 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
+	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
+	"github.com/kobsio/kobs/pkg/hub/clusters"
+	"github.com/kobsio/kobs/pkg/hub/db"
+	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils"
 	"github.com/stretchr/testify/require"
 )
@@ -257,4 +261,21 @@ func Test_getAggregation(t *testing.T) {
 		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
 		utils.AssertJSONEq(t, w, `{"errors":["Error while running aggregation"]}`)
 	})
+}
+
+func Test_Type(t *testing.T) {
+	require.Equal(t, "klogs", New().Type())
+}
+
+func Test_Mount(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	p := New()
+
+	clusterRouter, err := p.MountCluster([]plugin.Instance{}, kubernetes.NewMockClient(ctrl))
+	require.NoError(t, err)
+	require.NotNil(t, clusterRouter)
+
+	hubRouter, err := p.MountHub([]plugin.Instance{}, clusters.NewMockClient(ctrl), db.NewMockClient(ctrl))
+	require.NoError(t, err)
+	require.NotNil(t, hubRouter)
 }

@@ -77,7 +77,7 @@ const AggregationPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       <PluginPanelError
         title={title}
         description={description}
-        message="Invalid options for KLogs plugin"
+        message="Invalid options for klogs plugin"
         details="The provided options appear to be incorrect"
         example={`plugin:
   name: klogs

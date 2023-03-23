@@ -2,6 +2,7 @@ package klogs
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,6 +64,67 @@ func Test_getFields(t *testing.T) {
 			Number: []string{"number"},
 			String: []string{"string"},
 		}, fields)
-
 	})
+
+	t.Run("should handle database error", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		querier := NewMockQuerier(ctrl)
+		instance := instance{
+			querier: querier,
+		}
+
+		wantErr := fmt.Errorf("unexpected error in QueryContext")
+		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(nil, wantErr)
+		_, err := instance.getFields(context.Background())
+
+		require.Error(t, err)
+		require.ErrorIs(t, wantErr, err)
+	})
+
+	t.Run("should handle row scan error", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		querier := NewMockQuerier(ctrl)
+		instance := instance{
+			querier: querier,
+		}
+
+		row := NewMockRows(ctrl)
+		row.EXPECT().Close().Return(nil)
+		row.EXPECT().Next().Return(true)
+		wantErr := fmt.Errorf("unexpected error in Scan")
+		row.EXPECT().Scan(gomock.Any()).Return(wantErr)
+
+		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(row, nil)
+		_, err := instance.getFields(context.Background())
+
+		require.Error(t, err)
+		require.Equal(t, wantErr, err)
+	})
+
+	t.Run("should handle row.Err() error", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		querier := NewMockQuerier(ctrl)
+		instance := instance{
+			querier: querier,
+		}
+
+		row := NewMockRows(ctrl)
+		row.EXPECT().Close().Return(nil)
+		row.EXPECT().Next().Return(true)
+		row.EXPECT().Scan(gomock.Any()).Return(nil)
+		row.EXPECT().Next().Return(false)
+
+		wantErr := fmt.Errorf("unexpected Error in row.Err()")
+		row.EXPECT().Err().Return(wantErr)
+		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(row, nil)
+		_, err := instance.getFields(context.Background())
+
+		require.Error(t, err)
+		require.Equal(t, wantErr, err)
+	})
+}
+
+func Test_GetName(t *testing.T) {
+	i := &instance{name: "instance_name"}
+	require.Equal(t, "instance_name", i.GetName())
 }
