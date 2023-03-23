@@ -15,8 +15,9 @@
 - [x] bucket graph - use victory charts
 - [x] bucket graph - zoom
 - [x] aggregation view
-- [ ] aggregation panel view
+- [x] aggregation panel view
 - [ ] aggregation chart - improve tooltips
+- [ ] aggregation chart - break down by filters shows incorrect tooltips
 - [x] test coverage
 - [-] comparing fields with each other (type conversions)
 - [x] improved query editor

@@ -2,7 +2,7 @@ import { APIClient, APIContext, QueryClientProvider } from '@kobsio/core';
 import { render as _render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import Panel from './Panel';
+import LogsPanel from './LogsPanel';
 
 import { ILogsData } from '../common/types';
 
@@ -24,7 +24,7 @@ describe('LogsPanel', () => {
     return _render(
       <QueryClientProvider>
         <APIContext.Provider value={{ client: apiClient, getUser: vi.fn() }}>
-          <Panel
+          <LogsPanel
             options={options}
             instance={{ cluster: 'cluster', id: 'id', name: 'name', type: 'type' }}
             setTimes={vi.fn()}

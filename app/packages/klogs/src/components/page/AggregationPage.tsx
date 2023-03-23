@@ -16,63 +16,12 @@ import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import AggregationBarTopChart from './AggregationBarTopChart';
-import AggregationChartTimeseries from './AggregationChartTimeseries';
-import AggregationPieChart from './AggregationPieChart';
+import AggregationChart from './AggregationChart';
 import { AxisOp, IAggregationData, IAggregationSearch } from './AggregationTypes';
 import { defaultSearch, now } from './LogsPage';
 import LogsToolbar from './LogsToolbar';
 
-const searchToOptions = (search: IAggregationSearch): unknown | null => {
-  let options: unknown = undefined;
-  if (search.chart === 'pie') {
-    if (!search.sliceBy) {
-      throw new Error('please provide a column name for "Slice By"');
-    }
-    options = {
-      sizeByField: search.sizeByField,
-      sizeByOperation: search.sizeByOperation,
-      sliceBy: search.sliceBy,
-    };
-  } else if (search.chart === 'bar' && search.horizontalAxisOperation === 'top') {
-    if (!search.horizontalAxisField) {
-      throw new Error('please provide a column name for "Horizontal axis field"');
-    }
-
-    if (!search.horizontalAxisLimit || Number.isNaN(Number(search.horizontalAxisLimit))) {
-      throw new Error('please provide a valid value for "Horizontal axis limit" - must be a number');
-    }
-
-    options = {
-      breakDownByFields: search.breakDownByFields,
-      breakDownByFilters: search.breakDownByFilters,
-      horizontalAxisField: search.horizontalAxisField,
-      horizontalAxisLimit: `${search.horizontalAxisLimit}`,
-      horizontalAxisOperation: 'top',
-      horizontalAxisOrder: search.horizontalAxisOrder || 'ascending',
-      verticalAxisOperation: search.verticalAxisOperation,
-    };
-  } else {
-    if (!search.horizontalAxisOperation) {
-      throw new Error('please provide a column name for "Horizontal axis Operation"');
-    }
-
-    if (search.verticalAxisOperation !== 'count' && !search.verticalAxisField) {
-      throw new Error(
-        `when "Vertical axis Operation" is set to "${search.verticalAxisOperation}", you have to pick a column name for "Vertical axis Field"`,
-      );
-    }
-
-    options = {
-      breakDownByFields: search.breakDownByFields,
-      breakDownByFilters: search.breakDownByFilters,
-      horizontalAxisOperation: search.horizontalAxisOperation,
-      verticalAxisField: search.verticalAxisField,
-      verticalAxisOperation: search.verticalAxisOperation,
-    };
-  }
-  return options;
-};
+import { chartOptionsToRequestOptions } from '../utils/aggregation';
 
 const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);
@@ -86,11 +35,10 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     ...defaultSearch,
   });
 
-  /* eslint-disable sort-keys */
   const queryResult = useQuery<IAggregationData | null, APIError>(
     ['klogs/aggregation', instance, search, lastSearch],
     async () => {
-      const options = searchToOptions(search);
+      const options = chartOptionsToRequestOptions(search);
       if (options === null) {
         return null;
       }
@@ -107,12 +55,12 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       return client.post<IAggregationData>(`/api/plugins/klogs/aggregation`, {
         body: {
           chart: search.chart,
-          times: {
-            timeStart: timeStart,
-            timeEnd: timeEnd,
-          },
-          query: search.query,
           options: options,
+          query: search.query,
+          times: {
+            timeEnd: timeEnd,
+            timeStart: timeStart,
+          },
         },
         headers: {
           'x-kobs-cluster': instance.cluster,
@@ -146,22 +94,22 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const handleSetChart = (chart: IAggregationSearch['chart']) => {
     if (chart === 'pie') {
       setSearch({
-        chart: 'pie',
-        sizeByOperation: 'count',
-        horizontalAxisOperation: undefined,
-        verticalAxisOperation: undefined,
-        verticalAxisField: undefined,
         breakDownByFields: undefined,
         breakDownByFilters: undefined,
+        chart: 'pie',
+        horizontalAxisOperation: undefined,
+        sizeByOperation: 'count',
+        verticalAxisField: undefined,
+        verticalAxisOperation: undefined,
       });
     }
     if (chart === 'bar' || chart === 'line' || chart === 'area') {
       setSearch({
+        breakDownByField: [],
+        breakDownByFilter: [],
         chart: chart,
         horizontalAxisOperation: 'time',
         verticalAxisOperation: 'count',
-        breakDownByField: [],
-        breakDownByFilter: [],
       } as Partial<IAggregationSearch>);
     }
   };
@@ -194,7 +142,7 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       }
     >
       <Stack direction="row" spacing={2} alignItems="flex-start">
-        <Paper sx={{ p: 4 }} component="form" onSubmit={(e) => console.log(e)}>
+        <Paper sx={{ p: 4 }} component="form" elevation={0}>
           <Stack direction="column" sx={{ width: '250px' }} spacing={4}>
             <FormControl size="small">
               <InputLabel id="chart">Chart</InputLabel>
@@ -277,70 +225,72 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                   </Select>
                 </FormControl>
 
-                <Autocomplete
-                  sx={{ opacity: search.horizontalAxisOperation === 'top' ? 1 : 0 }}
-                  disabled={search.horizontalAxisOperation !== 'top'}
-                  size="small"
-                  disablePortal={true}
-                  freeSolo={true}
-                  id="horizontalAxisField"
-                  value={
-                    (search.chart === 'bar' &&
-                      search.horizontalAxisOperation === 'top' &&
-                      search.horizontalAxisField) ||
-                    ''
-                  }
-                  onChange={(e, value) => setSearch({ horizontalAxisField: value || '' })}
-                  options={columnSuggestions || []}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Horizontal axis field
-                  "
-                    />
-                  )}
-                />
-
-                <FormControl size="small">
-                  <InputLabel id="horizontalAxisOrder">Horizontal axis order</InputLabel>
-                  <Select
-                    fullWidth={true}
-                    labelId="horizontalAxisOrder"
+                {search.horizontalAxisOperation === 'top' && (
+                  <Autocomplete
+                    size="small"
+                    disablePortal={true}
+                    freeSolo={true}
+                    id="horizontalAxisField"
                     value={
                       (search.chart === 'bar' &&
                         search.horizontalAxisOperation === 'top' &&
-                        search.horizontalAxisOrder) ||
-                      'ascending'
+                        search.horizontalAxisField) ||
+                      ''
                     }
-                    label="Horizontal axis operation"
-                    onChange={(e) =>
-                      setSearch({
-                        horizontalAxisOrder: e.target.value as 'ascending' | 'descending',
-                      })
-                    }
-                  >
-                    <MenuItem value="ascending">ascending</MenuItem>
-                    <MenuItem value="descending">descending</MenuItem>
-                  </Select>
-                </FormControl>
+                    onChange={(e, value) => setSearch({ horizontalAxisField: value || '' })}
+                    options={columnSuggestions || []}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Horizontal axis field
+                  "
+                      />
+                    )}
+                  />
+                )}
 
-                <TextField
-                  sx={{ opacity: search.horizontalAxisOperation === 'top' ? 1 : 0 }}
-                  disabled={search.horizontalAxisOperation !== 'top'}
-                  label="Horizontal axis limit"
-                  size="small"
-                  value={
-                    (search.chart === 'bar' &&
-                      search.horizontalAxisOperation === 'top' &&
-                      search.horizontalAxisLimit) ||
-                    ''
-                  }
-                  onChange={(e) => {
-                    setSearch({
-                      horizontalAxisLimit: e.target.value,
-                    });
-                  }}
-                />
+                {search.horizontalAxisOperation === 'top' && (
+                  <FormControl size="small">
+                    <InputLabel id="horizontalAxisOrder">Horizontal axis order</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      labelId="horizontalAxisOrder"
+                      value={
+                        (search.chart === 'bar' &&
+                          search.horizontalAxisOperation === 'top' &&
+                          search.horizontalAxisOrder) ||
+                        'ascending'
+                      }
+                      label="Horizontal axis operation"
+                      onChange={(e) =>
+                        setSearch({
+                          horizontalAxisOrder: e.target.value as 'ascending' | 'descending',
+                        })
+                      }
+                    >
+                      <MenuItem value="ascending">ascending</MenuItem>
+                      <MenuItem value="descending">descending</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+
+                {search.horizontalAxisOperation === 'top' && (
+                  <TextField
+                    label="Horizontal axis limit"
+                    size="small"
+                    value={
+                      (search.chart === 'bar' &&
+                        search.horizontalAxisOperation === 'top' &&
+                        search.horizontalAxisLimit) ||
+                      ''
+                    }
+                    onChange={(e) => {
+                      setSearch({
+                        horizontalAxisLimit: e.target.value,
+                      });
+                    }}
+                  />
+                )}
 
                 <FormControl size="small">
                   <InputLabel id="verticalAxisOperation">Vertical axis operation</InputLabel>
@@ -363,18 +313,18 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                   </Select>
                 </FormControl>
 
-                <Autocomplete
-                  sx={{ opacity: search.verticalAxisOperation === 'count' ? 0 : 1 }}
-                  disabled={search.verticalAxisOperation === 'count'}
-                  size="small"
-                  disablePortal={true}
-                  freeSolo={true}
-                  id="verticalAxisField"
-                  value={search.verticalAxisField}
-                  onChange={(e, value) => setSearch({ verticalAxisField: value || '' })}
-                  options={columnSuggestions || []}
-                  renderInput={(params) => <TextField {...params} label="Vertical axis field" />}
-                />
+                {search.verticalAxisOperation !== 'count' && (
+                  <Autocomplete
+                    size="small"
+                    disablePortal={true}
+                    freeSolo={true}
+                    id="verticalAxisField"
+                    value={search.verticalAxisField}
+                    onChange={(e, value) => setSearch({ verticalAxisField: value || '' })}
+                    options={columnSuggestions || []}
+                    renderInput={(params) => <TextField {...params} label="Vertical axis field" />}
+                  />
+                )}
 
                 <Autocomplete
                   size="small"
@@ -394,7 +344,7 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                   multiple={true}
                   freeSolo={true}
                   value={search.breakDownByFilters}
-                  onChange={(e, value) => setSearch({ breakDownByFields: value || [] })}
+                  onChange={(e, value) => setSearch({ breakDownByFilters: value || [] })}
                   fullWidth={true}
                   options={[]}
                   renderInput={(params) => <TextField {...params} label="Break down by filters" />}
@@ -403,22 +353,14 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
             )}
           </Stack>
         </Paper>
-        <Paper sx={{ width: '100%', height: '500px', p: 4 }}>
+        <Paper sx={{ height: '500px', p: 4, width: '100%' }} elevation={0}>
           <UseQueryWrapper
             errorTitle={'aggregation failed'}
             {...queryResult}
             isNoData={!queryResult.data}
             noDataTitle="no data found"
           >
-            {search.chart === 'pie' && queryResult.data && <AggregationPieChart data={queryResult.data} />}
-            {search.chart === 'bar' && search.horizontalAxisOperation === 'top' && queryResult.data && (
-              <AggregationBarTopChart data={queryResult.data} filters={[]} />
-            )}
-            {(search.chart === 'bar' || search.chart === 'area' || search.chart === 'line') &&
-              search.horizontalAxisOperation === 'time' &&
-              queryResult.data && (
-                <AggregationChartTimeseries data={queryResult.data} filters={[]} type={search.chart} />
-              )}
+            {queryResult.data && <AggregationChart data={queryResult.data} options={search} />}
           </UseQueryWrapper>
         </Paper>
       </Stack>

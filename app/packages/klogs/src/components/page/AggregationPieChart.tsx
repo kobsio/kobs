@@ -12,7 +12,6 @@ interface IAggregationPieChartProps {
 const AggregationPieChart: FunctionComponent<IAggregationPieChartProps> = ({ data }) => {
   const refChart = useRef<HTMLDivElement>(null);
   const chartSize = useDimensions(refChart);
-
   const pieData =
     data.columns.length === 2
       ? data.rows.map((row) => {

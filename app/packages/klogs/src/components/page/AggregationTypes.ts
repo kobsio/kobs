@@ -50,7 +50,12 @@ interface IAreaChartOptions {
   breakDownByFilters: string[];
 }
 
-type IChartOptions = IBarChartOptions | ITopBarChartOptions | IPieChartOptions | ILineChartOptions | IAreaChartOptions;
+export type IChartOptions =
+  | IBarChartOptions
+  | ITopBarChartOptions
+  | IPieChartOptions
+  | ILineChartOptions
+  | IAreaChartOptions;
 
 interface IBaseSearch {
   query: string;

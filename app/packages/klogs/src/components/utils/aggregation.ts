@@ -1,4 +1,4 @@
-import { IAggregationData, IAggregationDataRow, ISeries, ISeriesDatum } from '../page/AggregationTypes';
+import { IAggregationData, IAggregationDataRow, IChartOptions, ISeries, ISeriesDatum } from '../page/AggregationTypes';
 
 // getLabel return a label for a row. For that we are joining the values of all columns which are not containing any
 // data.
@@ -122,4 +122,58 @@ export const chartFormatLabel = (label: string, minLength = 12): string => {
   }
 
   return label;
+};
+
+// utility for transforming the IChartOptions interface to request options
+// this method can throw an error, when one of the required options is missing
+export const chartOptionsToRequestOptions = (chartOptions: IChartOptions): unknown => {
+  let options: unknown = undefined;
+  if (chartOptions.chart === 'pie') {
+    if (!chartOptions.sliceBy) {
+      throw new Error('please provide a column name for "Slice By"');
+    }
+    options = {
+      sizeByField: chartOptions.sizeByField,
+      sizeByOperation: chartOptions.sizeByOperation,
+      sliceBy: chartOptions.sliceBy,
+    };
+  } else if (chartOptions.chart === 'bar' && chartOptions.horizontalAxisOperation === 'top') {
+    if (!chartOptions.horizontalAxisField) {
+      throw new Error('please provide a column name for "Horizontal axis field"');
+    }
+
+    if (!chartOptions.horizontalAxisLimit || Number.isNaN(Number(chartOptions.horizontalAxisLimit))) {
+      throw new Error('please provide a valid value for "Horizontal axis limit" - must be a number');
+    }
+
+    options = {
+      breakDownByFields: chartOptions.breakDownByFields,
+      breakDownByFilters: chartOptions.breakDownByFilters,
+      horizontalAxisField: chartOptions.horizontalAxisField,
+      horizontalAxisLimit: `${chartOptions.horizontalAxisLimit}`,
+      horizontalAxisOperation: 'top',
+      horizontalAxisOrder: chartOptions.horizontalAxisOrder || 'ascending',
+      verticalAxisOperation: chartOptions.verticalAxisOperation,
+    };
+  } else {
+    if (!chartOptions.horizontalAxisOperation) {
+      throw new Error('please provide a column name for "Horizontal axis Operation"');
+    }
+
+    if (chartOptions.verticalAxisOperation !== 'count' && !chartOptions.verticalAxisField) {
+      throw new Error(
+        `when "Vertical axis Operation" is set to "${chartOptions.verticalAxisOperation}", you have to pick a column name for "Vertical axis Field"`,
+      );
+    }
+
+    options = {
+      breakDownByFields: chartOptions.breakDownByFields,
+      breakDownByFilters: chartOptions.breakDownByFilters,
+      horizontalAxisOperation: chartOptions.horizontalAxisOperation,
+      verticalAxisField: chartOptions.verticalAxisField,
+      verticalAxisOperation: chartOptions.verticalAxisOperation,
+    };
+  }
+
+  return options;
 };
