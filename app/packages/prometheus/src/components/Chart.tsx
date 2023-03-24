@@ -6,6 +6,7 @@ import {
   chartTheme,
   formatTime,
   roundNumber,
+  ChartTooltip,
 } from '@kobsio/core';
 import { Square } from '@mui/icons-material';
 import { Box, darken, useTheme } from '@mui/material';
@@ -27,48 +28,30 @@ import {
 
 import { IDatum, IMetric } from '../utils/utils';
 
-/**
- * The `ChartTooltip` component is used to render our tooltips for a metric. It uses `foreignObject` so that we can
- * render HTML in the SVG charts. The tooltip position is calculated based on the x and y position and based on the
- * value.
- *
- * The tooltip contains the time for the datapoint, the color and label as well as the value with the unit. Since we
- * only have access to the `FlyoutProps` and a single datapoint (`IDatum`). This datapoint must contain all these
- * information.
- */
-const ChartTooltip = (props: FlyoutProps) => {
-  const datum = props.datum as IDatum;
-  const xValue = Math.floor((datum.x as Date).getTime() / 1000);
-  const yValue = datum.y;
-  const x = props.x ?? 0;
-  const y = props.y ?? 0;
+interface IChartTooltipContentProps extends FlyoutProps {
+  datum: IDatum;
+  text: string;
+}
 
+/**
+ * ChartTooltipContent renders a timestamp a color-indicator and the metric name,
+ * when the user hovers over a datapoint inside the chart area
+ */
+const ChartTooltipContent: FunctionComponent<IChartTooltipContentProps> = ({ datum, text }) => {
   return (
-    <g style={{ pointerEvents: 'none' }}>
-      <foreignObject
-        x={xValue > (datum.customMaxX + datum.customMinX) / 2 ? x - 300 : x}
-        y={y > 250 ? y - 75 : y}
-        width="300"
-        height="100"
-      >
-        <Box sx={{ backgroundColor: darken('#233044', 0.13), p: 4 }}>
-          <b>{formatTime(datum.x as Date)}</b>
-          <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 2 }}>
-            <Square sx={{ color: datum.customColor }} />
-            <Box
-              component="span"
-              sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-            >
-              {datum.customLabel}
-            </Box>
-            <Box component="span" sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {roundNumber(yValue, 4)} {(props as any).text}
-            </Box>
-          </Box>
+    <Box sx={{ backgroundColor: darken('#233044', 0.13), p: 4 }}>
+      <b>{formatTime(datum.x as Date)}</b>
+      <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 2 }}>
+        <Square sx={{ color: datum.customColor }} />
+        <Box component="span" sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {datum.customLabel}
         </Box>
-      </foreignObject>
-    </g>
+        <Box component="span" sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {roundNumber(datum.y, 4)} {text}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
@@ -147,7 +130,11 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
           <BrushVoronoiContainer
             brushDimension="x"
             labels={() => unit || ' '}
-            labelComponent={<VictoryTooltip labelComponent={<ChartTooltip />} />}
+            labelComponent={
+              <VictoryTooltip
+                labelComponent={<ChartTooltip width={chartSize.width} component={ChartTooltipContent} />}
+              />
+            }
             mouseFollowTooltips={true}
             defaultBrushArea="none"
             brushDomain={{ x: [0, 0] }}

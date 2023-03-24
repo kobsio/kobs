@@ -1,8 +1,10 @@
-import { useDimensions, chartTheme, chartColors } from '@kobsio/core';
-import { Box, useTheme } from '@mui/material';
-import React, { useRef } from 'react';
+import { useDimensions, chartTheme, ChartTooltip, formatTime, roundNumber } from '@kobsio/core';
+import { Square } from '@mui/icons-material';
+import { Box, darken, useTheme } from '@mui/material';
+import React, { FunctionComponent, useRef } from 'react';
 import {
   createContainer,
+  FlyoutProps,
   VictoryArea,
   VictoryAxis,
   VictoryBar,
@@ -14,8 +16,7 @@ import {
   VictoryVoronoiContainerProps,
 } from 'victory';
 
-import ChartTooltip from './AggregationChartTooltip';
-import { IAggregationData, ISeries, ISeriesDatum } from './AggregationTypes';
+import { IAggregationData, ISeriesDatum } from './AggregationTypes';
 
 import { chartFormatLabel, convertToTimeseriesChartData } from '../utils/aggregation';
 
@@ -24,16 +25,33 @@ const CursorVoronoiContainer = createContainer<VictoryCursorContainerProps, Vict
   'cursor',
 );
 
-// makeColormap creates a map where the a key maps to a color code
-// the key is the name of the time-series.
-// it allows us to create a consistent legend inside the tooltip
-const makeColormap = (series: ISeries[]) => {
-  const m = new Map<string, string>();
+interface IChartTooltipContentProps extends FlyoutProps {
+  activePoints: [{ childName: string }];
+  // datum: IDatum;
+  datum: ISeriesDatum;
+}
 
-  series.forEach((s, i) => {
-    m.set(s.name, chartColors[i]);
-  });
-  return m;
+/**
+ * ChartTooltipContent renders a timestamp a color-indicator and the metric name,
+ * when the user hovers over a datapoint inside the chart area
+ */
+const ChartTooltipContent: FunctionComponent<IChartTooltipContentProps> = (props) => {
+  return (
+    <Box sx={{ backgroundColor: darken('#233044', 0.13), p: 4 }}>
+      {/* <b>{formatTime(datum.x as Date)}</b> */}
+      <b>{formatTime(props.datum.x)}</b>
+      <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 2 }}>
+        {/* <Square sx={{ color: datum.customColor }} /> */}
+        <Square sx={{ color: props.datum.color }} />
+        <Box component="span" sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {props.activePoints[0].childName}
+        </Box>
+        <Box component="span" sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+          {roundNumber(props.datum.y ?? 0, 4)}
+        </Box>
+      </Box>
+    </Box>
+  );
 };
 
 interface IAggregationChartTimeseriesProps {
@@ -67,12 +85,13 @@ const AggregationChartTimeseries: React.FunctionComponent<IAggregationChartTimes
       <VictoryChart
         containerComponent={
           <CursorVoronoiContainer
-            cursorDimension="x"
-            labelComponent={<VictoryTooltip labelComponent={<ChartTooltip colorMap={makeColormap(series)} />} />}
-            labels={({ datum }: { datum: ISeriesDatum }): string => chartFormatLabel(datum.y ? `${datum.y}` : '')}
+            labelComponent={
+              <VictoryTooltip
+                labelComponent={<ChartTooltip width={chartSize.width} component={ChartTooltipContent} />}
+              />
+            }
             mouseFollowTooltips={true}
-            voronoiDimension="x"
-            voronoiPadding={0}
+            labels={({ datum }: { datum: ISeriesDatum }): string => chartFormatLabel(datum.y ? `${datum.y}` : '')}
           />
         }
         height={chartSize.height}
