@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
+	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/plugins"
@@ -60,14 +61,25 @@ func NewClient(plugins []plugins.Plugin, instances []plugin.Instance, clustersCl
 	// Create a new router and serve all the configured plugin instances at "/". Here we are just returning the
 	// converted "frontendInstances" to not leak confidential data (like passwords and access tokens) to the user.
 	router := chi.NewRouter()
+	router.Use(permissionHandler)
+
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		user := authContext.MustGetUser(r.Context())
+
 		plugins, err := dbClient.GetPlugins(r.Context())
 		if err != nil {
 			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get plugins")
 			return
 		}
 
-		render.JSON(w, r, plugins)
+		var filteredPlugins []plugin.Instance
+		for _, plugin := range plugins {
+			if user.HasPluginAccess(plugin.Cluster, plugin.Type, plugin.Name) {
+				filteredPlugins = append(filteredPlugins, plugin)
+			}
+		}
+
+		render.JSON(w, r, filteredPlugins)
 	})
 
 	// In the last step we are using the user defined `plugins` to mount the plugin routes at the formerly created

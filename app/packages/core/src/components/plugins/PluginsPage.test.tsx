@@ -32,6 +32,12 @@ describe('PluginsPage', () => {
     return waitFor(() => screen.getByText(/A list of all available plugins/)).then(() => result);
   };
 
+  it('should render info when no plugins were found', async () => {
+    await render([]);
+
+    expect(screen.getByText(/No plugins were found/)).toBeInTheDocument();
+  });
+
   it('should render all plugins', async () => {
     await render([
       {

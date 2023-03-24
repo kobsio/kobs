@@ -73,6 +73,7 @@ const Releases: FunctionComponent<{
         const tmpReleases = await apiContext.client.get<IRelease[]>(`/api/plugins/helm/releases?${n}`, {
           headers: {
             'x-kobs-cluster': cluster,
+            'x-kobs-plugin': instance.name,
           },
         });
         if (tmpReleases) {

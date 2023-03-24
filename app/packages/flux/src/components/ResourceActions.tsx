@@ -1,4 +1,4 @@
-import { APIContext, APIError, IAPIContext } from '@kobsio/core';
+import { APIContext, APIError, IAPIContext, IPluginInstance } from '@kobsio/core';
 import { Refresh as SyncIcon, Pause as SuspendIcon, PlayArrow as ResumeIcon, MoreVert } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -56,11 +56,12 @@ const getJSONPatch = (manifest: any, action: TAction): any => {
 const Sync: FunctionComponent<{
   cluster: string;
   fluxResource: IFluxResource;
+  instance: IPluginInstance;
   name: string;
   namespace: string;
   onClose: (message: string, severity: 'success' | 'error') => void;
   open: boolean;
-}> = ({ fluxResource, cluster, namespace, name, open, onClose }) => {
+}> = ({ instance, fluxResource, cluster, namespace, name, open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const apiContext = useContext<IAPIContext>(APIContext);
@@ -80,6 +81,7 @@ const Sync: FunctionComponent<{
         {
           headers: {
             'x-kobs-cluster': cluster,
+            'x-kobs-plugin': instance.name,
           },
         },
       );
@@ -199,7 +201,7 @@ const SuspendResume: FunctionComponent<{
           variant="contained"
           color="primary"
           size="small"
-          startIcon={<SyncIcon />}
+          startIcon={action === 'suspend' ? <SuspendIcon /> : <ResumeIcon />}
           loading={isLoading}
           loadingPosition="start"
           onClick={handleSuspendResume}
@@ -225,6 +227,7 @@ const SuspendResume: FunctionComponent<{
 const ResourceActions: FunctionComponent<{
   cluster: string;
   fluxResource: IFluxResource;
+  instance: IPluginInstance;
   isDrawerAction?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   manifest: any;
@@ -233,7 +236,18 @@ const ResourceActions: FunctionComponent<{
   path: string;
   refetch: () => void;
   resource: string;
-}> = ({ fluxResource, cluster, namespace, name, manifest, resource, path, refetch, isDrawerAction = false }) => {
+}> = ({
+  instance,
+  fluxResource,
+  cluster,
+  namespace,
+  name,
+  manifest,
+  resource,
+  path,
+  refetch,
+  isDrawerAction = false,
+}) => {
   const [message, setMessage] = useState<{ message: string; severity: 'success' | 'error' }>();
   const [action, setAction] = useState<TAction>('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -326,6 +340,7 @@ const ResourceActions: FunctionComponent<{
 
       {action === 'sync' && (
         <Sync
+          instance={instance}
           fluxResource={fluxResource}
           cluster={cluster}
           namespace={namespace}

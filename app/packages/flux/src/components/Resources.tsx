@@ -169,6 +169,7 @@ const ResourceRow: FunctionComponent<{
         ))}
         <TableCell>
           <ResourceActions
+            instance={instance}
             fluxResource={fluxResource}
             cluster={row.cells[2]}
             namespace={row.cells[1]}
