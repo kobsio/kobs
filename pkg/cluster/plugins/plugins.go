@@ -64,7 +64,9 @@ func NewClient(plugins []plugins.Plugin, instances []plugin.Instance, kubernetes
 		if err != nil {
 			return nil, err
 		}
-		router.Mount(fmt.Sprintf("/%s", plugin.Type()), pluginRouter)
+		if pluginRouter != nil {
+			router.Mount(fmt.Sprintf("/%s", plugin.Type()), pluginRouter)
+		}
 	}
 
 	return &client{

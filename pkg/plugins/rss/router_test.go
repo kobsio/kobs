@@ -117,7 +117,7 @@ func TestGetFeed(t *testing.T) {
 }
 
 func TestMount(t *testing.T) {
-	router, err := Mount([]plugin.Instance{{Name: "rss"}}, nil)
+	router, err := Mount([]plugin.Instance{{Name: "rss"}})
 	require.NoError(t, err)
 	require.NotNil(t, router)
 }

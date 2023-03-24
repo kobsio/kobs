@@ -3,12 +3,10 @@ package harbor
 import (
 	"net/http"
 
-	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/harbor/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
 	"go.uber.org/zap"
 
 	"github.com/go-chi/chi/v5"
@@ -189,7 +187,7 @@ func (router *Router) getBuildHistory(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, buildHistory)
 }
 
-func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
+func Mount(instances []plugin.Instance) (chi.Router, error) {
 	var harborInstances []instance.Instance
 
 	for _, i := range instances {
@@ -206,14 +204,12 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 		harborInstances,
 	}
 
-	proxy := pluginproxy.New(clustersClient)
-
-	router.With(proxy).Get("/projects", router.getProjects)
-	router.With(proxy).Get("/repositories", router.getRepositories)
-	router.With(proxy).Get("/artifacts", router.getArtifacts)
-	router.With(proxy).Get("/artifact", router.getArtifact)
-	router.With(proxy).Get("/vulnerabilities", router.getVulnerabilities)
-	router.With(proxy).Get("/buildhistory", router.getBuildHistory)
+	router.Get("/projects", router.getProjects)
+	router.Get("/repositories", router.getRepositories)
+	router.Get("/artifacts", router.getArtifacts)
+	router.Get("/artifact", router.getArtifact)
+	router.Get("/vulnerabilities", router.getVulnerabilities)
+	router.Get("/buildhistory", router.getBuildHistory)
 
 	return router, nil
 }

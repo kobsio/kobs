@@ -19,15 +19,9 @@ func TestType(t *testing.T) {
 func TestMountCluster(t *testing.T) {
 	p := New()
 
-	t.Run("should return router", func(t *testing.T) {
-		router, err := p.MountCluster([]plugin.Instance{{Options: map[string]any{"address": "localhost"}}}, nil)
+	t.Run("should return nil", func(t *testing.T) {
+		router, err := p.MountCluster(nil, nil)
 		require.NoError(t, err)
-		require.NotNil(t, router)
-	})
-
-	t.Run("should return error for invalid instances", func(t *testing.T) {
-		router, err := p.MountCluster([]plugin.Instance{{Options: map[string]any{"address": []string{"localhost"}}}}, nil)
-		require.Error(t, err)
 		require.Nil(t, router)
 	})
 }

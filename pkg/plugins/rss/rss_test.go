@@ -18,10 +18,10 @@ func TestType(t *testing.T) {
 func TestMountCluster(t *testing.T) {
 	p := New()
 
-	t.Run("should return router", func(t *testing.T) {
+	t.Run("should return nil", func(t *testing.T) {
 		router, err := p.MountCluster(nil, nil)
 		require.NoError(t, err)
-		require.NotNil(t, router)
+		require.Nil(t, router)
 	})
 }
 

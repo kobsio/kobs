@@ -3,12 +3,10 @@ package sonarqube
 import (
 	"net/http"
 
-	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/plugins/sonarqube/instance"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -86,7 +84,7 @@ func (router *Router) getProjectMeasures(w http.ResponseWriter, r *http.Request)
 	render.JSON(w, r, projectMeasures)
 }
 
-func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
+func Mount(instances []plugin.Instance) (chi.Router, error) {
 	var sonarqubeInstances []instance.Instance
 
 	for _, i := range instances {
@@ -102,10 +100,8 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 		sonarqubeInstances,
 	}
 
-	proxy := pluginproxy.New(clustersClient)
-
-	router.With(proxy).Get("/projects", router.getProjects)
-	router.With(proxy).Get("/projectmeasures", router.getProjectMeasures)
+	router.Get("/projects", router.getProjects)
+	router.Get("/projectmeasures", router.getProjectMeasures)
 
 	return router, nil
 }
