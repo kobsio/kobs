@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useMemoizedFn } from './useMemoizedFn';
 import { useUpdate } from './useUpdate';
 
+import { timeOptions, times } from '../times';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryState = Record<string, any>;
 
@@ -43,6 +45,22 @@ export const useQueryState = <S extends QueryState = QueryState>(initialState?: 
           parsedQueryString[key] = [];
         }
       });
+    }
+
+    // Whent the `queryFromUrl` function is run for the first time we have to apply some special handling for the time
+    // parameters. Instead of directly using the `timeEnd` and `timeStart` parameters, we have to check if the `time`
+    // parameter contains a valid time, so that we are really using the "last 15 minutes" and not the times from the
+    // `timeEnd` and `timeStart` parameters.
+    if (initialQueryFromUrl.current === true) {
+      if (
+        'time' in parsedQueryString &&
+        typeof parsedQueryString.time === 'string' &&
+        times.includes(parsedQueryString.time) &&
+        parsedQueryString.time !== 'custom'
+      ) {
+        parsedQueryString.timeEnd = Math.floor(Date.now() / 1000);
+        parsedQueryString.timeStart = Math.floor(Date.now() / 1000) - timeOptions[parsedQueryString.time].seconds;
+      }
     }
 
     initialQueryFromUrl.current = false;
