@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"sort"
 	"strings"
 	"sync"
@@ -179,7 +180,7 @@ func (router *Router) resourcesHandler(w http.ResponseWriter, r *http.Request) {
 							ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 							defer cancel()
 
-							manifest, err := clusterClient.Request(ctx, http.MethodGet, fmt.Sprintf("/api/resources?namespace=%s&resource=%s&path=%s&paramName=%s&param=%s", "", r.Resource, r.Path, paramName, param), nil)
+							manifest, err := clusterClient.Request(ctx, http.MethodGet, fmt.Sprintf("/api/resources?namespace=%s&resource=%s&path=%s&paramName=%s&param=%s", "", r.Resource, r.Path, paramName, url.QueryEscape(param)), nil)
 							if err != nil {
 								log.Error(ctx, "Failed to get resources", zap.Error(err))
 								muClusters.Lock()
