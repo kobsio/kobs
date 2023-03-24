@@ -74,6 +74,7 @@ const ResourceDetails: FunctionComponent<{
       subtitle={namespace ? `(${cluster} / ${namespace})` : `(${cluster})`}
       actions={
         <ResourceActions
+          instance={instance}
           fluxResource={fluxResource}
           cluster={cluster}
           namespace={namespace}

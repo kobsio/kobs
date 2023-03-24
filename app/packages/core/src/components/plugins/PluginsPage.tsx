@@ -1,6 +1,8 @@
 import { CheckBox, CheckBoxOutlineBlank, Clear, Extension, Search } from '@mui/icons-material';
 import {
+  Alert,
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -86,10 +88,13 @@ const PluginsPage: FunctionComponent = () => {
   const items = filteredItems.slice((options.page - 1) * options.perPage, options.page * options.perPage);
 
   /**
-   * `useEffect` is used to persist the options, when they are changed by a user.
+   * `useEffect` is used to persist the options, when they are changed by a user and to update the `searchTerm` state.
+   * The `searchTerm` state update is required, because we have to update the search term in the search field, when a
+   * user clicks on the "RESET FILTERS" button.
    */
   useEffect(() => {
     setPersistedOptions(options);
+    setSearchTerm(options.searchTerm ?? '');
   }, [options, setPersistedOptions]);
 
   return (
@@ -165,61 +170,88 @@ const PluginsPage: FunctionComponent = () => {
         </Toolbar>
       }
     >
-      <Grid container={true} spacing={6}>
-        <Grid item={true} xs={12} lg={12}>
+      {items.length === 0 ? (
+        <Alert
+          severity="info"
+          action={
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() =>
+                setOptions({
+                  clusters: [],
+                  page: 1,
+                  perPage: 10,
+                  pluginTypes: [],
+                  searchTerm: '',
+                })
+              }
+            >
+              RESET FILTERS
+            </Button>
+          }
+        >
+          No plugins were found
+        </Alert>
+      ) : (
+        <>
           <Grid container={true} spacing={6}>
-            {items.map((item) => (
-              <Grid key={item.id} item={true} xs={12} sm={6} md={3} lg={3} xl={3}>
-                <Card>
-                  <CardActionArea component={Link} to={`./${item.cluster}/${item.type}/${item.name}`}>
-                    <CardContent sx={{ p: 6 }}>
-                      {((instance: IPluginInstance) => {
-                        const plugin = getPlugin(instance.type);
-                        const icon = plugin?.icon;
+            <Grid item={true} xs={12} lg={12}>
+              <Grid container={true} spacing={6}>
+                {items.map((item) => (
+                  <Grid key={item.id} item={true} xs={12} sm={6} md={3} lg={3} xl={3}>
+                    <Card>
+                      <CardActionArea component={Link} to={`./${item.cluster}/${item.type}/${item.name}`}>
+                        <CardContent sx={{ p: 6 }}>
+                          {((instance: IPluginInstance) => {
+                            const plugin = getPlugin(instance.type);
+                            const icon = plugin?.icon;
 
-                        return (
-                          <Stack spacing={8}>
-                            <Stack direction="row" justifyContent="center">
-                              {!icon ? (
-                                <Extension sx={{ fontSize: 64 }} />
-                              ) : (
-                                <CardMedia
-                                  sx={{ height: 64, width: 64 }}
-                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                  image={icon as any}
-                                  title={`${instance.name}-icon`}
-                                />
-                              )}
-                            </Stack>
-                            <Box textAlign="center">
-                              <Typography variant="h6">{item.name}</Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                ({item.cluster} / {item.type})
-                              </Typography>
-                            </Box>
-                            <Typography textAlign="center">
-                              {item.description ? item.description : plugin?.description}
-                            </Typography>
-                          </Stack>
-                        );
-                      })(item)}
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
+                            return (
+                              <Stack spacing={8}>
+                                <Stack direction="row" justifyContent="center">
+                                  {!icon ? (
+                                    <Extension sx={{ fontSize: 64 }} />
+                                  ) : (
+                                    <CardMedia
+                                      sx={{ height: 64, width: 64 }}
+                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                      image={icon as any}
+                                      title={`${instance.name}-icon`}
+                                    />
+                                  )}
+                                </Stack>
+                                <Box textAlign="center">
+                                  <Typography variant="h6">{item.name}</Typography>
+                                  <Typography variant="caption" color="text.secondary">
+                                    ({item.cluster} / {item.type})
+                                  </Typography>
+                                </Box>
+                                <Typography textAlign="center">
+                                  {item.description ? item.description : plugin?.description}
+                                </Typography>
+                              </Stack>
+                            );
+                          })(item)}
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
+            </Grid>
           </Grid>
-        </Grid>
-      </Grid>
 
-      <Pagination
-        page={options.page}
-        perPage={options.perPage}
-        count={filteredItems.length}
-        handleChange={(page, perPage) =>
-          setOptions((prevOptions) => ({ ...prevOptions, page: page, perPage: perPage }))
-        }
-      />
+          <Pagination
+            page={options.page}
+            perPage={options.perPage}
+            count={filteredItems.length}
+            handleChange={(page, perPage) =>
+              setOptions((prevOptions) => ({ ...prevOptions, page: page, perPage: perPage }))
+            }
+          />
+        </>
+      )}
     </Page>
   );
 };

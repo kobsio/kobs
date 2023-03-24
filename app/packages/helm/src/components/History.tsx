@@ -67,6 +67,7 @@ const History: FunctionComponent<{
         {
           headers: {
             'x-kobs-cluster': cluster,
+            'x-kobs-plugin': instance.name,
           },
         },
       );
