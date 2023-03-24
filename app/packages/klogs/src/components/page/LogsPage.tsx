@@ -160,14 +160,14 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       }
       actions={
         <>
-          <Tooltip title="Documentation">
-            <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
-              <Description />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="Aggregation view">
             <IconButton component={Link} to={`./aggregation${rawSearch}`}>
               <PieChart />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Documentation">
+            <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
+              <Description />
             </IconButton>
           </Tooltip>
         </>

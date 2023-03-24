@@ -128,14 +128,14 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       }
       actions={
         <>
-          <Tooltip title="Documentation">
-            <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
-              <Description />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="Logs view">
             <IconButton component={Link} to={`..${rawSearch}`}>
               <TableView />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Documentation">
+            <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
+              <Description />
             </IconButton>
           </Tooltip>
         </>

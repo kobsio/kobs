@@ -1,4 +1,4 @@
-import { useDimensions, chartTheme, ChartTooltip, formatTime, roundNumber } from '@kobsio/core';
+import { useDimensions, chartTheme, ChartTooltip, formatTime, roundNumber, chartColors } from '@kobsio/core';
 import { Square } from '@mui/icons-material';
 import { Box, darken, useTheme } from '@mui/material';
 import React, { FunctionComponent, useRef } from 'react';
@@ -16,7 +16,7 @@ import {
   VictoryVoronoiContainerProps,
 } from 'victory';
 
-import { IAggregationData, ISeriesDatum } from './AggregationTypes';
+import { IAggregationData, ISeries, ISeriesDatum } from './AggregationTypes';
 
 import { chartFormatLabel, convertToTimeseriesChartData } from '../utils/aggregation';
 
@@ -27,7 +27,7 @@ const CursorVoronoiContainer = createContainer<VictoryCursorContainerProps, Vict
 
 interface IChartTooltipContentProps extends FlyoutProps {
   activePoints: [{ childName: string }];
-  // datum: IDatum;
+  colorMap: Map<string, string>;
   datum: ISeriesDatum;
 }
 
@@ -38,11 +38,9 @@ interface IChartTooltipContentProps extends FlyoutProps {
 const ChartTooltipContent: FunctionComponent<IChartTooltipContentProps> = (props) => {
   return (
     <Box sx={{ backgroundColor: darken('#233044', 0.13), p: 4 }}>
-      {/* <b>{formatTime(datum.x as Date)}</b> */}
       <b>{formatTime(props.datum.x)}</b>
       <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 2 }}>
-        {/* <Square sx={{ color: datum.customColor }} /> */}
-        <Square sx={{ color: props.datum.color }} />
+        <Square sx={{ color: props.colorMap.get(props.activePoints[0].childName) }} />
         <Box component="span" sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {props.activePoints[0].childName}
         </Box>
@@ -52,6 +50,18 @@ const ChartTooltipContent: FunctionComponent<IChartTooltipContentProps> = (props
       </Box>
     </Box>
   );
+};
+
+/**
+ * makeColormap creates a Map<string,string> which maps the label to a color value
+ * this map is useful for displaying a colored item in the Tooltip content
+ */
+const makeColormap = (series: ISeries[]): Map<string, string> => {
+  const m = new Map<string, string>();
+  series.forEach((s, i) => {
+    m.set(s.name, chartColors[i]);
+  });
+  return m;
 };
 
 interface IAggregationChartTimeseriesProps {
@@ -70,11 +80,14 @@ const AggregationChartTimeseries: React.FunctionComponent<IAggregationChartTimes
   const muiTheme = useTheme();
   const theme = chartTheme(muiTheme);
   const series = convertToTimeseriesChartData(data, filters);
+  const numBars = Math.max(...series.map((s) => s.data.length));
+  const barWidth = chartSize.width / numBars - 8;
+  const colorMap = makeColormap(series);
   const chartData = series.map((s) =>
     type === 'area' ? (
       <VictoryArea key={s.name} data={s.data} name={s.name} interpolation="monotoneX" />
     ) : type === 'bar' ? (
-      <VictoryBar key={s.name} data={s.data} name={s.name} />
+      <VictoryBar key={s.name} data={s.data} name={s.name} barWidth={barWidth} />
     ) : (
       <VictoryLine key={s.name} data={s.data} name={s.name} interpolation="monotoneX" />
     ),
@@ -87,7 +100,14 @@ const AggregationChartTimeseries: React.FunctionComponent<IAggregationChartTimes
           <CursorVoronoiContainer
             labelComponent={
               <VictoryTooltip
-                labelComponent={<ChartTooltip width={chartSize.width} component={ChartTooltipContent} />}
+                labelComponent={
+                  <ChartTooltip
+                    width={chartSize.width}
+                    component={(props) => (
+                      <ChartTooltipContent {...(props as IChartTooltipContentProps)} colorMap={colorMap} />
+                    )}
+                  />
+                }
               />
             }
             mouseFollowTooltips={true}

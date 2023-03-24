@@ -1,5 +1,3 @@
-import { getChartColor } from '@kobsio/core';
-
 import { IAggregationData, IAggregationDataRow, IChartOptions, ISeries, ISeriesDatum } from '../page/AggregationTypes';
 
 // getLabel return a label for a row. For that we are joining the values of all columns which are not containing any
@@ -54,15 +52,13 @@ export const convertToTimeseriesChartData = (data: IAggregationData, filters: st
 
   const series: ISeries[] = [];
 
-  for (let l = 0; l < labels.length; l++) {
-    const label = labels[l];
+  for (const label of labels) {
     const rows = data.rows.filter((row) => label === getLabel(row, labelColumns));
     const seriesData: ISeriesDatum[][] = dataColumns.map(() => []);
 
     for (const row of rows) {
       for (let i = 0; i < dataColumns.length; i++) {
         seriesData[i].push({
-          color: getChartColor(l),
           x: new Date(row.time as string),
           y: row.hasOwnProperty(dataColumns[i]) ? (row[dataColumns[i]] as number) : null,
         });

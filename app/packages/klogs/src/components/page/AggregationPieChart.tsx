@@ -1,5 +1,5 @@
 import { chartColors, useDimensions } from '@kobsio/core';
-import { Box } from '@mui/material';
+import { Box, darken } from '@mui/material';
 import { FunctionComponent, useRef } from 'react';
 import { VictoryPie, VictoryTooltip } from 'victory';
 
@@ -12,15 +12,19 @@ interface IAggregationPieChartProps {
 const AggregationPieChart: FunctionComponent<IAggregationPieChartProps> = ({ data }) => {
   const refChart = useRef<HTMLDivElement>(null);
   const chartSize = useDimensions(refChart);
-  const pieData =
-    data.columns.length === 2
-      ? data.rows.map((row) => {
-          return {
-            x: `${row[data.columns[0]]}`,
-            y: row[data.columns[1]] as number,
-          };
-        })
-      : [];
+  if (data.columns.length !== 2) {
+    return null;
+  }
+
+  const total = data.rows.reduce((total, row) => total + (row[data.columns[1]] as number), 0);
+  const pieData = data.rows.map((row) => {
+    const y = row[data.columns[1]] as number;
+    const percentage = Math.round((y / total) * 100);
+    return {
+      x: `${row[data.columns[0]]}: ${y} (${percentage}%)`,
+      y: y,
+    };
+  });
 
   return (
     <Box sx={{ height: '100%', width: '100%' }} ref={refChart}>
@@ -29,7 +33,20 @@ const AggregationPieChart: FunctionComponent<IAggregationPieChartProps> = ({ dat
         height={chartSize.height}
         width={chartSize.width}
         colorScale={chartColors}
-        labelComponent={<VictoryTooltip />}
+        labelComponent={
+          <VictoryTooltip
+            flyoutStyle={{
+              fill: darken('#233044', 0.13),
+              stroke: 'red',
+              strokeWidth: 0,
+            }}
+            style={{
+              fill: 'white',
+            }}
+            cornerRadius={0}
+            flyoutPadding={{ bottom: 8, left: 20, right: 20, top: 8 }}
+          />
+        }
       />
     </Box>
   );

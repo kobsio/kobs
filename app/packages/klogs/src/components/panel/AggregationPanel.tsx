@@ -5,8 +5,10 @@ import {
   PluginPanelError,
   PluginPanel,
   PluginPanelActionLinks,
+  IPluginInstance,
 } from '@kobsio/core';
 import { useQuery } from '@tanstack/react-query';
+import queryString from 'query-string';
 import { FunctionComponent, useContext } from 'react';
 
 import AggregationChart from '../page/AggregationChart';
@@ -34,6 +36,15 @@ const isValid = (options?: IOptions): options is IOptions => {
   // for now we send an API request and tell the user to check the provided options, when the server responds with an error
 
   return true;
+};
+
+// utility for creating a uri that directs the user to the correct klogs instance, where
+// both the query and fields are already selected
+const uriFromOptions = (instance: IPluginInstance, options: IOptions) => {
+  const path = `/plugins/${instance.cluster}/klogs/${instance.name}/aggregation`;
+  const search = queryString.stringify(options, { arrayFormat: 'bracket', skipEmptyString: false, skipNull: false });
+
+  return [path, search].join('?');
 };
 
 /**
@@ -107,7 +118,7 @@ const AggregationPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
           <PluginPanelActionLinks
             links={[
               {
-                link: 'TODO',
+                link: uriFromOptions(instance, options),
                 title: `explore "${options.query}"`,
               },
             ]}
