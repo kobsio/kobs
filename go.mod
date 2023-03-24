@@ -17,6 +17,7 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/mmcdole/gofeed v1.2.1
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.14
 	github.com/orlangure/gnomock v0.24.0
 	github.com/prometheus/client_golang v1.14.0
 	github.com/prometheus/common v0.37.0
@@ -71,6 +72,8 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.0 // indirect
+	github.com/hashicorp/go-retryablehttp v0.5.1 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

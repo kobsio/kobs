@@ -61,6 +61,7 @@ jobs:
           - grafana
           - harbor
           - helm
+          - opsgenie
           - prometheus
           - rss
           - signalsciences
