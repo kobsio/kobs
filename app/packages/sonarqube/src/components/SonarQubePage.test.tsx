@@ -229,7 +229,6 @@ describe('SonarQubePage', () => {
     expect(await waitFor(() => screen.getByText('Project Name 2'))).toBeInTheDocument();
 
     await userEvent.click(screen.getByText(/Project Name 1/));
-    screen.debug();
     expect(await waitFor(() => screen.getAllByText(/Quality Gate Status/).length)).toBe(1);
   });
 });

@@ -11,6 +11,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/grafana"
 	"github.com/kobsio/kobs/pkg/plugins/harbor"
 	"github.com/kobsio/kobs/pkg/plugins/helm"
+	"github.com/kobsio/kobs/pkg/plugins/opsgenie"
 	"github.com/kobsio/kobs/pkg/plugins/prometheus"
 	"github.com/kobsio/kobs/pkg/plugins/rss"
 	"github.com/kobsio/kobs/pkg/plugins/signalsciences"
@@ -34,6 +35,7 @@ func main() {
 		grafana.New(),
 		harbor.New(),
 		helm.New(),
+		opsgenie.New(),
 		prometheus.New(),
 		rss.New(),
 		signalsciences.New(),
