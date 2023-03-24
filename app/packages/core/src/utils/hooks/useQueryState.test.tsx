@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react';
 import { render } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
+import { vi } from 'vitest';
 
 import type { MemoryRouterProps } from 'react-router-dom';
 
@@ -81,5 +82,22 @@ describe('useQueryState', () => {
       },
     ]);
     expect(res.state).toMatchObject({ array: [1, 2], boolean: true, number: 1, string: 'test' });
+  });
+
+  it('should overwrite default array value', () => {
+    const res = setup([{ pathname: '/index' }], { array: [1] });
+    expect(res.state).toMatchObject({ array: [1] });
+    act(() => {
+      res.setState({ array: [] });
+    });
+    expect(res.state).toMatchObject({});
+    expect(res.location.search).toBe('');
+  });
+
+  it('should parse initial time parameter', () => {
+    vi.useFakeTimers().setSystemTime(new Date('2023-01-01'));
+
+    const res = setup([{ pathname: '/index', search: '?time=last15Minutes&timeEnd=1646647980&timeStart=1646647080' }]);
+    expect(res.state).toMatchObject({ time: 'last15Minutes', timeEnd: 1672531200, timeStart: 1672530300 });
   });
 });
