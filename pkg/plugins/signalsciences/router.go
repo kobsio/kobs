@@ -4,12 +4,10 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/plugins/signalsciences/instance"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
 	"github.com/signalsciences/go-sigsci"
 
 	"github.com/go-chi/chi/v5"
@@ -134,7 +132,7 @@ func (router *Router) getRequests(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
-func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
+func Mount(instances []plugin.Instance) (chi.Router, error) {
 	var signalSciencesInstances []instance.Instance
 
 	for _, i := range instances {
@@ -151,12 +149,10 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 		signalSciencesInstances,
 	}
 
-	proxy := pluginproxy.New(clustersClient)
-
-	router.With(proxy).Get("/overview", router.getOverview)
-	router.With(proxy).Get("/sites", router.getSites)
-	router.With(proxy).Get("/agents", router.getAgents)
-	router.With(proxy).Get("/requests", router.getRequests)
+	router.Get("/overview", router.getOverview)
+	router.Get("/sites", router.getSites)
+	router.Get("/agents", router.getAgents)
+	router.Get("/requests", router.getRequests)
 
 	return router, nil
 }

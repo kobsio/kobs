@@ -21,9 +21,9 @@ func (p *Plugin) Type() string {
 }
 
 func (p *Plugin) MountCluster(instances []plugin.Instance, kubernetesClient kubernetes.Client) (chi.Router, error) {
-	return Mount(instances, nil)
+	return nil, nil
 }
 
 func (p *Plugin) MountHub(instances []plugin.Instance, clustersClient clusters.Client, dbClient db.Client) (chi.Router, error) {
-	return Mount(instances, clustersClient)
+	return Mount(instances)
 }

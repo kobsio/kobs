@@ -266,13 +266,13 @@ func TestGetRequests(t *testing.T) {
 
 func TestMount(t *testing.T) {
 	t.Run("should return error for invalid options", func(t *testing.T) {
-		router, err := Mount([]plugin.Instance{{Name: "signalsciences", Options: map[string]any{"corpName": []string{"test"}}}}, nil)
+		router, err := Mount([]plugin.Instance{{Name: "signalsciences", Options: map[string]any{"corpName": []string{"test"}}}})
 		require.Error(t, err)
 		require.Nil(t, router)
 	})
 
 	t.Run("should return router", func(t *testing.T) {
-		router, err := Mount([]plugin.Instance{{Name: "signalsciences"}}, nil)
+		router, err := Mount([]plugin.Instance{{Name: "signalsciences"}})
 		require.NoError(t, err)
 		require.NotNil(t, router)
 	})

@@ -4,13 +4,11 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/plugins/rss/feed"
 	"github.com/kobsio/kobs/pkg/plugins/rss/instance"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
 	"github.com/kobsio/kobs/pkg/utils/middleware/roundtripper"
 
 	"github.com/go-chi/chi/v5"
@@ -87,7 +85,7 @@ func (router *Router) getFeed(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, items)
 }
 
-func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
+func Mount(instances []plugin.Instance) (chi.Router, error) {
 	var rssInstances []instance.Instance
 
 	for _, i := range instances {
@@ -102,9 +100,7 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 		rssInstances,
 	}
 
-	proxy := pluginproxy.New(clustersClient)
-
-	router.With(proxy).Get("/feed", router.getFeed)
+	router.Get("/feed", router.getFeed)
 
 	return router, nil
 }

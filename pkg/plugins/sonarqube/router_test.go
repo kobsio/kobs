@@ -158,13 +158,13 @@ func TestGetProjectMeasures(t *testing.T) {
 
 func TestMount(t *testing.T) {
 	t.Run("should return error for invalid instance", func(t *testing.T) {
-		router, err := Mount([]plugin.Instance{{Name: "sonarqube", Options: map[string]any{"address": []string{"localhost"}}}}, nil)
+		router, err := Mount([]plugin.Instance{{Name: "sonarqube", Options: map[string]any{"address": []string{"localhost"}}}})
 		require.Error(t, err)
 		require.Nil(t, router)
 	})
 
 	t.Run("should work", func(t *testing.T) {
-		router, err := Mount([]plugin.Instance{{Name: "sonarqube"}}, nil)
+		router, err := Mount([]plugin.Instance{{Name: "sonarqube"}})
 		require.NoError(t, err)
 		require.NotNil(t, router)
 	})
