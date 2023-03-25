@@ -45,26 +45,35 @@ export const PluginPanel: FunctionComponent<IPluginPanelProps> = ({ title, descr
   }
 
   return (
-    <Card sx={{ height: gridContext.autoHeight ? undefined : '100%', p: 4, width: '100%' }}>
-      <Stack sx={{ pb: 2 }} direction="row" justifyContent="space-between" alignItems="center">
-        <Tooltip title={description}>
-          <Typography noWrap={true} variant="subtitle2">
-            <strong>{title}</strong>
-          </Typography>
-        </Tooltip>
+    <Card
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+        height: gridContext.autoHeight ? undefined : '100%',
+        p: 4,
+        width: '100%',
+      }}
+    >
+      <Box sx={{ flexShrink: 0, pb: 2 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Tooltip title={description}>
+            <Typography noWrap={true} variant="subtitle2">
+              <strong>{title}</strong>
+            </Typography>
+          </Tooltip>
 
-        {actions && <Box pl={6}>{actions}</Box>}
-      </Stack>
+          {actions && <Box pl={6}>{actions}</Box>}
+        </Stack>
+      </Box>
 
       <Box
         sx={{
           '&::-webkit-scrollbar': {
             display: 'none',
           },
-          height: '100%',
+          flexGrow: 1,
           overflowY: 'auto',
-          pb: 4,
-          width: '100%',
         }}
       >
         {children}
