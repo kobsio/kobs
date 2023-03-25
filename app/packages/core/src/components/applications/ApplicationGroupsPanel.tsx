@@ -275,10 +275,10 @@ const ApplicationGroupsPanelInternal: FunctionComponent<IApplicationGroupsPanelI
       refetch={refetch}
     >
       <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.map((application) => (
+        {data?.map((application, index) => (
           <Fragment key={`${application?.id?.cluster}-${application?.id?.namespace}-${application?.id?.name}`}>
             <ApplicationGroup groups={groups} application={application} />
-            <Divider component="li" />
+            {index + 1 !== data?.length && <Divider component="li" />}
           </Fragment>
         ))}
       </List>

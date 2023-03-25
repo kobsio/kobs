@@ -18,7 +18,7 @@ import {
 import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { VictoryArea, VictoryChart, VictoryGroup } from 'victory';
+import { VictoryArea, VictoryGroup } from 'victory';
 
 import Chart from './Chart';
 import Legend from './Legend';
@@ -108,6 +108,7 @@ const PrometheusSparkline: FunctionComponent<{
   value: string | undefined;
 }> = ({ queries, metrics, times, unit, mappings, value }) => {
   const theme = useTheme();
+  const gridContext = useContext<IGridContext>(GridContext);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dimensions = useDimensions(wrapperRef);
 
@@ -140,32 +141,31 @@ const PrometheusSparkline: FunctionComponent<{
   }
 
   return (
-    <div style={{ height: '100%', position: 'relative' }}>
-      <div style={{ height: '100%', width: '100%' }} ref={wrapperRef}>
+    <div style={{ height: gridContext.autoHeight ? '150px' : 'calc(100% - 5px)', position: 'relative' }}>
+      <div style={{ height: gridContext.autoHeight ? '145px' : '100%', width: '100%' }} ref={wrapperRef}>
         {dimensions.height > 0 && (
-          <VictoryChart
-            height={dimensions.height - 24}
+          <VictoryGroup
+            color={theme.palette.primary.main}
+            height={dimensions.height}
             padding={{ bottom: 0, left: 0, right: 0, top: 0 }}
             scale={{ x: 'time', y: 'linear' }}
             width={dimensions.width}
             domain={{ x: [new Date(times.timeStart * 1000), new Date(times.timeEnd * 1000)] }}
           >
-            <VictoryGroup color={theme.palette.primary.main}>
-              {metrics.length > 0 && (
-                <VictoryArea
-                  key={metrics[0].label}
-                  data={metrics[0].data}
-                  name={metrics[0].label}
-                  interpolation="monotoneX"
-                  style={{
-                    data: {
-                      fillOpacity: 0.5,
-                    },
-                  }}
-                />
-              )}
-            </VictoryGroup>
-          </VictoryChart>
+            {metrics.length > 0 && (
+              <VictoryArea
+                key={metrics[0].label}
+                data={metrics[0].data}
+                name={metrics[0].label}
+                interpolation="monotoneX"
+                style={{
+                  data: {
+                    fillOpacity: 0.5,
+                  },
+                }}
+              />
+            )}
+          </VictoryGroup>
         )}
       </div>
       {dimensions.height > 0 && (
@@ -174,7 +174,7 @@ const PrometheusSparkline: FunctionComponent<{
             fontSize: '24px',
             position: 'absolute',
             textAlign: 'center',
-            top: `${(dimensions.height - 24) / 2}px`,
+            top: `${dimensions.height / 2}px`,
             width: '100%',
           }}
         >
@@ -243,7 +243,11 @@ const PrometheusChart: FunctionComponent<{
         <Stack direction="column" spacing={2}>
           <Box
             height={
-              gridContext.autoHeight ? '350px' : legend === 'table' ? dimensions.height - 80 : dimensions.height - 16
+              gridContext.autoHeight
+                ? `${350 - 8}px`
+                : legend === 'table'
+                ? dimensions.height - 80 - 8
+                : dimensions.height - 8
             }
           >
             <Chart
@@ -268,7 +272,6 @@ const PrometheusChart: FunctionComponent<{
                   display: 'none',
                 },
                 overflowY: 'auto',
-                pb: gridContext.autoHeight ? 0 : 6,
               }}
             >
               <Legend
