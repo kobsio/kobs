@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"math"
 
-	// _ "github.com/ClickHouse/clickhouse-go/v2"
+	_ "github.com/ClickHouse/clickhouse-go/v2"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	"github.com/mitchellh/mapstructure"
