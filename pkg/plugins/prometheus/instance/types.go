@@ -21,7 +21,7 @@ type Metrics struct {
 // and average for the returned data.
 type Metric struct {
 	ID      string   `json:"id"`
-	Label   string   `json:"label"`
+	Name    string   `json:"name"`
 	Min     float64  `json:"min"`
 	Max     float64  `json:"max"`
 	Avg     float64  `json:"avg"`
