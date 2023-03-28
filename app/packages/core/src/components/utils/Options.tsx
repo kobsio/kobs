@@ -282,7 +282,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
                 </MenuList>
 
                 {internalAdditionalFields && internalAdditionalFields.length > 0 ? (
-                  <MenuList>
+                  <Stack direction="column" spacing={6} sx={{ py: '8px' }}>
                     {internalAdditionalFields.map((field, index) =>
                       field.type === 'select' ? (
                         <FormControl key={field.name} size="small" fullWidth={true}>
@@ -315,7 +315,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
                         />
                       ),
                     )}
-                  </MenuList>
+                  </Stack>
                 ) : null}
               </Stack>
             </DialogContent>

@@ -1,0 +1,196 @@
+{
+  "data": [
+    {
+      "processes": {
+        "p1": {
+          "serviceName": "csvupload",
+          "tags": [
+            {
+              "key": "container.id",
+              "type": "string",
+              "value": "950a1da905d2ba2a08ac6553f2209878d59f0868d764b81eeb8c048fa98c7bd1"
+            },
+            {
+              "key": "host.name",
+              "type": "string",
+              "value": "csvupload-55b9df7876-p4tjl"
+            },
+            {
+              "key": "os.description",
+              "type": "string",
+              "value": "Alpine Linux 3.17.2 (Linux csvupload-55b9df7876-p4tjl 5.4.0-1104-azure #110~18.04.1-Ubuntu SMP Sat Feb 11 17:41:21 UTC 2023 x86_64)"
+            },
+            {
+              "key": "os.type",
+              "type": "string",
+              "value": "linux"
+            },
+            {
+              "key": "process.executable.name",
+              "type": "string",
+              "value": "csvupload"
+            },
+            {
+              "key": "process.executable.path",
+              "type": "string",
+              "value": "/app/csvupload"
+            },
+            {
+              "key": "process.owner",
+              "type": "string",
+              "value": "nobody"
+            },
+            {
+              "key": "process.pid",
+              "type": "int64",
+              "value": 1
+            },
+            {
+              "key": "process.runtime.description",
+              "type": "string",
+              "value": "go version go1.20.2 linux/amd64"
+            },
+            {
+              "key": "process.runtime.name",
+              "type": "string",
+              "value": "go"
+            },
+            {
+              "key": "process.runtime.version",
+              "type": "string",
+              "value": "go1.20.2"
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "type": "string",
+              "value": "go"
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "type": "string",
+              "value": "opentelemetry"
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "type": "string",
+              "value": "1.14.0"
+            }
+          ]
+        }
+      },
+      "spans": [
+        {
+          "duration": 2000285,
+          "flags": 1,
+          "logs": [
+            {
+              "fields": [
+                {
+                  "key": "event",
+                  "type": "string",
+                  "value": "exception"
+                },
+                {
+                  "key": "exception.message",
+                  "type": "string",
+                  "value": "password rejected for root"
+                },
+                {
+                  "key": "exception.type",
+                  "type": "string",
+                  "value": "*errors.errorString"
+                }
+              ],
+              "timestamp": 1679976157149898
+            }
+          ],
+          "operationName": "ssh.auth.password",
+          "processID": "p1",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "spanID": "be9404584e0805fe",
+              "traceID": "e7845d5e5093156d71e6753f6ba2b38c"
+            }
+          ],
+          "spanID": "a560d333d9b16ac2",
+          "startTime": 1679976157149884,
+          "tags": [
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "sftp"
+            },
+            {
+              "key": "error",
+              "type": "bool",
+              "value": true
+            },
+            {
+              "key": "otel.status_code",
+              "type": "string",
+              "value": "ERROR"
+            },
+            {
+              "key": "otel.status_description",
+              "type": "string",
+              "value": "password rejected for root"
+            },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "jaeger"
+            }
+          ],
+          "traceID": "e7845d5e5093156d71e6753f6ba2b38c",
+          "warnings": null
+        },
+        {
+          "duration": 51331061,
+          "flags": 1,
+          "logs": [],
+          "operationName": "ssh.connection",
+          "processID": "p1",
+          "references": [],
+          "spanID": "be9404584e0805fe",
+          "startTime": 1679976108069855,
+          "tags": [
+            {
+              "key": "net.transport",
+              "type": "string",
+              "value": "ip_tcp"
+            },
+            {
+              "key": "remoteAddress",
+              "type": "string",
+              "value": "127.0.0.6:59219"
+            },
+            {
+              "key": "sessionId",
+              "type": "string",
+              "value": "4f3db0aa-32c2-41bb-b9ef-5f3d6fd1dafd"
+            },
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "sftp"
+            },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "jaeger"
+            }
+          ],
+          "traceID": "e7845d5e5093156d71e6753f6ba2b38c",
+          "warnings": null
+        }
+      ],
+      "traceID": "e7845d5e5093156d71e6753f6ba2b38c",
+      "warnings": null
+    }
+  ],
+  "errors": null,
+  "limit": 0,
+  "offset": 0,
+  "total": 0
+}
