@@ -97,4 +97,20 @@ describe('LogsFieldsList', () => {
     await userEvent.click(moveDownButton);
     expect(onSwapItem).toHaveBeenCalledWith(0, 1);
   });
+
+  it('can search field', async () => {
+    render(
+      <LogsFieldsList
+        fields={['namespace', 'app', 'content_foo']}
+        onToggleField={vi.fn()}
+        onSwapItem={vi.fn()}
+        selectedFields={[]}
+      />,
+    );
+
+    const searchField = screen.getByLabelText('search field');
+    await userEvent.type(searchField, 'namespace');
+    expect(screen.getByText(/namespace/)).toBeInTheDocument();
+    expect(screen.queryByText(/app/)).not.toBeInTheDocument();
+  });
 });
