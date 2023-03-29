@@ -150,8 +150,8 @@ const PrometheusSparkline: FunctionComponent<{
   let label = 'N/A';
   if (metrics.length > 0) {
     if (queries.length > 0 && queries[0].label) {
-      if (metrics[0].label) {
-        label = metrics[0].label;
+      if (metrics[0].name) {
+        label = metrics[0].name;
       }
     } else {
       if (mappings && Object.keys(mappings).length > 0) {
@@ -184,9 +184,9 @@ const PrometheusSparkline: FunctionComponent<{
           >
             {metrics.length > 0 && (
               <VictoryArea
-                key={metrics[0].label}
+                key={metrics[0].name}
                 data={metrics[0].data}
-                name={metrics[0].label}
+                name={metrics[0].name}
                 interpolation="monotoneX"
                 style={{
                   data: {
@@ -235,7 +235,7 @@ const PrometheusChart: FunctionComponent<{
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dimensions = useDimensions(wrapperRef);
   const [selectedMetric, setSelectedMetric] = useState<string>('');
-  const [order, setOrder] = useState<IOrder>({ order: 'asc', orderBy: 'label' });
+  const [order, setOrder] = useState<IOrder>({ order: 'asc', orderBy: 'name' });
   const [sortedMetrics, setSortedMetrics] = useState<IMetric[]>(metrics?.metrics ?? []);
 
   /**
@@ -377,12 +377,8 @@ const ChartPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
 
           for (let j = 0; j < result.metrics[i].data.length; j++) {
             result.metrics[i].data[j] = {
-              customColor: color,
-              customLabel: result.metrics[i].label,
-              customMaxX: times.timeEnd,
-              customMaxY: result.max,
-              customMinX: times.timeStart,
-              customMinY: result.min,
+              color: color,
+              name: result.metrics[i].name,
               x: new Date(result.metrics[i].data[j].x),
               y: result.metrics[i].data[j].y,
             };

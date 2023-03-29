@@ -35,14 +35,14 @@ const Legend: FunctionComponent<{
       <Table size="small" padding={padding}>
         <TableHead>
           <TableRow>
-            <TableCell sortDirection={order.orderBy === 'label' ? order.order : false}>
+            <TableCell sortDirection={order.orderBy === 'name' ? order.order : false}>
               <TableSortLabel
-                active={order.orderBy === 'label'}
-                direction={order.orderBy === 'label' ? order.order : 'asc'}
-                onClick={() => handleOrder('label')}
+                active={order.orderBy === 'name'}
+                direction={order.orderBy === 'name' ? order.order : 'asc'}
+                onClick={() => handleOrder('name')}
               >
                 Name
-                {order.orderBy === 'label' ? (
+                {order.orderBy === 'name' ? (
                   <Box component="span" sx={visuallyHidden}>
                     {order.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                   </Box>
@@ -123,7 +123,7 @@ const Legend: FunctionComponent<{
               <TableCell>
                 <Stack direction="row" spacing={4} alignItems="center">
                   <Square sx={{ color: metric.color }} />
-                  <Box>{metric.label}</Box>
+                  <Box>{metric.name}</Box>
                 </Stack>
               </TableCell>
               <TableCell>{roundNumber(metric.min, 4)}</TableCell>
