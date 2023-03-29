@@ -15,7 +15,19 @@ import {
   IGridContext,
   GridContext,
 } from '@kobsio/core';
-import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Table as MUITable,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  useTheme,
+  TableSortLabel,
+} from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { VictoryArea, VictoryGroup } from 'victory';
@@ -23,7 +35,7 @@ import { VictoryArea, VictoryGroup } from 'victory';
 import Chart from './Chart';
 import Legend from './Legend';
 
-import { IMetric, IMetrics, IOrder, TOrderBy } from '../utils/utils';
+import { IMetric, IMetrics, IOrder, TOrder, TOrderBy } from '../utils/utils';
 
 /**
  * `IOptions` is the interface for the options of the Prometheus plugin. The options are provided by a user and should
@@ -70,28 +82,46 @@ const getMappingValue = (value: string | number | null | undefined, mappings: Re
 };
 
 /**
- * `formatCellValue` is used to formate a value in a cell in a table. The value is retrieved by the provided `key` and
- * `column`. If the column contains a list of mappings the corresponding value from the mappings will be shown. If the
- * column is a `value` from a Prometheus query we will show the number.
+ * `formatCellValue` is used to formate a value in a cell in a table. If the column contains a list of mappings the
+ * corresponding value from the mappings will be shown. If the column is a `value` from a Prometheus query we will show
+ * the number.
  */
-const formatCellValue = (
-  key: string,
-  column: IColumn,
-  data: Record<string, Record<string, string>> | undefined,
-): string | number => {
-  if (!column.name || !data) {
-    return '';
+const formatCellValue = (column: IColumn, value: string): string | number => {
+  if (!column.name || !value) {
+    return 'N/A';
   }
 
   if (column.mappings) {
-    return getMappingValue(data[key][column.name], column.mappings);
+    return getMappingValue(value, column.mappings);
   }
 
   if (column.name.startsWith('value')) {
-    return roundNumber(parseFloat(data[key][column.name]), 4);
+    return roundNumber(parseFloat(value), 4);
   }
 
-  return data[key][column.name];
+  return value;
+};
+
+/**
+ * `convertTableData` converts the provided `data` to a list of rows, which can be used to render a table. This is
+ * required so that we can sort the data in the table.
+ */
+const convertTableData = (columns: IColumn[], data: Record<string, Record<string, string>>): string[][] => {
+  const rows: string[][] = [];
+
+  for (const key in data) {
+    const row: string[] = [];
+    for (const column of columns) {
+      if (column.name && data[key][column.name]) {
+        row.push(data[key][column.name]);
+      } else {
+        row.push('');
+      }
+    }
+    rows.push(row);
+  }
+
+  return rows;
 };
 
 /**
@@ -408,6 +438,91 @@ const ChartPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
 };
 
 /**
+ * The `Table` component renders the table for the provided data. The component is also responsible for converting the
+ * provided data and for sorting the data.
+ */
+const Table: FunctionComponent<{ columns: IColumn[]; data: Record<string, Record<string, string>> }> = ({
+  columns,
+  data,
+}) => {
+  const [order, setOrder] = useState<{ order: TOrder; orderBy: string }>({
+    order: 'asc',
+    orderBy: columns.length > 0 && columns[0].name ? columns[0].name : '',
+  });
+  const [sortedData, setSortedData] = useState<string[][]>([]);
+
+  /**
+   * `handleOrder` updates the `order` of the metrics based on the provided `orderBy` value.
+   */
+  const handleOrder = (orderBy: string) => {
+    const isAsc = order.orderBy === orderBy && order.order === 'asc';
+    setOrder({
+      order: isAsc ? 'desc' : 'asc',
+      orderBy: orderBy,
+    });
+  };
+
+  /**
+   * Everytime the order or the provided data is changed we have to sort the data and store them in the `sortedData`
+   * state.
+   */
+  useEffect(() => {
+    const tmpData = convertTableData(columns, data);
+    const columnIndex = columns.findIndex((column) => column.name === order.orderBy);
+
+    if (order.order === 'asc') {
+      tmpData.sort((a, b) => (a[columnIndex] > b[columnIndex] ? 1 : a[columnIndex] < b[columnIndex] ? -1 : 0));
+    } else {
+      tmpData.sort((a, b) => (a[columnIndex] < b[columnIndex] ? 1 : a[columnIndex] > b[columnIndex] ? -1 : 0));
+    }
+    setSortedData(tmpData);
+  }, [order, data, columns]);
+
+  return (
+    <TableContainer>
+      <MUITable size="small">
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
+              <TableCell key={column.name} sortDirection={order.orderBy === column.name ? order.order : false}>
+                <TableSortLabel
+                  active={order.orderBy === column.name}
+                  direction={order.orderBy === column.name ? order.order : 'asc'}
+                  onClick={() => handleOrder(column.name ?? '')}
+                >
+                  {column.title ? column.title : column.name}
+                  {order.orderBy === column.name ? (
+                    <Box component="span" sx={visuallyHidden}>
+                      {order.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </Box>
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {sortedData.map((row) => (
+            <TableRow
+              key={row[0]}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
+              hover={true}
+            >
+              {row.map((value, index) => (
+                <TableCell key={columns[index].name}>
+                  {formatCellValue(columns[index], value)}
+                  {columns[index].unit ? ` ${columns[index].unit}` : ''}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </MUITable>
+    </TableContainer>
+  );
+};
+
+/**
  * The `TablePanel` component is used to render a table with the user provided queries, when the corresponding `table`
  * type was specified by a user.
  */
@@ -472,33 +587,7 @@ const TablePanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
         }.`}
         refetch={refetch}
       >
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                {options?.columns?.map((column) => (
-                  <TableCell key={column.name}>{column.title ? column.title : column.name}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.keys(data ?? {}).map((key) => (
-                <TableRow
-                  key={key}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
-                  hover={true}
-                >
-                  {options?.columns?.map((column, index) => (
-                    <TableCell key={column.name}>
-                      {formatCellValue(key, column, data)}
-                      {column.unit ? ` ${column.unit}` : ''}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {data && <Table columns={options?.columns ?? []} data={data} />}
       </UseQueryWrapper>
     </PluginPanel>
   );

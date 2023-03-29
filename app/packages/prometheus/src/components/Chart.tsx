@@ -59,7 +59,7 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
   const chartData = metrics.map((metric, index) =>
     type === 'area' ? (
       <VictoryArea
-        key={metrics[index].name}
+        key={metrics[index].id}
         data={metric.data}
         name={metrics[index].name}
         colorScale={[metrics[index].color]}
@@ -67,14 +67,14 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
       />
     ) : type === 'bar' ? (
       <VictoryBar
-        key={metrics[index].name}
+        key={metrics[index].id}
         data={metric.data}
         name={metrics[index].name}
         colorScale={[metrics[index].color]}
       />
     ) : (
       <VictoryLine
-        key={metrics[index].name}
+        key={metrics[index].id}
         data={metric.data}
         name={metrics[index].name}
         colorScale={[metrics[index].color]}

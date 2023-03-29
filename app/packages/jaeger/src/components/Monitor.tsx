@@ -388,7 +388,7 @@ const MonitorChart: FunctionComponent<{
         domain={{ x: [new Date(times.timeStart * 1000), new Date(times.timeEnd * 1000)] }}
       >
         <VictoryAxis dependentAxis={false} tickFormat={chartTickFormatTime} />
-        <VictoryAxis dependentAxis={true} label={unit} tickFormat={(tick: number) => chartTickFormatValue(tick)} />
+        <VictoryAxis dependentAxis={true} label={unit} tickFormat={chartTickFormatValue} />
 
         <VictoryGroup>
           {data.map((metric) => (

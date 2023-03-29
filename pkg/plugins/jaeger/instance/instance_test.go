@@ -173,25 +173,25 @@ func TestGetMetrics(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	t.Run("should return error for invalid options", func(t *testing.T) {
-		instance, err := New("sonarqube", map[string]any{"address": []string{"localhost"}})
+		instance, err := New("jaeger", map[string]any{"address": []string{"localhost"}})
 		require.Error(t, err)
 		require.Nil(t, instance)
 	})
 
 	t.Run("should return instance with default round tripper", func(t *testing.T) {
-		instance, err := New("sonarqube", map[string]any{"address": "localhost"})
+		instance, err := New("jaeger", map[string]any{"address": "localhost"})
 		require.NoError(t, err)
 		require.NotNil(t, instance)
 	})
 
 	t.Run("should return instance with basic auth", func(t *testing.T) {
-		instance, err := New("sonarqube", map[string]any{"address": "localhost", "username": "admin", "password": "admin"})
+		instance, err := New("jaeger", map[string]any{"address": "localhost", "username": "admin", "password": "admin"})
 		require.NoError(t, err)
 		require.NotNil(t, instance)
 	})
 
 	t.Run("should return instance with token auth", func(t *testing.T) {
-		instance, err := New("sonarqube", map[string]any{"address": "localhost", "token": "token"})
+		instance, err := New("jaeger", map[string]any{"address": "localhost", "token": "token"})
 		require.NoError(t, err)
 		require.NotNil(t, instance)
 	})
