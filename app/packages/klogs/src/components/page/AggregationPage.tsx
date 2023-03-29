@@ -120,7 +120,7 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
         <LogsToolbar
           hideOderSelection={true}
           instance={instance}
-          onChangeTime={handleChangeTime}
+          onChangeOptions={handleChangeTime}
           onSearch={handleSearch}
           query={search.query}
           time={search.time}

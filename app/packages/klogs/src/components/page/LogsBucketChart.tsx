@@ -111,8 +111,8 @@ const LogsBucketChart: FunctionComponent<ILogsBucketChart> = ({ buckets, onChang
                 return;
               }
 
-              const left = new Date(x[0]);
-              const right = new Date(x[1]);
+              const left = new Date(domain.x[0]);
+              const right = new Date(domain.x[1]);
 
               onChangeTimeframe({
                 timeEnd: Math.floor(right.getTime() / 1000),

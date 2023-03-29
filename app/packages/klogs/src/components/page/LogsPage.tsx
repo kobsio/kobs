@@ -3,7 +3,6 @@ import {
   APIError,
   fileDownload,
   IPluginPageProps,
-  ITimes,
   Page,
   Pagination,
   timeOptions,
@@ -21,7 +20,7 @@ import LogsDownload from './LogsDownload';
 import LogsFieldsList from './LogsFieldsList';
 import LogsPageActions from './LogsPageActions';
 import LogsTable from './LogsTable';
-import LogsToolbar from './LogsToolbar';
+import LogsToolbar, { IOptions } from './LogsToolbar';
 
 import { ILogsData } from '../common/types';
 import { orderMapping } from '../utils/order';
@@ -92,14 +91,6 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     return setSearch({ fields: search.fields, query: query });
   };
 
-  const handleChangeTime = ({ time, timeEnd, timeStart }: ITimes) => {
-    setLastSeach(now());
-    setSearch({
-      time: time,
-      ...(time === 'custom' ? { timeEnd, timeStart } : undefined),
-    });
-  };
-
   const handleChangeTimeframe = (payload: IChangeTimeframePayload) => {
     setSearch({ page: 1, time: 'custom', timeEnd: payload.timeEnd, timeStart: payload.timeStart });
   };
@@ -114,16 +105,22 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     handleSearch(parts.join(' '));
   };
 
-  const handleChangeSort = (orderBy: string, order: 'asc' | 'desc') => {
+  const handleToggleSort = (orderBy: string) => {
+    const isAsc = search.orderBy === orderBy && search.order === 'asc';
     setSearch({
-      order: order,
+      order: isAsc ? 'desc' : 'asc',
       orderBy: orderBy,
     });
   };
 
-  const handleToggleSort = (orderBy: string) => {
-    const isAsc = search.orderBy === orderBy && search.order === 'asc';
-    handleChangeSort(orderBy, isAsc ? 'desc' : 'asc');
+  const handleChangeOptions = ({ time, timeEnd, timeStart, order, orderBy }: IOptions) => {
+    setLastSeach(now());
+    setSearch({
+      order: order,
+      orderBy: orderBy,
+      ...(time === 'custom' ? { timeEnd, timeStart } : undefined),
+      time: time,
+    });
   };
 
   const handleFieldToggle = (field: string) => {
@@ -156,9 +153,10 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       toolbar={
         <LogsToolbar
           instance={instance}
-          onChangeOrder={handleChangeSort}
-          onChangeTime={handleChangeTime}
+          onChangeOptions={handleChangeOptions}
           onSearch={handleSearch}
+          order={search.order}
+          orderBy={search.orderBy}
           query={search.query}
           time={search.time}
           timeEnd={search.timeEnd}

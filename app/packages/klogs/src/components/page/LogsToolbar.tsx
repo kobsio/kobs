@@ -15,14 +15,16 @@ import Editor from './Editor';
 import memo from '../utils/memo';
 import { orderMapping } from '../utils/order';
 
-interface ILogsToolbarProps extends ITimes {
-  hideOderSelection?: boolean;
-  instance: IPluginInstance;
-  onChangeOrder?: (orderBy: string, order: 'asc' | 'desc') => void;
-  onChangeTime: (times: ITimes) => void;
-  onSearch: (query: string) => void;
+export interface IOptions extends ITimes {
   order?: 'asc' | 'desc';
   orderBy?: string;
+}
+
+interface ILogsToolbarProps extends IOptions {
+  hideOderSelection?: boolean;
+  instance: IPluginInstance;
+  onChangeOptions: (options: IOptions) => void;
+  onSearch: (query: string) => void;
   query: string;
 }
 
@@ -33,9 +35,8 @@ interface ILogsToolbarProps extends ITimes {
 const LogsToolbar: FunctionComponent<ILogsToolbarProps> = ({
   hideOderSelection,
   instance,
-  onChangeTime,
+  onChangeOptions,
   onSearch,
-  onChangeOrder,
   orderBy,
   order,
   query: initialQuery,
@@ -47,12 +48,12 @@ const LogsToolbar: FunctionComponent<ILogsToolbarProps> = ({
   const { client } = useContext(APIContext);
 
   const handleChangeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined) => {
-    onChangeTime(times);
+    const options: IOptions = { ...times };
     if (additionalFields && additionalFields.length === 2) {
-      const orderBy = additionalFields[0].value;
-      const order = additionalFields[1].value as 'ascending' | 'descending';
-      onChangeOrder && onChangeOrder(orderBy, orderMapping.longToShort[order]);
+      options.orderBy = additionalFields[0].value;
+      options.order = orderMapping.longToShort[additionalFields[1].value as 'ascending' | 'descending'];
     }
+    onChangeOptions(options);
   };
 
   /**
