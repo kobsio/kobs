@@ -1,4 +1,3 @@
-/* eslint-disable sort-keys */
 import { languages } from 'monaco-editor';
 
 import CompletionItem = languages.CompletionItem;
@@ -9,70 +8,70 @@ import LanguageConfiguration = languages.LanguageConfiguration;
 import IMonarchLanguage = languages.IMonarchLanguage;
 
 export const conf: LanguageConfiguration = {
+  autoClosingPairs: [{ close: ')', open: '(' }],
   brackets: [['(', ')']],
-  autoClosingPairs: [{ open: '(', close: ')' }],
   colorizedBracketPairs: [['(', ')']],
   surroundingPairs: [
-    { open: '(', close: ')' },
-    { open: "'", close: "'" },
+    { close: ')', open: '(' },
+    { close: "'", open: "'" },
   ],
 };
 
 const operators = [
   {
-    op: '=',
     label: '!= (equals)',
+    op: '=',
   },
   {
-    op: '!=',
     label: '!= (not equals)',
+    op: '!=',
   },
   {
-    op: '<',
     label: '< (smaller)',
+    op: '<',
   },
   {
-    op: '<=',
     label: '<= (smaller or equal)',
+    op: '<=',
   },
   {
-    op: '>',
     label: '> (greater)',
+    op: '>',
   },
   {
-    op: '>=',
     label: '>= (greater or equal)',
+    op: '>=',
   },
   {
-    op: '=~',
     label: '=~ (ILIKE)',
+    op: '=~',
   },
   {
-    op: '!~',
     label: '!~ (not ILIKE)',
+    op: '!~',
   },
   {
-    op: '~',
     label: '~ (regex match)',
+    op: '~',
   },
 ];
 
 const logicalOperators = [
   {
-    op: '_and_',
     label: '_and_ (and statement)',
+    op: '_and_',
   },
   {
-    op: '_or_',
     label: '_or_ (or statement)',
+    op: '_or_',
   },
   {
-    op: '_not_',
     label: '_not_ (not statement)',
+    op: '_not_',
   },
   {
-    op: '_exists_',
     label: '_exists_ (exists statement)',
+    op: '_exists_',
   },
 ];
 
@@ -80,9 +79,9 @@ const logicalOperators = [
  * language is the language definition for the klogs query language
  */
 export const language: IMonarchLanguage = {
+  brackets: [{ close: ')', open: '(', token: 'delimiter.parenthesis' }],
   defaultToken: '',
   ignoreCase: true,
-  brackets: [{ open: '(', close: ')', token: 'delimiter.parenthesis' }],
   // both lowercase and uppercase logical ops are allowed
   keywords: [...logicalOperators.map((lop) => lop.op), ...logicalOperators.map((lop) => lop.op.toUpperCase())],
   operators: operators.map((op) => op.op),
@@ -108,8 +107,8 @@ export const language: IMonarchLanguage = {
         /@symbols/,
         {
           cases: {
-            '@operators': 'operators',
             '@default': '',
+            '@operators': 'operators',
           },
         },
       ],
@@ -117,36 +116,35 @@ export const language: IMonarchLanguage = {
         /[a-zA-Z_]\w*/,
         {
           cases: {
-            '@keywords': 'type',
             '@default': 'identifier',
+            '@keywords': 'type',
           },
         },
       ],
     ],
-    whitespace: [[/\s+/, 'white']],
+    // root must be the first element in the object. If it's not, the syntax highlighting breaks.
+    // eslint-disable-next-line sort-keys
     numbers: [[/((\d+(\.\d*)?)|(\.\d+))([eE][\-+]?\d+)?/, 'number']],
     string: [
       [/[^']+/, 'string'],
       [/''/, 'string'],
-      [/'/, { token: 'string', next: '@pop' }],
+      [/'/, { next: '@pop', token: 'string' }],
     ],
     stringDouble: [
       [/[^"]+/, 'invalid'],
       [/""/, 'invalid'],
-      [/"/, { token: 'invalid', next: '@pop' }],
+      [/"/, { next: '@pop', token: 'invalid' }],
     ],
+    whitespace: [[/\s+/, 'white']],
   },
 };
 
 export const klogsLanguageDefinition = {
-  id: 'klogs',
-  extensions: ['.klogs'],
   aliases: ['klogs'],
-  mimetypes: [],
+  extensions: ['.klogs'],
+  id: 'klogs',
   loader: () => {
     return {
-      languageConfiguration: conf,
-      language: language,
       completionItemProvider: {
         provideCompletionItems: () => {
           // completions should incldue both logical operators and comparison operators
@@ -163,16 +161,19 @@ export const klogsLanguageDefinition = {
 
           const suggestions = operatorSuggestions.map(({ op, label, kind }) => {
             return {
-              label: label,
-              kind: kind,
               insertText: op,
               insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              kind: kind,
+              label: label,
             } as CompletionItem;
           });
 
           return { suggestions } as ProviderResult<CompletionList>;
         },
       },
+      language: language,
+      languageConfiguration: conf,
     };
   },
+  mimetypes: [],
 };

@@ -5,6 +5,6 @@ import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-d
  * `Link` is a helper function, which we need to use the `Link` (imported as `RouterLink`) component from React Router
  * within the `ListItem` component from Material UI.
  */
-export const Link = forwardRef<HTMLAnchorElement, RouterLinkProps>(function link(itemProps, ref) {
+export const Link = forwardRef<HTMLAnchorElement, RouterLinkProps>(function Link(itemProps, ref) {
   return <RouterLink ref={ref} {...itemProps} role="link" />;
 });

@@ -9,9 +9,9 @@ import LogsPage from './LogsPage';
 
 import { ILogsData } from '../common/types';
 
-vi.mock('./InternalEditor', () => {
+vi.mock('./Editor', () => {
   return {
-    default: forwardRef<HTMLInputElement, InputBaseComponentProps>(function InternalEditor(props, ref) {
+    default: forwardRef<HTMLInputElement, InputBaseComponentProps>(function Editor(props, ref) {
       return <>mock editor</>;
     }),
   };

@@ -87,12 +87,11 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
       case 'signalsciences':
         setupSignalSciences(monaco, loadCompletionItems);
         break;
+      case 'klogs':
+        setupKlogs(monaco, loadCompletionItems);
+        break;
       default:
         break;
-    }
-
-    if (language === 'klogs') {
-      setupKlogs(monaco, loadCompletionItems);
     }
   };
 

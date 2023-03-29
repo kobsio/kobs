@@ -1,4 +1,4 @@
-import { chartTheme, getChartColor, useDimensions } from '@kobsio/core';
+import { chartTheme, chartTickFormatTime, getChartColor, useDimensions } from '@kobsio/core';
 import { Box, useTheme } from '@mui/material';
 import { FunctionComponent, useRef } from 'react';
 import {
@@ -32,7 +32,9 @@ const BrushVoronoiContainer = createContainer<VictoryVoronoiContainerProps, Vict
   'brush',
 );
 
-// utility for creating a bar chart theme from the base Theme definition
+/**
+ * utility for creating a bar chart theme from the base Theme definition
+ */
 const fromBaseTheme = (base: VictoryThemeDefinition): VictoryThemeDefinition => {
   return {
     ...base,
@@ -126,8 +128,8 @@ const LogsBucketChart: FunctionComponent<ILogsBucketChart> = ({ buckets, onChang
         height={chartSize.height}
         domain={getDomain(x, y)}
       >
-        <VictoryAxis dependentAxis={false} />
-        <VictoryBar data={data} name="count" />
+        <VictoryAxis dependentAxis={false} tickFormat={chartTickFormatTime} />
+        <VictoryBar data={data} name="count" barWidth={data && chartSize.width / data.length - 8} />
       </VictoryChart>
     </Box>
   );

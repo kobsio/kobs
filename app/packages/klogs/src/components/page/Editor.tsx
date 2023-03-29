@@ -3,10 +3,10 @@ import { InputBaseComponentProps } from '@mui/material';
 import { forwardRef } from 'react';
 
 /**
- * The `InternalEditor` component is a wrapper around our `MUIEditor` component, which allows us to use the editor
+ * The `Editor` component is a wrapper around our `MUIEditor` component, which allows us to use the editor
  * within a `TextField` component of MUI.
  */
-const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function InternalEditor(props, ref) {
+const Editor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function Editor(props, ref) {
   const { loadCompletionItems, callSubmit, value, onChange } = props;
 
   const handleOnChange = (value: string | undefined) => {
@@ -28,4 +28,4 @@ const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(fun
   );
 });
 
-export default InternalEditor;
+export default Editor;

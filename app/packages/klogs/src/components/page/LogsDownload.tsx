@@ -1,7 +1,7 @@
 import { formatTime } from '@kobsio/core';
-import { Download, ListAlt } from '@mui/icons-material';
-import { Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { FunctionComponent } from 'react';
+import { Download, ListAlt, MoreVert } from '@mui/icons-material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import { FunctionComponent, useState, MouseEvent } from 'react';
 
 import { IRow } from '../common/types';
 
@@ -15,6 +15,16 @@ interface ILogsDownloadProps {
  * LogsDownload renders two action items for downloading all rows in either JSON or CSV format
  */
 const LogsDownload: FunctionComponent<ILogsDownloadProps> = ({ fields, fileDownload, rows }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleOpen = (e: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleJSONDownload = () => {
     fileDownload(JSON.stringify(rows, null, 2), 'kobs-export-logs.json');
   };
@@ -39,33 +49,27 @@ const LogsDownload: FunctionComponent<ILogsDownloadProps> = ({ fields, fileDownl
   };
 
   return (
-    <Box>
-      <Tooltip title="Download all logs as JSON">
-        <IconButton onClick={handleJSONDownload} aria-label="Download all logs as JSON">
-          <Download fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip
-        title={
-          <>
-            <Typography fontSize={10}>Download all logs as CSV</Typography>
-            {fields.length === 0 && (
-              <Typography fontSize={10}>Select at least one column to download the logs in the CSV format.</Typography>
-            )}
-          </>
-        }
-      >
-        <span>
-          <IconButton
-            onClick={handleCSVDownload}
-            disabled={!rows || fields.length === 0}
-            aria-label="Download all logs as CSV"
-          >
+    <>
+      <IconButton size="small" onClick={handleOpen} aria-label="open menu">
+        <MoreVert />
+      </IconButton>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem onClick={handleJSONDownload} aria-label="Download Logs">
+          <ListItemIcon>
+            <Download fontSize="small" />
+          </ListItemIcon>
+
+          <ListItemText>Download Logs</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={handleCSVDownload} disabled={!rows || fields.length === 0} aria-label="Download CSV">
+          <ListItemIcon>
             <ListAlt fontSize="small" />
-          </IconButton>
-        </span>
-      </Tooltip>
-    </Box>
+          </ListItemIcon>
+          <ListItemText>Download CSV</ListItemText>
+        </MenuItem>
+      </Menu>
+    </>
   );
 };
 

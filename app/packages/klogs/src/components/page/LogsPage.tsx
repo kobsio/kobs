@@ -4,7 +4,6 @@ import {
   fileDownload,
   IPluginPageProps,
   ITimes,
-  Link,
   Page,
   Pagination,
   timeOptions,
@@ -12,20 +11,20 @@ import {
   useQueryState,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Description, PieChart } from '@mui/icons-material';
-import { Box, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Card, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext } from 'react';
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import LogsBucketChart, { IChangeTimeframePayload } from './LogsBucketChart';
 import LogsDownload from './LogsDownload';
 import LogsFieldsList from './LogsFieldsList';
+import LogsPageActions from './LogsPageActions';
 import LogsTable from './LogsTable';
 import LogsToolbar from './LogsToolbar';
 
 import { ILogsData } from '../common/types';
+import { orderMapping } from '../utils/order';
 
 export interface ISearch {
   fields: string[];
@@ -54,7 +53,7 @@ export const defaultSearch: ISearch = {
   timeStart: now() - 900,
 };
 
-const orderMapping = { asc: 'ascending', desc: 'descending' } as const;
+const defaultDescription = 'Fast, scalable and reliable logging using Fluent Bit and ClickHouse.';
 
 /**
  * LogsPage displays the klogs plugin page that allows the user to search for logs
@@ -62,7 +61,6 @@ const orderMapping = { asc: 'ascending', desc: 'descending' } as const;
  */
 const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);
-  const { search: rawSearch } = useLocation();
   const [search, setSearch] = useQueryState<ISearch>(defaultSearch);
   // lastSearch is required, to enable reloading of log results
   // when the user has selected one of the quick time-range options
@@ -79,7 +77,7 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
         timeStart = now() - timeOptions[search.time].seconds;
       }
 
-      const order = orderMapping[search.order];
+      const order = orderMapping.shortToLong[search.order];
       const path = `/api/plugins/klogs/logs?query=${search.query}&order=${order}&orderBy=${search.orderBy}&timeStart=${timeStart}&timeEnd=${timeEnd}`;
       return client.get<ILogsData>(path, {
         headers: {
@@ -116,12 +114,16 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     handleSearch(parts.join(' '));
   };
 
-  const handleChangeSort = (orderBy: string) => {
-    const isAsc = search.orderBy === orderBy && search.order === 'asc';
+  const handleChangeSort = (orderBy: string, order: 'asc' | 'desc') => {
     setSearch({
-      order: isAsc ? 'desc' : 'asc',
+      order: order,
       orderBy: orderBy,
     });
+  };
+
+  const handleToggleSort = (orderBy: string) => {
+    const isAsc = search.orderBy === orderBy && search.order === 'asc';
+    handleChangeSort(orderBy, isAsc ? 'desc' : 'asc');
   };
 
   const handleFieldToggle = (field: string) => {
@@ -149,59 +151,54 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   return (
     <Page
       title="klogs"
-      description="Fast, scalable and reliable logging using Fluent Bit and ClickHouse."
+      description={instance.description || defaultDescription}
       subtitle={instance.cluster}
       toolbar={
         <LogsToolbar
-          {...search}
-          handlers={{ onChangeTime: handleChangeTime, onSearch: handleSearch }}
           instance={instance}
+          onChangeOrder={handleChangeSort}
+          onChangeTime={handleChangeTime}
+          onSearch={handleSearch}
+          query={search.query}
+          time={search.time}
+          timeEnd={search.timeEnd}
+          timeStart={search.timeStart}
         />
       }
-      actions={
-        <>
-          <Tooltip title="Aggregation view">
-            <IconButton component={Link} to={`./aggregation${rawSearch}`}>
-              <PieChart />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Documentation">
-            <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
-              <Description />
-            </IconButton>
-          </Tooltip>
-        </>
-      }
+      actions={<LogsPageActions />}
     >
       <UseQueryWrapper
-        {...queryResult}
-        errorTitle="Failed to load applications"
+        error={queryResult.error}
+        isError={queryResult.isError}
+        isLoading={queryResult.isLoading}
+        refetch={queryResult.refetch}
+        errorTitle="Could not get log"
         isNoData={!queryResult.data || queryResult.data.documents === null}
         noDataTitle="No logs found"
         noDataMessage="There were no logs found for your search query"
       >
-        <Stack direction="row" spacing={2} sx={{ maxWidth: '100%' }}>
-          <Paper>
+        <Stack alignItems="flex-start" direction="row" spacing={2} sx={{ maxWidth: '100%' }}>
+          <Card sx={{ width: '250px' }}>
             <LogsFieldsList
               selectedFields={search.fields}
               fields={queryResult.data?.fields || []}
               onToggleField={handleFieldToggle}
               onSwapItem={handleFieldSwap}
             />
-          </Paper>
+          </Card>
           <Stack direction="column" sx={{ width: '100%' }} spacing={2}>
-            <Paper>
+            <Card>
               <Stack direction="row" justifyContent="space-between" m={2}>
                 <Typography fontWeight="medium">{`${queryResult.data?.count} documents in ${queryResult.data?.took} milliseconds`}</Typography>
                 {queryResult.data?.documents && (
                   <LogsDownload rows={queryResult.data.documents} fields={search.fields} fileDownload={fileDownload} />
                 )}
               </Stack>
-              <Box sx={{ height: '150px' }}>
+              <Box sx={{ height: '250px' }}>
                 <LogsBucketChart buckets={queryResult.data?.buckets || []} onChangeTimeframe={handleChangeTimeframe} />
               </Box>
-            </Paper>
-            <Paper>
+            </Card>
+            <Card sx={{ pb: 4 }}>
               <LogsTable
                 fields={search.fields}
                 order={search.order}
@@ -212,11 +209,11 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                 )}
                 handlers={{
                   onAddFilter: handleAddFilter,
-                  onChangeSort: handleChangeSort,
+                  onChangeSort: handleToggleSort,
                   onSelectField: handleFieldToggle,
                 }}
               />
-            </Paper>
+            </Card>
             <Pagination
               count={queryResult.data?.documents?.length ?? 0}
               page={search.page ?? 1}

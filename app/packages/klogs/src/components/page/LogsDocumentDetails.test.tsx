@@ -44,10 +44,10 @@ describe('LogsDocumentDetails', () => {
       hideActionColumn: false,
     };
     render(<LogsDocumentDetails row={row} handlers={handlers} options={options} />);
-    const addEQFilter = screen.getAllByLabelText('add EQ field filter')[0];
-    const addNEQFilter = screen.getAllByLabelText('add NEQ field filter')[0];
-    const addEXISTSFilter = screen.getAllByLabelText('add EXISTS field filter')[0];
-    const toggleFieldColumn = screen.getAllByLabelText('toggle field column')[0];
+    const addEQFilter = screen.getAllByLabelText('add EQ field filter')[1];
+    const addNEQFilter = screen.getAllByLabelText('add NEQ field filter')[1];
+    const addEXISTSFilter = screen.getAllByLabelText('add EXISTS field filter')[1];
+    const toggleFieldColumn = screen.getAllByLabelText('toggle field column')[1];
 
     await userEvent.click(addEQFilter);
     await userEvent.click(addNEQFilter);

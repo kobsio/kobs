@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 
 import AggregationPage from './AggregationPage';
 
-vi.mock('./InternalEditor', () => {
+vi.mock('./Editor', () => {
   return {
     default: () => {
       return <>mock editor</>;

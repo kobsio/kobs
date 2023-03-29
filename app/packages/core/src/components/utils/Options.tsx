@@ -16,11 +16,10 @@ import {
   Select,
   Stack,
   ButtonGroup,
-  Typography,
 } from '@mui/material';
 import { FunctionComponent, useEffect, useState } from 'react';
 
-import { ITimes, TTimeQuick, formatTimestamp, timeOptions } from '../../utils/times';
+import { ITimes, TTime, formatTimestamp, timeOptions } from '../../utils/times';
 
 export type TOptionsAdditionalFields = 'text' | 'select';
 
@@ -138,7 +137,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
    * `quick` is the function for the quick select option. We always use the current time in seconds and substract the
    * seconds specified in the quick select option.
    */
-  const quick = (t: TTimeQuick) => {
+  const quick = (t: TTime) => {
     setOptions(
       {
         time: t,
@@ -202,20 +201,16 @@ export const Options: FunctionComponent<IOptionsProps> = ({
         <>
           {showSearchButton ? (
             <Button variant="contained" color="primary" onClick={() => setShow(true)}>
-              <Typography noWrap={true}>
-                {times.time === 'custom'
-                  ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
-                  : timeOptions[times.time].label}
-              </Typography>
+              {times.time === 'custom'
+                ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
+                : timeOptions[times.time].label}
             </Button>
           ) : (
             <ButtonGroup variant="contained" color="primary">
               <Button onClick={() => setShow(true)}>
-                <Typography noWrap={true}>
-                  {times.time === 'custom'
-                    ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
-                    : timeOptions[times.time].label}
-                </Typography>
+                {times.time === 'custom'
+                  ? `${formatTimestamp(times.timeStart)} to ${formatTimestamp(times.timeEnd)}`
+                  : timeOptions[times.time].label}
               </Button>
               <Button onClick={refreshTimes}>
                 <Refresh />

@@ -5,7 +5,7 @@ import {
   IPluginPanelProps,
   PluginPanelError,
 } from '@kobsio/core';
-import { Paper, Tab, Tabs } from '@mui/material';
+import { Card, Tab, Tabs } from '@mui/material';
 import queryString from 'query-string';
 import { FunctionComponent, useState } from 'react';
 
@@ -160,7 +160,7 @@ const LogsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
         />
       }
     >
-      <Paper sx={{ height: '100%', width: '100%' }}>
+      <Card sx={{ height: '100%', width: '100%' }}>
         <Tabs
           value={tab}
           onChange={(e, value: number) => setTab(value)}
@@ -176,7 +176,7 @@ const LogsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
             <LogsQueryView instance={instance} query={query} setTimes={setTimes} times={times} />
           </TabPanel>
         ))}
-      </Paper>
+      </Card>
     </PluginPanel>
   );
 };

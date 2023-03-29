@@ -22,7 +22,7 @@ const RowPreview: FunctionComponent<IRowPreviewProps> = ({ row }) => {
         lineHeight={2}
         sx={{
           WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: '2',
+          WebkitLineClamp: '4',
           display: '-webkit-box',
           maxWidth: '100%',
           overflow: 'hidden',

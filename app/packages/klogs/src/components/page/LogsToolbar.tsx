@@ -1,18 +1,28 @@
-import { APIContext, IPluginInstance, ITimes, Options } from '@kobsio/core';
-import { Stack, TextField } from '@mui/material';
-import { FormEvent, FunctionComponent, useContext, useEffect, useState } from 'react';
+import {
+  APIContext,
+  IOptionsAdditionalFields,
+  IPluginInstance,
+  ITimes,
+  Options,
+  Toolbar,
+  ToolbarItem,
+} from '@kobsio/core';
+import { TextField } from '@mui/material';
+import { FunctionComponent, useContext, useEffect, useState } from 'react';
 
-import InternalEditor from './InternalEditor';
+import Editor from './Editor';
 
 import memo from '../utils/memo';
+import { orderMapping } from '../utils/order';
 
-interface ILogsToolbarHandlers {
+interface ILogsToolbarProps extends ITimes {
+  hideOderSelection?: boolean;
+  instance: IPluginInstance;
+  onChangeOrder?: (orderBy: string, order: 'asc' | 'desc') => void;
   onChangeTime: (times: ITimes) => void;
   onSearch: (query: string) => void;
-}
-interface ILogsToolbar extends ITimes {
-  handlers: ILogsToolbarHandlers;
-  instance: IPluginInstance;
+  order?: 'asc' | 'desc';
+  orderBy?: string;
   query: string;
 }
 
@@ -20,9 +30,14 @@ interface ILogsToolbar extends ITimes {
  * The `LogsToolbar` renders a text field and
  * a date selector for querying logs with the klogs plugin.
  */
-const LogsToolbar: FunctionComponent<ILogsToolbar> = ({
-  handlers,
+const LogsToolbar: FunctionComponent<ILogsToolbarProps> = ({
+  hideOderSelection,
   instance,
+  onChangeTime,
+  onSearch,
+  onChangeOrder,
+  orderBy,
+  order,
   query: initialQuery,
   time,
   timeEnd,
@@ -30,13 +45,14 @@ const LogsToolbar: FunctionComponent<ILogsToolbar> = ({
 }) => {
   const [query, setQuery] = useState<string>(initialQuery);
   const { client } = useContext(APIContext);
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    return handlers.onSearch(query);
-  };
 
-  const handleChangeTime = (times: ITimes) => {
-    handlers.onChangeTime(times);
+  const handleChangeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined) => {
+    onChangeTime(times);
+    if (additionalFields && additionalFields.length === 2) {
+      const orderBy = additionalFields[0].value;
+      const order = additionalFields[1].value as 'ascending' | 'descending';
+      onChangeOrder && onChangeOrder(orderBy, orderMapping.longToShort[order]);
+    }
   };
 
   /**
@@ -59,28 +75,52 @@ const LogsToolbar: FunctionComponent<ILogsToolbar> = ({
   }, [initialQuery]);
 
   return (
-    <Stack direction="row" component="form" onSubmit={handleSubmit} spacing={4} alignItems="center">
-      <TextField
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        InputProps={{
-          inputComponent: InternalEditor,
-          inputProps: {
-            callSubmit: () => {
-              handlers.onSearch(query);
+    <Toolbar>
+      <ToolbarItem grow={true}>
+        <TextField
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          InputProps={{
+            inputComponent: Editor,
+            inputProps: {
+              callSubmit: () => {
+                onSearch(query);
+              },
+              loadCompletionItems: loadCompletions,
             },
-            loadCompletionItems: loadCompletions,
-          },
-        }}
-        fullWidth={true}
-      />
-      <Options
-        times={{ time, timeEnd, timeStart }}
-        showOptions={true}
-        showSearchButton={false}
-        setOptions={handleChangeTime}
-      />
-    </Stack>
+          }}
+          fullWidth={true}
+        />
+      </ToolbarItem>
+      <ToolbarItem align="right">
+        <Options
+          additionalFields={
+            hideOderSelection
+              ? undefined
+              : [
+                  {
+                    label: 'Order By',
+                    name: 'orderBy',
+                    placeholder: 'timestamp',
+                    value: orderBy || '',
+                  },
+                  {
+                    label: 'Order',
+                    name: 'order',
+                    placeholder: '',
+                    type: 'select',
+                    value: order ? orderMapping.shortToLong[order] : 'descending',
+                    values: ['ascending', 'descending'],
+                  },
+                ]
+          }
+          times={{ time, timeEnd, timeStart }}
+          showOptions={true}
+          showSearchButton={false}
+          setOptions={handleChangeOptions}
+        />
+      </ToolbarItem>
+    </Toolbar>
   );
 };
 

@@ -3,19 +3,17 @@ import {
   APIError,
   IPluginPageProps,
   ITimes,
-  Link,
   Page,
   timeOptions,
   useQueryState,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Description, TableView } from '@mui/icons-material';
-import { FormControl, IconButton, MenuItem, Tooltip, Select, TextField, Stack, Paper, InputLabel } from '@mui/material';
+import { FormControl, MenuItem, Select, TextField, Stack, Card, InputLabel } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
+import AggregationActions from './AggregationActions';
 import AggregationChart from './AggregationChart';
 import { AxisOp, IAggregationData, IAggregationSearch } from './AggregationTypes';
 import { defaultSearch, now } from './LogsPage';
@@ -25,7 +23,6 @@ import { chartOptionsToRequestOptions } from '../utils/aggregation';
 
 const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);
-  const { search: rawSearch } = useLocation();
   const [lastSearch, setLastSeach] = useState(now());
   const [search, setSearch] = useQueryState<IAggregationSearch>({
     chart: 'pie',
@@ -121,29 +118,21 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       subtitle={instance.cluster}
       toolbar={
         <LogsToolbar
-          {...search}
-          handlers={{ onChangeTime: handleChangeTime, onSearch: handleSearch }}
+          hideOderSelection={true}
           instance={instance}
+          onChangeTime={handleChangeTime}
+          onSearch={handleSearch}
+          query={search.query}
+          time={search.time}
+          timeEnd={search.timeEnd}
+          timeStart={search.timeStart}
         />
       }
-      actions={
-        <>
-          <Tooltip title="Logs view">
-            <IconButton component={Link} to={`..${rawSearch}`}>
-              <TableView />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Documentation">
-            <IconButton component="a" href="https://kobs.io/main/plugins/klogs/" target="_blank">
-              <Description />
-            </IconButton>
-          </Tooltip>
-        </>
-      }
+      actions={<AggregationActions />}
     >
       <Stack direction="row" spacing={2} alignItems="flex-start">
-        <Paper sx={{ p: 4 }} component="form" elevation={0}>
-          <Stack direction="column" sx={{ width: '250px' }} spacing={4}>
+        <Card sx={{ p: 4, width: '250px' }} component="form">
+          <Stack direction="column" spacing={4}>
             <FormControl size="small">
               <InputLabel id="chart">Chart</InputLabel>
               <Select
@@ -352,17 +341,19 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
               </>
             )}
           </Stack>
-        </Paper>
-        <Paper sx={{ height: '500px', p: 4, width: '100%' }} elevation={0}>
+        </Card>
+        <Card sx={{ height: '500px', p: 4, width: '100%' }}>
           <UseQueryWrapper
-            errorTitle={'aggregation failed'}
-            {...queryResult}
+            error={queryResult.error}
+            errorTitle="aggregation failed"
+            isError={queryResult.isError}
+            isLoading={queryResult.isLoading}
             isNoData={!queryResult.data}
             noDataTitle="no data found"
           >
             {queryResult.data && <AggregationChart data={queryResult.data} options={search} />}
           </UseQueryWrapper>
-        </Paper>
+        </Card>
       </Stack>
     </Page>
   );

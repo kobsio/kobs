@@ -104,7 +104,7 @@ const DashboardGrid: FunctionComponent<IDashboardGridProps> = ({ panels, setTime
  * This should mainly be used for dashboards which are just containing one component, e.g. just display a logs panel,
  * traces panel or the documentation for an app.
  */
-const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, setTimes, times }) => {
+const DashboardGridAutoHeight: FunctionComponent<IDashboardGridProps> = ({ panels, times, setTimes }) => {
   return (
     <Grid container={true} spacing={4} columns={12}>
       {panels.map((panel) => (

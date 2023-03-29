@@ -5,7 +5,6 @@ import { FunctionComponent, useState } from 'react';
 
 import { ILogsTableHandlers, ILogsTableOptions } from './LogsTable';
 
-import compareFields from '../common/sortFields';
 import { IRow } from '../common/types';
 
 interface IDocumentDetailsTableViewProps {
@@ -22,66 +21,64 @@ const DocumentDetailsTableView: FunctionComponent<IDocumentDetailsTableViewProps
     <Box sx={{ margin: 1 }}>
       <Table size="small" aria-label="document view">
         <TableBody>
-          {Object.entries(row)
-            .sort(([a], [b]) => compareFields(a, b))
-            .map(([key, value]) => (
-              <TableRow
-                key={key}
-                sx={{
-                  '&:hover .row-action-icons': { opacity: 1 },
-                }}
-              >
-                {!options.hideActionColumn && (
-                  <TableCell component="th" scope="row">
-                    <Stack
-                      className="row-action-icons"
-                      direction="row"
-                      sx={{
-                        opacity: 0,
-                      }}
-                    >
-                      <IconButton
-                        aria-label="add EQ field filter"
-                        size="small"
-                        onClick={() => handlers.onAddFilter(`${key} = '${value}'`)}
-                      >
-                        <ZoomIn sx={{ fontSize: 16 }} />
-                      </IconButton>
-                      <IconButton
-                        aria-label="add NEQ field filter"
-                        size="small"
-                        onClick={() => handlers.onAddFilter(`${key} != '${value}'`)}
-                      >
-                        <ZoomOut sx={{ fontSize: 16 }} />
-                      </IconButton>
-                      <IconButton
-                        aria-label="add EXISTS field filter"
-                        size="small"
-                        onClick={() => handlers.onAddFilter(`_exists_ ${key}`)}
-                      >
-                        <SavedSearch sx={{ fontSize: 16 }} />
-                      </IconButton>
-                      {key !== 'timestamp' && (
-                        <IconButton
-                          aria-label="toggle field column"
-                          size="small"
-                          onClick={() => handlers.onSelectField(key)}
-                        >
-                          <TableChart sx={{ fontSize: 16 }} />
-                        </IconButton>
-                      )}
-                    </Stack>
-                  </TableCell>
-                )}
+          {Object.entries(row).map(([key, value]) => (
+            <TableRow
+              key={key}
+              sx={{
+                '&:hover .row-action-icons': { opacity: 1 },
+              }}
+            >
+              {!options.hideActionColumn && (
                 <TableCell component="th" scope="row">
-                  {key}
+                  <Stack
+                    className="row-action-icons"
+                    direction="row"
+                    sx={{
+                      opacity: 0,
+                    }}
+                  >
+                    <IconButton
+                      aria-label="add EQ field filter"
+                      size="small"
+                      onClick={() => handlers.onAddFilter(`${key} = '${value}'`)}
+                    >
+                      <ZoomIn sx={{ fontSize: 16 }} />
+                    </IconButton>
+                    <IconButton
+                      aria-label="add NEQ field filter"
+                      size="small"
+                      onClick={() => handlers.onAddFilter(`${key} != '${value}'`)}
+                    >
+                      <ZoomOut sx={{ fontSize: 16 }} />
+                    </IconButton>
+                    <IconButton
+                      aria-label="add EXISTS field filter"
+                      size="small"
+                      onClick={() => handlers.onAddFilter(`_exists_ ${key}`)}
+                    >
+                      <SavedSearch sx={{ fontSize: 16 }} />
+                    </IconButton>
+                    {key !== 'timestamp' && (
+                      <IconButton
+                        aria-label="toggle field column"
+                        size="small"
+                        onClick={() => handlers.onSelectField(key)}
+                      >
+                        <TableChart sx={{ fontSize: 16 }} />
+                      </IconButton>
+                    )}
+                  </Stack>
                 </TableCell>
-                <TableCell>
-                  <Typography sx={{ wordBreak: 'break-all' }}>{value}</Typography>
-                </TableCell>
-                <TableCell />
-              </TableRow>
-            ))}
+              )}
+              <TableCell component="th" scope="row">
+                {key}
+              </TableCell>
+              <TableCell>
+                <Typography sx={{ wordBreak: 'break-all' }}>{value}</Typography>
+              </TableCell>
+              <TableCell />
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </Box>
@@ -101,7 +98,7 @@ const DocumentDetailsJSONView: FunctionComponent<IDocumentDetailsEditorViewProps
   const height = lines * 20 - 26;
 
   return (
-    <Box height={height}>
+    <Box height={height} sx={{ maxWidth: 'calc(100vw - 600px)' }}>
       <Editor language="json" readOnly={true} value={content} />
     </Box>
   );

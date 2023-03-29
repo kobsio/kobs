@@ -1,5 +1,5 @@
 import { APIContext, APIError, timeOptions, ITimes, UseQueryWrapper, IPluginInstance, Pagination } from '@kobsio/core';
-import { Stack, Paper, Typography, Box } from '@mui/material';
+import { Card, Stack, Typography, Box } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
 
@@ -77,10 +77,10 @@ const LogsQueryView: FunctionComponent<ILogsQueryViewProps> = ({ instance, query
         <Stack direction="row" justifyContent="space-between" m={2}>
           <Typography fontWeight="medium">{`${queryResult.data?.count} documents in ${queryResult.data?.took} milliseconds`}</Typography>
         </Stack>
-        <Box sx={{ height: '150px' }}>
+        <Box sx={{ height: '250px' }}>
           <LogsBucketChart buckets={queryResult.data?.buckets || []} onChangeTimeframe={handleChangeTimeframe} />
         </Box>
-        <Paper>
+        <Card>
           <LogsTable
             fields={query.fields}
             options={{ hideActionColumn: true }}
@@ -89,7 +89,7 @@ const LogsQueryView: FunctionComponent<ILogsQueryViewProps> = ({ instance, query
             rows={((rows) => rows.slice((page - 1) * perPage, page * perPage))(queryResult?.data?.documents || [])}
             handlers={noopHandlers}
           />
-        </Paper>
+        </Card>
         <Pagination
           count={queryResult.data?.documents?.length ?? 0}
           page={page ?? 1}

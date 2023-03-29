@@ -16,7 +16,9 @@ describe('LogsDownload', () => {
     const fileDownload = vi.fn();
     render(<LogsDownload rows={rows} fileDownload={fileDownload} fields={[]} />);
 
-    const downloadJSON = screen.getByRole('button', { name: 'Download all logs as JSON' });
+    const openMenu = screen.getByLabelText('open menu');
+    await userEvent.click(openMenu);
+    const downloadJSON = screen.getByLabelText('Download Logs');
     await userEvent.click(downloadJSON);
     expect(fileDownload).toHaveBeenCalledWith(JSON.stringify(rows, null, 2), 'kobs-export-logs.json');
   });
@@ -25,7 +27,9 @@ describe('LogsDownload', () => {
     const fileDownload = vi.fn();
     render(<LogsDownload rows={rows} fileDownload={fileDownload} fields={['namespace']} />);
 
-    const downloadCSV = screen.getByRole('button', { name: 'Download all logs as CSV' });
+    const openMenu = screen.getByLabelText('open menu');
+    await userEvent.click(openMenu);
+    const downloadCSV = screen.getByLabelText('Download CSV');
     await userEvent.click(downloadCSV);
     expect(fileDownload).toHaveBeenCalledWith('2000-03-02 00:00:00;foo\r\n', 'kobs-export-logs.csv');
   });

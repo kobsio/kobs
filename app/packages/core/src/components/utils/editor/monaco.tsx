@@ -10,7 +10,7 @@ import CompletionItem = monaco.languages.CompletionItem;
 import ProviderResult = monaco.languages.ProviderResult;
 import CompletionList = monaco.languages.CompletionList;
 
-import { klogsLanguageDefinition } from './klogs';
+import { klogsLanguageDefinition } from './languages/klogs';
 import { signalsciencesLanguageDefinition } from './languages/signalsciences';
 import yamlWorker from './yaml.worker.js?worker';
 

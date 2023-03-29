@@ -2,8 +2,6 @@ import { ArrowDownward, ArrowUpward, ContentCopy, Delete } from '@mui/icons-mate
 import { Divider, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import { FunctionComponent } from 'react';
 
-import compareFields from '../common/sortFields';
-
 interface ILogsFieldsList {
   fields: string[];
   onSwapItem: (from: number, to: number) => void;
@@ -20,7 +18,6 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
     <List
       sx={{
         position: 'relative',
-        width: '250px',
         wordBreak: 'break-all',
       }}
       dense={true}
@@ -96,8 +93,7 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
         Fields
       </Typography>
       <Divider />
-      {[...fields] // copy slice, because sort() sorts in place
-        .sort(compareFields)
+      {fields
         .filter((field) => field !== 'timestamp')
         .map((field) => (
           <ListItem key={field} disablePadding={true}>

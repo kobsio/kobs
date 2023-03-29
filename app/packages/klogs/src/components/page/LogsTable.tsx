@@ -118,13 +118,13 @@ const LogsTable: FunctionComponent<ILogsTable> = ({
           <TableRow>
             <TableCell />
             {fields.map((field) => (
-              <TableCell key={field}>
+              <TableCell key={field} sx={{ verticalAlign: 'top' }}>
                 <TableSortLabel
                   onClick={() => handlers.onChangeSort(field)}
                   active={orderBy === field}
                   direction={orderBy === field ? order : 'asc'}
                 >
-                  <Typography>{field}</Typography>
+                  {field}
                 </TableSortLabel>
               </TableCell>
             ))}
