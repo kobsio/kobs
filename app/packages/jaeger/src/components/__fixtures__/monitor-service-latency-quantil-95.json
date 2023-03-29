@@ -1,0 +1,5447 @@
+{
+  "help": "0.95th quantile latency, grouped by service",
+  "metrics": [
+    {
+      "labels": [
+        {
+          "name": "service_name",
+          "value": "csvupload"
+        }
+      ],
+      "metricPoints": [
+        {
+          "gaugeValue": {
+            "doubleValue": 49.919999999999995
+          },
+          "timestamp": "2023-03-27T07:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 49.919999999999995
+          },
+          "timestamp": "2023-03-27T07:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 56.249999999999936
+          },
+          "timestamp": "2023-03-27T07:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.26666666666668
+          },
+          "timestamp": "2023-03-27T08:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 45.99999999999999
+          },
+          "timestamp": "2023-03-27T08:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 45.99999999999999
+          },
+          "timestamp": "2023-03-27T08:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.000000000000014
+          },
+          "timestamp": "2023-03-27T08:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-27T08:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T08:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-27T09:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T09:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 54.99999999999998
+          },
+          "timestamp": "2023-03-27T09:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 49.41176470588236
+          },
+          "timestamp": "2023-03-27T09:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 49.00000000000001
+          },
+          "timestamp": "2023-03-27T09:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48.74074074074074
+          },
+          "timestamp": "2023-03-27T09:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48.6
+          },
+          "timestamp": "2023-03-27T09:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48.6
+          },
+          "timestamp": "2023-03-27T09:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48.6
+          },
+          "timestamp": "2023-03-27T09:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48.6
+          },
+          "timestamp": "2023-03-27T09:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48.666666666666664
+          },
+          "timestamp": "2023-03-27T09:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 49.09090909090909
+          },
+          "timestamp": "2023-03-27T09:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.44444444444445
+          },
+          "timestamp": "2023-03-27T09:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.53846153846153
+          },
+          "timestamp": "2023-03-27T09:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.49999999999999
+          },
+          "timestamp": "2023-03-27T09:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.33333333333333
+          },
+          "timestamp": "2023-03-27T09:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-27T09:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4700
+          },
+          "timestamp": "2023-03-27T09:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4720
+          },
+          "timestamp": "2023-03-27T09:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4720
+          },
+          "timestamp": "2023-03-27T09:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4720
+          },
+          "timestamp": "2023-03-27T09:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4720
+          },
+          "timestamp": "2023-03-27T09:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4720
+          },
+          "timestamp": "2023-03-27T09:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4560
+          },
+          "timestamp": "2023-03-27T09:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4560
+          },
+          "timestamp": "2023-03-27T09:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4560
+          },
+          "timestamp": "2023-03-27T09:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4599.999999999999
+          },
+          "timestamp": "2023-03-27T09:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4466.666666666666
+          },
+          "timestamp": "2023-03-27T09:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T09:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T09:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T09:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T09:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T09:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.000000000000014
+          },
+          "timestamp": "2023-03-27T10:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T10:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T10:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T10:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T10:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T11:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T11:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T11:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T11:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.25
+          },
+          "timestamp": "2023-03-27T11:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-27T11:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4700
+          },
+          "timestamp": "2023-03-27T12:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4666.666666666666
+          },
+          "timestamp": "2023-03-27T12:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4599.999999999999
+          },
+          "timestamp": "2023-03-27T12:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T13:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999998
+          },
+          "timestamp": "2023-03-27T14:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-27T15:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.42857142857142
+          },
+          "timestamp": "2023-03-27T15:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.6
+          },
+          "timestamp": "2023-03-27T15:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.76923076923078
+          },
+          "timestamp": "2023-03-27T15:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.74999999999999
+          },
+          "timestamp": "2023-03-27T15:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.74999999999999
+          },
+          "timestamp": "2023-03-27T15:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.74999999999999
+          },
+          "timestamp": "2023-03-27T15:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.74999999999999
+          },
+          "timestamp": "2023-03-27T15:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.74999999999999
+          },
+          "timestamp": "2023-03-27T15:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.74999999999999
+          },
+          "timestamp": "2023-03-27T15:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.57142857142858
+          },
+          "timestamp": "2023-03-27T15:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.22222222222222
+          },
+          "timestamp": "2023-03-27T15:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.000000000000014
+          },
+          "timestamp": "2023-03-27T15:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 46.66666666666666
+          },
+          "timestamp": "2023-03-27T15:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 242.49999999999997
+          },
+          "timestamp": "2023-03-27T15:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 242.49999999999997
+          },
+          "timestamp": "2023-03-27T15:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4797.5
+          },
+          "timestamp": "2023-03-27T15:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4797.5
+          },
+          "timestamp": "2023-03-27T15:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4797.5
+          },
+          "timestamp": "2023-03-27T15:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4797.5
+          },
+          "timestamp": "2023-03-27T15:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4797.5
+          },
+          "timestamp": "2023-03-27T15:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4797.5
+          },
+          "timestamp": "2023-03-27T15:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4797.5
+          },
+          "timestamp": "2023-03-27T15:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4842.499999999998
+          },
+          "timestamp": "2023-03-27T15:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4842.499999999998
+          },
+          "timestamp": "2023-03-27T15:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4839.999999999999
+          },
+          "timestamp": "2023-03-27T15:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 8999.999999999998
+          },
+          "timestamp": "2023-03-27T15:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 8749.999999999996
+          },
+          "timestamp": "2023-03-27T15:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 8500
+          },
+          "timestamp": "2023-03-27T15:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 8250
+          },
+          "timestamp": "2023-03-27T15:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7999.999999999996
+          },
+          "timestamp": "2023-03-27T15:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999998
+          },
+          "timestamp": "2023-03-27T15:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-27T15:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3200.0000000000005
+          },
+          "timestamp": "2023-03-27T15:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3200.0000000000005
+          },
+          "timestamp": "2023-03-27T15:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999996
+          },
+          "timestamp": "2023-03-27T15:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.9999999999945
+          },
+          "timestamp": "2023-03-27T15:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-27T16:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999996
+          },
+          "timestamp": "2023-03-27T16:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999996
+          },
+          "timestamp": "2023-03-27T16:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999996
+          },
+          "timestamp": "2023-03-27T16:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999996
+          },
+          "timestamp": "2023-03-27T16:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7999.9999999999945
+          },
+          "timestamp": "2023-03-27T16:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999996
+          },
+          "timestamp": "2023-03-27T16:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7999.9999999999945
+          },
+          "timestamp": "2023-03-27T16:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4199.999999999998
+          },
+          "timestamp": "2023-03-27T16:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4300
+          },
+          "timestamp": "2023-03-27T16:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4300
+          },
+          "timestamp": "2023-03-27T16:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4199.999999999998
+          },
+          "timestamp": "2023-03-27T16:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4459.6492007804445
+          },
+          "timestamp": "2023-03-27T16:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4270.915610021788
+          },
+          "timestamp": "2023-03-27T16:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3734.167972222224
+          },
+          "timestamp": "2023-03-27T16:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3724.177326007325
+          },
+          "timestamp": "2023-03-27T16:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4127.273939393939
+          },
+          "timestamp": "2023-03-27T16:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3011.115925925924
+          },
+          "timestamp": "2023-03-27T16:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3442.8614285714266
+          },
+          "timestamp": "2023-03-27T16:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3853.3368888888886
+          },
+          "timestamp": "2023-03-27T16:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4250.002333333333
+          },
+          "timestamp": "2023-03-27T16:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4630.00188888889
+          },
+          "timestamp": "2023-03-27T16:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4514.285714285714
+          },
+          "timestamp": "2023-03-27T16:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4371.428571428572
+          },
+          "timestamp": "2023-03-27T16:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4127.777777777777
+          },
+          "timestamp": "2023-03-27T16:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3960.000000000001
+          },
+          "timestamp": "2023-03-27T16:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3760.0000000000014
+          },
+          "timestamp": "2023-03-27T16:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3640.000000000001
+          },
+          "timestamp": "2023-03-27T16:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3519.999999999997
+          },
+          "timestamp": "2023-03-27T16:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2900.0000000000027
+          },
+          "timestamp": "2023-03-27T16:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T16:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2733.3333333333308
+          },
+          "timestamp": "2023-03-27T16:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 728.5714285714291
+          },
+          "timestamp": "2023-03-27T16:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 868.7499999999999
+          },
+          "timestamp": "2023-03-27T16:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 872.222222222222
+          },
+          "timestamp": "2023-03-27T16:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T16:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T16:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T16:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T16:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T16:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 908.3333333333334
+          },
+          "timestamp": "2023-03-27T16:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 908.3333333333334
+          },
+          "timestamp": "2023-03-27T16:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 908.3333333333334
+          },
+          "timestamp": "2023-03-27T16:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T16:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T16:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T16:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T16:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T16:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T16:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T16:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-27T16:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-27T16:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-27T16:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-27T16:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.16666666666674
+          },
+          "timestamp": "2023-03-27T16:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 431.25000000000006
+          },
+          "timestamp": "2023-03-27T16:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T16:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T16:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T16:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T16:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T17:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-27T17:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4100
+          },
+          "timestamp": "2023-03-27T17:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4199.999999999998
+          },
+          "timestamp": "2023-03-27T17:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3599.9999999999973
+          },
+          "timestamp": "2023-03-27T17:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.999999999998
+          },
+          "timestamp": "2023-03-27T17:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2799.9999999999964
+          },
+          "timestamp": "2023-03-27T17:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3533.333333333334
+          },
+          "timestamp": "2023-03-27T17:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4000
+          },
+          "timestamp": "2023-03-27T17:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4120
+          },
+          "timestamp": "2023-03-27T17:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4485.714285714284
+          },
+          "timestamp": "2023-03-27T17:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 430.55555555555554
+          },
+          "timestamp": "2023-03-27T17:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4186.363636363636
+          },
+          "timestamp": "2023-03-27T17:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4031.8803418803423
+          },
+          "timestamp": "2023-03-27T17:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T17:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-27T17:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-27T17:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999998
+          },
+          "timestamp": "2023-03-27T17:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T17:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 5249.999999999994
+          },
+          "timestamp": "2023-03-27T17:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T17:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-27T17:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4850
+          },
+          "timestamp": "2023-03-27T17:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4850
+          },
+          "timestamp": "2023-03-27T17:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800.000000000002
+          },
+          "timestamp": "2023-03-27T17:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3799.999999999999
+          },
+          "timestamp": "2023-03-27T17:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3799.999999999999
+          },
+          "timestamp": "2023-03-27T17:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3799.999999999999
+          },
+          "timestamp": "2023-03-27T17:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3400
+          },
+          "timestamp": "2023-03-27T17:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T17:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T17:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T17:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T17:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T17:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T17:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T17:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.1666666666667
+          },
+          "timestamp": "2023-03-27T17:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 424.99999999999994
+          },
+          "timestamp": "2023-03-27T17:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 262.50000000000017
+          },
+          "timestamp": "2023-03-27T17:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 246.59090909090912
+          },
+          "timestamp": "2023-03-27T17:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 232.74999999999997
+          },
+          "timestamp": "2023-03-27T17:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 247.49999999999994
+          },
+          "timestamp": "2023-03-27T17:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 247.49999999999994
+          },
+          "timestamp": "2023-03-27T17:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 450.0000000000002
+          },
+          "timestamp": "2023-03-27T18:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 475.0000000000001
+          },
+          "timestamp": "2023-03-27T18:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 483.3333333333334
+          },
+          "timestamp": "2023-03-27T18:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 483.3333333333334
+          },
+          "timestamp": "2023-03-27T18:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 487.49999999999966
+          },
+          "timestamp": "2023-03-27T18:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 624.9999999999998
+          },
+          "timestamp": "2023-03-27T18:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-27T18:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T18:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2200.000000000001
+          },
+          "timestamp": "2023-03-27T18:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2200.000000000001
+          },
+          "timestamp": "2023-03-27T18:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2200.000000000001
+          },
+          "timestamp": "2023-03-27T18:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T18:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 837.4999999999998
+          },
+          "timestamp": "2023-03-27T18:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T18:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T18:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T18:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T18:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T18:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T18:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 459.3749999999999
+          },
+          "timestamp": "2023-03-27T18:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2200.000000000001
+          },
+          "timestamp": "2023-03-27T18:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2200.000000000001
+          },
+          "timestamp": "2023-03-27T18:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2399.9999999999955
+          },
+          "timestamp": "2023-03-27T18:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T18:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T18:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T18:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T18:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-27T18:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T18:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T18:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 472.5
+          },
+          "timestamp": "2023-03-27T18:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T18:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T18:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T18:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T18:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-27T18:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T18:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-27T18:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T18:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-27T18:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-27T18:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-27T18:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-27T18:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 462.49999999999994
+          },
+          "timestamp": "2023-03-27T18:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 462.5
+          },
+          "timestamp": "2023-03-27T19:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 450
+          },
+          "timestamp": "2023-03-27T19:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-27T19:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 471.875
+          },
+          "timestamp": "2023-03-27T19:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 477.5
+          },
+          "timestamp": "2023-03-27T19:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T19:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3200.000000000001
+          },
+          "timestamp": "2023-03-27T19:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T19:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T19:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T19:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 431.25
+          },
+          "timestamp": "2023-03-27T19:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 431.25
+          },
+          "timestamp": "2023-03-27T19:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 424.99999999999994
+          },
+          "timestamp": "2023-03-27T19:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T19:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T19:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T19:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T19:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T19:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T19:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T19:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 874.9999999999997
+          },
+          "timestamp": "2023-03-27T19:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T19:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 874.9999999999997
+          },
+          "timestamp": "2023-03-27T19:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T19:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T19:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T19:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T19:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 431.25
+          },
+          "timestamp": "2023-03-27T19:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 374.9999999999996
+          },
+          "timestamp": "2023-03-27T19:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 374.9999999999996
+          },
+          "timestamp": "2023-03-27T19:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 431.25
+          },
+          "timestamp": "2023-03-27T19:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 458.33333333333326
+          },
+          "timestamp": "2023-03-27T19:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T19:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T19:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T19:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T19:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T19:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T19:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T19:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T19:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T19:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T19:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T19:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999973
+          },
+          "timestamp": "2023-03-27T19:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999973
+          },
+          "timestamp": "2023-03-27T19:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999973
+          },
+          "timestamp": "2023-03-27T19:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-27T19:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T19:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T19:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T19:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.9999999999945
+          },
+          "timestamp": "2023-03-27T19:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T20:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T20:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T20:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T20:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T20:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 472.5
+          },
+          "timestamp": "2023-03-27T20:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-27T20:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-27T20:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 477.08333333333337
+          },
+          "timestamp": "2023-03-27T20:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-27T20:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-27T20:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-27T20:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T20:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T20:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T20:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-27T20:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 874.9999999999998
+          },
+          "timestamp": "2023-03-27T20:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T20:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 887.4999999999999
+          },
+          "timestamp": "2023-03-27T20:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T20:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T20:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T20:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T20:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T20:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T20:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5000000000001
+          },
+          "timestamp": "2023-03-27T20:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-27T20:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T20:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-27T20:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T20:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T20:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T20:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T20:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T20:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T20:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-27T20:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T20:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-27T20:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-27T20:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-27T20:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-27T20:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T20:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T20:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T20:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T20:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T20:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T20:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T20:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-27T20:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-27T20:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-27T20:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T20:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T20:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T20:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T20:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T20:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T20:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3200.000000000001
+          },
+          "timestamp": "2023-03-27T20:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 887.4999999999999
+          },
+          "timestamp": "2023-03-27T20:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3200.000000000001
+          },
+          "timestamp": "2023-03-27T20:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3200.000000000001
+          },
+          "timestamp": "2023-03-27T21:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3200.000000000001
+          },
+          "timestamp": "2023-03-27T21:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T21:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T21:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T21:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-27T21:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999973
+          },
+          "timestamp": "2023-03-27T21:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-27T21:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4450
+          },
+          "timestamp": "2023-03-27T21:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-27T21:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T21:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T21:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T21:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T21:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6749.9999999999945
+          },
+          "timestamp": "2023-03-27T21:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 431.25000000000006
+          },
+          "timestamp": "2023-03-27T21:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.16666666666674
+          },
+          "timestamp": "2023-03-27T21:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.16666666666674
+          },
+          "timestamp": "2023-03-27T21:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-27T21:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 472.5
+          },
+          "timestamp": "2023-03-27T21:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 477.08333333333337
+          },
+          "timestamp": "2023-03-27T21:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 480.3571428571429
+          },
+          "timestamp": "2023-03-27T21:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 480.3571428571429
+          },
+          "timestamp": "2023-03-27T21:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T21:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T21:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T21:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-27T21:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T21:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-27T21:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T21:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T21:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-27T21:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T21:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T21:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T21:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T21:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T21:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T21:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T21:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T21:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3799.999999999999
+          },
+          "timestamp": "2023-03-27T21:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T22:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T22:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T22:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T22:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T22:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T22:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T22:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 446.875
+          },
+          "timestamp": "2023-03-27T22:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 439.9999999999999
+          },
+          "timestamp": "2023-03-27T22:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 435.4166666666667
+          },
+          "timestamp": "2023-03-27T22:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 462.5
+          },
+          "timestamp": "2023-03-27T22:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 452.08333333333303
+          },
+          "timestamp": "2023-03-27T22:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 437.5000000000003
+          },
+          "timestamp": "2023-03-27T22:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 469.99999999999955
+          },
+          "timestamp": "2023-03-27T22:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 462.49999999999943
+          },
+          "timestamp": "2023-03-27T22:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 449.9999999999993
+          },
+          "timestamp": "2023-03-27T22:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 459.37500000000034
+          },
+          "timestamp": "2023-03-27T22:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 481.25
+          },
+          "timestamp": "2023-03-27T22:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 1099.9999999999973
+          },
+          "timestamp": "2023-03-27T22:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 1900.0000000000155
+          },
+          "timestamp": "2023-03-27T22:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 487.50000000000034
+          },
+          "timestamp": "2023-03-27T22:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 1199.9999999999945
+          },
+          "timestamp": "2023-03-27T22:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T22:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T22:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-27T22:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T22:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T22:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T22:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T22:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T22:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T22:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T22:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999999
+          },
+          "timestamp": "2023-03-27T22:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T22:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T22:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T22:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T22:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T22:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T22:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T22:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T22:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T22:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-27T22:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-27T22:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-27T22:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-27T22:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-27T22:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-27T22:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4450
+          },
+          "timestamp": "2023-03-27T22:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6749.9999999999945
+          },
+          "timestamp": "2023-03-27T22:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T22:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6749.9999999999945
+          },
+          "timestamp": "2023-03-27T22:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6749.9999999999945
+          },
+          "timestamp": "2023-03-27T22:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6749.9999999999945
+          },
+          "timestamp": "2023-03-27T22:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T22:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T22:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T22:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-27T22:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6749.9999999999945
+          },
+          "timestamp": "2023-03-27T22:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T22:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-27T23:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T23:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T23:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T23:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T23:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T23:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T23:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 874.9999999999998
+          },
+          "timestamp": "2023-03-27T23:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T23:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T23:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-27T23:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T23:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 862.5
+          },
+          "timestamp": "2023-03-27T23:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T23:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-27T23:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-27T23:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T23:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-27T23:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T23:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T23:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T23:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T23:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-27T23:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3199.999999999997
+          },
+          "timestamp": "2023-03-27T23:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.9999999999945
+          },
+          "timestamp": "2023-03-27T23:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T23:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.9999999999945
+          },
+          "timestamp": "2023-03-27T23:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T23:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T23:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-27T23:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T23:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T23:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T23:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-27T23:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.999999999992
+          },
+          "timestamp": "2023-03-27T23:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.9999999999764
+          },
+          "timestamp": "2023-03-27T23:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 1600.0000000000018
+          },
+          "timestamp": "2023-03-27T23:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 949.9999999999993
+          },
+          "timestamp": "2023-03-27T23:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 899.9999999999984
+          },
+          "timestamp": "2023-03-27T23:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 883.3333333333323
+          },
+          "timestamp": "2023-03-27T23:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 566.6666666666662
+          },
+          "timestamp": "2023-03-27T23:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 675.0000000000005
+          },
+          "timestamp": "2023-03-27T23:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 675.0000000000005
+          },
+          "timestamp": "2023-03-27T23:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 700.0000000000002
+          },
+          "timestamp": "2023-03-27T23:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 666.6666666666662
+          },
+          "timestamp": "2023-03-27T23:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 716.6666666666661
+          },
+          "timestamp": "2023-03-27T23:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 758.3333333333335
+          },
+          "timestamp": "2023-03-27T23:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 824.9999999999997
+          },
+          "timestamp": "2023-03-27T23:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 891.6666666666665
+          },
+          "timestamp": "2023-03-27T23:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 908.3333333333335
+          },
+          "timestamp": "2023-03-27T23:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 916.6666666666665
+          },
+          "timestamp": "2023-03-28T00:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 874.9999999999997
+          },
+          "timestamp": "2023-03-28T00:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-28T00:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-28T00:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-28T00:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 774.9999999999998
+          },
+          "timestamp": "2023-03-28T00:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-28T00:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T00:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T00:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T00:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T00:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3799.999999999999
+          },
+          "timestamp": "2023-03-28T00:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4133.333333333332
+          },
+          "timestamp": "2023-03-28T00:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4066.666666666666
+          },
+          "timestamp": "2023-03-28T00:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4300
+          },
+          "timestamp": "2023-03-28T00:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4440
+          },
+          "timestamp": "2023-03-28T00:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4479.999999999998
+          },
+          "timestamp": "2023-03-28T00:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4479.999999999998
+          },
+          "timestamp": "2023-03-28T00:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T00:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T00:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T00:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4199.999999999999
+          },
+          "timestamp": "2023-03-28T00:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T00:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T00:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T00:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-28T00:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 472.5
+          },
+          "timestamp": "2023-03-28T00:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 472.5
+          },
+          "timestamp": "2023-03-28T00:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 477.08333333333337
+          },
+          "timestamp": "2023-03-28T00:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 475
+          },
+          "timestamp": "2023-03-28T00:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 477.08333333333337
+          },
+          "timestamp": "2023-03-28T00:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-28T00:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-28T00:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-28T00:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.1666666666667
+          },
+          "timestamp": "2023-03-28T00:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.1666666666667
+          },
+          "timestamp": "2023-03-28T00:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.1666666666667
+          },
+          "timestamp": "2023-03-28T00:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 454.1666666666667
+          },
+          "timestamp": "2023-03-28T00:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 431.25
+          },
+          "timestamp": "2023-03-28T00:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.9999999999945
+          },
+          "timestamp": "2023-03-28T00:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T00:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7750.000000000004
+          },
+          "timestamp": "2023-03-28T00:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999998
+          },
+          "timestamp": "2023-03-28T00:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7749.999999999998
+          },
+          "timestamp": "2023-03-28T00:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-28T00:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-28T00:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-28T00:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-28T00:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.999999999993
+          },
+          "timestamp": "2023-03-28T00:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4333.333333333332
+          },
+          "timestamp": "2023-03-28T00:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4333.333333333332
+          },
+          "timestamp": "2023-03-28T00:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-28T00:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4266.666666666667
+          },
+          "timestamp": "2023-03-28T00:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T00:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T00:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T00:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-28T00:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T00:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T00:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-28T00:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999994
+          },
+          "timestamp": "2023-03-28T01:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-28T01:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 477.08333333333337
+          },
+          "timestamp": "2023-03-28T01:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 479.16666666666663
+          },
+          "timestamp": "2023-03-28T01:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-28T01:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 458.33333333333326
+          },
+          "timestamp": "2023-03-28T01:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T01:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-28T01:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-28T01:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-28T01:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-28T01:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T01:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T01:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T01:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T01:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-28T01:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 479.16666666666663
+          },
+          "timestamp": "2023-03-28T01:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 479.16666666666663
+          },
+          "timestamp": "2023-03-28T01:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 481.25
+          },
+          "timestamp": "2023-03-28T01:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 477.08333333333337
+          },
+          "timestamp": "2023-03-28T01:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 479.16666666666663
+          },
+          "timestamp": "2023-03-28T01:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-28T01:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 474.99999999999994
+          },
+          "timestamp": "2023-03-28T01:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7499.9999999999945
+          },
+          "timestamp": "2023-03-28T01:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 6999.999999999998
+          },
+          "timestamp": "2023-03-28T01:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 7250.000000000002
+          },
+          "timestamp": "2023-03-28T01:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T01:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-28T01:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999977
+          },
+          "timestamp": "2023-03-28T01:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T01:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T01:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T01:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-28T01:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-28T01:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.000000000001
+          },
+          "timestamp": "2023-03-28T01:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999955
+          },
+          "timestamp": "2023-03-28T01:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T02:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999977
+          },
+          "timestamp": "2023-03-28T02:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999973
+          },
+          "timestamp": "2023-03-28T02:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T02:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T02:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T02:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T02:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T02:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T02:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T02:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T02:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-28T02:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-28T02:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T02:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T02:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 749.9999999999992
+          },
+          "timestamp": "2023-03-28T02:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-28T02:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-28T02:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2999.9999999999936
+          },
+          "timestamp": "2023-03-28T02:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999973
+          },
+          "timestamp": "2023-03-28T02:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999977
+          },
+          "timestamp": "2023-03-28T02:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4099.999999999999
+          },
+          "timestamp": "2023-03-28T02:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4099.999999999999
+          },
+          "timestamp": "2023-03-28T02:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999977
+          },
+          "timestamp": "2023-03-28T02:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4099.999999999999
+          },
+          "timestamp": "2023-03-28T02:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 250
+          },
+          "timestamp": "2023-03-28T02:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T02:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 331.2499999999999
+          },
+          "timestamp": "2023-03-28T02:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 493.74999999999966
+          },
+          "timestamp": "2023-03-28T02:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3499.999999999999
+          },
+          "timestamp": "2023-03-28T02:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3999.9999999999973
+          },
+          "timestamp": "2023-03-28T02:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3900.0000000000005
+          },
+          "timestamp": "2023-03-28T02:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4300
+          },
+          "timestamp": "2023-03-28T02:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T02:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T02:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T02:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T02:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4349.999999999998
+          },
+          "timestamp": "2023-03-28T02:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4133.333333333332
+          },
+          "timestamp": "2023-03-28T02:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3699.9999999999977
+          },
+          "timestamp": "2023-03-28T02:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3600.0000000000005
+          },
+          "timestamp": "2023-03-28T02:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 3600.0000000000005
+          },
+          "timestamp": "2023-03-28T02:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T02:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-28T02:54:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-28T02:55:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999999
+          },
+          "timestamp": "2023-03-28T02:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 725.0000000000001
+          },
+          "timestamp": "2023-03-28T02:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-28T02:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 699.9999999999998
+          },
+          "timestamp": "2023-03-28T02:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T03:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-28T03:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T03:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-28T03:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T03:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T03:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T03:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-28T03:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2599.999999999998
+          },
+          "timestamp": "2023-03-28T03:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 2800.000000000001
+          },
+          "timestamp": "2023-03-28T03:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 472.5
+          },
+          "timestamp": "2023-03-28T03:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 468.74999999999994
+          },
+          "timestamp": "2023-03-28T03:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 470
+          },
+          "timestamp": "2023-03-28T03:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 472.5
+          },
+          "timestamp": "2023-03-28T03:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 465.625
+          },
+          "timestamp": "2023-03-28T03:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:18:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:19:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:20:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:21:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:22:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 875.000000000001
+          },
+          "timestamp": "2023-03-28T03:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 849.9999999999995
+          },
+          "timestamp": "2023-03-28T03:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 774.9999999999977
+          },
+          "timestamp": "2023-03-28T03:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 687.5000000000005
+          },
+          "timestamp": "2023-03-28T03:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 624.999999999999
+          },
+          "timestamp": "2023-03-28T03:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 240.2500000000002
+          },
+          "timestamp": "2023-03-28T03:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 240.45454545454538
+          },
+          "timestamp": "2023-03-28T03:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 240.45454545454547
+          },
+          "timestamp": "2023-03-28T03:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 228.1818181818181
+          },
+          "timestamp": "2023-03-28T03:35:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 244.99999999999986
+          },
+          "timestamp": "2023-03-28T03:36:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 524.9999999999993
+          },
+          "timestamp": "2023-03-28T03:37:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 240.25000000000003
+          },
+          "timestamp": "2023-03-28T03:38:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 244.74999999999994
+          },
+          "timestamp": "2023-03-28T03:39:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 250
+          },
+          "timestamp": "2023-03-28T03:40:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:41:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:42:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:43:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T03:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T04:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:44:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:45:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:46:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:47:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:48:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:49:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:50:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:51:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:52:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T04:53:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:05:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:06:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:07:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 10000
+          },
+          "timestamp": "2023-03-28T05:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:08:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:09:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:10:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:11:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:12:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:13:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:14:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:15:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:16:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 47.99999999999999
+          },
+          "timestamp": "2023-03-28T06:17:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T06:23:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4800
+          },
+          "timestamp": "2023-03-28T06:24:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:25:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:26:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:27:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:28:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:29:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:30:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:31:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4733.333333333332
+          },
+          "timestamp": "2023-03-28T06:32:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4700
+          },
+          "timestamp": "2023-03-28T06:33:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 4700
+          },
+          "timestamp": "2023-03-28T06:34:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T06:56:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T06:57:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T06:58:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T06:59:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T07:00:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T07:01:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T07:02:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T07:03:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T07:04:00Z"
+        },
+        {
+          "gaugeValue": {
+            "doubleValue": 48
+          },
+          "timestamp": "2023-03-28T07:05:00Z"
+        }
+      ]
+    }
+  ],
+  "name": "service_latencies",
+  "type": "GAUGE"
+}
