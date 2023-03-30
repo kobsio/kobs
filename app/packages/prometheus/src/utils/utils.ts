@@ -20,9 +20,9 @@ export interface IMetric {
   current: number;
   data: IDatum[];
   id: string;
-  label: string;
   max: number;
   min: number;
+  name: string;
 }
 
 // The `IDatum` interface represents one datapoint in a metric. Since the API returns the `x` value is number, but we
@@ -30,12 +30,8 @@ export interface IMetric {
 // only available at the client side and mainly used to render the tooltip for a datapoint. This is required since we
 // only have access to the `IDatum` in the tooltip.
 export interface IDatum {
-  customColor: string;
-  customLabel: string;
-  customMaxX: number;
-  customMaxY: number;
-  customMinX: number;
-  customMinY: number;
+  color: string;
+  name: string;
   x: number | Date;
   y: number;
 }
@@ -50,7 +46,7 @@ export type TOrder = 'asc' | 'desc';
  * `TOrderBy` is our type, after which we can order the returned metrics. This must be a valid key in the `IMetric`
  * interface.
  */
-export type TOrderBy = 'label' | 'min' | 'max' | 'avg' | 'current';
+export type TOrderBy = 'name' | 'min' | 'max' | 'avg' | 'current';
 
 /**
  * `IOrder` is the interface which combins the `TOrder` and `TOrderBy` types into one type, so we only have one state

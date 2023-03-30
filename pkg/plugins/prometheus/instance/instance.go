@@ -181,7 +181,7 @@ func (i *instance) GetRange(ctx context.Context, queries []Query, resolution str
 			if err != nil {
 				metrics = append(metrics, Metric{
 					ID:      fmt.Sprintf("%d-%d", queryIndex, streamIndex),
-					Label:   query.Label,
+					Name:    query.Label,
 					Min:     min,
 					Max:     max,
 					Avg:     avg,
@@ -195,7 +195,7 @@ func (i *instance) GetRange(ctx context.Context, queries []Query, resolution str
 
 				metrics = append(metrics, Metric{
 					ID:      fmt.Sprintf("%d-%d", queryIndex, streamIndex),
-					Label:   label,
+					Name:    label,
 					Min:     min,
 					Max:     max,
 					Avg:     avg,

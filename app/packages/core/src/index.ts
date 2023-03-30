@@ -4,6 +4,7 @@ export * from './components/resources/ResourcesSelectClusters';
 export * from './components/resources/ResourcesSelectNamespaces';
 
 export * from './components/utils/editor/Editor';
+export * from './components/utils/ChartTooltip';
 export * from './components/utils/DescriptionList';
 export * from './components/utils/DetailsDrawer';
 export * from './components/utils/editor/Editor';
@@ -14,7 +15,6 @@ export * from './components/utils/Pagination';
 export * from './components/utils/PluginPanel';
 export * from './components/utils/Toolbar';
 export * from './components/utils/UseQueryWrapper';
-export * from './components/utils/chart/ChartTooltip';
 
 export * from './context/APIContext';
 export * from './context/AppContext';

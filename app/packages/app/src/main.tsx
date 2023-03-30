@@ -3,6 +3,7 @@ import Flux from '@kobsio/flux';
 import Grafana from '@kobsio/grafana';
 import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
+import Jaeger from '@kobsio/jaeger';
 import Klogs from '@kobsio/klogs';
 import Opsgenie from '@kobsio/opsgenie';
 import Prometheus from '@kobsio/prometheus';
@@ -21,6 +22,6 @@ import '@kobsio/core/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <App plugins={[Flux, Grafana, Harbor, Helm, Klogs, Opsgenie, Prometheus, RSS, SignalSciences, SonarQube]} />
+    <App plugins={[Flux, Grafana, Harbor, Helm, Jaeger, Klogs, Opsgenie, Prometheus, RSS, SignalSciences, SonarQube]} />
   </StrictMode>,
 );

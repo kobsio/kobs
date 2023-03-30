@@ -64,7 +64,7 @@ const PrometheusChart: FunctionComponent<{
   const [stacked, setStacked] = useState<boolean>(false);
   const [selectedMetric, setSelectedMetric] = useState<string>('');
 
-  const [order, setOrder] = useState<IOrder>({ order: 'asc', orderBy: 'label' });
+  const [order, setOrder] = useState<IOrder>({ order: 'asc', orderBy: 'name' });
   const [sortedMetrics, setSortedMetrics] = useState<IMetric[]>(metrics?.metrics ?? []);
 
   /**
@@ -191,9 +191,7 @@ const PrometheusWrapper: FunctionComponent<{
     async () => {
       const result = await apiContext.client.post<IMetrics>('/api/plugins/prometheus/range', {
         body: {
-          queries: options.queries.map((query) => {
-            return { label: '', query: query };
-          }),
+          queries: options.queries.map((query) => ({ label: '', query: query })),
           resolution: options.resolution,
           timeEnd: options.timeEnd,
           timeStart: options.timeStart,
@@ -211,12 +209,8 @@ const PrometheusWrapper: FunctionComponent<{
 
           for (let j = 0; j < result.metrics[i].data.length; j++) {
             result.metrics[i].data[j] = {
-              customColor: color,
-              customLabel: result.metrics[i].label,
-              customMaxX: options.timeEnd,
-              customMaxY: result.max,
-              customMinX: options.timeStart,
-              customMinY: result.min,
+              color: color,
+              name: result.metrics[i].name,
               x: new Date(result.metrics[i].data[j].x),
               y: result.metrics[i].data[j].y,
             };

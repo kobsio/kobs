@@ -8,8 +8,7 @@ import {
   roundNumber,
   ChartTooltip,
 } from '@kobsio/core';
-import { Square } from '@mui/icons-material';
-import { Box, darken, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { FunctionComponent, useRef } from 'react';
 import {
   createContainer,
@@ -22,38 +21,9 @@ import {
   VictoryStack,
   VictoryVoronoiContainerProps,
   VictoryBrushContainerProps,
-  VictoryTooltip,
-  FlyoutProps,
 } from 'victory';
 
 import { IDatum, IMetric } from '../utils/utils';
-
-interface IChartTooltipContentProps extends FlyoutProps {
-  datum: IDatum;
-  text: string;
-}
-
-/**
- * ChartTooltipContent renders a timestamp a color-indicator and the metric name,
- * when the user hovers over a datapoint inside the chart area
- */
-const ChartTooltipContent: FunctionComponent<IChartTooltipContentProps> = ({ datum, text }) => {
-  return (
-    <Box sx={{ backgroundColor: darken('#233044', 0.13), p: 4 }}>
-      <b>{formatTime(datum.x as Date)}</b>
-      <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 2 }}>
-        <Square sx={{ color: datum.customColor }} />
-        <Box component="span" sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {datum.customLabel}
-        </Box>
-        <Box component="span" sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {roundNumber(datum.y, 4)} {text}
-        </Box>
-      </Box>
-    </Box>
-  );
-};
 
 /**
  * `IChartProps` is the interface for the properties of the `Chart` component.
@@ -89,24 +59,24 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
   const chartData = metrics.map((metric, index) =>
     type === 'area' ? (
       <VictoryArea
-        key={metrics[index].label}
+        key={metrics[index].id}
         data={metric.data}
-        name={metrics[index].label}
+        name={metrics[index].name}
         colorScale={[metrics[index].color]}
         interpolation="monotoneX"
       />
     ) : type === 'bar' ? (
       <VictoryBar
-        key={metrics[index].label}
+        key={metrics[index].id}
         data={metric.data}
-        name={metrics[index].label}
+        name={metrics[index].name}
         colorScale={[metrics[index].color]}
       />
     ) : (
       <VictoryLine
-        key={metrics[index].label}
+        key={metrics[index].id}
         data={metric.data}
-        name={metrics[index].label}
+        name={metrics[index].name}
         colorScale={[metrics[index].color]}
         interpolation="monotoneX"
       />
@@ -129,10 +99,18 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
         containerComponent={
           <BrushVoronoiContainer
             brushDimension="x"
-            labels={() => unit || ' '}
+            labels={() => ' '}
             labelComponent={
-              <VictoryTooltip
-                labelComponent={<ChartTooltip width={chartSize.width} component={ChartTooltipContent} />}
+              <ChartTooltip
+                height={chartSize.height}
+                width={chartSize.width}
+                legendData={({ datum }: { datum: IDatum }) => ({
+                  color: datum.color,
+                  label: datum.name,
+                  title: formatTime(datum.x as Date),
+                  unit: unit,
+                  value: datum.y ? roundNumber(datum.y, 4) : 'N/A',
+                })}
               />
             }
             mouseFollowTooltips={true}
@@ -158,7 +136,7 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
         // minDomain={{ y: stacked ? undefined : min }}
       >
         <VictoryAxis dependentAxis={false} tickFormat={chartTickFormatTime} />
-        <VictoryAxis dependentAxis={true} label={unit} tickFormat={(tick: number) => chartTickFormatValue(tick)} />
+        <VictoryAxis dependentAxis={true} label={unit} tickFormat={chartTickFormatValue} />
 
         {stacked ? <VictoryStack>{chartData}</VictoryStack> : <VictoryGroup>{chartData}</VictoryGroup>}
       </VictoryChart>

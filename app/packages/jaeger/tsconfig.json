@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    // allowJs is required for the TreeNode.js file from the Jaeger plugin.
+    // allowJs is required for the TreeNode.js file.
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -15,10 +15,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@kobsio/*": ["../*/src/index.ts"],
-    }
+    "jsx": "react-jsx"
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

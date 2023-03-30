@@ -61,6 +61,8 @@ const components: Components<Omit<Theme, 'components'>> = {
     styleOverrides: {
       root: {
         backgroundImage: 'none',
+        border: 'none',
+        boxShadow: 'none',
       },
     },
   },
