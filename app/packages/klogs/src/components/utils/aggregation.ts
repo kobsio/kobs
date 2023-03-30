@@ -1,7 +1,10 @@
+import { getChartColor } from '@kobsio/core';
+
 import { IAggregationData, IAggregationDataRow, IChartOptions, ISeries, ISeriesDatum } from '../page/AggregationTypes';
 
-// getLabel return a label for a row. For that we are joining the values of all columns which are not containing any
-// data.
+/**
+ * getLabel return a label for a row. For that we are joining the values of all columns which are not containing any data.
+ **/
 const getLabel = (row: IAggregationDataRow, columns: string[]): string => {
   let label = '';
 
@@ -24,7 +27,9 @@ const formatFilterValue = (filter: string, filters: string[]): string => {
   return filter;
 };
 
-// formatFilter returns a readable string for the applied filters.
+/**
+ * formatFilter returns a readable string for the applied filters.
+ */
 export const formatFilter = (filter: string, filters: string[]): string => {
   const filterParts = filter.split('_data');
   let formattedFilter = '';
@@ -42,7 +47,9 @@ export const formatFilter = (filter: string, filters: string[]): string => {
   return formattedFilter;
 };
 
-// convertToTimeseriesChartData converts the returned data from our API into the format required by the line chart component.
+/**
+ * convertToTimeseriesChartData converts the returned data from our API into the format required by the line chart component.
+ */
 export const convertToTimeseriesChartData = (data: IAggregationData, filters: string[]): ISeries[] => {
   const labelColumns = data.columns.filter((column) => !column.includes('_data') && column !== 'time');
   const dataColumns = data.columns.filter((column) => column.includes('_data'));
@@ -59,6 +66,9 @@ export const convertToTimeseriesChartData = (data: IAggregationData, filters: st
     for (const row of rows) {
       for (let i = 0; i < dataColumns.length; i++) {
         seriesData[i].push({
+          // both color and series are set in the lines below, because we don't have access to the filters and labels yet
+          color: '',
+          series: '',
           x: new Date(row.time as string),
           y: row.hasOwnProperty(dataColumns[i]) ? (row[dataColumns[i]] as number) : null,
         });
@@ -66,6 +76,17 @@ export const convertToTimeseriesChartData = (data: IAggregationData, filters: st
     }
 
     for (let i = 0; i < seriesData.length; i++) {
+      const name = label
+        ? `${label} - ${formatFilter(dataColumns[i], filters)}`
+        : `${formatFilter(dataColumns[i], filters)}`;
+      const color = getChartColor(i);
+
+      const data = seriesData[i];
+      for (let di = 0; di < data.length; di++) {
+        data[di].color = color;
+        data[di].series = name;
+      }
+
       series.push({
         data: seriesData[i],
         name: label
@@ -125,8 +146,10 @@ export const chartFormatLabel = (label: string, minLength = 12): string => {
   return label;
 };
 
-// utility for transforming the IChartOptions interface to request options
-// this method can throw an error, when one of the required options is missing
+/**
+ * utility for transforming the IChartOptions interface to request options
+ * this method can throw an error, when one of the required options is missing
+ */
 export const chartOptionsToRequestOptions = (chartOptions: IChartOptions): unknown => {
   let options: unknown = undefined;
   if (chartOptions.chart === 'pie') {

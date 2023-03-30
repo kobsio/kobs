@@ -1,36 +1,11 @@
 import { chartColors, chartTheme, ChartTooltip, roundNumber, useDimensions } from '@kobsio/core';
-import { Square } from '@mui/icons-material';
-import { Box, darken, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { FunctionComponent, useRef } from 'react';
-import { VictoryBar, VictoryChart, VictoryAxis, VictoryGroup, VictoryTooltip, FlyoutProps } from 'victory';
+import { VictoryBar, VictoryChart, VictoryAxis, VictoryGroup, VictoryTooltip } from 'victory';
 
 import { IAggregationData } from './AggregationTypes';
 
 import { convertToBarChartTopData } from '../utils/aggregation';
-
-interface IChartTooltipContentProps extends FlyoutProps {
-  datum: { xName: string; y: number };
-}
-
-/**
- * ChartTooltipContent renders a timestamp a color-indicator and the metric name,
- * when the user hovers over a datapoint inside the chart area
- */
-const ChartTooltipContent: FunctionComponent<IChartTooltipContentProps> = (props) => {
-  return (
-    <Box sx={{ backgroundColor: darken('#233044', 0.13), p: 4 }}>
-      <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 2 }}>
-        <Square sx={{ color: chartColors[0] }} />
-        <Box component="span" sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {props.datum.xName}
-        </Box>
-        <Box component="span" sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-          {roundNumber(props.datum.y ?? 0, 4)}
-        </Box>
-      </Box>
-    </Box>
-  );
-};
 
 interface IAggregationPieChartProps {
   data: IAggregationData;
@@ -61,7 +36,18 @@ const AggregationBarTopChart: FunctionComponent<IAggregationPieChartProps> = ({ 
             <VictoryBar
               labelComponent={
                 <VictoryTooltip
-                  labelComponent={<ChartTooltip component={ChartTooltipContent} width={chartSize.width} />}
+                  labelComponent={
+                    <ChartTooltip
+                      height={chartSize.height}
+                      width={chartSize.width}
+                      legendData={({ datum }: { datum: { xName: string; y: number } }) => ({
+                        color: chartColors[0],
+                        label: datum.xName,
+                        unit: '',
+                        value: datum.y ? roundNumber(datum.y, 4) : 'N/A',
+                      })}
+                    />
+                  }
                 />
               }
               key={metric[0].name}

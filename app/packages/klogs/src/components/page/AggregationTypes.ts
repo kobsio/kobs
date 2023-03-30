@@ -85,6 +85,8 @@ export interface ISeries {
 }
 
 export interface ISeriesDatum {
+  color: string;
+  series: string;
   x: Date;
   y: number | null;
 }
