@@ -16,8 +16,8 @@ import (
 
 // Config is the structure of the configuration for a single SQL database instance.
 type Config struct {
-	Driver     string `json:"driver"`
-	Connection string `json:"connection"`
+	Driver  string `json:"driver"`
+	Address string `json:"address"`
 }
 
 type Instance interface {
@@ -97,7 +97,7 @@ func New(name string, options map[string]any) (Instance, error) {
 		return nil, fmt.Errorf("invalid driver")
 	}
 
-	client, err := sql.Open(config.Driver, config.Connection)
+	client, err := sql.Open(config.Driver, config.Address)
 	if err != nil {
 		return nil, err
 	}

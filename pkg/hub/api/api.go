@@ -90,7 +90,7 @@ func New(config Config, appSettings settings.Settings, authClient auth.Client, c
 		r.Mount("/auth", authClient.Mount())
 
 		r.Group(func(r chi.Router) {
-			// r.Use(authClient.MiddlewareHandler)
+			r.Use(authClient.MiddlewareHandler)
 			r.Mount("/clusters", clustersAPI.Mount(dbClient, clustersClient))
 			r.Mount("/applications", applicationsAPI.Mount(dbClient))
 			r.Mount("/teams", teamsAPI.Mount(dbClient))

@@ -12,6 +12,7 @@ import Prometheus from '@kobsio/prometheus';
 import RSS from '@kobsio/rss';
 import SignalSciences from '@kobsio/signalsciences';
 import SonarQube from '@kobsio/sonarqube';
+import SQL from '@kobsio/sql';
 import TechDocs from '@kobsio/techdocs';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         RSS,
         SignalSciences,
         SonarQube,
+        SQL,
         TechDocs,
       ]}
     />
