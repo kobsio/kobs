@@ -18,8 +18,8 @@ export const defaultSearch: ISearch = {
 };
 
 /**
- * LogsPage displays the klogs plugin page that allows the user to search for logs
- * and compose a table with custom columns
+ * SQLPage displays the plugin page that allows users to run queries
+ * and view results in a table view.
  */
 const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);

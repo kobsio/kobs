@@ -9,7 +9,7 @@ interface ILogsToolbar {
 }
 
 /**
- * The `SQLToolbar` renders a an editor for entering sql queries
+ * SQLToolbar renders a an editor for entering sql queries
  */
 const SQLToolbar: FunctionComponent<ILogsToolbar> = ({ query: initialQuery, onSearch }) => {
   const [query, setQuery] = useState<string>(initialQuery);

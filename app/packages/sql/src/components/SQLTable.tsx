@@ -53,11 +53,9 @@ interface ISQLTableProps {
 }
 
 /**
- * SQLTable renders a table view for the rows given inside props
- * when zero columns are given the table renders a preview of the document, where only the first 16 columns are shown
+ * SQLTable renders a table view for the given rows and columns
  */
 const SQLTable: FunctionComponent<ISQLTableProps> = ({ columnOptions, columns, rows }) => {
-  console.log({ columnOptions });
   return (
     <TableContainer>
       <Table>
