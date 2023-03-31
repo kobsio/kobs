@@ -5,7 +5,7 @@ import { FunctionComponent, useContext } from 'react';
 
 import SQLTable from './SQLTable';
 import SQLToolbar from './SQLToolbar';
-import { IRow } from './types';
+import { ISQLData } from './types';
 
 const defaultDescription = 'Access the data of an relational database management system.';
 
@@ -17,11 +17,6 @@ export const defaultSearch: ISearch = {
   query: '',
 };
 
-interface IResult {
-  columns: string[];
-  rows: IRow[];
-}
-
 /**
  * LogsPage displays the klogs plugin page that allows the user to search for logs
  * and compose a table with custom columns
@@ -30,11 +25,11 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);
   const [search, setSearch] = useQueryState<ISearch>(defaultSearch);
 
-  const queryResult = useQuery<IResult | null, APIError>([search.query], () => {
+  const queryResult = useQuery<ISQLData | null, APIError>([search.query], () => {
     if (search.query === '') {
       return null;
     }
-    return client.get<IResult>(`/api/plugins/sql/query?query=${search.query}`, {
+    return client.get<ISQLData>(`/api/plugins/sql/query?query=${search.query}`, {
       headers: {
         'x-kobs-cluster': instance.cluster,
         'x-kobs-plugin': instance.name,

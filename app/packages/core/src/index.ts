@@ -33,6 +33,7 @@ export * from './utils/hooks/useUpdate';
 
 export * from './utils/charts';
 export * from './utils/fileDownload';
+export * from './utils/isString';
 export * from './utils/numbers';
 export * from './utils/statehistory';
 export * from './utils/times';

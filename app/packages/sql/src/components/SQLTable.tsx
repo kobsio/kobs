@@ -1,9 +1,27 @@
-import { TableRow, TableCell, Table, TableBody, TableHead, TableContainer, Typography } from '@mui/material';
+import { formatTime } from '@kobsio/core';
+import { TableRow, TableCell, Table, TableBody, TableHead, TableContainer } from '@mui/material';
 import { FunctionComponent } from 'react';
 
-import { IRow } from './types';
+import { IColumns, IRow } from './types';
+
+const renderCellValue = (value: string | number | string[] | number[], unit?: string): string => {
+  if (Array.isArray(value)) {
+    return `[${value.join(', ')}] ${unit}`;
+  }
+
+  if (unit) {
+    if (unit === 'time') {
+      return formatTime(new Date(value));
+    } else {
+      return `${value} ${unit}`;
+    }
+  }
+
+  return `${value}`;
+};
 
 interface ISQLRowProps {
+  columnOptions?: IColumns;
   columns: string[];
   row: IRow;
 }
@@ -11,12 +29,17 @@ interface ISQLRowProps {
 /**
  * SQLRow represents a single row in the table
  */
-const SQLRow: FunctionComponent<ISQLRowProps> = ({ columns, row }) => (
+const SQLRow: FunctionComponent<ISQLRowProps> = ({ columnOptions, columns, row }) => (
   <>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
       {columns.map((column) => (
         <TableCell key={column}>
-          <Typography>{`${row[column]}`}</Typography>
+          {row.hasOwnProperty(column)
+            ? renderCellValue(
+                row[column],
+                columnOptions && columnOptions.hasOwnProperty(column) ? columnOptions[column].unit : undefined,
+              )
+            : ''}
         </TableCell>
       ))}
     </TableRow>
@@ -24,6 +47,7 @@ const SQLRow: FunctionComponent<ISQLRowProps> = ({ columns, row }) => (
 );
 
 interface ISQLTableProps {
+  columnOptions?: IColumns;
   columns: string[];
   rows: IRow[];
 }
@@ -32,8 +56,8 @@ interface ISQLTableProps {
  * SQLTable renders a table view for the rows given inside props
  * when zero columns are given the table renders a preview of the document, where only the first 16 columns are shown
  */
-const SQLTable: FunctionComponent<ISQLTableProps> = ({ columns: selectedColumns, rows }) => {
-  const columns = selectedColumns.length === 0 ? ['preview'] : selectedColumns;
+const SQLTable: FunctionComponent<ISQLTableProps> = ({ columnOptions, columns, rows }) => {
+  console.log({ columnOptions });
   return (
     <TableContainer>
       <Table>
@@ -41,15 +65,16 @@ const SQLTable: FunctionComponent<ISQLTableProps> = ({ columns: selectedColumns,
           <TableRow>
             {columns.map((column) => (
               <TableCell key={column}>
-                <Typography>{column}</Typography>
+                {columnOptions && columnOptions.hasOwnProperty(column) && columnOptions[column].title
+                  ? columnOptions[column].title
+                  : column}
               </TableCell>
             ))}
-            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, i) => (
-            <SQLRow key={i} columns={selectedColumns} row={row} />
+            <SQLRow key={i} columnOptions={columnOptions} columns={columns} row={row} />
           ))}
         </TableBody>
       </Table>
