@@ -38,6 +38,8 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
+    "@types/cytoscape": "^3.19.9",
+    "@types/cytoscape-dagre": "^2.3.0",
     "@types/node": "^14.18.36",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
@@ -52,6 +54,8 @@
     "vitest": "^0.28.4"
   },
   "dependencies": {
-    "react-virtuoso": "^4.1.0"
+    "cytoscape": "^3.23.0",
+    "cytoscape-dagre": "^2.5.0",
+    "cytoscape-node-html-label": "^1.2.2"
   }
 }
