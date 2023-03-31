@@ -9,8 +9,8 @@ interface IDetailsDrawerProps {
   onClose: () => void;
   open: boolean;
   size: 'small' | 'large';
-  subtitle?: string;
-  title: string;
+  subtitle?: string | ReactNode;
+  title: string | ReactNode;
 }
 
 /**

@@ -1,0 +1,34 @@
+{
+  "id": "72a18e5238524936aeb593ddcfb67a28",
+  "source": "9abebc7c323c8c64cb932cc87c0f9f74",
+  "target": "1a9789b9c41c508db0784fe13409f106",
+  "traffic": {
+    "protocol": "grpc",
+    "rates": {
+      "grpc": "5.35",
+      "grpcErr": "0.001",
+      "grpcPercentErr": "0.0",
+      "grpcPercentReq": "100.0"
+    },
+    "responses": {
+      "0": {
+        "flags": {
+          "-": "100.0"
+        },
+        "hosts": {
+          "myservice.myservice.svc.cluster.local": "100.0"
+        }
+      },
+      "5": {
+        "flags": {
+          "-": "0.0"
+        },
+        "hosts": {
+          "myservice.myservice.svc.cluster.local": "0.0"
+        }
+      }
+    }
+  },
+  "edgeType": "grpc",
+  "edgeLabel": "5.35req/s\n0.0%"
+}

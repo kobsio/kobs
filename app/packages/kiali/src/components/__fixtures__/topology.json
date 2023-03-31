@@ -1,0 +1,1532 @@
+{
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "882289922d217f09a006b377262d1b09",
+          "nodeType": "box",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "mycacheservice",
+          "healthData": null,
+          "isBox": "app",
+          "nodeLabel": "mycacheservice",
+          "nodeLabelFull": "mycacheservice\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "bc3071de8088be60e7f262cc90b7e85d",
+          "nodeType": "box",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "myservice",
+          "healthData": null,
+          "isBox": "app",
+          "nodeLabel": "myservice",
+          "nodeLabelFull": "myservice\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "5d5437182c7d58d0478c41096cd5de3c",
+          "nodeType": "box",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "httpcache",
+          "healthData": null,
+          "isBox": "app",
+          "nodeLabel": "httpcache",
+          "nodeLabelFull": "httpcache\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "a12f74d17c385c3c69ea733e1a1321cb",
+          "nodeType": "box",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "nginx",
+          "healthData": null,
+          "isBox": "app",
+          "nodeLabel": "nginx",
+          "nodeLabelFull": "nginx\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "baf132b744e41677c09105c5ba9a00d9",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "blackbox-exporter",
+          "workload": "blackbox-exporter",
+          "app": "blackbox-exporter",
+          "version": "latest",
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpOut": "0.10"
+              }
+            }
+          ],
+          "healthData": null,
+          "isOutside": true,
+          "isRoot": true,
+          "nodeLabel": "blackbox-exporter",
+          "nodeLabelFull": "blackbox-exporter\nblackbox-exporter",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIz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"
+        }
+      },
+      {
+        "data": {
+          "id": "6c81141626e6d9ff944b888d90ab1e49",
+          "parent": "882289922d217f09a006b377262d1b09",
+          "nodeType": "service",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "mycacheservice",
+          "service": "mycacheservice",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "mycacheservice"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "10.69",
+                "httpIn4xx": "0.12",
+                "httpInNoResponse": "0.006",
+                "httpOut": "10.69"
+              }
+            }
+          ],
+          "healthData": null,
+          "hasRequestRouting": true,
+          "hasVS": {
+            "hostnames": [
+              "static-de1.staffbase.com",
+              "static-main-de1.staffbase.com",
+              "de1.staffbasestatic.com"
+            ]
+          },
+          "nodeLabel": "mycacheservice",
+          "nodeLabelFull": "mycacheservice\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "aed40ec3e4e89bfd7599fbe329b0d684",
+          "parent": "882289922d217f09a006b377262d1b09",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "workload": "mycacheservice",
+          "app": "mycacheservice",
+          "version": "latest",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "PassthroughCluster"
+            },
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "mycacheservice"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "11.46",
+                "httpIn4xx": "0.13",
+                "httpInNoResponse": "0.006",
+                "httpOut": "2.79"
+              }
+            },
+            {
+              "protocol": "tcp",
+              "rates": {
+                "tcpOut": "1655165.28"
+              }
+            }
+          ],
+          "healthData": null,
+          "nodeLabel": "latest",
+          "nodeLabelFull": "latest\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "1a9789b9c41c508db0784fe13409f106",
+          "parent": "bc3071de8088be60e7f262cc90b7e85d",
+          "nodeType": "service",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "myservice",
+          "service": "myservice",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "myservice"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "grpc",
+              "rates": {
+                "grpcIn": "5.34",
+                "grpcOut": "5.34"
+              }
+            },
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "0.25",
+                "httpOut": "0.25"
+              }
+            }
+          ],
+          "healthData": null,
+          "nodeLabel": "myservice",
+          "nodeLabelFull": "myservice\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "2e52c55e96178fac8cb791a4af82668c",
+          "parent": "bc3071de8088be60e7f262cc90b7e85d",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "workload": "myservice",
+          "app": "myservice",
+          "version": "latest",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "myservice"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "grpc",
+              "rates": {
+                "grpcIn": "5.34"
+              }
+            },
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "0.25",
+                "httpOut": "1.05"
+              }
+            },
+            {
+              "protocol": "tcp",
+              "rates": {
+                "tcpOut": "18760.12"
+              }
+            }
+          ],
+          "healthData": null,
+          "nodeLabel": "latest",
+          "nodeLabelFull": "latest\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "65264b13fef0be8e091b7ea086d8dc74",
+          "parent": "5d5437182c7d58d0478c41096cd5de3c",
+          "nodeType": "service",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "httpcache",
+          "service": "httpcache-auth",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "httpcache-auth"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "0.60",
+                "httpOut": "0.60"
+              }
+            }
+          ],
+          "healthData": null,
+          "nodeLabel": "httpcache-auth",
+          "nodeLabelFull": "httpcache-auth\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "6e44a0d1e011ad2b2600e2b4f7ecd522",
+          "parent": "5d5437182c7d58d0478c41096cd5de3c",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "workload": "httpcache",
+          "app": "httpcache",
+          "version": "latest",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "httpcache-auth"
+            },
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "httpcache-headless"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "30.51",
+                "httpIn3xx": "0.004",
+                "httpIn4xx": "0.06",
+                "httpOut": "1.47"
+              }
+            },
+            {
+              "protocol": "tcp",
+              "rates": {
+                "tcpOut": "6.66"
+              }
+            }
+          ],
+          "healthData": null,
+          "nodeLabel": "latest",
+          "nodeLabelFull": "latest\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "da33f5a9944804c762bed352abb6c1da",
+          "nodeType": "service",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "httpcache-headless",
+          "service": "httpcache-headless",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "httpcache-headless"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "29.91",
+                "httpIn3xx": "0.004",
+                "httpIn4xx": "0.06",
+                "httpOut": "29.91"
+              }
+            }
+          ],
+          "healthData": null,
+          "nodeLabel": "httpcache-headless",
+          "nodeLabelFull": "httpcache-headless\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "e1484d0b12cf1f8ca66f8a7056a27680",
+          "parent": "a12f74d17c385c3c69ea733e1a1321cb",
+          "nodeType": "service",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "app": "nginx",
+          "service": "nginx",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "nginx"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "0.22",
+                "httpIn3xx": "0.22",
+                "httpIn4xx": "0.001",
+                "httpOut": "0.22"
+              }
+            }
+          ],
+          "healthData": null,
+          "hasRequestRouting": true,
+          "hasVS": {
+            "hostnames": [
+              "www.fraops.app"
+            ]
+          },
+          "nodeLabel": "nginx",
+          "nodeLabelFull": "nginx\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "b8b0993a52f1b0261aa2736d14935eba",
+          "parent": "a12f74d17c385c3c69ea733e1a1321cb",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "myservice",
+          "workload": "nginx",
+          "app": "nginx",
+          "version": "latest",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "myservice",
+              "name": "nginx"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "0.22",
+                "httpIn3xx": "0.22",
+                "httpIn4xx": "0.001"
+              }
+            }
+          ],
+          "healthData": null,
+          "nodeLabel": "latest",
+          "nodeLabelFull": "latest\nmyservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "a667b44b1e859fa663a3e5f4255bec01",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "istio-system",
+          "workload": "istio-ingressgateway",
+          "app": "istio-ingressgateway",
+          "version": "latest",
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpOut": "39.76"
+              }
+            }
+          ],
+          "healthData": null,
+          "isGateway": {
+            "ingressInfo": {
+              "hostnames": [
+                "*"
+              ]
+            },
+            "egressInfo": {},
+            "gatewayAPIInfo": {}
+          },
+          "isOutside": true,
+          "isRoot": true,
+          "nodeLabel": "istio-ingressgateway",
+          "nodeLabelFull": "istio-ingressgateway\nistio-system",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA3OjA2KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA3OjA2KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNzowNiswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+V8jC3AAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAAfcSURBVHic7d1trBxVHcfx/7ltgYsggjWllvIoqeXJRhDtKyMaVIiCQRIsMSQaUJv48EIxGAgqMRpbojFGxAStFimQYKIICcYEUlB5VhJKDVIr1VYpWNIWr23v3vv1xZk1c2dnd8487s7e3yfZF/fOzjn/OXNm9syZM2fMRERERERERERERERERERERERERERERERERERERERERKoDHANcCNwG/Bb4KXAxcOwIxPZ64AJgE/BP4CCwHfghsAo4YtgxthbggKuAadJ1gLWAG0JsC4BPAof6xNa1H3hn0/GNBeBHGYXbdU/DcS0Efh8YW9dtTcbYesCanAV8TYOxPZkztq6fNBVj6wEv5izcPQ3FtW5ADI8DG4GtfZbPAiuaiLPVgLNz7vyu8xqIbX9Kvl8FJhPfOxq4O+W7B4AFdcfZasBXClaAb9cc13UpeV5Ln0YovqF4V8o6J9QZZ+sBNxesABtqjuuFRH7/AA7LWGdJSpzfqzPOUBPDDmCAvxRc77lKo+h1TOLvDc65Qxnr7LbeuD5cXUjFjXIFuNvMOjnXmTWzH9cQS9zCxN/bslZwzmFmzyb+vayyiEoY2QrgnNtjZn/KudoO59wrdcQTk6yUJwau99bE3y9XEMt4A04nvcWd5r/AGQ3E9NdEvtuA5Fkhuc7ilHjVKRQC+CCwL2PnTwGXNRTPTSn5rx3wfQfcmrLOmU3EOxaAFcA99Pa5TwO/Bs5uMJZJ4LVEHB3gC8kzAfA64LspO38aWNRUzIM0fgOlDGCxma02s8VmtsfMHnPO/StadpqZrTWzfWb2fefcv2uM4wkzS+tw2mZm95rZS2Z2ipl9xMzelFzdzC51zv2qrvjmHeA4fBugaz9wZE15fQ6YSfsdCvTLOuIqamDjpUVONrP4PfejzOwxYJVzbsbMDDjezJabPyKPNH8kTplvjW8POWMAV5vZd6zY1RNmdp9z7pIC68ogwKl9jrYbgM8Afw44Mp/G39tf2iePNX2O/H1kX6m8Any56XKZV4ANATs5RAdYj29vdNO+FH8XL+k/wLvwN32+BjwF/A3Yib9c/AP+J6NVba1WAo4AdlRUCcC3Kd4HXDRguUb5jApgEfDzCivAIIeA84e9zRKh2PCsojrAO4a9zRLB97RtamjnzwLnDnubJYb84wbLuHzY21u1VrdOgZPM9741NbyqY2bHOef2N5Rf7Ub2dnCgmyx8599sZkvNbNL8di8w3yG03Mw2Bqax0Myuzxmj1AE4jbAu2Z1A5j174Azg5YD0ZoA3NrGNTWjzGeAKy45/l5mtcM7tyErMOfecmZ1l2QM1Jszs3UERSn2ALQFHa/JOXEi6bw9I98k6tkkCAcsCdtK6EulvDEg/OThUmoJ/EneQGTKGamekf05ABTi9ym0alra2AbIeqpiOPkVlthmsd3h4K7W1AhydsXw2GopdVMh1/uEl0h8Zba0Aeq6uIm2tAPsylk9Q7h581hnGzOxgifRHRlsrwK6M5YuiT1EhD3vsLZH+yGhrBdiasXzCzL5RIv0vBXxnd4n0pSjgWPwY/LQhWkl1dQQ9Vce2SQbgPLKfEorbCRyVI/0lwO6AdB+nz+BRyQE/mONE4Jv4adVeAx7BT/82mfL9kNG9aZUg9GZQyM7vmsUPFtUVSRH4mTPSZtvomgJOjX1/gnIPZKwHjscPHnVRepPACcDPSqT7APCGYZZlKwHXBxTuLLAsts6DsWUz+DNCp8TOq0oHeM8wy7NVgJU5CveB2HoO+CJwC/5JHwOurH5/9nUXgxufZw2vVFuE9CdmB3nLgLQccHvRPZrD+ii/JcCrfb5zXXOl2GL4p2fyuDgjvUXA5hI7N8sviPUsAofh5wFOWpMS24X4xuUB/NljBt++2Urs6aN5Bf9IVR6Zo3Gp78GQdfSfAu4c/NXLLPAtYlcEUTy/yUh7Gvh8lWXbCvhn6PK4IDDdCeDynGn3MwW8NyBPR8pkD/izRqgripRjawFX5yicGXJeZgFL8dOyhPQWJk3jj+bCAz+BS3LmeRB4c9H8WgffnXsgsHCuLZHPScCngWcD8nka+DgV9PABv8tZAQA+WzbfVgHOJ/sIvZ+KXraAn8s37mHg/cC5VPjSCfxsJUXOPPNvoClwJvBoSmHMADdWtfOjvH6QyKOWqVqjbSriQB3xZBnqFDHOuS3AajNbZWZvMz+1yy4zeyiaKLJKJyf+fqni9LuKjkWcqjSKQEOfIygau/fH6FOn5K3huu7nv2h+Z+adpOrhGmLJ1NYBIbngZwxLXkm8WkdezrmDZnZngVVvqToWMTPgU/RO7Ah+itcP1JTnSvylXagX0JvFqoe/aTTILPCJmvK+irCrgb3AKXXEMK/hnx6K74Cd+K7ZB5k7qmiamt7hA3yUwYNMtgDL68h7XsN3Ccc7mjYTO8Xi7+htjy2/o8ZYDse//uYJ4Hn8GIbNwGVo+rh6RIUeP/p7Bocyd/q3vw8jTqkJfqhXXM/VTlRJ/v8zMIw4R8G4XgYSfbp6Bpja3Ic/sp40GlvjWgE6NrcCfCi+MPrt/XrsX880EZQ0iN4RO5vwo4JXAs8kln1s2PFKxaIrgb0pl15Jc4Z7yRjBv7Jl0PuH76DETCLSAvh5hFcD9wJ78B1Ct0Y/BePaBhIREREREREREREREREREREREREREREREREREREREZHx8j+gWJNQezFp8gAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "70fd5c55a74db7167930def52f1c915e",
+          "nodeType": "service",
+          "cluster": "Kubernetes",
+          "namespace": "tracing",
+          "service": "jaeger-collector",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "tracing",
+              "name": "jaeger-collector"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "3.84",
+                "httpOut": "3.84"
+              }
+            }
+          ],
+          "healthData": null,
+          "hasRequestRouting": true,
+          "hasRequestTimeout": true,
+          "hasVS": {
+            "hostnames": [
+              "jaeger-collector-de1.staffbase.com"
+            ]
+          },
+          "isOutside": true,
+          "nodeLabel": "jaeger-collector",
+          "nodeLabelFull": "jaeger-collector\ntracing",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIz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"
+        }
+      },
+      {
+        "data": {
+          "id": "7fbf058c7d48e89a15fd4301865ed479",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "tracing",
+          "workload": "jaeger-collector",
+          "app": "jaeger-collector",
+          "version": "latest",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "tracing",
+              "name": "jaeger-collector"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "3.84"
+              }
+            }
+          ],
+          "healthData": null,
+          "isOutside": true,
+          "nodeLabel": "jaeger-collector",
+          "nodeLabelFull": "jaeger-collector\ntracing",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIz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"
+        }
+      },
+      {
+        "data": {
+          "id": "3af4fe0de9b2d973a0ccd3a19f21c1b5",
+          "nodeType": "service",
+          "cluster": "Kubernetes",
+          "namespace": "unknown",
+          "service": "kubernetes",
+          "destServices": [
+            {
+              "cluster": "Kubernetes",
+              "namespace": "unknown",
+              "name": "kubernetes"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "tcp",
+              "rates": {
+                "tcpIn": "18766.78"
+              }
+            }
+          ],
+          "healthData": null,
+          "isInaccessible": true,
+          "nodeLabel": "kubernetes",
+          "nodeLabelFull": "kubernetes\nunknown",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "9abebc7c323c8c64cb932cc87c0f9f74",
+          "nodeType": "app",
+          "cluster": "Kubernetes",
+          "namespace": "myotherservice",
+          "workload": "myotherservice",
+          "app": "myotherservice",
+          "version": "latest",
+          "traffic": [
+            {
+              "protocol": "grpc",
+              "rates": {
+                "grpcOut": "5.34"
+              }
+            }
+          ],
+          "healthData": null,
+          "isOutside": true,
+          "isRoot": true,
+          "nodeLabel": "myotherservice",
+          "nodeLabelFull": "myotherservice\nmyotherservice",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIz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"
+        }
+      },
+      {
+        "data": {
+          "id": "9f8be85bc90983e46cdb23cf5fa6295e",
+          "nodeType": "service",
+          "cluster": "unknown",
+          "namespace": "unknown",
+          "service": "PassthroughCluster",
+          "destServices": [
+            {
+              "cluster": "unknown",
+              "namespace": "unknown",
+              "name": "PassthroughCluster"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "tcp",
+              "rates": {
+                "tcpIn": "1655165.28"
+              }
+            }
+          ],
+          "healthData": null,
+          "isInaccessible": true,
+          "nodeLabel": "PassthroughCluster",
+          "nodeLabelFull": "PassthroughCluster\nunknown",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIz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"
+        }
+      },
+      {
+        "data": {
+          "id": "43e237954e78c24f1aa5199619eb26b3",
+          "nodeType": "service",
+          "cluster": "unknown",
+          "namespace": "unknown",
+          "service": "mycacheservice",
+          "destServices": [
+            {
+              "cluster": "unknown",
+              "namespace": "unknown",
+              "name": "mycacheservice"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "0.004",
+                "httpInNoResponse": "0.004"
+              }
+            }
+          ],
+          "healthData": null,
+          "isInaccessible": true,
+          "nodeLabel": "mycacheservice",
+          "nodeLabelFull": "mycacheservice\nunknown",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "01c018b6fbf06d1076048d709091cb21",
+          "nodeType": "service",
+          "cluster": "unknown",
+          "namespace": "unknown",
+          "service": "httpcache",
+          "destServices": [
+            {
+              "cluster": "unknown",
+              "namespace": "unknown",
+              "name": "httpcache"
+            }
+          ],
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpIn": "0.10",
+                "httpIn4xx": "0.10",
+                "httpInNoResponse": "0.001"
+              }
+            }
+          ],
+          "healthData": null,
+          "isInaccessible": true,
+          "nodeLabel": "httpcache",
+          "nodeLabelFull": "httpcache\nunknown",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+        }
+      },
+      {
+        "data": {
+          "id": "375ab940b56ae7bcf0f89cb1a7af5d44",
+          "nodeType": "unknown",
+          "cluster": "unknown",
+          "namespace": "unknown",
+          "workload": "unknown",
+          "app": "unknown",
+          "version": "latest",
+          "traffic": [
+            {
+              "protocol": "http",
+              "rates": {
+                "httpOut": "1.20"
+              }
+            }
+          ],
+          "healthData": null,
+          "isInaccessible": true,
+          "isRoot": true,
+          "nodeLabel": "unknown",
+          "nodeLabelFull": "unknown\nunknown",
+          "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIz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"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "data": {
+          "id": "261d41a1df12b38a8e71abe5f566804e",
+          "source": "1a9789b9c41c508db0784fe13409f106",
+          "target": "2e52c55e96178fac8cb791a4af82668c",
+          "traffic": {
+            "protocol": "grpc",
+            "rates": {
+              "grpc": "5.34",
+              "grpcPercentReq": "100.0"
+            },
+            "responses": {
+              "0": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "myservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "grpc",
+          "edgeLabel": "5.34req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "cc44bee86e6cdd3d4fce562956cd8f63",
+          "source": "1a9789b9c41c508db0784fe13409f106",
+          "target": "2e52c55e96178fac8cb791a4af82668c",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.25",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "myservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.25req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "61b9ebd5a4283fc8edbb7080aebd8b98",
+          "source": "2e52c55e96178fac8cb791a4af82668c",
+          "target": "3af4fe0de9b2d973a0ccd3a19f21c1b5",
+          "traffic": {
+            "protocol": "tcp",
+            "rates": {
+              "tcp": "18760.12"
+            },
+            "responses": {
+              "-": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "kubernetes.default.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "tcp",
+          "edgeLabel": "18760.12"
+        }
+      },
+      {
+        "data": {
+          "id": "07c8121aaa6fafe490f9bd5ffde2729e",
+          "source": "2e52c55e96178fac8cb791a4af82668c",
+          "target": "70fd5c55a74db7167930def52f1c915e",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "1.05",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "202": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "jaeger-collector.tracing.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "1.05req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "3ed7a6f17143c569a316b716928d92dc",
+          "source": "375ab940b56ae7bcf0f89cb1a7af5d44",
+          "target": "1a9789b9c41c508db0784fe13409f106",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.20",
+              "httpPercentReq": "16.7"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "myservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.20req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "628e4a647ec3ec424b06cc7bcc95e513",
+          "source": "375ab940b56ae7bcf0f89cb1a7af5d44",
+          "target": "65264b13fef0be8e091b7ea086d8dc74",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.60",
+              "httpPercentReq": "50.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "httpcache-auth.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.60req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "577120bc78948a82c2961490a8b73a1c",
+          "source": "375ab940b56ae7bcf0f89cb1a7af5d44",
+          "target": "6c81141626e6d9ff944b888d90ab1e49",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.30",
+              "httpPercentReq": "25.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.30req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "175dd84153a1aa53de023eca8d5df558",
+          "source": "375ab940b56ae7bcf0f89cb1a7af5d44",
+          "target": "da33f5a9944804c762bed352abb6c1da",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.10",
+              "httpPercentReq": "8.3"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.10req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "0358852836c84a655ed7358f48923182",
+          "source": "65264b13fef0be8e091b7ea086d8dc74",
+          "target": "6e44a0d1e011ad2b2600e2b4f7ecd522",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.60",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "httpcache-auth.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.60req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "1275ce60fc71fd097b3632527aa71c85",
+          "source": "6c81141626e6d9ff944b888d90ab1e49",
+          "target": "aed40ec3e4e89bfd7599fbe329b0d684",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "10.69",
+              "http4xx": "0.12",
+              "httpNoResponse": "0.006",
+              "httpPercentErr": "1.2",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "-": {
+                "flags": {
+                  "DC": "0.1"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "0.1"
+                }
+              },
+              "200": {
+                "flags": {
+                  "-": "98.8"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "98.8"
+                }
+              },
+              "404": {
+                "flags": {
+                  "-": "1.1"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "1.1"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "10.69req/s\n1.2%"
+        }
+      },
+      {
+        "data": {
+          "id": "5468414361c0a79640a2388c9a6e8885",
+          "source": "6e44a0d1e011ad2b2600e2b4f7ecd522",
+          "target": "3af4fe0de9b2d973a0ccd3a19f21c1b5",
+          "traffic": {
+            "protocol": "tcp",
+            "rates": {
+              "tcp": "6.66"
+            },
+            "responses": {
+              "-": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "kubernetes.default.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "tcp",
+          "edgeLabel": "6.66"
+        }
+      },
+      {
+        "data": {
+          "id": "b4d93d8b80f332aeec13fa044eb0c824",
+          "source": "6e44a0d1e011ad2b2600e2b4f7ecd522",
+          "target": "6c81141626e6d9ff944b888d90ab1e49",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.70",
+              "http4xx": "0.01",
+              "httpPercentErr": "2.0",
+              "httpPercentReq": "47.9"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "98.0"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "98.0"
+                }
+              },
+              "404": {
+                "flags": {
+                  "-": "2.0"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "2.0"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "0.70req/s\n2.0%"
+        }
+      },
+      {
+        "data": {
+          "id": "e89cfdc6c792b49c61036db61075fef9",
+          "source": "6e44a0d1e011ad2b2600e2b4f7ecd522",
+          "target": "aed40ec3e4e89bfd7599fbe329b0d684",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.77",
+              "http4xx": "0.01",
+              "httpPercentErr": "1.3",
+              "httpPercentReq": "52.1"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "98.7"
+                },
+                "hosts": {
+                  "*": "0.1"
+                }
+              },
+              "404": {
+                "flags": {
+                  "-": "1.3"
+                },
+                "hosts": {
+                  "haco.staffbase.com": "0.1",
+                  "sander.staffbase.com": "0.1",
+                  "schustermannborensteintest.staffbase.com": "0.1",
+                  "tushi.staffbase.com": "0.5",
+                  "webassets-de1.staffbase.com": "0.4"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "0.77req/s\n1.3%"
+        }
+      },
+      {
+        "data": {
+          "id": "da84e99ea00ee66af5ee6f9586954ece",
+          "source": "70fd5c55a74db7167930def52f1c915e",
+          "target": "7fbf058c7d48e89a15fd4301865ed479",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "3.84",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "202": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "jaeger-collector.tracing.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "3.84req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "72a18e5238524936aeb593ddcfb67a28",
+          "source": "9abebc7c323c8c64cb932cc87c0f9f74",
+          "target": "1a9789b9c41c508db0784fe13409f106",
+          "traffic": {
+            "protocol": "grpc",
+            "rates": {
+              "grpc": "5.34",
+              "grpcPercentReq": "100.0"
+            },
+            "responses": {
+              "0": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "myservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "grpc",
+          "edgeLabel": "5.34req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "09a74727fd6ca8626c87242f8b356055",
+          "source": "a667b44b1e859fa663a3e5f4255bec01",
+          "target": "01c018b6fbf06d1076048d709091cb21",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.10",
+              "http4xx": "0.10",
+              "httpNoResponse": "0.001",
+              "httpPercentErr": "100.0",
+              "httpPercentReq": "0.3"
+            },
+            "responses": {
+              "-": {
+                "flags": {
+                  "-": "1.0"
+                },
+                "hosts": {
+                  "httpcache.myservice.svc.cluster.local": "1.0"
+                }
+              },
+              "406": {
+                "flags": {
+                  "UAEX": "99.0"
+                },
+                "hosts": {
+                  "httpcache.myservice.svc.cluster.local": "99.0"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "0.10req/s\n100.0%"
+        }
+      },
+      {
+        "data": {
+          "id": "a8521d6938ce48fc488d3a13a96252af",
+          "source": "a667b44b1e859fa663a3e5f4255bec01",
+          "target": "43e237954e78c24f1aa5199619eb26b3",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.004",
+              "httpNoResponse": "0.004",
+              "httpPercentErr": "100.0",
+              "httpPercentReq": "0.0"
+            },
+            "responses": {
+              "-": {
+                "flags": {
+                  "DC": "100.0"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "0.004req/s\n100.0%"
+        }
+      },
+      {
+        "data": {
+          "id": "103c89813bdd9fb8eea90d5e5ccc5a23",
+          "source": "a667b44b1e859fa663a3e5f4255bec01",
+          "target": "6c81141626e6d9ff944b888d90ab1e49",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "9.64",
+              "http4xx": "0.10",
+              "httpNoResponse": "0.006",
+              "httpPercentErr": "1.1",
+              "httpPercentReq": "24.2"
+            },
+            "responses": {
+              "-": {
+                "flags": {
+                  "DC": "0.1"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "0.1"
+                }
+              },
+              "200": {
+                "flags": {
+                  "-": "98.9"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "98.9"
+                }
+              },
+              "404": {
+                "flags": {
+                  "-": "1.1"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "1.1"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "9.64req/s\n1.1%"
+        }
+      },
+      {
+        "data": {
+          "id": "537f1c1a0553e2ed2d76fa1c725763ed",
+          "source": "a667b44b1e859fa663a3e5f4255bec01",
+          "target": "da33f5a9944804c762bed352abb6c1da",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "29.81",
+              "http3xx": "0.004",
+              "http4xx": "0.06",
+              "httpPercentErr": "0.2",
+              "httpPercentReq": "75.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "99.7"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "99.7"
+                }
+              },
+              "206": {
+                "flags": {
+                  "-": "0.1"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "0.1"
+                }
+              },
+              "304": {
+                "flags": {
+                  "-": "0.0"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "0.0"
+                }
+              },
+              "404": {
+                "flags": {
+                  "-": "0.2"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "0.2"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "29.81req/s\n0.2%"
+        }
+      },
+      {
+        "data": {
+          "id": "cd448bd4676c6e278dea594b0c4c311e",
+          "source": "a667b44b1e859fa663a3e5f4255bec01",
+          "target": "e1484d0b12cf1f8ca66f8a7056a27680",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.22",
+              "http3xx": "0.22",
+              "http4xx": "0.001",
+              "httpPercentErr": "0.5",
+              "httpPercentReq": "0.5"
+            },
+            "responses": {
+              "301": {
+                "flags": {
+                  "-": "99.5"
+                },
+                "hosts": {
+                  "nginx.myservice.svc.cluster.local": "99.5"
+                }
+              },
+              "400": {
+                "flags": {
+                  "-": "0.5"
+                },
+                "hosts": {
+                  "nginx.myservice.svc.cluster.local": "0.5"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "0.22req/s\n0.5%"
+        }
+      },
+      {
+        "data": {
+          "id": "c047effffe3fc6aed7ac7805926d42a8",
+          "source": "aed40ec3e4e89bfd7599fbe329b0d684",
+          "target": "70fd5c55a74db7167930def52f1c915e",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "2.79",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "202": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "jaeger-collector.tracing.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "2.79req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "42840cb73b510e8f7cd12eeb42da9952",
+          "source": "aed40ec3e4e89bfd7599fbe329b0d684",
+          "target": "9f8be85bc90983e46cdb23cf5fa6295e",
+          "traffic": {
+            "protocol": "tcp",
+            "rates": {
+              "tcp": "1655165.28"
+            },
+            "responses": {
+              "-": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "unknown": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "tcp",
+          "edgeLabel": "1655165.28"
+        }
+      },
+      {
+        "data": {
+          "id": "13f8be3ac378337d9cb9898c19c6cd36",
+          "source": "baf132b744e41677c09105c5ba9a00d9",
+          "target": "1a9789b9c41c508db0784fe13409f106",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.05",
+              "httpPercentReq": "50.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "myservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.05req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "f67191c9a5ff4b85814e47da937cfca8",
+          "source": "baf132b744e41677c09105c5ba9a00d9",
+          "target": "6c81141626e6d9ff944b888d90ab1e49",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.05",
+              "httpPercentReq": "50.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "100.0"
+                },
+                "hosts": {
+                  "mycacheservice.myservice.svc.cluster.local": "100.0"
+                }
+              }
+            }
+          },
+          "edgeType": "http",
+          "edgeLabel": "0.05req/s"
+        }
+      },
+      {
+        "data": {
+          "id": "c64319e5da0df961c522e18b3a5846de",
+          "source": "da33f5a9944804c762bed352abb6c1da",
+          "target": "6e44a0d1e011ad2b2600e2b4f7ecd522",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "29.91",
+              "http3xx": "0.004",
+              "http4xx": "0.06",
+              "httpPercentErr": "0.2",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "200": {
+                "flags": {
+                  "-": "99.7"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "99.7"
+                }
+              },
+              "206": {
+                "flags": {
+                  "-": "0.1"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "0.1"
+                }
+              },
+              "304": {
+                "flags": {
+                  "-": "0.0"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "0.0"
+                }
+              },
+              "404": {
+                "flags": {
+                  "-": "0.2"
+                },
+                "hosts": {
+                  "httpcache-headless.myservice.svc.cluster.local": "0.2"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "29.91req/s\n0.2%"
+        }
+      },
+      {
+        "data": {
+          "id": "8d804d9f31e4c088b1b3b55f66fe9c27",
+          "source": "e1484d0b12cf1f8ca66f8a7056a27680",
+          "target": "b8b0993a52f1b0261aa2736d14935eba",
+          "traffic": {
+            "protocol": "http",
+            "rates": {
+              "http": "0.22",
+              "http3xx": "0.22",
+              "http4xx": "0.001",
+              "httpPercentErr": "0.5",
+              "httpPercentReq": "100.0"
+            },
+            "responses": {
+              "301": {
+                "flags": {
+                  "-": "99.5"
+                },
+                "hosts": {
+                  "nginx.myservice.svc.cluster.local": "99.5"
+                }
+              },
+              "400": {
+                "flags": {
+                  "-": "0.5"
+                },
+                "hosts": {
+                  "nginx.myservice.svc.cluster.local": "0.5"
+                }
+              }
+            }
+          },
+          "edgeType": "httpfailure",
+          "edgeLabel": "0.22req/s\n0.5%"
+        }
+      }
+    ]
+  }
+}

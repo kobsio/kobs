@@ -1,0 +1,23 @@
+{
+  "id": "61b9ebd5a4283fc8edbb7080aebd8b98",
+  "source": "2e52c55e96178fac8cb791a4af82668c",
+  "target": "3af4fe0de9b2d973a0ccd3a19f21c1b5",
+  "traffic": {
+    "protocol": "tcp",
+    "rates": {
+      "tcp": "18760.60"
+    },
+    "responses": {
+      "-": {
+        "flags": {
+          "-": "100.0"
+        },
+        "hosts": {
+          "kubernetes.default.svc.cluster.local": "100.0"
+        }
+      }
+    }
+  },
+  "edgeType": "tcp",
+  "edgeLabel": "18760.60"
+}

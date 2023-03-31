@@ -1,0 +1,36 @@
+{
+  "id": "6c81141626e6d9ff944b888d90ab1e49",
+  "parent": "882289922d217f09a006b377262d1b09",
+  "nodeType": "service",
+  "cluster": "Kubernetes",
+  "namespace": "myservice",
+  "app": "mycacheservice",
+  "service": "mycacheservice",
+  "destServices": [
+    {
+      "cluster": "Kubernetes",
+      "namespace": "myservice",
+      "name": "mycacheservice"
+    }
+  ],
+  "traffic": [
+    {
+      "protocol": "http",
+      "rates": {
+        "httpIn": "9.17",
+        "httpIn4xx": "0.06",
+        "httpInNoResponse": "0.01",
+        "httpOut": "9.17"
+      }
+    }
+  ],
+  "hasRequestRouting": true,
+  "hasVS": {
+    "hostnames": [
+      "cache.kobs.io"
+    ]
+  },
+  "nodeLabel": "mycacheservice",
+  "nodeLabelFull": "mycacheservice\nmyservice",
+  "nodeImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEt2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjEyOCIKICAgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyOCIKICAgZXhpZjpDb2xvclNwYWNlPSIxIgogICB0aWZmOkltYWdlV2lkdGg9IjEyOCIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMTI4IgogICB0aWZmOlJlc29sdXRpb25Vbml0PSIyIgogICB0aWZmOlhSZXNvbHV0aW9uPSI3Mi8xIgogICB0aWZmOllSZXNvbHV0aW9uPSI3Mi8xIgogICBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIgogICBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTAzLTMwVDE4OjA0OjQ5KzAyOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IERlc2lnbmVyIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyMy0wMy0zMFQxODowNDo0OSswMjowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+mMJ5MAAAAYFpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/80MjRjPFwkKaNKxmNEZNbJSRUNI0Rvm1mXnmh5ofr/dmkmyVraLExq8FfwFbZa0UkZIta2LD9Jxn1Ewy53bu+dzvved077lgjWWVnG4PQC5f1KJjYc/s3LzH8YyNTtzY6YwrujociUxS1z7usJjxxm/Wqn/uX2teSuoKWBqFhxRVKwqPC0+uFFWTt4XblEx8SfhU2KfJBYVvTT1R4ReT0xX+MlmLRUfA6hb2pGs4UcNKRssJy8vx5rIl5fc+5kucyfzMtMQu8Q50oowRxsMEo4wQoo9BmUP4CdIrK+rkB37ypyhIriKzyioay6TJUMQnakmqJyWmRE/KyLJq9v9vX/VUf7BS3RmGhifDeOsGxxaUNw3j89Awykdge4SLfDW/cAAD76JvVjXvPrjW4eyyqiV24HwD2h/UuBb/kWzi1lQKXk+gZQ5ar6FpodKz332O7yG2Jl91Bbt70CPnXYvfMNhnzVcHv10AAAAJcEhZcwAACxMAAAsTAQCanBgAAABWSURBVHic7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G8AjwABPhljuwAAAABJRU5ErkJggg=="
+}

@@ -62,6 +62,7 @@ jobs:
           - harbor
           - helm
           - jaeger
+          - kiali
           - opsgenie
           - prometheus
           - rss
