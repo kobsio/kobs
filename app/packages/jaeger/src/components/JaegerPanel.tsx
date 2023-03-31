@@ -200,11 +200,24 @@ const JaegerPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for Jaeger plugin"
       details="One of the required options is missing."
-      example={`plugin:
+      example={`# View a list of traces
+plugin:
   name: jaeger
   type: jaeger
   options:
-    project: myproject`}
+    showChart: true
+    queries:
+      - name: All Requests
+        service: productpage.bookinfo
+# View the metrics of a service
+plugin:
+  name: jaeger
+  type: jaeger
+  options:
+    metrics:
+      # The type must be "servicelatency", "serviceerrors", "servicecalls" or "operations".
+      type: servicelatency
+      service: productpage.bookinfo`}
       documentation="https://kobs.io/main/plugins/jaeger"
     />
   );
