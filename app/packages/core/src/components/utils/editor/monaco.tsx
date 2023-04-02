@@ -10,6 +10,7 @@ import CompletionItem = monaco.languages.CompletionItem;
 import ProviderResult = monaco.languages.ProviderResult;
 import CompletionList = monaco.languages.CompletionList;
 
+import { mongodbLanguageDefinition } from './languages/mongodb';
 import { signalsciencesLanguageDefinition } from './languages/signalsciences';
 import yamlWorker from './yaml.worker.js?worker';
 
@@ -122,5 +123,32 @@ export const setupSignalSciences = (monaco: Monaco, loadCompletionItems?: () => 
     monaco.languages.setMonarchTokensProvider(signalsciencesLanguageDefinition.id, mod.language);
     monaco.languages.setLanguageConfiguration(signalsciencesLanguageDefinition.id, mod.languageConfiguration);
     monaco.languages.registerCompletionItemProvider(signalsciencesLanguageDefinition.id, mod.completionItemProvider);
+  }
+};
+
+/**
+ * `MONGODB_SETUP_STARTED` is a constants which allows us to check if the `setupMongoDB` functions was already run, so
+ * that the setup function is only run once.
+ */
+let MONGODB_SETUP_STARTED = false;
+
+/**
+ * `setupMongoDB` runs the setup for MongoDB support. It adds syntax highlighting and autocompletion.
+ */
+export const setupMongoDB = (monaco: Monaco, loadCompletionItems?: () => Promise<string[]>) => {
+  if (MONGODB_SETUP_STARTED === false) {
+    MONGODB_SETUP_STARTED = true;
+
+    const mod = mongodbLanguageDefinition.loader();
+    monaco.languages.register({
+      aliases: mongodbLanguageDefinition.aliases,
+      extensions: mongodbLanguageDefinition.extensions,
+      id: mongodbLanguageDefinition.id,
+      mimetypes: mongodbLanguageDefinition.mimetypes,
+    });
+
+    monaco.languages.setMonarchTokensProvider(mongodbLanguageDefinition.id, mod.language);
+    monaco.languages.setLanguageConfiguration(mongodbLanguageDefinition.id, mod.languageConfiguration);
+    monaco.languages.registerCompletionItemProvider(mongodbLanguageDefinition.id, mod.completionItemProvider);
   }
 };

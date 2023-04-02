@@ -63,6 +63,7 @@ jobs:
           - helm
           - jaeger
           - kiali
+          - mongodb
           - opsgenie
           - prometheus
           - rss
