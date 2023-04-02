@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import * as monaco from 'monaco-editor';
 import { FunctionComponent, useState } from 'react';
 
-import { setupPromQL, setupMonaco, setupSignalSciences } from './monaco';
+import { setupPromQL, setupMonaco, setupMongoDB, setupSignalSciences } from './monaco';
 import { muiTheme, nordTheme } from './themes';
 
 import { useLatest } from '../../../utils/hooks/useLatest';
@@ -94,6 +94,9 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
     monaco.editor.defineTheme('mui', muiTheme);
 
     switch (language) {
+      case 'mongodb':
+        setupMongoDB(monaco, loadCompletionItems);
+        break;
       case 'promql':
         setupPromQL(monaco, loadCompletionItems);
         break;
