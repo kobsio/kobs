@@ -99,10 +99,10 @@ const PanelTableView: FunctionComponent<IPanelTableViewProps> = ({ instance, tit
         error={queryResult.error}
         isLoading={queryResult.isLoading}
         refetch={queryResult.refetch}
-        errorTitle="Failed to load applications"
+        errorTitle="Failed to load sql results"
         isNoData={!queryResult.data}
-        noDataTitle="No logs found"
-        noDataMessage="There were no logs found for your search query"
+        noDataTitle="No rows found"
+        noDataMessage="There were no rows found for the configured query"
       >
         <SQLTable
           columnOptions={queries[currentQuery].columns}

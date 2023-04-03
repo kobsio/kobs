@@ -32,7 +32,9 @@ export interface IColumn {
 
 export interface ISingleStatsChart {
   legend?: ILegend;
+  query: string;
   thresholds?: IThresholds;
+  type: 'singlestat';
   yAxisColumns: string[];
   yAxisUnit?: string;
 }
@@ -40,10 +42,13 @@ export interface ISingleStatsChart {
 export interface IPieChart {
   pieLabelColumn: string;
   pieValueColumn: string;
+  query: string;
+  type: 'pie';
 }
 
 export interface IGenericChart {
   legend?: ILegend;
+  query: string;
   type: 'area' | 'bar' | 'line';
   xAxisColumn: string;
   xAxisType?: string;

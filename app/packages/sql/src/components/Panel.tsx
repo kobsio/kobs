@@ -34,7 +34,8 @@ const isValidQueries = (queries: unknown): queries is IQuery[] => {
  * runtime check for validating the chart object
  */
 const isValidChart = (chart: unknown): chart is IChart => {
-  return false;
+  // TODO
+  return true;
 };
 
 const Panel: FunctionComponent<IPluginPanelProps<ITablePanelOptions | IChartPanelOptions>> = ({
@@ -90,7 +91,15 @@ const Panel: FunctionComponent<IPluginPanelProps<ITablePanelOptions | IChartPane
         />
       );
     }
-    return <PanelChartView chart={options.chart} description={description} instance={instance} title={title} />;
+    return (
+      <PanelChartView
+        chart={options.chart}
+        description={description}
+        instance={instance}
+        query={options.chart.query}
+        title={title}
+      />
+    );
   }
 
   return (
