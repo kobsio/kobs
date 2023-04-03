@@ -13,6 +13,8 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/harbor"
 	"github.com/kobsio/kobs/pkg/plugins/helm"
 	"github.com/kobsio/kobs/pkg/plugins/jaeger"
+	"github.com/kobsio/kobs/pkg/plugins/kiali"
+	"github.com/kobsio/kobs/pkg/plugins/mongodb"
 	"github.com/kobsio/kobs/pkg/plugins/opsgenie"
 	"github.com/kobsio/kobs/pkg/plugins/prometheus"
 	"github.com/kobsio/kobs/pkg/plugins/rss"
@@ -39,6 +41,8 @@ func main() {
 		helm.New(),
 		klogs.New(),
 		jaeger.New(),
+		kiali.New(),
+		mongodb.New(),
 		opsgenie.New(),
 		prometheus.New(),
 		rss.New(),

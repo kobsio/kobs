@@ -173,7 +173,7 @@ const Container: FunctionComponent<IContainerProps> = ({ container, containerSta
 
   return (
     <>
-      <TableRow selected={open} sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow hover={true} selected={open}>
         <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}

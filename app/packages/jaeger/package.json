@@ -11,6 +11,9 @@
   "exports": {
     ".": {
       "import": "./dist/index.js"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css"
     }
   },
   "scripts": {
@@ -52,6 +55,7 @@
     "vitest": "^0.28.4"
   },
   "dependencies": {
+    "@pyroscope/flamegraph": "^0.35.5",
     "react-virtuoso": "^4.1.0"
   }
 }

@@ -1,0 +1,24 @@
+{
+  "id": "cc44bee86e6cdd3d4fce562956cd8f63",
+  "source": "1a9789b9c41c508db0784fe13409f106",
+  "target": "2e52c55e96178fac8cb791a4af82668c",
+  "traffic": {
+    "protocol": "http",
+    "rates": {
+      "http": "0.25",
+      "httpPercentReq": "100.0"
+    },
+    "responses": {
+      "200": {
+        "flags": {
+          "-": "100.0"
+        },
+        "hosts": {
+          "myservice.myservice.svc.cluster.local": "100.0"
+        }
+      }
+    }
+  },
+  "edgeType": "http",
+  "edgeLabel": "0.25req/s"
+}

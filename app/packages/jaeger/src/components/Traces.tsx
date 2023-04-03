@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext, useMemo, useRef, useState } from 'react';
 import { VictoryChart, VictoryAxis, VictoryVoronoiContainer, VictoryScatter } from 'victory';
 
+import { Flamegraph } from './Flamegraph';
 import { Spans } from './Spans';
 import { TraceActions } from './Trace';
 
@@ -36,6 +37,8 @@ const TraceDetails: FunctionComponent<{
   open: boolean;
   trace: ITrace;
 }> = ({ instance, colors, trace, open, onClose }) => {
+  const [view, setView] = useState<'timeline' | 'flamegraph'>('timeline');
+
   return (
     <DetailsDrawer
       size="large"
@@ -43,7 +46,7 @@ const TraceDetails: FunctionComponent<{
       onClose={onClose}
       title={trace.traceName}
       subtitle={trace.traceID}
-      actions={<TraceActions instance={instance} trace={trace} isDrawerAction={true} />}
+      actions={<TraceActions instance={instance} trace={trace} view={view} setView={setView} isDrawerAction={true} />}
     >
       <>
         <span>
@@ -80,7 +83,11 @@ const TraceDetails: FunctionComponent<{
         </span>
 
         <Box sx={{ bgcolor: 'background.paper', height: 'calc(100vh - 64px - 48px - 8px)', mt: 4, p: 4 }}>
-          <Spans instance={instance} colors={colors} trace={trace} />
+          {view === 'timeline' ? (
+            <Spans instance={instance} colors={colors} trace={trace} />
+          ) : (
+            <Flamegraph instance={instance} colors={colors} trace={trace} />
+          )}
         </Box>
       </>
     </DetailsDrawer>
@@ -120,7 +127,7 @@ const Trace: FunctionComponent<{ colors: Record<string, string>; instance: IPlug
             <Stack direction="row" justifyContent="space-between">
               <Stack direction="row" spacing={4}>
                 <Chip size="small" label={`${trace.spans.length} Span${trace.spans.length !== 1 ? 's' : ''}`} />
-                <Stack direction="row" spacing={2}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
                   {trace.services.map((service, index) => (
                     <Chip
                       key={index}
@@ -129,9 +136,11 @@ const Trace: FunctionComponent<{ colors: Record<string, string>; instance: IPlug
                       label={`${service.name} (${service.numberOfSpans})`}
                     />
                   ))}
-                </Stack>
+                </Box>
               </Stack>
-              <Box>{formatTraceTime(trace.startTime)}</Box>
+              <Box>
+                <Typography noWrap={true}>{formatTraceTime(trace.startTime)}</Typography>
+              </Box>
             </Stack>
           }
         />

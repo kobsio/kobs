@@ -397,45 +397,38 @@ const PrometheusToolbar: FunctionComponent<{
   return (
     <Toolbar>
       <ToolbarItem grow={true}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: 3 }}>
-          {queries.map((query, index) => (
-            <Box key={index} sx={{ flexGrow: 1 }}>
-              <Box sx={{ alignItems: 'start', display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', gap: 3 }}>
-                <Box sx={{ flexGrow: 1 }}>
-                  <TextField
-                    value={query}
-                    onChange={(e) => changeQuery(index, e.target.value)}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <PrometheusHistory
-                            optionsQueries={options.queries}
-                            setQuery={(query) => changeQuery(index, query)}
-                          />
-                          {index === 0 ? (
-                            <IconButton size="small" onClick={addQuery}>
-                              <Add />
-                            </IconButton>
-                          ) : (
-                            <IconButton size="small" onClick={(): void => removeQuery(index)}>
-                              <Remove />
-                            </IconButton>
-                          )}
-                        </InputAdornment>
-                      ),
-                      inputComponent: Editor,
-                      inputProps: {
-                        callSubmit: callSubmit,
-                        loadCompletionItems: loadCompletionItems,
-                      },
-                    }}
-                    fullWidth={true}
-                  />
-                </Box>
-              </Box>
-            </Box>
-          ))}
-        </Box>
+        {queries.map((query, index) => (
+          <TextField
+            key={index}
+            sx={{
+              mb: index !== queries.length - 1 ? 3 : 0,
+            }}
+            value={query}
+            onChange={(e) => changeQuery(index, e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <PrometheusHistory optionsQueries={options.queries} setQuery={(query) => changeQuery(index, query)} />
+                  {index === 0 ? (
+                    <IconButton size="small" onClick={addQuery}>
+                      <Add />
+                    </IconButton>
+                  ) : (
+                    <IconButton size="small" onClick={(): void => removeQuery(index)}>
+                      <Remove />
+                    </IconButton>
+                  )}
+                </InputAdornment>
+              ),
+              inputComponent: Editor,
+              inputProps: {
+                callSubmit: callSubmit,
+                loadCompletionItems: loadCompletionItems,
+              },
+            }}
+            fullWidth={true}
+          />
+        ))}
       </ToolbarItem>
 
       <ToolbarItem align="right">

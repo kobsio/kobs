@@ -1,0 +1,179 @@
+{
+  "_id": "/cluster/test/namespace/yopass/name/mongodb",
+  "updatedAt": 1680439430,
+  "cluster": "test",
+  "namespace": "yopass",
+  "name": "mongodb",
+  "description": "A source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with optional schemas.",
+  "tags": [
+    "database"
+  ],
+  "links": [
+    {
+      "title": "GitHub",
+      "link": "https://github.com/mongodb/mongo"
+    },
+    {
+      "title": "Documentation",
+      "link": "https://docs.mongodb.com/manual/"
+    }
+  ],
+  "teams": [
+    "team1@kobs.io"
+  ],
+  "topology": {
+    "external": false,
+    "dependencies": null
+  },
+  "insights": [
+    {
+      "title": "Replica Set Members",
+      "type": "sparkline",
+      "unit": "",
+      "mappings": null,
+      "plugin": {
+        "type": "prometheus",
+        "cluster": "test",
+        "name": "prometheus",
+        "options": {
+          "raw": {
+            "$binary": {
+              "base64": "eyJxdWVyeSI6Im1pbihtb25nb2RiX21vbmdvZF9yZXBsc2V0X251bWJlcl9vZl9tZW1iZXJze25hbWVzcGFjZT1+XCJ5b3Bhc3NcIiwgaW5zdGFuY2U9flwibW9uZ29kYi1ycy4qXCJ9KSJ9",
+              "subType": "00"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "dashboards": [
+    {
+      "cluster": "test",
+      "namespace": "yopass",
+      "name": "",
+      "title": "Kubernetes Workloads",
+      "description": "",
+      "placeholders": null,
+      "hideToolbar": false,
+      "defaultTime": "",
+      "variables": null,
+      "rows": [
+        {
+          "title": "",
+          "description": "",
+          "if": "",
+          "autoHeight": false,
+          "panels": [
+            {
+              "title": "Workloads",
+              "description": "",
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0,
+              "plugin": {
+                "type": "app",
+                "cluster": "test",
+                "name": "resources",
+                "options": {
+                  "raw": {
+                    "$binary": {
+                      "base64": "eyJjbHVzdGVycyI6WyJcdTAwM2MlICQuY2x1c3RlciAlXHUwMDNlIl0sIm5hbWVzcGFjZXMiOlsieW9wYXNzIl0sInJlc291cmNlcyI6WyJwb2RzIiwic3RhdGVmdWxzZXRzIl0sInNhdGVsbGl0ZXMiOlsiXHUwMDNjJSAkLnNhdGVsbGl0ZSAlXHUwMDNlIl0sInNlbGVjdG9yIjoiYXBwPW1vbmdvZGItcnMifQ==",
+                      "subType": "00"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "cluster": "test",
+      "namespace": "kobs",
+      "name": "resource-usage",
+      "title": "Resource Usage",
+      "description": "",
+      "placeholders": {
+        "namespace": "yopass",
+        "pod": "mongodb-rs.*"
+      }
+    },
+    {
+      "cluster": "test",
+      "namespace": "kobs",
+      "name": "mongodb-overview",
+      "title": "MongoDB Overview",
+      "description": "",
+      "placeholders": {
+        "pod": "mongodb-rs.*",
+        "namespace": "yopass"
+      }
+    },
+    {
+      "cluster": "test",
+      "namespace": "kobs",
+      "name": "mongodb-wiredtiger",
+      "title": "MongoDB WiredTiger",
+      "description": "",
+      "placeholders": {
+        "namespace": "yopass",
+        "pod": "mongodb-rs.*"
+      }
+    },
+    {
+      "cluster": "test",
+      "namespace": "kobs",
+      "name": "mongodb-replset",
+      "title": "MongoDB ReplSet",
+      "description": "",
+      "placeholders": {
+        "namespace": "yopass",
+        "pod": "mongodb-rs.*"
+      }
+    },
+    {
+      "cluster": "test",
+      "namespace": "yopass",
+      "name": "",
+      "title": "Logs",
+      "description": "",
+      "placeholders": null,
+      "hideToolbar": false,
+      "defaultTime": "",
+      "variables": null,
+      "rows": [
+        {
+          "title": "",
+          "description": "",
+          "if": "",
+          "autoHeight": false,
+          "panels": [
+            {
+              "title": "Logs",
+              "description": "",
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0,
+              "plugin": {
+                "type": "klogs",
+                "cluster": "test",
+                "name": "klogs",
+                "options": {
+                  "raw": {
+                    "$binary": {
+                      "base64": "eyJxdWVyaWVzIjpbeyJmaWVsZHMiOlsicG9kX25hbWUiLCJsb2ciXSwibmFtZSI6Ik1vbmdvIFNsb3cgUXVlcmllcyIsInF1ZXJ5IjoibmFtZXNwYWNlPSd5b3Bhc3MnIF9hbmRfIGFwcD0nbW9uZ29kYi1ycycgX2FuZF8gY29udGFpbmVyX25hbWU9J21vbmdvZGInIF9hbmRfIGxvZ34nYXBwTmFtZScgX2FuZF8gX25vdF8gbG9nfidvcGxvZy5ycycifSx7ImZpZWxkcyI6WyJwb2RfbmFtZSIsImxvZyJdLCJuYW1lIjoiTW9uZ28gU2xvdyBRdWVyaWVzIChTdG9yYWdlIGFjY2VzcykiLCJxdWVyeSI6Im5hbWVzcGFjZT0neW9wYXNzJyBfYW5kXyBhcHA9J21vbmdvZGItcnMnIF9hbmRfIGNvbnRhaW5lcl9uYW1lPSdtb25nb2RiJyBfYW5kXyBsb2d+J2FwcE5hbWUnIF9hbmRfIGxvZ34nYnl0ZXNSZWFkJyJ9LHsiZmllbGRzIjpbInBvZF9uYW1lIiwibG9nIl0sIm5hbWUiOiJJbnRlcm5hbCBNb25nbyBDb25uZWN0aW9uIEVycm9ycyIsInF1ZXJ5IjoibmFtZXNwYWNlPSd5b3Bhc3MnIF9hbmRfIGFwcD0nbW9uZ29kYi1ycycgX2FuZF8gY29udGFpbmVyX25hbWU9J21vbmdvZGInIF9hbmRfIGxvZ34nUmVzdGFydGluZyBvcGxvZyBxdWVyeSBkdWUgdG8gZXJyb3I6IE5ldHdvcmtJbnRlcmZhY2VFeGNlZWRlZFRpbWVMaW1pdCcifV0sInR5cGUiOiJsb2dzIn0=",
+                      "subType": "00"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

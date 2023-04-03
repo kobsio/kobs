@@ -1,5 +1,5 @@
 import { APIContext, APIError, IAPIContext, IPluginInstance, pluginBasePath, UseQueryWrapper } from '@kobsio/core';
-import { CompareArrows, ContentCopy, MoreVert, OpenInNew } from '@mui/icons-material';
+import { CompareArrows, ContentCopy, MoreVert, OpenInNew, ViewTimeline } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -24,6 +24,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { Flamegraph } from './Flamegraph';
 import { Spans } from './Spans';
 
 import { formatTraceTime, getColors, ITrace, transformTraceData } from '../utils/utils';
@@ -31,8 +32,10 @@ import { formatTraceTime, getColors, ITrace, transformTraceData } from '../utils
 export const TraceActions: FunctionComponent<{
   instance: IPluginInstance;
   isDrawerAction?: boolean;
+  setView: (view: 'timeline' | 'flamegraph') => void;
   trace: ITrace;
-}> = ({ instance, trace, isDrawerAction = false }) => {
+  view: 'timeline' | 'flamegraph';
+}> = ({ instance, trace, view, setView, isDrawerAction = false }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -71,6 +74,12 @@ export const TraceActions: FunctionComponent<{
       )}
 
       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
+        <MenuItem onClick={() => (view === 'timeline' ? setView('flamegraph') : setView('timeline'))}>
+          <ListItemIcon>
+            <ViewTimeline fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{view === 'timeline' ? 'Trace Flamegraph' : 'Trace Timeline'}</ListItemText>
+        </MenuItem>
         <MenuItem component={Link} to={`${pluginBasePath(instance)}/trace/${trace.traceID}`}>
           <ListItemIcon>
             <OpenInNew fontSize="small" />
@@ -189,6 +198,8 @@ const Trace: FunctionComponent<{ colors: Record<string, string>; instance: IPlug
   colors,
   trace,
 }) => {
+  const [view, setView] = useState<'timeline' | 'flamegraph'>('timeline');
+
   return (
     <Stack>
       <Grid justifyContent="space-between" container={true} spacing={2}>
@@ -202,7 +213,7 @@ const Trace: FunctionComponent<{ colors: Record<string, string>; instance: IPlug
         </Grid>
 
         <Grid item={true} xs={2} sx={{ textAlign: 'right' }}>
-          <TraceActions instance={instance} trace={trace} />
+          <TraceActions instance={instance} trace={trace} view={view} setView={setView} />
         </Grid>
 
         <Grid item={true} xs={12}>
@@ -248,7 +259,11 @@ const Trace: FunctionComponent<{ colors: Record<string, string>; instance: IPlug
       </Box>
 
       <Box sx={{ bgcolor: 'background.paper', height: 'calc(100vh - 96px - 74px - 50px)', p: 4 }}>
-        <Spans instance={instance} colors={colors} trace={trace} />
+        {view === 'timeline' ? (
+          <Spans instance={instance} colors={colors} trace={trace} />
+        ) : (
+          <Flamegraph instance={instance} colors={colors} trace={trace} />
+        )}
       </Box>
     </Stack>
   );

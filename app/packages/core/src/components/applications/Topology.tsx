@@ -172,7 +172,7 @@ export const TopologyGraph: FunctionComponent<ITopologyGraphProps> = ({ edges, n
           },
         ]);
       }
-    } catch (err) {}
+    } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size]);
 

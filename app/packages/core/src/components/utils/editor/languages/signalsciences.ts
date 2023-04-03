@@ -84,7 +84,6 @@ export const language: IMonarchLanguage = {
   //
   // The default classes can be found here: https://microsoft.github.io/monaco-editor/monarch-static.html
   tokenizer: {
-    numbers: [[/((\d+(\.\d*)?)|(\.\d+))([eE][\-+]?\d+)?/, 'number']],
     root: [
       { include: '@whitespace' },
       { include: '@numbers' },
@@ -101,7 +100,7 @@ export const language: IMonarchLanguage = {
         },
       ],
       [
-        /[a-zA-Z_]\w*/,
+        /[a-zA-Z:]\w*/,
         {
           cases: {
             '@default': 'identifier',
@@ -110,15 +109,18 @@ export const language: IMonarchLanguage = {
         },
       ],
     ],
+    // "root" must be the first element in the object. If it's not, the syntax highlighting breaks.
+    // eslint-disable-next-line sort-keys
+    numbers: [[/((\d+(\.\d*)?)|(\.\d+))([eE][-+]?\d+)?/, 'number']],
     string: [
       [/[^']+/, 'string'],
       [/''/, 'string'],
       [/'/, { next: '@pop', token: 'string' }],
     ],
     stringDouble: [
-      [/[^"]+/, 'invalid'],
-      [/""/, 'invalid'],
-      [/"/, { next: '@pop', token: 'invalid' }],
+      [/[^"]+/, 'string'],
+      [/""/, 'string'],
+      [/"/, { next: '@pop', token: 'string' }],
     ],
     whitespace: [[/\s+/, 'white']],
   },

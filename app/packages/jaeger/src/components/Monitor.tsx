@@ -959,6 +959,7 @@ const MonitorOperationsToolbar: FunctionComponent<{ operation: string; setOperat
     e.preventDefault();
     setOperation(internalOperation);
   };
+
   const handleClear = () => {
     setInternalOperation('');
     setOperation('');
@@ -969,7 +970,7 @@ const MonitorOperationsToolbar: FunctionComponent<{ operation: string; setOperat
   }, [operation]);
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
+    <Box sx={{ mb: 6 }} component="form" onSubmit={handleSubmit}>
       <TextField
         size="small"
         variant="outlined"

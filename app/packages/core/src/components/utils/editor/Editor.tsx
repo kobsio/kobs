@@ -1,8 +1,9 @@
 import MonacoEditorReact, { Monaco } from '@monaco-editor/react';
+import { Box } from '@mui/material';
 import * as monaco from 'monaco-editor';
 import { FunctionComponent, useState } from 'react';
 
-import { setupPromQL, setupMonaco, setupKlogs, setupSignalSciences } from './monaco';
+import { setupPromQL, setupMonaco, setupKlogs, setupMongoDB, setupSignalSciences } from './monaco';
 import { muiTheme, nordTheme } from './themes';
 
 import { useLatest } from '../../../utils/hooks/useLatest';
@@ -28,6 +29,20 @@ export const Editor: FunctionComponent<IEditorProps> = ({ language, readOnly = f
     monaco.editor.defineTheme('nord', nordTheme);
   };
 
+  const handleOnMount = (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    editor.addCommand(monaco.KeyCode.F1, () => {
+      // Disable command pallete, by "stealing" its keybindings.
+      // See: https://github.com/microsoft/monaco-editor/issues/419
+    });
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF, () => {
+      // Since the find action is "disabled" in the `MUIEditor` component we have to re-add the command here. If we
+      // wouldn't do this the find action would not work in the `Editor` component, after a user used the `MUIEditor`
+      // component.
+      editor.getAction('actions.find')?.run();
+    });
+  };
+
   return (
     <MonacoEditorReact
       theme="nord"
@@ -35,6 +50,7 @@ export const Editor: FunctionComponent<IEditorProps> = ({ language, readOnly = f
       language={language}
       value={value}
       beforeMount={handleBeforeMount}
+      onMount={handleOnMount}
       onChange={onChange}
       options={{
         fontFamily: 'monospace',
@@ -81,6 +97,9 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
     monaco.editor.defineTheme('mui', muiTheme);
 
     switch (language) {
+      case 'mongodb':
+        setupMongoDB(monaco, loadCompletionItems);
+        break;
       case 'promql':
         setupPromQL(monaco, loadCompletionItems);
         break;
@@ -118,39 +137,55 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
   };
 
   return (
-    <MonacoEditorReact
-      theme="mui"
-      height={height}
-      language={language}
-      value={value}
-      beforeMount={handleBeforeMount}
-      onMount={handleOnMount}
-      onChange={onChange}
-      options={{
-        cursorWidth: 1,
-        folding: false,
-        fontFamily: 'monospace',
-        fontSize: 13,
-        glyphMargin: false,
-        lineDecorationsWidth: 12,
-        lineHeight: 18.6875,
-        lineNumbers: 'off',
-        lineNumbersMinChars: 0,
-        minimap: {
-          enabled: false,
+    <Box
+      sx={{
+        '.kobsio-monaco-editor': {
+          height: '100%',
+          position: 'absolute',
+          width: '100%',
         },
-        overviewRulerLanes: 0,
-        padding: { bottom: 8.5, top: 8.5 },
-        readOnly: readOnly,
-        renderLineHighlight: 'none',
-        scrollBeyondLastLine: false,
-        scrollbar: {
-          handleMouseWheel: false,
-          horizontal: 'hidden',
-          vertical: 'hidden',
-        },
-        wordWrap: 'on',
+
+        height: '100%',
+        position: 'relative',
+        width: '100%',
       }}
-    />
+    >
+      <MonacoEditorReact
+        theme="mui"
+        height={height}
+        language={language}
+        value={value}
+        beforeMount={handleBeforeMount}
+        onMount={handleOnMount}
+        onChange={onChange}
+        className="kobsio-monaco-editor"
+        options={{
+          contextmenu: false,
+          cursorWidth: 1,
+          folding: false,
+          fontFamily: 'monospace',
+          fontSize: 13,
+          glyphMargin: false,
+          lineDecorationsWidth: 12,
+          lineHeight: 18.6875,
+          lineNumbers: 'off',
+          lineNumbersMinChars: 0,
+          minimap: {
+            enabled: false,
+          },
+          overviewRulerLanes: 0,
+          padding: { bottom: 8.5, top: 8.5 },
+          readOnly: readOnly,
+          renderLineHighlight: 'none',
+          scrollBeyondLastLine: false,
+          scrollbar: {
+            handleMouseWheel: false,
+            horizontal: 'hidden',
+            vertical: 'hidden',
+          },
+          wordWrap: 'on',
+        }}
+      />
+    </Box>
   );
 };

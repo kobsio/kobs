@@ -1,0 +1,5 @@
+{"_id": "/cluster/cluster1/namespace/default/name/app1", "cluster": "cluster1", "namespace": "default", "name": "app1", "tags": ["tag1", "tag2"], "teams": ["team1"]}
+{"_id": "/cluster/cluster1/namespace/default/name/app2", "cluster": "cluster1", "namespace": "default", "name": "app2", "tags": ["tag1", "tag2"], "teams": ["team2"]}
+{"_id": "/cluster/cluster1/namespace/default/name/app3", "cluster": "cluster1", "namespace": "default", "name": "app3", "tags": ["tag3", "tag4"], "teams": ["team1"]}
+{"_id": "/cluster/cluster2/namespace/default/name/app1", "cluster": "cluster2", "namespace": "default", "name": "app1", "tags": ["tag1", "tag2"], "teams": ["team1"]}
+{"_id": "/cluster/cluster2/namespace/default/name/app2", "cluster": "cluster2", "namespace": "default", "name": "app2", "tags": ["tag1", "tag2"], "teams": ["team2"]}

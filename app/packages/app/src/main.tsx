@@ -4,7 +4,9 @@ import Grafana from '@kobsio/grafana';
 import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
 import Jaeger from '@kobsio/jaeger';
+import Kiali from '@kobsio/kiali';
 import Klogs from '@kobsio/klogs';
+import MongoDB from '@kobsio/mongodb';
 import Opsgenie from '@kobsio/opsgenie';
 import Prometheus from '@kobsio/prometheus';
 import RSS from '@kobsio/rss';
@@ -19,9 +21,26 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import '@kobsio/core/dist/style.css';
+import '@kobsio/jaeger/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <App plugins={[Flux, Grafana, Harbor, Helm, Jaeger, Klogs, Opsgenie, Prometheus, RSS, SignalSciences, SonarQube]} />
+    <App
+      plugins={[
+        Flux,
+        Grafana,
+        Harbor,
+        Helm,
+        Jaeger,
+        Kiali,
+        Klogs,
+        MongoDB,
+        Opsgenie,
+        Prometheus,
+        RSS,
+        SignalSciences,
+        SonarQube,
+      ]}
+    />
   </StrictMode>,
 );
