@@ -42,7 +42,7 @@ describe('convertToTimeseriesChartData', () => {
       {
         data: [
           {
-            color: getChartColor(0),
+            color: getChartColor(2),
             series: "bar - count - container_name ~ 'grafana'",
             x: new Date(data.rows[1].time),
             y: 80,
@@ -53,7 +53,7 @@ describe('convertToTimeseriesChartData', () => {
       {
         data: [
           {
-            color: getChartColor(1),
+            color: getChartColor(3),
             series: "bar - count - container_name ~ 'prometheus'",
             x: new Date(data.rows[1].time),
             y: 160,

@@ -1,6 +1,18 @@
 import { Editor } from '@kobsio/core';
 import { ZoomIn, ZoomOut, SavedSearch, TableChart } from '@mui/icons-material';
-import { TableRow, TableCell, Tabs, Tab, Box, IconButton, Stack, Table, TableBody, Typography } from '@mui/material';
+import {
+  TableRow,
+  TableCell,
+  Tabs,
+  Tab,
+  Box,
+  IconButton,
+  Stack,
+  Table,
+  TableBody,
+  Typography,
+  Tooltip,
+} from '@mui/material';
 import { FunctionComponent, useState } from 'react';
 
 import { ILogsTableHandlers, ILogsTableOptions } from './LogsTable';
@@ -37,35 +49,45 @@ const DocumentDetailsTableView: FunctionComponent<IDocumentDetailsTableViewProps
                       opacity: 0,
                     }}
                   >
-                    <IconButton
-                      aria-label="add EQ field filter"
-                      size="small"
-                      onClick={() => handlers.onAddFilter(`${key} = '${value}'`)}
-                    >
-                      <ZoomIn sx={{ fontSize: 16 }} />
-                    </IconButton>
-                    <IconButton
-                      aria-label="add NEQ field filter"
-                      size="small"
-                      onClick={() => handlers.onAddFilter(`${key} != '${value}'`)}
-                    >
-                      <ZoomOut sx={{ fontSize: 16 }} />
-                    </IconButton>
-                    <IconButton
-                      aria-label="add EXISTS field filter"
-                      size="small"
-                      onClick={() => handlers.onAddFilter(`_exists_ ${key}`)}
-                    >
-                      <SavedSearch sx={{ fontSize: 16 }} />
-                    </IconButton>
-                    {key !== 'timestamp' && (
+                    <Tooltip title={`add filter: ${key} = '${value}'`}>
                       <IconButton
-                        aria-label="toggle field column"
+                        aria-label="add EQ field filter"
                         size="small"
-                        onClick={() => handlers.onSelectField(key)}
+                        onClick={() => handlers.onAddFilter(`${key} = '${value}'`)}
                       >
-                        <TableChart sx={{ fontSize: 16 }} />
+                        <ZoomIn sx={{ fontSize: 16 }} />
                       </IconButton>
+                    </Tooltip>
+                    <Tooltip title={`add filter: ${key} != '${value}'`}>
+                      <IconButton
+                        aria-label="add NEQ field filter"
+                        size="small"
+                        onClick={() => handlers.onAddFilter(`${key} != '${value}'`)}
+                      >
+                        <ZoomOut sx={{ fontSize: 16 }} />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title={`add filter: _exists_ ${key}`}>
+                      <IconButton
+                        aria-label="add EXISTS field filter"
+                        size="small"
+                        onClick={() => handlers.onAddFilter(`_exists_ ${key}`)}
+                      >
+                        <SavedSearch sx={{ fontSize: 16 }} />
+                      </IconButton>
+                    </Tooltip>
+
+                    {key !== 'timestamp' && (
+                      <Tooltip title={`toggle column ${key}`}>
+                        <IconButton
+                          aria-label="toggle field column"
+                          size="small"
+                          onClick={() => handlers.onSelectField(key)}
+                        >
+                          <TableChart sx={{ fontSize: 16 }} />
+                        </IconButton>
+                      </Tooltip>
                     )}
                   </Stack>
                 </TableCell>

@@ -77,7 +77,11 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       }
 
       const order = orderMapping.shortToLong[search.order];
-      const path = `/api/plugins/klogs/logs?query=${search.query}&order=${order}&orderBy=${search.orderBy}&timeStart=${timeStart}&timeEnd=${timeEnd}`;
+      const path = `/api/plugins/klogs/logs?query=${encodeURIComponent(search.query)}&order=${encodeURIComponent(
+        order,
+      )}&orderBy=${encodeURIComponent(search.orderBy)}&timeStart=${encodeURIComponent(
+        timeStart,
+      )}&timeEnd=${encodeURIComponent(timeEnd)}`;
       return client.get<ILogsData>(path, {
         headers: {
           'x-kobs-cluster': instance.cluster,
@@ -88,7 +92,7 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   );
 
   const handleSearch = (query: string) => {
-    return setSearch({ fields: search.fields, query: query });
+    return setSearch({ fields: search.fields, page: 1, query: query });
   };
 
   const handleChangeTimeframe = (payload: IChangeTimeframePayload) => {

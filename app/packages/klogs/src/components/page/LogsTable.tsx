@@ -38,18 +38,18 @@ const LogRow: FunctionComponent<ILogRowProps> = ({ fields, handlers, options, ro
   return (
     <>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell width={12}>
+        <TableCell width={12} sx={{ verticalAlign: 'top' }}>
           <IconButton aria-label="expand row" size="small" onClick={toggleOpen}>
             {open ? <KeyboardArrowRight /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.timestamp}</TableCell>
+        <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap' }}>{row.timestamp}</TableCell>
 
         {fields.length === 0 ? (
           <RowPreview row={row} />
         ) : (
           fields.map((field) => (
-            <TableCell key={field}>
+            <TableCell key={field} sx={{ verticalAlign: 'top' }}>
               <Typography sx={{ wordBreak: 'break-all' }}>{row[field]}</Typography>
             </TableCell>
           ))

@@ -8,7 +8,17 @@ import {
   useQueryState,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { FormControl, MenuItem, Select, TextField, Stack, Card, InputLabel } from '@mui/material';
+import {
+  createFilterOptions,
+  FormControl,
+  MenuItem,
+  Select,
+  TextField,
+  Stack,
+  Card,
+  InputLabel,
+  FilterOptionsState,
+} from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
@@ -23,6 +33,7 @@ import { chartOptionsToRequestOptions } from '../utils/aggregation';
 
 const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);
+  const filter = createFilterOptions<string>();
   const [lastSearch, setLastSeach] = useState(now());
   const [search, setSearch] = useQueryState<IAggregationSearch>({
     chart: 'pie',
@@ -111,6 +122,11 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     }
   };
 
+  const filterOptions = (options: string[], state: FilterOptionsState<string>) => {
+    const filtered = filter(options, state);
+    return filtered.slice(0, 64);
+  };
+
   return (
     <Page
       title="klogs"
@@ -159,6 +175,7 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                   value={search.sliceBy}
                   onChange={(e, value) => setSearch({ sliceBy: value || '' })}
                   options={columnSuggestions || []}
+                  filterOptions={filterOptions}
                   renderInput={(params) => <TextField {...params} label="Slize By" />}
                 />
 
@@ -227,6 +244,7 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                       ''
                     }
                     onChange={(e, value) => setSearch({ horizontalAxisField: value || '' })}
+                    filterOptions={filterOptions}
                     options={columnSuggestions || []}
                     renderInput={(params) => (
                       <TextField
@@ -310,6 +328,7 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                     id="verticalAxisField"
                     value={search.verticalAxisField}
                     onChange={(e, value) => setSearch({ verticalAxisField: value || '' })}
+                    filterOptions={filterOptions}
                     options={columnSuggestions || []}
                     renderInput={(params) => <TextField {...params} label="Vertical axis field" />}
                   />
@@ -323,6 +342,7 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
                   id="breakDownByFields"
                   value={search.breakDownByFields}
                   onChange={(e, value) => setSearch({ breakDownByFields: value || [] })}
+                  filterOptions={filterOptions}
                   options={columnSuggestions || []}
                   renderInput={(params) => <TextField {...params} label="Break down by fields" />}
                 />

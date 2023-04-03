@@ -5,7 +5,7 @@ import {
   IPluginPanelProps,
   PluginPanelError,
 } from '@kobsio/core';
-import { Card, Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import queryString from 'query-string';
 import { FunctionComponent, useState } from 'react';
 
@@ -14,7 +14,7 @@ import LogsQueryView from './LogsQueryView';
 import isString from '../utils/isString';
 
 export interface IQuery {
-  fields: string[];
+  fields?: string[];
   name: string;
   query: string;
 }
@@ -23,20 +23,6 @@ export interface IOptions {
   queries: IQuery[];
   type: 'logs';
 }
-
-interface ITabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-const TabPanel: FunctionComponent<ITabPanelProps> = ({ index, value, children }) => {
-  return (
-    <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`}>
-      {value === index && children}
-    </div>
-  );
-};
 
 // utility for creating a uri that directs the user to the correct klogs instance, where
 // both the query and fields are already selected
@@ -65,12 +51,14 @@ const isValid = (options?: IOptions): options is IOptions => {
   }
 
   for (const query of options.queries) {
-    if (!Array.isArray(query.fields)) {
-      return false;
-    }
-    for (const field of query.fields) {
-      if (!isString(field)) {
+    if (typeof query.fields !== 'undefined') {
+      if (!Array.isArray(query.fields)) {
         return false;
+      }
+      for (const field of query.fields) {
+        if (!isString(field)) {
+          return false;
+        }
       }
     }
 
@@ -160,23 +148,21 @@ const LogsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
         />
       }
     >
-      <Card sx={{ height: '100%', width: '100%' }}>
-        <Tabs
-          value={tab}
-          onChange={(e, value: number) => setTab(value)}
-          aria-label="selects the search query"
-          sx={{ mb: 2 }}
-        >
-          {options.queries.map((query, i) => (
-            <Tab key={i} label={query.name} id={query.name} aria-controls={`tab-query-${i}`} />
-          ))}
-        </Tabs>
+      <Tabs
+        value={tab}
+        onChange={(e, value: number) => setTab(value)}
+        aria-label="selects the search query"
+        sx={{ mb: 2 }}
+      >
         {options.queries.map((query, i) => (
-          <TabPanel key={i} index={i} value={tab}>
-            <LogsQueryView instance={instance} query={query} setTimes={setTimes} times={times} />
-          </TabPanel>
+          <Tab key={i} label={query.name} id={query.name} aria-controls={`tab-query-${i}`} />
         ))}
-      </Card>
+      </Tabs>
+      {options.queries.map((query, i) => (
+        <Box key={i} hidden={tab !== i}>
+          {tab === i && <LogsQueryView instance={instance} query={query} setTimes={setTimes} times={times} />}
+        </Box>
+      ))}
     </PluginPanel>
   );
 };

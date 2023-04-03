@@ -82,7 +82,7 @@ const LogsQueryView: FunctionComponent<ILogsQueryViewProps> = ({ instance, query
         </Box>
         <Card>
           <LogsTable
-            fields={query.fields}
+            fields={query.fields || []}
             options={{ hideActionColumn: true }}
             order={order}
             orderBy={orderBy}

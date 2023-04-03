@@ -58,7 +58,6 @@ export const convertToTimeseriesChartData = (data: IAggregationData, filters: st
     .filter((value, index, self) => self.indexOf(value) === index);
 
   const series: ISeries[] = [];
-
   for (const label of labels) {
     const rows = data.rows.filter((row) => label === getLabel(row, labelColumns));
     const seriesData: ISeriesDatum[][] = dataColumns.map(() => []);
@@ -79,12 +78,9 @@ export const convertToTimeseriesChartData = (data: IAggregationData, filters: st
       const name = label
         ? `${label} - ${formatFilter(dataColumns[i], filters)}`
         : `${formatFilter(dataColumns[i], filters)}`;
-      const color = getChartColor(i);
 
-      const data = seriesData[i];
-      for (let di = 0; di < data.length; di++) {
-        data[di].color = color;
-        data[di].series = name;
+      for (let di = 0; di < seriesData[i].length; di++) {
+        seriesData[i][di].series = name;
       }
 
       series.push({
@@ -93,6 +89,14 @@ export const convertToTimeseriesChartData = (data: IAggregationData, filters: st
           ? `${label} - ${formatFilter(dataColumns[i], filters)}`
           : `${formatFilter(dataColumns[i], filters)}`,
       });
+    }
+  }
+
+  // assign color values retroactively
+  for (let i = 0; i < series.length; i++) {
+    const color = getChartColor(i);
+    for (let j = 0; j < series[i].data.length; j++) {
+      series[i].data[j].color = color;
     }
   }
 

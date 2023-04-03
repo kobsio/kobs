@@ -69,6 +69,7 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
                   sx={{ p: 0 }}
                   size="small"
                   disabled={i === selectedFields.length - 1}
+                  disableRipple={true}
                   onClick={() => {
                     onSwapItem(i, i + 1);
                   }}
@@ -80,6 +81,7 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
                   sx={{ p: 0 }}
                   size="small"
                   disabled={i === 0}
+                  disableRipple={true}
                   onClick={() => {
                     onSwapItem(i - 1, i);
                   }}
@@ -90,13 +92,20 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
                   aria-label="copy"
                   sx={{ p: 0 }}
                   size="small"
+                  disableRipple={true}
                   onClick={() => {
                     navigator.clipboard.writeText(field);
                   }}
                 >
                   <ContentCopy sx={{ fontSize: 14 }} />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={() => onToggleField(field)} sx={{ p: 0 }} size="small">
+                <IconButton
+                  aria-label="delete"
+                  disableRipple={true}
+                  onClick={() => onToggleField(field)}
+                  sx={{ p: 0 }}
+                  size="small"
+                >
                   <Delete sx={{ fontSize: 14 }} />
                 </IconButton>
               </Stack>
@@ -111,7 +120,7 @@ const LogsFieldsList: FunctionComponent<ILogsFieldsList> = ({ fields, selectedFi
         </Box>
         {fields
           .filter((field) => field !== 'timestamp')
-          .filter((field) => field.startsWith(search))
+          .filter((field) => field.includes(search))
           .map((field) => (
             <ListItem key={field} disablePadding={true}>
               <ListItemButton onClick={() => onToggleField(field)} aria-label={field}>
