@@ -5,6 +5,7 @@ import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
 import Jaeger from '@kobsio/jaeger';
 import Kiali from '@kobsio/kiali';
+import Klogs from '@kobsio/klogs';
 import MongoDB from '@kobsio/mongodb';
 import Opsgenie from '@kobsio/opsgenie';
 import Prometheus from '@kobsio/prometheus';
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         Helm,
         Jaeger,
         Kiali,
+        Klogs,
         MongoDB,
         Opsgenie,
         Prometheus,

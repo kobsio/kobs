@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import * as monaco from 'monaco-editor';
 import { FunctionComponent, useState } from 'react';
 
-import { setupPromQL, setupMonaco, setupMongoDB, setupSignalSciences } from './monaco';
+import { setupPromQL, setupMonaco, setupKlogs, setupMongoDB, setupSignalSciences } from './monaco';
 import { muiTheme, nordTheme } from './themes';
 
 import { useLatest } from '../../../utils/hooks/useLatest';
@@ -56,6 +56,9 @@ export const Editor: FunctionComponent<IEditorProps> = ({ language, readOnly = f
         fontFamily: 'monospace',
         readOnly: readOnly,
         scrollBeyondLastLine: false,
+        scrollbar: {
+          alwaysConsumeMouseWheel: false,
+        },
       }}
     />
   );
@@ -102,6 +105,9 @@ export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
         break;
       case 'signalsciences':
         setupSignalSciences(monaco, loadCompletionItems);
+        break;
+      case 'klogs':
+        setupKlogs(monaco, loadCompletionItems);
         break;
       default:
         break;

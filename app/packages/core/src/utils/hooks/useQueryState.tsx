@@ -99,5 +99,5 @@ export const useQueryState = <S extends QueryState = QueryState>(initialState?: 
     }
   };
 
-  return [targetQuery as S, useMemoizedFn(setState)] as const;
+  return [targetQuery as S, useMemoizedFn(setState) as (s: React.SetStateAction<Partial<S>>) => void] as const;
 };
