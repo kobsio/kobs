@@ -2,6 +2,7 @@ import { APIContext, APIError, IPluginInstance, PluginPanel, UseQueryWrapper } f
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 
+import SQLChartPie from './SQLChartPie';
 import SQLChartSinglestats from './SQLChartSinglestats';
 import { IChart, ISQLData } from './types';
 
@@ -49,6 +50,14 @@ const PanelChartView: React.FunctionComponent<ISQLChartProps> = ({
         noDataTitle="No rows found"
         noDataMessage="There were no rows found for the configured query"
       >
+        {chart.type === 'pie' && (
+          <SQLChartPie
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            data={queryResult.data!}
+            pieLabelColumn={chart.pieLabelColumn}
+            pieValueColumn={chart.pieValueColumn}
+          />
+        )}
         {chart.type === 'singlestat' && (
           <SQLChartSinglestats
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
