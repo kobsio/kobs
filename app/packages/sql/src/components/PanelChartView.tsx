@@ -2,6 +2,7 @@ import { APIContext, APIError, IPluginInstance, PluginPanel, UseQueryWrapper } f
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 
+import SQLGenericChart from './SQLChartGeneric';
 import SQLChartPie from './SQLChartPie';
 import SQLChartSinglestats from './SQLChartSinglestats';
 import { IChart, ISQLData } from './types';
@@ -66,6 +67,20 @@ const PanelChartView: React.FunctionComponent<ISQLChartProps> = ({
             yAxisUnit={chart.yAxisUnit}
             legend={chart.legend}
             thresholds={chart.thresholds}
+          />
+        )}
+        {(chart.type === 'area' || chart.type === 'bar' || chart.type === 'line') && (
+          <SQLGenericChart
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            data={queryResult.data!}
+            type={chart.type}
+            xAxisColumn={chart.xAxisColumn}
+            yAxisColumns={chart.yAxisColumns}
+            xAxisType={chart.xAxisType}
+            legend={chart.legend}
+            yAxisGroup={chart.yAxisGroup}
+            yAxisStacked={chart.yAxisStacked}
+            yAxisUnit={chart.yAxisUnit}
           />
         )}
       </UseQueryWrapper>

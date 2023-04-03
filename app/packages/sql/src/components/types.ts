@@ -86,6 +86,8 @@ export interface IMetrics {
 }
 
 export interface IDatum {
+  color: string;
+  name: string;
   x: number | Date;
   y: number | null;
 }

@@ -53,10 +53,10 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
         error={queryResult.error}
         isLoading={queryResult.isLoading}
         refetch={queryResult.refetch}
-        errorTitle="Failed to load applications"
+        errorTitle="Failed to load results for your query"
         isNoData={!queryResult.data}
-        noDataTitle="No logs found"
-        noDataMessage="There were no logs found for your search query"
+        noDataTitle="No rows found"
+        noDataMessage="There were no rows found for your search query"
       >
         <Card
           sx={{
