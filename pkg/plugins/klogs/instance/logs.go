@@ -1,9 +1,10 @@
-package klogs
+package instance
 
 import (
 	"context"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
@@ -11,6 +12,39 @@ import (
 
 	"go.uber.org/zap"
 )
+
+func (i *instance) parseOrder(order, orderBy string) string {
+	if order == "" || orderBy == "" {
+		return "timestamp DESC"
+	}
+
+	if order == "ascending" {
+		order = "ASC"
+	} else {
+		order = "DESC"
+	}
+
+	orderBy = strings.TrimSpace(orderBy)
+	if utils.Contains(i.defaultFields, orderBy) || utils.Contains(i.materializedColumns, orderBy) {
+		return fmt.Sprintf("%s %s", orderBy, order)
+	}
+
+	return fmt.Sprintf("fields_string['%s'] %s, fields_number['%s'] %s", orderBy, order, orderBy, order)
+}
+
+// getBucketTimes determines the start and end time of an bucket. This is necessary, because the first and last bucket
+// time can be outside of the user defined time range.
+func getBucketTimes(interval, bucketTime, timeStart, timeEnd int64) (int64, int64) {
+	if bucketTime < timeStart {
+		return timeStart, timeStart + interval - (timeStart - bucketTime)
+	}
+
+	if bucketTime+interval > timeEnd {
+		return bucketTime, bucketTime + timeEnd - bucketTime
+	}
+
+	return bucketTime, bucketTime + interval
+}
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
@@ -143,7 +177,7 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	// Now we are building and executing our sql query. We always return all fields from the logs table, where the
 	// timestamp of a row is within the selected query range and the parsed query. We also order all the results by the
 	// timestamp field and limiting the results / using a offset for pagination.
-	sqlQueryRawLogs := fmt.Sprintf("SELECT %s FROM %s.logs WHERE (%s) %s ORDER BY %s LIMIT %d SETTINGS skip_unavailable_shards = 1", defaultColumns, i.database, timeConditions, conditions, parsedOrder, limit)
+	sqlQueryRawLogs := fmt.Sprintf("SELECT %s FROM %s.logs WHERE (%s) %s ORDER BY %s LIMIT %d SETTINGS skip_unavailable_shards = 1", strings.Join(defaultFieldsSQL, ", "), i.database, timeConditions, conditions, parsedOrder, limit)
 	log.Debug(ctx, "SQL query raw logs", zap.String("query", sqlQueryRawLogs))
 	rowsRawLogs, err := i.querier.QueryContext(ctx, sqlQueryRawLogs)
 	if err != nil {

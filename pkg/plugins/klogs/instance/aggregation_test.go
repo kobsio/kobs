@@ -1,4 +1,4 @@
-package klogs
+package instance
 
 import (
 	"context"
@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/plugins/klogs/instance/parser"
+
 	"github.com/golang/mock/gomock"
-	"github.com/kobsio/kobs/pkg/klogs/parser"
 	"github.com/stretchr/testify/require"
 )
 
@@ -53,7 +54,6 @@ func TestGetAggregation(t *testing.T) {
 	t.Run("should be able to aggregate logs when pie chart is selected", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace", "container_name", "app"}
 		instance := instance{
 			database:      "logs",
 			defaultFields: defaultFields,
@@ -137,7 +137,6 @@ func TestGetAggregation(t *testing.T) {
 	t.Run("should be able to aggregate logs when bar chart is selected", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace", "container_name", "app", "timestamp"}
 		instance := instance{
 			querier:   querier,
 			database:  "logs",
@@ -202,7 +201,6 @@ func TestGetAggregation(t *testing.T) {
 	t.Run("should be able to aggregate with bar chart with the option to break down by fields", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace", "container_name", "app", "timestamp"}
 		instance := instance{
 			querier:       querier,
 			database:      "logs",
@@ -241,7 +239,6 @@ func TestGetAggregation(t *testing.T) {
 	t.Run("should be able to aggregate with bar chart with the option to break down by filters", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace", "container_name", "app", "timestamp"}
 		instance := instance{
 			querier:       querier,
 			database:      "logs",
@@ -281,7 +278,6 @@ func TestGetAggregation(t *testing.T) {
 	t.Run("should be able to aggregate as a timeseries", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace", "container_name", "app", "timestamp"}
 		instance := instance{
 			querier:       querier,
 			database:      "logs",

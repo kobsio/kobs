@@ -1,6 +1,6 @@
-package klogs
+package instance
 
-//go:generate mockgen -source=instance.go -destination=./querier_mock.go -package=klogs Instance, Querier, Rows
+//go:generate mockgen -source=instance.go -destination=./instance_mock.go -package=instance Instance, Querier, Rows
 
 import (
 	"context"
@@ -10,13 +10,16 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
-	"github.com/kobsio/kobs/pkg/klogs/parser"
+	"github.com/kobsio/kobs/pkg/plugins/klogs/instance/parser"
 	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"
 )
+
+var defaultFields = []string{"timestamp", "cluster", "namespace", "app", "pod_name", "container_name", "host", "log"}
+var defaultFieldsSQL = []string{"timestamp", "cluster", "namespace", "app", "pod_name", "container_name", "host", "fields_string", "fields_number", "log"}
 
 // Config is the structure of the configuration for a single klogs instance.
 type Config struct {
@@ -227,14 +230,13 @@ func newQuerierFromConfig(config Config) Querier {
 }
 
 // New returns a new klogs instance for the given configuration.
-func NewInstance(name string, options map[string]any) (Instance, error) {
+func New(name string, options map[string]any) (Instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {
 		return nil, err
 	}
 
-	defaultFields := []string{"timestamp", "cluster", "namespace", "app", "pod_name", "container_name", "host", "log"}
 	instance := &instance{
 		name:                name,
 		database:            config.Database,
