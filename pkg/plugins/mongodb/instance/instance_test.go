@@ -65,6 +65,18 @@ func TestGetDBCollectionStats(t *testing.T) {
 	require.Equal(t, int64(5), stats.Count)
 }
 
+func TestGetDBCollectionIndexes(t *testing.T) {
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+
+	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
+	require.NoError(t, err)
+
+	indexes, err := instance.GetDBCollectionIndexes(context.Background(), "applications")
+	require.NoError(t, err)
+	require.Equal(t, []primitive.D{{primitive.E{Key: "v", Value: int32(2)}, primitive.E{Key: "key", Value: primitive.D{primitive.E{Key: "_id", Value: int32(1)}}}, primitive.E{Key: "name", Value: "_id_"}}}, indexes)
+}
+
 func TestFind(t *testing.T) {
 	uri, container := setupDatabase(t)
 	defer gnomock.Stop(container)
@@ -72,8 +84,8 @@ func TestFind(t *testing.T) {
 	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
 	require.NoError(t, err)
 
-	t.Run("should return error for invalid query", func(t *testing.T) {
-		_, err := instance.Find(context.Background(), "applications", `invalid query`, "", 50)
+	t.Run("should return error for invalid filter", func(t *testing.T) {
+		_, err := instance.Find(context.Background(), "applications", `invalid filter`, "", 50)
 		require.Error(t, err)
 	})
 
@@ -99,8 +111,8 @@ func TestCount(t *testing.T) {
 	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
 	require.NoError(t, err)
 
-	t.Run("should return error for invalid query", func(t *testing.T) {
-		_, err := instance.Count(context.Background(), "applications", `invalid query`)
+	t.Run("should return error for invalid filter", func(t *testing.T) {
+		_, err := instance.Count(context.Background(), "applications", `invalid filter`)
 		require.Error(t, err)
 	})
 
@@ -118,8 +130,8 @@ func TestFindOne(t *testing.T) {
 	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
 	require.NoError(t, err)
 
-	t.Run("should return error for invalid query", func(t *testing.T) {
-		_, err := instance.FindOne(context.Background(), "applications", `invalid query`)
+	t.Run("should return error for invalid filter", func(t *testing.T) {
+		_, err := instance.FindOne(context.Background(), "applications", `invalid filter`)
 		require.Error(t, err)
 	})
 
@@ -127,6 +139,115 @@ func TestFindOne(t *testing.T) {
 		douments, err := instance.FindOne(context.Background(), "applications", `{"name": "app1"}`)
 		require.NoError(t, err)
 		require.Equal(t, &primitive.M{"_id": "/cluster/cluster1/namespace/default/name/app1", "cluster": "cluster1", "name": "app1", "namespace": "default", "tags": primitive.A{"tag1", "tag2"}, "teams": primitive.A{"team1"}}, douments)
+	})
+}
+
+func TestFindOneAndUpdate(t *testing.T) {
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+
+	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
+	require.NoError(t, err)
+
+	t.Run("should return error for invalid filter", func(t *testing.T) {
+		_, err := instance.FindOneAndUpdate(context.Background(), "applications", `invalid filter`, ``)
+		require.Error(t, err)
+	})
+
+	t.Run("should return error for invalid update", func(t *testing.T) {
+		_, err := instance.FindOneAndUpdate(context.Background(), "applications", `{"_id": "/cluster/cluster1/namespace/default/name/app1"}`, `invalid update`)
+		require.Error(t, err)
+	})
+
+	t.Run("should return document", func(t *testing.T) {
+		douments, err := instance.FindOneAndUpdate(context.Background(), "applications", `{"_id": "/cluster/cluster1/namespace/default/name/app1"}`, `{"$set": {"name": "newapp1"}}`)
+		require.NoError(t, err)
+		require.Equal(t, &primitive.M{"_id": "/cluster/cluster1/namespace/default/name/app1", "cluster": "cluster1", "name": "newapp1", "namespace": "default", "tags": primitive.A{"tag1", "tag2"}, "teams": primitive.A{"team1"}}, douments)
+	})
+}
+
+func TestFindOneAnddelete(t *testing.T) {
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+
+	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
+	require.NoError(t, err)
+
+	t.Run("should return error for invalid filter", func(t *testing.T) {
+		_, err := instance.FindOneAndDelete(context.Background(), "applications", `invalid filter`)
+		require.Error(t, err)
+	})
+
+	t.Run("should return document", func(t *testing.T) {
+		douments, err := instance.FindOneAndDelete(context.Background(), "applications", `{"_id": "/cluster/cluster1/namespace/default/name/app1"}`)
+		require.NoError(t, err)
+		require.Equal(t, &primitive.M{"_id": "/cluster/cluster1/namespace/default/name/app1", "cluster": "cluster1", "name": "app1", "namespace": "default", "tags": primitive.A{"tag1", "tag2"}, "teams": primitive.A{"team1"}}, douments)
+	})
+}
+
+func TestUpdateMany(t *testing.T) {
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+
+	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
+	require.NoError(t, err)
+
+	t.Run("should return error for invalid filter", func(t *testing.T) {
+		_, _, err := instance.UpdateMany(context.Background(), "applications", `invalid filter`, ``)
+		require.Error(t, err)
+	})
+
+	t.Run("should return error for invalid update", func(t *testing.T) {
+		_, _, err := instance.UpdateMany(context.Background(), "applications", `{"name": "app1"}`, `invalid update`)
+		require.Error(t, err)
+	})
+
+	t.Run("should return document", func(t *testing.T) {
+		matchedCount, modifiedCount, err := instance.UpdateMany(context.Background(), "applications", `{"name": "app1"}`, `{"$set": {"name": "newapp1"}}`)
+		require.NoError(t, err)
+		require.Equal(t, int64(2), matchedCount)
+		require.Equal(t, int64(2), modifiedCount)
+	})
+}
+
+func TestDeleteMany(t *testing.T) {
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+
+	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
+	require.NoError(t, err)
+
+	t.Run("should return error for invalid filter", func(t *testing.T) {
+		_, err := instance.DeleteMany(context.Background(), "applications", `invalid filter`)
+		require.Error(t, err)
+	})
+
+	t.Run("should return document", func(t *testing.T) {
+		count, err := instance.DeleteMany(context.Background(), "applications", `{"name": "app1"}`)
+		require.NoError(t, err)
+		require.Equal(t, int64(2), count)
+	})
+}
+
+func TestAggregate(t *testing.T) {
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+
+	instance, err := New("mongodb", map[string]any{"connectionString": uri, "databaseName": "db1"})
+	require.NoError(t, err)
+
+	t.Run("should return error for invalid pipeline", func(t *testing.T) {
+		_, err := instance.Aggregate(context.Background(), "applications", `invalid pipeline`)
+		require.Error(t, err)
+	})
+
+	t.Run("should return documents", func(t *testing.T) {
+		documents, err := instance.Aggregate(context.Background(), "applications", `[{"$match": {"teams": "team1"}}, {"$group": {"_id": [{"name": "$name"},{"namespace": "$namespace"}]}}, {"$sort":{"_id": 1}}]`)
+		require.NoError(t, err)
+		require.Equal(t, []primitive.D{
+			{primitive.E{Key: "_id", Value: primitive.A{primitive.D{primitive.E{Key: "name", Value: "app1"}}, primitive.D{primitive.E{Key: "namespace", Value: "default"}}}}},
+			{primitive.E{Key: "_id", Value: primitive.A{primitive.D{primitive.E{Key: "name", Value: "app3"}}, primitive.D{primitive.E{Key: "namespace", Value: "default"}}}}},
+		}, documents)
 	})
 }
 

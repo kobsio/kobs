@@ -17,29 +17,25 @@ import { Documents } from './Documents';
 
 import { toExtendedJson } from '../utils/utils';
 
-export const OperationFind: FunctionComponent<{
+export const OperationFindOneAndDelete: FunctionComponent<{
   collectionName: string;
   description?: string;
   filter: string;
   instance: IPluginInstance;
-  limit: number;
   showActions?: boolean;
-  sort: string;
   times: ITimes;
   title: string;
-}> = ({ instance, title, description, collectionName, filter, sort, limit, showActions, times }) => {
+}> = ({ instance, title, description, collectionName, filter, showActions, times }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<Document[], APIError>(
-    ['mongodb/operation/find', instance, collectionName, filter, sort, limit, times],
+    ['mongodb/operation/findoneanddelete', instance, collectionName, filter, times],
     async () => {
-      const result = await apiContext.client.post<unknown[]>(
-        `/api/plugins/mongodb/collections/find?collectionName=${collectionName}`,
+      const result = await apiContext.client.post<unknown>(
+        `/api/plugins/mongodb/collections/findoneanddelete?collectionName=${collectionName}`,
         {
           body: {
             filter: toExtendedJson(filter),
-            limit: limit,
-            sort: toExtendedJson(sort),
           },
           headers: {
             'x-kobs-cluster': instance.cluster,
@@ -49,7 +45,7 @@ export const OperationFind: FunctionComponent<{
       );
 
       if (result) {
-        return result.map((document: unknown) => EJSON.parse(JSON.stringify(document)));
+        return [EJSON.parse(JSON.stringify(result))];
       }
 
       return [];
@@ -65,9 +61,9 @@ export const OperationFind: FunctionComponent<{
           <PluginPanelActionLinks
             links={[
               {
-                link: `${pluginBasePath(instance)}/${collectionName}/query?operation=find&filter=${encodeURIComponent(
-                  filter,
-                )}&sort=${encodeURIComponent(sort)}&limit=${limit}`,
+                link: `${pluginBasePath(
+                  instance,
+                )}/${collectionName}/query?operation=findOneAndDelete&filter=${encodeURIComponent(filter)}`,
                 title: 'Explore',
               },
             ]}
@@ -77,11 +73,11 @@ export const OperationFind: FunctionComponent<{
     >
       <UseQueryWrapper
         error={error}
-        errorTitle="Failed to load documents"
+        errorTitle="Failed to delete document"
         isError={isError}
         isLoading={isLoading}
         isNoData={!data || data.length === 0}
-        noDataTitle="No documents were found"
+        noDataTitle="No document was deleted"
         refetch={refetch}
       >
         <Documents instance={instance} collectionName={collectionName} documents={data ?? []} />

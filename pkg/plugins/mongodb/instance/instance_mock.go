@@ -35,6 +35,21 @@ func (m *MockInstance) EXPECT() *MockInstanceMockRecorder {
 	return m.recorder
 }
 
+// Aggregate mocks base method.
+func (m *MockInstance) Aggregate(ctx context.Context, collectionName, pipeline string) ([]bson.D, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Aggregate", ctx, collectionName, pipeline)
+	ret0, _ := ret[0].([]bson.D)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Aggregate indicates an expected call of Aggregate.
+func (mr *MockInstanceMockRecorder) Aggregate(ctx, collectionName, pipeline interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Aggregate", reflect.TypeOf((*MockInstance)(nil).Aggregate), ctx, collectionName, pipeline)
+}
+
 // Count mocks base method.
 func (m *MockInstance) Count(ctx context.Context, collectionName, filter string) (int64, error) {
 	m.ctrl.T.Helper()
@@ -48,6 +63,21 @@ func (m *MockInstance) Count(ctx context.Context, collectionName, filter string)
 func (mr *MockInstanceMockRecorder) Count(ctx, collectionName, filter interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockInstance)(nil).Count), ctx, collectionName, filter)
+}
+
+// DeleteMany mocks base method.
+func (m *MockInstance) DeleteMany(ctx context.Context, collectionName, filter string) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteMany", ctx, collectionName, filter)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteMany indicates an expected call of DeleteMany.
+func (mr *MockInstanceMockRecorder) DeleteMany(ctx, collectionName, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMany", reflect.TypeOf((*MockInstance)(nil).DeleteMany), ctx, collectionName, filter)
 }
 
 // Find mocks base method.
@@ -78,6 +108,51 @@ func (m *MockInstance) FindOne(ctx context.Context, collectionName, filter strin
 func (mr *MockInstanceMockRecorder) FindOne(ctx, collectionName, filter interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockInstance)(nil).FindOne), ctx, collectionName, filter)
+}
+
+// FindOneAndDelete mocks base method.
+func (m *MockInstance) FindOneAndDelete(ctx context.Context, collectionName, filter string) (*bson.M, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOneAndDelete", ctx, collectionName, filter)
+	ret0, _ := ret[0].(*bson.M)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOneAndDelete indicates an expected call of FindOneAndDelete.
+func (mr *MockInstanceMockRecorder) FindOneAndDelete(ctx, collectionName, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneAndDelete", reflect.TypeOf((*MockInstance)(nil).FindOneAndDelete), ctx, collectionName, filter)
+}
+
+// FindOneAndUpdate mocks base method.
+func (m *MockInstance) FindOneAndUpdate(ctx context.Context, collectionName, filter, update string) (*bson.M, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOneAndUpdate", ctx, collectionName, filter, update)
+	ret0, _ := ret[0].(*bson.M)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOneAndUpdate indicates an expected call of FindOneAndUpdate.
+func (mr *MockInstanceMockRecorder) FindOneAndUpdate(ctx, collectionName, filter, update interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneAndUpdate", reflect.TypeOf((*MockInstance)(nil).FindOneAndUpdate), ctx, collectionName, filter, update)
+}
+
+// GetDBCollectionIndexes mocks base method.
+func (m *MockInstance) GetDBCollectionIndexes(ctx context.Context, collectionName string) ([]bson.D, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDBCollectionIndexes", ctx, collectionName)
+	ret0, _ := ret[0].([]bson.D)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDBCollectionIndexes indicates an expected call of GetDBCollectionIndexes.
+func (mr *MockInstanceMockRecorder) GetDBCollectionIndexes(ctx, collectionName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDBCollectionIndexes", reflect.TypeOf((*MockInstance)(nil).GetDBCollectionIndexes), ctx, collectionName)
 }
 
 // GetDBCollectionNames mocks base method.
@@ -137,4 +212,20 @@ func (m *MockInstance) GetName() string {
 func (mr *MockInstanceMockRecorder) GetName() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetName", reflect.TypeOf((*MockInstance)(nil).GetName))
+}
+
+// UpdateMany mocks base method.
+func (m *MockInstance) UpdateMany(ctx context.Context, collectionName, filter, update string) (int64, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateMany", ctx, collectionName, filter, update)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// UpdateMany indicates an expected call of UpdateMany.
+func (mr *MockInstanceMockRecorder) UpdateMany(ctx, collectionName, filter, update interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMany", reflect.TypeOf((*MockInstance)(nil).UpdateMany), ctx, collectionName, filter, update)
 }

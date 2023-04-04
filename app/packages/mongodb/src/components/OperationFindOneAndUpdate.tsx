@@ -17,29 +17,27 @@ import { Documents } from './Documents';
 
 import { toExtendedJson } from '../utils/utils';
 
-export const OperationFind: FunctionComponent<{
+export const OperationFindOneAndUpdate: FunctionComponent<{
   collectionName: string;
   description?: string;
   filter: string;
   instance: IPluginInstance;
-  limit: number;
   showActions?: boolean;
-  sort: string;
   times: ITimes;
   title: string;
-}> = ({ instance, title, description, collectionName, filter, sort, limit, showActions, times }) => {
+  update: string;
+}> = ({ instance, title, description, collectionName, filter, update, showActions, times }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<Document[], APIError>(
-    ['mongodb/operation/find', instance, collectionName, filter, sort, limit, times],
+    ['mongodb/operation/findoneandupdate', instance, collectionName, filter, update, times],
     async () => {
-      const result = await apiContext.client.post<unknown[]>(
-        `/api/plugins/mongodb/collections/find?collectionName=${collectionName}`,
+      const result = await apiContext.client.post<unknown>(
+        `/api/plugins/mongodb/collections/findoneandupdate?collectionName=${collectionName}`,
         {
           body: {
             filter: toExtendedJson(filter),
-            limit: limit,
-            sort: toExtendedJson(sort),
+            update: toExtendedJson(update),
           },
           headers: {
             'x-kobs-cluster': instance.cluster,
@@ -49,7 +47,7 @@ export const OperationFind: FunctionComponent<{
       );
 
       if (result) {
-        return result.map((document: unknown) => EJSON.parse(JSON.stringify(document)));
+        return [EJSON.parse(JSON.stringify(result))];
       }
 
       return [];
@@ -65,9 +63,11 @@ export const OperationFind: FunctionComponent<{
           <PluginPanelActionLinks
             links={[
               {
-                link: `${pluginBasePath(instance)}/${collectionName}/query?operation=find&filter=${encodeURIComponent(
+                link: `${pluginBasePath(
+                  instance,
+                )}/${collectionName}/query?operation=findOneAndUpdate&filter=${encodeURIComponent(
                   filter,
-                )}&sort=${encodeURIComponent(sort)}&limit=${limit}`,
+                )}&update=${encodeURIComponent(update)}`,
                 title: 'Explore',
               },
             ]}
@@ -77,11 +77,11 @@ export const OperationFind: FunctionComponent<{
     >
       <UseQueryWrapper
         error={error}
-        errorTitle="Failed to load documents"
+        errorTitle="Failed to update document"
         isError={isError}
         isLoading={isLoading}
         isNoData={!data || data.length === 0}
-        noDataTitle="No documents were found"
+        noDataTitle="No document was updated"
         refetch={refetch}
       >
         <Documents instance={instance} collectionName={collectionName} documents={data ?? []} />

@@ -9,37 +9,31 @@ import {
   PluginPanelActionLinks,
   UseQueryWrapper,
 } from '@kobsio/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { Document, EJSON } from 'bson';
 import { FunctionComponent, useContext } from 'react';
-
-import { Documents } from './Documents';
 
 import { toExtendedJson } from '../utils/utils';
 
-export const OperationFind: FunctionComponent<{
+export const OperationDeleteMany: FunctionComponent<{
   collectionName: string;
   description?: string;
   filter: string;
   instance: IPluginInstance;
-  limit: number;
   showActions?: boolean;
-  sort: string;
   times: ITimes;
   title: string;
-}> = ({ instance, title, description, collectionName, filter, sort, limit, showActions, times }) => {
+}> = ({ instance, title, description, collectionName, filter, showActions, times }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<Document[], APIError>(
-    ['mongodb/operation/find', instance, collectionName, filter, sort, limit, times],
+  const { isError, isLoading, error, data, refetch } = useQuery<{ count: number }, APIError>(
+    ['mongodb/operation/deletemany', instance, collectionName, filter, times],
     async () => {
-      const result = await apiContext.client.post<unknown[]>(
-        `/api/plugins/mongodb/collections/find?collectionName=${collectionName}`,
+      return apiContext.client.post<{ count: number }>(
+        `/api/plugins/mongodb/collections/deletemany?collectionName=${collectionName}`,
         {
           body: {
             filter: toExtendedJson(filter),
-            limit: limit,
-            sort: toExtendedJson(sort),
           },
           headers: {
             'x-kobs-cluster': instance.cluster,
@@ -47,12 +41,6 @@ export const OperationFind: FunctionComponent<{
           },
         },
       );
-
-      if (result) {
-        return result.map((document: unknown) => EJSON.parse(JSON.stringify(document)));
-      }
-
-      return [];
     },
   );
 
@@ -65,9 +53,9 @@ export const OperationFind: FunctionComponent<{
           <PluginPanelActionLinks
             links={[
               {
-                link: `${pluginBasePath(instance)}/${collectionName}/query?operation=find&filter=${encodeURIComponent(
-                  filter,
-                )}&sort=${encodeURIComponent(sort)}&limit=${limit}`,
+                link: `${pluginBasePath(
+                  instance,
+                )}/${collectionName}/query?operation=deleteMany&filter=${encodeURIComponent(filter)}`,
                 title: 'Explore',
               },
             ]}
@@ -77,14 +65,27 @@ export const OperationFind: FunctionComponent<{
     >
       <UseQueryWrapper
         error={error}
-        errorTitle="Failed to load documents"
+        errorTitle="Failed to delete documents"
         isError={isError}
         isLoading={isLoading}
-        isNoData={!data || data.length === 0}
-        noDataTitle="No documents were found"
+        isNoData={!data}
+        noDataTitle="No documents were deleted"
         refetch={refetch}
       >
-        <Documents instance={instance} collectionName={collectionName} documents={data ?? []} />
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Deleted Documents</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>{data?.count ?? 0}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </UseQueryWrapper>
     </PluginPanel>
   );

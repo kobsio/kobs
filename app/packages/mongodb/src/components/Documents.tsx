@@ -158,11 +158,7 @@ const SingleDocumentDetailsTree: FunctionComponent<{
           </TableHead>
           <TableBody>
             {Object.keys(value).map((key) => (
-              <SingleDocumentDetailsTree
-                key={value[key]?.toString() ?? 'null'}
-                documentKey={key}
-                documentValue={value[key]}
-              />
+              <SingleDocumentDetailsTree key={key} documentKey={key} documentValue={value[key]} />
             ))}
           </TableBody>
         </Table>
@@ -207,13 +203,13 @@ const SingleDocumentDetails: FunctionComponent<{
     <>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs variant="scrollable" scrollButtons={false} value={activeTab} onChange={(_, value) => setActiveTab(value)}>
-          <Tab key="tree" label="Tree" value="tree" />
-          <Tab key="bson" label="BSON" value="bson" />
-          <Tab key="json" label="JSON" value="json" />
+          <Tab label="Tree" value="tree" />
+          <Tab label="BSON" value="bson" />
+          <Tab label="JSON" value="json" />
         </Tabs>
       </Box>
 
-      <Box key="tree" hidden={activeTab !== 'tree'} py={6}>
+      <Box hidden={activeTab !== 'tree'} py={6}>
         {activeTab === 'tree' && (
           <TableContainer>
             <Table size="small">
@@ -228,11 +224,7 @@ const SingleDocumentDetails: FunctionComponent<{
                 {Object.keys(document)
                   .filter((key) => key !== '_id')
                   .map((key) => (
-                    <SingleDocumentDetailsTree
-                      key={document[key]?.toString() ?? 'null'}
-                      documentKey={key}
-                      documentValue={document[key]}
-                    />
+                    <SingleDocumentDetailsTree key={key} documentKey={key} documentValue={document[key]} />
                   ))}
               </TableBody>
             </Table>
@@ -240,13 +232,13 @@ const SingleDocumentDetails: FunctionComponent<{
         )}
       </Box>
 
-      <Box key="bson" hidden={activeTab !== 'bson'} py={6}>
+      <Box hidden={activeTab !== 'bson'} py={6}>
         {activeTab === 'bson' && (
           <Editor language="json" value={JSON.stringify(EJSON.serialize(document, { relaxed: true }), null, 2)} />
         )}
       </Box>
 
-      <Box key="json" hidden={activeTab !== 'json'} py={6}>
+      <Box hidden={activeTab !== 'json'} py={6}>
         {activeTab === 'json' && <Editor language="json" value={JSON.stringify(document, null, 2)} />}
       </Box>
     </>
@@ -341,7 +333,13 @@ const SingleDocument: FunctionComponent<{
             {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
-        <TableCell sx={{ verticalAlign: 'top' }}>{document['_id']?.toString() ?? 'null'}</TableCell>
+        <TableCell sx={{ verticalAlign: 'top' }}>
+          {document['_id']
+            ? typeof document['_id'] === 'object'
+              ? JSON.stringify(document['_id'])
+              : document['_id'].toString()
+            : null}
+        </TableCell>
         <TableCell sx={{ verticalAlign: 'top' }}>
           <Box
             sx={{
@@ -400,13 +398,8 @@ export const Documents: FunctionComponent<{
           </TableRow>
         </TableHead>
         <TableBody>
-          {documents.map((document) => (
-            <SingleDocument
-              key={document['_id']?.toString() ?? 'null'}
-              instance={instance}
-              collectionName={collectionName}
-              document={document}
-            />
+          {documents.map((document, index) => (
+            <SingleDocument key={index} instance={instance} collectionName={collectionName} document={document} />
           ))}
         </TableBody>
       </Table>

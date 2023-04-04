@@ -25,9 +25,15 @@ type Instance interface {
 	GetDBStats(ctx context.Context) (*DBStats, error)
 	GetDBCollectionNames(ctx context.Context) ([]string, error)
 	GetDBCollectionStats(ctx context.Context, collectionName string) (*CollectionStats, error)
+	GetDBCollectionIndexes(ctx context.Context, collectionName string) ([]bson.D, error)
 	Find(ctx context.Context, collectionName string, filter string, sort string, limit int64) ([]bson.D, error)
 	Count(ctx context.Context, collectionName string, filter string) (int64, error)
 	FindOne(ctx context.Context, collectionName, filter string) (*bson.M, error)
+	FindOneAndUpdate(ctx context.Context, collectionName, filter, update string) (*bson.M, error)
+	FindOneAndDelete(ctx context.Context, collectionName, filter string) (*bson.M, error)
+	UpdateMany(ctx context.Context, collectionName, filter, update string) (int64, int64, error)
+	DeleteMany(ctx context.Context, collectionName, filter string) (int64, error)
+	Aggregate(ctx context.Context, collectionName, pipeline string) ([]bson.D, error)
 }
 
 type instance struct {
@@ -46,13 +52,13 @@ func (i *instance) GetDBStats(ctx context.Context) (*DBStats, error) {
 		{Key: "scale", Value: 1},
 	})
 	if stats.Err() != nil {
-		log.Error(ctx, "Could not get db stats", zap.Error(stats.Err()))
+		log.Error(ctx, "Failed to get db stats", zap.Error(stats.Err()))
 		return nil, stats.Err()
 	}
 
 	var dbStats DBStats
 	if err := stats.Decode(&dbStats); err != nil {
-		log.Error(ctx, "Could not decode db stats", zap.Error(stats.Err()))
+		log.Error(ctx, "Failed to decode db stats", zap.Error(stats.Err()))
 		return nil, err
 	}
 
@@ -62,7 +68,7 @@ func (i *instance) GetDBStats(ctx context.Context) (*DBStats, error) {
 func (i *instance) GetDBCollectionNames(ctx context.Context) ([]string, error) {
 	names, err := i.mongoClient.Database(i.config.DatabaseName).ListCollectionNames(ctx, bson.D{}, nil)
 	if err != nil {
-		log.Error(ctx, "Could not get collection names", zap.Error(err))
+		log.Error(ctx, "Failed to get collection names", zap.Error(err))
 		return nil, err
 	}
 
@@ -75,41 +81,23 @@ func (i *instance) GetDBCollectionStats(ctx context.Context, collectionName stri
 		{Key: "scale", Value: 1},
 	})
 	if stats.Err() != nil {
-		log.Error(ctx, "Could not get db stats", zap.Error(stats.Err()))
+		log.Error(ctx, "Failed to get collection stats", zap.Error(stats.Err()))
 		return nil, stats.Err()
 	}
 
 	var collStats CollectionStats
 	if err := stats.Decode(&collStats); err != nil {
-		log.Error(ctx, "Could not decode db stats", zap.Error(stats.Err()))
+		log.Error(ctx, "Failed to decode collection stats", zap.Error(stats.Err()))
 		return nil, err
 	}
 
 	return &collStats, nil
 }
 
-func (i *instance) Find(ctx context.Context, collectionName string, filter string, sort string, limit int64) ([]bson.D, error) {
-	var bsonFilter any
-	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
+func (i *instance) GetDBCollectionIndexes(ctx context.Context, collectionName string) ([]bson.D, error) {
+	cursor, err := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).Indexes().List(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not unmarshall query", zap.Error(err))
-		return nil, err
-	}
-
-	var bsonSort any
-	err = bson.UnmarshalExtJSON([]byte(sort), false, &bsonSort)
-	if err != nil {
-		log.Error(ctx, "Could not unmarshall sort", zap.Error(err))
-		return nil, err
-	}
-
-	cursor, err := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).Find(ctx, bsonFilter, &mongoOptions.FindOptions{
-		Limit: &limit,
-		Skip:  nil,
-		Sort:  bsonSort,
-	})
-	if err != nil {
-		log.Error(ctx, "Could not get db stats", zap.Error(err))
+		log.Error(ctx, "Failed to get collection indexes", zap.Error(err))
 		return nil, err
 	}
 
@@ -119,7 +107,48 @@ func (i *instance) Find(ctx context.Context, collectionName string, filter strin
 		var elem bson.D
 		err := cursor.Decode(&elem)
 		if err != nil {
-			log.Error(ctx, "Cannot decode find result", zap.Error(err))
+			log.Error(ctx, "Failed to decode index", zap.Error(err))
+			return nil, err
+		}
+
+		results = append(results, elem)
+	}
+
+	return results, nil
+}
+
+func (i *instance) Find(ctx context.Context, collectionName string, filter string, sort string, limit int64) ([]bson.D, error) {
+	var bsonFilter any
+	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall filter", zap.Error(err), zap.String("filter", filter))
+		return nil, err
+	}
+
+	var bsonSort any
+	err = bson.UnmarshalExtJSON([]byte(sort), false, &bsonSort)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall sort", zap.Error(err), zap.String("sort", sort))
+		return nil, err
+	}
+
+	cursor, err := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).Find(ctx, bsonFilter, &mongoOptions.FindOptions{
+		Limit: &limit,
+		Skip:  nil,
+		Sort:  bsonSort,
+	})
+	if err != nil {
+		log.Error(ctx, "Failed to get find documents", zap.Error(err))
+		return nil, err
+	}
+
+	var results = make([]bson.D, 0)
+
+	for cursor.Next(ctx) {
+		var elem bson.D
+		err := cursor.Decode(&elem)
+		if err != nil {
+			log.Error(ctx, "Failed to decode document", zap.Error(err))
 			return nil, err
 		}
 
@@ -133,7 +162,7 @@ func (i *instance) Count(ctx context.Context, collectionName string, filter stri
 	var bsonFilter any
 	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
 	if err != nil {
-		log.Error(ctx, "Could not unmarshall query", zap.Error(err))
+		log.Error(ctx, "Failed to unmarshall filter", zap.Error(err), zap.String("filter", filter))
 		return 0, err
 	}
 
@@ -144,13 +173,13 @@ func (i *instance) FindOne(ctx context.Context, collectionName, filter string) (
 	var bsonFilter any
 	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
 	if err != nil {
-		log.Error(ctx, "Could not unmarshall query", zap.Error(err))
+		log.Error(ctx, "Failed to unmarshall filter", zap.Error(err), zap.String("filter", filter))
 		return nil, err
 	}
 
 	res := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).FindOne(ctx, bsonFilter)
 	if res.Err() != nil {
-		log.Error(ctx, "Could not get document", zap.Error(err))
+		log.Error(ctx, "Failed to find document", zap.Error(err), zap.String("filter", filter))
 		return nil, err
 	}
 
@@ -158,11 +187,128 @@ func (i *instance) FindOne(ctx context.Context, collectionName, filter string) (
 
 	err = res.Decode(&document)
 	if err != nil {
-		log.Error(ctx, "Could not decode document", zap.Error(err))
+		log.Error(ctx, "Failed to decode document", zap.Error(err))
 		return nil, err
 	}
 
 	return &document, nil
+}
+
+func (i *instance) FindOneAndUpdate(ctx context.Context, collectionName, filter, update string) (*bson.M, error) {
+	var bsonFilter any
+	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall filter", zap.Error(err))
+		return nil, err
+	}
+
+	var bsonUpdate any
+	err = bson.UnmarshalExtJSON([]byte(update), false, &bsonUpdate)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall update", zap.Error(err))
+		return nil, err
+	}
+
+	returnAfter := mongoOptions.After
+	res := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).FindOneAndUpdate(ctx, bsonFilter, bsonUpdate, &mongoOptions.FindOneAndUpdateOptions{ReturnDocument: &returnAfter})
+
+	var document bson.M
+
+	err = res.Decode(&document)
+	if err != nil {
+		log.Error(ctx, "Failed to decode document", zap.Error(err))
+		return nil, err
+	}
+
+	return &document, nil
+}
+
+func (i *instance) FindOneAndDelete(ctx context.Context, collectionName, filter string) (*bson.M, error) {
+	var bsonFilter any
+	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall filter", zap.Error(err))
+		return nil, err
+	}
+
+	res := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).FindOneAndDelete(ctx, bsonFilter)
+
+	var document bson.M
+
+	err = res.Decode(&document)
+	if err != nil {
+		log.Error(ctx, "Failed to decode document", zap.Error(err))
+		return nil, err
+	}
+
+	return &document, nil
+}
+
+func (i *instance) UpdateMany(ctx context.Context, collectionName, filter, update string) (int64, int64, error) {
+	var bsonFilter any
+	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall filter", zap.Error(err))
+		return 0, 0, err
+	}
+
+	var bsonUpdate any
+	err = bson.UnmarshalExtJSON([]byte(update), false, &bsonUpdate)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall update", zap.Error(err))
+		return 0, 0, err
+	}
+
+	res, err := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).UpdateMany(ctx, bsonFilter, bsonUpdate)
+	if err != nil {
+		log.Error(ctx, "Failed to update documents", zap.Error(err))
+		return 0, 0, err
+	}
+
+	return res.MatchedCount, res.ModifiedCount, nil
+}
+
+func (i *instance) DeleteMany(ctx context.Context, collectionName, filter string) (int64, error) {
+	var bsonFilter any
+	err := bson.UnmarshalExtJSON([]byte(filter), false, &bsonFilter)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall filter", zap.Error(err))
+		return 0, err
+	}
+
+	res, err := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).DeleteMany(ctx, bsonFilter)
+	if err != nil {
+		log.Error(ctx, "Failed to delete documents", zap.Error(err))
+		return 0, err
+	}
+
+	return res.DeletedCount, nil
+}
+
+func (i *instance) Aggregate(ctx context.Context, collectionName, pipeline string) ([]bson.D, error) {
+	var bsonPipeline any
+	err := bson.UnmarshalExtJSON([]byte(pipeline), false, &bsonPipeline)
+	if err != nil {
+		log.Error(ctx, "Failed to unmarshall pipeline", zap.Error(err))
+		return nil, err
+	}
+
+	cursor, err := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).Aggregate(ctx, bsonPipeline)
+
+	var results = make([]bson.D, 0)
+
+	for cursor.Next(ctx) {
+		var elem bson.D
+		err := cursor.Decode(&elem)
+		if err != nil {
+			log.Error(ctx, "Failed to decode document", zap.Error(err))
+			return nil, err
+		}
+
+		results = append(results, elem)
+	}
+
+	return results, nil
 }
 
 func New(name string, options map[string]any) (Instance, error) {
@@ -177,7 +323,7 @@ func New(name string, options map[string]any) (Instance, error) {
 
 	client, err := mongo.Connect(ctx, mongoOptions.Client().ApplyURI(config.ConnectionString).SetAppName("kobs"))
 	if err != nil {
-		log.Error(nil, "Could not initialize database connection", zap.Error(err))
+		log.Error(nil, "Failed to initialize database connection", zap.Error(err))
 		return nil, err
 	}
 
