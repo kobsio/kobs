@@ -1,7 +1,7 @@
 import { HighlightStyle } from '@codemirror/language';
 import { EditorView } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
-import { darken, Theme } from '@mui/material';
+import { darken, lighten, Theme } from '@mui/material';
 
 /**
  * `createTheme` creates a new theme for our `CodeMirrorEditor` component based on the provided MUI theme.
@@ -121,8 +121,7 @@ export const createTheme = (theme: Theme, minimal: boolean) => {
       '.cm-content': {
         fontSize: 13,
         lineHeight: '18.687px',
-        paddingBottom: '8.5px',
-        paddingTop: '8.5px',
+        padding: '8.5px',
       },
 
       '.cm-diagnostic': {
@@ -157,7 +156,7 @@ export const createTheme = (theme: Theme, minimal: boolean) => {
       },
 
       '.cm-tooltip': {
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: lighten(theme.palette.background.paper, 0.025),
       },
 
       '.cm-tooltip.cm-completionInfo': {
@@ -180,7 +179,7 @@ export const createTheme = (theme: Theme, minimal: boolean) => {
           padding: '2px 1em 2px 3px',
         },
         '& > ul > li[aria-selected]': {
-          backgroundColor: darken(theme.palette.background.paper, 0.13),
+          backgroundColor: theme.palette.primary.main,
         },
         minWidth: '30%',
       },

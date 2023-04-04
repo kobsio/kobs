@@ -107,5 +107,7 @@ jobs:
 
       - name: Build
         if: ${{ matrix.plugin == 'app' }}
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: |
           npm run build
