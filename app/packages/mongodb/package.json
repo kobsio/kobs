@@ -53,6 +53,8 @@
     "vitest": "^0.28.4"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.4.2",
+    "@codemirror/lang-javascript": "^6.1.4",
     "bson": "^5.1.0",
     "ejson-shell-parser": "^1.2.2"
   }

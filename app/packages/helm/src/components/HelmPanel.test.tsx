@@ -9,14 +9,6 @@ import HelmPanel from './HelmPanel';
 
 import { IRelease } from '../utils/utils';
 
-vi.mock('./Editor', () => {
-  return {
-    default: () => {
-      return <>mock editor</>;
-    },
-  };
-});
-
 describe('HelmPanel', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const render = (options: any, releases: IRelease[], history: IRelease[]): RenderResult => {

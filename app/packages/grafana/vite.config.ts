@@ -42,10 +42,6 @@ export default defineConfig({
         find: /^@kobsio\/(.*)/,
         replacement: __dirname + '/../$1/src/index.ts',
       },
-      {
-        find: /^monaco-editor$/,
-        replacement: __dirname + '../../../node_modules/monaco-editor/esm/vs/editor/editor.api',
-      },
     ],
     coverage: {
       all: true,

@@ -8,14 +8,6 @@ import PrometheusPage from './PrometheusPage';
 
 import { description } from '../utils/utils';
 
-vi.mock('./Editor', () => {
-  return {
-    default: () => {
-      return <>mock editor</>;
-    },
-  };
-});
-
 describe('PrometheusPage', () => {
   const render = (path: string): RenderResult => {
     const client = new APIClient();

@@ -1,6 +1,6 @@
 import { Save } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme } from '@mui/material';
 import { compare } from 'fast-json-patch';
 import yaml from 'js-yaml';
 import { FunctionComponent, useContext, useEffect, useState } from 'react';
@@ -68,9 +68,7 @@ const Edit: FunctionComponent<IEditProps> = ({ resource, cluster, namespace, nam
     <Dialog open={open} onClose={() => onClose('', 'success')} fullScreen={fullScreen} maxWidth="md">
       <DialogTitle>Edit {name}</DialogTitle>
       <DialogContent sx={{ minWidth: '50vw' }}>
-        <Box height="50vh">
-          <Editor language="yaml" value={value} onChange={(value) => setValue(value ?? '')} />
-        </Box>
+        <Editor language="yaml" value={value} onChange={(value) => setValue(value ?? '')} />
       </DialogContent>
       <DialogActions>
         <LoadingButton

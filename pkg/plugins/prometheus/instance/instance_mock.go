@@ -9,6 +9,8 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
+	model "github.com/prometheus/common/model"
 )
 
 // MockInstance is a mock of Instance interface.
@@ -49,19 +51,20 @@ func (mr *MockInstanceMockRecorder) GetInstant(ctx, queries, timeEnd interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstant", reflect.TypeOf((*MockInstance)(nil).GetInstant), ctx, queries, timeEnd)
 }
 
-// GetMetrics mocks base method.
-func (m *MockInstance) GetMetrics(ctx context.Context) ([]string, error) {
+// GetLabels mocks base method.
+func (m *MockInstance) GetLabels(ctx context.Context, matches []string, timeStart, timeEnd int64) ([]string, v1.Warnings, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMetrics", ctx)
+	ret := m.ctrl.Call(m, "GetLabels", ctx, matches, timeStart, timeEnd)
 	ret0, _ := ret[0].([]string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(v1.Warnings)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
-// GetMetrics indicates an expected call of GetMetrics.
-func (mr *MockInstanceMockRecorder) GetMetrics(ctx interface{}) *gomock.Call {
+// GetLabels indicates an expected call of GetLabels.
+func (mr *MockInstanceMockRecorder) GetLabels(ctx, matches, timeStart, timeEnd interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockInstance)(nil).GetMetrics), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLabels", reflect.TypeOf((*MockInstance)(nil).GetLabels), ctx, matches, timeStart, timeEnd)
 }
 
 // GetName mocks base method.
@@ -91,6 +94,22 @@ func (m *MockInstance) GetRange(ctx context.Context, queries []Query, resolution
 func (mr *MockInstanceMockRecorder) GetRange(ctx, queries, resolution, timeStart, timeEnd interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRange", reflect.TypeOf((*MockInstance)(nil).GetRange), ctx, queries, resolution, timeStart, timeEnd)
+}
+
+// GetSeries mocks base method.
+func (m *MockInstance) GetSeries(ctx context.Context, matches []string, timeStart, timeEnd int64) ([]model.LabelSet, v1.Warnings, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSeries", ctx, matches, timeStart, timeEnd)
+	ret0, _ := ret[0].([]model.LabelSet)
+	ret1, _ := ret[1].(v1.Warnings)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetSeries indicates an expected call of GetSeries.
+func (mr *MockInstanceMockRecorder) GetSeries(ctx, matches, timeStart, timeEnd interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSeries", reflect.TypeOf((*MockInstance)(nil).GetSeries), ctx, matches, timeStart, timeEnd)
 }
 
 // GetVariable mocks base method.

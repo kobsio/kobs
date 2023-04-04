@@ -245,12 +245,10 @@ func (router *Router) getInstant(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, rows)
 }
 
-// getCompletions returns a list of completions for the Prometheus query editor. Currently it only returns all available
-// metrics.
-func (router *Router) getCompletions(w http.ResponseWriter, r *http.Request) {
+func (router *Router) proxy(w http.ResponseWriter, r *http.Request) {
 	name := r.Header.Get("x-kobs-plugin")
 
-	log.Debug(r.Context(), "getCompletions", zap.String("name", name))
+	log.Debug(r.Context(), "proxy", zap.String("name", name))
 
 	i := router.getInstance(name)
 	if i == nil {
@@ -259,15 +257,7 @@ func (router *Router) getCompletions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	metrics, err := i.GetMetrics(r.Context())
-	if err != nil {
-		log.Error(r.Context(), "Failed to get label values", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get label values")
-		return
-	}
-
-	log.Debug(r.Context(), "getCompletions", zap.Int("metricsCount", len(metrics)))
-	render.JSON(w, r, metrics)
+	i.Proxy(w, r)
 }
 
 // Mount mounts the Prometheus plugin routes in the plugins router of a kobs satellite instance.
@@ -294,7 +284,7 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 	router.With(proxy).Post("/insight", router.getInsight)
 	router.With(proxy).Post("/range", router.getRange)
 	router.With(proxy).Post("/instant", router.getInstant)
-	router.With(proxy).Get("/completions", router.getCompletions)
+	router.With(proxy).HandleFunc("/proxy/*", router.proxy)
 
 	return router, nil
 }

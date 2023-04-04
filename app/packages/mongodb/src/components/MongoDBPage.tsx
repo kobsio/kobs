@@ -1,4 +1,12 @@
-import { addStateHistoryItem, getStateHistory, IPluginPageProps, ITimes, Page, useQueryState } from '@kobsio/core';
+import {
+  addStateHistoryItem,
+  Editor,
+  getStateHistory,
+  IPluginPageProps,
+  ITimes,
+  Page,
+  useQueryState,
+} from '@kobsio/core';
 import { ManageSearch, Search } from '@mui/icons-material';
 import { Button, Grid, IconButton, InputAdornment, Menu, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { FunctionComponent, MouseEvent, useMemo, useState } from 'react';
@@ -6,12 +14,11 @@ import { Route, Routes, useParams } from 'react-router-dom';
 
 import { Collections } from './Collections';
 import { DBStats } from './DBStats';
-import Editor from './Editor';
 import { OperationCount } from './OperationCount';
 import { OperationFind } from './OperationFind';
 import { OperationFindOne } from './OperationFindOne';
 
-import { description } from '../utils/utils';
+import { codemirrorExtension, description } from '../utils/utils';
 
 interface IQueryPageOptions {
   filter: string;
@@ -109,22 +116,20 @@ const QueryPageToolbar: FunctionComponent<{
         Filter
       </Grid>
       <Grid item={true} xs={12} md={10}>
-        <TextField
+        <Editor
+          language={codemirrorExtension()}
+          minimal={true}
           value={internalOptions.filter}
-          onChange={(e) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: e.target.value }))}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <QueryPageToolbarHistory
-                  identifier="kobs-mongodb-filterhistory"
-                  value={options.filter}
-                  setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
-                />
-              </InputAdornment>
-            ),
-            inputComponent: Editor,
-          }}
-          fullWidth={true}
+          onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
+          adornment={
+            <InputAdornment position="end">
+              <QueryPageToolbarHistory
+                identifier="kobs-mongodb-filterhistory"
+                value={options.filter}
+                setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
+              />
+            </InputAdornment>
+          }
         />
       </Grid>
 
@@ -134,22 +139,20 @@ const QueryPageToolbar: FunctionComponent<{
             Sort
           </Grid>
           <Grid item={true} xs={12} md={10}>
-            <TextField
+            <Editor
+              language={codemirrorExtension()}
+              minimal={true}
               value={internalOptions.sort}
-              onChange={(e) => setInternalOptions((prevOptions) => ({ ...prevOptions, sort: e.target.value }))}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <QueryPageToolbarHistory
-                      identifier="kobs-mongodb-sorthistory"
-                      value={options.sort}
-                      setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, sort: value }))}
-                    />
-                  </InputAdornment>
-                ),
-                inputComponent: Editor,
-              }}
-              fullWidth={true}
+              onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, sort: value }))}
+              adornment={
+                <InputAdornment position="end">
+                  <QueryPageToolbarHistory
+                    identifier="kobs-mongodb-sorthistory"
+                    value={options.sort}
+                    setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, sort: value }))}
+                  />
+                </InputAdornment>
+              }
             />
           </Grid>
         </>

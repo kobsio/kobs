@@ -1,5 +1,6 @@
 import {
   addStateHistoryItem,
+  Editor,
   getStateHistory,
   IOptionsAdditionalFields,
   IPluginInstance,
@@ -14,27 +15,16 @@ import {
   useUpdate,
 } from '@kobsio/core';
 import { ManageSearch, Refresh } from '@mui/icons-material';
-import {
-  Alert,
-  AlertTitle,
-  Button,
-  IconButton,
-  InputAdornment,
-  Menu,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Alert, AlertTitle, Button, IconButton, InputAdornment, Menu, MenuItem, Typography } from '@mui/material';
 import { FunctionComponent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import Agents from './Agents';
-import Editor from './Editor';
 import Overview from './Overview';
 import Requests from './Requests';
 import { SiteSelect } from './SiteSelect';
 
-import { description } from '../utils/utils';
+import { codemirrorExtension, description } from '../utils/utils';
 
 const RequestsHistory: FunctionComponent<{ optionsQuery: string; setQuery: (query: string) => void }> = ({
   optionsQuery,
@@ -119,7 +109,7 @@ const RequestsPageToolbar: FunctionComponent<{
     setOptions({ ...options, ...times, page: 1, query: query });
   };
 
-  const callSubmit = () => {
+  const handleSubmit = () => {
     addStateHistoryItem('kobs-signalsciences-queryhistory', query);
     setOptions({ ...options, page: 1, query: query });
   };
@@ -134,21 +124,17 @@ const RequestsPageToolbar: FunctionComponent<{
         />
       </ToolbarItem>
       <ToolbarItem grow={true}>
-        <TextField
+        <Editor
+          language={[codemirrorExtension()]}
+          minimal={true}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <RequestsHistory optionsQuery={options.query} setQuery={(query) => setQuery(query)} />
-              </InputAdornment>
-            ),
-            inputComponent: Editor,
-            inputProps: {
-              callSubmit: callSubmit,
-            },
-          }}
-          fullWidth={true}
+          onChange={(value) => setQuery(value)}
+          handleSubmit={() => handleSubmit()}
+          adornment={
+            <InputAdornment position="end">
+              <RequestsHistory optionsQuery={options.query} setQuery={(query) => setQuery(query)} />
+            </InputAdornment>
+          }
         />
       </ToolbarItem>
       <ToolbarItem align="right">

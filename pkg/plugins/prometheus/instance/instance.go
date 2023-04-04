@@ -6,11 +6,18 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/utils/middleware/roundtripper"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/prometheus/client_golang/api"
@@ -33,11 +40,12 @@ type Instance interface {
 	GetVariable(ctx context.Context, label, query, queryType string, timeStart, timeEnd int64) ([]string, error)
 	GetRange(ctx context.Context, queries []Query, resolution string, timeStart, timeEnd int64) (*Metrics, error)
 	GetInstant(ctx context.Context, queries []Query, timeEnd int64) (map[string]map[string]string, error)
-	GetMetrics(ctx context.Context) ([]string, error)
+	Proxy(w http.ResponseWriter, r *http.Request)
 }
 
 type instance struct {
 	name             string
+	config           Config
 	metrics          []string
 	metricsLastFetch time.Time
 	v1api            v1.API
@@ -268,31 +276,36 @@ func (i *instance) GetInstant(ctx context.Context, queries []Query, timeEnd int6
 	return rows, nil
 }
 
-// GetMetrics returns all metrics we can get the configured Prometheus instance. These metrics can be used completion
-// item in the PromQL query editor. The metric names are cached for one hour before they are reloaded, to reduce the
-// time of the API call.
-func (i *instance) GetMetrics(ctx context.Context) ([]string, error) {
-	now := time.Now()
+func (i *instance) Proxy(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 
-	if i.metricsLastFetch.Add(1 * time.Hour).Before(now) {
-		labelValues, _, err := i.v1api.LabelValues(ctx, model.MetricNameLabel, nil, now.Add(-1*time.Hour), now)
-		if err != nil {
-			return nil, err
+	proxyURL, err := url.Parse(i.config.Address)
+	if err != nil {
+		return
+	}
+	proxy := httputil.NewSingleHostReverseProxy(proxyURL)
+	proxy.FlushInterval = -1
+
+	originalDirector := proxy.Director
+	proxy.Director = func(req *http.Request) {
+		originalDirector(req)
+		otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
+
+		req.Host = req.URL.Host
+		req.URL.Path = strings.ReplaceAll(req.URL.Path, "/api/plugins/prometheus/proxy", "")
+
+		if i.config.Token != "" {
+			req.Header.Set("Authorization", "Bearer "+i.config.Token)
 		}
-
-		var metricss []string
-		for _, metrics := range labelValues {
-			metricss = append(metricss, string(metrics))
-		}
-
-		i.metrics = metricss
-		i.metricsLastFetch = now
-		log.Debug(ctx, "Get metric names", zap.String("name", i.name))
-	} else {
-		log.Debug(ctx, "Use cached metric names", zap.String("name", i.name))
 	}
 
-	return i.metrics, nil
+	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+		log.Error(r.Context(), "client request failed", zap.Error(err), zap.String("clientName", i.name))
+		errresponse.Render(w, r, http.StatusBadGateway)
+		return
+	}
+
+	proxy.ServeHTTP(w, r)
 }
 
 // New returns a new Prometheus instance for the given configuration.
@@ -329,7 +342,8 @@ func New(name string, options map[string]any) (Instance, error) {
 	}
 
 	return &instance{
-		name:  name,
-		v1api: v1.NewAPI(client),
+		name:   name,
+		config: config,
+		v1api:  v1.NewAPI(client),
 	}, nil
 }

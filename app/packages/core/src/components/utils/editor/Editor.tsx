@@ -1,185 +1,206 @@
-import MonacoEditorReact, { Monaco } from '@monaco-editor/react';
-import { Box } from '@mui/material';
-import * as monaco from 'monaco-editor';
-import { FunctionComponent, useState } from 'react';
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
+import { json } from '@codemirror/lang-json';
+import { bracketMatching, syntaxHighlighting, foldGutter, StreamLanguage } from '@codemirror/language';
+import { yaml } from '@codemirror/legacy-modes/mode/yaml';
+import { EditorState, Extension, Prec } from '@codemirror/state';
+import {
+  EditorView,
+  ViewUpdate,
+  highlightSpecialChars,
+  highlightActiveLine,
+  rectangularSelection,
+  lineNumbers,
+  highlightActiveLineGutter,
+  dropCursor,
+  crosshairCursor,
+  keymap,
+} from '@codemirror/view';
+import { InputBaseComponentProps, TextField, useTheme } from '@mui/material';
+import { forwardRef, FunctionComponent, ReactNode, useEffect, useRef } from 'react';
 
-import { setupPromQL, setupMonaco, setupMongoDB, setupSignalSciences } from './monaco';
-import { muiTheme, nordTheme } from './themes';
+import { createHighlighter, createTheme } from './theme';
 
 import { useLatest } from '../../../utils/hooks/useLatest';
 
-setupMonaco();
+/**
+ * `getLanguageExtensions` returns the extensions for the given language. If the provided language is a list of
+ * extensions these extensions are returned. If the provided language is a string the defined extensions are returned.
+ */
+const getLanguageExtensions = (language: string | Extension[]): Extension[] => {
+  switch (language) {
+    case 'json':
+      return [json()];
+    case 'yaml':
+      return [StreamLanguage.define(yaml)];
+    default:
+      return typeof language === 'string' ? [] : language;
+  }
+};
 
 /**
- * `IEditorProps` is the interface for the `Editor` component and the `MUIEditor` component.
+ * The `CodeMirrorEditor` component implements the CodeMirror editor, which can be used to provide autocompletion and
+ * syntax highlighting within the app.
  */
-interface IEditorProps {
-  language: string;
-  onChange?: (value: string | undefined) => void;
-  readOnly?: boolean;
+const CodeMirrorEditor: FunctionComponent<{
+  handleSubmit?: () => void;
+  language: string | Extension[];
+  minimal: boolean;
+  onChange?: (value: string) => void;
   value: string;
-}
+}> = ({ language, minimal, value, onChange, handleSubmit }) => {
+  const theme = useTheme();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<EditorView | null>(null);
+  const handleSubmitRef = useLatest(handleSubmit);
 
-/**
- * The `Editor` component wraps the monaco editor, so that we can apply some default settings which should always be
- * used in our app.
- */
-export const Editor: FunctionComponent<IEditorProps> = ({ language, readOnly = false, value, onChange }) => {
-  const handleBeforeMount = (monaco: Monaco) => {
-    monaco.editor.defineTheme('nord', nordTheme);
-  };
+  useEffect(() => {
+    const view = viewRef.current;
+    if (view === null) {
+      if (!containerRef.current) {
+        throw new Error('expected CodeMirror container element to exist');
+      }
 
-  const handleOnMount = (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
-    editor.addCommand(monaco.KeyCode.F1, () => {
-      // Disable command pallete, by "stealing" its keybindings.
-      // See: https://github.com/microsoft/monaco-editor/issues/419
-    });
+      const startState = EditorState.create({
+        doc: value,
+        extensions: [
+          createTheme(theme, minimal),
+          syntaxHighlighting(createHighlighter(theme)),
+          highlightSpecialChars(),
+          bracketMatching(),
+          closeBrackets(),
+          history(),
+          autocompletion(),
 
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF, () => {
-      // Since the find action is "disabled" in the `MUIEditor` component we have to re-add the command here. If we
-      // wouldn't do this the find action would not work in the `Editor` component, after a user used the `MUIEditor`
-      // component.
-      editor.getAction('actions.find')?.run();
-    });
-  };
+          minimal
+            ? []
+            : [
+                lineNumbers(),
+                highlightActiveLine(),
+                highlightActiveLineGutter(),
+                foldGutter(),
+                rectangularSelection(),
+                dropCursor(),
+                crosshairCursor(),
+              ],
+
+          EditorView.lineWrapping,
+          onChange ? EditorState.readOnly.of(false) : EditorState.readOnly.of(true),
+          EditorView.updateListener.of((update: ViewUpdate): void => {
+            if (update.docChanged && onChange) {
+              onChange(update.state.doc.toString());
+            }
+          }),
+
+          keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...completionKeymap]),
+          Prec.highest(
+            keymap.of([
+              {
+                key: 'Shift-Enter',
+                run: (v: EditorView): boolean => {
+                  if (handleSubmit && handleSubmitRef.current) {
+                    handleSubmitRef.current();
+                  }
+                  return true;
+                },
+              },
+            ]),
+          ),
+
+          ...getLanguageExtensions(language),
+        ],
+      });
+
+      const view = new EditorView({
+        parent: containerRef.current,
+        state: startState,
+      });
+
+      viewRef.current = view;
+
+      view.focus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    if (view !== null && view.state.doc.toString() !== value) {
+      view.dispatch(
+        view.state.update({
+          changes: { from: 0, insert: value, to: view.state.doc.length },
+        }),
+      );
+    }
+  }, [value]);
 
   return (
-    <MonacoEditorReact
-      theme="nord"
-      height="100%"
-      language={language}
-      value={value}
-      beforeMount={handleBeforeMount}
-      onMount={handleOnMount}
-      onChange={onChange}
-      options={{
-        fontFamily: 'monospace',
-        readOnly: readOnly,
-        scrollBeyondLastLine: false,
+    <div
+      style={{
+        height: '100%',
+        width: '100%',
       }}
+      ref={containerRef}
     />
   );
 };
 
-/**
- * `IMUIEditorProps` is the interface for the `MUIEditor` component which extends the `IEditorProps` interface with some
- * additional functions.
- */
-interface IMUIEditorProps extends IEditorProps {
-  callSubmit?: () => void;
-  loadCompletionItems?: () => Promise<string[]>;
-}
+const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function Editor(props, ref) {
+  const { language, minimal, value, onChange, handleSubmit } = props;
 
-/**
- * The `MUIEditor` component wraps the monaco editor, similar to the `Editor` component, but applies the MUI theme we
- * are using, so that the editor looks like a `TextField` component. The `MUIEditor` also adds support for the languages
- * we are using (e.g. PromQL).
- *
- * The `MUIEditor` also allows us to add some special features to monaco, so that it is possible to load custom
- * completion items via the passed in `loadCompletionItems` function and to submit a form via the `Shift + Enter` by
- * calling the provided `callSubmit` function.
- */
-export const MUIEditor: FunctionComponent<IMUIEditorProps> = ({
-  language,
-  readOnly = false,
-  loadCompletionItems,
-  callSubmit,
-  value,
-  onChange,
-}) => {
-  const callSubmitRef = useLatest(callSubmit);
-  const [height, setHeight] = useState(36);
-
-  const handleBeforeMount = (monaco: Monaco) => {
-    monaco.editor.defineTheme('mui', muiTheme);
-
-    switch (language) {
-      case 'mongodb':
-        setupMongoDB(monaco, loadCompletionItems);
-        break;
-      case 'promql':
-        setupPromQL(monaco, loadCompletionItems);
-        break;
-      case 'signalsciences':
-        setupSignalSciences(monaco, loadCompletionItems);
-        break;
-      default:
-        break;
+  const handleOnChange = (value: string | undefined) => {
+    if (onChange) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      onChange({ target: { value: value ?? '' } });
     }
   };
 
-  const handleOnMount = (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
-    editor.onDidContentSizeChange(() => {
-      const newHeight = Math.min(1000, editor.getContentHeight());
-      setHeight(newHeight < 36 ? 36 : newHeight);
-    });
-
-    editor.addCommand(monaco.KeyCode.F1, () => {
-      // Disable command pallete, by "stealing" its keybindings.
-      // See: https://github.com/microsoft/monaco-editor/issues/419
-    });
-
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF, () => {
-      // Disable find, by "stealing" its keybindings.
-    });
-
-    editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, () => {
-      if (callSubmitRef.current) {
-        callSubmitRef.current();
-      }
-    });
-  };
-
   return (
-    <Box
+    <CodeMirrorEditor
+      language={language}
+      minimal={minimal}
+      value={value}
+      onChange={handleOnChange}
+      handleSubmit={handleSubmit}
+    />
+  );
+});
+
+/**
+ * The `Editor` component can be used within our app to have a code editor with autocompletion and syntax highlighting.
+ * The editor is a normal MUI TextField with the CodeMirror editor as input component.
+ */
+export const Editor: FunctionComponent<{
+  adornment?: ReactNode;
+  handleSubmit?: () => void;
+  language: string | Extension[];
+  minimal?: boolean;
+  onChange?: (value: string) => void;
+  value: string;
+}> = ({ adornment, language, minimal = false, value, onChange, handleSubmit }) => {
+  return (
+    <TextField
       sx={{
-        '.kobsio-monaco-editor': {
+        '.MuiInputBase-root': {
           height: '100%',
-          position: 'absolute',
           width: '100%',
         },
-
         height: '100%',
-        position: 'relative',
         width: '100%',
       }}
-    >
-      <MonacoEditorReact
-        theme="mui"
-        height={height}
-        language={language}
-        value={value}
-        beforeMount={handleBeforeMount}
-        onMount={handleOnMount}
-        onChange={onChange}
-        className="kobsio-monaco-editor"
-        options={{
-          contextmenu: false,
-          cursorWidth: 1,
-          folding: false,
-          fontFamily: 'monospace',
-          fontSize: 13,
-          glyphMargin: false,
-          lineDecorationsWidth: 12,
-          lineHeight: 18.6875,
-          lineNumbers: 'off',
-          lineNumbersMinChars: 0,
-          minimap: {
-            enabled: false,
-          },
-          overviewRulerLanes: 0,
-          padding: { bottom: 8.5, top: 8.5 },
-          readOnly: readOnly,
-          renderLineHighlight: 'none',
-          scrollBeyondLastLine: false,
-          scrollbar: {
-            handleMouseWheel: false,
-            horizontal: 'hidden',
-            vertical: 'hidden',
-          },
-          wordWrap: 'on',
-        }}
-      />
-    </Box>
+      fullWidth={true}
+      value={value}
+      onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+      InputProps={{
+        endAdornment: adornment,
+        inputComponent: InternalEditor,
+        inputProps: {
+          handleSubmit: handleSubmit,
+          language: language,
+          minimal: minimal,
+        },
+      }}
+    />
   );
 };
