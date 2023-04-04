@@ -6,14 +6,6 @@ import { vi } from 'vitest';
 
 import AggregationPage from './AggregationPage';
 
-vi.mock('./Editor', () => {
-  return {
-    default: () => {
-      return <>mock editor</>;
-    },
-  };
-});
-
 describe('AggregationPage', () => {
   const apiClient = new APIClient();
   const getSpy = vi.spyOn(apiClient, 'get');
@@ -140,7 +132,7 @@ describe('AggregationPage', () => {
   });
 
   it('should suggest columns in the breakDownByFields input', async () => {
-    getSpy.mockResolvedValueOnce(['column_suggestions']);
+    getSpy.mockResolvedValue(['column_suggestions']);
     render('/?chart=bar');
 
     const breakDownByFieldsSelect = screen.getByLabelText('Break down by fields');

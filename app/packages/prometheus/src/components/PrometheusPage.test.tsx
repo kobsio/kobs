@@ -8,6 +8,17 @@ import PrometheusPage from './PrometheusPage';
 
 import { description } from '../utils/utils';
 
+vi.mock('@kobsio/core', async () => {
+  const originalModule = await vi.importActual('@kobsio/core');
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(originalModule as any),
+    Editor: () => {
+      return <>mocked editor</>;
+    },
+  };
+});
+
 describe('PrometheusPage', () => {
   const render = (path: string): RenderResult => {
     const client = new APIClient();

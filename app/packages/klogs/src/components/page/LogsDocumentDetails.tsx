@@ -107,25 +107,6 @@ const DocumentDetailsTableView: FunctionComponent<IDocumentDetailsTableViewProps
   );
 };
 
-interface IDocumentDetailsEditorViewProps {
-  row: IRow;
-}
-
-/**
- * DocumentDetailsJSONView renders a JSON readonly editor for viewing a log document in JSON format
- */
-const DocumentDetailsJSONView: FunctionComponent<IDocumentDetailsEditorViewProps> = ({ row }) => {
-  const content = JSON.stringify(row, null, 2);
-  const lines = content.split('\n').length;
-  const height = lines * 20 - 26;
-
-  return (
-    <Box height={height} sx={{ maxWidth: 'calc(100vw - 600px)' }}>
-      <Editor language="json" readOnly={true} value={content} />
-    </Box>
-  );
-};
-
 interface ITabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -168,7 +149,7 @@ const DocumentDetails: FunctionComponent<IDocumentDetailsProps> = ({ row, handle
           <DocumentDetailsTableView row={row} handlers={handlers} options={options} />
         </TabPanel>
         <TabPanel index={1} value={tab}>
-          <DocumentDetailsJSONView row={row} />
+          <Editor language="json" value={JSON.stringify(row, null, 2)} />
         </TabPanel>
       </TableCell>
     </TableRow>

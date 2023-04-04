@@ -22,6 +22,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       ],
     };
   }
+
   return {
     // Source maps are disabled for now to avoid Javascript heap out of memory errors during the build process.
     //

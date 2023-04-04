@@ -39,12 +39,12 @@ export const codemirrorExtension = () => {
         { label: 'useragent', type: 'keyword' },
 
         { info: 'equals', label: ':=', type: 'keyword' },
-        { info: '(not equals)', label: '!=', type: 'keyword' },
-        { info: '(greater-than, integers only)', label: ':>', type: 'keyword' },
-        { info: '(equals or greater-than, integers only)', label: ':>=', type: 'keyword' },
-        { info: '(less-than, integers only)', label: ':<', type: 'keyword' },
-        { info: '(equals or less-than, integers only)', label: ':<=', type: 'keyword' },
-        { info: '(search on the field with the terms provided)', label: ':~', type: 'keyword' },
+        { info: 'not equals', label: '!=', type: 'keyword' },
+        { info: 'greater-than, integers only', label: ':>', type: 'keyword' },
+        { info: 'equals or greater-than, integers only', label: ':>=', type: 'keyword' },
+        { info: 'less-than, integers only', label: ':<', type: 'keyword' },
+        { info: 'equals or less-than, integers only', label: ':<=', type: 'keyword' },
+        { info: 'search on the field with the terms provided', label: ':~', type: 'keyword' },
       ]),
     ],
   });
