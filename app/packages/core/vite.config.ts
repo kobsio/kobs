@@ -7,11 +7,6 @@ import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
 
 export default defineConfig({
-  // The definition of the "base" property is required, so that the workers from monaco are added to the assets of the
-  // production build of the "app" package.
-  //
-  // See: https://github.com/vitejs/vite/issues/11943
-  base: './',
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
@@ -44,10 +39,6 @@ export default defineConfig({
   test: {
     coverage: {
       all: true,
-      exclude: [
-        // this file configures the klogs query language.
-        'src/components/utils/editor/klogs.ts',
-      ],
     },
     environment: 'jsdom',
     globals: true,

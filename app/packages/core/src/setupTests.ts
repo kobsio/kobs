@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
-import { afterEach, expect } from 'vitest';
+import { afterEach, expect, vi } from 'vitest';
 
 expect.extend(matchers);
 
@@ -45,6 +45,12 @@ class LocalStorageMock {
 }
 
 global.localStorage = new LocalStorageMock();
+
+Range.prototype.getClientRects = () => ({
+  item: () => null,
+  length: 0,
+  [Symbol.iterator]: vi.fn(),
+});
 
 afterEach(() => {
   global.localStorage.clear();

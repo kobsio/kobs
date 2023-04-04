@@ -8,14 +8,6 @@ import MongoDBPage from './MongoDBPage';
 
 import { description } from '../utils/utils';
 
-vi.mock('./Editor', () => {
-  return {
-    default: () => {
-      return <>Mocked Editor</>;
-    },
-  };
-});
-
 vi.mock('./OperationCount', () => {
   return {
     OperationCount: () => {

@@ -1,7 +1,7 @@
 import { V1EphemeralContainer } from '@kubernetes/client-node';
 import { BugReport as DebugIcon } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme } from '@mui/material';
 import { compare } from 'fast-json-patch';
 import yaml from 'js-yaml';
 import { FunctionComponent, useContext, useState } from 'react';
@@ -87,9 +87,7 @@ tty: true`);
     <Dialog open={open} onClose={() => onClose('', 'success')} fullScreen={fullScreen} maxWidth="md">
       <DialogTitle>Create Debug Container</DialogTitle>
       <DialogContent sx={{ minWidth: '50vw' }}>
-        <Box height="50vh">
-          <Editor language="yaml" value={debugContainer} onChange={(value) => setDebugContainer(value ?? '')} />
-        </Box>
+        <Editor language="yaml" value={debugContainer} onChange={(value) => setDebugContainer(value ?? '')} />
       </DialogContent>
       <DialogActions>
         <LoadingButton

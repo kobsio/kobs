@@ -15,6 +15,7 @@ import {
   getChartColor,
   getStateHistory,
   addStateHistoryItems,
+  Editor,
 } from '@kobsio/core';
 import { Add, ManageSearch, Remove } from '@mui/icons-material';
 import {
@@ -27,16 +28,15 @@ import {
   Menu,
   MenuItem,
   Stack,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
+import { PromQLExtension } from '@prometheus-io/codemirror-promql';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, MouseEvent, useContext, useEffect, useMemo, useState } from 'react';
 
 import Chart from './Chart';
-import Editor from './Editor';
 import Legend from './Legend';
 
 import { description, IMetric, IMetrics, IOrder, TOrderBy } from '../utils/utils';
@@ -321,23 +321,7 @@ const PrometheusToolbar: FunctionComponent<{
   options: IOptions;
   setOptions: (options: IOptions) => void;
 }> = ({ instance, options, setOptions }) => {
-  const apiContext = useContext<IAPIContext>(APIContext);
   const [queries, setQueries] = useState<string[]>(options.queries);
-
-  /**
-   * `loadCompletionItems` is the function which we pass to the `MUIEditor` to load additional completion items for the
-   * monaco editor. Currently we are just loading all available metrics from the Prometheus instance.
-   *
-   * NOTE: We should also add support for labels and label values.
-   */
-  const loadCompletionItems = (): Promise<string[]> => {
-    return apiContext.client.get<string[]>(`/api/plugins/prometheus/completions`, {
-      headers: {
-        'x-kobs-cluster': instance.cluster,
-        'x-kobs-plugin': instance.name,
-      },
-    });
-  };
 
   /**
    * `addQuery` adds a new PromQL query to our list of queries. In the UI we will add a new editor field which can then
@@ -383,13 +367,14 @@ const PrometheusToolbar: FunctionComponent<{
   };
 
   /**
-   * `callSubmit` is the function we pass to our `MUIEditor` component so that we can submit the provided query by
+   * `handleSubmit` is the function we pass to our `Editor` component so that we can submit the provided query by
    * calling the `setOptions` function when a user presses `Shift + Enter`.
    *
    * We also add all the queries to the history of Prometheus queries when the function is triggered, so that a user has
    * easy access to the last 10 queries he run.
    */
-  const callSubmit = () => {
+  const handleSubmit = () => {
+    console.log(queries);
     addStateHistoryItems('kobs-prometheus-queryhistory', queries);
     setOptions({ ...options, queries: queries });
   };
@@ -398,15 +383,38 @@ const PrometheusToolbar: FunctionComponent<{
     <Toolbar>
       <ToolbarItem grow={true}>
         {queries.map((query, index) => (
-          <TextField
+          <Box
             key={index}
             sx={{
               mb: index !== queries.length - 1 ? 3 : 0,
             }}
-            value={query}
-            onChange={(e) => changeQuery(index, e.target.value)}
-            InputProps={{
-              endAdornment: (
+          >
+            <Editor
+              language={[
+                new PromQLExtension()
+                  .activateCompletion(true)
+                  .activateLinter(true)
+                  .setComplete({
+                    remote: {
+                      fetchFn: (input: RequestInfo, init?: RequestInit): Promise<Response> => {
+                        return fetch(input, {
+                          ...init,
+                          headers: {
+                            'x-kobs-cluster': instance.cluster,
+                            'x-kobs-plugin': instance.name,
+                          },
+                        });
+                      },
+                      url: `/api/plugins/prometheus/proxy`,
+                    },
+                  })
+                  .asExtension(),
+              ]}
+              minimal={true}
+              value={query}
+              onChange={(value) => changeQuery(index, value)}
+              handleSubmit={() => handleSubmit()}
+              adornment={
                 <InputAdornment position="end">
                   <PrometheusHistory optionsQueries={options.queries} setQuery={(query) => changeQuery(index, query)} />
                   {index === 0 ? (
@@ -419,15 +427,9 @@ const PrometheusToolbar: FunctionComponent<{
                     </IconButton>
                   )}
                 </InputAdornment>
-              ),
-              inputComponent: Editor,
-              inputProps: {
-                callSubmit: callSubmit,
-                loadCompletionItems: loadCompletionItems,
-              },
-            }}
-            fullWidth={true}
-          />
+              }
+            />
+          </Box>
         ))}
       </ToolbarItem>
 

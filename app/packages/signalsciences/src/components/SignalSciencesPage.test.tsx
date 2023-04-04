@@ -8,14 +8,6 @@ import SignalSciencesPage from './SignalSciencesPage';
 
 import { description } from '../utils/utils';
 
-vi.mock('./Editor', () => {
-  return {
-    default: () => {
-      return <>mock editor</>;
-    },
-  };
-});
-
 describe('SignalSciencesPage', () => {
   const render = (path: string): RenderResult => {
     const client = new APIClient();

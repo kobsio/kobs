@@ -9,14 +9,6 @@ import HelmPage from './HelmPage';
 
 import { description, IRelease } from '../utils/utils';
 
-vi.mock('./Editor', () => {
-  return {
-    default: () => {
-      return <>mock editor</>;
-    },
-  };
-});
-
 describe('HelmPage', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const render = (path: string, releases: IRelease[], history: IRelease[]): RenderResult => {

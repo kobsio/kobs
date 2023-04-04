@@ -4,6 +4,7 @@ import {
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
+  Editor,
   IPluginInstance,
   ITimes,
   formatTimeString,
@@ -23,7 +24,6 @@ import {
 import yaml from 'js-yaml';
 import { FunctionComponent, useState } from 'react';
 
-import Editor from './Editor';
 import History from './History';
 
 import { IRelease } from '../utils/utils';
@@ -142,11 +142,7 @@ const Release: FunctionComponent<{
       </Box>
 
       <Box key="values" hidden={activeTab !== 'values'} py={6}>
-        {activeTab === 'values' && (
-          <Box height="calc(100vh - 161px)">
-            <Editor value={yaml.dump(release.config)} />
-          </Box>
-        )}
+        {activeTab === 'values' && <Editor language="yaml" value={yaml.dump(release.config)} />}
       </Box>
 
       <Box key="history" hidden={activeTab !== 'history'} py={6}>
@@ -169,9 +165,7 @@ const Release: FunctionComponent<{
                 <Typography>values.yaml</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Box height="300px">
-                  <Editor value={yaml.dump(release.chart?.values)} />
-                </Box>
+                <Editor language="yaml" value={yaml.dump(release.chart?.values)} />
               </AccordionDetails>
             </Accordion>
 
@@ -181,9 +175,7 @@ const Release: FunctionComponent<{
                   <Typography>{template?.name}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Box height="300px">
-                    <Editor value={atob(template?.data ?? '')} />
-                  </Box>
+                  <Editor language="yaml" value={atob(template?.data ?? '')} />
                 </AccordionDetails>
               </Accordion>
             ))}
