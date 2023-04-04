@@ -109,6 +109,40 @@ func (router *Router) getCollectionStats(w http.ResponseWriter, r *http.Request)
 	render.JSON(w, r, stats)
 }
 
+func (router *Router) getCollectionIndexes(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	collectionName := r.URL.Query().Get("collectionName")
+
+	log.Debug(r.Context(), "Get database collection indexes", zap.String("name", name), zap.String("collectionName", collectionName))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
+		return
+	}
+
+	indexes, err := i.GetDBCollectionIndexes(r.Context(), collectionName)
+	if err != nil {
+		log.Error(r.Context(), "Failed to fetch collection indexes", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to fetch collection indexes")
+		return
+	}
+
+	var docs []json.RawMessage
+	for _, doc := range indexes {
+		encodedDoc, err := bson.MarshalExtJSON(doc, false, true)
+		if err != nil {
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to marshal find results")
+			return
+		}
+
+		docs = append(docs, encodedDoc)
+	}
+
+	render.JSON(w, r, docs)
+}
+
 // find runs a query on the database and returns the result.
 func (router *Router) find(w http.ResponseWriter, r *http.Request) {
 	name := r.Header.Get("x-kobs-plugin")
@@ -138,8 +172,8 @@ func (router *Router) find(w http.ResponseWriter, r *http.Request) {
 
 	results, err := i.Find(r.Context(), collectionName, data.Filter, data.Sort, data.Limit)
 	if err != nil {
-		log.Error(r.Context(), "Failed to run 'find' query", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run 'find' query")
+		log.Error(r.Context(), "Failed to run find", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run find")
 		return
 	}
 
@@ -147,7 +181,7 @@ func (router *Router) find(w http.ResponseWriter, r *http.Request) {
 	for _, doc := range results {
 		encodedDoc, err := bson.MarshalExtJSON(doc, false, true)
 		if err != nil {
-			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to marshal query results")
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to marshal find results")
 			return
 		}
 
@@ -184,8 +218,8 @@ func (router *Router) count(w http.ResponseWriter, r *http.Request) {
 
 	result, err := i.Count(r.Context(), collectionName, data.Filter)
 	if err != nil {
-		log.Error(r.Context(), "Failed to run 'count' query", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run 'count' query")
+		log.Error(r.Context(), "Failed to run count", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run count")
 		return
 	}
 
@@ -224,12 +258,209 @@ func (router *Router) findOne(w http.ResponseWriter, r *http.Request) {
 
 	result, err := i.FindOne(r.Context(), collectionName, data.Filter)
 	if err != nil {
-		log.Error(r.Context(), "Failed to run 'findOne' query", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run 'findOne' query")
+		log.Error(r.Context(), "Failed to run findOne", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run findOne")
 		return
 	}
 
 	render.JSON(w, r, result)
+}
+
+func (router *Router) findOneAndUpdate(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	collectionName := r.URL.Query().Get("collectionName")
+
+	log.Debug(r.Context(), "Running 'findOneAndUpdate' on database", zap.String("name", name), zap.String("collectionName", collectionName))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
+		return
+	}
+
+	data := struct {
+		Filter string `json:"filter"`
+		Update string `json:"update"`
+	}{}
+
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		log.Warn(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
+		return
+	}
+
+	result, err := i.FindOneAndUpdate(r.Context(), collectionName, data.Filter, data.Update)
+	if err != nil {
+		log.Error(r.Context(), "Failed to run findOneAndUpdate", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run findOneAndUpdate")
+		return
+	}
+
+	render.JSON(w, r, result)
+}
+
+func (router *Router) findOneAndDelete(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	collectionName := r.URL.Query().Get("collectionName")
+
+	log.Debug(r.Context(), "Running 'findOneAndDelete' on database", zap.String("name", name), zap.String("collectionName", collectionName))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
+		return
+	}
+
+	data := struct {
+		Filter string `json:"filter"`
+	}{}
+
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		log.Warn(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
+		return
+	}
+
+	result, err := i.FindOneAndDelete(r.Context(), collectionName, data.Filter)
+	if err != nil {
+		log.Error(r.Context(), "Failed to run findOneAndDelete", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run findOneAndDelete")
+		return
+	}
+
+	render.JSON(w, r, result)
+}
+
+func (router *Router) updateMany(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	collectionName := r.URL.Query().Get("collectionName")
+
+	log.Debug(r.Context(), "Running 'updateMany' on database", zap.String("name", name), zap.String("collectionName", collectionName))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
+		return
+	}
+
+	data := struct {
+		Filter string `json:"filter"`
+		Update string `json:"update"`
+	}{}
+
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		log.Warn(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
+		return
+	}
+
+	matchedCount, modifiedCount, err := i.UpdateMany(r.Context(), collectionName, data.Filter, data.Update)
+	if err != nil {
+		log.Error(r.Context(), "Failed to run updateMany", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run updateMany")
+		return
+	}
+
+	response := struct {
+		MatchedCount  int64 `json:"matchedCount"`
+		ModifiedCount int64 `json:"modifiedCount"`
+	}{
+		matchedCount,
+		modifiedCount,
+	}
+
+	render.JSON(w, r, response)
+}
+
+func (router *Router) deleteMany(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	collectionName := r.URL.Query().Get("collectionName")
+
+	log.Debug(r.Context(), "Running 'deleteMany' on database", zap.String("name", name), zap.String("collectionName", collectionName))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
+		return
+	}
+
+	data := struct {
+		Filter string `json:"filter"`
+	}{}
+
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		log.Warn(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
+		return
+	}
+
+	count, err := i.DeleteMany(r.Context(), collectionName, data.Filter)
+	if err != nil {
+		log.Error(r.Context(), "Failed to run deleteMany", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run deleteMany")
+		return
+	}
+
+	response := struct {
+		Count int64 `json:"count"`
+	}{
+		count,
+	}
+
+	render.JSON(w, r, response)
+}
+
+func (router *Router) aggregate(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	collectionName := r.URL.Query().Get("collectionName")
+
+	log.Debug(r.Context(), "Running 'aggregate' on database", zap.String("name", name), zap.String("collectionName", collectionName))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
+		return
+	}
+
+	data := struct {
+		Pipeline string `json:"pipeline"`
+	}{}
+
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		log.Warn(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
+		return
+	}
+
+	results, err := i.Aggregate(r.Context(), collectionName, data.Pipeline)
+	if err != nil {
+		log.Error(r.Context(), "Failed to run aggregate", zap.String("name", name), zap.String("collectionName", collectionName), zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to run aggregate")
+		return
+	}
+
+	var docs []json.RawMessage
+	for _, doc := range results {
+		encodedDoc, err := bson.MarshalExtJSON(doc, false, true)
+		if err != nil {
+			errresponse.Render(w, r, http.StatusInternalServerError, "Failed to marshal aggregate results")
+			return
+		}
+
+		docs = append(docs, encodedDoc)
+	}
+
+	render.JSON(w, r, docs)
 }
 
 func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
@@ -253,9 +484,15 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 	router.With(proxy).Get("/stats", router.getStats)
 	router.With(proxy).Get("/collections", router.getCollectionNames)
 	router.With(proxy).Get("/collections/stats", router.getCollectionStats)
+	router.With(proxy).Get("/collections/indexes", router.getCollectionIndexes)
 	router.With(proxy).Post("/collections/find", router.find)
 	router.With(proxy).Post("/collections/count", router.count)
 	router.With(proxy).Post("/collections/findone", router.findOne)
+	router.With(proxy).Post("/collections/findoneandupdate", router.findOneAndUpdate)
+	router.With(proxy).Post("/collections/findoneanddelete", router.findOneAndDelete)
+	router.With(proxy).Post("/collections/updatemany", router.updateMany)
+	router.With(proxy).Post("/collections/deletemany", router.deleteMany)
+	router.With(proxy).Post("/collections/aggregate", router.aggregate)
 
 	return router, nil
 }

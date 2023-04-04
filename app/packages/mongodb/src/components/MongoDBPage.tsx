@@ -14,9 +14,14 @@ import { Route, Routes, useParams } from 'react-router-dom';
 
 import { Collections } from './Collections';
 import { DBStats } from './DBStats';
+import { OperationAggregate } from './OperationAggregate';
 import { OperationCount } from './OperationCount';
+import { OperationDeleteMany } from './OperationDeleteMany';
 import { OperationFind } from './OperationFind';
 import { OperationFindOne } from './OperationFindOne';
+import { OperationFindOneAndDelete } from './OperationFindOneAndDelete';
+import { OperationFindOneAndUpdate } from './OperationFindOneAndUpdate';
+import { OperationUpdateMany } from './OperationUpdateMany';
 
 import { codemirrorExtension, description } from '../utils/utils';
 
@@ -24,7 +29,9 @@ interface IQueryPageOptions {
   filter: string;
   limit: number;
   operation: string;
+  pipeline: string;
   sort: string;
+  update: string;
 }
 
 interface IQueryPageParams extends Record<string, string | undefined> {
@@ -109,29 +116,44 @@ const QueryPageToolbar: FunctionComponent<{
           <MenuItem value="find">find</MenuItem>
           <MenuItem value="count">count</MenuItem>
           <MenuItem value="findOne">findOne</MenuItem>
+          <MenuItem value="findOneAndUpdate">findOneAndUpdate</MenuItem>
+          <MenuItem value="findOneAndDelete">findOneAndDelete</MenuItem>
+          <MenuItem value="updateMany">updateMany</MenuItem>
+          <MenuItem value="deleteMany">deleteMany</MenuItem>
+          <MenuItem value="aggregate">aggregate</MenuItem>
         </Select>
       </Grid>
 
-      <Grid item={true} xs={12} md={2}>
-        Filter
-      </Grid>
-      <Grid item={true} xs={12} md={10}>
-        <Editor
-          language={codemirrorExtension()}
-          minimal={true}
-          value={internalOptions.filter}
-          onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
-          adornment={
-            <InputAdornment position="end">
-              <QueryPageToolbarHistory
-                identifier="kobs-mongodb-filterhistory"
-                value={options.filter}
-                setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
-              />
-            </InputAdornment>
-          }
-        />
-      </Grid>
+      {(internalOptions.operation === 'find' ||
+        internalOptions.operation === 'count' ||
+        internalOptions.operation === 'findOne' ||
+        internalOptions.operation === 'findOneAndUpdate' ||
+        internalOptions.operation === 'findOneAndDelete' ||
+        internalOptions.operation === 'updateMany' ||
+        internalOptions.operation === 'deleteMany') && (
+        <>
+          <Grid item={true} xs={12} md={2}>
+            Filter
+          </Grid>
+          <Grid item={true} xs={12} md={10}>
+            <Editor
+              language={codemirrorExtension()}
+              minimal={true}
+              value={internalOptions.filter}
+              onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
+              adornment={
+                <InputAdornment position="end">
+                  <QueryPageToolbarHistory
+                    identifier="kobs-mongodb-filterhistory"
+                    value={options.filter}
+                    setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
+                  />
+                </InputAdornment>
+              }
+            />
+          </Grid>
+        </>
+      )}
 
       {internalOptions.operation === 'find' && (
         <>
@@ -177,6 +199,56 @@ const QueryPageToolbar: FunctionComponent<{
         </>
       )}
 
+      {(internalOptions.operation === 'findOneAndUpdate' || internalOptions.operation === 'updateMany') && (
+        <>
+          <Grid item={true} xs={12} md={2}>
+            Update
+          </Grid>
+          <Grid item={true} xs={12} md={10}>
+            <Editor
+              language={codemirrorExtension()}
+              minimal={true}
+              value={internalOptions.update}
+              onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, update: value }))}
+              adornment={
+                <InputAdornment position="end">
+                  <QueryPageToolbarHistory
+                    identifier="kobs-mongodb-updatehistory"
+                    value={options.update}
+                    setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, update: value }))}
+                  />
+                </InputAdornment>
+              }
+            />
+          </Grid>
+        </>
+      )}
+
+      {internalOptions.operation === 'aggregate' && (
+        <>
+          <Grid item={true} xs={12} md={2}>
+            Pipeline
+          </Grid>
+          <Grid item={true} xs={12} md={10}>
+            <Editor
+              language={codemirrorExtension()}
+              minimal={true}
+              value={internalOptions.pipeline}
+              onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, pipeline: value }))}
+              adornment={
+                <InputAdornment position="end">
+                  <QueryPageToolbarHistory
+                    identifier="kobs-mongodb-pipelinehistory"
+                    value={options.pipeline}
+                    setValue={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, pipeline: value }))}
+                  />
+                </InputAdornment>
+              }
+            />
+          </Grid>
+        </>
+      )}
+
       <Grid item={true} xs={12} md={2}></Grid>
       <Grid item={true} xs={12} md={10}>
         <Button variant="contained" color="primary" startIcon={<Search />} onClick={query}>
@@ -193,7 +265,9 @@ const QueryPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     filter: '{}',
     limit: 50,
     operation: 'find',
+    pipeline: '[]',
     sort: '{"_id" : -1}',
+    update: '{}',
   });
 
   const times: ITimes = {
@@ -233,6 +307,48 @@ const QueryPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
           title="Result"
           collectionName={params.collectionName ?? ''}
           filter={options.filter}
+          times={times}
+        />
+      ) : options.operation === 'findOneAndUpdate' ? (
+        <OperationFindOneAndUpdate
+          instance={instance}
+          title="Result"
+          collectionName={params.collectionName ?? ''}
+          filter={options.filter}
+          update={options.update}
+          times={times}
+        />
+      ) : options.operation === 'findOneAndDelete' ? (
+        <OperationFindOneAndDelete
+          instance={instance}
+          title="Result"
+          collectionName={params.collectionName ?? ''}
+          filter={options.filter}
+          times={times}
+        />
+      ) : options.operation === 'updateMany' ? (
+        <OperationUpdateMany
+          instance={instance}
+          title="Result"
+          collectionName={params.collectionName ?? ''}
+          filter={options.filter}
+          update={options.update}
+          times={times}
+        />
+      ) : options.operation === 'deleteMany' ? (
+        <OperationDeleteMany
+          instance={instance}
+          title="Result"
+          collectionName={params.collectionName ?? ''}
+          filter={options.filter}
+          times={times}
+        />
+      ) : options.operation === 'aggregate' ? (
+        <OperationAggregate
+          instance={instance}
+          title="Result"
+          collectionName={params.collectionName ?? ''}
+          pipeline={options.pipeline}
           times={times}
         />
       ) : null}

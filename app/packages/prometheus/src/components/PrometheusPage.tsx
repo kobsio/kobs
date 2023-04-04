@@ -374,7 +374,6 @@ const PrometheusToolbar: FunctionComponent<{
    * easy access to the last 10 queries he run.
    */
   const handleSubmit = () => {
-    console.log(queries);
     addStateHistoryItems('kobs-prometheus-queryhistory', queries);
     setOptions({ ...options, queries: queries });
   };

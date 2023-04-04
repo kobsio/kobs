@@ -17,29 +17,44 @@ import { Documents } from './Documents';
 
 import { toExtendedJson } from '../utils/utils';
 
-export const OperationFind: FunctionComponent<{
+/**
+ * The `OperationAggregate` component is used to load the results for a user provided aggregate pipeline, e.g.
+ *
+ * ```
+ * [
+ *   {
+ *     $group: {
+ *       "_id": [
+ *         {"name": "$name"},
+ *         {"namespace": "$namespace"}
+ *       ],
+ *       "clusters": {$push: "$cluster"},
+ *       "namespaces": {$push: "$namespace"},
+ *       "names": {$push: "$name"},
+ *     }
+ *   }
+ * ]
+ * ```
+ */
+export const OperationAggregate: FunctionComponent<{
   collectionName: string;
   description?: string;
-  filter: string;
   instance: IPluginInstance;
-  limit: number;
+  pipeline: string;
   showActions?: boolean;
-  sort: string;
   times: ITimes;
   title: string;
-}> = ({ instance, title, description, collectionName, filter, sort, limit, showActions, times }) => {
+}> = ({ instance, title, description, collectionName, pipeline, showActions, times }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<Document[], APIError>(
-    ['mongodb/operation/find', instance, collectionName, filter, sort, limit, times],
+    ['mongodb/operation/aggregate', instance, collectionName, pipeline, times],
     async () => {
       const result = await apiContext.client.post<unknown[]>(
-        `/api/plugins/mongodb/collections/find?collectionName=${collectionName}`,
+        `/api/plugins/mongodb/collections/aggregate?collectionName=${collectionName}`,
         {
           body: {
-            filter: toExtendedJson(filter),
-            limit: limit,
-            sort: toExtendedJson(sort),
+            pipeline: toExtendedJson(pipeline),
           },
           headers: {
             'x-kobs-cluster': instance.cluster,
@@ -65,9 +80,9 @@ export const OperationFind: FunctionComponent<{
           <PluginPanelActionLinks
             links={[
               {
-                link: `${pluginBasePath(instance)}/${collectionName}/query?operation=find&filter=${encodeURIComponent(
-                  filter,
-                )}&sort=${encodeURIComponent(sort)}&limit=${limit}`,
+                link: `${pluginBasePath(
+                  instance,
+                )}/${collectionName}/query?operation=aggregate&pipeline=${encodeURIComponent(pipeline)}`,
                 title: 'Explore',
               },
             ]}
@@ -77,7 +92,7 @@ export const OperationFind: FunctionComponent<{
     >
       <UseQueryWrapper
         error={error}
-        errorTitle="Failed to load documents"
+        errorTitle="Failed to run aggregation"
         isError={isError}
         isLoading={isLoading}
         isNoData={!data || data.length === 0}

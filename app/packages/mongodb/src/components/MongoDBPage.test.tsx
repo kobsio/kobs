@@ -32,6 +32,46 @@ vi.mock('./OperationFindOne', () => {
   };
 });
 
+vi.mock('./OperationFindOneAndUpdate', () => {
+  return {
+    OperationFindOneAndUpdate: () => {
+      return <>Mocked OperationFindOneAndUpdate</>;
+    },
+  };
+});
+
+vi.mock('./OperationFindOneAndDelete', () => {
+  return {
+    OperationFindOneAndDelete: () => {
+      return <>Mocked OperationFindOneAndDelete</>;
+    },
+  };
+});
+
+vi.mock('./OperationUpdateMany', () => {
+  return {
+    OperationUpdateMany: () => {
+      return <>Mocked OperationUpdateMany</>;
+    },
+  };
+});
+
+vi.mock('./OperationDeleteMany', () => {
+  return {
+    OperationDeleteMany: () => {
+      return <>Mocked OperationDeleteMany</>;
+    },
+  };
+});
+
+vi.mock('./OperationAggregate', () => {
+  return {
+    OperationAggregate: () => {
+      return <>Mocked OperationAggregate</>;
+    },
+  };
+});
+
 describe('MongoDBPage', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const render = (path: string): RenderResult => {
@@ -73,6 +113,10 @@ describe('MongoDBPage', () => {
           totalIndexSize: 36864,
           totalSize: 73728,
         };
+      }
+
+      if (path.startsWith('/api/plugins/mongodb/collections/indexes?collectionName=tags')) {
+        return [{ key: { _id: 1 }, name: '_id_', v: 2 }];
       }
 
       if (path.startsWith('/api/plugins/mongodb/collections')) {
@@ -127,6 +171,9 @@ describe('MongoDBPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'tags details' }));
     expect(await waitFor(() => screen.getByText('Collection Statistics'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('kobs.tags'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Collection Indexes'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText(/key/))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText(/_id_/))).toBeInTheDocument();
   });
 
   it('should render document', async () => {
@@ -139,8 +186,8 @@ describe('MongoDBPage', () => {
     expect(await waitFor(() => screen.getByText('Mocked OperationFindOne'))).toBeInTheDocument();
   });
 
-  it('should render query', async () => {
-    render('/tags/query');
+  it('should render query with find toolbar', async () => {
+    render('/tags/query?operation=find');
 
     expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
     expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
@@ -151,5 +198,91 @@ describe('MongoDBPage', () => {
     expect(await waitFor(() => screen.getByText('Sort'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('Limit'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('Mocked OperationFind'))).toBeInTheDocument();
+  });
+
+  it('should render query with count toolbar', async () => {
+    render('/tags/query?operation=count');
+
+    expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
+    expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByText('Operation'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Filter'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Mocked OperationCount'))).toBeInTheDocument();
+  });
+
+  it('should render query with findOne toolbar', async () => {
+    render('/tags/query?operation=findOne');
+
+    expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
+    expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByText('Operation'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Filter'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Mocked OperationFindOne'))).toBeInTheDocument();
+  });
+
+  it('should render query with findOneAndUpdate toolbar', async () => {
+    render('/tags/query?operation=findOneAndUpdate');
+
+    expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
+    expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByText('Operation'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Filter'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Update'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Mocked OperationFindOneAndUpdate'))).toBeInTheDocument();
+  });
+
+  it('should render query with findOneAndDelete toolbar', async () => {
+    render('/tags/query?operation=findOneAndDelete');
+
+    expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
+    expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByText('Operation'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Filter'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Mocked OperationFindOneAndDelete'))).toBeInTheDocument();
+  });
+
+  it('should render query with updateMany toolbar', async () => {
+    render('/tags/query?operation=updateMany');
+
+    expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
+    expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByText('Operation'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Filter'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Update'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Mocked OperationUpdateMany'))).toBeInTheDocument();
+  });
+
+  it('should render query with deleteMany toolbar', async () => {
+    render('/tags/query?operation=deleteMany');
+
+    expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
+    expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByText('Operation'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Filter'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Mocked OperationDeleteMany'))).toBeInTheDocument();
+  });
+
+  it('should render query with aggregate toolbar', async () => {
+    render('/tags/query?operation=aggregate');
+
+    expect(screen.getByText('mongodb: tags')).toBeInTheDocument();
+    expect(screen.getByText('(hub / mongodb)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByText('Operation'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Pipeline'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Mocked OperationAggregate'))).toBeInTheDocument();
   });
 });

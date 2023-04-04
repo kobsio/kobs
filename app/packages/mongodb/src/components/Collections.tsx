@@ -2,6 +2,7 @@ import {
   APIContext,
   APIError,
   DetailsDrawer,
+  Editor,
   IAPIContext,
   IPluginInstance,
   Pagination,
@@ -48,12 +49,50 @@ interface ICollectionStats {
   totalSize: number;
 }
 
-const CollectionListItemDetails: FunctionComponent<{
+const CollectionListItemDetailsIndexes: FunctionComponent<{
   collection: string;
   instance: IPluginInstance;
-  onClose: () => void;
-  open: boolean;
-}> = ({ instance, collection, open, onClose }) => {
+}> = ({ instance, collection }) => {
+  const apiContext = useContext<IAPIContext>(APIContext);
+
+  const { isError, isLoading, error, data, refetch } = useQuery<unknown[], APIError>(
+    ['mongodb/collections/indexes', instance, collection],
+    async () => {
+      return apiContext.client.get<unknown[]>(`/api/plugins/mongodb/collections/indexes?collectionName=${collection}`, {
+        headers: {
+          'x-kobs-cluster': instance.cluster,
+          'x-kobs-plugin': instance.name,
+        },
+      });
+    },
+  );
+
+  return (
+    <Card sx={{ mb: 4 }}>
+      <CardContent>
+        <Typography variant="h6" pb={2}>
+          Collection Indexes
+        </Typography>
+        <UseQueryWrapper
+          error={error}
+          errorTitle="Failed to load collection indexes"
+          isError={isError}
+          isLoading={isLoading}
+          isNoData={!data}
+          noDataTitle="No collection indexes were found"
+          refetch={refetch}
+        >
+          {data && <Editor language="json" value={JSON.stringify(data, null, 2)} />}
+        </UseQueryWrapper>
+      </CardContent>
+    </Card>
+  );
+};
+
+const CollectionListItemDetailsStats: FunctionComponent<{
+  collection: string;
+  instance: IPluginInstance;
+}> = ({ instance, collection }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<ICollectionStats, APIError>(
@@ -72,78 +111,90 @@ const CollectionListItemDetails: FunctionComponent<{
   );
 
   return (
+    <Card sx={{ mb: 4 }}>
+      <CardContent>
+        <Typography variant="h6" pb={2}>
+          Collection Statistics
+        </Typography>
+        <UseQueryWrapper
+          error={error}
+          errorTitle="Failed to load collection statistics"
+          isError={isError}
+          isLoading={isLoading}
+          isNoData={!data}
+          noDataTitle="No collection statistics were found"
+          refetch={refetch}
+        >
+          {data && (
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Metric</TableCell>
+                    <TableCell>Value</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Namespace</TableCell>
+                    <TableCell>{data.ns}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Total data size</TableCell>
+                    <TableCell>{humanReadableSize(data.size)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Number of documents</TableCell>
+                    <TableCell>{data.count}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Average size of document</TableCell>
+                    <TableCell>{humanReadableSize(data.avgObjSize)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Number of orphaned documents</TableCell>
+                    <TableCell>{data.numOrphanDocs}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Size of allocated document storage</TableCell>
+                    <TableCell>{humanReadableSize(data.storageSize)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Size of reusable storage</TableCell>
+                    <TableCell>{humanReadableSize(data.freeStorageSize)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Number of indexes</TableCell>
+                    <TableCell>{data.nindexes}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Total size of indexes</TableCell>
+                    <TableCell>{humanReadableSize(data.totalIndexSize)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Total size of collection</TableCell>
+                    <TableCell>{humanReadableSize(data.totalSize)}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </UseQueryWrapper>
+      </CardContent>
+    </Card>
+  );
+};
+
+const CollectionListItemDetails: FunctionComponent<{
+  collection: string;
+  instance: IPluginInstance;
+  onClose: () => void;
+  open: boolean;
+}> = ({ instance, collection, open, onClose }) => {
+  return (
     <DetailsDrawer size="small" open={open} onClose={onClose} title={collection}>
-      <Card sx={{ mb: 4 }}>
-        <CardContent>
-          <Typography variant="h6" pb={2}>
-            Collection Statistics
-          </Typography>
-          <UseQueryWrapper
-            error={error}
-            errorTitle="Failed to load collection statistics"
-            isError={isError}
-            isLoading={isLoading}
-            isNoData={!data}
-            noDataTitle="No collection statistics were found"
-            refetch={refetch}
-          >
-            {data && (
-              <TableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Metric</TableCell>
-                      <TableCell>Value</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Namespace</TableCell>
-                      <TableCell>{data.ns}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Total data size</TableCell>
-                      <TableCell>{humanReadableSize(data.size)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Number of documents</TableCell>
-                      <TableCell>{data.count}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Average size of document</TableCell>
-                      <TableCell>{humanReadableSize(data.avgObjSize)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Number of orphaned documents</TableCell>
-                      <TableCell>{data.numOrphanDocs}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Size of allocated document storage</TableCell>
-                      <TableCell>{humanReadableSize(data.storageSize)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Size of reusable storage</TableCell>
-                      <TableCell>{humanReadableSize(data.freeStorageSize)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Number of indexes</TableCell>
-                      <TableCell>{data.nindexes}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Total size of indexes</TableCell>
-                      <TableCell>{humanReadableSize(data.totalIndexSize)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Total size of collection</TableCell>
-                      <TableCell>{humanReadableSize(data.totalSize)}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </UseQueryWrapper>
-        </CardContent>
-      </Card>
+      <CollectionListItemDetailsStats instance={instance} collection={collection} />
+      <CollectionListItemDetailsIndexes instance={instance} collection={collection} />
     </DetailsDrawer>
   );
 };

@@ -31,8 +31,7 @@ export const OperationFindOne: FunctionComponent<{
   const { isError, isLoading, error, data, refetch } = useQuery<Document[], APIError>(
     ['mongodb/operation/findone', instance, collectionName, filter, times],
     async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await apiContext.client.post<any>(
+      const result = await apiContext.client.post<unknown>(
         `/api/plugins/mongodb/collections/findone?collectionName=${collectionName}`,
         {
           body: {
@@ -46,7 +45,6 @@ export const OperationFindOne: FunctionComponent<{
       );
 
       if (result) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return [EJSON.parse(JSON.stringify(result))];
       }
 

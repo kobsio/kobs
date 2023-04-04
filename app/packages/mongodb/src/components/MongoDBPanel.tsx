@@ -3,6 +3,7 @@ import { FunctionComponent } from 'react';
 
 import { Collections } from './Collections';
 import { DBStats } from './DBStats';
+import { OperationAggregate } from './OperationAggregate';
 import { OperationCount } from './OperationCount';
 import { OperationFind } from './OperationFind';
 import { OperationFindOne } from './OperationFindOne';
@@ -16,6 +17,7 @@ interface IQuery {
   collectionName?: string;
   filter?: string;
   limit?: number;
+  pipeline?: string;
   sort?: string;
 }
 
@@ -92,6 +94,26 @@ const MongoDBPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
         description={description}
         collectionName={options.query.collectionName}
         filter={options.query.filter}
+        showActions={true}
+        times={times}
+      />
+    );
+  }
+
+  if (
+    options &&
+    options.operation === 'aggregate' &&
+    options.query &&
+    options.query.collectionName &&
+    options.query.pipeline
+  ) {
+    return (
+      <OperationAggregate
+        instance={instance}
+        title={title}
+        description={description}
+        collectionName={options.query.collectionName}
+        pipeline={options.query.pipeline}
         showActions={true}
         times={times}
       />

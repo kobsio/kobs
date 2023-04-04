@@ -44,6 +44,14 @@ vi.mock('./OperationFindOne', () => {
   };
 });
 
+vi.mock('./OperationAggregate', () => {
+  return {
+    OperationAggregate: () => {
+      return <>Mocked OperationAggregate</>;
+    },
+  };
+});
+
 describe('MongoDBPanel', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const render = (options: any): RenderResult => {
@@ -104,5 +112,11 @@ describe('MongoDBPanel', () => {
     render({ operation: 'findOne', query: { collectionName: 'tags', filter: '{}' } });
 
     expect(await waitFor(() => screen.getByText(/Mocked OperationFindOne/))).toBeInTheDocument();
+  });
+
+  it('should render aggregate query', async () => {
+    render({ operation: 'aggregate', query: { collectionName: 'tags', pipeline: '{}' } });
+
+    expect(await waitFor(() => screen.getByText(/Mocked OperationAggregate/))).toBeInTheDocument();
   });
 });
