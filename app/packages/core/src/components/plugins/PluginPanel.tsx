@@ -94,11 +94,11 @@ const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
   cluster,
   name,
   type,
+  setTimes,
   title,
   description,
   options,
   times,
-  setTimes,
 }) => {
   const { getInstance, getPlugin } = useContext(PluginContext);
 

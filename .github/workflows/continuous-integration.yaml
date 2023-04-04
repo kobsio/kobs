@@ -65,6 +65,7 @@ jobs:
           - kiali
           - mongodb
           - opsgenie
+          - klogs
           - prometheus
           - rss
           - signalsciences

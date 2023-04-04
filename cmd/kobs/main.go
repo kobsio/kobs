@@ -5,6 +5,7 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/hub"
 	"github.com/kobsio/kobs/cmd/kobs/version"
 	"github.com/kobsio/kobs/cmd/kobs/watcher"
+	"github.com/kobsio/kobs/pkg/klogs"
 	"github.com/kobsio/kobs/pkg/plugins"
 
 	"github.com/kobsio/kobs/pkg/plugins/flux"
@@ -38,6 +39,7 @@ func main() {
 		grafana.New(),
 		harbor.New(),
 		helm.New(),
+		klogs.New(),
 		jaeger.New(),
 		kiali.New(),
 		mongodb.New(),

@@ -44,6 +44,10 @@ export default defineConfig({
   test: {
     coverage: {
       all: true,
+      exclude: [
+        // this file configures the klogs query language.
+        'src/components/utils/editor/klogs.ts',
+      ],
     },
     environment: 'jsdom',
     globals: true,
