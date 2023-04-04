@@ -3,7 +3,7 @@ WORKDIR /kobs
 COPY app /kobs/
 RUN npm config set fetch-timeout 3600000
 RUN npm clean-install
-RUN npm run build
+RUN export NODE_OPTIONS=--max-old-space-size=4096 && npm run build
 
 FROM golang:1.20.1 as api
 WORKDIR /kobs
