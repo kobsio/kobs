@@ -68,6 +68,10 @@ export interface IThresholds {
   [key: string]: string;
 }
 
+export interface ISQLTables {
+  tables: string[];
+}
+
 /**
  * ISQLData is the interface of the data returned from our Go API for the get query results call.
  */

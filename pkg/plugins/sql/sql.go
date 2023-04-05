@@ -94,6 +94,27 @@ func (router *Router) getQueryResults(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
+func (router *Router) getTables(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Could not find instance name")
+		return
+	}
+
+	tables, err := i.GetTables(r.Context())
+	if err != nil {
+		log.Error(r.Context(), "Could not get result for Tables query", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Could not get tables")
+		return
+	}
+
+	render.JSON(w, r, struct {
+		Tables []string `json:"tables"`
+	}{tables})
+}
+
 // Mount mounts the SQL plugin routes in the plugins router of a kobs satellite instance.
 func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
 	var sqlInstances []instance.Instance
@@ -115,6 +136,7 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 	proxy := pluginproxy.New(clustersClient)
 
 	router.With(proxy).Get("/query", router.getQueryResults)
+	router.With(proxy).Get("/tables", router.getTables)
 
 	return router, nil
 }

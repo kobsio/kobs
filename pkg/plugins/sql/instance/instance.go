@@ -22,12 +22,14 @@ type Config struct {
 
 type Instance interface {
 	GetName() string
+	GetTables(ctx context.Context) ([]string, error)
 	GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error)
 }
 
 type instance struct {
 	name   string
 	client *sql.DB
+	tq     TablesQuery
 }
 
 func (i *instance) GetName() string {
@@ -85,6 +87,35 @@ func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[str
 	return result, columns, nil
 }
 
+func (i *instance) GetTables(ctx context.Context) ([]string, error) {
+	results, _, err := i.GetQueryResults(ctx, i.tq.Query())
+	if err != nil {
+		return nil, err
+	}
+	tables := make([]string, 0, len(results))
+	for _, result := range results {
+		if tableName, ok := result["name"].(string); ok {
+			tables = append(tables, tableName)
+		}
+	}
+	return tables, nil
+}
+
+func tableQueryFromDriver(driver string) TablesQuery {
+	if driver == "clickhouse" {
+		return clickhouseTablesQuery{}
+	}
+
+	if driver == "postgres" {
+		return postgresTablesQuery{}
+	}
+
+	if driver == "mysql" {
+		return mysqlTablesQuery{}
+	}
+	panic(fmt.Sprintf("got unknown driver: %s", driver))
+}
+
 // New returns a new sql instance for the given configuration.
 func New(name string, options map[string]any) (Instance, error) {
 	var config Config
@@ -105,5 +136,6 @@ func New(name string, options map[string]any) (Instance, error) {
 	return &instance{
 		name:   name,
 		client: client,
+		tq:     tableQueryFromDriver(config.Driver),
 	}, nil
 }
