@@ -60,7 +60,7 @@ export default defineConfig({
         '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
         '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
       ],
-      include: ['src/**'],
+
     },
     environment: 'jsdom',
     globals: true,
