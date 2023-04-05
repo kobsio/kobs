@@ -1,6 +1,7 @@
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { json } from '@codemirror/lang-json';
+import { sql } from '@codemirror/lang-sql';
 import { bracketMatching, syntaxHighlighting, foldGutter, StreamLanguage } from '@codemirror/language';
 import { yaml } from '@codemirror/legacy-modes/mode/yaml';
 import { EditorState, Extension, Prec } from '@codemirror/state';
@@ -33,6 +34,8 @@ const getLanguageExtensions = (language: string | Extension[]): Extension[] => {
       return [json()];
     case 'yaml':
       return [StreamLanguage.define(yaml)];
+    case 'sql':
+      return [sql()];
     default:
       return typeof language === 'string' ? [] : language;
   }

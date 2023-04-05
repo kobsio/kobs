@@ -1,7 +1,5 @@
-import { Box, TextField } from '@mui/material';
-import { FormEvent, FunctionComponent, useEffect, useState } from 'react';
-
-import Editor from './Editor';
+import { Editor } from '@kobsio/core';
+import { FunctionComponent, useEffect, useState } from 'react';
 
 interface ILogsToolbar {
   onSearch: (query: string) => void;
@@ -13,8 +11,7 @@ interface ILogsToolbar {
  */
 const SQLToolbar: FunctionComponent<ILogsToolbar> = ({ query: initialQuery, onSearch }) => {
   const [query, setQuery] = useState<string>(initialQuery);
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     return onSearch(query);
   };
 
@@ -23,21 +20,14 @@ const SQLToolbar: FunctionComponent<ILogsToolbar> = ({ query: initialQuery, onSe
   }, [initialQuery]);
 
   return (
-    <Box component="form" sx={{ maxWidth: '100%' }} onSubmit={handleSubmit}>
-      <TextField
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        InputProps={{
-          inputComponent: Editor,
-          inputProps: {
-            callSubmit: () => {
-              onSearch(query);
-            },
-          },
-        }}
-        fullWidth={true}
-      />
-    </Box>
+    <Editor
+      language="sql"
+      minimal={true}
+      value={query}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onChange={(value: any) => setQuery(value || '')}
+      handleSubmit={handleSubmit}
+    />
   );
 };
 
