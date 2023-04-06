@@ -299,4 +299,15 @@ describe('Panel', () => {
 
     expect(screen.getByText(`Please provide a valid "queries" property.`)).toBeInTheDocument();
   });
+
+  it('should render error when table options are invalid', () => {
+    render('invalid type', {
+      chart: {
+        type: 'unknown',
+      },
+      type: 'chart',
+    });
+
+    expect(screen.getByText(`Please provide a valid "chart" property.`)).toBeInTheDocument();
+  });
 });

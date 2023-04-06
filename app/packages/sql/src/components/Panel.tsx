@@ -32,9 +32,21 @@ const isValidQueries = (queries: unknown): queries is IQuery[] => {
 
 /**
  * runtime check for validating the chart object
+ * these represent obvious errors in the chart object
  */
-const isValidChart = (chart: unknown): chart is IChart => {
-  // TODO
+const isValidChart = (chart: IChart): chart is IChart => {
+  if (!chart) {
+    return false;
+  }
+
+  if (!['bar', 'area', 'pie', 'line', 'singlestat', 'line'].includes(chart.type)) {
+    return false;
+  }
+
+  if (typeof chart.query !== 'string') {
+    return false;
+  }
+
   return true;
 };
 
@@ -85,7 +97,20 @@ const Panel: FunctionComponent<IPluginPanelProps<ITablePanelOptions | IChartPane
           description={description}
           details={`The validation for the "chart" property failed.`}
           documentation=""
-          example={`TODO`}
+          example={`type: chart
+  chart:
+    type: singlestat,
+    legend: 
+      p50: P50
+      p95: P95
+      p99: P99
+    query: SELECT 2.99 AS p50, 4.31 AS p95, 16.05 AS p99;,
+    yAxisColumns: [ p50, p95, p99]
+    thresholds: {
+      4: "#F0AB00",
+      6: "#C9190B",
+      -1024: "#3E8635"
+    yAxisUnit: ms`}
           message={`Please provide a valid "chart" property.`}
           title={title}
         />
