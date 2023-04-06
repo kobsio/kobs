@@ -84,7 +84,7 @@ const SQLChartGenericLegend: React.FunctionComponent<ISQLChartGenericLegendProps
             <TableRow key={metric.name}>
               <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Name">
                 <Stack direction="row" alignItems="center">
-                  <Box sx={{ backgroundColor: getChartColor(i), mr: '4px', height: '8px', width: '8px' }} />
+                  <Box sx={{ backgroundColor: getChartColor(i), height: '8px', mr: '4px', width: '8px' }} />
                   {legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
                 </Stack>
               </TableCell>
