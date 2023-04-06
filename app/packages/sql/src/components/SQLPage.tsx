@@ -30,7 +30,7 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     if (search.query === '') {
       return null;
     }
-    return client.get<ISQLData>(`/api/plugins/sql/query?query=${search.query}`, {
+    return client.get<ISQLData>(`/api/plugins/sql/query?query=${encodeURIComponent(search.query)}`, {
       headers: {
         'x-kobs-cluster': instance.cluster,
         'x-kobs-plugin': instance.name,

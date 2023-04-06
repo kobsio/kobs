@@ -70,7 +70,7 @@ export interface IThresholds {
 
 export interface ISQLMetaInfo {
   completions: Record<string, string[]>;
-  dialect: 'postgres' | 'mysql' | 'clickhouse';
+  dialect: 'postgres' | 'mysql' | 'clickhouse' | 'sql';
 }
 
 /**
