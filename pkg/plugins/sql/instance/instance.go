@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"fmt"
 	"math"
+	"strings"
 
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	_ "github.com/go-sql-driver/mysql"
@@ -21,24 +22,30 @@ type Config struct {
 }
 
 type Instance interface {
+	GetDialect() string
 	GetName() string
-	GetTables(ctx context.Context) ([]string, error)
+	GetCompletions(ctx context.Context) (map[string][]string, error)
 	GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error)
 }
 
 type instance struct {
-	name   string
-	client *sql.DB
-	tq     TablesQuery
+	querier
+	dialect            string
+	name               string
+	completionProvider CompletionProvider
 }
 
 func (i *instance) GetName() string {
 	return i.name
 }
 
+type querier struct {
+	client *sql.DB
+}
+
 // GetQueryResults returns all rows for the user provided SQL query.
-func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error) {
-	rows, err := i.client.QueryContext(ctx, query)
+func (q *querier) GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error) {
+	rows, err := q.client.QueryContext(ctx, query)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -72,6 +79,8 @@ func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[str
 				if !math.IsNaN(v) && !math.IsInf(v, 0) {
 					resultMap[columns[i]] = val
 				}
+			case []uint8:
+				resultMap[columns[i]] = string(v)
 			default:
 				resultMap[columns[i]] = val
 			}
@@ -87,33 +96,28 @@ func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[str
 	return result, columns, nil
 }
 
-func (i *instance) GetTables(ctx context.Context) ([]string, error) {
-	results, _, err := i.GetQueryResults(ctx, i.tq.Query())
-	if err != nil {
-		return nil, err
-	}
-	tables := make([]string, 0, len(results))
-	for _, result := range results {
-		if tableName, ok := result["name"].(string); ok {
-			tables = append(tables, tableName)
-		}
-	}
-	return tables, nil
+func (i *instance) GetDialect() string {
+	return i.dialect
 }
 
-func tableQueryFromDriver(driver string) TablesQuery {
-	if driver == "clickhouse" {
-		return clickhouseTablesQuery{}
-	}
+func (i *instance) GetCompletions(ctx context.Context) (map[string][]string, error) {
+	return i.completionProvider.GetCompletions(ctx)
+}
 
+func dialectFromDriver(driver string) string {
 	if driver == "postgres" {
-		return postgresTablesQuery{}
+		return "postgres"
 	}
 
 	if driver == "mysql" {
-		return mysqlTablesQuery{}
+		return "mysql"
 	}
-	panic(fmt.Sprintf("got unknown driver: %s", driver))
+
+	if driver == "clickhouse" {
+		return "clickhouse"
+	}
+
+	return "sql"
 }
 
 // New returns a new sql instance for the given configuration.
@@ -132,10 +136,17 @@ func New(name string, options map[string]any) (Instance, error) {
 	if err != nil {
 		return nil, err
 	}
+	q := querier{client}
+	parts := strings.Split(config.Address, "/")
+	databaseName := ""
+	if len(parts) > 1 {
+		databaseName = parts[len(parts)-1]
+	}
 
 	return &instance{
-		name:   name,
-		client: client,
-		tq:     tableQueryFromDriver(config.Driver),
+		querier:            q,
+		name:               name,
+		completionProvider: newCompletionProvider(q, config.Driver, databaseName),
+		dialect:            dialectFromDriver(config.Driver),
 	}, nil
 }

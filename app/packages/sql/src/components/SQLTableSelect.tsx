@@ -1,10 +1,10 @@
 import { APIContext, APIError, IPluginInstance } from '@kobsio/core';
 import { Search } from '@mui/icons-material';
-import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Box, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext } from 'react';
 
-import { ISQLTables } from './types';
+import { ISQLMetaInfo } from './types';
 
 interface ISQLTableSelectProps {
   instance: IPluginInstance;
@@ -13,8 +13,8 @@ interface ISQLTableSelectProps {
 
 const SQLTableSelect: FunctionComponent<ISQLTableSelectProps> = ({ instance, onSelectTable }) => {
   const { client } = useContext(APIContext);
-  const queryResult = useQuery<ISQLTables | null, APIError>(['sql/tables'], () => {
-    return client.get<ISQLTables>(`/api/plugins/sql/tables`, {
+  const queryResult = useQuery<ISQLMetaInfo | null, APIError>(['sql/meta', instance], () => {
+    return client.get<ISQLMetaInfo>(`/api/plugins/sql/meta`, {
       headers: {
         'x-kobs-cluster': instance.cluster,
         'x-kobs-plugin': instance.name,
@@ -28,14 +28,15 @@ const SQLTableSelect: FunctionComponent<ISQLTableSelectProps> = ({ instance, onS
         Tables
       </Typography>
       <List subheader={<li />}>
-        {queryResult.data?.tables.map((table) => (
-          <ListItem key={table} disablePadding={true}>
-            <ListItemButton onClick={() => onSelectTable(table)} aria-label={`SELECT * FROM ${table} LIMIT 100`}>
-              <Search sx={{ mr: 2 }} />
-              <ListItemText primary={table} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {queryResult.data?.completions &&
+          Object.keys(queryResult.data.completions).map((table) => (
+            <ListItem key={table} disablePadding={true}>
+              <ListItemButton onClick={() => onSelectTable(table)} aria-label={`SELECT * FROM ${table} LIMIT 100`}>
+                <Search sx={{ mr: 2 }} />
+                <ListItemText primary={table} />
+              </ListItemButton>
+            </ListItem>
+          ))}
       </List>
     </Box>
   );

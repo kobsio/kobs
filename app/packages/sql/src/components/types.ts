@@ -68,8 +68,9 @@ export interface IThresholds {
   [key: string]: string;
 }
 
-export interface ISQLTables {
-  tables: string[];
+export interface ISQLMetaInfo {
+  completions: Record<string, string[]>;
+  dialect: 'postgres' | 'mysql' | 'clickhouse';
 }
 
 /**

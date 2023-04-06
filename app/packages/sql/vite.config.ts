@@ -3,6 +3,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+import { configDefaults } from 'vitest/config';
 
 import { resolve } from 'path';
 
@@ -49,6 +50,7 @@ export default defineConfig({
     ],
     coverage: {
       all: true,
+      exclude: [...configDefaults.coverage.exclude, 'src/components/utils/clickhouse.ts'],
     },
     environment: 'jsdom',
     globals: true,

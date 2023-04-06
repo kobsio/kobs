@@ -94,7 +94,7 @@ func (router *Router) getQueryResults(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
-func (router *Router) getTables(w http.ResponseWriter, r *http.Request) {
+func (router *Router) getMetaInfo(w http.ResponseWriter, r *http.Request) {
 	name := r.Header.Get("x-kobs-plugin")
 	i := router.getInstance(name)
 	if i == nil {
@@ -103,16 +103,20 @@ func (router *Router) getTables(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tables, err := i.GetTables(r.Context())
+	completions, err := i.GetCompletions(r.Context())
 	if err != nil {
 		log.Error(r.Context(), "Could not get result for Tables query", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not get tables")
+		errresponse.Render(w, r, http.StatusBadRequest, "could not get completions")
 		return
 	}
 
 	render.JSON(w, r, struct {
-		Tables []string `json:"tables"`
-	}{tables})
+		Dialect     string              `json:"dialect"`
+		Completions map[string][]string `json:"completions"`
+	}{
+		Completions: completions,
+		Dialect:     i.GetDialect(),
+	})
 }
 
 // Mount mounts the SQL plugin routes in the plugins router of a kobs satellite instance.
@@ -136,7 +140,7 @@ func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Rou
 	proxy := pluginproxy.New(clustersClient)
 
 	router.With(proxy).Get("/query", router.getQueryResults)
-	router.With(proxy).Get("/tables", router.getTables)
+	router.With(proxy).Get("/meta", router.getMetaInfo)
 
 	return router, nil
 }

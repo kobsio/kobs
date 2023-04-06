@@ -26,7 +26,7 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
   const { client } = useContext(APIContext);
   const [search, setSearch] = useQueryState<ISearch>(defaultSearch);
 
-  const queryResult = useQuery<ISQLData | null, APIError>(['sql/query', search.query], () => {
+  const queryResult = useQuery<ISQLData | null, APIError>(['sql/query', instance, search.query], () => {
     if (search.query === '') {
       return null;
     }
@@ -47,7 +47,7 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       title="sql"
       description={instance.description || defaultDescription}
       subtitle={instance.cluster}
-      toolbar={<SQLToolbar onSearch={handleSearch} query={search.query} />}
+      toolbar={<SQLToolbar instance={instance} onSearch={handleSearch} query={search.query} />}
     >
       <Stack alignItems="flex-start" direction="row" spacing={2} sx={{ maxWidth: '100%' }}>
         <Card sx={{ minWidth: '200px' }}>
