@@ -58,8 +58,7 @@ const SQLToolbar: FunctionComponent<ILogsToolbar> = ({ query: initialQuery, inst
       language={extension}
       minimal={true}
       value={query}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onChange={(value: any) => setQuery(value || '')}
+      onChange={(value?: string) => setQuery(value || '')}
       handleSubmit={handleSubmit}
     />
   );

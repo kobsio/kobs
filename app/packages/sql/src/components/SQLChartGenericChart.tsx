@@ -1,4 +1,12 @@
-import { useDimensions, formatTime, ChartTooltip, roundNumber, chartTickFormatTime, chartTheme } from '@kobsio/core';
+import {
+  useDimensions,
+  formatTime,
+  ChartTooltip,
+  roundNumber,
+  chartTickFormatTime,
+  chartTheme,
+  chartTickFormatValue,
+} from '@kobsio/core';
 import { Box, useTheme } from '@mui/material';
 import React, { useRef } from 'react';
 import {
@@ -92,7 +100,12 @@ const SQLChartGenericChart: React.FunctionComponent<ISQLChartGenericChartProps> 
                 legendData={({ datum }: { datum: IDatum }) => ({
                   color: datum.color,
                   label: datum.name,
-                  title: xAxisType === 'time' ? formatTime(datum.x as Date) : `${datum.x}`,
+                  title:
+                    xAxisType === 'time'
+                      ? formatTime(datum.x as Date)
+                      : typeof datum.x === 'undefined'
+                      ? undefined
+                      : `${datum.x}`,
                   unit: yAxisUnit,
                   value: datum.y ? roundNumber(datum.y, 4) : 'N/A',
                 })}
@@ -110,7 +123,7 @@ const SQLChartGenericChart: React.FunctionComponent<ISQLChartGenericChartProps> 
         width={chartSize.width}
       >
         <VictoryAxis dependentAxis={false} tickFormat={xAxisType === 'time' ? chartTickFormatTime : undefined} />
-        <VictoryAxis dependentAxis={true} label={yAxisUnit} />
+        <VictoryAxis fixLabelOverlap={true} dependentAxis={true} label={yAxisUnit} />
 
         {yAxisStacked ? <VictoryStack>{chartData}</VictoryStack> : <VictoryGroup>{chartData}</VictoryGroup>}
       </VictoryChart>

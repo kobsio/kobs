@@ -38,7 +38,7 @@ const getMetricsData = (
               color: getChartColor(yi),
               name: legendName,
               x: xAxisType === 'time' ? new Date(row[xAxisColumn] as string) : (row[xAxisColumn] as number),
-              y: row.hasOwnProperty(yAxisColumn) ? (row[yAxisColumn] as number) : null,
+              y: row.hasOwnProperty(yAxisColumn) ? Number(row[yAxisColumn]) : null,
             });
           }
         }
@@ -56,7 +56,7 @@ const getMetricsData = (
           color: getChartColor(yi),
           name: legendName,
           x: xAxisType === 'time' ? new Date(row[xAxisColumn] as string) : (row[xAxisColumn] as number),
-          y: row.hasOwnProperty(yAxisColumn) ? (row[yAxisColumn] as number) : null,
+          y: row.hasOwnProperty(yAxisColumn) ? Number(row[yAxisColumn]) : null,
         });
       }
 
