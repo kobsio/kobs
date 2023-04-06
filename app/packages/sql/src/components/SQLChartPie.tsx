@@ -29,7 +29,8 @@ const SQLChartPie: React.FunctionComponent<ISQLChartPieProps> = ({
     : [];
 
   return (
-    <Box sx={{ height: '100%', width: '100%' }} ref={refChart}>
+    // substract 1px, to prevent scrolling behavior inside panel
+    <Box sx={{ height: 'calc(100% - 1px)', width: '100%' }} ref={refChart}>
       <VictoryPie
         data={pieData}
         height={chartSize.height}
