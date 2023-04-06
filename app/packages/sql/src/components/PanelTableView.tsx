@@ -8,26 +8,11 @@ import {
 } from '@kobsio/core';
 import { FormControl, Select, MenuItem, ListItem, List, ListItemText } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import queryString from 'query-string';
 import { FunctionComponent, useContext, useState } from 'react';
 
 import SQLTable from './SQLTable';
 import { IQuery, ISQLData } from './types';
-
-/**
- * utility for creating the path to the sql plugin with the given query as query-parameter
- **/
-const uriFromQuery = (instance: IPluginInstance, query: IQuery) => {
-  const path = `/plugins/${instance.cluster}/sql/${instance.name}`;
-  const search = queryString.stringify(
-    {
-      query: query.query,
-    },
-    { arrayFormat: 'bracket', skipEmptyString: false, skipNull: false },
-  );
-
-  return [path, search].join('?');
-};
+import { uriFromQuery } from './utils/uriFromQuery';
 
 interface IPanelTableViewProps {
   description?: string;
@@ -65,7 +50,7 @@ const PanelTableView: FunctionComponent<IPanelTableViewProps> = ({ instance, tit
         <PluginPanelActionLinks
           links={[
             {
-              link: uriFromQuery(instance, queries[currentQuery]),
+              link: uriFromQuery(instance, queries[currentQuery].query),
               title: `explore "${queries[currentQuery].name || queries[currentQuery].query}"`,
             },
           ]}

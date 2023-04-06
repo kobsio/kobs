@@ -1,4 +1,11 @@
-import { APIContext, APIError, IPluginInstance, PluginPanel, UseQueryWrapper } from '@kobsio/core';
+import {
+  APIContext,
+  APIError,
+  IPluginInstance,
+  PluginPanel,
+  PluginPanelActionLinks,
+  UseQueryWrapper,
+} from '@kobsio/core';
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 
@@ -6,6 +13,7 @@ import SQLGenericChart from './SQLChartGeneric';
 import SQLChartPie from './SQLChartPie';
 import SQLChartSinglestats from './SQLChartSinglestats';
 import { IChart, ISQLData } from './types';
+import { uriFromQuery } from './utils/uriFromQuery';
 
 interface ISQLChartProps {
   chart: IChart;
@@ -37,8 +45,15 @@ const PanelChartView: React.FunctionComponent<ISQLChartProps> = ({
       title={title}
       description={description}
       actions={
-        // todo add explore links
-        <></>
+        <PluginPanelActionLinks
+          links={[
+            {
+              link: uriFromQuery(instance, chart.query),
+              title: `explore "${chart.query}"`,
+            },
+          ]}
+          isFetching={false}
+        />
       }
     >
       <UseQueryWrapper
