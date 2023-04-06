@@ -34,6 +34,35 @@ func (m *MockInstance) EXPECT() *MockInstanceMockRecorder {
 	return m.recorder
 }
 
+// GetCompletions mocks base method.
+func (m *MockInstance) GetCompletions(ctx context.Context) (map[string][]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCompletions", ctx)
+	ret0, _ := ret[0].(map[string][]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCompletions indicates an expected call of GetCompletions.
+func (mr *MockInstanceMockRecorder) GetCompletions(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCompletions", reflect.TypeOf((*MockInstance)(nil).GetCompletions), ctx)
+}
+
+// GetDialect mocks base method.
+func (m *MockInstance) GetDialect() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDialect")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetDialect indicates an expected call of GetDialect.
+func (mr *MockInstanceMockRecorder) GetDialect() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDialect", reflect.TypeOf((*MockInstance)(nil).GetDialect))
+}
+
 // GetName mocks base method.
 func (m *MockInstance) GetName() string {
 	m.ctrl.T.Helper()
