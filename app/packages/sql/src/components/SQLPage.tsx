@@ -70,8 +70,7 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
             sx={{
               // table should take full width of the page
               maxWidth: {
-                md: 'calc(100vw - 358px - 200px)',
-                sm: '100vw',
+                md: 'calc(100vw - 580px)',
               },
             }}
           >
