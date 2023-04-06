@@ -1,5 +1,5 @@
-import { roundNumber } from '@kobsio/core';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { getChartColor, roundNumber } from '@kobsio/core';
+import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React from 'react';
 
 import { IDatum, ILegend, IMetrics } from './types';
@@ -80,18 +80,13 @@ const SQLChartGenericLegend: React.FunctionComponent<ISQLChartGenericLegendProps
           </TableRow>
         </TableHead>
         <TableBody>
-          {metrics.map((metric, index) => (
+          {metrics.map((metric, i) => (
             <TableRow key={metric.name}>
               <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Name">
-                {/* <Button
-                style={{ color: 'inherit', cursor: 'inherit', textDecoration: 'inherit' }}
-                variant={ButtonVariant.link}
-                isInline={true}
-                icon={<SquareIcon color={getColor(index)} />}
-              >
-                {}
-              </Button> */}
-                {legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
+                <Stack direction="row" alignItems="center">
+                  <Box sx={{ backgroundColor: getChartColor(i), mr: '4px', height: '8px', width: '8px' }} />
+                  {legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
+                </Stack>
               </TableCell>
               <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Min">
                 {calcMin(metric.data, yAxisUnit)}
