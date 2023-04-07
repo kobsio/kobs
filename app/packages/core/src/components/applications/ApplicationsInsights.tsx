@@ -1,6 +1,5 @@
 import { OpenInNew } from '@mui/icons-material';
-import { IconButton, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, IconButton, Typography } from '@mui/material';
 import { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 

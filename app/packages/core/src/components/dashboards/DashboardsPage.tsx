@@ -2,7 +2,7 @@ import { FunctionComponent } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IReference } from '../../crds/dashboard';
-import Dashboards from '../dashboards/Dashboards';
+import { Dashboards } from '../dashboards/Dashboards';
 import { Page } from '../utils/Page';
 
 interface IPage {

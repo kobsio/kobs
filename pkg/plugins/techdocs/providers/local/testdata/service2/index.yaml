@@ -1,0 +1,7 @@
+key: service2
+name: Service 2
+description: Service 2 Description
+home: index.md
+toc:
+  - Introduction: index.md
+  - Development: development.md

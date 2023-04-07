@@ -4,7 +4,7 @@ import { FunctionComponent, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APIContext, IAPIContext } from '../../context/APIContext';
-import Dashboards from '../dashboards/Dashboards';
+import { Dashboards } from '../dashboards/Dashboards';
 import { Page } from '../utils/Page';
 
 const Home: FunctionComponent = () => {

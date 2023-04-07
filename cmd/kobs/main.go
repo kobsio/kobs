@@ -20,6 +20,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/rss"
 	"github.com/kobsio/kobs/pkg/plugins/signalsciences"
 	"github.com/kobsio/kobs/pkg/plugins/sonarqube"
+	"github.com/kobsio/kobs/pkg/plugins/techdocs"
 
 	"github.com/alecthomas/kong"
 )
@@ -48,6 +49,7 @@ func main() {
 		rss.New(),
 		signalsciences.New(),
 		sonarqube.New(),
+		techdocs.New(),
 	}
 
 	err := ctx.Run(registeredPlugins)
