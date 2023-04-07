@@ -70,6 +70,7 @@ jobs:
           - rss
           - signalsciences
           - sonarqube
+          - techdocs
     defaults:
       run:
         working-directory: app

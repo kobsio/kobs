@@ -22,7 +22,7 @@ import { GridContextProvider } from '../../context/GridContext';
 import { IDashboard, IPanel, IReference, IRow, IVariableValues } from '../../crds/dashboard';
 import { useQueryState } from '../../utils/hooks/useQueryState';
 import { ITimes, timeOptions, times as defaultTimes, TTime } from '../../utils/times';
-import PluginPanel from '../plugins/PluginPanel';
+import { PluginPanel } from '../plugins/PluginPanel';
 import { IOptionsAdditionalFields, Options } from '../utils/Options';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
 import { UseQueryWrapper } from '../utils/UseQueryWrapper';
@@ -220,7 +220,7 @@ interface IDashboardProps {
  * - Maintain the user selected time range
  * - Interpolate all variables in the dashboard with their current value
  */
-const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => {
+export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const [times, setTimes] = useState<ITimes>({
@@ -342,7 +342,7 @@ interface IDashboardsProps {
  * make a difference later in the variable handling. After the dashboards were loaded we will also replace all JSONPath
  * occurences with the correct value from the provided `manifest`.
  */
-const Dashboards: FunctionComponent<IDashboardsProps> = ({ manifest, references }) => {
+export const Dashboards: FunctionComponent<IDashboardsProps> = ({ manifest, references }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
   const [selectedDashboard, setSelectedDashboard] = useQueryState<{ title: string }>();
 
@@ -411,5 +411,3 @@ const Dashboards: FunctionComponent<IDashboardsProps> = ({ manifest, references 
     </UseQueryWrapper>
   );
 };
-
-export default Dashboards;

@@ -15,7 +15,7 @@ import Resources from './Resources';
 import { IResource, getSelector, getDashboards, IDashboard } from './utils';
 
 import { timeDifference } from '../../utils/times';
-import Dashboards from '../dashboards/Dashboards';
+import { Dashboards } from '../dashboards/Dashboards';
 import {
   DescriptionList,
   DescriptionListDescription,

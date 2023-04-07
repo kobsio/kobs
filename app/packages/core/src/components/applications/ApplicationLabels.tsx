@@ -1,6 +1,5 @@
 import { OpenInNew, HubOutlined, PeopleOutlined } from '@mui/icons-material';
-import { Chip } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, Chip } from '@mui/material';
 import { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 

@@ -1,6 +1,5 @@
 import { Close } from '@mui/icons-material';
-import { Drawer, IconButton, Toolbar, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, Drawer, IconButton, Toolbar, Typography } from '@mui/material';
 import { FunctionComponent, ReactNode } from 'react';
 
 interface IDetailsDrawerProps {

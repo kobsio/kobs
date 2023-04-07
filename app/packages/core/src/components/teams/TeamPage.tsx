@@ -7,7 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { IApplication } from '../../crds/application';
 import { ITeam } from '../../crds/team';
-import Dashboards from '../dashboards/Dashboards';
+import { Dashboards } from '../dashboards/Dashboards';
 import { Page } from '../utils/Page';
 import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 

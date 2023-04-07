@@ -8,10 +8,10 @@ import {
   DialogTitle,
   FormControlLabel,
   Switch,
+  Stack,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Stack } from '@mui/system';
 import { FunctionComponent, useContext, useState } from 'react';
 
 import { APIContext, APIError, IAPIContext } from '../../../context/APIContext';

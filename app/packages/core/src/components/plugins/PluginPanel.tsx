@@ -90,7 +90,7 @@ interface IPluginPanelProps {
  * should be rendered the `cluster`, `name` and `type` props are required. Each panel also requires a `title`. The
  * `description`, `options`, and `times` props are optionally.
  */
-const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
+export const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
   cluster,
   name,
   type,
@@ -152,5 +152,3 @@ const PluginPanel: FunctionComponent<IPluginPanelProps> = ({
     </ErrorBoundary>
   );
 };
-
-export default PluginPanel;

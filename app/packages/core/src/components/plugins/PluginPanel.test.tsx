@@ -2,7 +2,7 @@ import { render as _render, RenderResult, screen } from '@testing-library/react'
 import { FunctionComponent } from 'react';
 import { vi } from 'vitest';
 
-import PluginPanel from './PluginPanel';
+import { PluginPanel } from './PluginPanel';
 
 import { IPluginContext, IPluginPanelProps, PluginContext } from '../../context/PluginContext';
 

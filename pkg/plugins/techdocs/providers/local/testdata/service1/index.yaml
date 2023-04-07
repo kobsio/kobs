@@ -1,0 +1,11 @@
+key: service1
+name: Service 1
+description: Service 1 Description
+home: index.md
+toc:
+  - Introduction: index.md
+  - Development: development.md
+  - Installation:
+      - Helm: installation/helm.md
+      - Kustomize: installation/kustomize.md
+      - Docker: installation/docker.md
