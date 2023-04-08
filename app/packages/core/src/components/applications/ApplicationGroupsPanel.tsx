@@ -1,5 +1,16 @@
-import { HubOutlined, PeopleOutlined } from '@mui/icons-material';
-import { Box, Divider, List, Chip, ListItem, ListItemText, Typography, Button, Menu, MenuItem } from '@mui/material';
+import { AppsOutlined, HubOutlined, PeopleOutlined } from '@mui/icons-material';
+import {
+  Box,
+  Divider,
+  List,
+  Chip,
+  ListItem,
+  ListItemText,
+  Typography,
+  Menu,
+  MenuItem,
+  IconButton,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, MouseEvent, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -154,9 +165,9 @@ const ApplicationGroup: FunctionComponent<IApplicationGroupProps> = ({ groups, a
       secondaryAction={
         links && links.length > 0 ? (
           <>
-            <Button variant="contained" color="primary" size="small" onClick={handleOpen}>
-              Environments
-            </Button>
+            <IconButton onClick={handleOpen}>
+              <AppsOutlined />
+            </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
               {links.map((link) => (
                 <MenuItem key={link.link} component={Link} to={link.link}>
