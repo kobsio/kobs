@@ -6,7 +6,8 @@ import {
   EmbeddedDashboards,
   TEmbeddedDashboards,
 } from '@kobsio/core';
-import { Box, Theme } from '@mui/material';
+import { ContentCopy } from '@mui/icons-material';
+import { Box, IconButton, Theme } from '@mui/material';
 import yaml from 'js-yaml';
 import { Children, ReactElement, createElement } from 'react';
 import { Link } from 'react-router-dom';
@@ -129,9 +130,28 @@ export const renderCode = (
 
   if (!inline) {
     return (
-      <SyntaxHighlighter style={prismTheme(theme)} language={match ? match[1] : undefined} PreTag="div">
-        {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
+      <Box sx={{ position: 'relative' }}>
+        <SyntaxHighlighter
+          style={prismTheme(theme)}
+          language={match ? match[1] : undefined}
+          PreTag="div"
+          showLineNumbers={true}
+          wrapLongLines={true}
+        >
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+        {navigator.clipboard && (
+          <Box sx={{ position: 'absolute', right: '1em', top: '1em' }}>
+            <IconButton
+              size="small"
+              disableRipple={true}
+              onClick={() => navigator.clipboard.writeText(String(children).replace(/\n$/, ''))}
+            >
+              <ContentCopy fontSize="small" />
+            </IconButton>
+          </Box>
+        )}
+      </Box>
     );
   }
 
