@@ -222,14 +222,47 @@ const PluginsPage: FunctionComponent = () => {
                                   )}
                                 </Stack>
                                 <Box textAlign="center">
-                                  <Typography variant="h6">{item.name}</Typography>
-                                  <Typography variant="caption" color="text.secondary">
+                                  <Typography
+                                    sx={{
+                                      WebkitBoxOrient: 'vertical',
+                                      WebkitLineClamp: '1',
+                                      display: '-webkit-box',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                    variant="h6"
+                                  >
+                                    {item.name}
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      WebkitBoxOrient: 'vertical',
+                                      WebkitLineClamp: '1',
+                                      display: '-webkit-box',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                    variant="caption"
+                                    color="text.secondary"
+                                  >
                                     ({item.cluster} / {item.type})
                                   </Typography>
                                 </Box>
-                                <Typography textAlign="center">
-                                  {item.description ? item.description : plugin?.description}
-                                </Typography>
+                                <Box
+                                  sx={(theme) => ({
+                                    WebkitBoxOrient: 'vertical',
+                                    WebkitLineClamp: '3',
+                                    display: '-webkit-box',
+                                    height: `${(theme.typography.body1.lineHeight as number) * 3}em`,
+                                    lineHeight: `${theme.typography.body1.lineHeight}em`,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  })}
+                                >
+                                  <Typography textAlign="center" variant="body1" color="text.primary">
+                                    {item.description ? item.description : plugin?.description}
+                                  </Typography>
+                                </Box>
                               </Stack>
                             );
                           })(item)}
