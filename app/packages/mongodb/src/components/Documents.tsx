@@ -99,7 +99,7 @@ const SingleDocumentDetailsTree: FunctionComponent<{
   const formatValue = (value: any): React.ReactNode => {
     if (canBeRenderedAsValue(value)) {
       return (
-        <TableCell sx={{ verticalAlign: 'top' }}>
+        <TableCell>
           <Typography>
             {value?.toString() ?? 'null'}
             <small style={{ marginLeft: '4px' }}>({getTypeName(value)})</small>
@@ -109,7 +109,7 @@ const SingleDocumentDetailsTree: FunctionComponent<{
     }
 
     return (
-      <TableCell sx={{ verticalAlign: 'top' }}>
+      <TableCell>
         <Box
           sx={{
             WebkitBoxOrient: 'vertical',
@@ -122,10 +122,17 @@ const SingleDocumentDetailsTree: FunctionComponent<{
         >
           {Object.keys(value).map((key) => (
             <span key={key} style={{ paddingBottom: '8px', paddingRight: '8px' }}>
-              <span style={{ backgroundColor: theme.palette.action.selected, borderRadius: '6px', padding: '4px' }}>
+              <span
+                style={{
+                  backgroundColor: theme.palette.action.selected,
+                  borderRadius: '6px',
+                  padding: '4px',
+                  wordBreak: 'break-all',
+                }}
+              >
                 {key}:
               </span>
-              <span style={{ padding: '4px' }}>{value[key]?.toString() ?? 'null'}</span>
+              <span style={{ padding: '4px', wordBreak: 'break-all' }}>{value[key]?.toString() ?? 'null'}</span>
             </span>
           ))}
         </Box>
@@ -137,7 +144,7 @@ const SingleDocumentDetailsTree: FunctionComponent<{
   const formatDetails = (value: any): React.ReactNode => {
     if (canBeRenderedAsValue(value)) {
       return (
-        <TableCell sx={{ verticalAlign: 'top' }}>
+        <TableCell>
           <Typography>
             {value?.toString() ?? 'null'}
             <small style={{ marginLeft: '4px' }}>({getTypeName(value)})</small>
@@ -169,14 +176,14 @@ const SingleDocumentDetailsTree: FunctionComponent<{
   return (
     <>
       <TableRow hover={true} selected={open}>
-        <TableCell sx={{ verticalAlign: 'top' }}>
+        <TableCell>
           {canBeRenderedAsValue(documentValue) ? null : (
             <IconButton size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
             </IconButton>
           )}
         </TableCell>
-        <TableCell sx={{ verticalAlign: 'top' }}>{documentKey?.toString() ?? 'null'}</TableCell>
+        <TableCell>{documentKey?.toString() ?? 'null'}</TableCell>
         {formatValue(documentValue)}
       </TableRow>
 
@@ -328,19 +335,19 @@ const SingleDocument: FunctionComponent<{
   return (
     <>
       <TableRow hover={true} selected={open}>
-        <TableCell sx={{ verticalAlign: 'top' }}>
+        <TableCell>
           <IconButton aria-label="expand" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
-        <TableCell sx={{ verticalAlign: 'top' }}>
+        <TableCell>
           {document['_id']
             ? typeof document['_id'] === 'object'
               ? JSON.stringify(document['_id'])
               : document['_id'].toString()
             : null}
         </TableCell>
-        <TableCell sx={{ verticalAlign: 'top' }}>
+        <TableCell>
           <Box
             sx={{
               WebkitBoxOrient: 'vertical',
@@ -355,15 +362,22 @@ const SingleDocument: FunctionComponent<{
               .filter((key) => key !== '_id')
               .map((key) => (
                 <span key={key} style={{ paddingBottom: '8px', paddingRight: '8px' }}>
-                  <span style={{ backgroundColor: theme.palette.action.selected, borderRadius: '6px', padding: '4px' }}>
+                  <span
+                    style={{
+                      backgroundColor: theme.palette.action.selected,
+                      borderRadius: '6px',
+                      padding: '4px',
+                      wordBreak: 'break-all',
+                    }}
+                  >
                     {key}:
                   </span>
-                  <span style={{ padding: '4px' }}>{document[key]?.toString() ?? 'null'}</span>
+                  <span style={{ padding: '4px', wordBreak: 'break-all' }}>{document[key]?.toString() ?? 'null'}</span>
                 </span>
               ))}
           </Box>
         </TableCell>
-        <TableCell sx={{ verticalAlign: 'top' }}>
+        <TableCell>
           <SingleDocumentActions instance={instance} collectionName={collectionName} document={document} />
         </TableCell>
       </TableRow>
