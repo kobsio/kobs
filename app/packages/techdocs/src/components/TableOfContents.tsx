@@ -28,7 +28,7 @@ const TableOfContentsItem: FunctionComponent<{
   if (Array.isArray(tocItem[title])) {
     return (
       <>
-        <ListItemButton sx={{ pl: 4 * level }} onClick={() => setOpen(!open)}>
+        <ListItemButton sx={{ pl: 4 * level, wordBreak: 'break-all' }} onClick={() => setOpen(!open)}>
           <ListItemText primary={title} />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>

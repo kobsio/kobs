@@ -48,6 +48,7 @@ const ServiceMarkdownTableOfContents: FunctionComponent<{
           paddingLeft: 4,
           paddingRight: 4,
           paddingTop: 2,
+          wordBreak: 'break-all',
         },
         'li:hover': {
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
