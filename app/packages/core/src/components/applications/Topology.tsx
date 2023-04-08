@@ -5,7 +5,7 @@ import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import { FunctionComponent, useCallback, useContext, useEffect, useRef } from 'react';
 
-import ApplicationInsights from './ApplicationsInsights';
+import { ApplicationInsightsDrawer } from './ApplicationsInsights';
 import { IEdge, INode, INodeData } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
@@ -240,5 +240,5 @@ export const ApplicationsInsightsWrapper: FunctionComponent<IApplicationsInsight
     return null;
   }
 
-  return <ApplicationInsights application={data} open={open} onClose={onClose} />;
+  return <ApplicationInsightsDrawer application={data} open={open} onClose={onClose} />;
 };
