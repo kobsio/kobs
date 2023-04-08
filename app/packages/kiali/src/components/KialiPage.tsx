@@ -1,5 +1,6 @@
 import {
   APIContext,
+  APIError,
   IAPIContext,
   IPluginInstance,
   IPluginPageProps,
@@ -34,7 +35,7 @@ const SelectNamespaces: FunctionComponent<{
 }> = ({ instance, selectedNamespaces, selectNamespaces }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isLoading, data } = useQuery<string[], Error>(['kiali/namespaces', instance], async () => {
+  const { isLoading, data } = useQuery<string[], APIError>(['kiali/namespaces', instance], async () => {
     return apiContext.client.get<string[]>('/api/plugins/kiali/namespaces', {
       headers: {
         'x-kobs-cluster': instance.cluster,

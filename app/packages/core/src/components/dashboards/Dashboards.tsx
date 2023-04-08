@@ -246,7 +246,7 @@ export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => 
     }),
   );
 
-  const { data } = useQuery<IVariableValues[] | null, Error>(
+  const { data } = useQuery<IVariableValues[] | null, APIError>(
     ['core/dashboards/variables', dashboard, variables, times],
     async () => {
       if (!variables) {

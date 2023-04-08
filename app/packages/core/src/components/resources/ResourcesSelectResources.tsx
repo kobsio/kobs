@@ -5,7 +5,7 @@ import { useContext, FunctionComponent, useState, useEffect } from 'react';
 
 import { IResource } from './utils';
 
-import { APIContext, IAPIContext } from '../../context/APIContext';
+import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -88,7 +88,7 @@ export const ResourcesSelectResources: FunctionComponent<IResourcesSelectResourc
 }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { data } = useQuery<IResource[], Error>(['core/resources'], async () => {
+  const { data } = useQuery<IResource[], APIError>(['core/resources'], async () => {
     return apiContext.client.get<IResource[]>('/api/clusters/resources');
   });
 

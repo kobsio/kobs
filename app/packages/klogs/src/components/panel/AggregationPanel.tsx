@@ -6,6 +6,7 @@ import {
   PluginPanel,
   PluginPanelActionLinks,
   IPluginInstance,
+  APIError,
 } from '@kobsio/core';
 import { useQuery } from '@tanstack/react-query';
 import queryString from 'query-string';
@@ -60,7 +61,7 @@ const AggregationPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
   description,
 }) => {
   const { client } = useContext(APIContext);
-  const queryResult = useQuery<IAggregationData | null, Error>(
+  const queryResult = useQuery<IAggregationData | null, APIError>(
     ['klogs/aggregation', instance, options, times],
     async () => {
       if (!options) {

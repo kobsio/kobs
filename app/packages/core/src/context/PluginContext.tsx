@@ -2,7 +2,7 @@ import { Alert, AlertTitle, Box, Button, CircularProgress } from '@mui/material'
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, createContext, ReactNode, useContext } from 'react';
 
-import { APIContext } from './APIContext';
+import { APIContext, APIError } from './APIContext';
 
 import { ITimes } from '../utils/times';
 
@@ -104,7 +104,7 @@ interface IPluginContextProviderProps {
  */
 export const PluginContextProvider: FunctionComponent<IPluginContextProviderProps> = ({ plugins, children }) => {
   const { client } = useContext(APIContext);
-  const { isError, error, isLoading, data, refetch } = useQuery<IPluginInstance[] | null, Error>(
+  const { isError, error, isLoading, data, refetch } = useQuery<IPluginInstance[] | null, APIError>(
     ['core/plugincontext'],
     () => client.get<IPluginInstance[] | null>('/api/plugins'),
   );

@@ -15,7 +15,7 @@ import { useContext, FunctionComponent, useState, FormEvent, useEffect } from 'r
 
 import { IApplicationOptions } from './utils';
 
-import { APIContext, IAPIContext } from '../../context/APIContext';
+import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 import { ResourcesSelectClusters } from '../resources/ResourcesSelectClusters';
 import { ResourcesSelectNamespaces } from '../resources/ResourcesSelectNamespaces';
 import { Toolbar, ToolbarItem } from '../utils/Toolbar';
@@ -39,7 +39,7 @@ interface IApplicationsToolbarTagsProps {
 const ApplicationsToolbarTags: FunctionComponent<IApplicationsToolbarTagsProps> = ({ selectedTags, selectTags }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isLoading, data } = useQuery<string[], Error>(['core/applications/tags'], async () => {
+  const { isLoading, data } = useQuery<string[], APIError>(['core/applications/tags'], async () => {
     return apiContext.client.get<string[]>('/api/applications/tags');
   });
 

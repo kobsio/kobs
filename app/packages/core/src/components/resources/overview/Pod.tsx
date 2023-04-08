@@ -27,7 +27,7 @@ import { FunctionComponent, ReactNode, useContext, useState } from 'react';
 
 import Conditions from './Conditions';
 
-import { APIContext, IAPIContext } from '../../../context/APIContext';
+import { APIContext, APIError, IAPIContext } from '../../../context/APIContext';
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -445,7 +445,7 @@ const Pod: FunctionComponent<IPodProps> = ({ cluster, namespace, name, pod }) =>
     }
   }
 
-  const { isError, data } = useQuery<IMetricContainer[], Error>(
+  const { isError, data } = useQuery<IMetricContainer[], APIError>(
     ['core/resources/pod/metrics', cluster, namespace, name],
     async () => {
       const metric = await apiContext.client.get<IMetric>(
