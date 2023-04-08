@@ -3,7 +3,7 @@ import { Autocomplete, Checkbox, Chip, TextField } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useContext, FunctionComponent } from 'react';
 
-import { APIContext, IAPIContext } from '../../context/APIContext';
+import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -32,7 +32,7 @@ export const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamesp
 }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isLoading, data } = useQuery<string[], Error>(['core/namespaces', selectedClusters], async () => {
+  const { isLoading, data } = useQuery<string[], APIError>(['core/namespaces', selectedClusters], async () => {
     const c = selectedClusters.map((cluster) => `&cluster=${encodeURIComponent(cluster)}`);
     return apiContext.client.get<string[]>(`/api/clusters/namespaces?${c.length > 0 ? c.join('') : ''}`);
   });

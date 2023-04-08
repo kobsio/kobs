@@ -1,4 +1,12 @@
-import { APIContext, DetailsDrawer, IAPIContext, IPluginInstance, ITimes, UseQueryWrapper } from '@kobsio/core';
+import {
+  APIContext,
+  APIError,
+  DetailsDrawer,
+  IAPIContext,
+  IPluginInstance,
+  ITimes,
+  UseQueryWrapper,
+} from '@kobsio/core';
 import {
   Box,
   Card,
@@ -198,7 +206,7 @@ const EdgeMetricsTCP: FunctionComponent<{
 }> = ({ instance, times, sourceNode, targetNode }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], APIError>(
     ['kiali/metrics/edge/tcp', instance, times, sourceNode, targetNode],
     async () => {
       if (targetNode.data?.namespace === 'unknown') {
@@ -298,7 +306,7 @@ const EdgeMetricsHTTP: FunctionComponent<{
 }> = ({ instance, times, sourceNode, targetNode }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], APIError>(
     ['kiali/metrics/edge/http', instance, times, sourceNode, targetNode],
     async () => {
       if (targetNode.data?.namespace === 'unknown') {
@@ -407,7 +415,7 @@ const EdgeMetricsgRPC: FunctionComponent<{
 }> = ({ instance, times, sourceNode, targetNode }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], APIError>(
     ['kiali/metrics/edge/grpc', instance, times, sourceNode, targetNode],
     async () => {
       if (targetNode.data?.namespace === 'unknown') {

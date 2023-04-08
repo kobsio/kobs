@@ -11,7 +11,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useContext, FunctionComponent, SyntheticEvent } from 'react';
 
-import { APIContext, IAPIContext } from '../../context/APIContext';
+import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -37,7 +37,7 @@ export const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClusters
   const apiContext = useContext<IAPIContext>(APIContext);
   const filter = createFilterOptions<string>();
 
-  const { isLoading, data } = useQuery<string[], Error>(['core/clusters'], async () => {
+  const { isLoading, data } = useQuery<string[], APIError>(['core/clusters'], async () => {
     return apiContext.client.get<string[]>('/api/clusters');
   });
 

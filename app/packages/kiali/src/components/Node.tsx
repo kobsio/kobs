@@ -1,4 +1,12 @@
-import { APIContext, DetailsDrawer, IAPIContext, IPluginInstance, ITimes, UseQueryWrapper } from '@kobsio/core';
+import {
+  APIContext,
+  APIError,
+  DetailsDrawer,
+  IAPIContext,
+  IPluginInstance,
+  ITimes,
+  UseQueryWrapper,
+} from '@kobsio/core';
 import {
   Box,
   Card,
@@ -204,7 +212,7 @@ const NodeMetrics: FunctionComponent<{
 }> = ({ instance, times, nodeNamespace, nodeType, nodeName, filters, byLabels, direction, reporter }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], Error>(
+  const { isError, isLoading, error, data, refetch } = useQuery<IChart[], APIError>(
     ['kiali/metrics/node', instance, times, nodeNamespace, nodeType, nodeName, filters, byLabels, direction, reporter],
     async () => {
       const response = await apiContext.client.get<IMetricsMap>(
