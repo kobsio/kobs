@@ -1,4 +1,4 @@
-package klogs
+package instance
 
 import (
 	"context"
@@ -6,16 +6,61 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/plugins/klogs/instance/parser"
+
 	"github.com/golang/mock/gomock"
-	"github.com/kobsio/kobs/pkg/klogs/parser"
 	"github.com/stretchr/testify/require"
 )
+
+func TestParseOrder(t *testing.T) {
+	i := instance{
+		defaultFields:       defaultFields,
+		materializedColumns: []string{"faster"},
+	}
+
+	for _, tt := range []struct {
+		order             string
+		orderBy           string
+		expectedCondition string
+	}{
+		{order: "", orderBy: "", expectedCondition: "timestamp DESC"},
+		{order: "ascending", orderBy: "cluster", expectedCondition: "cluster ASC"},
+		{order: "descending", orderBy: "cluster", expectedCondition: "cluster DESC"},
+		{order: "descending", orderBy: "faster", expectedCondition: "faster DESC"},
+		{order: "ascending", orderBy: "foobar", expectedCondition: "fields_string['foobar'] ASC, fields_number['foobar'] ASC"},
+	} {
+		t.Run(tt.order+tt.orderBy, func(t *testing.T) {
+			actualCondition := i.parseOrder(tt.order, tt.orderBy)
+			require.Equal(t, tt.expectedCondition, actualCondition)
+		})
+	}
+}
+
+func TestGetBucketTimes(t *testing.T) {
+	for _, tt := range []struct {
+		interval          int64
+		bucketTime        int64
+		timeStart         int64
+		timeEnd           int64
+		expectedTimeStart int64
+		expectedTimeEnd   int64
+	}{
+		{interval: 124, bucketTime: 1640188920, timeStart: 1640189016, timeEnd: 1640192745, expectedTimeStart: 1640189016, expectedTimeEnd: 1640189044},
+		{interval: 124, bucketTime: 1640190780, timeStart: 1640189016, timeEnd: 1640192745, expectedTimeStart: 1640190780, expectedTimeEnd: 1640190904},
+		{interval: 124, bucketTime: 1640192640, timeStart: 1640189016, timeEnd: 1640192745, expectedTimeStart: 1640192640, expectedTimeEnd: 1640192745},
+	} {
+		t.Run(fmt.Sprintf("%d", tt.bucketTime), func(t *testing.T) {
+			actualTimeStart, actualTimeEnd := getBucketTimes(tt.interval, tt.bucketTime, tt.timeStart, tt.timeEnd)
+			require.Equal(t, tt.expectedTimeStart, actualTimeStart)
+			require.Equal(t, tt.expectedTimeEnd, actualTimeEnd)
+		})
+	}
+}
 
 func TestGetLogs(t *testing.T) {
 	t.Run("should return log results", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace"}
 		instance := instance{
 			database:      "logs",
 			defaultFields: defaultFields,
@@ -112,7 +157,7 @@ func TestGetLogs(t *testing.T) {
 			"foo":            "bar",
 		}}, documents)
 
-		require.Equal(t, []string{"foo", "namespace"}, fields)
+		require.Equal(t, []string{"app", "cluster", "container_name", "foo", "host", "log", "namespace", "pod_name", "timestamp"}, fields)
 		require.Equal(t, int64(16), count)
 		require.Equal(t, int64(0), took) // really 0?
 		require.NotNil(t, []Bucket{{Interval: timeStart.Unix(), Count: 16}}, buckets)
@@ -121,7 +166,6 @@ func TestGetLogs(t *testing.T) {
 	t.Run("should optimize query when order is timestamp DESC", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace", "timestamp"}
 		instance := instance{
 			database:      "logs",
 			defaultFields: defaultFields,
@@ -181,7 +225,6 @@ func TestGetLogs(t *testing.T) {
 	t.Run("should optimize query when order is timestamp ASC", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		querier := NewMockQuerier(ctrl)
-		defaultFields := []string{"namespace", "timestamp"}
 		instance := instance{
 			database:      "logs",
 			defaultFields: defaultFields,

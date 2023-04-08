@@ -8,14 +8,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
-	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/instrument/log"
+	"github.com/kobsio/kobs/pkg/plugins/klogs/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
-
 	"go.uber.org/zap"
 )
 
@@ -23,13 +21,13 @@ import (
 // the api routes for the klogs plugin and it's configuration.
 type Router struct {
 	*chi.Mux
-	instances []Instance
+	instances []instance.Instance
 }
 
 // getInstance returns a klogs instance by it's name. If we couldn't found an instance with the provided name and the
 // provided name is "default" we return the first instance from the list. The first instance in the list is also the
 // first one configured by the user and can be used as default one.
-func (router *Router) getInstance(name string) Instance {
+func (router *Router) getInstance(name string) instance.Instance {
 	for _, i := range router.instances {
 		if i.GetName() == name {
 			return i
@@ -137,11 +135,11 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Documents []map[string]any `json:"documents"`
-		Fields    []string         `json:"fields"`
-		Count     int64            `json:"count"`
-		Took      int64            `json:"took"`
-		Buckets   []Bucket         `json:"buckets"`
+		Documents []map[string]any  `json:"documents"`
+		Fields    []string          `json:"fields"`
+		Count     int64             `json:"count"`
+		Took      int64             `json:"took"`
+		Buckets   []instance.Bucket `json:"buckets"`
 	}{
 		documents,
 		fields,
@@ -167,7 +165,7 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var aggregationData Aggregation
+	var aggregationData instance.Aggregation
 	err := json.NewDecoder(r.Body).Decode(&aggregationData)
 	if err != nil {
 		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
@@ -217,34 +215,15 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
-type Plugin struct{}
+func (p *Plugin) Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
+	var klogsInstances []instance.Instance
 
-func New() *Plugin {
-	return &Plugin{}
-}
-
-// PluginType is the type which must be used for the klogs plugin.
-func (p *Plugin) Type() string {
-	return "klogs"
-}
-
-// Mount mounts the klogs plugin routes in a cluster.
-func (p *Plugin) MountCluster(instances []plugin.Instance, kubernetesClient kubernetes.Client) (chi.Router, error) {
-	return p.mount(instances, nil)
-}
-
-func (p *Plugin) MountHub(instances []plugin.Instance, clustersClient clusters.Client, dbClient db.Client) (chi.Router, error) {
-	return p.mount(instances, clustersClient)
-}
-
-func (p *Plugin) mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {
-	klogsInstances := make([]Instance, len(instances))
-	for i, instance := range instances {
-		klogsInstance, err := NewInstance(instance.Name, instance.Options)
+	for _, i := range instances {
+		klogsInstance, err := instance.New(i.Name, i.Options)
 		if err != nil {
 			return nil, err
 		}
-		klogsInstances[i] = klogsInstance
+		klogsInstances = append(klogsInstances, klogsInstance)
 	}
 
 	router := Router{
@@ -253,6 +232,7 @@ func (p *Plugin) mount(instances []plugin.Instance, clustersClient clusters.Clie
 	}
 
 	proxy := pluginproxy.New(clustersClient)
+
 	router.With(proxy).Get("/fields", router.getFields)
 	router.With(proxy).Get("/logs", router.getLogs)
 	router.With(proxy).Post("/aggregation", router.getAggregation)

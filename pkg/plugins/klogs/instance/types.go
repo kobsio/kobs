@@ -1,4 +1,4 @@
-package klogs
+package instance
 
 import (
 	"time"
