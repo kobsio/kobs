@@ -16,7 +16,7 @@ export interface IApplication {
 }
 
 export interface IInsight {
-  mappings?: { [key: string]: string };
+  mappings?: Record<string, string>;
   plugin: IPlugin;
   title: string;
   type: string;

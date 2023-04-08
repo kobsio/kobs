@@ -3,7 +3,7 @@ import { Box, Chip, IconButton, ListItem, ListItemText, Typography } from '@mui/
 import { FunctionComponent, MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import ApplicationInsights from './ApplicationsInsights';
+import { ApplicationInsightsDrawer } from './ApplicationsInsights';
 
 import { IApplication } from '../../crds/application';
 
@@ -119,7 +119,7 @@ const Application: FunctionComponent<IApplicationProps> = ({ application }) => {
         />
       </ListItem>
 
-      <ApplicationInsights application={application} onClose={hideInsights} open={open} />
+      <ApplicationInsightsDrawer application={application} onClose={hideInsights} open={open} />
     </>
   );
 };

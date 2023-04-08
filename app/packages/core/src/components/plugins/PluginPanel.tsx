@@ -5,6 +5,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { PluginContext } from '../../context/PluginContext';
 import { ITimes } from '../../utils/times';
 import ApplicationGroupsPanel from '../applications/ApplicationGroupsPanel';
+import { ApplicationInsightsPanel } from '../applications/ApplicationsInsights';
 import ApplicationsPanel from '../applications/ApplicationsPanel';
 import TopologyPanel from '../applications/TopologyPanel';
 import DashboardsPanel from '../dashboards/DashboardsPanel';
@@ -42,6 +43,10 @@ const CorePanel: FunctionComponent<ICorePanelProps> = ({ cluster, name, title, d
 
   if (name === 'applicationgroups') {
     return <ApplicationGroupsPanel title={title} description={description} options={options} />;
+  }
+
+  if (name === 'applicationinsights') {
+    return <ApplicationInsightsPanel options={options} times={times} />;
   }
 
   if (name === 'topology') {
