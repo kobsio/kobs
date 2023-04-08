@@ -15,7 +15,6 @@ import Resources from './Resources';
 import { IResource, getSelector, getDashboards, IDashboard } from './utils';
 
 import { timeDifference } from '../../utils/times';
-import { Dashboards } from '../dashboards/Dashboards';
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -24,6 +23,7 @@ import {
 } from '../utils/DescriptionList';
 import { DetailsDrawer } from '../utils/DetailsDrawer';
 import { Editor } from '../utils/editor/Editor';
+import { EmbeddedDashboards } from '../utils/embedded/EmbeddedDashboards';
 
 /**
  * `IResourceOverviewProps` is the interface, which defines the properties for the `ResourceOverview` component.
@@ -184,7 +184,7 @@ const ResourceDashboards: FunctionComponent<IResourceDashboardsProps> = ({
     );
   }
 
-  return <Dashboards manifest={manifest} references={references} />;
+  return <EmbeddedDashboards manifest={manifest} references={references} />;
 };
 
 /**
