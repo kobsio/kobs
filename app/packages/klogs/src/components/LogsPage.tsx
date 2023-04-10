@@ -1,5 +1,6 @@
 import { Completion, autocompletion, completeFromList } from '@codemirror/autocomplete';
 import {
+  addStateHistoryItem,
   APIContext,
   APIError,
   Editor,
@@ -23,6 +24,7 @@ import {
   Card,
   Divider,
   IconButton,
+  InputAdornment,
   List,
   ListItem,
   ListItemButton,
@@ -42,6 +44,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Logs } from './Logs';
+import { QueryHistory } from './QueryHistory';
 
 import { description, ILogsData } from '../utils/utils';
 
@@ -256,6 +259,7 @@ const LogsToolbar: FunctionComponent<{
 
   const changeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined) => {
     if (additionalFields && additionalFields.length === 2) {
+      addStateHistoryItem('kobs-klogs-queryhistory', query);
       setOptions({
         ...options,
         ...times,
@@ -267,6 +271,7 @@ const LogsToolbar: FunctionComponent<{
   };
 
   const handleSubmit = () => {
+    addStateHistoryItem('kobs-klogs-queryhistory', query);
     setOptions({ ...options, query: query });
   };
 
@@ -288,6 +293,11 @@ const LogsToolbar: FunctionComponent<{
             value={query}
             onChange={(value) => setQuery(value)}
             handleSubmit={handleSubmit}
+            adornment={
+              <InputAdornment position="end">
+                <QueryHistory optionsQuery={options.query} setQuery={(query) => setQuery(query)} />
+              </InputAdornment>
+            }
           />
         )}
       </ToolbarItem>
