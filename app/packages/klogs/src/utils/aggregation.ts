@@ -1,6 +1,66 @@
+import { TTime } from '@kobsio/core';
 import { getChartColor } from '@kobsio/core';
 
-import { IAggregationData, IAggregationDataRow, IChartOptions, ISeries, ISeriesDatum } from '../page/AggregationTypes';
+/**
+ * `IAggregationOptions` is the interface for an aggragation. It contains the query to select the logs, the time range
+ * and some chart specify options:
+ *   - The "sliceBy", "sizeByOperation" and "sizeByField" is required, when a user choosed a pie chart as visualization
+ *     type. The latter one is only needed if the user did not choose "count" for "sizeByOperation".
+ *   - The values for the horizontal axis are needed for the bar, line and area chart. The "horizontalAxisField",
+ *     "horizontalAxisOrder" and "horizontalAxisLimit" can only be set, when the "horizontalAxisOperation" is "top".
+ *   - For the vertical axis we need to now the "verticalAxisOperation" and "verticalAxisField" values, where the latter
+ *     one is only required when the "verticalAxisOperation" is not "count"
+ *   - Finally the user can also break down his aggregation, via a list of fields ("breakDownByFields") or a list of
+ *     filters ("breakDownByFilters").
+ */
+export interface IAggregationOptions {
+  breakDownByFields: string[];
+  breakDownByFilters: string[];
+  chart: string;
+  horizontalAxisField: string;
+  horizontalAxisLimit: number;
+  horizontalAxisOperation: string;
+  horizontalAxisOrder: string;
+  query: string;
+  sizeByField: string;
+  sizeByOperation: string;
+  sliceBy: string;
+  time: TTime;
+  timeEnd: number;
+  timeStart: number;
+  verticalAxisField: string;
+  verticalAxisOperation: string;
+}
+
+/**
+ * `IAggregationDataRow` is the interface for a single row returned by the aggregation API. It contains the column name
+ * as key and the cell value for the row/column as value. The value could be a string, for the selected fields in the
+ * aggregation or a number for the value of the fields combination.
+ */
+export interface IAggregationDataRow {
+  [key: string]: string | number | null;
+}
+
+/**
+ * `IAggregationData` is the data returned by the aggregation API call. It contains a list of columns and a list of
+ * rows.
+ */
+export interface IAggregationData {
+  columns: string[];
+  rows: IAggregationDataRow[];
+}
+
+export interface ISeries {
+  data: ISeriesDatum[];
+  name: string;
+}
+
+export interface ISeriesDatum {
+  color: string;
+  series: string;
+  x: Date;
+  y: number | null;
+}
 
 /**
  * getLabel return a label for a row. For that we are joining the values of all columns which are not containing any data.
@@ -148,60 +208,4 @@ export const chartFormatLabel = (label: string, minLength = 12): string => {
   }
 
   return label;
-};
-
-/**
- * utility for transforming the IChartOptions interface to request options
- * this method can throw an error, when one of the required options is missing
- */
-export const chartOptionsToRequestOptions = (chartOptions: IChartOptions): unknown => {
-  let options: unknown = undefined;
-  if (chartOptions.chart === 'pie') {
-    if (!chartOptions.sliceBy) {
-      throw new Error('please provide a column name for "Slice By"');
-    }
-    options = {
-      sizeByField: chartOptions.sizeByField,
-      sizeByOperation: chartOptions.sizeByOperation,
-      sliceBy: chartOptions.sliceBy,
-    };
-  } else if (chartOptions.chart === 'bar' && chartOptions.horizontalAxisOperation === 'top') {
-    if (!chartOptions.horizontalAxisField) {
-      throw new Error('please provide a column name for "Horizontal axis field"');
-    }
-
-    if (!chartOptions.horizontalAxisLimit || Number.isNaN(Number(chartOptions.horizontalAxisLimit))) {
-      throw new Error('please provide a valid value for "Horizontal axis limit" - must be a number');
-    }
-
-    options = {
-      breakDownByFields: chartOptions.breakDownByFields,
-      breakDownByFilters: chartOptions.breakDownByFilters,
-      horizontalAxisField: chartOptions.horizontalAxisField,
-      horizontalAxisLimit: `${chartOptions.horizontalAxisLimit}`,
-      horizontalAxisOperation: 'top',
-      horizontalAxisOrder: chartOptions.horizontalAxisOrder || 'ascending',
-      verticalAxisOperation: chartOptions.verticalAxisOperation,
-    };
-  } else {
-    if (!chartOptions.horizontalAxisOperation) {
-      throw new Error('please provide a column name for "Horizontal axis Operation"');
-    }
-
-    if (chartOptions.verticalAxisOperation !== 'count' && !chartOptions.verticalAxisField) {
-      throw new Error(
-        `when "Vertical axis Operation" is set to "${chartOptions.verticalAxisOperation}", you have to pick a column name for "Vertical axis Field"`,
-      );
-    }
-
-    options = {
-      breakDownByFields: chartOptions.breakDownByFields,
-      breakDownByFilters: chartOptions.breakDownByFilters,
-      horizontalAxisOperation: chartOptions.horizontalAxisOperation,
-      verticalAxisField: chartOptions.verticalAxisField,
-      verticalAxisOperation: chartOptions.verticalAxisOperation,
-    };
-  }
-
-  return options;
 };

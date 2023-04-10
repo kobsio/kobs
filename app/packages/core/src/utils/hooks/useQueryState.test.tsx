@@ -5,7 +5,14 @@ import { vi } from 'vitest';
 
 import type { MemoryRouterProps } from 'react-router-dom';
 
-import { useQueryState } from './useQueryState';
+import { encodeQueryState, useQueryState } from './useQueryState';
+
+describe('encodeQueryState', () => {
+  it('should encode state', () => {
+    const res = encodeQueryState({ array: [1, 2], boolean: true, number: 1, string: 'test' });
+    expect(res).toMatchObject('array[]=1&array[]=2&boolean=true&number=1&string=test');
+  });
+});
 
 describe('useQueryState', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

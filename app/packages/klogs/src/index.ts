@@ -1,14 +1,15 @@
 import { IPlugin } from '@kobsio/core';
 
 import icon from './assets/icon.png';
-import Entrypoint from './components/page/Routes';
-import Panel from './components/panel/Panel';
+import KLogsPage from './components/KLogsPage';
+import KLogsPanel from './components/KLogsPanel';
+import { description } from './utils/utils';
 
 const plugin: IPlugin = {
-  description: 'Fast, scalable and reliable logging using Fluent Bit and ClickHouse.',
+  description: description,
   icon: icon,
-  page: Entrypoint,
-  panel: Panel,
+  page: KLogsPage,
+  panel: KLogsPanel,
   type: 'klogs',
 };
 

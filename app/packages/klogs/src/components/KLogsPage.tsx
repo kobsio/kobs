@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import AggregationPage from './AggregationPage';
 import LogsPage from './LogsPage';
 
-const Entrypoint: FunctionComponent<IPluginPageProps> = (props) => {
+const KLogsPage: FunctionComponent<IPluginPageProps> = (props) => {
   return (
     <Routes>
       <Route path="/" element={<LogsPage {...props} />} />
@@ -14,4 +14,4 @@ const Entrypoint: FunctionComponent<IPluginPageProps> = (props) => {
   );
 };
 
-export default Entrypoint;
+export default KLogsPage;

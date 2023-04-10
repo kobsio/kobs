@@ -30,7 +30,7 @@ type AggregationOptions struct {
 	HorizontalAxisOperation string `json:"horizontalAxisOperation"`
 	HorizontalAxisField     string `json:"horizontalAxisField"`
 	HorizontalAxisOrder     string `json:"horizontalAxisOrder"`
-	HorizontalAxisLimit     string `json:"horizontalAxisLimit"`
+	HorizontalAxisLimit     int64  `json:"horizontalAxisLimit"`
 
 	VerticalAxisOperation string `json:"verticalAxisOperation"`
 	VerticalAxisField     string `json:"verticalAxisField"`
@@ -127,7 +127,10 @@ func (i *instance) buildAggregationQuery(chart string, options AggregationOption
 			selectStatement = fmt.Sprintf("%s, %s(%s) as %s_data", horizontalAxisField, options.VerticalAxisOperation, verticalAxisField, options.VerticalAxisOperation)
 			groupByStatement = horizontalAxisField
 			orderByStatement = fmt.Sprintf("%s_data %s", options.VerticalAxisOperation, getOrderBy(options.HorizontalAxisOrder))
-			limitByStatement = strings.TrimSpace(options.HorizontalAxisLimit)
+			limitByStatement = ""
+			if options.HorizontalAxisLimit > 0 {
+				limitByStatement = fmt.Sprintf("%d", options.HorizontalAxisLimit)
+			}
 
 			return selectStatement, groupByStatement, orderByStatement, limitByStatement, nil
 		} else if len(options.BreakDownByFields) > 0 && len(options.BreakDownByFilters) == 0 {
@@ -145,7 +148,10 @@ func (i *instance) buildAggregationQuery(chart string, options AggregationOption
 			selectStatement = fmt.Sprintf("%s, %s, %s(%s) as %s_data", horizontalAxisField, strings.Join(breakDownByFields, ", "), options.VerticalAxisOperation, verticalAxisField, options.VerticalAxisOperation)
 			groupByStatement = fmt.Sprintf("%s, %s", horizontalAxisField, strings.Join(breakDownByFields, ", "))
 			orderByStatement = fmt.Sprintf("%s_data %s", options.VerticalAxisOperation, getOrderBy(options.HorizontalAxisOrder))
-			limitByStatement = strings.TrimSpace(options.HorizontalAxisLimit)
+			limitByStatement = ""
+			if options.HorizontalAxisLimit > 0 {
+				limitByStatement = fmt.Sprintf("%d", options.HorizontalAxisLimit)
+			}
 			return selectStatement, groupByStatement, orderByStatement, limitByStatement, nil
 		} else if len(options.BreakDownByFilters) > 0 {
 			if options.VerticalAxisOperation == "count" {
@@ -188,7 +194,10 @@ func (i *instance) buildAggregationQuery(chart string, options AggregationOption
 				groupByStatement = fmt.Sprintf("%s, %s", groupByStatement, strings.Join(breakDownByFields, ", "))
 			}
 
-			limitByStatement = strings.TrimSpace(options.HorizontalAxisLimit)
+			limitByStatement = ""
+			if options.HorizontalAxisLimit > 0 {
+				limitByStatement = fmt.Sprintf("%d", options.HorizontalAxisLimit)
+			}
 			return selectStatement, groupByStatement, "", limitByStatement, nil
 		}
 	}

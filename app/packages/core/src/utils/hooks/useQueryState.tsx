@@ -10,6 +10,10 @@ import { timeOptions, times } from '../times';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryState = Record<string, any>;
 
+export const encodeQueryState = (state: QueryState) => {
+  return queryString.stringify(state, { arrayFormat: 'bracket', skipEmptyString: false, skipNull: false });
+};
+
 /**
  * `useQueryState` is a React hook, which allows us to store the state into a url query.
  *
