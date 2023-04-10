@@ -118,8 +118,8 @@ func TestGetLogs(t *testing.T) {
 		router := Router{instances: []instance.Instance{mockInstance}}
 		router.getLogs(w, req)
 
-		utils.AssertStatusEq(t, w, http.StatusBadRequest)
-		utils.AssertJSONEq(t, w, `{"errors":["Could not get logs"]}`)
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get logs"]}`)
 	})
 
 	t.Run("should handle unknown instance", func(t *testing.T) {
@@ -130,7 +130,7 @@ func TestGetLogs(t *testing.T) {
 		router.getLogs(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusBadRequest)
-		utils.AssertJSONEq(t, w, `{"errors":["Could not find instance name"]}`)
+		utils.AssertJSONEq(t, w, `{"errors":["Invalid plugin instance"]}`)
 	})
 
 	t.Run("should handle invalid timeStart", func(t *testing.T) {
@@ -146,7 +146,7 @@ func TestGetLogs(t *testing.T) {
 		router.getLogs(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusBadRequest)
-		utils.AssertJSONEq(t, w, `{"errors":["Could not parse start time"]}`)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to parse start time"]}`)
 	})
 
 	t.Run("should handle invalid timeEnd", func(t *testing.T) {
@@ -162,7 +162,7 @@ func TestGetLogs(t *testing.T) {
 		router.getLogs(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusBadRequest)
-		utils.AssertJSONEq(t, w, `{"errors":["Could not parse end time"]}`)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to parse end time"]}`)
 	})
 }
 
@@ -206,7 +206,7 @@ func TestGetAggregation(t *testing.T) {
 		router.getAggregation(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusBadRequest)
-		utils.AssertJSONEq(t, w, `{"errors":["Could not find instance name"]}`)
+		utils.AssertJSONEq(t, w, `{"errors":["Invalid plugin instance"]}`)
 	})
 
 	t.Run("should handle invalid aggregation body", func(t *testing.T) {
@@ -222,7 +222,7 @@ func TestGetAggregation(t *testing.T) {
 		router.getAggregation(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusBadRequest)
-		utils.AssertJSONEq(t, w, `{"errors":["Could not decode request body"]}`)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to decode request body"]}`)
 	})
 
 	t.Run("should handle error in instance.GetAggregation", func(t *testing.T) {
@@ -239,6 +239,6 @@ func TestGetAggregation(t *testing.T) {
 		router.getAggregation(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
-		utils.AssertJSONEq(t, w, `{"errors":["Error while running aggregation"]}`)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to get aggragation result"]}`)
 	})
 }

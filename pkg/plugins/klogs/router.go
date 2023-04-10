@@ -50,8 +50,8 @@ func (router *Router) getFields(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not find instance name")
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
 		return
 	}
 
@@ -75,22 +75,22 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not find instance name")
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
 		return
 	}
 
 	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse start time", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not parse start time")
+		log.Error(r.Context(), "Failed to parse start time", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse start time")
 		return
 	}
 
 	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
 	if err != nil {
-		log.Error(r.Context(), "Could not parse end time", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not parse end time")
+		log.Error(r.Context(), "Failed to parse end time", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse end time")
 		return
 	}
 
@@ -129,8 +129,8 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	documents, fields, count, took, buckets, err := i.GetLogs(r.Context(), query, order, orderBy, 1000, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
-		log.Error(r.Context(), "Could not get logs", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not get logs")
+		log.Error(r.Context(), "Failed to get logs", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get logs")
 		return
 	}
 
@@ -160,16 +160,16 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 
 	i := router.getInstance(name)
 	if i == nil {
-		log.Error(r.Context(), "Could not find instance name", zap.String("name", name))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not find instance name")
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
 		return
 	}
 
 	var aggregationData instance.Aggregation
 	err := json.NewDecoder(r.Body).Decode(&aggregationData)
 	if err != nil {
-		log.Error(r.Context(), "Could not decode request body", zap.Error(err))
-		errresponse.Render(w, r, http.StatusBadRequest, "Could not decode request body")
+		log.Error(r.Context(), "Failed to decode request body", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
 		return
 	}
 
@@ -199,8 +199,8 @@ func (router *Router) getAggregation(w http.ResponseWriter, r *http.Request) {
 
 	rows, columns, err := i.GetAggregation(r.Context(), aggregationData)
 	if err != nil {
-		log.Error(r.Context(), "Error while running aggregation", zap.Error(err))
-		errresponse.Render(w, r, http.StatusInternalServerError, "Error while running aggregation")
+		log.Error(r.Context(), "Failed to get aggragation result", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get aggragation result")
 		return
 	}
 

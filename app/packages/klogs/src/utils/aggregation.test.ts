@@ -1,8 +1,6 @@
 import { getChartColor } from '@kobsio/core';
 
-import { convertToTimeseriesChartData } from './aggregation';
-
-import { ISeries } from '../page/AggregationTypes';
+import { convertToTimeseriesChartData, ISeries } from './aggregation';
 
 describe('convertToTimeseriesChartData', () => {
   it('should map the data', () => {

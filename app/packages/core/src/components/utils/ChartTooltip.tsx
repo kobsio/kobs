@@ -1,5 +1,5 @@
 import { Square } from '@mui/icons-material';
-import { Box, darken } from '@mui/material';
+import { Box, darken, useTheme } from '@mui/material';
 import { FunctionComponent } from 'react';
 import { FlyoutProps } from 'victory';
 
@@ -65,8 +65,10 @@ interface IChartTooltipContentProps {
 }
 
 const ChartTooltipContent: FunctionComponent<IChartTooltipContentProps> = ({ color, label, title, unit, value }) => {
+  const theme = useTheme();
+
   return (
-    <Box sx={{ backgroundColor: darken('#233044', 0.13), p: 4 }}>
+    <Box sx={{ backgroundColor: darken(theme.palette.background.paper, 0.13), p: 4 }}>
       {title && <b>{title}</b>}
       <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 2 }}>
         {color && <Square sx={{ color: color }} />}

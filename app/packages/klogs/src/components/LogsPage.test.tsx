@@ -2,16 +2,16 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-import LogsFieldsList from './LogsFieldsList';
+import { LogsFields } from './LogsPage';
 
-describe('LogsFieldsList', () => {
+describe('LogsFields', () => {
   it('renders the fields', () => {
     render(
-      <LogsFieldsList
+      <LogsFields
         selectedFields={['a_selected_field']}
         fields={['namespace', 'app', 'content_foo']}
-        onToggleField={vi.fn()}
-        onSwapItem={vi.fn()}
+        selectField={vi.fn()}
+        changeFieldOrder={vi.fn()}
       />,
     );
 
@@ -20,11 +20,11 @@ describe('LogsFieldsList', () => {
 
   it('renders the selectedFields', () => {
     render(
-      <LogsFieldsList
+      <LogsFields
         selectedFields={['a_selected_field']}
         fields={['namespace', 'app', 'content_foo']}
-        onToggleField={vi.fn()}
-        onSwapItem={vi.fn()}
+        selectField={vi.fn()}
+        changeFieldOrder={vi.fn()}
       />,
     );
 
@@ -32,83 +32,83 @@ describe('LogsFieldsList', () => {
   });
 
   it('can toggle field', async () => {
-    const onToggleField = vi.fn();
+    const selectField = vi.fn();
     render(
-      <LogsFieldsList
+      <LogsFields
         selectedFields={[]}
         fields={['namespace', 'app', 'content_foo']}
-        onToggleField={onToggleField}
-        onSwapItem={vi.fn()}
+        selectField={selectField}
+        changeFieldOrder={vi.fn()}
       />,
     );
 
     const fieldButton = screen.getByLabelText('namespace');
     await userEvent.click(fieldButton);
-    expect(onToggleField).toHaveBeenCalledWith('namespace');
+    expect(selectField).toHaveBeenCalledWith('namespace');
   });
 
   it('can toggle selectedField', async () => {
-    const onToggleField = vi.fn();
+    const selectField = vi.fn();
     render(
-      <LogsFieldsList
+      <LogsFields
         selectedFields={['a_selected_field']}
         fields={['namespace', 'app', 'content_foo']}
-        onToggleField={onToggleField}
-        onSwapItem={vi.fn()}
+        selectField={selectField}
+        changeFieldOrder={vi.fn()}
       />,
     );
 
     const selectedFieldItem = screen.getByLabelText('a_selected_field');
     const deleteButton = within(selectedFieldItem).getByRole('button', { name: 'delete' });
     await userEvent.click(deleteButton);
-    expect(onToggleField).toHaveBeenCalledWith('a_selected_field');
+    expect(selectField).toHaveBeenCalledWith('a_selected_field');
   });
 
   it('can move field up', async () => {
-    const onSwapItem = vi.fn();
+    const changeFieldOrder = vi.fn();
     render(
-      <LogsFieldsList
+      <LogsFields
         selectedFields={['first_field', 'second_field']}
         fields={['namespace', 'app', 'content_foo']}
-        onToggleField={vi.fn()}
-        onSwapItem={onSwapItem}
+        selectField={vi.fn()}
+        changeFieldOrder={changeFieldOrder}
       />,
     );
 
     const selectedFieldItem = screen.getByLabelText('second_field');
     const moveUpButton = within(selectedFieldItem).getByRole('button', { name: 'move up' });
     await userEvent.click(moveUpButton);
-    expect(onSwapItem).toHaveBeenCalledWith(0, 1);
+    expect(changeFieldOrder).toHaveBeenCalledWith(0, 1);
   });
 
   it('can move field down', async () => {
-    const onSwapItem = vi.fn();
+    const changeFieldOrder = vi.fn();
     render(
-      <LogsFieldsList
+      <LogsFields
         selectedFields={['first_field', 'second_field']}
         fields={['namespace', 'app', 'content_foo']}
-        onToggleField={vi.fn()}
-        onSwapItem={onSwapItem}
+        selectField={vi.fn()}
+        changeFieldOrder={changeFieldOrder}
       />,
     );
 
     const selectedFieldItem = screen.getByLabelText('first_field');
     const moveDownButton = within(selectedFieldItem).getByRole('button', { name: 'move down' });
     await userEvent.click(moveDownButton);
-    expect(onSwapItem).toHaveBeenCalledWith(0, 1);
+    expect(changeFieldOrder).toHaveBeenCalledWith(0, 1);
   });
 
-  it('can search field', async () => {
+  it('can filter fields', async () => {
     render(
-      <LogsFieldsList
+      <LogsFields
         fields={['namespace', 'app', 'content_foo']}
-        onToggleField={vi.fn()}
-        onSwapItem={vi.fn()}
+        selectField={vi.fn()}
+        changeFieldOrder={vi.fn()}
         selectedFields={[]}
       />,
     );
 
-    const searchField = screen.getByLabelText('search field');
+    const searchField = screen.getByLabelText('Filter Fields');
     await userEvent.type(searchField, 'namespace');
     expect(screen.getByText(/namespace/)).toBeInTheDocument();
     expect(screen.queryByText(/app/)).not.toBeInTheDocument();

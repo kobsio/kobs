@@ -115,7 +115,7 @@ func (i *instance) refreshCachedFields() []string {
 
 	fields, err := i.getFields(ctx)
 	if err != nil {
-		log.Error(ctx, "Could not refresh cached fields", zap.Error(err))
+		log.Error(ctx, "Failed to refresh cached fields", zap.Error(err))
 	} else {
 		log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
 		i.cachedFields = fields
@@ -132,7 +132,7 @@ func (i *instance) refreshCachedFields() []string {
 
 			fields, err := i.getFields(ctx)
 			if err != nil {
-				log.Error(ctx, "Could not refresh cached fields", zap.Error(err))
+				log.Error(ctx, "Failed to refresh cached fields", zap.Error(err))
 			} else {
 				log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
 
