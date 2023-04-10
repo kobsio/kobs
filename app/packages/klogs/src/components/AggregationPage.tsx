@@ -10,6 +10,7 @@ import {
   ITimes,
   Options,
   Page,
+  addStateHistoryItem,
   pluginBasePath,
   useQueryState,
 } from '@kobsio/core';
@@ -19,6 +20,7 @@ import {
   FilterOptionsState,
   Grid,
   IconButton,
+  InputAdornment,
   ListItemText,
   Menu,
   MenuItem,
@@ -32,6 +34,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Aggregation } from './Aggregation';
+import { QueryHistory } from './QueryHistory';
 
 import { IAggregationOptions } from '../utils/aggregation';
 import { description } from '../utils/utils';
@@ -115,6 +118,7 @@ const AggregationToolbar: FunctionComponent<{
   });
 
   const changeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined) => {
+    addStateHistoryItem('kobs-klogs-queryhistory', internalOptions.query);
     setOptions({
       ...internalOptions,
       ...times,
@@ -122,6 +126,7 @@ const AggregationToolbar: FunctionComponent<{
   };
 
   const handleSubmit = () => {
+    addStateHistoryItem('kobs-klogs-queryhistory', internalOptions.query);
     setOptions(internalOptions);
   };
 
@@ -156,6 +161,14 @@ const AggregationToolbar: FunctionComponent<{
             value={internalOptions.query}
             onChange={(value) => setInternalOptions({ ...internalOptions, query: value })}
             handleSubmit={handleSubmit}
+            adornment={
+              <InputAdornment position="end">
+                <QueryHistory
+                  optionsQuery={options.query}
+                  setQuery={(query) => setInternalOptions({ ...internalOptions, query: query })}
+                />
+              </InputAdornment>
+            }
           />
         )}
       </Grid>
