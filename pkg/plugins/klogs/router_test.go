@@ -87,7 +87,7 @@ func TestGetLogs(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		mockInstance := instance.NewMockInstance(ctrl)
 		mockInstance.EXPECT().GetName().Return("instance")
-		mockInstance.EXPECT().GetLogs(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), int64(1000), timeStart.Unix(), timeEnd.Unix()).Return([]map[string]any{{"namespace": "kube-system"}}, []string{"namespace"}, int64(1), int64(1), []instance.Bucket{{}}, nil)
+		mockInstance.EXPECT().GetLogs(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), int64(1000), timeStart.Unix(), timeEnd.Unix()).Return([]map[string]any{{"namespace": "kube-system"}}, []instance.Field{{Name: "namespace", Type: "string"}}, int64(1), int64(1), []instance.Bucket{{}}, nil)
 
 		path := fmt.Sprintf("/logs?timeStart=%d&timeEnd=%d", timeStart.Unix(), timeEnd.Unix())
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, nil)
@@ -98,7 +98,7 @@ func TestGetLogs(t *testing.T) {
 		router.getLogs(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"documents":[{"namespace":"kube-system"}],"fields":["namespace"],"count":1,"took":1,"buckets":[{"interval":0,"count":0}]}`)
+		utils.AssertJSONEq(t, w, `{"documents":[{"namespace":"kube-system"}],"fields":[{"name":"namespace","type":"string"}],"count":1,"took":1,"buckets":[{"interval":0,"count":0}]}`)
 	})
 
 	t.Run("should handle error from instance.GetLogs", func(t *testing.T) {
@@ -108,7 +108,7 @@ func TestGetLogs(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		mockInstance := instance.NewMockInstance(ctrl)
 		mockInstance.EXPECT().GetName().Return("instance")
-		mockInstance.EXPECT().GetLogs(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), int64(1000), timeStart.Unix(), timeEnd.Unix()).Return([]map[string]any{}, []string{}, int64(0), int64(0), []instance.Bucket{}, fmt.Errorf("unexpected error"))
+		mockInstance.EXPECT().GetLogs(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), int64(1000), timeStart.Unix(), timeEnd.Unix()).Return([]map[string]any{}, []instance.Field{}, int64(0), int64(0), []instance.Bucket{}, fmt.Errorf("unexpected error"))
 
 		path := fmt.Sprintf("/logs?timeStart=%d&timeEnd=%d", timeStart.Unix(), timeEnd.Unix())
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, nil)

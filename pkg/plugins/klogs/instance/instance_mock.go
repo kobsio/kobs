@@ -65,11 +65,11 @@ func (mr *MockInstanceMockRecorder) GetFields(filter, fieldType interface{}) *go
 }
 
 // GetLogs mocks base method.
-func (m *MockInstance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error) {
+func (m *MockInstance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []Field, int64, int64, []Bucket, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLogs", ctx, query, order, orderBy, limit, timeStart, timeEnd)
 	ret0, _ := ret[0].([]map[string]any)
-	ret1, _ := ret[1].([]string)
+	ret1, _ := ret[1].([]Field)
 	ret2, _ := ret[2].(int64)
 	ret3, _ := ret[3].(int64)
 	ret4, _ := ret[4].([]Bucket)

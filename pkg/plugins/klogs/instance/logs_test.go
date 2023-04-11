@@ -157,7 +157,17 @@ func TestGetLogs(t *testing.T) {
 			"foo":            "bar",
 		}}, documents)
 
-		require.Equal(t, []string{"app", "cluster", "container_name", "foo", "host", "log", "namespace", "pod_name", "timestamp"}, fields)
+		require.Equal(t, []Field{
+			{Name: "app", Type: "string"},
+			{Name: "cluster", Type: "string"},
+			{Name: "container_name", Type: "string"},
+			{Name: "foo", Type: "number"},
+			{Name: "host", Type: "string"},
+			{Name: "log", Type: "string"},
+			{Name: "namespace", Type: "string"},
+			{Name: "pod_name", Type: "string"},
+			{Name: "timestamp", Type: "string"},
+		}, fields)
 		require.Equal(t, int64(16), count)
 		require.Equal(t, int64(0), took) // really 0?
 		require.NotNil(t, []Bucket{{Interval: timeStart.Unix(), Count: 16}}, buckets)

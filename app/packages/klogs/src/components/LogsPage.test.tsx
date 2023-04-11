@@ -9,7 +9,11 @@ describe('LogsFields', () => {
     render(
       <LogsFields
         selectedFields={['a_selected_field']}
-        fields={['namespace', 'app', 'content_foo']}
+        fields={[
+          { name: 'namespace', type: 'string' },
+          { name: 'app', type: 'string' },
+          { name: 'content_foo', type: 'string' },
+        ]}
         selectField={vi.fn()}
         changeFieldOrder={vi.fn()}
       />,
@@ -22,7 +26,11 @@ describe('LogsFields', () => {
     render(
       <LogsFields
         selectedFields={['a_selected_field']}
-        fields={['namespace', 'app', 'content_foo']}
+        fields={[
+          { name: 'namespace', type: 'string' },
+          { name: 'app', type: 'string' },
+          { name: 'content_foo', type: 'string' },
+        ]}
         selectField={vi.fn()}
         changeFieldOrder={vi.fn()}
       />,
@@ -36,7 +44,11 @@ describe('LogsFields', () => {
     render(
       <LogsFields
         selectedFields={[]}
-        fields={['namespace', 'app', 'content_foo']}
+        fields={[
+          { name: 'namespace', type: 'string' },
+          { name: 'app', type: 'string' },
+          { name: 'content_foo', type: 'string' },
+        ]}
         selectField={selectField}
         changeFieldOrder={vi.fn()}
       />,
@@ -52,7 +64,11 @@ describe('LogsFields', () => {
     render(
       <LogsFields
         selectedFields={['a_selected_field']}
-        fields={['namespace', 'app', 'content_foo']}
+        fields={[
+          { name: 'namespace', type: 'string' },
+          { name: 'app', type: 'string' },
+          { name: 'content_foo', type: 'string' },
+        ]}
         selectField={selectField}
         changeFieldOrder={vi.fn()}
       />,
@@ -69,7 +85,11 @@ describe('LogsFields', () => {
     render(
       <LogsFields
         selectedFields={['first_field', 'second_field']}
-        fields={['namespace', 'app', 'content_foo']}
+        fields={[
+          { name: 'namespace', type: 'string' },
+          { name: 'app', type: 'string' },
+          { name: 'content_foo', type: 'string' },
+        ]}
         selectField={vi.fn()}
         changeFieldOrder={changeFieldOrder}
       />,
@@ -86,7 +106,11 @@ describe('LogsFields', () => {
     render(
       <LogsFields
         selectedFields={['first_field', 'second_field']}
-        fields={['namespace', 'app', 'content_foo']}
+        fields={[
+          { name: 'namespace', type: 'string' },
+          { name: 'app', type: 'string' },
+          { name: 'content_foo', type: 'string' },
+        ]}
         selectField={vi.fn()}
         changeFieldOrder={changeFieldOrder}
       />,
@@ -101,14 +125,18 @@ describe('LogsFields', () => {
   it('can filter fields', async () => {
     render(
       <LogsFields
-        fields={['namespace', 'app', 'content_foo']}
+        fields={[
+          { name: 'namespace', type: 'string' },
+          { name: 'app', type: 'string' },
+          { name: 'content_foo', type: 'string' },
+        ]}
         selectField={vi.fn()}
         changeFieldOrder={vi.fn()}
         selectedFields={[]}
       />,
     );
 
-    const searchField = screen.getByLabelText('Filter Fields');
+    const searchField = screen.getByPlaceholderText('Filter Fields');
     await userEvent.type(searchField, 'namespace');
     expect(screen.getByText(/namespace/)).toBeInTheDocument();
     expect(screen.queryByText(/app/)).not.toBeInTheDocument();

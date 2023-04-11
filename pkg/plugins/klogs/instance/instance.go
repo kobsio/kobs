@@ -39,7 +39,7 @@ type Instance interface {
 	getFields(ctx context.Context) (Fields, error)
 	refreshCachedFields() []string
 	GetFields(filter string, fieldType string) []string
-	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error)
+	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []Field, int64, int64, []Bucket, error)
 	GetAggregation(ctx context.Context, aggregation Aggregation) ([]map[string]any, []string, error)
 }
 

@@ -87,6 +87,14 @@ const chartThemeFromBaseTheme = (muiTheme: Theme, base: VictoryThemeDefinition):
   };
 };
 
+const isNumberField = (field: string, fields: { name: string; type: string }[]): boolean => {
+  if (fields.filter((f) => f.name === field && f.type === 'number').length > 0) {
+    return true;
+  }
+
+  return false;
+};
+
 /**
  * The `LogsChart` component renders a bar chart for the provided buckets, so that a user gets a fast idea how the
  * returned logs are distributed in the selected time range. The chart can also be used to adjust the selected time
@@ -285,76 +293,83 @@ const DocumentPreview: FunctionComponent<{ document: Record<string, string> }> =
 const DocumentDetailsTable: FunctionComponent<{
   addFilter?: (filter: string) => void;
   document: Record<string, string>;
+  fields: { name: string; type: string }[];
   selectField?: (field: string) => void;
-}> = ({ document, selectField, addFilter }) => {
+}> = ({ document, fields, selectField, addFilter }) => {
   return (
     <Box sx={{ margin: 1 }}>
       <Table size="small" aria-label="document view">
         <TableBody>
-          {Object.entries(document).map(([key, value]) => (
-            <TableRow
-              key={key}
-              sx={{
-                '&:hover .row-action-icons': { opacity: 1 },
-              }}
-            >
-              {addFilter && selectField && (
-                <TableCell component="th" scope="row">
-                  <Stack
-                    className="row-action-icons"
-                    direction="row"
-                    sx={{
-                      opacity: 0,
-                    }}
-                  >
-                    <Tooltip title={`add filter: ${key} = '${value}'`}>
-                      <IconButton
-                        aria-label="add EQ field filter"
-                        size="small"
-                        onClick={() => addFilter(`${key} = '${value}'`)}
-                      >
-                        <ZoomIn sx={{ fontSize: 16 }} />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title={`add filter: ${key} != '${value}'`}>
-                      <IconButton
-                        aria-label="add NEQ field filter"
-                        size="small"
-                        onClick={() => addFilter(`${key} != '${value}'`)}
-                      >
-                        <ZoomOut sx={{ fontSize: 16 }} />
-                      </IconButton>
-                    </Tooltip>
+          {Object.entries(document).map(([key, value]) => {
+            const isNumber = isNumberField(key, fields);
 
-                    <Tooltip title={`add filter: _exists_ ${key}`}>
-                      <IconButton
-                        aria-label="add EXISTS field filter"
-                        size="small"
-                        onClick={() => addFilter(`_exists_ ${key}`)}
-                      >
-                        <SavedSearch sx={{ fontSize: 16 }} />
-                      </IconButton>
-                    </Tooltip>
-
-                    {key !== 'timestamp' && (
-                      <Tooltip title={`toggle column ${key}`}>
-                        <IconButton aria-label="toggle field column" size="small" onClick={() => selectField(key)}>
-                          <TableChart sx={{ fontSize: 16 }} />
+            return (
+              <TableRow
+                key={key}
+                sx={{
+                  '&:hover .row-action-icons': { opacity: 1 },
+                }}
+              >
+                {addFilter && selectField && (
+                  <TableCell component="th" scope="row">
+                    <Stack
+                      className="row-action-icons"
+                      direction="row"
+                      sx={{
+                        opacity: 0,
+                      }}
+                    >
+                      <Tooltip title={isNumber ? `add filter: ${key} = ${value}` : `add filter: ${key} = '${value}'`}>
+                        <IconButton
+                          aria-label="add EQ field filter"
+                          size="small"
+                          onClick={() => addFilter(isNumber ? `_and_ ${key} = ${value}` : `_and_ ${key} = '${value}'`)}
+                        >
+                          <ZoomIn sx={{ fontSize: 16 }} />
                         </IconButton>
                       </Tooltip>
-                    )}
-                  </Stack>
+                      <Tooltip title={isNumber ? `add filter: ${key} != ${value}` : `add filter: ${key} != '${value}'`}>
+                        <IconButton
+                          aria-label="add NEQ field filter"
+                          size="small"
+                          onClick={() =>
+                            addFilter(isNumber ? `_and_ ${key} != ${value}` : `_and_ ${key} != '${value}'`)
+                          }
+                        >
+                          <ZoomOut sx={{ fontSize: 16 }} />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title={`add filter: _exists_ ${key}`}>
+                        <IconButton
+                          aria-label="add EXISTS field filter"
+                          size="small"
+                          onClick={() => addFilter(`_exists_ ${key}`)}
+                        >
+                          <SavedSearch sx={{ fontSize: 16 }} />
+                        </IconButton>
+                      </Tooltip>
+
+                      {key !== 'timestamp' && (
+                        <Tooltip title={`toggle column ${key}`}>
+                          <IconButton aria-label="toggle field column" size="small" onClick={() => selectField(key)}>
+                            <TableChart sx={{ fontSize: 16 }} />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Stack>
+                  </TableCell>
+                )}
+                <TableCell width="25%">
+                  <Typography sx={{ wordBreak: 'break-all' }}>{key}</Typography>
                 </TableCell>
-              )}
-              <TableCell width="25%">
-                <Typography sx={{ wordBreak: 'break-all' }}>{key}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{value}</Typography>
-              </TableCell>
-              <TableCell />
-            </TableRow>
-          ))}
+                <TableCell>
+                  <Typography sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{value}</Typography>
+                </TableCell>
+                <TableCell />
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Box>
@@ -364,9 +379,10 @@ const DocumentDetailsTable: FunctionComponent<{
 const DocumentDetails: FunctionComponent<{
   addFilter?: (filter: string) => void;
   document: Record<string, string>;
+  fields: { name: string; type: string }[];
   selectField?: (field: string) => void;
   selectedFields: string[];
-}> = ({ document, selectedFields, selectField, addFilter }) => {
+}> = ({ document, selectedFields, fields, selectField, addFilter }) => {
   const [activeTab, setActiveTab] = useState<string>('table');
 
   return (
@@ -382,7 +398,7 @@ const DocumentDetails: FunctionComponent<{
 
         <Box hidden={activeTab !== 'table'} py={6}>
           {activeTab === 'table' && (
-            <DocumentDetailsTable document={document} selectField={selectField} addFilter={addFilter} />
+            <DocumentDetailsTable document={document} fields={fields} selectField={selectField} addFilter={addFilter} />
           )}
         </Box>
 
@@ -403,9 +419,10 @@ const DocumentDetails: FunctionComponent<{
 const Document: FunctionComponent<{
   addFilter?: (filter: string) => void;
   document: Record<string, string>;
+  fields: { name: string; type: string }[];
   selectField?: (field: string) => void;
   selectedFields: string[];
-}> = ({ document, selectedFields, selectField, addFilter }) => {
+}> = ({ document, selectedFields, fields, selectField, addFilter }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -451,6 +468,7 @@ const Document: FunctionComponent<{
         <DocumentDetails
           document={document}
           selectedFields={selectedFields}
+          fields={fields}
           selectField={selectField}
           addFilter={addFilter}
         />
@@ -468,11 +486,12 @@ const Documents: FunctionComponent<{
   addFilter?: (filter: string) => void;
   changeOrder?: (orderBy: string) => void;
   documents: Record<string, string>[];
+  fields: { name: string; type: string }[];
   order: 'ascending' | 'descending';
   orderBy: string;
   selectField?: (field: string) => void;
   selectedFields: string[];
-}> = ({ selectedFields, order, orderBy, documents, addFilter, selectField, changeOrder }) => {
+}> = ({ selectedFields, fields, order, orderBy, documents, addFilter, selectField, changeOrder }) => {
   return (
     <TableContainer>
       <Table size="small">
@@ -519,6 +538,7 @@ const Documents: FunctionComponent<{
               key={index}
               document={document}
               selectedFields={selectedFields}
+              fields={fields}
               selectField={selectField}
               addFilter={addFilter}
             />
@@ -576,6 +596,7 @@ export const Logs: FunctionComponent<{
         <Documents
           documents={data?.documents?.slice((page - 1) * perPage, page * perPage) ?? []}
           selectedFields={selectedFields}
+          fields={data?.fields ?? []}
           selectField={selectField}
           addFilter={addFilter}
           changeOrder={changeOrder}
