@@ -7,6 +7,9 @@ export interface ILogsData {
   }[];
   count?: number;
   documents?: Record<string, string>[];
-  fields?: string[];
+  fields?: {
+    name: string;
+    type: string;
+  }[];
   took?: number;
 }

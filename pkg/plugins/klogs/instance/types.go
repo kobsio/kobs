@@ -36,3 +36,8 @@ type VisualizationRow struct {
 	Label string  `json:"label"`
 	Value float64 `json:"value"`
 }
+
+type Field struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}

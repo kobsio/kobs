@@ -67,299 +67,1190 @@
     }
   ],
   "fields": [
-    "_p",
-    "app",
-    "cluster",
-    "container_name",
-    "content_@timestamp",
-    "content_attr_client",
-    "content_attr_connectionCount",
-    "content_attr_connectionId",
-    "content_attr_doc_application_name",
-    "content_attr_doc_driver_name",
-    "content_attr_doc_driver_version",
-    "content_attr_doc_os_architecture",
-    "content_attr_doc_os_name",
-    "content_attr_doc_os_type",
-    "content_attr_doc_os_version",
-    "content_attr_remote",
-    "content_attr_uuid",
-    "content_authority",
-    "content_bytes_received",
-    "content_bytes_sent",
-    "content_c",
-    "content_caller",
-    "content_contextMap_accessor_userId",
-    "content_contextMap_client_component",
-    "content_contextMap_client_language",
-    "content_contextMap_client_locale",
-    "content_contextMap_client_native",
-    "content_contextMap_client_platform",
-    "content_contextMap_client_version",
-    "content_contextMap_correlationId",
-    "content_contextMap_headerAppId",
-    "content_contextMap_requestID",
-    "content_contextMap_requestPath",
-    "content_contextMap_requestQuery",
-    "content_contextMap_request_client-cert",
-    "content_contextMap_request_method",
-    "content_contextMap_request_path",
-    "content_contextMap_request_pathTemplate",
-    "content_contextMap_request_query",
-    "content_contextMap_request_requestUri_path",
-    "content_contextMap_request_startTimeNano",
-    "content_contextMap_resolvedAppId",
-    "content_contextMap_traceId",
-    "content_contextMap_userAgent_browser",
-    "content_contextMap_userAgent_device",
-    "content_contextMap_userAgent_os",
-    "content_contextMap_userAgent_raw",
-    "content_ctx",
-    "content_downstream_local_address",
-    "content_downstream_remote_address",
-    "content_duration",
-    "content_endOfBatch",
-    "content_grpc_status",
-    "content_host",
-    "content_id",
-    "content_instant_epochSecond",
-    "content_instant_nanoOfSecond",
-    "content_level",
-    "content_logger",
-    "content_loggerFqcn",
-    "content_loggerName",
-    "content_message",
-    "content_method",
-    "content_msg",
-    "content_name",
-    "content_namespace",
-    "content_path",
-    "content_pid",
-    "content_protocol",
-    "content_reconciler kind",
-    "content_req_headers_accept",
-    "content_req_headers_accept-encoding",
-    "content_req_headers_connection",
-    "content_req_headers_host",
-    "content_req_headers_user-agent",
-    "content_req_method",
-    "content_req_remoteAddress",
-    "content_req_url",
-    "content_req_userAgent",
-    "content_request_id",
-    "content_requested_server_name",
-    "content_res_contentLength",
-    "content_res_responseTime",
-    "content_res_statusCode",
-    "content_responseSize",
-    "content_responseStatus",
-    "content_response_code",
-    "content_response_code_details",
-    "content_response_flags",
-    "content_route_name",
-    "content_s",
-    "content_start_time",
-    "content_statusCode",
-    "content_t_$date",
-    "content_tags_0",
-    "content_thread",
-    "content_threadId",
-    "content_threadPriority",
-    "content_thrown_cause_commonElementCount",
-    "content_thrown_cause_extendedStackTrace",
-    "content_thrown_cause_localizedMessage",
-    "content_thrown_cause_message",
-    "content_thrown_cause_name",
-    "content_thrown_commonElementCount",
-    "content_thrown_extendedStackTrace",
-    "content_thrown_localizedMessage",
-    "content_thrown_message",
-    "content_thrown_name",
-    "content_timestamp",
-    "content_traceid",
-    "content_ts",
-    "content_type",
-    "content_upstream_cluster",
-    "content_upstream_host",
-    "content_upstream_local_address",
-    "content_upstream_service_time",
-    "content_uri",
-    "content_user_agent",
-    "content_x_forwarded_for",
-    "content_x_request_headers",
-    "content_x_sigsci_waf_response",
-    "host",
-    "kubernetes_annotations_checksum/config",
-    "kubernetes_annotations_checksum/configmap",
-    "kubernetes_annotations_checksum/health",
-    "kubernetes_annotations_checksum/scripts",
-    "kubernetes_annotations_checksum/secret",
-    "kubernetes_annotations_co_elastic_logs/module",
-    "kubernetes_annotations_configmap-sync-lastupdate-at",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/auth-tester",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/backend",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/casper",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/check-elasticsearch-index",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/clamav",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elastic-internal-init-config",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elastic-internal-init-filesystem",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elastic-internal-suspend",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elasticsearch",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/filescan",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/functions",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/httpcache",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/iframely",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/init-database",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/kafka",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/kafka2bigquery",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/kibana",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/kubernetes-zookeeper",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/link-service",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/manager",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/mediagateway",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/mediaserver",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/metrics",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/migrate",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/mongodb",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/nginx",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/notifications",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/pickle-rick",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/pidgey",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/plugin-facebook",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/plugin-surveymonkey",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/policy-reporter",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/pushgateway",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/pushserver",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/satan",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/screenshot-automation-service",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/searchagain",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sentinel",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sentinel-metrics",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sso-control",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sysctl",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/temporal-frontend",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/temporal-history",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/wams",
-    "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/zookeeper",
-    "kubernetes_annotations_elasticsearch_k8s_elastic_co/config-hash",
-    "kubernetes_annotations_kibana_k8s_elastic_co/config-hash",
-    "kubernetes_annotations_kobs_io/restartedAt",
-    "kubernetes_annotations_kubectl_kubernetes_io/default-container",
-    "kubernetes_annotations_kubectl_kubernetes_io/default-logs-container",
-    "kubernetes_annotations_kubectl_kubernetes_io/restartedAt",
-    "kubernetes_annotations_kubenav_io/restartedAt",
-    "kubernetes_annotations_kubernetes_io/config_seen",
-    "kubernetes_annotations_kubernetes_io/config_source",
-    "kubernetes_annotations_linkerd_io/inject",
-    "kubernetes_annotations_prometheus_io/port",
-    "kubernetes_annotations_prometheus_io/scrape",
-    "kubernetes_annotations_proxy_istio_io/config",
-    "kubernetes_annotations_reloader_stakater_com/auto",
-    "kubernetes_annotations_seccomp_security_alpha_kubernetes_io/pod",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de/containers",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-cookie-domain",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-cookie-name",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-google-group",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-whitelist-domain",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de/status",
-    "kubernetes_annotations_sidecar-injector_ricoberger_de/volumes",
-    "kubernetes_annotations_sidecar_istio_io/inject",
-    "kubernetes_annotations_sidecar_istio_io/proxyCPU",
-    "kubernetes_annotations_sidecar_istio_io/proxyMemory",
-    "kubernetes_annotations_sidecar_istio_io/proxyMemoryLimit",
-    "kubernetes_annotations_sidecar_istio_io/status",
-    "kubernetes_annotations_status",
-    "kubernetes_annotations_strimzi_io/broker-configuration-hash",
-    "kubernetes_annotations_strimzi_io/clients-ca-cert-generation",
-    "kubernetes_annotations_strimzi_io/cluster-ca-cert-generation",
-    "kubernetes_annotations_strimzi_io/inter-broker-protocol-version",
-    "kubernetes_annotations_strimzi_io/kafka-version",
-    "kubernetes_annotations_strimzi_io/log-message-format-version",
-    "kubernetes_annotations_strimzi_io/logging-appenders-hash",
-    "kubernetes_annotations_strimzi_io/logging-hash",
-    "kubernetes_annotations_strimzi_io/revision",
-    "kubernetes_annotations_traffic_sidecar_istio_io/excludeInboundPorts",
-    "kubernetes_annotations_traffic_sidecar_istio_io/excludeOutboundPorts",
-    "kubernetes_annotations_traffic_sidecar_istio_io/includeInboundPorts",
-    "kubernetes_annotations_traffic_sidecar_istio_io/includeOutboundIPRanges",
-    "kubernetes_annotations_update_k8s_elastic_co/timestamp",
-    "kubernetes_container_hash",
-    "kubernetes_container_image",
-    "kubernetes_docker_id",
-    "kubernetes_labels_app_kubernetes_io/component",
-    "kubernetes_labels_app_kubernetes_io/instance",
-    "kubernetes_labels_app_kubernetes_io/managed-by",
-    "kubernetes_labels_app_kubernetes_io/name",
-    "kubernetes_labels_app_kubernetes_io/part-of",
-    "kubernetes_labels_app_kubernetes_io/version",
-    "kubernetes_labels_application",
-    "kubernetes_labels_chart",
-    "kubernetes_labels_clickhouse_altinity_com/app",
-    "kubernetes_labels_clickhouse_altinity_com/chi",
-    "kubernetes_labels_clickhouse_altinity_com/cluster",
-    "kubernetes_labels_clickhouse_altinity_com/namespace",
-    "kubernetes_labels_clickhouse_altinity_com/ready",
-    "kubernetes_labels_clickhouse_altinity_com/replica",
-    "kubernetes_labels_clickhouse_altinity_com/settings-version",
-    "kubernetes_labels_clickhouse_altinity_com/shard",
-    "kubernetes_labels_clickhouse_altinity_com/zookeeper-version",
-    "kubernetes_labels_cluster-name",
-    "kubernetes_labels_common_k8s_elastic_co/type",
-    "kubernetes_labels_controller-revision-hash",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/cluster-name",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/http-scheme",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_cold",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_content",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_frozen",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_hot",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_warm",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-ingest",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-master",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-ml",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-remote_cluster_client",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-transform",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/node-voting_only",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/statefulset-name",
-    "kubernetes_labels_elasticsearch_k8s_elastic_co/version",
-    "kubernetes_labels_filebeat",
-    "kubernetes_labels_helm_sh/chart",
-    "kubernetes_labels_heritage",
-    "kubernetes_labels_install_operator_istio_io/owning-resource",
-    "kubernetes_labels_istio",
-    "kubernetes_labels_istio_io/rev",
-    "kubernetes_labels_kibana_k8s_elastic_co/name",
-    "kubernetes_labels_kibana_k8s_elastic_co/version",
-    "kubernetes_labels_kubernetes_io/cluster-service",
-    "kubernetes_labels_managed-by",
-    "kubernetes_labels_observability",
-    "kubernetes_labels_operator_istio_io/component",
-    "kubernetes_labels_pod-template-generation",
-    "kubernetes_labels_pod-template-hash",
-    "kubernetes_labels_release",
-    "kubernetes_labels_security_istio_io/tlsMode",
-    "kubernetes_labels_service_istio_io/canonical-name",
-    "kubernetes_labels_service_istio_io/canonical-revision",
-    "kubernetes_labels_sidecar_istio_io/inject",
-    "kubernetes_labels_spilo-role",
-    "kubernetes_labels_statefulset_kubernetes_io/pod-name",
-    "kubernetes_labels_strimzi_io/cluster",
-    "kubernetes_labels_strimzi_io/controller",
-    "kubernetes_labels_strimzi_io/controller-name",
-    "kubernetes_labels_strimzi_io/kind",
-    "kubernetes_labels_strimzi_io/name",
-    "kubernetes_labels_strimzi_io/pod-name",
-    "kubernetes_labels_team",
-    "kubernetes_labels_version",
-    "kubernetes_labels_what",
-    "kubernetes_pod_id",
-    "log",
-    "namespace",
-    "pod_name",
-    "stream",
-    "time",
-    "timestamp"
+    {
+      "name": "_p",
+      "type": "string"
+    },
+    {
+      "name": "app",
+      "type": "string"
+    },
+    {
+      "name": "cluster",
+      "type": "string"
+    },
+    {
+      "name": "container_name",
+      "type": "string"
+    },
+    {
+      "name": "content_@timestamp",
+      "type": "string"
+    },
+    {
+      "name": "content_HelmChart_name",
+      "type": "string"
+    },
+    {
+      "name": "content_HelmChart_namespace",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_authenticationDatabase",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_client",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_connectionCount",
+      "type": "number"
+    },
+    {
+      "name": "content_attr_connectionId",
+      "type": "number"
+    },
+    {
+      "name": "content_attr_doc_application_name",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_driver_name",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_driver_version",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_os_architecture",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_os_name",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_os_type",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_os_version",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_platform",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_doc_version",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_mechanism",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_message",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_principalName",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_remote",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_speculative",
+      "type": "string"
+    },
+    {
+      "name": "content_attr_uuid",
+      "type": "string"
+    },
+    {
+      "name": "content_authority",
+      "type": "string"
+    },
+    {
+      "name": "content_bytes_received",
+      "type": "number"
+    },
+    {
+      "name": "content_bytes_sent",
+      "type": "number"
+    },
+    {
+      "name": "content_c",
+      "type": "string"
+    },
+    {
+      "name": "content_caller",
+      "type": "string"
+    },
+    {
+      "name": "content_contextMap_accessor_userId",
+      "type": "string"
+    },
+    {
+      "name": "content_contextMap_cookies",
+      "type": "string"
+    },
+    {
+      "name": "content_contextMap_feature_id",
+      "type": "string"
+    },
+    {
+      "name": "content_contextMap_feature_type",
+      "type": "string"
+    },
+    {
+      "name": "content_contextMap_headerAppId",
+      "type": "string"
+    },
+    {
+      "name": "content_contextMap_request_requestUri_path",
+      "type": "string"
+    },
+    {
+      "name": "content_contextMap_resolvedAppId",
+      "type": "string"
+    },
+    {
+      "name": "content_controller",
+      "type": "string"
+    },
+    {
+      "name": "content_controllerGroup",
+      "type": "string"
+    },
+    {
+      "name": "content_controllerKind",
+      "type": "string"
+    },
+    {
+      "name": "content_ctx",
+      "type": "string"
+    },
+    {
+      "name": "content_downstream_local_address",
+      "type": "string"
+    },
+    {
+      "name": "content_downstream_remote_address",
+      "type": "string"
+    },
+    {
+      "name": "content_duration",
+      "type": "number"
+    },
+    {
+      "name": "content_endOfBatch",
+      "type": "string"
+    },
+    {
+      "name": "content_grpc_code",
+      "type": "string"
+    },
+    {
+      "name": "content_grpc_method",
+      "type": "string"
+    },
+    {
+      "name": "content_grpc_service",
+      "type": "string"
+    },
+    {
+      "name": "content_grpc_start_time",
+      "type": "string"
+    },
+    {
+      "name": "content_grpc_status",
+      "type": "string"
+    },
+    {
+      "name": "content_grpc_time_ms",
+      "type": "number"
+    },
+    {
+      "name": "content_id",
+      "type": "number"
+    },
+    {
+      "name": "content_instant_epochSecond",
+      "type": "number"
+    },
+    {
+      "name": "content_instant_nanoOfSecond",
+      "type": "number"
+    },
+    {
+      "name": "content_latency",
+      "type": "number"
+    },
+    {
+      "name": "content_level",
+      "type": "string"
+    },
+    {
+      "name": "content_logger",
+      "type": "string"
+    },
+    {
+      "name": "content_loggerFqcn",
+      "type": "string"
+    },
+    {
+      "name": "content_loggerName",
+      "type": "string"
+    },
+    {
+      "name": "content_message",
+      "type": "string"
+    },
+    {
+      "name": "content_method",
+      "type": "string"
+    },
+    {
+      "name": "content_msg",
+      "type": "string"
+    },
+    {
+      "name": "content_name",
+      "type": "string"
+    },
+    {
+      "name": "content_namespace",
+      "type": "string"
+    },
+    {
+      "name": "content_offset",
+      "type": "number"
+    },
+    {
+      "name": "content_partition",
+      "type": "number"
+    },
+    {
+      "name": "content_path",
+      "type": "string"
+    },
+    {
+      "name": "content_pid",
+      "type": "number"
+    },
+    {
+      "name": "content_protocol",
+      "type": "string"
+    },
+    {
+      "name": "content_reconcileID",
+      "type": "string"
+    },
+    {
+      "name": "content_reconciler kind",
+      "type": "string"
+    },
+    {
+      "name": "content_req_headers_accept",
+      "type": "string"
+    },
+    {
+      "name": "content_req_headers_accept-encoding",
+      "type": "string"
+    },
+    {
+      "name": "content_req_headers_connection",
+      "type": "string"
+    },
+    {
+      "name": "content_req_headers_host",
+      "type": "string"
+    },
+    {
+      "name": "content_req_headers_user-agent",
+      "type": "string"
+    },
+    {
+      "name": "content_req_method",
+      "type": "string"
+    },
+    {
+      "name": "content_req_remoteAddress",
+      "type": "string"
+    },
+    {
+      "name": "content_req_url",
+      "type": "string"
+    },
+    {
+      "name": "content_req_userAgent",
+      "type": "string"
+    },
+    {
+      "name": "content_request_id",
+      "type": "string"
+    },
+    {
+      "name": "content_requested_server_name",
+      "type": "string"
+    },
+    {
+      "name": "content_res_contentLength",
+      "type": "number"
+    },
+    {
+      "name": "content_res_responseTime",
+      "type": "number"
+    },
+    {
+      "name": "content_res_statusCode",
+      "type": "number"
+    },
+    {
+      "name": "content_response_code",
+      "type": "number"
+    },
+    {
+      "name": "content_response_code_details",
+      "type": "string"
+    },
+    {
+      "name": "content_response_flags",
+      "type": "string"
+    },
+    {
+      "name": "content_route_name",
+      "type": "string"
+    },
+    {
+      "name": "content_s",
+      "type": "string"
+    },
+    {
+      "name": "content_scope",
+      "type": "string"
+    },
+    {
+      "name": "content_span_kind",
+      "type": "string"
+    },
+    {
+      "name": "content_start_time",
+      "type": "string"
+    },
+    {
+      "name": "content_statusCode",
+      "type": "number"
+    },
+    {
+      "name": "content_system",
+      "type": "string"
+    },
+    {
+      "name": "content_t_$date",
+      "type": "string"
+    },
+    {
+      "name": "content_tags_0",
+      "type": "string"
+    },
+    {
+      "name": "content_thread",
+      "type": "string"
+    },
+    {
+      "name": "content_threadId",
+      "type": "number"
+    },
+    {
+      "name": "content_threadPriority",
+      "type": "number"
+    },
+    {
+      "name": "content_time",
+      "type": "string"
+    },
+    {
+      "name": "content_timestamp",
+      "type": "string"
+    },
+    {
+      "name": "content_topic",
+      "type": "string"
+    },
+    {
+      "name": "content_ts",
+      "type": "string"
+    },
+    {
+      "name": "content_ttl",
+      "type": "number"
+    },
+    {
+      "name": "content_type",
+      "type": "string"
+    },
+    {
+      "name": "content_upstream_cluster",
+      "type": "string"
+    },
+    {
+      "name": "content_upstream_host",
+      "type": "string"
+    },
+    {
+      "name": "content_upstream_local_address",
+      "type": "string"
+    },
+    {
+      "name": "content_upstream_service_time",
+      "type": "number"
+    },
+    {
+      "name": "content_user_agent",
+      "type": "string"
+    },
+    {
+      "name": "content_x_forwarded_for",
+      "type": "string"
+    },
+    {
+      "name": "content_x_request_headers",
+      "type": "string"
+    },
+    {
+      "name": "content_x_sigsci_waf_response",
+      "type": "string"
+    },
+    {
+      "name": "host",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_checksum/config",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_checksum/configmap",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_checksum/health",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_checksum/hydra-config",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_checksum/hydra-secrets",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_checksum/scripts",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_checksum/secret",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_co_elastic_logs/module",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_configmap-sync-lastupdate-at",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/auth-tester",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/authentication",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/backend",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/backstage",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/casper",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/check-elasticsearch-index",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elastic-internal-init-config",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elastic-internal-init-filesystem",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elastic-internal-suspend",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/elasticsearch",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/functions",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/gatekeeper",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/httpcache",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/hydra",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/hydra-automigrate",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/iframely",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/init-database",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/jaeger-agent",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/keytool-service",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/kibana",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/kyverno",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/kyverno-pre",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/link-service",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/manager",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/mediagateway",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/mediaserver",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/metrics",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/migrate",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/mongodb",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/ms365-personal-teams-app",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/nginx",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/nginx-redirect",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/notifications",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/pacman",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/pidgey",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/plugin-absence-service",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/plugin-surveymonkey",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/pushgateway",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/screenshot-automation-service",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/security-metrics",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sentinel",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sentinel-metrics",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sso-control",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/sysctl",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/temporal-frontend",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/temporal-history",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/temporal-matching",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/temporal-worker",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/wams",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_container_seccomp_security_alpha_kubernetes_io/zookeeper",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_elasticsearch_k8s_elastic_co/config-hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kibana_k8s_elastic_co/config-hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kobs_io/restartedAt",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kubectl_kubernetes_io/default-container",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kubectl_kubernetes_io/default-logs-container",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kubectl_kubernetes_io/restartedAt",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kubenav_io/restartedAt",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kubernetes_io/config_seen",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_kubernetes_io/config_source",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_linkerd_io/inject",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_prometheus_io/port",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_prometheus_io/scrape",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_proxy_istio_io/config",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_reloader_stakater_com/auto",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_seccomp_security_alpha_kubernetes_io/pod",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de/containers",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-cookie-domain",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-cookie-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-google-group",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de/oauth2-proxy-whitelist-domain",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de/status",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar-injector_ricoberger_de/volumes",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar_istio_io/inject",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar_istio_io/proxyCPU",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar_istio_io/proxyMemory",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar_istio_io/proxyMemoryLimit",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar_istio_io/status",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_sidecar_jaegertracing_io/inject",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_status",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/broker-configuration-hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/clients-ca-cert-generation",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/cluster-ca-cert-generation",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/inter-broker-protocol-version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/kafka-version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/log-message-format-version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/logging-appenders-hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/logging-hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_strimzi_io/revision",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_traffic_sidecar_istio_io/excludeInboundPorts",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_traffic_sidecar_istio_io/excludeOutboundPorts",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_traffic_sidecar_istio_io/includeInboundPorts",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_traffic_sidecar_istio_io/includeOutboundIPRanges",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_annotations_update_k8s_elastic_co/timestamp",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_container_hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_container_image",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_docker_id",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_app_kubernetes_io/component",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_app_kubernetes_io/instance",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_app_kubernetes_io/managed-by",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_app_kubernetes_io/name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_app_kubernetes_io/part-of",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_app_kubernetes_io/version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_application",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_chart",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/app",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/chi",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/cluster",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/namespace",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/ready",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/replica",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/settings-version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/shard",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_clickhouse_altinity_com/zookeeper-version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_cluster-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_common_k8s_elastic_co/type",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_controller-revision-hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/cluster-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/http-scheme",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_cold",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_content",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_frozen",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_hot",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-data_warm",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-ingest",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-master",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-ml",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-remote_cluster_client",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-transform",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/node-voting_only",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/statefulset-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_elasticsearch_k8s_elastic_co/version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_filebeat",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_helm_sh/chart",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_heritage",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_install_operator_istio_io/owning-resource",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_istio",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_istio_io/rev",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_kibana_k8s_elastic_co/name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_kibana_k8s_elastic_co/version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_kubernetes_io/cluster-service",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_managed-by",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_observability",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_operator_istio_io/component",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_pod-template-generation",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_pod-template-hash",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_release",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_security_istio_io/tlsMode",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_service_istio_io/canonical-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_service_istio_io/canonical-revision",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_sidecar_istio_io/inject",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_sidecar_jaegertracing_io/injected",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_spilo-role",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_statefulset_kubernetes_io/pod-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_strimzi_io/cluster",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_strimzi_io/controller",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_strimzi_io/controller-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_strimzi_io/kind",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_strimzi_io/name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_strimzi_io/pod-name",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_team",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_labels_version",
+      "type": "string"
+    },
+    {
+      "name": "kubernetes_pod_id",
+      "type": "string"
+    },
+    {
+      "name": "log",
+      "type": "string"
+    },
+    {
+      "name": "namespace",
+      "type": "string"
+    },
+    {
+      "name": "pod_name",
+      "type": "string"
+    },
+    {
+      "name": "stream",
+      "type": "string"
+    },
+    {
+      "name": "time",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": "string"
+    }
   ],
   "count": 307277,
   "took": 481,

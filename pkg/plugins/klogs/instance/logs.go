@@ -48,13 +48,17 @@ func getBucketTimes(interval, bucketTime, timeStart, timeEnd int64) (int64, int6
 
 // GetLogs parses the given query into the sql syntax, which is then run against the ClickHouse instance. The returned
 // rows are converted into a document schema which can be used by our UI.
-func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []string, int64, int64, []Bucket, error) {
+func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []Field, int64, int64, []Bucket, error) {
 	var count int64
 	var buckets []Bucket
 	var documents []map[string]any
 	var timeConditions string
 
-	fields := i.defaultFields
+	var fields []Field
+	for _, field := range i.defaultFields {
+		fields = append(fields, Field{Name: field, Type: "string"})
+	}
+
 	queryStartTime := time.Now()
 
 	// When the user provides a query, we have to build the additional conditions for the sql query. This is done via
@@ -210,12 +214,12 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 
 		for k, v := range r.FieldsNumber {
 			document[k] = v
-			fields = utils.AppendIfStringIsMissing(fields, k)
+			fields = utils.AppendIf(fields, Field{Name: k, Type: "number"}, func(iter, nw Field) bool { return iter.Name != nw.Name })
 		}
 
 		for k, v := range r.FieldsString {
 			document[k] = v
-			fields = utils.AppendIfStringIsMissing(fields, k)
+			fields = utils.AppendIf(fields, Field{Name: k, Type: "string"}, func(iter, nw Field) bool { return iter.Name != nw.Name })
 		}
 
 		documents = append(documents, document)
@@ -225,8 +229,10 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 		return nil, nil, 0, 0, nil, err
 	}
 
-	sort.Strings(fields)
-	log.Debug(ctx, "SQL result raw logs", zap.Int("documentsCount", len(documents)))
+	sort.Slice(fields, func(i, j int) bool {
+		return fields[i].Name < fields[j].Name
+	})
 
+	log.Debug(ctx, "SQL result raw logs", zap.Int("documentsCount", len(documents)), zap.Int("fieldsCount", len(fields)))
 	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
 }

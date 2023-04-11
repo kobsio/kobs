@@ -102,7 +102,7 @@ const LogsActions: FunctionComponent<{ instance: IPluginInstance; options: IOpti
  */
 export const LogsFields: FunctionComponent<{
   changeFieldOrder: (from: number, to: number) => void;
-  fields: string[];
+  fields: { name: string; type: string }[];
   selectField: (field: string) => void;
   selectedFields: string[];
 }> = ({ fields, selectedFields, selectField, changeFieldOrder }) => {
@@ -192,18 +192,18 @@ export const LogsFields: FunctionComponent<{
       <Divider />
       <Box p={2}>
         <TextField
-          label="Filter Fields"
+          placeholder="Filter Fields"
           size="small"
           onChange={(e) => setFieldsFilter(e.target.value)}
           fullWidth={true}
         />
       </Box>
       {fields
-        .filter((field) => field.includes(fieldsFilter))
+        .filter((field) => field.name.includes(fieldsFilter))
         .map((field) => (
-          <ListItem key={field} disablePadding={true}>
-            <ListItemButton onClick={() => selectField(field)} aria-label={field}>
-              <ListItemText primary={field} />
+          <ListItem key={`${field.name}-${field.type}`} disablePadding={true}>
+            <ListItemButton onClick={() => selectField(field.name)} aria-label={field.name}>
+              <ListItemText primary={field.name} />
             </ListItemButton>
           </ListItem>
         ))}
