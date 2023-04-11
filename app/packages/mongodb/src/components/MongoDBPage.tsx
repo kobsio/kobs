@@ -98,6 +98,9 @@ const QueryPageToolbar: FunctionComponent<{
   const query = () => {
     addStateHistoryItem('kobs-mongodb-filterhistory', internalOptions.filter);
     addStateHistoryItem('kobs-mongodb-sorthistory', internalOptions.sort);
+    addStateHistoryItem('kobs-mongodb-updatehistory', internalOptions.update);
+    addStateHistoryItem('kobs-mongodb-pipelinehistory', internalOptions.pipeline);
+
     setOptions(internalOptions);
   };
 
