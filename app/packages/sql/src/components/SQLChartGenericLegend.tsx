@@ -8,13 +8,13 @@ const calcMin = (data: IDatum[], unit: string | undefined): string => {
   let min = 0;
 
   for (let i = 0; i < data.length; i++) {
-    if (data[i].y) {
+    const y = data[i].y;
+    if (y) {
       if (i === 0) {
-        min = data[i].y as number;
+        min = y as number;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (data[i].y! < min) {
+      if (y < min) {
         min = data[i].y as number;
       }
     }
@@ -27,14 +27,15 @@ const calcMax = (data: IDatum[], unit: string | undefined): string => {
   let max = 0;
 
   for (let i = 0; i < data.length; i++) {
-    if (data[i].y) {
+    const y = data[i].y;
+    if (y) {
       if (i === 0) {
-        max = data[i].y as number;
+        max = y as number;
       }
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (data[i].y! > max) {
-        max = data[i].y as number;
+      if (y! > max) {
+        max = y as number;
       }
     }
   }
@@ -47,9 +48,10 @@ const calcAvg = (data: IDatum[], unit: string | undefined): string => {
   let sum = 0;
 
   for (let i = 0; i < data.length; i++) {
-    if (data[i].y) {
+    const y = data[i].y;
+    if (y) {
       count = count + 1;
-      sum = sum + (data[i].y as number);
+      sum = sum + (y as number);
     }
   }
 
