@@ -1,5 +1,5 @@
 import { APIContext, APIError, IPluginPageProps, Page, useQueryState, UseQueryWrapper } from '@kobsio/core';
-import { Card, Stack } from '@mui/material';
+import { Card, Grid } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext } from 'react';
 
@@ -49,13 +49,16 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       subtitle={instance.cluster}
       toolbar={<SQLToolbar instance={instance} onSearch={handleSearch} query={search.query} />}
     >
-      <Stack alignItems="flex-start" direction="row" spacing={2} sx={{ maxWidth: '100%' }}>
-        <Card sx={{ minWidth: '200px' }}>
-          <SQLTableSelect
-            onSelectTable={(table) => setSearch({ query: `SELECT * FROM ${table} LIMIT 100` })}
-            instance={instance}
-          />
-        </Card>
+      <Grid spacing={2} container={true}>
+        <Grid xs={12} md={2} item={true}>
+          <Card>
+            <SQLTableSelect
+              onSelectTable={(table) => setSearch({ query: `SELECT * FROM ${table} LIMIT 100` })}
+              instance={instance}
+            />
+          </Card>
+        </Grid>
+
         <UseQueryWrapper
           isError={queryResult.isError}
           error={queryResult.error}
@@ -66,18 +69,13 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
           noDataTitle="No rows found"
           noDataMessage="There were no rows found for your search query"
         >
-          <Card
-            sx={{
-              // table should take full width of the page
-              maxWidth: {
-                md: 'calc(100vw - 580px)',
-              },
-            }}
-          >
-            <SQLTable columns={queryResult?.data?.columns || []} rows={queryResult?.data?.rows || []} />
-          </Card>
+          <Grid xs={12} md={10} item={true}>
+            <Card>
+              <SQLTable columns={queryResult?.data?.columns || []} rows={queryResult?.data?.rows || []} />
+            </Card>
+          </Grid>
         </UseQueryWrapper>
-      </Stack>
+      </Grid>
     </Page>
   );
 };
