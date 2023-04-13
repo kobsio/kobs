@@ -58,6 +58,7 @@ jobs:
           - app
           - core
           - flux
+          - github
           - grafana
           - harbor
           - helm

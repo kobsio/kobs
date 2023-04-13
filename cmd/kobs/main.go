@@ -8,6 +8,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins"
 
 	"github.com/kobsio/kobs/pkg/plugins/flux"
+	"github.com/kobsio/kobs/pkg/plugins/github"
 	"github.com/kobsio/kobs/pkg/plugins/grafana"
 	"github.com/kobsio/kobs/pkg/plugins/harbor"
 	"github.com/kobsio/kobs/pkg/plugins/helm"
@@ -37,6 +38,7 @@ func main() {
 
 	registeredPlugins := []plugins.Plugin{
 		flux.New(),
+		github.New(),
 		grafana.New(),
 		harbor.New(),
 		helm.New(),

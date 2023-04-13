@@ -1,5 +1,6 @@
 import { App } from '@kobsio/core';
 import Flux from '@kobsio/flux';
+import Github from '@kobsio/github';
 import Grafana from '@kobsio/grafana';
 import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
@@ -29,6 +30,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <App
       plugins={[
         Flux,
+        Github,
         Grafana,
         Harbor,
         Helm,
