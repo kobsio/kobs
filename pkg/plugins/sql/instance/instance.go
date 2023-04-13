@@ -8,11 +8,14 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"time"
 
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/kobsio/kobs/pkg/instrument/log"
 	_ "github.com/lib/pq"
 	"github.com/mitchellh/mapstructure"
+	"go.uber.org/zap"
 )
 
 // Config is the structure of the configuration for a single SQL database instance.
@@ -24,7 +27,7 @@ type Config struct {
 type Instance interface {
 	GetDialect() string
 	GetName() string
-	GetCompletions(ctx context.Context) (map[string][]string, error)
+	GetCompletions() map[string][]string
 	GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error)
 }
 
@@ -32,6 +35,7 @@ type instance struct {
 	querier
 	dialect            string
 	name               string
+	completions        map[string][]string
 	completionProvider CompletionProvider
 }
 
@@ -100,8 +104,8 @@ func (i *instance) GetDialect() string {
 	return i.dialect
 }
 
-func (i *instance) GetCompletions(ctx context.Context) (map[string][]string, error) {
-	return i.completionProvider.GetCompletions(ctx)
+func (i *instance) GetCompletions() map[string][]string {
+	return i.completions
 }
 
 func dialectFromDriver(driver string) string {
@@ -120,8 +124,27 @@ func dialectFromDriver(driver string) string {
 	return "sql"
 }
 
+func (i *instance) updateCompletions() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+	if completions, err := i.completionProvider.GetCompletions(ctx); err != nil {
+		log.Error(ctx, "could not fetch completions", zap.Error(err))
+	} else {
+		i.completions = completions
+	}
+}
+
+// refreshCompletions fetches the completions for this instance in a regular interval
+func (i *instance) refreshCompletions() {
+	i.updateCompletions()
+	for {
+		<-time.After(1 * time.Hour)
+		i.updateCompletions()
+	}
+}
+
 // New returns a new sql instance for the given configuration.
-func New(name string, options map[string]any) (Instance, error) {
+func New(name string, options map[string]any) (*instance, error) {
 	var config Config
 	err := mapstructure.Decode(options, &config)
 	if err != nil {
@@ -143,10 +166,13 @@ func New(name string, options map[string]any) (Instance, error) {
 		databaseName = parts[len(parts)-1]
 	}
 
-	return &instance{
+	instance := &instance{
 		querier:            q,
 		name:               name,
 		completionProvider: newCompletionProvider(q, config.Driver, databaseName),
 		dialect:            dialectFromDriver(config.Driver),
-	}, nil
+	}
+
+	go instance.refreshCompletions()
+	return instance, nil
 }

@@ -74,8 +74,9 @@ func TestCompletions(t *testing.T) {
 			"address": connString,
 		})
 		require.NoError(t, err)
+		instance.updateCompletions()
 
-		completions, err := instance.GetCompletions(context.TODO())
+		completions := instance.GetCompletions()
 		require.NoError(t, err)
 		require.Contains(t, completions["mytable"], "id")
 		require.Contains(t, completions["mytable"], "foo")
@@ -90,8 +91,9 @@ func TestCompletions(t *testing.T) {
 			"address": connString,
 		})
 		require.NoError(t, err)
+		instance.updateCompletions()
 
-		completions, err := instance.GetCompletions(context.TODO())
+		completions := instance.GetCompletions()
 		require.NoError(t, err)
 		require.Contains(t, completions["mytable"], "id")
 		require.Contains(t, completions["mytable"], "foo")
@@ -104,8 +106,9 @@ func TestCompletions(t *testing.T) {
 			"address": connString + "/system",
 		})
 		require.NoError(t, err)
+		instance.updateCompletions()
 
-		completions, err := instance.GetCompletions(context.TODO())
+		completions := instance.GetCompletions()
 		require.NoError(t, err)
 		require.Contains(t, completions["tables"], "database")
 		require.Contains(t, completions["tables"], "name")

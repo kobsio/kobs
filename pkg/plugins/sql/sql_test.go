@@ -119,7 +119,7 @@ func Test_getMetaInfo(t *testing.T) {
 		w := httptest.NewRecorder()
 		mockInstance.EXPECT().GetName().Return("sql")
 		mockInstance.EXPECT().GetDialect().Return("postgres")
-		mockInstance.EXPECT().GetCompletions(gomock.Any()).Return(map[string][]string{"foo": {"first_column", "second_column"}}, nil)
+		mockInstance.EXPECT().GetCompletions().Return(map[string][]string{"foo": {"first_column", "second_column"}})
 		router.getMetaInfo(w, r)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
@@ -140,24 +140,6 @@ func Test_getMetaInfo(t *testing.T) {
 
 		utils.AssertStatusEq(t, w, http.StatusBadRequest)
 		utils.AssertJSONEq(t, w, `{"errors": ["Could not find instance name"]}`)
-	})
-
-	t.Run("should get error when GetCompletions fails", func(t *testing.T) {
-		ctrl := gomock.NewController(t)
-		mockInstance := instance.NewMockInstance(ctrl)
-		router := Router{
-			instances: []instance.Instance{mockInstance},
-		}
-
-		r, _ := http.NewRequest(http.MethodGet, "/meta", nil)
-		r.Header.Set("x-kobs-plugin", "sql")
-		w := httptest.NewRecorder()
-		mockInstance.EXPECT().GetName().Return("sql")
-		mockInstance.EXPECT().GetCompletions(gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
-		router.getMetaInfo(w, r)
-
-		utils.AssertStatusEq(t, w, http.StatusBadRequest)
-		utils.AssertJSONEq(t, w, `{"errors": ["could not get completions"]}`)
 	})
 }
 
