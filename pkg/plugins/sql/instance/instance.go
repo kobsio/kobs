@@ -4,24 +4,23 @@ package instance
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
-	"math"
-	"strings"
 	"time"
 
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/kobsio/kobs/pkg/instrument/log"
 	_ "github.com/lib/pq"
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"
+
+	"github.com/kobsio/kobs/pkg/instrument/log"
 )
 
 // Config is the structure of the configuration for a single SQL database instance.
 type Config struct {
-	Driver  string `json:"driver"`
-	Address string `json:"address"`
+	Driver   string `json:"driver"`
+	Address  string `json:"address"`
+	Database string `json:"databse"`
 }
 
 type Instance interface {
@@ -32,7 +31,7 @@ type Instance interface {
 }
 
 type instance struct {
-	querier
+	querier            Querier
 	dialect            string
 	name               string
 	completions        map[string][]string
@@ -43,69 +42,16 @@ func (i *instance) GetName() string {
 	return i.name
 }
 
-type querier struct {
-	client *sql.DB
-}
-
-// GetQueryResults returns all rows for the user provided SQL query.
-func (q *querier) GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error) {
-	rows, err := q.client.QueryContext(ctx, query)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer rows.Close()
-
-	columns, err := rows.Columns()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var result []map[string]any
-
-	for rows.Next() {
-		values := make([]any, len(columns))
-		pointers := make([]any, len(columns))
-
-		for i := range values {
-			pointers[i] = &values[i]
-		}
-
-		if err := rows.Scan(pointers...); err != nil {
-			return nil, nil, err
-		}
-
-		// When we assign the correct value to an row, we also have to check if the returned value is of type float and
-		// if the value is NaN or Inf, because then the json encoding would fail if we add the value.
-		resultMap := make(map[string]any)
-		for i, val := range values {
-			switch v := val.(type) {
-			case float64:
-				if !math.IsNaN(v) && !math.IsInf(v, 0) {
-					resultMap[columns[i]] = val
-				}
-			case []uint8:
-				resultMap[columns[i]] = string(v)
-			default:
-				resultMap[columns[i]] = val
-			}
-		}
-
-		result = append(result, resultMap)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, nil, err
-	}
-
-	return result, columns, nil
-}
-
 func (i *instance) GetDialect() string {
 	return i.dialect
 }
 
 func (i *instance) GetCompletions() map[string][]string {
 	return i.completions
+}
+
+func (i *instance) GetQueryResults(ctx context.Context, query string) ([]map[string]any, []string, error) {
+	return i.querier.GetQueryResults(ctx, query)
 }
 
 func dialectFromDriver(driver string) string {
@@ -119,6 +65,10 @@ func dialectFromDriver(driver string) string {
 
 	if driver == "clickhouse" {
 		return "clickhouse"
+	}
+
+	if driver == "bigquery" {
+		return "bigquery"
 	}
 
 	return "sql"
@@ -151,25 +101,45 @@ func New(name string, options map[string]any) (*instance, error) {
 		return nil, err
 	}
 
-	if config.Driver != "clickhouse" && config.Driver != "postgres" && config.Driver != "mysql" {
+	if config.Driver != "clickhouse" && config.Driver != "postgres" && config.Driver != "mysql" && config.Driver != "bigquery" {
 		return nil, fmt.Errorf("invalid driver")
 	}
 
-	client, err := sql.Open(config.Driver, config.Address)
-	if err != nil {
-		return nil, err
-	}
-	q := querier{client}
-	parts := strings.Split(config.Address, "/")
-	databaseName := ""
-	if len(parts) > 1 {
-		databaseName = parts[len(parts)-1]
+	if config.Driver == "bigquery" {
+		bigqueryConfig, err := parseBigQueryConnectionString(config.Address, config.Database)
+		if err != nil {
+			return nil, fmt.Errorf("couldn't parse big query connection string %w", err)
+		}
+
+		querier, err := NewBigQueryQuerier(*bigqueryConfig)
+		if err != nil {
+			return nil, fmt.Errorf("unable to create querier %w", err)
+		}
+
+		instance := &instance{
+			querier: querier,
+			name:    name,
+			completionProvider: newCompletionProvider(querier, completionConfig{
+				driver:              config.Driver,
+				bigqueryProjectName: bigqueryConfig.ProjectName,
+				bigqueryDatasetName: config.Database,
+			}),
+			dialect: dialectFromDriver(config.Driver),
+		}
+		go instance.refreshCompletions()
+
+		return instance, nil
 	}
 
+	address := fmt.Sprintf("%s/%s", config.Address, config.Database)
+	querier, err := NewStandardQuerier(config.Driver, address)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create querier %w", err)
+	}
 	instance := &instance{
-		querier:            q,
+		querier:            querier,
 		name:               name,
-		completionProvider: newCompletionProvider(q, config.Driver, databaseName),
+		completionProvider: newCompletionProvider(querier, completionConfig{driver: config.Driver, databaseName: config.Database}),
 		dialect:            dialectFromDriver(config.Driver),
 	}
 
