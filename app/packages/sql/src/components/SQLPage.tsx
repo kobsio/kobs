@@ -58,23 +58,22 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
             />
           </Card>
         </Grid>
-
-        <UseQueryWrapper
-          isError={queryResult.isError}
-          error={queryResult.error}
-          isLoading={queryResult.isLoading}
-          refetch={queryResult.refetch}
-          errorTitle="Failed to load results for your query"
-          isNoData={!queryResult.data}
-          noDataTitle="No rows found"
-          noDataMessage="There were no rows found for your search query"
-        >
-          <Grid xs={12} md={10} item={true}>
+        <Grid xs={12} md={10} item={true}>
+          <UseQueryWrapper
+            isError={queryResult.isError}
+            error={queryResult.error}
+            isLoading={queryResult.isLoading}
+            refetch={queryResult.refetch}
+            errorTitle="Failed to load results for your query"
+            isNoData={!queryResult.data}
+            noDataTitle="No rows found"
+            noDataMessage="There were no rows found for your search query"
+          >
             <Card>
               <SQLTable columns={queryResult?.data?.columns || []} rows={queryResult?.data?.rows || []} />
             </Card>
-          </Grid>
-        </UseQueryWrapper>
+          </UseQueryWrapper>
+        </Grid>
       </Grid>
     </Page>
   );
