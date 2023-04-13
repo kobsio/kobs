@@ -1,12 +1,4 @@
-import {
-  useDimensions,
-  formatTime,
-  ChartTooltip,
-  roundNumber,
-  chartTickFormatTime,
-  chartTheme,
-  chartTickFormatValue,
-} from '@kobsio/core';
+import { useDimensions, formatTime, ChartTooltip, roundNumber, chartTickFormatTime, chartTheme } from '@kobsio/core';
 import { Box, useTheme } from '@mui/material';
 import React, { useRef } from 'react';
 import {
