@@ -26,7 +26,7 @@ func TestCompletions(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		return fmt.Sprintf("postgres://gnomock:password@%s", c.DefaultAddress()), c
+		return fmt.Sprintf("postgres://gnomock:password@%s/mydb?sslmode=disable", c.DefaultAddress()), c
 	}
 
 	setupMysql := func(t *testing.T) (string, *gnomock.Container) {
@@ -40,7 +40,7 @@ func TestCompletions(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		return fmt.Sprintf("gnomock:password@tcp(%s)", c.DefaultAddress()), c
+		return fmt.Sprintf("gnomock:password@tcp(%s)/mydb", c.DefaultAddress()), c
 	}
 
 	setupClickhouse := func(t *testing.T) (string, *gnomock.Container) {
@@ -67,12 +67,12 @@ func TestCompletions(t *testing.T) {
 
 	t.Run("postgres completions", func(t *testing.T) {
 		connString, _ := setupPostgres(t)
-		seedDatabase(t, "postgres", connString+"/mydb?sslmode=disable")
+		seedDatabase(t, "postgres", connString)
 
 		instance, err := New("instance", map[string]any{
 			"driver":   "postgres",
+			"database": "mydb",
 			"address":  connString,
-			"database": "mydb?sslmode=disable",
 		})
 		require.NoError(t, err)
 		instance.updateCompletions()
@@ -85,12 +85,12 @@ func TestCompletions(t *testing.T) {
 
 	t.Run("mysql completions", func(t *testing.T) {
 		connString, _ := setupMysql(t)
-		seedDatabase(t, "mysql", connString+"/mydb")
+		seedDatabase(t, "mysql", connString)
 
 		instance, err := New("instance", map[string]any{
 			"driver":   "mysql",
-			"address":  connString,
 			"database": "mydb",
+			"address":  connString,
 		})
 		require.NoError(t, err)
 		instance.updateCompletions()
@@ -105,8 +105,8 @@ func TestCompletions(t *testing.T) {
 		connString, _ := setupClickhouse(t)
 		instance, err := New("instance", map[string]any{
 			"driver":   "clickhouse",
-			"address":  connString,
 			"database": "system",
+			"address":  connString + "/system",
 		})
 		require.NoError(t, err)
 		instance.updateCompletions()
@@ -131,7 +131,7 @@ func TestGetQueryResults(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		return fmt.Sprintf("postgres://gnomock:password@%s", c.DefaultAddress()), c
+		return fmt.Sprintf("postgres://gnomock:password@%s/mydb?sslmode=disable", c.DefaultAddress()), c
 	}
 
 	seedDatabase := func(t *testing.T, driver, connString string) {
@@ -147,15 +147,15 @@ func TestGetQueryResults(t *testing.T) {
 
 	t.Run("can query rows", func(t *testing.T) {
 		connString, _ := setupPostgres(t)
-		seedDatabase(t, "postgres", connString+"/mydb?sslmode=disable")
+		seedDatabase(t, "postgres", connString)
 		instance, err := New("instance", map[string]any{
 			"driver":   "postgres",
+			"database": "mydb",
 			"address":  connString,
-			"database": "mydb?sslmode=disable",
 		})
 		require.NoError(t, err)
 
-		rows, cols, err := instance.querier.GetQueryResults(context.Background(), "SELECT * FROM foo")
+		rows, cols, err := instance.GetQueryResults(context.Background(), "SELECT * FROM foo")
 		require.NoError(t, err)
 		require.Equal(t, []string{"id", "name", "num"}, cols)
 

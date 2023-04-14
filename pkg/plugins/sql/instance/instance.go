@@ -105,6 +105,10 @@ func New(name string, options map[string]any) (*instance, error) {
 		return nil, fmt.Errorf("invalid driver")
 	}
 
+	if config.Database == "" {
+		return nil, fmt.Errorf("config \"database\" is missing")
+	}
+
 	if config.Driver == "bigquery" {
 		bigqueryConfig, err := parseBigQueryConnectionString(config.Address, config.Database)
 		if err != nil {
@@ -131,8 +135,7 @@ func New(name string, options map[string]any) (*instance, error) {
 		return instance, nil
 	}
 
-	address := fmt.Sprintf("%s/%s", config.Address, config.Database)
-	querier, err := NewStandardQuerier(config.Driver, address)
+	querier, err := NewStandardQuerier(config.Driver, config.Address)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create querier %w", err)
 	}
