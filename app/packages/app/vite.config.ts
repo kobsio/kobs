@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import topLevelAwait from 'vite-plugin-top-level-await';
 
 export default defineConfig(({ command, mode, ssrBuild }) => {
-  let resolve = undefined;
+  let resolve: unknown = {};
 
   // For development we have to set an alias for all packages, to get hot reloading working. Since we also have to
   // import .css files in the app packages main.tsx file we only allow alphanumberic characters and hyphens as a valid
@@ -18,6 +18,10 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         {
           find: /^@kobsio\/([a-zA-Z0-9-]*)$/,
           replacement: __dirname + '/../$1/src/index.ts',
+        },
+        {
+          find: 'node-fetch',
+          replacement: 'isomorphic-fetch',
         },
       ],
     };
