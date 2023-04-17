@@ -12,6 +12,7 @@ import { FunctionComponent, ReactNode } from 'react';
 const queryClientOptions: QueryClientConfig = {
   defaultOptions: {
     queries: {
+      networkMode: 'always',
       refetchInterval: false,
       refetchIntervalInBackground: false,
       refetchOnWindowFocus: false,

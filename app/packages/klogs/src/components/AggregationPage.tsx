@@ -366,6 +366,7 @@ const AggregationToolbar: FunctionComponent<{
           <Grid item={true} xs={12} md={10}>
             <Autocomplete
               size="small"
+              freeSolo={true}
               multiple={true}
               value={internalOptions.breakDownByFilters}
               onChange={(e, value) => setInternalOptions({ ...internalOptions, breakDownByFilters: value || [] })}
