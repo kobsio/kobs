@@ -37,9 +37,12 @@ type Client interface {
 	SaveNamespaces(ctx context.Context, cluster string, namespaces []string) error
 	SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error
 	SaveApplications(ctx context.Context, cluster string, applications []applicationv1.ApplicationSpec) error
+	SaveApplication(ctx context.Context, application *applicationv1.ApplicationSpec) error
 	SaveDashboards(ctx context.Context, cluster string, dashboards []dashboardv1.DashboardSpec) error
 	SaveTeams(ctx context.Context, cluster string, teams []teamv1.TeamSpec) error
+	SaveTeam(ctx context.Context, team *teamv1.TeamSpec) error
 	SaveUsers(ctx context.Context, cluster string, users []userv1.UserSpec) error
+	SaveUser(ctx context.Context, user *userv1.UserSpec) error
 	SaveTags(ctx context.Context, applications []applicationv1.ApplicationSpec) error
 	SaveTopology(ctx context.Context, cluster string, applications []applicationv1.ApplicationSpec) error
 	GetPlugins(ctx context.Context) ([]plugin.Instance, error)
@@ -52,7 +55,7 @@ type Client interface {
 	GetApplicationsByFilterCount(ctx context.Context, teams, clusters, namespaces, tags []string, searchTerm string) (int, error)
 	GetApplicationsByGroup(ctx context.Context, teams, groups []string) ([]ApplicationGroup, error)
 	GetApplicationByID(ctx context.Context, id string) (*applicationv1.ApplicationSpec, error)
-	GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error)
+	GetDashboards(ctx context.Context, clusters, namespaces []string) ([]dashboardv1.DashboardSpec, error)
 	GetDashboardByID(ctx context.Context, id string) (*dashboardv1.DashboardSpec, error)
 	GetTeams(ctx context.Context, searchTerm string) ([]teamv1.TeamSpec, error)
 	GetTeamsByIDs(ctx context.Context, ids []string, searchTerm string) ([]teamv1.TeamSpec, error)
@@ -234,6 +237,23 @@ func (c *client) SaveApplications(ctx context.Context, cluster string, applicati
 	return nil
 }
 
+func (c *client) SaveApplication(ctx context.Context, application *applicationv1.ApplicationSpec) error {
+	ctx, span := c.tracer.Start(ctx, "db.SaveApplication")
+	defer span.End()
+
+	upsert := true
+	application.UpdatedAt = time.Now().Unix()
+
+	_, err := c.db.Database("kobs").Collection("applications").ReplaceOne(ctx, bson.D{{Key: "_id", Value: application.ID}}, application, &options.ReplaceOptions{Upsert: &upsert})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (c *client) SaveDashboards(ctx context.Context, cluster string, dashboards []dashboardv1.DashboardSpec) error {
 	if len(dashboards) == 0 {
 		return nil
@@ -288,6 +308,23 @@ func (c *client) SaveTeams(ctx context.Context, cluster string, teams []teamv1.T
 	return nil
 }
 
+func (c *client) SaveTeam(ctx context.Context, team *teamv1.TeamSpec) error {
+	ctx, span := c.tracer.Start(ctx, "db.SaveTeam")
+	defer span.End()
+
+	upsert := true
+	team.UpdatedAt = time.Now().Unix()
+
+	_, err := c.db.Database("kobs").Collection("teams").ReplaceOne(ctx, bson.D{{Key: "_id", Value: team.ID}}, team, &options.ReplaceOptions{Upsert: &upsert})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (c *client) SaveUsers(ctx context.Context, cluster string, users []userv1.UserSpec) error {
 	if len(users) == 0 {
 		return nil
@@ -306,6 +343,23 @@ func (c *client) SaveUsers(ctx context.Context, cluster string, users []userv1.U
 	}
 
 	err := c.save(ctx, "users", models, cluster, updatedAt)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (c *client) SaveUser(ctx context.Context, user *userv1.UserSpec) error {
+	ctx, span := c.tracer.Start(ctx, "db.SaveUser")
+	defer span.End()
+
+	upsert := true
+	user.UpdatedAt = time.Now().Unix()
+
+	_, err := c.db.Database("kobs").Collection("users").ReplaceOne(ctx, bson.D{{Key: "_id", Value: user.ID}}, user, &options.ReplaceOptions{Upsert: &upsert})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -718,13 +772,24 @@ func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicatio
 	return &application, nil
 }
 
-func (c *client) GetDashboards(ctx context.Context) ([]dashboardv1.DashboardSpec, error) {
+func (c *client) GetDashboards(ctx context.Context, clusters, namespaces []string) ([]dashboardv1.DashboardSpec, error) {
 	_, span := c.tracer.Start(ctx, "db.GetDashboards")
 	defer span.End()
 
+	var filter bson.M
+	filter = make(bson.M)
+
+	if len(clusters) > 0 {
+		filter["cluster"] = bson.M{"$in": clusters}
+	}
+
+	if len(namespaces) > 0 {
+		filter["namespace"] = bson.M{"$in": namespaces}
+	}
+
 	var dashboards []dashboardv1.DashboardSpec
 
-	cursor, err := c.db.Database("kobs").Collection("dashboards").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.db.Database("kobs").Collection("dashboards").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())

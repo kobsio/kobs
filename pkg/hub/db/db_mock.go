@@ -207,18 +207,18 @@ func (mr *MockClientMockRecorder) GetDashboardByID(ctx, id interface{}) *gomock.
 }
 
 // GetDashboards mocks base method.
-func (m *MockClient) GetDashboards(ctx context.Context) ([]v10.DashboardSpec, error) {
+func (m *MockClient) GetDashboards(ctx context.Context, clusters, namespaces []string) ([]v10.DashboardSpec, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDashboards", ctx)
+	ret := m.ctrl.Call(m, "GetDashboards", ctx, clusters, namespaces)
 	ret0, _ := ret[0].([]v10.DashboardSpec)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetDashboards indicates an expected call of GetDashboards.
-func (mr *MockClientMockRecorder) GetDashboards(ctx interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) GetDashboards(ctx, clusters, namespaces interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDashboards", reflect.TypeOf((*MockClient)(nil).GetDashboards), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDashboards", reflect.TypeOf((*MockClient)(nil).GetDashboards), ctx, clusters, namespaces)
 }
 
 // GetNamespaces mocks base method.
@@ -386,6 +386,20 @@ func (mr *MockClientMockRecorder) GetUsers(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsers", reflect.TypeOf((*MockClient)(nil).GetUsers), ctx)
 }
 
+// SaveApplication mocks base method.
+func (m *MockClient) SaveApplication(ctx context.Context, application *v1.ApplicationSpec) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveApplication", ctx, application)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveApplication indicates an expected call of SaveApplication.
+func (mr *MockClientMockRecorder) SaveApplication(ctx, application interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveApplication", reflect.TypeOf((*MockClient)(nil).SaveApplication), ctx, application)
+}
+
 // SaveApplications mocks base method.
 func (m *MockClient) SaveApplications(ctx context.Context, cluster string, applications []v1.ApplicationSpec) error {
 	m.ctrl.T.Helper()
@@ -470,6 +484,20 @@ func (mr *MockClientMockRecorder) SaveTags(ctx, applications interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveTags", reflect.TypeOf((*MockClient)(nil).SaveTags), ctx, applications)
 }
 
+// SaveTeam mocks base method.
+func (m *MockClient) SaveTeam(ctx context.Context, team *v11.TeamSpec) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveTeam", ctx, team)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveTeam indicates an expected call of SaveTeam.
+func (mr *MockClientMockRecorder) SaveTeam(ctx, team interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveTeam", reflect.TypeOf((*MockClient)(nil).SaveTeam), ctx, team)
+}
+
 // SaveTeams mocks base method.
 func (m *MockClient) SaveTeams(ctx context.Context, cluster string, teams []v11.TeamSpec) error {
 	m.ctrl.T.Helper()
@@ -496,6 +524,20 @@ func (m *MockClient) SaveTopology(ctx context.Context, cluster string, applicati
 func (mr *MockClientMockRecorder) SaveTopology(ctx, cluster, applications interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveTopology", reflect.TypeOf((*MockClient)(nil).SaveTopology), ctx, cluster, applications)
+}
+
+// SaveUser mocks base method.
+func (m *MockClient) SaveUser(ctx context.Context, user *v12.UserSpec) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveUser", ctx, user)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveUser indicates an expected call of SaveUser.
+func (mr *MockClientMockRecorder) SaveUser(ctx, user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUser", reflect.TypeOf((*MockClient)(nil).SaveUser), ctx, user)
 }
 
 // SaveUsers mocks base method.

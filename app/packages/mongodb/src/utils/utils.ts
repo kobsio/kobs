@@ -5,6 +5,23 @@ import parse from 'ejson-shell-parser';
 
 export const description = 'MongoDB powers faster, more flexible application development.';
 
+export const example = `plugin:
+  name: mongodb
+  type: mongodb
+  options:
+    # The type must be
+    #   - "db" to show the database statistics
+    #   - "collections" to show the database collections and collection statistics
+    #   - "count" to show the number of documents in a collection for provided filter
+    #   - "find" to show the documents in a collection for provided filter, sort and limit
+    #   - "findOne" to show a single document in a collection for the provided filter
+    type: find
+    query:
+      collectionName: applications
+      filter: '{"namespace": "default"}'
+      sort: '{"name": -1}'
+      limit: 10`;
+
 export const humanReadableSize = (size: number): string => {
   if (size === 0) return '0 B';
   const i = Math.floor(Math.log(size) / Math.log(1024));

@@ -57,11 +57,11 @@ export const PluginPanel: FunctionComponent<IPluginPanelProps> = ({ title, descr
     >
       <Box sx={{ flexShrink: 0, pb: 2 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Tooltip title={description}>
-            <Typography noWrap={true} variant="subtitle2">
-              <strong>{title}</strong>
-            </Typography>
-          </Tooltip>
+          <Typography fontWeight="bold">
+            <Tooltip title={description && <span style={{ whiteSpace: 'pre' }}>{description}</span>}>
+              <span>{title}</span>
+            </Tooltip>
+          </Typography>
 
           {actions && <Box pl={6}>{actions}</Box>}
         </Stack>

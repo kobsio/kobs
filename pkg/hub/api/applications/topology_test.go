@@ -11,6 +11,7 @@ import (
 	"github.com/golang/mock/gomock"
 	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/hub/app/settings"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/utils"
@@ -23,7 +24,7 @@ func TestGetApplicationsTopology(t *testing.T) {
 	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
-		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
+		router := Router{chi.NewRouter(), settings.Settings{}, dbClient, otel.Tracer("applications")}
 
 		return dbClient, router
 	}
@@ -185,7 +186,7 @@ func TestGetApplicationTopology(t *testing.T) {
 	var newRouter = func(t *testing.T) (*db.MockClient, Router) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
-		router := Router{chi.NewRouter(), dbClient, otel.Tracer("applications")}
+		router := Router{chi.NewRouter(), settings.Settings{}, dbClient, otel.Tracer("applications")}
 
 		return dbClient, router
 	}

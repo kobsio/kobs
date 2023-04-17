@@ -12,6 +12,8 @@ import { FunctionComponent, useContext } from 'react';
 
 import { Topology } from './Topology';
 
+import { example } from '../utils/utils';
+
 interface IOptions {
   application?: string;
   namespaces?: string[];
@@ -108,22 +110,7 @@ const KialiPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for Kiali plugin"
       details="One of the required options is missing."
-      example={`# Show a topology graph for a list of namespaces
-plugin:
-  name: kiali
-  type: kiali
-  options:
-    namespaces:
-      - mynamespace1
-      - mynamespace2
-# Show a topology graph for a single application
-plugin:
-  name: kiali
-  type: kiali
-  options:
-    namespaces:
-      - mynamespace1
-    application: myapplication1`}
+      example={example}
       documentation="https://kobs.io/main/plugins/kiali"
     />
   );

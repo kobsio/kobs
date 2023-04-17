@@ -115,14 +115,19 @@ const Logs: FunctionComponent<ILogsProps> = ({ cluster, namespace, name, pod, op
 
           <FormControlLabel
             control={
-              <Switch size="small" value={previous} disabled={follow} onChange={(_, checked) => setPrevious(checked)} />
+              <Switch
+                size="small"
+                checked={previous}
+                disabled={follow}
+                onChange={(_, checked) => setPrevious(checked)}
+              />
             }
             label="Previous"
           />
 
           <FormControlLabel
             control={
-              <Switch size="small" value={follow} disabled={previous} onChange={(_, checked) => setFollow(checked)} />
+              <Switch size="small" checked={follow} disabled={previous} onChange={(_, checked) => setFollow(checked)} />
             }
             label="Follow"
           />

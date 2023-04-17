@@ -13,6 +13,8 @@ import { FunctionComponent, useState } from 'react';
 import Alerts from './Alerts';
 import Incidents from './Incidents';
 
+import { example } from '../utils/utils';
+
 interface IOptions {
   interval?: number;
   queries?: string[];
@@ -137,14 +139,7 @@ const OpsgeniePanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for Opsgenie plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: opsgenie
-  type: opsgenie
-  options:
-    # The "type" must be "alerts" or "incidents".
-    type: alerts
-    queries:
-      - "status: open"`}
+      example={example}
       documentation="https://kobs.io/main/plugins/opsgenie"
     />
   );

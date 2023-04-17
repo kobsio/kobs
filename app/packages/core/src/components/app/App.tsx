@@ -17,6 +17,7 @@ import ApplicationPage from '../applications/ApplicationPage';
 import ApplicationsPage from '../applications/ApplicationsPage';
 import TopologyPage from '../applications/TopologyPage';
 import DashboardsPage from '../dashboards/DashboardsPage';
+import EditPage from '../edit/EditPage';
 import PluginPage from '../plugins/PluginPage';
 import PluginsPage from '../plugins/PluginsPage';
 import ResourcesLogsPage from '../resources/ResourcesLogsPage';
@@ -129,6 +130,7 @@ export const App: FunctionComponent<IAppProps> = ({ icons, plugins }) => {
                             <Route path="/resources/terminal" element={<ResourcesTerminalPage />} />
                             <Route path="/plugins" element={<PluginsPage />} />
                             <Route path="/plugins/:cluster/:type/:name/*" element={<PluginPage />} />
+                            <Route path="/edit/:type" element={<EditPage />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>

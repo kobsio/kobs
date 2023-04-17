@@ -74,7 +74,7 @@ const Delete: FunctionComponent<IDeleteProps> = ({ resource, cluster, namespace,
             ?
           </p>
           <FormControlLabel
-            control={<Switch size="small" value={force} onChange={(_, checked) => setForce(checked)} />}
+            control={<Switch size="small" checked={force} onChange={(_, checked) => setForce(checked)} />}
             label="Force"
           />
         </Stack>

@@ -14,6 +14,7 @@ const checkedIcon = <CheckBox fontSize="small" />;
  * selected clusters.
  */
 interface IResourcesSelectNamespacesProps {
+  disableCloseOnSelect?: boolean;
   selectNamespaces: (namespaces: string[]) => void;
   selectedClusters: string[];
   selectedNamespaces: string[];
@@ -29,6 +30,7 @@ export const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamesp
   selectedNamespaces,
   selectedClusters,
   selectNamespaces,
+  disableCloseOnSelect = true,
 }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
@@ -41,7 +43,7 @@ export const ResourcesSelectNamespaces: FunctionComponent<IResourcesSelectNamesp
     <Autocomplete
       size="small"
       multiple={true}
-      disableCloseOnSelect={true}
+      disableCloseOnSelect={disableCloseOnSelect}
       loading={isLoading}
       options={data ?? []}
       getOptionLabel={(option) => option ?? ''}

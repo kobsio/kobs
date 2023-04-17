@@ -9,6 +9,7 @@ import {
   Select,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
@@ -305,7 +306,9 @@ export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => 
             <Fragment key={rowIndex}>
               {row.title ? (
                 <Typography variant="h6" pb={4} pt={rowIndex === 0 ? 0 : 4}>
-                  {row.title}
+                  <Tooltip title={row.description && <span style={{ whiteSpace: 'pre' }}>{row.description}</span>}>
+                    <span>{row.title}</span>
+                  </Tooltip>
                 </Typography>
               ) : (
                 <Box pb={4}></Box>
