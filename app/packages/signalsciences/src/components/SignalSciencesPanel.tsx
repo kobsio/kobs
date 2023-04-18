@@ -13,6 +13,8 @@ import Agents from './Agents';
 import Overview from './Overview';
 import Requests from './Requests';
 
+import { example } from '../utils/utils';
+
 interface IOptions {
   query?: string;
   site?: string;
@@ -116,16 +118,7 @@ const SignalSciencesPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for SignalSciences plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: signalsciences
-  type: signalsciences
-  options:
-    # The type must be "overview", "requests" or "agents".
-    #   - If the "type" is "requests" you must provide a "site" and "query".
-    #   - If the "type" is "agents" a "site" must be provided.
-    type: requests
-    site: mysite
-    query: "agentcode:=406"`}
+      example={example}
       documentation="https://kobs.io/main/plugins/signalsciences"
     />
   );

@@ -1,6 +1,15 @@
 export const description =
   'From metrics to insight: Power your metrics and alerting with the leading open-source monitoring solution.';
 
+export const example = `plugin:
+  name: prometheus
+  type: prometheus
+  options:
+    type: line
+    queries:
+      - label: "{% .instance %}"
+        query: sum(node_load1) by (instance)`;
+
 // `IMetrics` implements the interface for the corresponding Go struct, which is returned by our API. It contains a list
 // of metrics, the start and end time and the minimum and maximum value accross all time series.
 export interface IMetrics {

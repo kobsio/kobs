@@ -71,7 +71,7 @@ export interface IPlaceholders {
 export interface IReferenceInline {
   defaultTime?: string;
   hideToolbar?: boolean;
-  panels: IPanel[];
+  rows?: IRow[];
   variables?: IVariable[];
 }
 

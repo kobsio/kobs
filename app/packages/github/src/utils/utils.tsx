@@ -11,6 +11,13 @@ import {
 
 export const description = 'Where the world builds software.';
 
+export const example = `plugin:
+  name: github
+  type: github
+  options:
+    type: repositorypullrequests
+    repository: kobs`;
+
 const octokit = new Octokit();
 
 export type TSearchIssuesAndPullRequests = GetResponseDataTypeFromEndpointMethod<

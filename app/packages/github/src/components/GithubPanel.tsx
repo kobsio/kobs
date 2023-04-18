@@ -11,6 +11,7 @@ import { TeamRepos } from './teams/TeamRepos';
 import { UserPullRequests } from './users/UserPullRequests';
 
 import { AuthContextProvider } from '../context/AuthContext';
+import { example } from '../utils/utils';
 
 interface IOptions {
   repository?: string;
@@ -89,12 +90,7 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
       description={description}
       message="Invalid options for GitHub plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: github
-  type: github
-  options:
-    type: repositorypullrequests
-    repository: kobs`}
+      example={example}
       documentation="https://kobs.io/main/plugins/github"
     />
   );

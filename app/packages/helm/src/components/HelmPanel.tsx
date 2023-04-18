@@ -4,6 +4,8 @@ import { FunctionComponent } from 'react';
 import History from './History';
 import Releases from './Releases';
 
+import { example } from '../utils/utils';
+
 /**
  * `IOptions` is the interface for the options which can be set by a user for the Helm panel in a dashboard.
  */
@@ -97,27 +99,7 @@ const HelmPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for Helm plugin"
       details="One of the required options is missing."
-      example={`# Configuration when the type is "releases"
-plugin:
-  name: helm
-  type: helm
-  options:
-    type: releases
-    clusters:
-      - mycluster
-    namespaces:
-      - default
-# Configuration when the type is "releasehistory"
-plugin:
-  name: helm
-  type: helm
-  options:
-    type: releasehistory
-    clusters:
-      - mycluster
-    namespaces:
-      - default
-    name: kobs`}
+      example={example}
       documentation="https://kobs.io/main/plugins/helm"
     />
   );

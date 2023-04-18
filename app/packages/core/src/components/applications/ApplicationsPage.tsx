@@ -122,7 +122,23 @@ const ApplicationsPage: FunctionComponent = () => {
       description="A list of your / all applications. You can search for applications or filter them by clusters, namespaces or tags."
       toolbar={<ApplicationsToolbar options={options} setOptions={setOptions} />}
       actions={
-        <Button variant="contained" color="primary" size="small" startIcon={<Add />} component={Link} to="/todo">
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<Add />}
+          component={Link}
+          to={`/edit/application?state=${encodeURIComponent(
+            btoa(
+              JSON.stringify({
+                cluster: 'default',
+                id: '/cluster/default/namespace/default/name/default',
+                name: 'default',
+                namespace: 'default',
+              }),
+            ),
+          )}`}
+        >
           Add Application
         </Button>
       }

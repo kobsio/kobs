@@ -162,6 +162,42 @@ func TestSaveAndGetApplications(t *testing.T) {
 	require.Equal(t, 1, len(storedApplications2))
 }
 
+func TestSaveAndGetApplication(t *testing.T) {
+	application := applicationv1.ApplicationSpec{
+		ID:        "/cluster/test-cluster/namespace/default/name/application1",
+		Cluster:   "test-cluster",
+		Namespace: "default",
+		Name:      "application1",
+	}
+
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+	c, _ := NewClient(Config{URI: uri})
+
+	err := c.SaveApplication(context.Background(), &application)
+	require.NoError(t, err)
+
+	storedApplication1, err := c.GetApplicationByID(context.Background(), application.ID)
+	require.NoError(t, err)
+	require.Equal(t, application.ID, storedApplication1.ID)
+	require.Equal(t, application.Cluster, storedApplication1.Cluster)
+	require.Equal(t, application.Namespace, storedApplication1.Namespace)
+	require.Equal(t, application.Name, storedApplication1.Name)
+
+	time.Sleep(2 * time.Second)
+
+	application.Name = "application2"
+	err = c.SaveApplication(context.Background(), &application)
+	require.NoError(t, err)
+
+	storedApplication2, err := c.GetApplicationByID(context.Background(), application.ID)
+	require.NoError(t, err)
+	require.Equal(t, application.ID, storedApplication2.ID)
+	require.Equal(t, application.Cluster, storedApplication2.Cluster)
+	require.Equal(t, application.Namespace, storedApplication2.Namespace)
+	require.Equal(t, application.Name, storedApplication2.Name)
+}
+
 func TestSaveAndGetDashboards(t *testing.T) {
 	dashboards := []dashboardv1.DashboardSpec{{
 		ID:        "/cluster/test-cluster/namespace/default/name/dashboard1",
@@ -171,7 +207,7 @@ func TestSaveAndGetDashboards(t *testing.T) {
 	}, {
 		ID:        "/cluster/test-cluster/namespace/default/name/dashboard2",
 		Cluster:   "test-cluster",
-		Namespace: "default",
+		Namespace: "kube-system",
 		Name:      "dashboard2",
 	}}
 
@@ -182,18 +218,22 @@ func TestSaveAndGetDashboards(t *testing.T) {
 	err := c.SaveDashboards(context.Background(), "test-cluster", dashboards)
 	require.NoError(t, err)
 
-	storedDashboards1, err := c.GetDashboards(context.Background())
+	storedDashboards1, err := c.GetDashboards(context.Background(), nil, nil)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedDashboards1))
+
+	storedDashboards2, err := c.GetDashboards(context.Background(), []string{"test-cluster"}, []string{"default"})
+	require.NoError(t, err)
+	require.Equal(t, 1, len(storedDashboards2))
 
 	time.Sleep(2 * time.Second)
 
 	err = c.SaveDashboards(context.Background(), "test-cluster", dashboards[0:1])
 	require.NoError(t, err)
 
-	storedDashboards2, err := c.GetDashboards(context.Background())
+	storedDashboards3, err := c.GetDashboards(context.Background(), nil, nil)
 	require.NoError(t, err)
-	require.Equal(t, 1, len(storedDashboards2))
+	require.Equal(t, 1, len(storedDashboards3))
 }
 
 func TestSaveAndGetTeams(t *testing.T) {
@@ -230,6 +270,42 @@ func TestSaveAndGetTeams(t *testing.T) {
 	require.Equal(t, 1, len(storedTeams2))
 }
 
+func TestSaveAndGetTeam(t *testing.T) {
+	team := teamv1.TeamSpec{
+		ID:        "/cluster/test-cluster/namespace/default/name/team1",
+		Cluster:   "test-cluster",
+		Namespace: "default",
+		Name:      "team1",
+	}
+
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+	c, _ := NewClient(Config{URI: uri})
+
+	err := c.SaveTeam(context.Background(), &team)
+	require.NoError(t, err)
+
+	storedTeam1, err := c.GetTeamByID(context.Background(), team.ID)
+	require.NoError(t, err)
+	require.Equal(t, team.ID, storedTeam1.ID)
+	require.Equal(t, team.Cluster, storedTeam1.Cluster)
+	require.Equal(t, team.Namespace, storedTeam1.Namespace)
+	require.Equal(t, team.Name, storedTeam1.Name)
+
+	time.Sleep(2 * time.Second)
+
+	team.Name = "team2"
+	err = c.SaveTeam(context.Background(), &team)
+	require.NoError(t, err)
+
+	storedTeam2, err := c.GetTeamByID(context.Background(), team.ID)
+	require.NoError(t, err)
+	require.Equal(t, team.ID, storedTeam2.ID)
+	require.Equal(t, team.Cluster, storedTeam2.Cluster)
+	require.Equal(t, team.Namespace, storedTeam2.Namespace)
+	require.Equal(t, team.Name, storedTeam2.Name)
+}
+
 func TestSaveAndGetUsers(t *testing.T) {
 	users := []userv1.UserSpec{{
 		ID:        "/cluster/test-cluster/namespace/default/name/user1",
@@ -262,6 +338,42 @@ func TestSaveAndGetUsers(t *testing.T) {
 	storedUsers2, err := c.GetUsers(context.Background())
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedUsers2))
+}
+
+func TestSaveAndGetUser(t *testing.T) {
+	user := userv1.UserSpec{
+		ID:        "/cluster/test-cluster/namespace/default/name/user1",
+		Cluster:   "test-cluster",
+		Namespace: "default",
+		Name:      "user1",
+	}
+
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+	c, _ := NewClient(Config{URI: uri})
+
+	err := c.SaveUser(context.Background(), &user)
+	require.NoError(t, err)
+
+	storedUser1, err := c.GetUserByID(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Equal(t, user.ID, storedUser1.ID)
+	require.Equal(t, user.Cluster, storedUser1.Cluster)
+	require.Equal(t, user.Namespace, storedUser1.Namespace)
+	require.Equal(t, user.Name, storedUser1.Name)
+
+	time.Sleep(2 * time.Second)
+
+	user.Name = "user2"
+	err = c.SaveUser(context.Background(), &user)
+	require.NoError(t, err)
+
+	storedUser2, err := c.GetUserByID(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Equal(t, user.ID, storedUser2.ID)
+	require.Equal(t, user.Cluster, storedUser2.Cluster)
+	require.Equal(t, user.Namespace, storedUser2.Namespace)
+	require.Equal(t, user.Name, storedUser2.Name)
 }
 
 func TestSaveAndGetTags(t *testing.T) {

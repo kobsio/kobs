@@ -1,6 +1,14 @@
 export const description =
   "Query, visualize, alert on, and understand your data no matter where it's stored. With Grafana you can create, explore and share all of your data through beautiful, flexible dashboards.";
 
+export const example = `plugin:
+  name: grafana
+  type: grafana
+  options:
+    type: dashboards
+    dashboards:
+      - aNBJWNtGk`;
+
 /**
  * `IDashboard` is the interface of a single dashboard.
  */

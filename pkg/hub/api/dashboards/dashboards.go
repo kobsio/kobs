@@ -20,6 +20,21 @@ type Router struct {
 	dbClient db.Client
 }
 
+func (router *Router) getDashboards(w http.ResponseWriter, r *http.Request) {
+	clusters := r.URL.Query()["cluster"]
+	namespaces := r.URL.Query()["namespace"]
+
+	dashboards, err := router.dbClient.GetDashboards(r.Context(), clusters, namespaces)
+	if err != nil {
+		log.Error(r.Context(), "Failed to get dashboards", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get dashboards")
+		return
+	}
+
+	log.Debug(r.Context(), "Get dashboards result", zap.Int("dashboardsCount", len(dashboards)))
+	render.JSON(w, r, dashboards)
+}
+
 func (router *Router) getDashboardsFromReferences(w http.ResponseWriter, r *http.Request) {
 	var references []dashboardv1.Reference
 
@@ -90,6 +105,7 @@ func Mount(dbClient db.Client) chi.Router {
 		dbClient,
 	}
 
+	router.Get("/", router.getDashboards)
 	router.Post("/", router.getDashboardsFromReferences)
 	router.Get("/dashboard", router.getDashboard)
 

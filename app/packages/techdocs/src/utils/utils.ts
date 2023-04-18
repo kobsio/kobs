@@ -8,6 +8,18 @@ import { normalizePath } from './path';
 export const description =
   'TechDocs allows your engineers to write their documentation in markdown files which live together with their code.';
 
+export const example = `plugin:
+  name: techdocs
+  type: techdocs
+  options:
+    # The type must be
+    #   - 'services' to show a list of all services for the TechDocs instance
+    #   - 'services-toc' to show the table of contents for a given service
+    #   - 'service-markdown': to show the TechDocs for the given service
+    #   - 'markdown': to render the provided markdown
+    type: service-markdown
+    service: kobs`;
+
 export interface IIndex {
   description: string;
   home: string;

@@ -3,6 +3,23 @@ import { ITimes } from '@kobsio/core';
 export const description =
   'The Console for Istio Service Mesh - Manage, visualize, validate and troubleshoot your mesh.';
 
+export const example = `# Show a topology graph for a list of namespaces
+plugin:
+  name: kiali
+  type: kiali
+  options:
+    namespaces:
+      - mynamespace1
+      - mynamespace2
+# Show a topology graph for a single application
+plugin:
+  name: kiali
+  type: kiali
+  options:
+    namespaces:
+      - mynamespace1
+    application: myapplication1`;
+
 /**
  * `IGraph` is the interface for the Kiali topology graph including our custom fields. It should implement the same
  * fields as the Graph struct from the pkg/plugins/kiali/instance/types.go file.

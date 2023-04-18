@@ -1,5 +1,11 @@
 export const description = 'SonarQube empowers all developers to write cleaner and safer code.';
 
+export const example = `plugin:
+  name: sonarqube
+  type: sonarqube
+  options:
+    project: myproject`;
+
 /**
  * `IResponseProjects` is the interface for the returned data from the API, for a call to get projects.
  */

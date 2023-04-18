@@ -2,6 +2,15 @@ import { ITimes } from '@kobsio/core';
 
 export const description = 'On-call and alert management to keep services always on.';
 
+export const example = `plugin:
+  name: opsgenie
+  type: opsgenie
+  options:
+    # The "type" must be "alerts" or "incidents".
+    type: alerts
+    queries:
+      - "status: open"`;
+
 export const queryWithTime = (query: string, times: ITimes, interval?: number): string => {
   if (interval) {
     const timeEnd = Math.floor(Date.now() / 1000);

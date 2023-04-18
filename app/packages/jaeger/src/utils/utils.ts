@@ -5,6 +5,25 @@ import TreeNode from './TreeNode';
 export const description =
   'Open source, end-to-end distributed tracing: Monitor and troubleshoot transactions in complex distributed systems.';
 
+export const example = `# View a list of traces
+plugin:
+  name: jaeger
+  type: jaeger
+  options:
+    showChart: true
+    queries:
+      - name: All Requests
+        service: productpage.bookinfo
+# View the metrics of a service
+plugin:
+  name: jaeger
+  type: jaeger
+  options:
+    metrics:
+      # The type must be "servicelatency", "serviceerrors", "servicecalls" or "operations".
+      type: servicelatency
+      service: productpage.bookinfo`;
+
 export const spanKinds = ['unspecified', 'internal', 'server', 'client', 'producer', 'consumer'];
 
 /**

@@ -101,7 +101,23 @@ const TeamsPage: FunctionComponent = () => {
         </Toolbar>
       }
       actions={
-        <Button variant="contained" color="primary" size="small" startIcon={<Add />} component={Link} to="/todo">
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<Add />}
+          component={Link}
+          to={`/edit/team?state=${encodeURIComponent(
+            btoa(
+              JSON.stringify({
+                cluster: 'default',
+                id: 'default@example.com',
+                name: 'default',
+                namespace: 'default',
+              }),
+            ),
+          )}`}
+        >
           Add Team
         </Button>
       }

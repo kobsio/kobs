@@ -20,7 +20,7 @@ import { ServiceMarkdown } from './ServiceMarkdown';
 import { Services } from './Services';
 import { TableOfContents } from './TableOfContents';
 
-import { IIndex } from '../utils/utils';
+import { IIndex, example } from '../utils/utils';
 
 /**
  * `IOptions` is the interface which defines the options, which can be set by a user when the TechDocs plugin is used
@@ -187,17 +187,7 @@ const TechDocsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for TechDocs plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: techdocs
-  type: techdocs
-  options:
-    # The type must be
-    #   - 'services' to show a list of all services for the TechDocs instance
-    #   - 'services-toc' to show the table of contents for a given service
-    #   - 'service-markdown': to show the TechDocs for the given service
-    #   - 'markdown': to render the provided markdown
-    type: service-markdown
-    service: kobs`}
+      example={example}
       documentation="https://kobs.io/main/plugins/techdocs"
     />
   );

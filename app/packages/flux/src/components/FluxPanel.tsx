@@ -3,6 +3,8 @@ import { FunctionComponent } from 'react';
 
 import Resources from './Resources';
 
+import { example } from '../utils/utils';
+
 /**
  * `IOptions` is the interface for the options which can be set by a user within the Flux plugin when it is used within
  * a panel.
@@ -69,14 +71,7 @@ const FluxPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for Flux plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: flux
-  type: flux
-  options:
-    # Type must be "gitrepositories", "helmrepositories", "buckets", "kustomizations" or "helmreleases"
-    type: kustomizations
-    clusters:
-      - mycluster`}
+      example={example}
       documentation="https://kobs.io/main/plugins/flux"
     />
   );

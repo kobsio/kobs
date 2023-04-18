@@ -10,6 +10,7 @@ import (
 	dashboardsAPI "github.com/kobsio/kobs/pkg/hub/api/dashboards"
 	resourcesAPI "github.com/kobsio/kobs/pkg/hub/api/resources"
 	teamsAPI "github.com/kobsio/kobs/pkg/hub/api/teams"
+	usersAPI "github.com/kobsio/kobs/pkg/hub/api/users"
 	"github.com/kobsio/kobs/pkg/hub/app/settings"
 	"github.com/kobsio/kobs/pkg/hub/auth"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
@@ -92,8 +93,9 @@ func New(config Config, appSettings settings.Settings, authClient auth.Client, c
 		r.Group(func(r chi.Router) {
 			r.Use(authClient.MiddlewareHandler)
 			r.Mount("/clusters", clustersAPI.Mount(dbClient, clustersClient))
-			r.Mount("/applications", applicationsAPI.Mount(dbClient))
-			r.Mount("/teams", teamsAPI.Mount(dbClient))
+			r.Mount("/applications", applicationsAPI.Mount(appSettings, dbClient))
+			r.Mount("/teams", teamsAPI.Mount(appSettings, dbClient))
+			r.Mount("/users", usersAPI.Mount(appSettings, dbClient))
 			r.Mount("/dashboards", dashboardsAPI.Mount(dbClient))
 			r.Mount("/resources", resourcesAPI.Mount(appSettings, clustersClient, dbClient))
 			r.Mount("/plugins", pluginsClient.Mount())

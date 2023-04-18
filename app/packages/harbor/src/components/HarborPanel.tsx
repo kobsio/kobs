@@ -5,6 +5,8 @@ import Artifacts from './Artifacts';
 import Projects from './Projects';
 import Repositories from './Repositories';
 
+import { example } from '../utils/utils';
+
 export interface IOptions {
   artifacts?: IOptionsArtifacts;
   repositories?: IOptionsRepositories;
@@ -102,31 +104,7 @@ const HarborPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
       description={description}
       message="Invalid options for Harbor plugin"
       details="One of the required options is missing."
-      example={`# Projects
-plugin:
-  name: harbor
-  type: harbor
-  options:
-    type: projects
-
-# Repositories
-plugin:
-  name: harbor
-  type: harbor
-  options:
-    type: repositories
-    repositories:
-      projectName: test
-
-# Artifacts
-plugin:
-  name: harbor
-  type: harbor
-  options:
-    type: artifacts
-    artifacts:
-      projectName: test
-      repositoryName: repo`}
+      example={example}
       documentation="https://kobs.io/main/plugins/harbor"
     />
   );
