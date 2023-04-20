@@ -2,6 +2,7 @@ import {
   DetailsDrawer,
   Editor,
   IPluginInstance,
+  ITimes,
   Pagination,
   PluginPanel,
   UseQueryWrapper,
@@ -37,11 +38,12 @@ const RepositoryWorkflowRunsDetailsJobsLogs: FunctionComponent<{
   id: number;
   instance: IPluginInstance;
   repo: string;
-}> = ({ repo, id, instance }) => {
+  times: ITimes;
+}> = ({ repo, id, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
 
   const { data } = useQuery<string, Error>(
-    ['github/repo/workflowruns/jobs/logs', authContext.organization, repo, id, instance],
+    ['github/repo/workflowruns/jobs/logs', authContext.organization, times, repo, id, instance],
     async () => {
       const octokit = authContext.getOctokitClient();
       const logs = await octokit.actions.downloadJobLogsForWorkflowRun({
@@ -70,11 +72,12 @@ const RepositoryWorkflowRunsDetailsJobs: FunctionComponent<{
   id: number;
   instance: IPluginInstance;
   repo: string;
-}> = ({ repo, id, attempt, instance }) => {
+  times: ITimes;
+}> = ({ repo, id, attempt, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<TRepositoryWorkflowRunsJobs, Error>(
-    ['github/repo/workflowruns/jobs', authContext.organization, repo, id, attempt, instance],
+    ['github/repo/workflowruns/jobs', authContext.organization, repo, id, attempt, instance, times],
     async () => {
       const octokit = authContext.getOctokitClient();
       const jobs = await octokit.actions.listJobsForWorkflowRunAttempt({
@@ -151,7 +154,7 @@ const RepositoryWorkflowRunsDetailsJobs: FunctionComponent<{
               </TableContainer>
             )}
 
-            <RepositoryWorkflowRunsDetailsJobsLogs instance={instance} id={job.id} repo={repo} />
+            <RepositoryWorkflowRunsDetailsJobsLogs instance={instance} id={job.id} repo={repo} times={times} />
           </AccordionDetails>
         </Accordion>
       ))}
@@ -165,7 +168,8 @@ const RepositoryWorkflowRunDetails: FunctionComponent<{
   open: boolean;
   repo: string;
   run: TRepositoryWorkflowRun;
-}> = ({ instance, run, repo, open, onClose }) => {
+  times: ITimes;
+}> = ({ instance, run, repo, times, open, onClose }) => {
   return (
     <DetailsDrawer
       size="large"
@@ -185,7 +189,13 @@ const RepositoryWorkflowRunDetails: FunctionComponent<{
         </>
       }
     >
-      <RepositoryWorkflowRunsDetailsJobs instance={instance} id={run.id} attempt={run.run_attempt ?? 1} repo={repo} />
+      <RepositoryWorkflowRunsDetailsJobs
+        instance={instance}
+        id={run.id}
+        attempt={run.run_attempt ?? 1}
+        repo={repo}
+        times={times}
+      />
     </DetailsDrawer>
   );
 };
@@ -194,7 +204,8 @@ const RepositoryWorkflowRun: FunctionComponent<{
   instance: IPluginInstance;
   repo: string;
   run: TRepositoryWorkflowRun;
-}> = ({ instance, run, repo }) => {
+  times: ITimes;
+}> = ({ instance, run, repo, times }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -238,6 +249,7 @@ const RepositoryWorkflowRun: FunctionComponent<{
           instance={instance}
           run={run}
           repo={repo}
+          times={times}
           open={open}
           onClose={() => setOpen(false)}
         />
@@ -250,13 +262,14 @@ export const RepositoryWorkflowRuns: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
   repo: string;
+  times: ITimes;
   title: string;
-}> = ({ title, description, repo, instance }) => {
+}> = ({ title, description, repo, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [options, setOptions] = useState<{ page: number; perPage: number }>({ page: 1, perPage: 10 });
 
   const { isError, isLoading, error, data, refetch } = useQuery<TRepositoryWorkflowRuns, Error>(
-    ['github/repo/workflowruns', authContext.organization, instance, repo, options],
+    ['github/repo/workflowruns', authContext.organization, instance, times, repo, options],
     async () => {
       const octokit = authContext.getOctokitClient();
       const workflowRuns = await octokit.actions.listWorkflowRunsForRepo({
@@ -283,7 +296,7 @@ export const RepositoryWorkflowRuns: FunctionComponent<{
         <List disablePadding={true}>
           {data?.workflow_runs.map((run, index) => (
             <Fragment key={run.id}>
-              <RepositoryWorkflowRun instance={instance} run={run} repo={repo} />
+              <RepositoryWorkflowRun instance={instance} run={run} repo={repo} times={times} />
               {index + 1 !== data?.workflow_runs.length && <Divider component="li" />}
             </Fragment>
           ))}

@@ -1,4 +1,4 @@
-import { IPluginInstance, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
+import { IPluginInstance, ITimes, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
 import { Clear, Search } from '@mui/icons-material';
 import { Box, Divider, IconButton, InputAdornment, List, TextField } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
@@ -59,9 +59,9 @@ const OrgReposToolbar: FunctionComponent<{ filter: string; setFilter: (filter: s
 export const OrgRepos: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
-  setDetails?: (details: React.ReactNode) => void;
+  times: ITimes;
   title: string;
-}> = ({ title, description, instance, setDetails }) => {
+}> = ({ title, description, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [options, setOptions] = useState<{ filter: string; page: number; perPage: number }>({
     filter: '',
@@ -70,7 +70,7 @@ export const OrgRepos: FunctionComponent<{
   });
 
   const { isError, isLoading, error, data, refetch } = useQuery<{ count: number; repos: TSearchRepos }, Error>(
-    ['github/org/repos', authContext.organization, instance, options],
+    ['github/org/repos', authContext.organization, instance, times, options],
     async () => {
       const octokit = authContext.getOctokitClient();
       const result = await octokit.search.repos({
@@ -112,6 +112,7 @@ export const OrgRepos: FunctionComponent<{
                 forksCount={repo.forks_count}
                 openIssuesCount={repo.open_issues_count}
                 pushedAt={repo.pushed_at}
+                times={times}
               />
               {index + 1 !== data?.repos.length && <Divider component="li" />}
             </Fragment>

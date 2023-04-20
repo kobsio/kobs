@@ -1,4 +1,4 @@
-import { IPluginInstance, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
+import { IPluginInstance, ITimes, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
 import { Divider, List } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext, useState } from 'react';
@@ -10,15 +10,16 @@ import { PullRequest } from '../shared/PullRequest';
 export const OrgPullRequests: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
+  times: ITimes;
   title: string;
-}> = ({ title, description, instance }) => {
+}> = ({ title, description, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [options, setOptions] = useState<{ page: number; perPage: number }>({ page: 1, perPage: 10 });
 
   const { isError, isLoading, error, data, refetch } = useQuery<
     { count: number; pullRequests: TSearchIssuesAndPullRequests },
     Error
-  >(['github/org/pullrequests', authContext.organization, instance, options.page, options.perPage], async () => {
+  >(['github/org/pullrequests', authContext.organization, instance, times, options.page, options.perPage], async () => {
     const octokit = authContext.getOctokitClient();
     const result = await octokit.search.issuesAndPullRequests({
       order: 'desc',

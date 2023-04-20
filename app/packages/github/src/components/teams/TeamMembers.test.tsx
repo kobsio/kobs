@@ -40,6 +40,7 @@ describe('TeamMembers', () => {
                 name: 'github',
                 type: 'github',
               }}
+              times={{ time: 'last15Minutes', timeEnd: 2, timeStart: 1 }}
             />
           </AuthContext.Provider>
         </QueryClientProvider>

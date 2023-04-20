@@ -1,4 +1,4 @@
-import { IPluginInstance, PluginPanel, UseQueryWrapper } from '@kobsio/core';
+import { IPluginInstance, ITimes, PluginPanel, UseQueryWrapper } from '@kobsio/core';
 import { Button, Divider, List } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext } from 'react';
@@ -13,8 +13,9 @@ export const TeamRepos: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
   slug: string;
+  times: ITimes;
   title: string;
-}> = ({ title, description, slug, instance }) => {
+}> = ({ title, description, slug, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
 
   const fetchRepos = async (page = 1) => {
@@ -31,9 +32,13 @@ export const TeamRepos: FunctionComponent<{
   const { isLoading, isError, data, error, refetch, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery<
     TTeamRepos,
     Error
-  >(['github/team/repos', authContext.organization, slug, instance], ({ pageParam = 1 }) => fetchRepos(pageParam), {
-    getNextPageParam: (lastPage, allPages) => (lastPage.length < reposPerPage ? undefined : allPages.length + 1),
-  });
+  >(
+    ['github/team/repos', authContext.organization, slug, instance, times],
+    ({ pageParam = 1 }) => fetchRepos(pageParam),
+    {
+      getNextPageParam: (lastPage, allPages) => (lastPage.length < reposPerPage ? undefined : allPages.length + 1),
+    },
+  );
 
   return (
     <PluginPanel title={title} description={description}>
@@ -59,6 +64,7 @@ export const TeamRepos: FunctionComponent<{
                   forksCount={repo.forks_count}
                   openIssuesCount={repo.open_issues_count}
                   pushedAt={repo.pushed_at}
+                  times={times}
                 />
                 {pageIndex + 1 === data?.pages.length &&
                 repoIndex + 1 === data?.pages[data.pages.length - 1].length ? null : (

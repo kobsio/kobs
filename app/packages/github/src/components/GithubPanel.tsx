@@ -19,11 +19,17 @@ interface IOptions {
   type?: string;
 }
 
-const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, description, options, instance }) => {
+const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
+  title,
+  description,
+  options,
+  instance,
+  times,
+}) => {
   if (options && options.type && options.type === 'orgpullrequests') {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <OrgPullRequests title={title} description={description} instance={instance} />
+        <OrgPullRequests title={title} description={description} instance={instance} times={times} />
       </AuthContextProvider>
     );
   }
@@ -31,7 +37,7 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
   if (options && options.type && options.type === 'orgrepositories') {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <OrgRepos title={title} description={description} instance={instance} />
+        <OrgRepos title={title} description={description} instance={instance} times={times} />
       </AuthContextProvider>
     );
   }
@@ -39,7 +45,7 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
   if (options && options.type && options.type === 'teammembers' && options.team) {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <TeamMembers title={title} description={description} slug={options.team} instance={instance} />
+        <TeamMembers title={title} description={description} slug={options.team} instance={instance} times={times} />
       </AuthContextProvider>
     );
   }
@@ -47,7 +53,7 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
   if (options && options.type && options.type === 'teamrepositories' && options.team) {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <TeamRepos title={title} description={description} slug={options.team} instance={instance} />
+        <TeamRepos title={title} description={description} slug={options.team} instance={instance} times={times} />
       </AuthContextProvider>
     );
   }
@@ -55,7 +61,13 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
   if (options && options.type && options.type === 'repositoryissues' && options.repository) {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <RepositoryIssues title={title} description={description} repo={options.repository} instance={instance} />
+        <RepositoryIssues
+          title={title}
+          description={description}
+          repo={options.repository}
+          instance={instance}
+          times={times}
+        />
       </AuthContextProvider>
     );
   }
@@ -63,7 +75,13 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
   if (options && options.type && options.type === 'repositorypullrequests' && options.repository) {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <RepositoryPullRequests title={title} description={description} repo={options.repository} instance={instance} />
+        <RepositoryPullRequests
+          title={title}
+          description={description}
+          repo={options.repository}
+          instance={instance}
+          times={times}
+        />
       </AuthContextProvider>
     );
   }
@@ -71,7 +89,13 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
   if (options && options.type && options.type === 'repositoryworkflowruns' && options.repository) {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <RepositoryWorkflowRuns title={title} description={description} repo={options.repository} instance={instance} />
+        <RepositoryWorkflowRuns
+          title={title}
+          description={description}
+          repo={options.repository}
+          instance={instance}
+          times={times}
+        />
       </AuthContextProvider>
     );
   }
@@ -79,7 +103,7 @@ const GithubPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, de
   if (options && options.type && options.type === 'userpullrequests') {
     return (
       <AuthContextProvider title={title} instance={instance}>
-        <UserPullRequests title={title} description={description} instance={instance} />
+        <UserPullRequests title={title} description={description} instance={instance} times={times} />
       </AuthContextProvider>
     );
   }

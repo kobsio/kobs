@@ -1,4 +1,4 @@
-import { DetailsDrawer, IPluginInstance, timeDifference } from '@kobsio/core';
+import { DetailsDrawer, IPluginInstance, ITimes, timeDifference } from '@kobsio/core';
 import { Box, ListItem, ListItemText, Tab, Tabs, Typography } from '@mui/material';
 import { IssueOpenedIcon, RepoForkedIcon, StarIcon } from '@primer/octicons-react';
 import { FunctionComponent, useState } from 'react';
@@ -13,7 +13,8 @@ const RepositoryDetails: FunctionComponent<{
   onClose: () => void;
   open: boolean;
   repo: string;
-}> = ({ instance, repo, open, onClose }) => {
+  times: ITimes;
+}> = ({ instance, repo, times, open, onClose }) => {
   const [activeTab, setActiveTab] = useState('issues');
 
   return (
@@ -27,18 +28,18 @@ const RepositoryDetails: FunctionComponent<{
       </Box>
 
       <Box key="issues" hidden={activeTab !== 'issues'} py={6}>
-        {activeTab === 'issues' && <RepositoryIssues instance={instance} title="Issues" repo={repo} />}
+        {activeTab === 'issues' && <RepositoryIssues instance={instance} title="Issues" repo={repo} times={times} />}
       </Box>
 
       <Box key="pullrequests" hidden={activeTab !== 'pullrequests'} py={6}>
         {activeTab === 'pullrequests' && (
-          <RepositoryPullRequests instance={instance} title="Pull Requests" repo={repo} />
+          <RepositoryPullRequests instance={instance} title="Pull Requests" repo={repo} times={times} />
         )}
       </Box>
 
       <Box key="workflowruns" hidden={activeTab !== 'workflowruns'} py={6}>
         {activeTab === 'workflowruns' && (
-          <RepositoryWorkflowRuns instance={instance} title="Workflow Runs" repo={repo} />
+          <RepositoryWorkflowRuns instance={instance} title="Workflow Runs" repo={repo} times={times} />
         )}
       </Box>
     </DetailsDrawer>
@@ -54,7 +55,8 @@ export const Repository: FunctionComponent<{
   openIssuesCount: number | undefined;
   pushedAt: string | null | undefined;
   stargazersCount: number | undefined;
-}> = ({ instance, name, description, language, stargazersCount, forksCount, openIssuesCount, pushedAt }) => {
+  times: ITimes;
+}> = ({ instance, name, description, language, stargazersCount, forksCount, openIssuesCount, pushedAt, times }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -127,7 +129,9 @@ export const Repository: FunctionComponent<{
         />
       </ListItem>
 
-      {open && <RepositoryDetails instance={instance} repo={name} onClose={() => setOpen(false)} open={open} />}
+      {open && (
+        <RepositoryDetails instance={instance} repo={name} times={times} onClose={() => setOpen(false)} open={open} />
+      )}
     </>
   );
 };
