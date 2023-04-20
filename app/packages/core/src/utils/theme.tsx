@@ -203,11 +203,11 @@ const theme = createTheme(
       mode: 'dark',
       primary: {
         contrastText: '#ffffff',
-        main: '#407ad6',
+        main: '#326de6',
       },
       secondary: {
         contrastText: '#ffffff',
-        main: '#4782da',
+        main: '#326de6',
       },
       text: {
         primary: 'rgba(255, 255, 255, 0.95)',
@@ -226,7 +226,7 @@ const theme = createTheme(
       background: '#1B2635',
       color: grey[300],
       indicator: {
-        background: '#407ad6',
+        background: '#326de6',
       },
       search: {
         color: grey[200],
@@ -235,7 +235,7 @@ const theme = createTheme(
     sidebar: {
       background: '#233044',
       badge: {
-        background: '#4782da',
+        background: '#326de6',
         color: '#ffffff',
       },
       color: grey[200],
@@ -249,7 +249,7 @@ const theme = createTheme(
       header: {
         background: '#233044',
         brand: {
-          color: '#4782da',
+          color: '#326de6',
         },
         color: grey[200],
       },

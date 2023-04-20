@@ -58,7 +58,7 @@ export const chartTickFormatValue = (tick: number, dec = 3): string => {
  * the default color in a chart.
  */
 export const chartColors = [
-  '#407ad6',
+  '#326de6',
   red[500],
   green[500],
   yellow[500],
