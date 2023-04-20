@@ -1,4 +1,4 @@
-import { IPluginInstance, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
+import { IPluginInstance, ITimes, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
 import { Avatar, Box } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
@@ -11,13 +11,14 @@ export const TeamMembers: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
   slug: string;
+  times: ITimes;
   title: string;
-}> = ({ title, description, slug, instance }) => {
+}> = ({ title, description, slug, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [options, setOptions] = useState<{ page: number; perPage: number }>({ page: 1, perPage: 20 });
 
   const { isError, isLoading, error, data, refetch } = useQuery<TTeamMembers, Error>(
-    ['github/team/members', authContext.organization, slug, instance],
+    ['github/team/members', authContext.organization, slug, instance, times],
     async () => {
       const octokit = authContext.getOctokitClient();
       const members = await octokit.paginate(octokit.teams.listMembersInOrg, {

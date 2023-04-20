@@ -1,4 +1,4 @@
-import { IPluginInstance, Pagination, PluginPanel, UseQueryWrapper, formatTimeString } from '@kobsio/core';
+import { IPluginInstance, ITimes, Pagination, PluginPanel, UseQueryWrapper, formatTimeString } from '@kobsio/core';
 import {
   Box,
   Chip,
@@ -22,8 +22,9 @@ export const RepositoryIssues: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
   repo: string;
+  times: ITimes;
   title: string;
-}> = ({ title, description, repo, instance }) => {
+}> = ({ title, description, repo, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [options, setOptions] = useState<{ filter: string; page: number; perPage: number }>({
     filter: '',
@@ -34,7 +35,7 @@ export const RepositoryIssues: FunctionComponent<{
   const { isError, isLoading, error, data, refetch } = useQuery<
     { count: number; issues: TSearchIssuesAndPullRequests },
     Error
-  >(['github/repo/issues', authContext.organization, instance, repo, options], async () => {
+  >(['github/repo/issues', authContext.organization, instance, times, repo, options], async () => {
     const octokit = authContext.getOctokitClient();
     const result = await octokit.search.issuesAndPullRequests({
       order: 'desc',

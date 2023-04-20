@@ -1,4 +1,4 @@
-import { IPluginInstance, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
+import { IPluginInstance, ITimes, Pagination, PluginPanel, UseQueryWrapper } from '@kobsio/core';
 import { Divider, List, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext, useState } from 'react';
@@ -10,8 +10,9 @@ import { PullRequest } from '../shared/PullRequest';
 export const UserPullRequests: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
+  times: ITimes;
   title: string;
-}> = ({ title, description, instance }) => {
+}> = ({ title, description, instance, times }) => {
   const authContext = useContext<IAuthContext>(AuthContext);
   const [options, setOptions] = useState<{ filter: string; page: number; perPage: number }>({
     filter: 'author',
@@ -22,17 +23,20 @@ export const UserPullRequests: FunctionComponent<{
   const { isError, isLoading, error, data, refetch } = useQuery<
     { count: number; pullRequests: TSearchIssuesAndPullRequests },
     Error
-  >(['github/users/pullrequests', authContext.organization, authContext.username, instance, options], async () => {
-    const octokit = authContext.getOctokitClient();
-    const result = await octokit.search.issuesAndPullRequests({
-      order: 'desc',
-      page: options.page,
-      per_page: options.perPage,
-      q: `is:pull-request ${options.filter}:${authContext.username}`,
-      sort: 'updated',
-    });
-    return { count: result.data.total_count, pullRequests: result.data.items };
-  });
+  >(
+    ['github/users/pullrequests', authContext.organization, authContext.username, instance, times, options],
+    async () => {
+      const octokit = authContext.getOctokitClient();
+      const result = await octokit.search.issuesAndPullRequests({
+        order: 'desc',
+        page: options.page,
+        per_page: options.perPage,
+        q: `is:pull-request ${options.filter}:${authContext.username}`,
+        sort: 'updated',
+      });
+      return { count: result.data.total_count, pullRequests: result.data.items };
+    },
+  );
 
   return (
     <PluginPanel
