@@ -118,6 +118,7 @@ func New(config Config, apiConfig api.Config) (Server, error) {
 				strings.HasSuffix(r.URL.Path, ".png") ||
 				strings.HasSuffix(r.URL.Path, ".svg") ||
 				strings.HasSuffix(r.URL.Path, ".txt") ||
+				strings.HasSuffix(r.URL.Path, ".webmanifest") ||
 				strings.HasSuffix(r.URL.Path, ".woff") ||
 				strings.HasSuffix(r.URL.Path, ".woff2") ||
 				strings.HasSuffix(r.URL.Path, ".xml") {

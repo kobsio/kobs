@@ -40,8 +40,7 @@ yarn-error.log*
 /values.yaml
 
 # favicons
-/hack/favicons/icons
-/hack/favicons/files
+/hack/favicons/favicons
 
 # secrets
 .env

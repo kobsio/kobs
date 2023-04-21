@@ -2,6 +2,7 @@
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import topLevelAwait from 'vite-plugin-top-level-await';
 
 export default defineConfig(({ command, mode, ssrBuild }) => {
@@ -36,6 +37,82 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
     },
     plugins: [
       react(),
+      VitePWA({
+        manifest: {
+          background_color: '#233044',
+          description: 'Kubernetes Observability Platform',
+          dir: 'ltr',
+          display: 'standalone',
+          icons: [
+            {
+              purpose: 'any maskable',
+              sizes: '36x36',
+              src: '/android-chrome-36x36.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '48x48',
+              src: '/android-chrome-48x48.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '72x72',
+              src: '/android-chrome-72x72.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '96x96',
+              src: '/android-chrome-96x96.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '144x144',
+              src: '/android-chrome-144x144.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '192x192',
+              src: '/android-chrome-192x192.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '256x256',
+              src: '/android-chrome-256x256.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '384x384',
+              src: '/android-chrome-384x384.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '512x512',
+              src: '/android-chrome-512x512.png',
+              type: 'image/png',
+            },
+          ],
+          lang: 'en-US',
+          name: 'kobs',
+          orientation: 'any',
+          scope: '.',
+          short_name: 'kobs',
+          start_url: '/',
+          theme_color: '#233044',
+        },
+        registerType: 'autoUpdate',
+        useCredentials: true,
+        workbox: {
+          maximumFileSizeToCacheInBytes: 100000000,
+        },
+      }),
       // The topLevelAwait plugin is used to enable top level await. This is needed to avoid the following error caused
       // by the `bson` package in the mongodb plugin:
       //
