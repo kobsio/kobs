@@ -7,6 +7,7 @@ require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.6.3
 	github.com/alecthomas/kong v0.7.1
 	github.com/alecthomas/participle/v2 v2.0.0-beta.5
+	github.com/andygrunwald/go-jira v1.16.0
 	github.com/coreos/go-oidc/v3 v3.5.0
 	github.com/felixge/httpsnoop v1.0.3
 	github.com/fluxcd/helm-controller/api v0.31.1
@@ -71,6 +72,7 @@ require (
 	github.com/emicklei/go-restful/v3 v3.10.1 // indirect
 	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fluxcd/pkg/apis/kustomize v0.8.1 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/errors v0.6.1 // indirect
@@ -127,6 +129,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
+	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/vjeantet/grok v1.0.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect

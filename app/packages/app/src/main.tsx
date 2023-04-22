@@ -5,6 +5,7 @@ import Grafana from '@kobsio/grafana';
 import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
 import Jaeger from '@kobsio/jaeger';
+import Jira from '@kobsio/jira';
 import Kiali from '@kobsio/kiali';
 import Klogs from '@kobsio/klogs';
 import MongoDB from '@kobsio/mongodb';
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         Harbor,
         Helm,
         Jaeger,
+        Jira,
         Kiali,
         Klogs,
         MongoDB,
