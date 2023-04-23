@@ -182,13 +182,14 @@ func NewSQLParser(defaultFields, materializedColumns []string) SQLParser {
 
 func (s *SQLParser) Parse(query string) (string, error) {
 	s.errors = nil
-	if expr, err := P.ParseString("", query); err != nil {
-		return "", fmt.Errorf("couldn't parse query, error: %w", err)
-	} else {
-		r := s.parseExpr(expr)
-		if s.errors != nil {
-			return r, fmt.Errorf("couldn't convert query to sql")
-		}
-		return r, nil
+	expr, err := P.ParseString("", query)
+	if err != nil {
+		return "", fmt.Errorf("Failed to parse query: %w", err)
 	}
+
+	r := s.parseExpr(expr)
+	if s.errors != nil {
+		return r, fmt.Errorf("Failed to convert query to SQL")
+	}
+	return r, nil
 }
