@@ -122,6 +122,27 @@ func TestGetLogs(t *testing.T) {
 		utils.AssertJSONEq(t, w, `{"errors":["Failed to get logs"]}`)
 	})
 
+	t.Run("should handle error from instance.GetLogs for invalid query", func(t *testing.T) {
+		timeEnd := time.Now()
+		timeStart := timeEnd.Add(-30 * time.Minute)
+
+		ctrl := gomock.NewController(t)
+		mockInstance := instance.NewMockInstance(ctrl)
+		mockInstance.EXPECT().GetName().Return("instance")
+		mockInstance.EXPECT().GetLogs(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), int64(1000), timeStart.Unix(), timeEnd.Unix()).Return([]map[string]any{}, []instance.Field{}, int64(0), int64(0), []instance.Bucket{}, fmt.Errorf(`Failed to parse query: 1:24: unexpected token "<EOF>" (expected ")")`))
+
+		path := fmt.Sprintf("/logs?timeStart=%d&timeEnd=%d", timeStart.Unix(), timeEnd.Unix())
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, nil)
+		req.Header.Add("x-kobs-plugin", "instance")
+		w := httptest.NewRecorder()
+
+		router := Router{instances: []instance.Instance{mockInstance}}
+		router.getLogs(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors":["Failed to parse query: 1:24: unexpected token \"<EOF>\" (expected \")\")"]}`)
+	})
+
 	t.Run("should handle unknown instance", func(t *testing.T) {
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/logs", nil)
 		w := httptest.NewRecorder()

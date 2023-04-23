@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -129,6 +130,11 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	documents, fields, count, took, buckets, err := i.GetLogs(r.Context(), query, order, orderBy, 1000, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		if strings.Contains(err.Error(), "Failed to parse query:") {
+			log.Error(r.Context(), "Failed to parse query", zap.Error(err))
+			errresponse.Render(w, r, http.StatusInternalServerError, err.Error())
+			return
+		}
 		log.Error(r.Context(), "Failed to get logs", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get logs")
 		return
