@@ -133,7 +133,7 @@ func New(name string, options map[string]any) (Instance, error) {
 
 	config.Session.ParsedDuration, err = time.ParseDuration(config.Session.Duration)
 	if err != nil {
-		config.Session.ParsedDuration = 168 * time.Hour
+		config.Session.ParsedDuration = 720 * time.Hour
 	}
 
 	return &instance{

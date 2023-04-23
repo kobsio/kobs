@@ -99,6 +99,11 @@ func (router *Router) authToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cookie, err := i.TokenToCookie(token)
+	if err == nil {
+		http.SetCookie(w, cookie)
+	}
+
 	data := struct {
 		URL string `json:"url"`
 	}{

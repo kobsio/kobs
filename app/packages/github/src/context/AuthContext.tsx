@@ -55,17 +55,21 @@ export const AuthContextProvider: FunctionComponent<{
   const { isError, isLoading, error, data, refetch } = useQuery<
     { organization: string; token: string; username: string },
     Error
-  >(['github/oauth', instance], async () => {
-    return apiContext.client.get<{ organization: string; token: string; username: string }>(
-      '/api/plugins/github/oauth',
-      {
-        headers: {
-          'x-kobs-cluster': instance.cluster,
-          'x-kobs-plugin': instance.name,
+  >(
+    ['github/oauth', instance],
+    async () => {
+      return apiContext.client.get<{ organization: string; token: string; username: string }>(
+        '/api/plugins/github/oauth',
+        {
+          headers: {
+            'x-kobs-cluster': instance.cluster,
+            'x-kobs-plugin': instance.name,
+          },
         },
-      },
-    );
-  });
+      );
+    },
+    { staleTime: 24 * 60 * 60 * 1000 },
+  );
 
   const getOctokitClient = (): Octokit => {
     return new Octokit({ auth: data?.token });
