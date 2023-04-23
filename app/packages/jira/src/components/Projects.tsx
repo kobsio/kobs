@@ -3,6 +3,7 @@ import {
   APIError,
   IAPIContext,
   IPluginInstance,
+  ITimes,
   Pagination,
   PluginPanel,
   UseQueryWrapper,
@@ -130,11 +131,12 @@ const ProjectsToolbar: FunctionComponent<{ filter: string; setFilter: (filter: s
   );
 };
 
-export const Projects: FunctionComponent<{ description?: string; instance: IPluginInstance; title: string }> = ({
-  instance,
-  title,
-  description,
-}) => {
+export const Projects: FunctionComponent<{
+  description?: string;
+  instance: IPluginInstance;
+  times: ITimes;
+  title: string;
+}> = ({ instance, title, description, times }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
   const [options, setOptions] = useState<{ filter: string; page: number; perPage: number }>({
     filter: '',
@@ -143,7 +145,7 @@ export const Projects: FunctionComponent<{ description?: string; instance: IPlug
   });
 
   const { isError, isLoading, error, data, refetch } = useQuery<IProject[], APIError>(
-    ['jira/projects', instance],
+    ['jira/projects', instance, times],
     async () => {
       return apiContext.client.get<IProject[]>('/api/plugins/jira/projects', {
         headers: {

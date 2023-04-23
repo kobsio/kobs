@@ -29,6 +29,11 @@ describe('Issues', () => {
               jql=""
               page={{ page: 1, perPage: 10 }}
               setPage={vi.fn()}
+              times={{
+                time: 'last15Minutes',
+                timeEnd: 0,
+                timeStart: 0,
+              }}
             />
           </APIContext.Provider>
         </QueryClientProvider>
@@ -64,6 +69,11 @@ describe('IssuesWrapper', () => {
                 type: 'jira',
               }}
               jql=""
+              times={{
+                time: 'last15Minutes',
+                timeEnd: 0,
+                timeStart: 0,
+              }}
             />
           </APIContext.Provider>
         </QueryClientProvider>

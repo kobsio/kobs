@@ -1,5 +1,6 @@
 import { APIContext, APIError, IAPIContext, IPluginInstance } from '@kobsio/core';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -10,7 +11,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { FunctionComponent, useContext, useState } from 'react';
+import { FormEvent, FunctionComponent, useContext, useState } from 'react';
 
 export const Login: FunctionComponent<{ instance: IPluginInstance; refetchAuth: () => void }> = ({
   instance,
@@ -53,6 +54,11 @@ export const Login: FunctionComponent<{ instance: IPluginInstance; refetchAuth: 
     }
   };
 
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    handleLogin();
+  };
+
   return (
     <>
       <Button color="inherit" size="small" onClick={() => setOpen(true)}>
@@ -64,19 +70,25 @@ export const Login: FunctionComponent<{ instance: IPluginInstance; refetchAuth: 
           <DialogTitle>Login</DialogTitle>
           <DialogContent sx={{ width: '50vw' }}>
             <Stack py={2} spacing={4} direction="column">
-              <TextField
-                size="small"
-                label="Email"
-                value={state.email}
-                onChange={(e) => setState({ ...state, email: e.target.value })}
-              />
-              <TextField
-                type="password"
-                size="small"
-                label="Token"
-                value={state.token}
-                onChange={(e) => setState({ ...state, token: e.target.value })}
-              />
+              <Box component="form" onSubmit={handleSubmit}>
+                <TextField
+                  size="small"
+                  label="Email"
+                  fullWidth={true}
+                  value={state.email}
+                  onChange={(e) => setState({ ...state, email: e.target.value })}
+                />
+              </Box>
+              <Box component="form" onSubmit={handleSubmit}>
+                <TextField
+                  type="password"
+                  size="small"
+                  label="Token"
+                  fullWidth={true}
+                  value={state.token}
+                  onChange={(e) => setState({ ...state, token: e.target.value })}
+                />
+              </Box>
             </Stack>
           </DialogContent>
           <DialogActions>

@@ -8,6 +8,7 @@ import {
   DetailsDrawer,
   IAPIContext,
   IPluginInstance,
+  ITimes,
   Pagination,
   PluginPanel,
   UseQueryWrapper,
@@ -17,6 +18,8 @@ import { OpenInNew } from '@mui/icons-material';
 import {
   Avatar,
   Box,
+  Card,
+  CardContent,
   Chip,
   Divider,
   IconButton,
@@ -122,156 +125,169 @@ const IssueDetails: FunctionComponent<{
         </IconButton>
       }
     >
-      <DescriptionList>
-        {issue.fields?.issuetype?.name && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Issue Type</DescriptionListTerm>
-            <DescriptionListDescription>
-              <Stack direction="row" spacing={2} alignItems="center">
-                {issue.fields?.issuetype?.iconUrl && (
-                  <Avatar
-                    variant="square"
-                    style={{ height: '24px', width: '24px' }}
-                    src={issue.fields?.issuetype?.iconUrl}
-                    alt=""
-                  />
-                )}
-                <span>{issue.fields?.issuetype?.name || ''}</span>
-              </Stack>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.assignee?.displayName && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Assignee</DescriptionListTerm>
-            <DescriptionListDescription>
-              <Stack direction="row" spacing={2} alignItems="center">
-                {issue.fields?.assignee?.avatarUrls?.['24x24'] && (
-                  <Avatar
-                    style={{ height: '24px', width: '24px' }}
-                    src={issue.fields?.assignee?.avatarUrls?.['24x24']}
-                    alt=""
-                  />
-                )}
-                <span>{issue.fields?.assignee?.displayName || ''}</span>
-              </Stack>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.reporter?.displayName && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Reporter</DescriptionListTerm>
-            <DescriptionListDescription>
-              <Stack direction="row" spacing={2} alignItems="center">
-                {issue.fields?.reporter?.avatarUrls?.['24x24'] && (
-                  <Avatar
-                    style={{ height: '24px', width: '24px' }}
-                    src={issue.fields?.reporter?.avatarUrls?.['24x24']}
-                    alt=""
-                  />
-                )}
-                <span>{issue.fields?.reporter?.displayName || ''}</span>
-              </Stack>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.status?.name && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Status</DescriptionListTerm>
-            <DescriptionListDescription>
-              <Chip
-                size="small"
-                color={getStatusColor(issue.fields?.status?.statusCategory.name)}
-                label={issue.fields?.status?.name.toUpperCase()}
-              />
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.labels && issue.fields?.labels.length > 0 && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Labels</DescriptionListTerm>
-            <DescriptionListDescription>
-              <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
-                {issue.fields?.labels.map((label) => (
-                  <Chip
-                    key={label}
-                    size="small"
-                    color="default"
-                    clickable={true}
-                    label={label}
-                    component={Link}
-                    to={`${pluginBasePath(instance)}/search?jql=${encodeURIComponent(`labels = "${label}"`)}`}
-                  />
-                ))}
-              </Box>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.description && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Description</DescriptionListTerm>
-            <DescriptionListDescription>
-              <ReactMarkdown linkTarget="_blank">{jiraToMarkdown(issue.fields?.description)}</ReactMarkdown>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.parent?.key && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Parent</DescriptionListTerm>
-            <DescriptionListDescription>
-              <Link
-                to={`${pluginBasePath(instance)}/search?jql=${encodeURIComponent(`key = ${issue.fields?.parent.key}`)}`}
-              >
-                <div>{issue.fields?.parent.key}</div>
-              </Link>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.subtasks && issue.fields?.subtasks.length > 0 && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Subtasks</DescriptionListTerm>
-            <DescriptionListDescription>
-              <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-                {issue.fields?.subtasks?.map((childIssue, index) => (
-                  <Fragment key={childIssue.id}>
-                    <IssueDetailsIssueLink instance={instance} issue={childIssue} />
-                    {index + 1 !== issue.fields?.subtasks?.length && <Divider component="li" />}
-                  </Fragment>
-                ))}
-              </List>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-
-        {issue.fields?.issuelinks && issue.fields?.issuelinks.length > 0 && (
-          <DescriptionListGroup>
-            <DescriptionListTerm>Linked Issues</DescriptionListTerm>
-            <DescriptionListDescription>
-              <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-                {issue.fields?.issuelinks?.map((childIssue, index) => (
-                  <Fragment key={childIssue.id}>
-                    {childIssue.inwardIssue ? (
-                      <IssueDetailsIssueLink instance={instance} issue={childIssue.inwardIssue} />
-                    ) : childIssue.outwardIssue ? (
-                      <IssueDetailsIssueLink instance={instance} issue={childIssue.outwardIssue} />
-                    ) : (
-                      <div></div>
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Typography variant="h6" pb={2}>
+            Details
+          </Typography>
+          <DescriptionList>
+            {issue.fields?.issuetype?.name && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Issue Type</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    {issue.fields?.issuetype?.iconUrl && (
+                      <Avatar
+                        variant="square"
+                        style={{ height: '24px', width: '24px' }}
+                        src={issue.fields?.issuetype?.iconUrl}
+                        alt=""
+                      />
                     )}
-                    {index + 1 !== issue.fields?.issuelinks?.length && <Divider component="li" />}
-                  </Fragment>
-                ))}
-              </List>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        )}
-      </DescriptionList>
+                    <span>{issue.fields?.issuetype?.name || ''}</span>
+                  </Stack>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+
+            {issue.fields?.assignee?.displayName && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Assignee</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    {issue.fields?.assignee?.avatarUrls?.['24x24'] && (
+                      <Avatar
+                        style={{ height: '24px', width: '24px' }}
+                        src={issue.fields?.assignee?.avatarUrls?.['24x24']}
+                        alt=""
+                      />
+                    )}
+                    <span>{issue.fields?.assignee?.displayName || ''}</span>
+                  </Stack>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+
+            {issue.fields?.reporter?.displayName && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Reporter</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    {issue.fields?.reporter?.avatarUrls?.['24x24'] && (
+                      <Avatar
+                        style={{ height: '24px', width: '24px' }}
+                        src={issue.fields?.reporter?.avatarUrls?.['24x24']}
+                        alt=""
+                      />
+                    )}
+                    <span>{issue.fields?.reporter?.displayName || ''}</span>
+                  </Stack>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+
+            {issue.fields?.status?.name && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Status</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <Chip
+                    size="small"
+                    color={getStatusColor(issue.fields?.status?.statusCategory.name)}
+                    label={issue.fields?.status?.name.toUpperCase()}
+                  />
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+
+            {issue.fields?.labels && issue.fields?.labels.length > 0 && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Labels</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
+                    {issue.fields?.labels.map((label) => (
+                      <Chip
+                        key={label}
+                        size="small"
+                        color="default"
+                        clickable={true}
+                        label={label}
+                        component={Link}
+                        to={`${pluginBasePath(instance)}/search?jql=${encodeURIComponent(`labels = "${label}"`)}`}
+                      />
+                    ))}
+                  </Box>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+
+            {issue.fields?.description && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Description</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <ReactMarkdown linkTarget="_blank">{jiraToMarkdown(issue.fields?.description)}</ReactMarkdown>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+
+            {issue.fields?.parent?.key && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Parent</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <Link
+                    to={`${pluginBasePath(instance)}/search?jql=${encodeURIComponent(
+                      `key = ${issue.fields?.parent.key}`,
+                    )}`}
+                  >
+                    <div>{issue.fields?.parent.key}</div>
+                  </Link>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+          </DescriptionList>
+        </CardContent>
+      </Card>
+
+      {issue.fields?.subtasks && issue.fields?.subtasks.length > 0 && (
+        <Card sx={{ mb: 4 }}>
+          <CardContent>
+            <Typography variant="h6" pb={2}>
+              Subtasks
+            </Typography>
+            <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
+              {issue.fields?.subtasks?.map((childIssue, index) => (
+                <Fragment key={childIssue.id}>
+                  <IssueDetailsIssueLink instance={instance} issue={childIssue} />
+                  {index + 1 !== issue.fields?.subtasks?.length && <Divider component="li" />}
+                </Fragment>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
+      )}
+
+      {issue.fields?.issuelinks && issue.fields?.issuelinks.length > 0 && (
+        <Card sx={{ mb: 4 }}>
+          <CardContent>
+            <Typography variant="h6" pb={2}>
+              Linked Issues
+            </Typography>
+            <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
+              {issue.fields?.issuelinks?.map((childIssue, index) => (
+                <Fragment key={childIssue.id}>
+                  {childIssue.inwardIssue ? (
+                    <IssueDetailsIssueLink instance={instance} issue={childIssue.inwardIssue} />
+                  ) : childIssue.outwardIssue ? (
+                    <IssueDetailsIssueLink instance={instance} issue={childIssue.outwardIssue} />
+                  ) : (
+                    <div></div>
+                  )}
+                  {index + 1 !== issue.fields?.issuelinks?.length && <Divider component="li" />}
+                </Fragment>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
+      )}
     </DetailsDrawer>
   );
 };
@@ -338,12 +354,13 @@ export const Issues: FunctionComponent<{
   jql: string;
   page: { page: number; perPage: number };
   setPage: (page: number, perPage: number) => void;
+  times: ITimes;
   title: string;
-}> = ({ instance, title, description, jql, page, setPage }) => {
+}> = ({ instance, title, description, jql, page, setPage, times }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<{ issues: IIssue[]; total: number }, APIError>(
-    ['jira/projects', instance, jql, page],
+    ['jira/projects', instance, jql, page, times],
     async () => {
       return apiContext.client.get<{ issues: IIssue[]; total: number }>(
         `/api/plugins/jira/issues?jql=${encodeURIComponent(jql || '')}&startAt=${page.page - 1}&maxResults=${
@@ -394,8 +411,9 @@ export const IssuesWrapper: FunctionComponent<{
   description?: string;
   instance: IPluginInstance;
   jql: string;
+  times: ITimes;
   title: string;
-}> = ({ instance, title, description, jql }) => {
+}> = ({ instance, title, description, jql, times }) => {
   const [options, setOptions] = useState<{ page: number; perPage: number }>({
     page: 1,
     perPage: 10,
@@ -409,6 +427,7 @@ export const IssuesWrapper: FunctionComponent<{
       jql={jql}
       page={options}
       setPage={(page, perPage) => setOptions({ page: page, perPage: perPage })}
+      times={times}
     />
   );
 };

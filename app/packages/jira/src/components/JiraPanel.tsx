@@ -10,11 +10,17 @@ interface IOptions {
   jql?: string;
 }
 
-const JiraPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, description, options, instance }) => {
+const JiraPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
+  title,
+  description,
+  options,
+  instance,
+  times,
+}) => {
   if (options?.jql) {
     return (
       <AuthContextProvider title={title} description={description} instance={instance}>
-        <IssuesWrapper instance={instance} title={title} description={description} jql={options.jql} />
+        <IssuesWrapper instance={instance} title={title} description={description} jql={options.jql} times={times} />
       </AuthContextProvider>
     );
   }

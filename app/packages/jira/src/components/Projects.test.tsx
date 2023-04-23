@@ -44,6 +44,11 @@ describe('Projects', () => {
                 name: 'jira',
                 type: 'jira',
               }}
+              times={{
+                time: 'last15Minutes',
+                timeEnd: 0,
+                timeStart: 0,
+              }}
             />
           </APIContext.Provider>
         </QueryClientProvider>

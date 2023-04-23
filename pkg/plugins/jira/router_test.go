@@ -193,6 +193,7 @@ func TestAuthToken(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jira")
 		i.EXPECT().TokenFromCookie(gomock.Any()).Return(&instance.Token{Email: "admin@kobs.io", Token: "token"}, nil)
+		i.EXPECT().TokenToCookie(gomock.Any()).Return(&http.Cookie{}, nil)
 		i.EXPECT().GetSelf(gomock.Any(), gomock.Any()).Return(nil, nil)
 		i.EXPECT().GetURL().Return("jira.com")
 
