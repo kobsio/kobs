@@ -13,6 +13,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/harbor"
 	"github.com/kobsio/kobs/pkg/plugins/helm"
 	"github.com/kobsio/kobs/pkg/plugins/jaeger"
+	"github.com/kobsio/kobs/pkg/plugins/jira"
 	"github.com/kobsio/kobs/pkg/plugins/kiali"
 	"github.com/kobsio/kobs/pkg/plugins/klogs"
 	"github.com/kobsio/kobs/pkg/plugins/mongodb"
@@ -43,6 +44,7 @@ func main() {
 		harbor.New(),
 		helm.New(),
 		jaeger.New(),
+		jira.New(),
 		kiali.New(),
 		klogs.New(),
 		mongodb.New(),

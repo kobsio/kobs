@@ -120,6 +120,11 @@ func (router *Router) oauthToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cookie, err := i.TokenToCookie(token)
+	if err == nil {
+		http.SetCookie(w, cookie)
+	}
+
 	render.JSON(w, r, OAuthResponse{
 		Organization: i.GetOrganization(),
 		Token:        token.AccessToken,

@@ -1,44 +1,34 @@
 {
-  "name": "@kobsio/app",
+  "name": "@kobsio/jira",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "analyze": "source-map-explorer 'dist/**/*.js' --no-border-checks",
-    "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@fontsource/roboto": "^4.5.8",
     "@kobsio/core": "*",
-    "@kobsio/flux": "*",
-    "@kobsio/github": "*",
-    "@kobsio/grafana": "*",
-    "@kobsio/harbor": "*",
-    "@kobsio/helm": "*",
-    "@kobsio/jaeger": "*",
-    "@kobsio/jira": "*",
-    "@kobsio/kiali": "*",
-    "@kobsio/klogs": "*",
-    "@kobsio/mongodb": "*",
-    "@kobsio/opsgenie": "*",
-    "@kobsio/prometheus": "*",
-    "@kobsio/rss": "*",
-    "@kobsio/signalsciences": "*",
-    "@kobsio/sonarqube": "*",
-    "@kobsio/techdocs": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.121",
     "@mui/material": "^5.11.7",
     "@tanstack/react-query": "^4.24.4",
-    "isomorphic-fetch": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
@@ -47,16 +37,21 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@types/node": "^18.11.19",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/node": "^14.18.36",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/coverage-c8": "^0.28.4",
-    "source-map-explorer": "^2.5.3",
+    "@vitest/ui": "^0.28.4",
+    "jsdom": "^21.1.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0",
-    "vite-plugin-top-level-await": "^1.3.0",
+    "vite-plugin-dts": "^1.7.2",
     "vitest": "^0.28.4"
+  },
+  "dependencies": {
+    "react-markdown": "^8.0.7"
   }
 }

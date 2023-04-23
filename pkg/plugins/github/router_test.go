@@ -223,6 +223,7 @@ func TestOauthToken(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("github")
 		i.EXPECT().TokenFromCookie(gomock.Any()).Return(&oauth2.Token{AccessToken: "accesstoken"}, nil)
+		i.EXPECT().TokenToCookie(gomock.Any()).Return(&http.Cookie{}, nil)
 		i.EXPECT().OAuthIsAuthenticated(gomock.Any(), gomock.Any()).Return(&github.User{Login: &login}, nil)
 		i.EXPECT().GetOrganization().Return("kobsio")
 

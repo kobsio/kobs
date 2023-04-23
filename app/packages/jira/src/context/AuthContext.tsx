@@ -1,45 +1,16 @@
 import { APIContext, IAPIContext, IPluginInstance, PluginPanel } from '@kobsio/core';
 import { Alert, AlertTitle, Box, Button, CircularProgress } from '@mui/material';
-import { Octokit } from '@octokit/rest';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, createContext, useContext } from 'react';
-import { Link } from 'react-router-dom';
 
-const LoginButton: FunctionComponent<{ instance: IPluginInstance }> = ({ instance }) => {
-  const apiContext = useContext<IAPIContext>(APIContext);
-
-  const { isError, isLoading, data } = useQuery<{ url?: string }, Error>(['github/oauth/login', instance], async () => {
-    return apiContext.client.get<{ url?: string }>(`/api/plugins/github/oauth/login`, {
-      headers: {
-        'x-kobs-cluster': instance.cluster,
-        'x-kobs-plugin': instance.name,
-      },
-    });
-  });
-
-  if (isLoading || isError || !data?.url) {
-    return null;
-  }
-
-  return (
-    <Button color="inherit" size="small" component={Link} to={data?.url ?? ''} target="_blank">
-      LOGIN
-    </Button>
-  );
-};
+import { Login } from './Login';
 
 export interface IAuthContext {
-  getOctokitClient: () => Octokit;
-  organization: string;
-  token: string;
-  username: string;
+  url: string;
 }
 
 export const AuthContext = createContext<IAuthContext>({
-  getOctokitClient: () => new Octokit(),
-  organization: '',
-  token: '',
-  username: '',
+  url: '',
 });
 
 export const AuthContextConsumer = AuthContext.Consumer;
@@ -52,31 +23,21 @@ export const AuthContextProvider: FunctionComponent<{
 }> = ({ title, description, instance, children }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<
-    { organization: string; token: string; username: string },
-    Error
-  >(
-    ['github/oauth', instance],
+  const { isError, isLoading, error, data, refetch } = useQuery<{ url: string }, Error>(
+    ['jira/auth', instance],
     async () => {
-      return apiContext.client.get<{ organization: string; token: string; username: string }>(
-        '/api/plugins/github/oauth',
-        {
-          headers: {
-            'x-kobs-cluster': instance.cluster,
-            'x-kobs-plugin': instance.name,
-          },
+      return apiContext.client.get<{ url: string }>('/api/plugins/jira/auth', {
+        headers: {
+          'x-kobs-cluster': instance.cluster,
+          'x-kobs-plugin': instance.name,
         },
-      );
+      });
     },
     { staleTime: 24 * 60 * 60 * 1000 },
   );
 
-  const getOctokitClient = (): Octokit => {
-    return new Octokit({ auth: data?.token });
-  };
-
   /**
-   * We can not use the `UseQueryWrapper` component here, because the `AuthContextProvider` can be used on the GitHub
+   * We can not use the `UseQueryWrapper` component here, because the `AuthContextProvider` can be used on the Jira
    * plugin page or within a panel on a dashboard, so that we have to render the loading indicator and the error alert
    * within a PluginPanel component when a title is provided or without a PluginPanel component when no title is
    * provided.
@@ -110,7 +71,7 @@ export const AuthContextProvider: FunctionComponent<{
         severity="error"
         action={
           <>
-            <LoginButton instance={instance} />
+            <Login instance={instance} refetchAuth={refetch} />
             <Button color="inherit" size="small" onClick={() => refetch()}>
               RETRY
             </Button>
@@ -136,10 +97,7 @@ export const AuthContextProvider: FunctionComponent<{
   return (
     <AuthContext.Provider
       value={{
-        getOctokitClient: getOctokitClient,
-        organization: data?.organization ?? '',
-        token: data?.token ?? '',
-        username: data?.username ?? '',
+        url: data?.url ?? '',
       }}
     >
       {children}
