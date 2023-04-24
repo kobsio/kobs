@@ -7,11 +7,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/golang/mock/gomock"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/plugins/rss/instance"
 	"github.com/kobsio/kobs/pkg/utils"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
 	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/require"
 )

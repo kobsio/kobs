@@ -7,6 +7,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/plugins/techdocs/providers"
 	"github.com/kobsio/kobs/pkg/plugins/techdocs/shared"
+
 	"github.com/mitchellh/mapstructure"
 )
 

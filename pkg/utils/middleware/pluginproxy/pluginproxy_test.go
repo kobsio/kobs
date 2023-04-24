@@ -1,15 +1,17 @@
 package pluginproxy
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-chi/render"
-	"github.com/golang/mock/gomock"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/utils"
+
+	"github.com/go-chi/render"
+	"github.com/golang/mock/gomock"
 )
 
 func TestProxy(t *testing.T) {
@@ -27,7 +29,7 @@ func TestProxy(t *testing.T) {
 		handler := mw(hubHandler)
 
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest(http.MethodGet, "/path", nil)
+		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/path", nil)
 		handler.ServeHTTP(w, r)
 
 		utils.AssertStatusEq(t, w, http.StatusBadRequest)
@@ -42,7 +44,7 @@ func TestProxy(t *testing.T) {
 		handler := mw(hubHandler)
 
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest(http.MethodGet, "/path", nil)
+		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/path", nil)
 		r.Header.Set("x-kobs-cluster", "hub")
 		handler.ServeHTTP(w, r)
 
@@ -58,7 +60,7 @@ func TestProxy(t *testing.T) {
 		handler := mw(hubHandler)
 
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest(http.MethodGet, "/path", nil)
+		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/path", nil)
 		r.Header.Set("x-kobs-cluster", "unknown")
 
 		clustersClient.EXPECT().GetCluster("unknown").Return(nil)
@@ -76,7 +78,7 @@ func TestProxy(t *testing.T) {
 		handler := mw(hubHandler)
 
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest(http.MethodGet, "/path", nil)
+		r, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/path", nil)
 		r.Header.Set("x-kobs-cluster", "foo")
 
 		clusterClient := cluster.NewMockClient(ctrl)

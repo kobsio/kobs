@@ -7,15 +7,15 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/go-github/github"
 	"github.com/kobsio/kobs/pkg/plugins/github/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils"
-	"golang.org/x/oauth2"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/golang/mock/gomock"
+	"github.com/google/go-github/github"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
 )
 
 func TestGetInstance(t *testing.T) {

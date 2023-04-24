@@ -6,18 +6,14 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"regexp"
 	"time"
 
-	"github.com/google/go-github/github"
 	"github.com/kobsio/kobs/pkg/hub/auth/jwt"
+
+	"github.com/google/go-github/github"
 	"github.com/mitchellh/mapstructure"
 	"golang.org/x/oauth2"
 	githuboauth "golang.org/x/oauth2/github"
-)
-
-var (
-	slugifyRe = regexp.MustCompile("[^a-z0-9]+")
 )
 
 // Config is the structure of the configuration for a single GitHub instance.

@@ -8,10 +8,10 @@ import (
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/flux/sync"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"go.uber.org/zap"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"go.uber.org/zap"
 )
 
 type Router struct {
@@ -51,7 +51,6 @@ func (router *Router) sync(w http.ResponseWriter, r *http.Request) {
 	}
 
 	errresponse.Render(w, r, http.StatusBadRequest, fmt.Sprintf("The sync operation is not supported for the provided resource: '%s'", resource))
-	return
 }
 
 func Mount(kubernetesClient kubernetes.Client) (chi.Router, error) {

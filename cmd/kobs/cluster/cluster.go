@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,6 +15,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/config"
+
 	"go.uber.org/zap"
 )
 
@@ -34,7 +36,7 @@ type Cmd struct {
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	cfg, err := config.Load(r.Config, *r)
 	if err != nil {
-		log.Error(nil, "Could not load configuration", zap.Error(err))
+		log.Error(context.Background(), "Could not load configuration", zap.Error(err))
 		return err
 	}
 
@@ -58,19 +60,19 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 
 	kubernetesClient, err := kubernetes.NewClient(cfg.Cluster.Kubernetes)
 	if err != nil {
-		log.Error(nil, "Could not create Kubernetes client", zap.Error(err))
+		log.Error(context.Background(), "Could not create Kubernetes client", zap.Error(err))
 		return err
 	}
 
 	pluginsClient, err := clusterPlugins.NewClient(plugins, cfg.Cluster.Plugins, kubernetesClient)
 	if err != nil {
-		log.Error(nil, "Could not create plugins client", zap.Error(err))
+		log.Error(context.Background(), "Could not create plugins client", zap.Error(err))
 		return err
 	}
 
 	apiServer, err := api.New(cfg.Cluster.API, kubernetesClient, pluginsClient)
 	if err != nil {
-		log.Error(nil, "Could not create client server", zap.Error(err))
+		log.Error(context.Background(), "Could not create client server", zap.Error(err))
 		return err
 	}
 	go apiServer.Start()
@@ -81,13 +83,13 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 
-	log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
+	log.Debug(context.Background(), "Start listining for SIGINT and SIGTERM signal")
 	<-done
-	log.Info(nil, "Shutdown kobs client...")
+	log.Info(context.Background(), "Shutdown kobs client...")
 
 	apiServer.Stop()
 
-	log.Info(nil, "Shutdown is done")
+	log.Info(context.Background(), "Shutdown is done")
 
 	return nil
 }

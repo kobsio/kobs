@@ -77,7 +77,6 @@ func TestSaveAndGetPlugins(t *testing.T) {
 }
 
 func TestSaveAndGetNamespaces(t *testing.T) {
-
 	uri, container := setupDatabase(t)
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})

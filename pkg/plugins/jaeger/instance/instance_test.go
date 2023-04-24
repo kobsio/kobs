@@ -23,6 +23,9 @@ func TestDoRequest(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
+		// This is used to test when no context is passed to the function. This should never happen, but we want to make
+		// sure that the function does not panic.
+		//nolint:staticcheck
 		_, err := i.doRequest(nil, "/")
 		require.Error(t, err)
 	})

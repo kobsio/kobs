@@ -8,13 +8,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/kobsio/kobs/pkg/hub/app/settings"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
 

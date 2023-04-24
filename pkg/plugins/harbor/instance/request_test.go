@@ -14,6 +14,9 @@ func TestDoRequest(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 		defer ts.Close()
 
+		// This is used to test when no context is passed to the function. This should never happen, but we want to make
+		// sure that the function does not panic.
+		//nolint:staticcheck
 		_, _, err := doRequest[[]string](nil, ts.Client(), ts.URL)
 		require.Error(t, err)
 	})

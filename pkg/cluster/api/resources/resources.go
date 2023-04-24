@@ -2,9 +2,7 @@ package resources
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
@@ -177,7 +175,7 @@ func (router *Router) createResource(w http.ResponseWriter, r *http.Request) {
 	span.SetAttributes(attribute.Key("path").String(path))
 	log.Debug(ctx, "Create resource", zap.String("namespace", namespace), zap.String("name", name), zap.String("path", path), zap.String("resource", resource))
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -281,11 +279,9 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 			defer ticker.Stop()
 
 			for {
-				select {
-				case <-ticker.C:
-					if err := c.WriteMessage(websocket.PingMessage, nil); err != nil {
-						return
-					}
+				<-ticker.C
+				if err := c.WriteMessage(websocket.PingMessage, nil); err != nil {
+					return
 				}
 			}
 		}()
@@ -355,11 +351,10 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		defer ticker.Stop()
 
 		for {
-			select {
-			case <-ticker.C:
-				if err := c.WriteMessage(websocket.PingMessage, nil); err != nil {
-					return
-				}
+			<-ticker.C
+
+			if err := c.WriteMessage(websocket.PingMessage, nil); err != nil {
+				return
 			}
 		}
 	}()
@@ -371,7 +366,7 @@ func (router *Router) getTerminal(w http.ResponseWriter, r *http.Request) {
 		log.Error(ctx, "Failed to create terminal", zap.Error(err))
 		msg, _ := json.Marshal(terminal.Message{
 			Op:   "stdout",
-			Data: fmt.Sprintf("Failed to create terminal"),
+			Data: "Failed to create terminal",
 		})
 		c.WriteMessage(websocket.TextMessage, msg)
 		return

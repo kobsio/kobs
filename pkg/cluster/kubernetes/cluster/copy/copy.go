@@ -1,6 +1,7 @@
 package copy
 
 import (
+	"context"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -14,7 +15,7 @@ import (
 )
 
 // FileFromPod let a user download a file from a container.
-func FileFromPod(w http.ResponseWriter, config *rest.Config, reqURL *url.URL) error {
+func FileFromPod(ctx context.Context, w http.ResponseWriter, config *rest.Config, reqURL *url.URL) error {
 	reader, outStream := io.Pipe()
 
 	exec, err := remotecommand.NewSPDYExecutor(config, "POST", reqURL)
@@ -24,14 +25,14 @@ func FileFromPod(w http.ResponseWriter, config *rest.Config, reqURL *url.URL) er
 
 	go func() {
 		defer outStream.Close()
-		err = exec.Stream(remotecommand.StreamOptions{
+		err = exec.StreamWithContext(ctx, remotecommand.StreamOptions{
 			Stdin:  os.Stdin,
 			Stdout: outStream,
 			Stderr: os.Stderr,
 			Tty:    false,
 		})
 		if err != nil {
-			log.Error(nil, "Could not copy file from pod")
+			log.Error(context.Background(), "Could not copy file from pod")
 		}
 	}()
 
@@ -43,7 +44,7 @@ func FileFromPod(w http.ResponseWriter, config *rest.Config, reqURL *url.URL) er
 }
 
 // FileToPod let a user upload a file to a container.
-func FileToPod(config *rest.Config, reqURL *url.URL, srcFile multipart.File, destPath string) error {
+func FileToPod(ctx context.Context, config *rest.Config, reqURL *url.URL, srcFile multipart.File, destPath string) error {
 	reader, writer := io.Pipe()
 
 	go func() {
@@ -56,7 +57,7 @@ func FileToPod(config *rest.Config, reqURL *url.URL, srcFile multipart.File, des
 		return err
 	}
 
-	err = exec.Stream(remotecommand.StreamOptions{
+	err = exec.StreamWithContext(ctx, remotecommand.StreamOptions{
 		Stdin:  reader,
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,

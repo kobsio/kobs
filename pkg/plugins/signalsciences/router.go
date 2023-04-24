@@ -8,10 +8,10 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/plugins/signalsciences/instance"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"github.com/signalsciences/go-sigsci"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/signalsciences/go-sigsci"
 	"go.uber.org/zap"
 )
 

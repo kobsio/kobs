@@ -31,7 +31,7 @@ type SessionConfig struct {
 	ParsedDuration time.Duration `json:"-"`
 }
 
-// Instance is the interface which must be implemented by a single SonarQube instance.
+// Instance is the interface which must be implemented by a single Jira instance.
 type Instance interface {
 	GetName() string
 	GetURL() string
@@ -45,16 +45,19 @@ type Instance interface {
 type instance struct {
 	name   string
 	config Config
-	client *http.Client
 }
 
 func (i *instance) getAuthenticatedClient(token *Token) (*jira.Client, error) {
-	client, err := jira.NewClient(i.client, i.config.URL)
+	basicAuthTransport := jira.BasicAuthTransport{
+		Username:  token.Email,
+		Password:  token.Token,
+		Transport: roundtripper.DefaultRoundTripper,
+	}
+
+	client, err := jira.NewClient(basicAuthTransport.Client(), i.config.URL)
 	if err != nil {
 		return nil, err
 	}
-
-	client.Authentication.SetBasicAuth(token.Email, token.Token)
 
 	return client, nil
 }
@@ -139,8 +142,5 @@ func New(name string, options map[string]any) (Instance, error) {
 	return &instance{
 		name:   name,
 		config: config,
-		client: &http.Client{
-			Transport: roundtripper.DefaultRoundTripper,
-		},
 	}, nil
 }

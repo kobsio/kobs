@@ -8,13 +8,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/utils"
-	"github.com/stretchr/testify/require"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetDashboards(t *testing.T) {

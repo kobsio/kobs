@@ -33,25 +33,25 @@ type server struct {
 
 // Start starts serving the metrics server.
 func (s *server) Start() {
-	log.Info(nil, "Metrics server started", zap.String("address", s.Addr))
+	log.Info(context.Background(), "Metrics server started", zap.String("address", s.Addr))
 
 	if err := s.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.Error(nil, "Metrics server died unexpected", zap.Error(err))
+			log.Error(context.Background(), "Metrics server died unexpected", zap.Error(err))
 		}
 	}
 }
 
 // Stop terminates the metrics server gracefully.
 func (s *server) Stop() {
-	log.Debug(nil, "Start shutdown of the metrics server")
+	log.Debug(context.Background(), "Start shutdown of the metrics server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	err := s.Shutdown(ctx)
 	if err != nil {
-		log.Error(nil, "Graceful shutdown of the metrics server failed", zap.Error(err))
+		log.Error(context.Background(), "Graceful shutdown of the metrics server failed", zap.Error(err))
 	}
 }
 
@@ -80,8 +80,9 @@ func New(config Config) Server {
 
 	return &server{
 		&http.Server{
-			Addr:    config.Address,
-			Handler: router,
+			Addr:              config.Address,
+			Handler:           router,
+			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}
 }

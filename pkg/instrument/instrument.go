@@ -124,8 +124,6 @@ func handleInstrumentation(reqInfo *RequestInfo) func(next http.Handler) http.Ha
 					}
 
 					log.Panic(r.Context(), "Request completed", fields...)
-
-					panic(err)
 				}
 			}()
 
@@ -166,7 +164,6 @@ func handleInstrumentation(reqInfo *RequestInfo) func(next http.Handler) http.Ha
 					log.Info(r.Context(), "Request completed", fields...)
 				}
 			}
-
 		})
 	}
 }

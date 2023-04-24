@@ -1,6 +1,7 @@
 package watcher
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,14 +28,14 @@ type Cmd struct {
 
 	Watcher struct {
 		Watcher  watcher.Config  `json:"watcher" embed:"" prefix:"watcher." envprefix:"WATCHER_"`
-		Clusters clusters.Config `json:"clusters" json:"clusters" kong:"-"`
+		Clusters clusters.Config `json:"clusters" kong:"-"`
 	} `json:"watcher" embed:"" prefix:"watcher." envprefix:"KOBS_WATCHER_"`
 }
 
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	cfg, err := config.Load(r.Config, *r)
 	if err != nil {
-		log.Error(nil, "Could not load configuration", zap.Error(err))
+		log.Error(context.Background(), "Could not load configuration", zap.Error(err))
 		return err
 	}
 
@@ -58,18 +59,18 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 
 	clustersClient, err := clusters.NewClient(cfg.Watcher.Clusters)
 	if err != nil {
-		log.Error(nil, "Could not create clusters client", zap.Error(err))
+		log.Error(context.Background(), "Could not create clusters client", zap.Error(err))
 		return err
 	}
 
 	dbClient, err := db.NewClient(cfg.Database)
 	if err != nil {
-		log.Error(nil, "Could not create database client", zap.Error(err))
+		log.Error(context.Background(), "Could not create database client", zap.Error(err))
 	}
 
 	watcherClient, err := watcher.NewClient(cfg.Watcher.Watcher, clustersClient, dbClient)
 	if err != nil {
-		log.Error(nil, "Could not create watcher", zap.Error(err))
+		log.Error(context.Background(), "Could not create watcher", zap.Error(err))
 		return err
 	}
 	go watcherClient.Watch()
@@ -80,13 +81,13 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 
-	log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
+	log.Debug(context.Background(), "Start listining for SIGINT and SIGTERM signal")
 	<-done
-	log.Info(nil, "Shutdown kobs watcher...")
+	log.Info(context.Background(), "Shutdown kobs watcher...")
 
 	watcherClient.Stop()
 
-	log.Info(nil, "Shutdown is done")
+	log.Info(context.Background(), "Shutdown is done")
 
 	return nil
 }

@@ -232,7 +232,6 @@ func (router *Router) resourcesHandler(w http.ResponseWriter, r *http.Request) {
 								muNamespaces.Lock()
 								resourceResponseNamespace = append(resourceResponseNamespace, ResourceResponseNamespace{Namespace: namespace, Manifest: manifest})
 								muNamespaces.Unlock()
-								return
 							}(namespace)
 						}
 
@@ -251,7 +250,6 @@ func (router *Router) resourcesHandler(w http.ResponseWriter, r *http.Request) {
 					muClusters.Lock()
 					resourceResponseCluster = append(resourceResponseCluster, ResourceResponseCluster{Cluster: cluster, Error: fmt.Sprintf("Failed to find cluster %s", cluster)})
 					muClusters.Unlock()
-					return
 				}(cluster)
 			}
 
@@ -264,7 +262,6 @@ func (router *Router) resourcesHandler(w http.ResponseWriter, r *http.Request) {
 			muResourceResponses.Lock()
 			resourceResponses = append(resourceResponses, ResourceResponse{Resource: r, Clusters: resourceResponseCluster, Dashboards: dashboards})
 			muResourceResponses.Unlock()
-			return
 		}(resource)
 	}
 

@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	gomock "github.com/golang/mock/gomock"
 	"github.com/kobsio/kobs/pkg/plugins/techdocs/providers"
 	"github.com/kobsio/kobs/pkg/plugins/techdocs/shared"
+
+	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
 

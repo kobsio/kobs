@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/kobsio/kobs/pkg/plugins/klogs/instance"
 	"github.com/kobsio/kobs/pkg/utils"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
@@ -208,7 +208,7 @@ func TestGetAggregation(t *testing.T) {
 
 		var body bytes.Buffer
 		require.NoError(t, json.NewEncoder(&body).Encode(aggregation))
-		req, _ := http.NewRequest(http.MethodGet, "/aggregation", &body)
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/aggregation", &body)
 		req.Header.Add("x-kobs-plugin", "instance")
 		w := httptest.NewRecorder()
 
@@ -252,7 +252,7 @@ func TestGetAggregation(t *testing.T) {
 		mockInstance.EXPECT().GetName().Return("instance")
 		mockInstance.EXPECT().GetAggregation(gomock.Any(), gomock.Any()).Return([]map[string]any{}, []string{}, fmt.Errorf("unexpected error"))
 
-		req, _ := http.NewRequest(http.MethodGet, "/aggregation", strings.NewReader(`{}`))
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/aggregation", strings.NewReader(`{}`))
 		req.Header.Add("x-kobs-plugin", "instance")
 		w := httptest.NewRecorder()
 

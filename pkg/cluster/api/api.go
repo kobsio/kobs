@@ -43,25 +43,25 @@ type server struct {
 
 // Start starts serving the client server.
 func (s *server) Start() {
-	log.Info(nil, "Client server started", zap.String("address", s.server.Addr))
+	log.Info(context.Background(), "Client server started", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.Error(nil, "Client server died unexpected", zap.Error(err))
+			log.Error(context.Background(), "Client server died unexpected", zap.Error(err))
 		}
 	}
 }
 
 // Stop terminates the client server gracefully.
 func (s *server) Stop() {
-	log.Debug(nil, "Start shutdown of the client server")
+	log.Debug(context.Background(), "Start shutdown of the client server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		log.Error(nil, "Graceful shutdown of the client server failed", zap.Error(err))
+		log.Error(context.Background(), "Graceful shutdown of the client server failed", zap.Error(err))
 	}
 }
 
@@ -99,8 +99,9 @@ func New(config Config, kubernetesClient kubernetes.Client, pluginsClient plugin
 
 	return &server{
 		server: &http.Server{
-			Addr:    config.Address,
-			Handler: router,
+			Addr:              config.Address,
+			Handler:           router,
+			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}, nil
 }
