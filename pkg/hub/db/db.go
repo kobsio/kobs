@@ -613,8 +613,7 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, n
 	span.SetAttributes(attribute.Key("offset").Int(offset))
 	defer span.End()
 
-	var filter bson.M
-	filter = make(bson.M)
+	filter := make(bson.M)
 
 	if searchTerm != "" {
 		filter["name"] = bson.M{"$regex": primitive.Regex{Pattern: searchTerm, Options: "i"}}
@@ -664,8 +663,7 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 	span.SetAttributes(attribute.Key("searchTerm").String(searchTerm))
 	defer span.End()
 
-	var filter bson.M
-	filter = make(bson.M)
+	filter := make(bson.M)
 
 	if searchTerm != "" {
 		filter["name"] = bson.M{"$regex": primitive.Regex{Pattern: searchTerm, Options: "i"}}
@@ -776,8 +774,7 @@ func (c *client) GetDashboards(ctx context.Context, clusters, namespaces []strin
 	_, span := c.tracer.Start(ctx, "db.GetDashboards")
 	defer span.End()
 
-	var filter bson.M
-	filter = make(bson.M)
+	filter := make(bson.M)
 
 	if len(clusters) > 0 {
 		filter["cluster"] = bson.M{"$in": clusters}

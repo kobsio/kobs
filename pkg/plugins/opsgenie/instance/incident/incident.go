@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
@@ -43,7 +43,7 @@ func (c *Client) GetTimeline(ctx context.Context, id string) ([]Entry, error) {
 		return data.Data.Entries, nil
 	}
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}

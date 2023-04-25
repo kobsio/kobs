@@ -46,7 +46,7 @@ func (c *client) Shutdown() {
 
 	err := c.tracerProvider.Shutdown(ctx)
 	if err != nil {
-		log.Error(nil, "Graceful shutdown of the tracer provider failed", zap.Error(err))
+		log.Error(context.Background(), "Graceful shutdown of the tracer provider failed", zap.Error(err))
 	}
 }
 

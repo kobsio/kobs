@@ -5,6 +5,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/plugins/techdocs/providers/azure"
 	"github.com/kobsio/kobs/pkg/plugins/techdocs/providers/s3"
+
 	"github.com/stretchr/testify/require"
 )
 

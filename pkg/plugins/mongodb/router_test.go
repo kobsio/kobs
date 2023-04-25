@@ -11,13 +11,13 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/mongodb/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils"
-	"github.com/orlangure/gnomock"
-	"github.com/orlangure/gnomock/preset/mongo"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/golang/mock/gomock"
+	"github.com/orlangure/gnomock"
+	"github.com/orlangure/gnomock/preset/mongo"
 	"github.com/stretchr/testify/require"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func TestGetInstance(t *testing.T) {

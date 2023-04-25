@@ -35,7 +35,7 @@ describe('TeamRepos', () => {
                 name: 'github',
                 type: 'github',
               }}
-              times={{ time: 'last15Minutes', timeEnd: 2, timeStart: 1 }}
+              times={{ time: 'last15Minutes', timeEnd: 0, timeStart: 0 }}
             />
           </AuthContext.Provider>
         </QueryClientProvider>

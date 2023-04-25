@@ -15,6 +15,9 @@ func TestDoRequest(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 		defer ts.Close()
 
+		// This is used to test when no context is passed to the function. This should never happen, but we want to make
+		// sure that the function does not panic.
+		//nolint:staticcheck
 		_, err := doRequest[[]string](nil, ts.Client(), "", http.MethodGet, ts.URL, nil)
 		require.Error(t, err)
 	})
@@ -50,8 +53,7 @@ func TestDoRequest(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		var expectedMap map[string][]string
-		expectedMap = make(map[string][]string)
+		expectedMap := make(map[string][]string)
 		expectedMap["cluster1"] = []string{"default", "kube-system"}
 
 		ctx := context.Background()

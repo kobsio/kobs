@@ -1,6 +1,8 @@
 package provider
 
 import (
+	"context"
+
 	"github.com/kobsio/kobs/pkg/instrument/log"
 
 	"go.uber.org/zap"
@@ -17,7 +19,7 @@ type Config struct {
 }
 
 func NewRestConfig(config Config) (*rest.Config, error) {
-	log.Debug(nil, "Create rest config", zap.String("provider", config.Type))
+	log.Debug(context.Background(), "Create rest config", zap.String("provider", config.Type))
 
 	switch config.Type {
 	case "kubeconfig":

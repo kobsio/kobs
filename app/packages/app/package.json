@@ -24,6 +24,7 @@
     "@kobsio/harbor": "*",
     "@kobsio/helm": "*",
     "@kobsio/jaeger": "*",
+    "@kobsio/jira": "*",
     "@kobsio/kiali": "*",
     "@kobsio/klogs": "*",
     "@kobsio/mongodb": "*",

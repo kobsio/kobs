@@ -236,7 +236,7 @@ func TestParser(t *testing.T) {
 	t.Run("with parsing errors", func(t *testing.T) {
 		_, err := defaultParser.Parse("namespace = 'hello' _ant_ content_level='ERROR'")
 		require.Error(t, err)
-		require.Contains(t, err.Error(), "couldn't parse query")
+		require.Contains(t, err.Error(), "Failed to parse query:")
 	})
 
 	t.Run("comparing columns with each other isn't supported", func(t *testing.T) {

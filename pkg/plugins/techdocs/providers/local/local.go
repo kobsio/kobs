@@ -3,7 +3,7 @@ package local
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
@@ -21,7 +21,7 @@ type Provider struct {
 }
 
 func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
-	files, err := ioutil.ReadDir(p.config.RootDirectory)
+	files, err := os.ReadDir(p.config.RootDirectory)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 	for _, file := range files {
 		if file.IsDir() {
 			indexPath := fmt.Sprintf("%s/%s/index.yaml", p.config.RootDirectory, file.Name())
-			content, err := ioutil.ReadFile(indexPath)
+			content, err := os.ReadFile(indexPath)
 			if err != nil {
 				log.Error(ctx, "Failed to read file", zap.Error(err), zap.String("file", indexPath))
 			} else {
@@ -53,7 +53,7 @@ func (p *Provider) GetIndex(ctx context.Context, service string) (*shared.Index,
 		return nil, fmt.Errorf("service name can not contain \"./\" or \"./\"")
 	}
 
-	content, err := ioutil.ReadFile(fmt.Sprintf("%s/%s/index.yaml", p.config.RootDirectory, service))
+	content, err := os.ReadFile(fmt.Sprintf("%s/%s/index.yaml", p.config.RootDirectory, service))
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (p *Provider) GetMarkdown(ctx context.Context, service, path string) (strin
 		return "", fmt.Errorf("path name can not contain \"./\" or \"./\"")
 	}
 
-	content, err := ioutil.ReadFile(fmt.Sprintf("%s/%s/%s", p.config.RootDirectory, service, path))
+	content, err := os.ReadFile(fmt.Sprintf("%s/%s/%s", p.config.RootDirectory, service, path))
 	if err != nil {
 		return "", err
 	}
@@ -92,7 +92,7 @@ func (p *Provider) GetFile(ctx context.Context, service, path string) ([]byte, e
 		return nil, fmt.Errorf("path name can not contain \"./\" or \"./\"")
 	}
 
-	return ioutil.ReadFile(fmt.Sprintf("%s/%s/%s", p.config.RootDirectory, service, path))
+	return os.ReadFile(fmt.Sprintf("%s/%s/%s", p.config.RootDirectory, service, path))
 }
 
 func New(config Config) (*Provider, error) {

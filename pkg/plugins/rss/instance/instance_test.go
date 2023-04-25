@@ -11,7 +11,6 @@ import (
 func TestGetName(t *testing.T) {
 	i := New("rss", http.DefaultClient)
 	require.Equal(t, "rss", i.GetName())
-
 }
 
 func TestGetFeed(t *testing.T) {

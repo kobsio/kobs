@@ -86,9 +86,6 @@ type Chart struct {
 	// Files are miscellaneous files in a chart archive,
 	// e.g. README, LICENSE, etc.
 	Files []*File `json:"files"`
-
-	parent       *Chart
-	dependencies []*Chart
 }
 
 type File struct {

@@ -99,12 +99,9 @@ describe('GithubPanel', () => {
               title="Test"
               instance={{
                 cluster: 'hub',
-                id: '/cluster/hub/type/sonarqube/name/sonarqube',
-                name: 'sonarqube',
-                options: {
-                  address: 'https://sonarcloud.io',
-                },
-                type: 'sonarqube',
+                id: '/cluster/hub/type/github/name/github',
+                name: 'github',
+                type: 'github',
               }}
               options={options}
               times={{

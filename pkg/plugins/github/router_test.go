@@ -7,15 +7,15 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/go-github/github"
 	"github.com/kobsio/kobs/pkg/plugins/github/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils"
-	"golang.org/x/oauth2"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/golang/mock/gomock"
+	"github.com/google/go-github/github"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
 )
 
 func TestGetInstance(t *testing.T) {
@@ -223,6 +223,7 @@ func TestOauthToken(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("github")
 		i.EXPECT().TokenFromCookie(gomock.Any()).Return(&oauth2.Token{AccessToken: "accesstoken"}, nil)
+		i.EXPECT().TokenToCookie(gomock.Any()).Return(&http.Cookie{}, nil)
 		i.EXPECT().OAuthIsAuthenticated(gomock.Any(), gomock.Any()).Return(&github.User{Login: &login}, nil)
 		i.EXPECT().GetOrganization().Return("kobsio")
 

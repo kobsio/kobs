@@ -8,7 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
 	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/hub/app/settings"
@@ -17,6 +16,7 @@ import (
 	"github.com/kobsio/kobs/pkg/utils"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
 	"go.opentelemetry.io/otel"
 )
 

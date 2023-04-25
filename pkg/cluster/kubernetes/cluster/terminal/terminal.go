@@ -5,6 +5,7 @@
 package terminal
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -96,15 +97,15 @@ func (t Session) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-// StartProcess executes the given command (cmd) in the container specified in the request and connects it up with the
+// StartProcess executes the given command in the container specified in the request and connects it up with the
 // ptyHandler (a session).
-func StartProcess(config *rest.Config, reqURL *url.URL, cmd []string, ptyHandler PtyHandler) error {
+func StartProcess(ctx context.Context, config *rest.Config, reqURL *url.URL, ptyHandler PtyHandler) error {
 	exec, err := remotecommand.NewSPDYExecutor(config, "POST", reqURL)
 	if err != nil {
 		return err
 	}
 
-	err = exec.Stream(remotecommand.StreamOptions{
+	err = exec.StreamWithContext(ctx, remotecommand.StreamOptions{
 		Stdin:             ptyHandler,
 		Stdout:            ptyHandler,
 		Stderr:            ptyHandler,

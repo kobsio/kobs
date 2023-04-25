@@ -44,25 +44,25 @@ type server struct {
 
 // Start starts serving the hub server.
 func (s *server) Start() {
-	log.Info(nil, "Hub server started", zap.String("address", s.server.Addr))
+	log.Info(context.Background(), "Hub server started", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.Error(nil, "Hub server died unexpected", zap.Error(err))
+			log.Error(context.Background(), "Hub server died unexpected", zap.Error(err))
 		}
 	}
 }
 
 // Stop terminates the hub server gracefully.
 func (s *server) Stop() {
-	log.Debug(nil, "Start shutdown of the hub server")
+	log.Debug(context.Background(), "Start shutdown of the hub server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		log.Error(nil, "Graceful shutdown of the hub server failed", zap.Error(err))
+		log.Error(context.Background(), "Graceful shutdown of the hub server failed", zap.Error(err))
 	}
 }
 
@@ -100,13 +100,13 @@ func New(config Config, appSettings settings.Settings, authClient auth.Client, c
 			r.Mount("/resources", resourcesAPI.Mount(appSettings, clustersClient, dbClient))
 			r.Mount("/plugins", pluginsClient.Mount())
 		})
-
 	})
 
 	return &server{
 		server: &http.Server{
-			Addr:    config.Address,
-			Handler: router,
+			Addr:              config.Address,
+			Handler:           router,
+			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}, nil
 }

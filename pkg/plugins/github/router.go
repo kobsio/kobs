@@ -7,10 +7,10 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/github/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"go.uber.org/zap"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"go.uber.org/zap"
 )
 
 // OAuthResponse is the response data returned when the a user finished the oauth process or when the user is
@@ -118,6 +118,11 @@ func (router *Router) oauthToken(w http.ResponseWriter, r *http.Request) {
 		log.Error(r.Context(), "Failed to get user", zap.Error(err))
 		errresponse.Render(w, r, http.StatusBadRequest, "Failed to get user")
 		return
+	}
+
+	cookie, err := i.TokenToCookie(token)
+	if err == nil {
+		http.SetCookie(w, cookie)
 	}
 
 	render.JSON(w, r, OAuthResponse{

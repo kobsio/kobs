@@ -98,18 +98,18 @@ func (mr *MockInstanceMockRecorder) GetName() *gomock.Call {
 }
 
 // getFields mocks base method.
-func (m *MockInstance) getFields(ctx context.Context) (Fields, error) {
+func (m *MockInstance) getFields() (Fields, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "getFields", ctx)
+	ret := m.ctrl.Call(m, "getFields")
 	ret0, _ := ret[0].(Fields)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // getFields indicates an expected call of getFields.
-func (mr *MockInstanceMockRecorder) getFields(ctx interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) getFields() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "getFields", reflect.TypeOf((*MockInstance)(nil).getFields), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "getFields", reflect.TypeOf((*MockInstance)(nil).getFields))
 }
 
 // refreshCachedFields mocks base method.

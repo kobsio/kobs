@@ -191,7 +191,6 @@ func (c *client) Proxy(w http.ResponseWriter, r *http.Request) {
 	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
 		log.Error(r.Context(), "client request failed", zap.Error(err), zap.String("clientName", c.config.Name))
 		errresponse.Render(w, r, http.StatusBadGateway)
-		return
 	}
 
 	proxy.ServeHTTP(w, r)
