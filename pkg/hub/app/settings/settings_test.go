@@ -5,6 +5,7 @@ import (
 
 	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
+
 	"github.com/stretchr/testify/require"
 )
 

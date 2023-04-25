@@ -1,13 +1,13 @@
-// nolint: govet
 package parser
 
 import (
 	"fmt"
 	"strings"
 
+	"github.com/kobsio/kobs/pkg/utils"
+
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
-	"github.com/kobsio/kobs/pkg/utils"
 )
 
 // Grammar
@@ -184,12 +184,14 @@ func (s *SQLParser) Parse(query string) (string, error) {
 	s.errors = nil
 	expr, err := P.ParseString("", query)
 	if err != nil {
+		// This error is directly returned to the user, so that it should start with an uppercase letter.
+		//nolint:staticcheck
 		return "", fmt.Errorf("Failed to parse query: %w", err)
 	}
 
 	r := s.parseExpr(expr)
 	if s.errors != nil {
-		return r, fmt.Errorf("Failed to convert query to SQL")
+		return r, fmt.Errorf("failed to convert query to SQL")
 	}
 	return r, nil
 }

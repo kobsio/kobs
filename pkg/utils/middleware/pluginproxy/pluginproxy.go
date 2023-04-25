@@ -34,7 +34,7 @@ func New(clustersClient clusters.Client) func(http.Handler) http.Handler {
 
 			clusterClient.Proxy(w, r)
 		})
-
 	}
+
 	return proxy
 }

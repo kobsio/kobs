@@ -26,6 +26,9 @@ func TestGetTimeline(t *testing.T) {
 			client:  opsgenieClient,
 		}
 
+		// This is used to test when no context is passed to the function. This should never happen, but we want to make
+		// sure that the function does not panic.
+		//nolint:staticcheck
 		_, err := client.GetTimeline(nil, "")
 		require.Error(t, err)
 	})

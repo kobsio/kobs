@@ -175,7 +175,7 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	// If the count of documents is 0 we can already return the result, because the following query wouldn't return any
 	// documents.
 	if count == 0 {
-		return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
+		return documents, fields, count, time.Since(queryStartTime).Milliseconds(), buckets, nil
 	}
 
 	// Now we are building and executing our sql query. We always return all fields from the logs table, where the
@@ -201,8 +201,7 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 			return nil, nil, 0, 0, nil, err
 		}
 
-		var document map[string]any
-		document = make(map[string]any)
+		document := make(map[string]any)
 		document["timestamp"] = r.Timestamp
 		document["cluster"] = r.Cluster
 		document["namespace"] = r.Namespace
@@ -234,5 +233,5 @@ func (i *instance) GetLogs(ctx context.Context, query, order, orderBy string, li
 	})
 
 	log.Debug(ctx, "SQL result raw logs", zap.Int("documentsCount", len(documents)), zap.Int("fieldsCount", len(fields)))
-	return documents, fields, count, time.Now().Sub(queryStartTime).Milliseconds(), buckets, nil
+	return documents, fields, count, time.Since(queryStartTime).Milliseconds(), buckets, nil
 }

@@ -1,7 +1,6 @@
 package instance
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -58,7 +57,7 @@ func Test_getFields(t *testing.T) {
 		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(rowsString, nil)
 		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(rowsNumber, nil)
 
-		fields, err := instance.getFields(context.Background())
+		fields, err := instance.getFields()
 		require.NoError(t, err)
 		require.Equal(t, Fields{
 			Number: []string{"number"},
@@ -75,7 +74,7 @@ func Test_getFields(t *testing.T) {
 
 		wantErr := fmt.Errorf("unexpected error in QueryContext")
 		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(nil, wantErr)
-		_, err := instance.getFields(context.Background())
+		_, err := instance.getFields()
 
 		require.Error(t, err)
 		require.ErrorIs(t, wantErr, err)
@@ -95,7 +94,7 @@ func Test_getFields(t *testing.T) {
 		row.EXPECT().Scan(gomock.Any()).Return(wantErr)
 
 		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(row, nil)
-		_, err := instance.getFields(context.Background())
+		_, err := instance.getFields()
 
 		require.Error(t, err)
 		require.Equal(t, wantErr, err)
@@ -117,7 +116,7 @@ func Test_getFields(t *testing.T) {
 		wantErr := fmt.Errorf("unexpected Error in row.Err()")
 		row.EXPECT().Err().Return(wantErr)
 		querier.EXPECT().QueryContext(gomock.Any(), gomock.Any()).Return(row, nil)
-		_, err := instance.getFields(context.Background())
+		_, err := instance.getFields()
 
 		require.Error(t, err)
 		require.Equal(t, wantErr, err)

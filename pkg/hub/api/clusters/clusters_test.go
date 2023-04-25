@@ -7,14 +7,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/clusters/cluster"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/utils"
-	"github.com/stretchr/testify/require"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetClusters(t *testing.T) {
@@ -61,7 +61,6 @@ func TestGetNamespaces(t *testing.T) {
 
 		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
 		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get namespaces"]}`)
-
 	})
 
 	t.Run("should return namespaces", func(t *testing.T) {

@@ -10,10 +10,10 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
-	"go.uber.org/zap"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"go.uber.org/zap"
 )
 
 type Router struct {

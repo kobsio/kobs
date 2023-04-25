@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/andygrunwald/go-jira"
 	"github.com/kobsio/kobs/pkg/plugins/jira/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils"
 
+	"github.com/andygrunwald/go-jira"
 	"github.com/go-chi/chi/v5"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"

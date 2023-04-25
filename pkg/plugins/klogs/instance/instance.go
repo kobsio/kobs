@@ -36,7 +36,7 @@ type Config struct {
 
 type Instance interface {
 	GetName() string
-	getFields(ctx context.Context) (Fields, error)
+	getFields() (Fields, error)
 	refreshCachedFields() []string
 	GetFields(filter string, fieldType string) []string
 	GetLogs(ctx context.Context, query, order, orderBy string, limit, timeStart, timeEnd int64) ([]map[string]any, []Field, int64, int64, []Bucket, error)
@@ -74,7 +74,10 @@ func (i *instance) GetName() string {
 	return i.name
 }
 
-func (i *instance) getFields(ctx context.Context) (Fields, error) {
+func (i *instance) getFields() (Fields, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+
 	fields := Fields{}
 	now := time.Now().Unix()
 
@@ -110,10 +113,9 @@ func (i *instance) getFields(ctx context.Context) (Fields, error) {
 // refreshCachedFields retrieves all fields for the last 24 hours and merges them with the already cached fields. To get
 // the initial list of cached fields we are running the query before starting the ticker.
 func (i *instance) refreshCachedFields() []string {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-	defer cancel()
+	ctx := context.Background()
 
-	fields, err := i.getFields(ctx)
+	fields, err := i.getFields()
 	if err != nil {
 		log.Error(ctx, "Failed to refresh cached fields", zap.Error(err))
 	} else {
@@ -125,24 +127,20 @@ func (i *instance) refreshCachedFields() []string {
 	defer ticker.Stop()
 
 	for {
-		select {
-		case <-ticker.C:
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-			defer cancel()
+		<-ticker.C
 
-			fields, err := i.getFields(ctx)
-			if err != nil {
-				log.Error(ctx, "Failed to refresh cached fields", zap.Error(err))
-			} else {
-				log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
+		fields, err := i.getFields()
+		if err != nil {
+			log.Error(ctx, "Failed to refresh cached fields", zap.Error(err))
+		} else {
+			log.Info(ctx, "Refreshed fields", zap.Int("stringFieldsCount", len(fields.String)), zap.Int("numberFieldsCount", len(fields.Number)))
 
-				for _, field := range fields.String {
-					i.cachedFields.String = utils.AppendIfStringIsMissing(i.cachedFields.String, field)
-				}
+			for _, field := range fields.String {
+				i.cachedFields.String = utils.AppendIfStringIsMissing(i.cachedFields.String, field)
+			}
 
-				for _, field := range fields.Number {
-					i.cachedFields.Number = utils.AppendIfStringIsMissing(i.cachedFields.Number, field)
-				}
+			for _, field := range fields.Number {
+				i.cachedFields.Number = utils.AppendIfStringIsMissing(i.cachedFields.Number, field)
 			}
 		}
 	}

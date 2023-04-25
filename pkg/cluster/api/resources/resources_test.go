@@ -411,9 +411,10 @@ func TestGetTerminal(t *testing.T) {
 
 		host := strings.TrimPrefix(s.URL, "http://")
 		uri := fmt.Sprintf("ws://%s?namespace=%s&name=%s&container=%s&shell=%s", host, namespace, name, container, shell)
-		ws, _, err := websocket.DefaultDialer.Dial(uri, nil)
+		ws, resp, err := websocket.DefaultDialer.Dial(uri, nil)
 		require.NoError(t, err)
 		defer ws.Close()
+		defer resp.Body.Close()
 	})
 }
 

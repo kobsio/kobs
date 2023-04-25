@@ -41,17 +41,11 @@ func (c *client) List(ctx context.Context, namespace string) ([]*Release, error)
 		return nil, err
 	}
 
-	var secrets map[string][]corev1.Secret
-	secrets = make(map[string][]corev1.Secret)
+	secrets := make(map[string][]corev1.Secret)
 
 	for _, secretItem := range secretsList.Items {
 		key := secretItem.Namespace + "_" + secretItem.Labels["name"]
-
-		if _, ok := secrets[key]; ok {
-			secrets[key] = append(secrets[key], secretItem)
-		} else {
-			secrets[key] = []corev1.Secret{secretItem}
-		}
+		secrets[key] = append(secrets[key], secretItem)
 	}
 
 	for key := range secrets {

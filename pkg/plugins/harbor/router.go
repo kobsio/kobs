@@ -7,10 +7,10 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/harbor/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
-	"go.uber.org/zap"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"go.uber.org/zap"
 )
 
 type Router struct {

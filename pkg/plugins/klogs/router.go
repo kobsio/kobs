@@ -7,14 +7,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/klogs/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
 

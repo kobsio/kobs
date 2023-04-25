@@ -16,13 +16,13 @@ import (
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/utils/middleware/roundtripper"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"go.uber.org/zap"
 )
 
@@ -44,11 +44,9 @@ type Instance interface {
 }
 
 type instance struct {
-	name             string
-	config           Config
-	metrics          []string
-	metricsLastFetch time.Time
-	v1api            v1.API
+	name   string
+	config Config
+	v1api  v1.API
 }
 
 // GetName returns the name of the current Prometheus instance.
@@ -59,7 +57,7 @@ func (i *instance) GetName() string {
 // GetVariable returns all values for a label from the given query. For that we have to retrive the label sets from the
 // Prometheus instance and so that we can add the values for the specified label to the values slice.
 func (i *instance) GetVariable(ctx context.Context, label, query, queryType string, timeStart, timeEnd int64) ([]string, error) {
-	log.Debug(ctx, "Query variable values", zap.String("query", query))
+	log.Debug(ctx, "Query variable values", zap.String("query", query), zap.String("queryType", queryType))
 
 	labelSets, _, err := i.v1api.Series(ctx, []string{query}, time.Unix(timeStart, 0), time.Unix(timeEnd, 0))
 	if err != nil {
@@ -178,8 +176,7 @@ func (i *instance) GetRange(ctx context.Context, queries []Query, resolution str
 				avg = avg / count
 			}
 
-			var labels map[string]string
-			labels = make(map[string]string)
+			labels := make(map[string]string)
 
 			for key, value := range stream.Metric {
 				labels[string(key)] = string(value)
@@ -229,8 +226,7 @@ func (i *instance) GetRange(ctx context.Context, queries []Query, resolution str
 func (i *instance) GetInstant(ctx context.Context, queries []Query, timeEnd int64) (map[string]map[string]string, error) {
 	queryTime := time.Unix(timeEnd, 0)
 
-	var rows map[string]map[string]string
-	rows = make(map[string]map[string]string)
+	rows := make(map[string]map[string]string)
 
 	for queryIndex, query := range queries {
 		log.Debug(ctx, "Query table data", zap.String("query", query.Query), zap.String("label", query.Label), zap.Time("time", queryTime))
@@ -246,8 +242,7 @@ func (i *instance) GetInstant(ctx context.Context, queries []Query, timeEnd int6
 		}
 
 		for _, stream := range streams {
-			var labels map[string]string
-			labels = make(map[string]string)
+			labels := make(map[string]string)
 			labels[fmt.Sprintf("value-%d", queryIndex+1)] = stream.Value.String()
 
 			for key, value := range stream.Metric {
@@ -302,7 +297,6 @@ func (i *instance) Proxy(w http.ResponseWriter, r *http.Request) {
 	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
 		log.Error(r.Context(), "client request failed", zap.Error(err), zap.String("clientName", i.name))
 		errresponse.Render(w, r, http.StatusBadGateway)
-		return
 	}
 
 	proxy.ServeHTTP(w, r)

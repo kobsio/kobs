@@ -52,12 +52,14 @@ func (wp *pool) RunTask(task Task) {
 func (wp *pool) Stop() error {
 	if atomic.LoadInt64(&wp.routines) != 0 {
 		close(wp.stop)
+
 		for {
 			if atomic.LoadInt64(&wp.routines) == 0 {
 				return nil
 			}
 		}
 	}
+
 	return fmt.Errorf("the worker pool has been already closed")
 }
 
@@ -87,13 +89,10 @@ func (wp *pool) add(nums int64) {
 func (wp *pool) waitStop() {
 	go func() {
 		for {
-			select {
-			case <-wp.stop:
-				routines := int(atomic.LoadInt64(&wp.routines))
-				for i := 0; i < routines; i++ {
-					wp.kill <- true
-				}
-				return
+			<-wp.stop
+			routines := int(atomic.LoadInt64(&wp.routines))
+			for i := 0; i < routines; i++ {
+				wp.kill <- true
 			}
 		}
 	}()

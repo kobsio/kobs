@@ -9,12 +9,12 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/kobsio/kobs/pkg/utils/middleware/roundtripper"
+
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/mitchellh/mapstructure"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
-
-	"github.com/mitchellh/mapstructure"
 )
 
 // Config is the structure of the configuration for a single Jaeger database instance.
@@ -45,11 +45,9 @@ type Instance interface {
 }
 
 type instance struct {
-	name         string
-	address      string
-	organization string
-	client       *http.Client
-	metricKeys   []string
+	name    string
+	address string
+	client  *http.Client
 }
 
 func (i *instance) GetName() string {

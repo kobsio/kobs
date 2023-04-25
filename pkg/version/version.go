@@ -41,6 +41,7 @@ func Print(program string) (string, error) {
 	}
 
 	var buf bytes.Buffer
+
 	tmpl := template.Must(template.New("version").Parse(versionInfoTmpl))
 	tmpl.ExecuteTemplate(&buf, "version", data)
 

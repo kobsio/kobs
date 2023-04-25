@@ -55,7 +55,7 @@ func TestHandler(t *testing.T) {
 			router.ServeHTTP(w, req)
 
 			require.Equal(t, tt.expectedStatusCode, w.Code)
-			require.Equal(t, tt.expectedBody, string(w.Body.Bytes()))
+			require.Equal(t, tt.expectedBody, w.Body.String())
 		})
 	}
 }
