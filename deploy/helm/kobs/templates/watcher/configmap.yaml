@@ -1,0 +1,12 @@
+{{- if .Values.watcher.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kobs.fullname" . }}-watcher
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: watcher
+data:
+  config.yaml: |
+{{ tpl .Values.config.watcher . | indent 4 }}
+{{- end }}

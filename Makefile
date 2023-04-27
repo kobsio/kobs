@@ -28,9 +28,9 @@ test-coverage:
 	@go tool cover -html coverage.out -o coverage.html
 
 .PHONY: generate
-generate: generate-crds
+generate: generate-mocks generate-crds
 
-.PHONY: generate-crds
+.PHONY: generate-mocks
 generate-mocks:
 	@go generate ./...
 
@@ -53,7 +53,7 @@ generate-crds:
 	@controller-gen "crd:crdVersions={v1}" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
 
 	@for crd in $(CRDS); do \
-		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/satellite/crds/kobs.io_$$crd\s.yaml; \
+		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
 	done
 
 .PHONY: clean
