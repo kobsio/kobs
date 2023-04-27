@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, ReactNode, useContext } from 'react';
+import { Helmet } from 'react-helmet';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Home from './Home';
@@ -101,6 +102,7 @@ export const App: FunctionComponent<IAppProps> = ({ icons, plugins }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <Helmet titleTemplate="kobs - %s" defaultTitle="kobs" />
       <QueryClientProvider>
         <AppContextProvider icons={icons}>
           <APIContextProvider>
