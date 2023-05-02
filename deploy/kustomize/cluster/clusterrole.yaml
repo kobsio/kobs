@@ -1,0 +1,29 @@
+---
+# Source: kobs/templates/cluster/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kobs-cluster
+  labels:
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cluster
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - 'get'
+      - 'watch'
+      - 'list'
+
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - 'get'
+      - 'watch'
+      - 'list'

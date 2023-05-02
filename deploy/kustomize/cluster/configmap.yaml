@@ -1,0 +1,34 @@
+---
+# Source: kobs/templates/cluster/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kobs-cluster
+  labels:
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cluster
+data:
+  config.yaml: |
+    cluster:
+      log:
+        format: json
+        level: info
+
+      tracer:
+        enabled: false
+        service: cluster
+        provider: jaeger
+        address: http://localhost:14268/api/traces
+
+      kubernetes:
+        provider:
+          type: incluster
+
+      api:
+        token: changeme
+
+      plugins: []

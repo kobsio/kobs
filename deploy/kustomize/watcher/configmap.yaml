@@ -1,0 +1,42 @@
+---
+# Source: kobs/templates/watcher/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kobs-watcher
+  labels:
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: watcher
+data:
+  config.yaml: |
+    watcher:
+      log:
+        format: json
+        level: info
+
+      tracer:
+        enabled: false
+        service: watcher
+        provider: jaeger
+        address: http://localhost:14268/api/traces
+
+      ## kobs requires a MongoDB database to store the collected data. The following configuration can be used to
+      ## install a MongoDB database using the Bitnami Helm chart:
+      ##
+      ##   helm install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb --set auth.rootPassword=changeme
+      ##
+      database:
+        uri: mongodb://root:changeme@mongodb.kobs.svc.cluster.local:27017
+
+      watcher:
+        # interval: 300s
+        workers: 10
+
+      clusters:
+        - name: kobs
+          address: http://kobs-cluster.kobs.svc.cluster.local:15221
+          token: changeme

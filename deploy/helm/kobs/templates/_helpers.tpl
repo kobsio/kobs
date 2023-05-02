@@ -55,7 +55,7 @@ Create the name of the service account to use for the kobs cluster component
 */}}
 {{- define "cluster.serviceAccountName" -}}
 {{- if .Values.cluster.serviceAccount.enabled -}}
-    {{ default (printf "%s-%s" (include "kobs.fullname" .) "-cluster") .Values.cluster.serviceAccount.name }}
+    {{ default (printf "%s-%s" (include "kobs.fullname" .) "cluster") .Values.cluster.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.cluster.serviceAccount.name }}
 {{- end -}}
@@ -66,7 +66,7 @@ Create the name of the cluster role and cluster role binding to use for the kobs
 */}}
 {{- define "cluster.rbacName" -}}
 {{- if .Values.cluster.rbac.enabled -}}
-    {{ default (printf "%s-%s" (include "kobs.fullname" .) "-cluster") .Values.cluster.rbac.name }}
+    {{ default (printf "%s-%s" (include "kobs.fullname" .) "cluster") .Values.cluster.rbac.name }}
 {{- else -}}
     {{ default "default" .Values.cluster.rbac.name }}
 {{- end -}}
