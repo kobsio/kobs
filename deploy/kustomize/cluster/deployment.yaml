@@ -1,48 +1,46 @@
 ---
-# Source: kobs/templates/hub/deployment.yaml
+# Source: kobs/templates/cluster/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kobs-hub
+  name: kobs-cluster
   labels:
     helm.sh/chart: kobs-0.1.0
     app.kubernetes.io/name: kobs
     app.kubernetes.io/instance: kobs
     app.kubernetes.io/version: "v0.12.0"
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/component: hub
+    app.kubernetes.io/component: cluster
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: kobs
       app.kubernetes.io/instance: kobs
-      app.kubernetes.io/component: hub
+      app.kubernetes.io/component: cluster
   template:
     metadata:
       labels:
         app.kubernetes.io/name: kobs
         app.kubernetes.io/instance: kobs
-        app.kubernetes.io/component: hub
+        app.kubernetes.io/component: cluster
       annotations:
-        checksum/config: 6a772fbdaa69f465410db25a090d8032a934f071bd8bdd0e443cad9753dcbdc9
+        checksum/config: 4e6eaa9901adb22624f520b6b44e94ae097de97bce0fe11aa110b0866be02e82
     spec:
+      serviceAccountName: kobs-cluster
       securityContext:
         {}
       containers:
-        - name: hub
+        - name: cluster
           securityContext:
             {}
           image: "ghcr.io/kobsio/kobs:v0.12.0"
           imagePullPolicy: IfNotPresent
           args:
-            - hub
+            - cluster
           ports:
-            - name: http-app
-              containerPort: 15219
-              protocol: TCP
             - name: http-api
-              containerPort: 15220
+              containerPort: 15221
               protocol: TCP
             - name: http-metrics
               containerPort: 15222
@@ -68,4 +66,4 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: kobs-hub
+            name: kobs-cluster

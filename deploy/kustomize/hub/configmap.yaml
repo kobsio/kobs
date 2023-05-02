@@ -1,15 +1,85 @@
 ---
+# Source: kobs/templates/hub/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: hub
-  namespace: kobs
+  name: kobs-hub
   labels:
-    app.kubernetes.io/name: hub
-    app.kubernetes.io/instance: hub
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: hub
 data:
   config.yaml: |
-    satellites:
-      - name: kobs
-        address: http://satellite.kobs.svc.cluster.local:15221
-        token: unsecuretoken
+    hub:
+      log:
+        format: json
+        level: info
+
+      tracer:
+        enabled: false
+        service: hub
+        provider: jaeger
+        address: http://localhost:14268/api/traces
+
+      ## kobs requires a MongoDB database to store the collected data. The following configuration can be used to
+      ## install a MongoDB database using the Bitnami Helm chart:
+      ##
+      ##   helm install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb --set auth.rootPassword=changeme
+      ##
+      database:
+        uri: mongodb://root:changeme@mongodb.kobs.svc.cluster.local:27017
+
+      app:
+        settings:
+          save:
+            enabled: false
+          defaultNavigation:
+            - name: Home
+              items:
+                - name: Home
+                  icon: home
+                  link: "/"
+                - name: Search
+                  icon: search
+                  link: "/search"
+            - name: Resources
+              items:
+                - name: Applications
+                  icon: apps
+                  link: "/applications"
+                - name: Topology
+                  icon: topology
+                  link: "/topology"
+                - name: Teams
+                  icon: team
+                  link: "/teams"
+                - name: Kubernetes Resources
+                  icon: kubernetes
+                  link: "/resources"
+                - name: Plugins
+                  icon: plugin
+                  link: "/plugins"
+          defaultDashboards: []
+
+      auth:
+        oidc:
+          enabled: false
+          issuer:
+          clientID:
+          clientSecret:
+          redirectURL: https://<changeme>/auth/callback
+          state:
+          scopes: ["openid", "profile", "email", "groups"]
+        session:
+          token: changeme
+          duration: 168h
+
+      plugins: []
+
+      clusters:
+        - name: kobs
+          address: http://kobs-cluster.kobs.svc.cluster.local:15221
+          token: changeme
