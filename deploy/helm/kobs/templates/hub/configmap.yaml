@@ -1,0 +1,12 @@
+{{- if .Values.hub.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kobs.fullname" . }}-hub
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hub
+data:
+  config.yaml: |
+{{ tpl .Values.config.hub . | indent 4 }}
+{{- end }}

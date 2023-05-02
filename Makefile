@@ -17,10 +17,6 @@ build:
 		-X ${REPO}/pkg/version.BuildDate=${BUILDTIME}" \
 		-o ./bin/kobs ./cmd/kobs;
 
-.PHONY: vet
-vet:
-	@go vet ./...
-
 .PHONY: test
 test:
 	@go test ./cmd/... ./pkg/...
@@ -32,9 +28,9 @@ test-coverage:
 	@go tool cover -html coverage.out -o coverage.html
 
 .PHONY: generate
-generate: generate-crds generate-assets
+generate: generate-mocks generate-crds
 
-.PHONY: generate-crds
+.PHONY: generate-mocks
 generate-mocks:
 	@go generate ./...
 
@@ -57,27 +53,11 @@ generate-crds:
 	@controller-gen "crd:crdVersions={v1}" paths="./pkg/..." output:crd:artifacts:config=deploy/kustomize/crds
 
 	@for crd in $(CRDS); do \
-		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/satellite/crds/kobs.io_$$crd\s.yaml; \
+		cp ./deploy/kustomize/crds/kobs.io_$$crd\s.yaml ./deploy/helm/kobs/crds/kobs.io_$$crd\s.yaml; \
 	done
-
-.PHONY: generate-assets
-generate-assets:
-	@yarn build
-	@mkdir -p ./bin
-	@rm -rf ./bin/app
-	@echo "Copy files for 'app'"
-	@cp -r ./plugins/app/build ./bin/app
-	@mkdir -p ./bin/app/plugins
-	@for plugin in plugins/plugin-*/; do \
-		if [ -d "$$plugin/src" ]; then \
-			plugin=`echo "$$plugin" | sed -e "s/^plugins\/plugin-//" -e "s/\/$///"`; \
-			echo "Copy files for '$$plugin' plugin"; \
-			cp -r ./plugins/plugin-$$plugin/build ./bin/app/plugins/$$plugin; \
-		fi \
-	done;
 
 .PHONY: clean
 clean:
 	rm -rf ./bin
 	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
-	find . -name 'build' -type d -prune -exec rm -rf '{}' +
+	find . -name 'dist' -type d -prune -exec rm -rf '{}' +

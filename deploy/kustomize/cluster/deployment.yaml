@@ -1,0 +1,69 @@
+---
+# Source: kobs/templates/cluster/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kobs-cluster
+  labels:
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cluster
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kobs
+      app.kubernetes.io/instance: kobs
+      app.kubernetes.io/component: cluster
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kobs
+        app.kubernetes.io/instance: kobs
+        app.kubernetes.io/component: cluster
+      annotations:
+        checksum/config: 4e6eaa9901adb22624f520b6b44e94ae097de97bce0fe11aa110b0866be02e82
+    spec:
+      serviceAccountName: kobs-cluster
+      securityContext:
+        {}
+      containers:
+        - name: cluster
+          securityContext:
+            {}
+          image: "ghcr.io/kobsio/kobs:v0.12.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - cluster
+          ports:
+            - name: http-api
+              containerPort: 15221
+              protocol: TCP
+            - name: http-metrics
+              containerPort: 15222
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http-api
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http-api
+            failureThreshold: 3
+          resources:
+            {}
+          volumeMounts:
+            - name: config
+              mountPath: /kobs/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      terminationGracePeriodSeconds: 90
+      volumes:
+        - name: config
+          configMap:
+            name: kobs-cluster

@@ -35,6 +35,7 @@ export interface IPluginPanelProps<T> {
  */
 export interface IPlugin {
   description: string;
+  example?: string;
   icon?: ReactNode;
   page?: FunctionComponent<IPluginPageProps>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

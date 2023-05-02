@@ -1,6 +1,7 @@
 package watcher
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -20,31 +21,30 @@ import (
 type Cmd struct {
 	Config string `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the watcher."`
 
-	Log      log.Config     `json:"log" embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
-	Tracer   tracer.Config  `json:"tracer" embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
-	Metrics  metrics.Config `json:"metrics" embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
-	Database db.Config      `json:"database" embed:"" prefix:"database." envprefix:"KOBS_DATABASE_"`
-
 	Watcher struct {
+		Log      log.Config      `json:"log" embed:"" prefix:"log." envprefix:"LOG_"`
+		Tracer   tracer.Config   `json:"tracer" embed:"" prefix:"tracer." envprefix:"TRACER_"`
+		Metrics  metrics.Config  `json:"metrics" embed:"" prefix:"metrics." envprefix:"METRICS_"`
+		Database db.Config       `json:"database" embed:"" prefix:"database." envprefix:"DATABASE_"`
 		Watcher  watcher.Config  `json:"watcher" embed:"" prefix:"watcher." envprefix:"WATCHER_"`
-		Clusters clusters.Config `json:"clusters" json:"clusters" kong:"-"`
+		Clusters clusters.Config `json:"clusters" kong:"-"`
 	} `json:"watcher" embed:"" prefix:"watcher." envprefix:"KOBS_WATCHER_"`
 }
 
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	cfg, err := config.Load(r.Config, *r)
 	if err != nil {
-		log.Error(nil, "Could not load configuration", zap.Error(err))
+		log.Error(context.Background(), "Could not load configuration", zap.Error(err))
 		return err
 	}
 
-	logger, err := log.Setup(cfg.Log)
+	logger, err := log.Setup(cfg.Watcher.Log)
 	if err != nil {
 		return err
 	}
 	defer logger.Sync()
 
-	tracerClient, err := tracer.Setup(cfg.Tracer)
+	tracerClient, err := tracer.Setup(cfg.Watcher.Tracer)
 	if err != nil {
 		return err
 	}
@@ -52,24 +52,24 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		defer tracerClient.Shutdown()
 	}
 
-	metricsServer := metrics.New(cfg.Metrics)
+	metricsServer := metrics.New(cfg.Watcher.Metrics)
 	go metricsServer.Start()
 	defer metricsServer.Stop()
 
 	clustersClient, err := clusters.NewClient(cfg.Watcher.Clusters)
 	if err != nil {
-		log.Error(nil, "Could not create clusters client", zap.Error(err))
+		log.Error(context.Background(), "Could not create clusters client", zap.Error(err))
 		return err
 	}
 
-	dbClient, err := db.NewClient(cfg.Database)
+	dbClient, err := db.NewClient(cfg.Watcher.Database)
 	if err != nil {
-		log.Error(nil, "Could not create database client", zap.Error(err))
+		log.Error(context.Background(), "Could not create database client", zap.Error(err))
 	}
 
 	watcherClient, err := watcher.NewClient(cfg.Watcher.Watcher, clustersClient, dbClient)
 	if err != nil {
-		log.Error(nil, "Could not create watcher", zap.Error(err))
+		log.Error(context.Background(), "Could not create watcher", zap.Error(err))
 		return err
 	}
 	go watcherClient.Watch()
@@ -80,13 +80,13 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 
-	log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
+	log.Debug(context.Background(), "Start listining for SIGINT and SIGTERM signal")
 	<-done
-	log.Info(nil, "Shutdown kobs watcher...")
+	log.Info(context.Background(), "Shutdown kobs watcher...")
 
 	watcherClient.Stop()
 
-	log.Info(nil, "Shutdown is done")
+	log.Info(context.Background(), "Shutdown is done")
 
 	return nil
 }

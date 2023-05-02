@@ -17,7 +17,24 @@ const Home: FunctionComponent = () => {
       description={`Welcome back, ${user?.name}! We've missed you. 👋`}
       hasTabs={true}
       actions={
-        <Button variant="contained" color="primary" size="small" startIcon={<Edit />} component={Link} to="/todo">
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<Edit />}
+          component={Link}
+          to={`/edit/user?state=${encodeURIComponent(
+            btoa(
+              JSON.stringify({
+                cluster: 'default',
+                dashboards: user?.dashboards ?? [],
+                id: user?.id ?? 'email@example.com',
+                name: 'default',
+                namespace: 'default',
+              }),
+            ),
+          )}`}
+        >
           Edit
         </Button>
       }

@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,17 +15,17 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/config"
+
 	"go.uber.org/zap"
 )
 
 type Cmd struct {
 	Config string `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the cluster."`
 
-	Log     log.Config     `json:"log" embed:"" prefix:"log." envprefix:"KOBS_LOG_"`
-	Tracer  tracer.Config  `json:"tracer" embed:"" prefix:"tracer." envprefix:"KOBS_TRACER_"`
-	Metrics metrics.Config `json:"metrics" embed:"" prefix:"metrics." envprefix:"KOBS_METRICS_"`
-
 	Cluster struct {
+		Log        log.Config        `json:"log" embed:"" prefix:"log." envprefix:"LOG_"`
+		Tracer     tracer.Config     `json:"tracer" embed:"" prefix:"tracer." envprefix:"TRACER_"`
+		Metrics    metrics.Config    `json:"metrics" embed:"" prefix:"metrics." envprefix:"METRICS_"`
 		Kubernetes kubernetes.Config `json:"kubernetes" embed:"" prefix:"kubernetes." envprefix:"KUBERNETES_"`
 		API        api.Config        `json:"api" embed:"" prefix:"api." envprefix:"API_"`
 		Plugins    []plugin.Instance `json:"plugins" kong:"-"`
@@ -34,17 +35,17 @@ type Cmd struct {
 func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	cfg, err := config.Load(r.Config, *r)
 	if err != nil {
-		log.Error(nil, "Could not load configuration", zap.Error(err))
+		log.Error(context.Background(), "Could not load configuration", zap.Error(err))
 		return err
 	}
 
-	logger, err := log.Setup(cfg.Log)
+	logger, err := log.Setup(cfg.Cluster.Log)
 	if err != nil {
 		return err
 	}
 	defer logger.Sync()
 
-	tracerClient, err := tracer.Setup(cfg.Tracer)
+	tracerClient, err := tracer.Setup(cfg.Cluster.Tracer)
 	if err != nil {
 		return err
 	}
@@ -52,25 +53,25 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		defer tracerClient.Shutdown()
 	}
 
-	metricsServer := metrics.New(cfg.Metrics)
+	metricsServer := metrics.New(cfg.Cluster.Metrics)
 	go metricsServer.Start()
 	defer metricsServer.Stop()
 
 	kubernetesClient, err := kubernetes.NewClient(cfg.Cluster.Kubernetes)
 	if err != nil {
-		log.Error(nil, "Could not create Kubernetes client", zap.Error(err))
+		log.Error(context.Background(), "Could not create Kubernetes client", zap.Error(err))
 		return err
 	}
 
 	pluginsClient, err := clusterPlugins.NewClient(plugins, cfg.Cluster.Plugins, kubernetesClient)
 	if err != nil {
-		log.Error(nil, "Could not create plugins client", zap.Error(err))
+		log.Error(context.Background(), "Could not create plugins client", zap.Error(err))
 		return err
 	}
 
 	apiServer, err := api.New(cfg.Cluster.API, kubernetesClient, pluginsClient)
 	if err != nil {
-		log.Error(nil, "Could not create client server", zap.Error(err))
+		log.Error(context.Background(), "Could not create client server", zap.Error(err))
 		return err
 	}
 	go apiServer.Start()
@@ -81,13 +82,13 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 
-	log.Debug(nil, "Start listining for SIGINT and SIGTERM signal")
+	log.Debug(context.Background(), "Start listining for SIGINT and SIGTERM signal")
 	<-done
-	log.Info(nil, "Shutdown kobs client...")
+	log.Info(context.Background(), "Shutdown kobs client...")
 
 	apiServer.Stop()
 
-	log.Info(nil, "Shutdown is done")
+	log.Info(context.Background(), "Shutdown is done")
 
 	return nil
 }

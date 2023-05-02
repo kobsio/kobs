@@ -8,6 +8,8 @@ import { OperationCount } from './OperationCount';
 import { OperationFind } from './OperationFind';
 import { OperationFindOne } from './OperationFindOne';
 
+import { example } from '../utils/utils';
+
 interface IOptions {
   operation?: string;
   query?: IQuery;
@@ -126,22 +128,7 @@ const MongoDBPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for MongoDB plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: mongodb
-  type: mongodb
-  options:
-    # The type must be
-    #   - "db" to show the database statistics
-    #   - "collections" to show the database collections and collection statistics
-    #   - "count" to show the number of documents in a collection for provided filter
-    #   - "find" to show the documents in a collection for provided filter, sort and limit
-    #   - "findOne" to show a single document in a collection for the provided filter
-    type: find
-    query:
-      collectionName: applications
-      filter: '{"namespace": "default"}'
-      sort: '{"name": -1}'
-      limit: 10`}
+      example={example}
       documentation="https://kobs.io/main/plugins/mongodb"
     />
   );

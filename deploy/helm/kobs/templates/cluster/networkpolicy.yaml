@@ -1,0 +1,23 @@
+{{- if .Values.cluster.enabled }}
+{{- if .Values.cluster.networkPolicy.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "kobs.fullname" . }}-cluster
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cluster
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "kobs.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: cluster
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    {{- toYaml .Values.cluster.networkPolicy.ingressRules | nindent 4 }}
+  egress:
+    {{- toYaml .Values.cluster.networkPolicy.egressRules | nindent 4 }}
+{{- end }}
+{{- end }}

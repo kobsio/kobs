@@ -1,0 +1,65 @@
+---
+# Source: kobs/templates/watcher/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kobs-watcher
+  labels:
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: watcher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kobs
+      app.kubernetes.io/instance: kobs
+      app.kubernetes.io/component: watcher
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kobs
+        app.kubernetes.io/instance: kobs
+        app.kubernetes.io/component: watcher
+      annotations:
+        checksum/config: e2ada0c4504a8982b5f5f03f29db8e4bf69da1bd99149316d45e6831f16565e3
+    spec:
+      securityContext:
+        {}
+      containers:
+        - name: watcher
+          securityContext:
+            {}
+          image: "ghcr.io/kobsio/kobs:v0.12.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - watcher
+          ports:
+            - name: http-metrics
+              containerPort: 15222
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http-metrics
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http-metrics
+            failureThreshold: 3
+          resources:
+            {}
+          volumeMounts:
+            - name: config
+              mountPath: /kobs/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      terminationGracePeriodSeconds: 90
+      volumes:
+        - name: config
+          configMap:
+            name: kobs-watcher

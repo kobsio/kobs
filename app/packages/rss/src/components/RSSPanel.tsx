@@ -3,6 +3,8 @@ import { FunctionComponent } from 'react';
 
 import Feed from './Feed';
 
+import { example } from '../utils/utils';
+
 interface IOptions {
   sortBy?: string;
   urls?: string[];
@@ -23,12 +25,7 @@ const RSSPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, descr
       description={description}
       message="Invalid options for RSS plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: rss
-  type: rss
-  options:
-    urls:
-      - https://www.githubstatus.com/history.rss`}
+      example={example}
       documentation="https://kobs.io/main/plugins/rss"
     />
   );

@@ -1,6 +1,32 @@
 export const description =
   'An open source registry that secures artifacts with policies and role-based access control, ensures images are scanned and free from vulnerabilities, and signs images as trusted.';
 
+export const example = `# Projects
+plugin:
+  name: harbor
+  type: harbor
+  options:
+    type: projects
+
+# Repositories
+plugin:
+  name: harbor
+  type: harbor
+  options:
+    type: repositories
+    repositories:
+      projectName: test
+
+# Artifacts
+plugin:
+  name: harbor
+  type: harbor
+  options:
+    type: artifacts
+    artifacts:
+      projectName: test
+      repositoryName: repo`;
+
 // IProjectsData is the data returned by our API. It contains a list of projects and the total number of projects.
 export interface IProjectsData {
   projects: IProject[];

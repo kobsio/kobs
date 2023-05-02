@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider, Box, CircularProgress } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, ReactNode, useContext } from 'react';
+import { Helmet } from 'react-helmet';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Home from './Home';
@@ -17,6 +18,7 @@ import ApplicationPage from '../applications/ApplicationPage';
 import ApplicationsPage from '../applications/ApplicationsPage';
 import TopologyPage from '../applications/TopologyPage';
 import DashboardsPage from '../dashboards/DashboardsPage';
+import EditPage from '../edit/EditPage';
 import PluginPage from '../plugins/PluginPage';
 import PluginsPage from '../plugins/PluginsPage';
 import ResourcesLogsPage from '../resources/ResourcesLogsPage';
@@ -100,6 +102,7 @@ export const App: FunctionComponent<IAppProps> = ({ icons, plugins }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <Helmet titleTemplate="kobs - %s" defaultTitle="kobs" />
       <QueryClientProvider>
         <AppContextProvider icons={icons}>
           <APIContextProvider>
@@ -129,6 +132,7 @@ export const App: FunctionComponent<IAppProps> = ({ icons, plugins }) => {
                             <Route path="/resources/terminal" element={<ResourcesTerminalPage />} />
                             <Route path="/plugins" element={<PluginsPage />} />
                             <Route path="/plugins/:cluster/:type/:name/*" element={<PluginPage />} />
+                            <Route path="/edit/:type" element={<EditPage />} />
                           </Routes>
                         </Layout>
                       </PluginContextProvider>

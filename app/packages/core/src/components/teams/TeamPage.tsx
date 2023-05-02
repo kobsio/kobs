@@ -64,7 +64,14 @@ const TeamPage: FunctionComponent = () => {
         }
         hasTabs={true}
         actions={
-          <Button variant="contained" color="primary" size="small" startIcon={<Edit />} component={Link} to="/todo">
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<Edit />}
+            component={Link}
+            to={`/edit/team?state=${encodeURIComponent(btoa(JSON.stringify(data)))}`}
+          >
             Edit Team
           </Button>
         }

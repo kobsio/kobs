@@ -38,7 +38,6 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 				if err != nil {
 					log.Error(ctx, "Failed to read file", zap.Error(err), zap.String("file", indexPath))
 				} else {
-					defer obj.Close()
 					fileInfo, _ := obj.Stat()
 
 					if fileInfo.Size > 0 {
@@ -52,6 +51,8 @@ func (p *Provider) GetIndexes(ctx context.Context) ([]shared.Index, error) {
 							indexes = append(indexes, index)
 						}
 					}
+
+					obj.Close()
 				}
 			}
 		}

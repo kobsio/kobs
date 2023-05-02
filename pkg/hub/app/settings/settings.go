@@ -10,6 +10,9 @@ import (
 )
 
 type Settings struct {
+	Save struct {
+		Enabled bool `json:"enabled"`
+	} `json:"save"`
 	DefaultNavigation []userv1.Navigation     `json:"defaultNavigation"`
 	DefaultDashboards []dashboardv1.Reference `json:"defaultDashboards"`
 	Integrations      Integrations            `json:"integrations"`

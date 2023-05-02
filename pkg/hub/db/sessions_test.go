@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
+
 	"github.com/orlangure/gnomock"
 	"github.com/stretchr/testify/require"
 	"go.mongodb.org/mongo-driver/bson/primitive"

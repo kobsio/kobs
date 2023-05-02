@@ -22,6 +22,7 @@ const selectAllValue = 'Select all';
  * of clusters and a function to change the selected clusters.
  */
 interface IResourcesSelectClustersProps {
+  disableCloseOnSelect?: boolean;
   selectClusters: (clusters: string[]) => void;
   selectedClusters: string[];
 }
@@ -33,6 +34,7 @@ interface IResourcesSelectClustersProps {
 export const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClustersProps> = ({
   selectedClusters,
   selectClusters,
+  disableCloseOnSelect = true,
 }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
   const filter = createFilterOptions<string>();
@@ -71,7 +73,7 @@ export const ResourcesSelectClusters: FunctionComponent<IResourcesSelectClusters
     <Autocomplete
       size="small"
       multiple={true}
-      disableCloseOnSelect={true}
+      disableCloseOnSelect={disableCloseOnSelect}
       loading={isLoading}
       options={data ?? []}
       getOptionLabel={(option) => option ?? ''}

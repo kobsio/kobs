@@ -312,11 +312,7 @@ func (c *client) GetLogs(ctx context.Context, namespace, name, container, regex 
 	}
 
 	if regex == "" {
-		var logs []string
-		for _, line := range strings.Split(string(res), "\n") {
-			logs = append(logs, line)
-		}
-
+		logs := strings.Split(string(res), "\n")
 		return strings.Join(logs, "\n\r") + "\n\r", nil
 	}
 
@@ -428,8 +424,7 @@ func (c *client) GetTerminal(ctx context.Context, conn *websocket.Conn, namespac
 		SizeChan:  make(chan remotecommand.TerminalSize),
 	}
 
-	cmd := []string{shell}
-	return terminal.StartProcess(c.restConfig, reqURL, cmd, session)
+	return terminal.StartProcess(ctx, c.restConfig, reqURL, session)
 }
 
 // CopyFileFromPod creates the request URL for downloading a file from the specified container.
@@ -449,7 +444,7 @@ func (c *client) CopyFileFromPod(ctx context.Context, w http.ResponseWriter, nam
 		return err
 	}
 
-	return copy.FileFromPod(w, c.restConfig, reqURL)
+	return copy.FileFromPod(ctx, w, c.restConfig, reqURL)
 }
 
 // CopyFileToPod creates the request URL for uploading a file to the specified container.
@@ -469,7 +464,7 @@ func (c *client) CopyFileToPod(ctx context.Context, namespace, name, container s
 		return err
 	}
 
-	return copy.FileToPod(c.restConfig, reqURL, srcFile, destPath)
+	return copy.FileToPod(ctx, c.restConfig, reqURL, srcFile, destPath)
 }
 
 // GetApplications returns a list of applications gor the given namespace. It also adds the cluster, namespace and
@@ -718,37 +713,37 @@ func (c *client) GetCRDs(ctx context.Context) ([]CRD, error) {
 func NewClient(config Config) (Client, error) {
 	restConfig, err := provider.NewRestConfig(config.Provider)
 	if err != nil {
-		log.Error(nil, "Could not create Kubernetes rest config", zap.Error(err))
+		log.Error(context.Background(), "Could not create Kubernetes rest config", zap.Error(err))
 		return nil, err
 	}
 
 	clientset, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create Kubernetes clientset", zap.Error(err))
+		log.Error(context.Background(), "Could not create Kubernetes clientset", zap.Error(err))
 		return nil, err
 	}
 
 	applicationClientset, err := applicationClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create application clientset", zap.Error(err))
+		log.Error(context.Background(), "Could not create application clientset", zap.Error(err))
 		return nil, err
 	}
 
 	teamClientset, err := teamClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create team clientset", zap.Error(err))
+		log.Error(context.Background(), "Could not create team clientset", zap.Error(err))
 		return nil, err
 	}
 
 	dashboardClientset, err := dashboardClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create dashboard clientset", zap.Error(err))
+		log.Error(context.Background(), "Could not create dashboard clientset", zap.Error(err))
 		return nil, err
 	}
 
 	userClientset, err := userClientsetVersioned.NewForConfig(restConfig)
 	if err != nil {
-		log.Error(nil, "Could not create user clientset", zap.Error(err))
+		log.Error(context.Background(), "Could not create user clientset", zap.Error(err))
 		return nil, err
 	}
 

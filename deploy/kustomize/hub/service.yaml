@@ -1,19 +1,23 @@
 ---
+# Source: kobs/templates/hub/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: hub
-  namespace: kobs
+  name: kobs-hub
   labels:
-    app.kubernetes.io/name: hub
-    app.kubernetes.io/instance: hub
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: hub
 spec:
   type: ClusterIP
   ports:
     - port: 15219
-      targetPort: http-web
+      targetPort: http-app
       protocol: TCP
-      name: http-web
+      name: http-app
     - port: 15220
       targetPort: http-api
       protocol: TCP
@@ -23,5 +27,6 @@ spec:
       protocol: TCP
       name: http-metrics
   selector:
-    app.kubernetes.io/name: hub
-    app.kubernetes.io/instance: hub
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/component: hub

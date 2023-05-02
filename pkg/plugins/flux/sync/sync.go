@@ -22,16 +22,6 @@ func createScheme() *runtime.Scheme {
 	return scheme
 }
 
-func doReconcileAnnotations(annotations map[string]string) {
-	if annotations == nil {
-		annotations = map[string]string{
-			meta.ReconcileRequestAnnotation: time.Now().Format(time.RFC3339Nano),
-		}
-	} else {
-		annotations[meta.ReconcileRequestAnnotation] = time.Now().Format(time.RFC3339Nano)
-	}
-}
-
 // Kustomization can be used to sync a Flux Kustomization. For that the cluster, namespace and name for the resource
 // must be provided.
 func Kustomization(ctx context.Context, kubernetesClient kubernetes.Client, namespace, name string) error {
@@ -50,7 +40,12 @@ func Kustomization(ctx context.Context, kubernetesClient kubernetes.Client, name
 		return fmt.Errorf("could not list kustomizations: %w", err)
 	}
 
-	doReconcileAnnotations(kustomization.Annotations)
+	if kustomization.Annotations == nil {
+		kustomization.Annotations = make(map[string]string)
+		kustomization.Annotations[meta.ReconcileRequestAnnotation] = time.Now().Format(time.RFC3339Nano)
+	} else {
+		kustomization.Annotations[meta.ReconcileRequestAnnotation] = time.Now().Format(time.RFC3339Nano)
+	}
 
 	if err := client.Update(ctx, &kustomization); err != nil {
 		return fmt.Errorf("could not update kustomization: %w", err)
@@ -77,10 +72,15 @@ func HelmRelease(ctx context.Context, kubernetesClient kubernetes.Client, namesp
 		return fmt.Errorf("could not get helm release: %w", err)
 	}
 
-	doReconcileAnnotations(hr.Annotations)
+	if hr.Annotations == nil {
+		hr.Annotations = make(map[string]string)
+		hr.Annotations[meta.ReconcileRequestAnnotation] = time.Now().Format(time.RFC3339Nano)
+	} else {
+		hr.Annotations[meta.ReconcileRequestAnnotation] = time.Now().Format(time.RFC3339Nano)
+	}
 
 	if err := client.Update(ctx, &hr); err != nil {
-		return fmt.Errorf("could not update kustomization: %w", err)
+		return fmt.Errorf("could not update helm release: %w", err)
 	}
 
 	return nil

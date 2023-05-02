@@ -1,7 +1,6 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -12,7 +11,7 @@ import (
 // need some more complex configuration options, which can be set via a config file in yaml format. The configuration
 // file can contain environment variables in the following format: "${NAME_OF_THE_ENVIRONMENT_VARIABLE}".
 func Load[T any](file string, config T) (T, error) {
-	configContent, err := ioutil.ReadFile(file)
+	configContent, err := os.ReadFile(file)
 	if err != nil {
 		return config, err
 	}

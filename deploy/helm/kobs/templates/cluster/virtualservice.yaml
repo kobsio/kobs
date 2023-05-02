@@ -1,0 +1,30 @@
+{{- if .Values.cluster.enabled }}
+{{- if .Values.cluster.istio.virtualService.enabled -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "kobs.fullname" . }}-cluster
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cluster
+spec:
+  {{- with .Values.cluster.istio.virtualService.hosts }}
+  hosts:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.istio.virtualService.gateways }}
+  gateways:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  http:
+    {{- with .Values.cluster.istio.virtualService.additionalRoutes }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    - route:
+        - destination:
+            host: {{ include "kobs.fullname" . }}-cluster.{{ .Release.Namespace }}.svc.cluster.local
+            port:
+              number: 15221
+      timeout: {{ .Values.cluster.istio.virtualService.timeout }}
+{{- end }}
+{{- end }}

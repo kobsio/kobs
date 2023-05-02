@@ -1,5 +1,27 @@
 export const description = 'The package manager for Kubernetes.';
 
+export const example = `# Configuration when the type is "releases"
+plugin:
+  name: helm
+  type: helm
+  options:
+    type: releases
+    clusters:
+      - mycluster
+    namespaces:
+      - default
+# Configuration when the type is "releasehistory"
+plugin:
+  name: helm
+  type: helm
+  options:
+    type: releasehistory
+    clusters:
+      - mycluster
+    namespaces:
+      - default
+    name: kobs`;
+
 export interface IRelease {
   chart?: IChart;
   cluster?: string;

@@ -3,6 +3,8 @@ import { FunctionComponent } from 'react';
 
 import Measures from './Measures';
 
+import { example } from '../utils/utils';
+
 interface IOptions {
   metricKeys: string[];
   project: string;
@@ -39,11 +41,7 @@ const SonarQubePanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title,
       description={description}
       message="Invalid options for SonarQube plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: sonarqube
-  type: sonarqube
-  options:
-    project: myproject`}
+      example={example}
       documentation="https://kobs.io/main/plugins/sonarqube"
     />
   );

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
+
 	"github.com/stretchr/testify/require"
 )
 

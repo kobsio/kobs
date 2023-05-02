@@ -1,6 +1,15 @@
 export const description =
   'A set of continuous and progressive delivery solutions for Kubernetes that are open and extensible.';
 
+export const example = `plugin:
+  name: flux
+  type: flux
+  options:
+    # Type must be "gitrepositories", "helmrepositories", "buckets", "kustomizations" or "helmreleases"
+    type: kustomizations
+    clusters:
+      - mycluster`;
+
 /**
  * `TFluxType` is the type for the Flux resources we are supporting within the plugin.
  */

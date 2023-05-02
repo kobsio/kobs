@@ -1,6 +1,7 @@
 package version
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -15,7 +16,7 @@ type Cmd struct{}
 func (r *Cmd) Run() error {
 	v, err := version.Print("kobs")
 	if err != nil {
-		log.Error(nil, "Failed to print version information", zap.Error(err))
+		log.Error(context.Background(), "Failed to print version information", zap.Error(err))
 		return err
 	}
 

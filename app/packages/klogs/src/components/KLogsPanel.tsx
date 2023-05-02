@@ -20,7 +20,7 @@ import { Aggregation } from './Aggregation';
 import { Logs } from './Logs';
 
 import { IAggregationOptions } from '../utils/aggregation';
-import { ILogsData } from '../utils/utils';
+import { ILogsData, example } from '../utils/utils';
 
 interface IOptions {
   aggregation?: IAggregationOptions;
@@ -191,11 +191,7 @@ const KLogsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for klogs plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: klogs
-  type: klogs
-  options:
-    project: myproject`}
+      example={example}
       documentation="https://kobs.io/main/plugins/klogs"
     />
   );

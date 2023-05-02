@@ -53,7 +53,7 @@ func New(config Config) (Provider, error) {
 	case Azure:
 		return azure.New(config.Azure)
 	default:
-		log.Error(nil, "Invalid provider", zap.String("provider", string(config.Type)))
+		log.Error(context.Background(), "Invalid provider", zap.String("provider", string(config.Type)))
 		return nil, fmt.Errorf("invalid provider type")
 	}
 }

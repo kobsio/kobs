@@ -35,7 +35,7 @@ import { VictoryArea, VictoryGroup } from 'victory';
 import Chart from './Chart';
 import Legend from './Legend';
 
-import { IMetric, IMetrics, IOrder, TOrder, TOrderBy } from '../utils/utils';
+import { IMetric, IMetrics, IOrder, TOrder, TOrderBy, example } from '../utils/utils';
 
 /**
  * `IOptions` is the interface for the options of the Prometheus plugin. The options are provided by a user and should
@@ -620,14 +620,7 @@ const PrometheusPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
         description={description}
         message="Invalid options for Prometheus plugin"
         details="One of the required options: 'type' or 'queries' is missing"
-        example={`plugin:
-  name: prometheus
-  type: prometheus
-  options:
-    type: line
-    queries:
-      - label: "{% .instance %}"
-        query: sum(node_load1) by (instance)`}
+        example={example}
         documentation="https://kobs.io/main/plugins/prometheus"
       />
     );

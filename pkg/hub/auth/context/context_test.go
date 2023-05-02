@@ -145,6 +145,9 @@ func TestMustGetUser(t *testing.T) {
 
 	t.Run("should panic when no user is present in the context", func(t *testing.T) {
 		require.Panics(t, func() {
+			// This is used to test when no context is passed to the function. This should never happen, but we want to
+			// make sure that the function does panic.
+			//nolint:staticcheck
 			MustGetUser(nil)
 		})
 	})

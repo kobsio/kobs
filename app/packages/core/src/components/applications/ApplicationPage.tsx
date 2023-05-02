@@ -56,7 +56,14 @@ const ApplicationPage: FunctionComponent = () => {
         toolbar={data ? <ApplicationLabels application={data} /> : undefined}
         hasTabs={true}
         actions={
-          <Button variant="contained" color="primary" size="small" startIcon={<Edit />} component={Link} to="/todo">
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<Edit />}
+            component={Link}
+            to={`/edit/application?state=${encodeURIComponent(btoa(JSON.stringify(data)))}`}
+          >
             Edit Application
           </Button>
         }

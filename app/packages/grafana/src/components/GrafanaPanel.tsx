@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IDashboard } from '../utils/utils';
+import { IDashboard, example } from '../utils/utils';
 
 interface IOptions {
   dashboards?: string[];
@@ -182,13 +182,7 @@ const GrafanaPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for Grafana plugin"
       details="One of the required options is missing."
-      example={`plugin:
-  name: grafana
-  type: grafana
-  options:
-    type: dashboards
-    dashboards:
-      - aNBJWNtGk`}
+      example={example}
       documentation="https://kobs.io/main/plugins/grafana"
     />
   );

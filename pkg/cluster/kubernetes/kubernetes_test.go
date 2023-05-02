@@ -17,9 +17,9 @@ import (
 	teamfake "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients/team/clientset/versioned/typed/team/v1/fake"
 	userfakeclient "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients/user/clientset/versioned/fake"
 	userfake "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients/user/clientset/versioned/typed/user/v1/fake"
-	"go.opentelemetry.io/otel"
 
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

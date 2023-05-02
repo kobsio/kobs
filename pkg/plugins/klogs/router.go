@@ -4,16 +4,18 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/plugins/klogs/instance"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/kobsio/kobs/pkg/utils/middleware/errresponse"
 	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
 
@@ -129,6 +131,11 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 
 	documents, fields, count, took, buckets, err := i.GetLogs(r.Context(), query, order, orderBy, 1000, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
+		if strings.Contains(err.Error(), "Failed to parse query:") {
+			log.Error(r.Context(), "Failed to parse query", zap.Error(err))
+			errresponse.Render(w, r, http.StatusInternalServerError, err.Error())
+			return
+		}
 		log.Error(r.Context(), "Failed to get logs", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get logs")
 		return

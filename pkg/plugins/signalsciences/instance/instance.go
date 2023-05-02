@@ -54,6 +54,7 @@ func (i *instance) GetRequests(siteName string, query url.Values) (int, string, 
 // New returns a new Signal Sciences instance for the given configuration.
 func New(name string, options map[string]any) (Instance, error) {
 	var config Config
+
 	err := mapstructure.Decode(options, &config)
 	if err != nil {
 		return nil, err

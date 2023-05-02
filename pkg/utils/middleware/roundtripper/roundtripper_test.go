@@ -33,6 +33,7 @@ func TestBasicAuthTransport(t *testing.T) {
 	}
 
 	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
+	//nolint:bodyclose
 	roundTripper.RoundTrip(req)
 
 	w := httptest.NewRecorder()
@@ -40,6 +41,7 @@ func TestBasicAuthTransport(t *testing.T) {
 
 	resp := w.Result()
 	require.Equal(t, http.StatusOK, resp.StatusCode)
+	defer resp.Body.Close()
 }
 
 func TestTokenAuthTransporter(t *testing.T) {
@@ -51,6 +53,7 @@ func TestTokenAuthTransporter(t *testing.T) {
 	}
 
 	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/", nil)
+	//nolint:bodyclose
 	roundTripper.RoundTrip(req)
 
 	w := httptest.NewRecorder()
@@ -58,4 +61,5 @@ func TestTokenAuthTransporter(t *testing.T) {
 
 	resp := w.Result()
 	require.Equal(t, http.StatusOK, resp.StatusCode)
+	defer resp.Body.Close()
 }

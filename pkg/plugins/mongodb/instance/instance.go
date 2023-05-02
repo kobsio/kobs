@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/kobsio/kobs/pkg/instrument/log"
-	"go.uber.org/zap"
 
 	"github.com/mitchellh/mapstructure"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	mongoOptions "go.mongodb.org/mongo-driver/mongo/options"
+	"go.uber.org/zap"
 )
 
 type Config struct {
@@ -294,6 +294,9 @@ func (i *instance) Aggregate(ctx context.Context, collectionName, pipeline strin
 	}
 
 	cursor, err := i.mongoClient.Database(i.config.DatabaseName).Collection(collectionName).Aggregate(ctx, bsonPipeline)
+	if err != nil {
+		return nil, err
+	}
 
 	var results = make([]bson.D, 0)
 
@@ -323,7 +326,7 @@ func New(name string, options map[string]any) (Instance, error) {
 
 	client, err := mongo.Connect(ctx, mongoOptions.Client().ApplyURI(config.ConnectionString).SetAppName("kobs"))
 	if err != nil {
-		log.Error(nil, "Failed to initialize database connection", zap.Error(err))
+		log.Error(context.Background(), "Failed to initialize database connection", zap.Error(err))
 		return nil, err
 	}
 

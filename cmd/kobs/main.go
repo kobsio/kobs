@@ -8,10 +8,12 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins"
 
 	"github.com/kobsio/kobs/pkg/plugins/flux"
+	"github.com/kobsio/kobs/pkg/plugins/github"
 	"github.com/kobsio/kobs/pkg/plugins/grafana"
 	"github.com/kobsio/kobs/pkg/plugins/harbor"
 	"github.com/kobsio/kobs/pkg/plugins/helm"
 	"github.com/kobsio/kobs/pkg/plugins/jaeger"
+	"github.com/kobsio/kobs/pkg/plugins/jira"
 	"github.com/kobsio/kobs/pkg/plugins/kiali"
 	"github.com/kobsio/kobs/pkg/plugins/klogs"
 	"github.com/kobsio/kobs/pkg/plugins/mongodb"
@@ -38,10 +40,12 @@ func main() {
 
 	registeredPlugins := []plugins.Plugin{
 		flux.New(),
+		github.New(),
 		grafana.New(),
 		harbor.New(),
 		helm.New(),
 		jaeger.New(),
+		jira.New(),
 		kiali.New(),
 		klogs.New(),
 		mongodb.New(),

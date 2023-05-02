@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 	"path"
 	"strings"
 	"time"
@@ -41,25 +41,25 @@ type server struct {
 
 // Start starts serving the application server.
 func (s *server) Start() {
-	log.Info(nil, "Application server started", zap.String("address", s.server.Addr))
+	log.Info(context.Background(), "Application server started", zap.String("address", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
-			log.Error(nil, "Application server died unexpected", zap.Error(err))
+			log.Error(context.Background(), "Application server died unexpected", zap.Error(err))
 		}
 	}
 }
 
 // Stop terminates the application server gracefully.
 func (s *server) Stop() {
-	log.Debug(nil, "Start shutdown of the Application server")
+	log.Debug(context.Background(), "Start shutdown of the Application server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		log.Error(nil, "Graceful shutdown of the Application server failed", zap.Error(err))
+		log.Error(context.Background(), "Graceful shutdown of the Application server failed", zap.Error(err))
 	}
 }
 
@@ -87,7 +87,7 @@ func New(config Config, apiConfig api.Config) (Server, error) {
 			return nil, err
 		}
 
-		reactApp, err := ioutil.ReadFile(path.Join(config.AssetsDir, "index.html"))
+		reactApp, err := os.ReadFile(path.Join(config.AssetsDir, "index.html"))
 		if err != nil {
 			return nil, err
 		}
@@ -118,6 +118,7 @@ func New(config Config, apiConfig api.Config) (Server, error) {
 				strings.HasSuffix(r.URL.Path, ".png") ||
 				strings.HasSuffix(r.URL.Path, ".svg") ||
 				strings.HasSuffix(r.URL.Path, ".txt") ||
+				strings.HasSuffix(r.URL.Path, ".webmanifest") ||
 				strings.HasSuffix(r.URL.Path, ".woff") ||
 				strings.HasSuffix(r.URL.Path, ".woff2") ||
 				strings.HasSuffix(r.URL.Path, ".xml") {
@@ -131,8 +132,9 @@ func New(config Config, apiConfig api.Config) (Server, error) {
 
 	return &server{
 		server: &http.Server{
-			Addr:    config.Address,
-			Handler: router,
+			Addr:              config.Address,
+			Handler:           router,
+			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}, nil
 }

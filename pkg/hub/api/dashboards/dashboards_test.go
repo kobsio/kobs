@@ -8,17 +8,49 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/utils"
-	"github.com/stretchr/testify/require"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
+func TestGetDashboards(t *testing.T) {
+	t.Run("should return error from db client", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		dbClient.EXPECT().GetDashboards(gomock.Any(), []string{"test"}, []string{"default"}).Return(nil, fmt.Errorf("unexpected error"))
+
+		router := Router{chi.NewRouter(), dbClient}
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/dashboards?cluster=test&namespace=default", nil)
+		w := httptest.NewRecorder()
+
+		router.getDashboards(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get dashboards"]}`)
+	})
+
+	t.Run("should return dashboards", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		dbClient := db.NewMockClient(ctrl)
+		dbClient.EXPECT().GetDashboards(gomock.Any(), []string{"test"}, []string{"default"}).Return([]dashboardv1.DashboardSpec{{Title: "test", Cluster: "test", Namespace: "default", Name: "test"}}, nil)
+
+		router := Router{chi.NewRouter(), dbClient}
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/dashboards?cluster=test&namespace=default", nil)
+		w := httptest.NewRecorder()
+
+		router.getDashboards(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `[{"cluster":"test", "name":"test", "namespace":"default", "rows": null, "title":"test"}]`)
+	})
+}
+
 func TestGetDashboardsFromReferences(t *testing.T) {
-	t.Run("should return error fro invalud request body", func(t *testing.T) {
+	t.Run("should return error for invalid request body", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		dbClient := db.NewMockClient(ctrl)
 

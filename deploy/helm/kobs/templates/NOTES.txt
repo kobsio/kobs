@@ -1,0 +1,6 @@
+You can find more information about running kobs on Kubernetes
+in the kobs documentation:
+
+  https://kobs.io
+
+Thanks for using kobs!

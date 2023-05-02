@@ -1,5 +1,6 @@
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import { FunctionComponent, ReactNode } from 'react';
+import { Helmet } from 'react-helmet';
 
 interface IPageProps {
   actions?: ReactNode;
@@ -31,6 +32,10 @@ export const Page: FunctionComponent<IPageProps> = ({
       <Grid justifyContent="space-between" container={true} spacing={6}>
         <Grid item={true} xs={12} sm={actions ? 8 : 12}>
           <Typography variant="h3" gutterBottom={true}>
+            <Helmet titleTemplate="kobs - %s" defaultTitle="kobs">
+              <title>{subtitle ? `${title} - ${subtitle}` : title}</title>
+            </Helmet>
+
             {title}
             {subtitle && (
               <Typography pl={2} color="text.secondary" variant="caption">

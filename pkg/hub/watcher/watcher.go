@@ -53,10 +53,8 @@ func (c *client) Watch() {
 	defer ticker.Stop()
 
 	for {
-		select {
-		case <-ticker.C:
-			c.watch()
-		}
+		<-ticker.C
+		c.watch()
 	}
 }
 

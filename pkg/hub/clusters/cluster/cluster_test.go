@@ -141,8 +141,11 @@ func TestProxy(t *testing.T) {
 	defer hubServer.Close()
 
 	t.Run("proxy error", func(t *testing.T) {
-		resp, err := http.Get(hubServer.URL)
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, hubServer.URL, nil)
+		resp, err := http.DefaultClient.Do(req)
+
 		body, _ := io.ReadAll(resp.Body)
+		defer resp.Body.Close()
 
 		require.NoError(t, err)
 		require.Equal(t, http.StatusBadGateway, resp.StatusCode)
@@ -150,8 +153,11 @@ func TestProxy(t *testing.T) {
 	})
 
 	t.Run("request ok", func(t *testing.T) {
-		resp, err := http.Post(hubServer.URL+"?status=ok", "", nil)
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, hubServer.URL+"?status=ok", nil)
+		resp, err := http.DefaultClient.Do(req)
+
 		body, _ := io.ReadAll(resp.Body)
+		defer resp.Body.Close()
 
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, resp.StatusCode)
@@ -159,8 +165,11 @@ func TestProxy(t *testing.T) {
 	})
 
 	t.Run("request error", func(t *testing.T) {
-		resp, err := http.Post(hubServer.URL+"?status=error", "", nil)
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, hubServer.URL+"?status=error", nil)
+		resp, err := http.DefaultClient.Do(req)
+
 		body, _ := io.ReadAll(resp.Body)
+		defer resp.Body.Close()
 
 		require.NoError(t, err)
 		require.Equal(t, http.StatusBadRequest, resp.StatusCode)

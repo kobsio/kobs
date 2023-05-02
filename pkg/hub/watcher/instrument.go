@@ -42,11 +42,10 @@ func instrument(ctx context.Context, span trace.Span, cluster, resource string, 
 		syncsSumMetric.WithLabelValues(cluster, "error", resource).Observe(float64(time.Since(startTime).Nanoseconds()) / 1000000)
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-		log.Error(ctx, "Could not get resources", zap.Error(err), zap.String("cluster", cluster), zap.String("resource", resource), zap.Int("count", length), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Now().Sub(startTime)))
-
+		log.Error(ctx, "Could not get resources", zap.Error(err), zap.String("cluster", cluster), zap.String("resource", resource), zap.Int("count", length), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Since(startTime)))
 	} else {
 		syncsTotalMetric.WithLabelValues(cluster, "success", resource).Inc()
 		syncsSumMetric.WithLabelValues(cluster, "success", resource).Observe(float64(time.Since(startTime).Nanoseconds()) / 1000000)
-		log.Debug(ctx, "Resources were saved", zap.String("cluster", cluster), zap.String("resource", resource), zap.Int("count", length), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Now().Sub(startTime)))
+		log.Debug(ctx, "Resources were saved", zap.String("cluster", cluster), zap.String("resource", resource), zap.Int("count", length), zap.Time("endTime", time.Now()), zap.Duration("duration", time.Since(startTime)))
 	}
 }

@@ -13,7 +13,7 @@ import { FunctionComponent, useState } from 'react';
 import { MonitorOperations, MonitorServiceCalls, MonitorServiceErrors, MonitorServiceLatency } from './Monitor';
 import { Traces } from './Traces';
 
-import { spanKinds } from '../utils/utils';
+import { example, spanKinds } from '../utils/utils';
 
 export interface IOptions {
   metrics?: {
@@ -200,24 +200,7 @@ const JaegerPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
       description={description}
       message="Invalid options for Jaeger plugin"
       details="One of the required options is missing."
-      example={`# View a list of traces
-plugin:
-  name: jaeger
-  type: jaeger
-  options:
-    showChart: true
-    queries:
-      - name: All Requests
-        service: productpage.bookinfo
-# View the metrics of a service
-plugin:
-  name: jaeger
-  type: jaeger
-  options:
-    metrics:
-      # The type must be "servicelatency", "serviceerrors", "servicecalls" or "operations".
-      type: servicelatency
-      service: productpage.bookinfo`}
+      example={example}
       documentation="https://kobs.io/main/plugins/jaeger"
     />
   );

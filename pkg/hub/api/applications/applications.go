@@ -1,11 +1,13 @@
 package applications
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 
 	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
+	"github.com/kobsio/kobs/pkg/hub/app/settings"
 	authContext "github.com/kobsio/kobs/pkg/hub/auth/context"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/instrument/log"
@@ -22,8 +24,9 @@ import (
 
 type Router struct {
 	*chi.Mux
-	dbClient db.Client
-	tracer   trace.Tracer
+	appSettings settings.Settings
+	dbClient    db.Client
+	tracer      trace.Tracer
 }
 
 func (router *Router) getApplications(w http.ResponseWriter, r *http.Request) {
@@ -243,6 +246,57 @@ func (router *Router) getApplicationsByTeam(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, data)
 }
 
+func (router *Router) saveApplication(w http.ResponseWriter, r *http.Request) {
+	ctx, span := router.tracer.Start(r.Context(), "saveApplication")
+	defer span.End()
+
+	user := authContext.MustGetUser(ctx)
+
+	if !router.appSettings.Save.Enabled {
+		errresponse.Render(w, r, http.StatusMethodNotAllowed, "Save is disabled")
+		return
+	}
+
+	var application applicationv1.ApplicationSpec
+
+	err := json.NewDecoder(r.Body).Decode(&application)
+	if err != nil {
+		log.Error(r.Context(), "Failed to decode request body", zap.Error(err))
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "Failed to decode request body")
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to decode request body")
+		return
+	}
+
+	if application.Cluster == "" || application.Namespace == "" || application.Name == "" || fmt.Sprintf("/cluster/%s/namespace/%s/name/%s", application.Cluster, application.Namespace, application.Name) != application.ID {
+		log.Error(r.Context(), "Invalid application data")
+		span.RecordError(fmt.Errorf("invalid application data"))
+		span.SetStatus(codes.Error, "invalid application data")
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid application data")
+		return
+	}
+
+	if !user.HasApplicationAccess(&application) {
+		log.Warn(ctx, "The user is not authorized to edit the application")
+		span.RecordError(fmt.Errorf("user is not authorized to edit the application"))
+		span.SetStatus(codes.Error, "user is not authorized to edit the application")
+		errresponse.Render(w, r, http.StatusForbidden, "You are not allowed to edit the application")
+		return
+	}
+
+	err = router.dbClient.SaveApplication(ctx, &application)
+	if err != nil {
+		log.Error(ctx, "Failed to save application", zap.Error(err))
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "Failed to save application")
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to save application")
+		return
+	}
+
+	render.Status(r, http.StatusNoContent)
+	render.JSON(w, r, nil)
+}
+
 func (router *Router) getApplicationGroups(w http.ResponseWriter, r *http.Request) {
 	ctx, span := router.tracer.Start(r.Context(), "getApplicationGroups")
 	defer span.End()
@@ -276,9 +330,10 @@ func (router *Router) getApplicationGroups(w http.ResponseWriter, r *http.Reques
 	render.JSON(w, r, applicationsGroups)
 }
 
-func Mount(dbClient db.Client) chi.Router {
+func Mount(appSettings settings.Settings, dbClient db.Client) chi.Router {
 	router := Router{
 		chi.NewRouter(),
+		appSettings,
 		dbClient,
 		otel.Tracer("applications"),
 	}
@@ -286,6 +341,7 @@ func Mount(dbClient db.Client) chi.Router {
 	router.Get("/", router.getApplications)
 	router.Get("/tags", router.getTags)
 	router.Get("/application", router.getApplication)
+	router.Post("/application", router.saveApplication)
 	router.Get("/team", router.getApplicationsByTeam)
 	router.Get("/topology", router.getApplicationsTopology)
 	router.Get("/topology/application", router.getApplicationTopology)

@@ -25,9 +25,7 @@ func TestNewPool(t *testing.T) {
 func TestRunTask(t *testing.T) {
 	wp, _ := NewPool(1)
 	testRunTask := func() {
-		wp.RunTask(testTask(func() {
-			return
-		}))
+		wp.RunTask(testTask(func() {}))
 	}
 
 	require.NotPanics(t, testRunTask)

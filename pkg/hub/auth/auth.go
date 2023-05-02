@@ -250,14 +250,22 @@ func (c *client) signoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     "kobs.token",
-		Value:    "",
-		Path:     "/",
-		Secure:   true,
-		HttpOnly: true,
-		Expires:  time.Unix(0, 0),
-	})
+	// "Delete" all cookies which are starting with "kobs.". This is required to not only delete the "kobs.token"
+	// cookie, but also the cookies created by plugins, like the "kobs.plugin.jira." or "kobs.plugin.github." cookies
+	// from the Jira and GitHub plugin.
+	cookies := r.Cookies()
+	for _, cookie := range cookies {
+		if strings.HasPrefix(cookie.Name, "kobs.") {
+			http.SetCookie(w, &http.Cookie{
+				Name:     cookie.Name,
+				Value:    "",
+				Path:     "/",
+				Secure:   true,
+				HttpOnly: true,
+				Expires:  time.Unix(0, 0),
+			})
+		}
+	}
 
 	render.Status(r, http.StatusNoContent)
 	render.JSON(w, r, nil)

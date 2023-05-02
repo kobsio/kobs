@@ -5,6 +5,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	"github.com/kobsio/kobs/pkg/utils"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,7 +22,6 @@ func TestGetResources(t *testing.T) {
 		require.True(t, utils.Some(r, func(x Resource) bool {
 			return x.ID == custom.ID
 		}))
-
 	})
 
 	t.Run("some resources are namespaced", func(t *testing.T) {

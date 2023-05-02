@@ -1,20 +1,20 @@
-/* eslint-disable sort-keys */
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import favicons from 'favicons';
-import fs from 'fs';
+import fs from 'fs/promises';
+import path from 'path';
 
-var source = 'logo.png';
+const source = 'logo.png';
+const dest = './favicons';
+const htmlBasename = 'index.html';
 
-var configuration = {
+const configuration = {
   path: '/',
   appName: 'kobs',
   appShortName: 'kobs',
   appDescription: 'Kubernetes Observability Platform',
   dir: 'auto',
   lang: 'en-US',
-  background: '#000000',
-  theme_color: '#000000',
+  background: '#233044',
+  theme_color: '#233044',
   appleStatusBarStyle: 'black',
   display: 'standalone',
   orientation: 'any',
@@ -23,57 +23,18 @@ var configuration = {
   loadManifestWithCredentials: true,
   manifestMaskable: true,
   icons: {
-    android: { offset: 20, background: '#000000' },
-    appleIcon: { offset: 15, background: '#000000' },
-    appleStartup: { offset: 15, background: '#000000' },
-    favicons: { offset: 15, background: '#000000' },
-    windows: { offset: 15, background: '#000000' },
+    android: { offset: 20, background: '#233044' },
+    appleIcon: { offset: 15, background: '#233044' },
+    appleStartup: { offset: 15, background: '#233044' },
+    favicons: { offset: 15, background: '#233044' },
+    windows: { offset: 15, background: '#233044' },
     yandex: false,
   },
-  shortcuts: [
-    {
-      name: 'Applications',
-      short_name: 'Applications',
-      description: 'View your applications',
-      url: '/applications',
-      icon: 'applications.png',
-    },
-    {
-      name: 'Teams',
-      short_name: 'Teams',
-      description: 'View your teams',
-      url: '/teams',
-      icon: 'teams.png',
-    },
-    {
-      name: 'Profile',
-      short_name: 'Profile',
-      description: 'View your profile',
-      url: '/profile',
-      icon: 'profile.png',
-    },
-  ],
 };
 
-const callback = (error, response) => {
-  if (error) {
-    console.log(error.message);
-    return;
-  }
+const response = await favicons(source, configuration);
+await fs.mkdir(dest, { recursive: true });
 
-  // console.log(response.images);
-  // console.log(response.files);
-  // console.log(response.html);
-
-  response.images.forEach((image) => {
-    fs.writeFileSync(`./icons/${image.name}`, image.contents);
-  });
-
-  response.files.forEach((file) => {
-    fs.writeFileSync(`./files/${file.name}`, file.contents);
-  });
-
-  fs.writeFileSync(`./files/index.html`, response.html.join('\n'));
-};
-
-favicons(source, configuration, callback);
+await Promise.all(response.images.map(async (image) => await fs.writeFile(path.join(dest, image.name), image.contents)));
+await Promise.all(response.files.map(async (file) => await fs.writeFile(path.join(dest, file.name), file.contents)));
+await fs.writeFile(path.join(dest, htmlBasename), response.html.join('\n'));

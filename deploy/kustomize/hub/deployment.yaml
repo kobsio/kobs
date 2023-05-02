@@ -1,39 +1,44 @@
 ---
+# Source: kobs/templates/hub/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hub
-  namespace: kobs
+  name: kobs-hub
   labels:
-    app.kubernetes.io/name: hub
-    app.kubernetes.io/instance: hub
+    helm.sh/chart: kobs-0.1.0
+    app.kubernetes.io/name: kobs
+    app.kubernetes.io/instance: kobs
+    app.kubernetes.io/version: "v0.12.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: hub
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: hub
-      app.kubernetes.io/instance: hub
+      app.kubernetes.io/name: kobs
+      app.kubernetes.io/instance: kobs
+      app.kubernetes.io/component: hub
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: hub
-        app.kubernetes.io/instance: hub
+        app.kubernetes.io/name: kobs
+        app.kubernetes.io/instance: kobs
+        app.kubernetes.io/component: hub
+      annotations:
+        checksum/config: 6a772fbdaa69f465410db25a090d8032a934f071bd8bdd0e443cad9753dcbdc9
     spec:
+      securityContext:
+        {}
       containers:
         - name: hub
-          image: "kobsio/kobs:v0.11.0"
+          securityContext:
+            {}
+          image: "ghcr.io/kobsio/kobs:v0.12.0"
           imagePullPolicy: IfNotPresent
           args:
             - hub
-            - --log.format=console
-            - --log.level=info
-            - --hub.mode=default
-            - --hub.store.driver=bolt
-            - --hub.store.uri=/tmp/kobs.db
-            - --hub.watcher.interval=300s
-            - --hub.watcher.worker=10
           ports:
-            - name: http-web
+            - name: http-app
               containerPort: 15219
               protocol: TCP
             - name: http-api
@@ -46,10 +51,14 @@ spec:
             httpGet:
               path: /api/health
               port: http-api
+            failureThreshold: 5
           readinessProbe:
             httpGet:
               path: /api/health
               port: http-api
+            failureThreshold: 3
+          resources:
+            {}
           volumeMounts:
             - name: config
               mountPath: /kobs/config.yaml
@@ -59,4 +68,4 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: hub
+            name: kobs-hub
