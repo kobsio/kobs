@@ -1,0 +1,12 @@
+{{- if .Values.cluster.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kobs.fullname" . }}-cluster
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cluster
+data:
+  config.yaml: |
+{{ tpl .Values.config.cluster . | indent 4 }}
+{{- end }}

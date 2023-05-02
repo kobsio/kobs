@@ -1,0 +1,45 @@
+{{- if .Values.hub.enabled }}
+{{- if .Values.hub.ingress.enabled -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "kobs.fullname" . }}-hub
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hub
+  {{- with .Values.hub.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.hub.ingress.tls }}
+  tls:
+  {{- range .Values.hub.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.hub.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              serviceName: {{ include "kobs.fullname" . }}-hub
+              servicePort: http-api
+          - path: /
+            backend:
+              serviceName: {{ include "kobs.fullname" . }}-hub
+              servicePort: http-app
+  {{- end }}
+{{- end }}
+{{- end }}

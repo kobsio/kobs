@@ -1,0 +1,34 @@
+{{- if .Values.hub.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kobs.fullname" . }}-hub
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hub
+    {{- with .Values.hub.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.hub.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.hub.service.type }}
+  ports:
+    - port: 15219
+      targetPort: http-app
+      protocol: TCP
+      name: http-app
+    - port: 15220
+      targetPort: http-api
+      protocol: TCP
+      name: http-api
+    - port: 15222
+      targetPort: http-metrics
+      protocol: TCP
+      name: http-metrics
+  selector:
+    {{- include "kobs.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: hub
+{{- end }}

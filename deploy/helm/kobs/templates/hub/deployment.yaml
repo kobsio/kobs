@@ -1,0 +1,105 @@
+{{- if .Values.hub.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobs.fullname" . }}-hub
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hub
+spec:
+  replicas: {{ .Values.hub.replicas }}
+  selector:
+    matchLabels:
+      {{- include "kobs.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: hub
+  template:
+    metadata:
+      labels:
+        {{- include "kobs.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: hub
+        {{- with .Values.hub.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/hub/configmap.yaml") . | sha256sum }}
+        {{- with .Values.hub.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.hub.podSecurityContext | nindent 8 }}
+      containers:
+        - name: hub
+          securityContext:
+            {{- toYaml .Values.hub.securityContext | nindent 12 }}
+          image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          args:
+            - hub
+          {{- with .Values.hub.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.hub.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http-app
+              containerPort: 15219
+              protocol: TCP
+            - name: http-api
+              containerPort: 15220
+              protocol: TCP
+            - name: http-metrics
+              containerPort: 15222
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http-api
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http-api
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.hub.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /kobs/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            {{- if .Values.hub.volumeMounts }}
+            {{- toYaml .Values.hub.volumeMounts | nindent 12 }}
+            {{- end }}
+      terminationGracePeriodSeconds: 90
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "kobs.fullname" . }}-hub
+        {{- if .Values.hub.volumes }}
+        {{- toYaml .Values.hub.volumes | nindent 8 }}
+        {{- end }}
+      {{- with .Values.hub.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hub.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hub.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hub.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

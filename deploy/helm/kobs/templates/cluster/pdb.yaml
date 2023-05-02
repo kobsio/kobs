@@ -1,0 +1,17 @@
+{{- if .Values.cluster.enabled }}
+{{- if .Values.cluster.podDisruptionBudget }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "kobs.fullname" . }}-cluster
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cluster
+spec:
+  {{- toYaml .Values.cluster.podDisruptionBudget | nindent 2 }}
+  selector:
+    matchLabels:
+      {{- include "kobs.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: cluster
+{{- end }}
+{{- end }}

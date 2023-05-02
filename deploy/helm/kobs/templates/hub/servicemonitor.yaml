@@ -1,0 +1,40 @@
+{{- if .Values.hub.enabled }}
+{{- if .Values.hub.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "kobs.fullname" . }}-hub
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hub
+    {{- with .Values.hub.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+    - port: http-metrics
+      {{- if .Values.hub.serviceMonitor.interval }}
+      interval: {{ .Values.hub.serviceMonitor.interval }}
+      {{- end }}
+      {{- if .Values.hub.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.hub.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      path: /metrics
+      honorLabels: {{ .Values.hub.serviceMonitor.honorLabels }}
+      {{- if .Values.hub.serviceMonitor.metricRelabelings }}
+      metricRelabelings:
+      {{ toYaml .Values.hub.serviceMonitor.metricRelabelings | nindent 6 }}
+      {{- end }}
+      {{- if .Values.hub.serviceMonitor.relabelings }}
+      relabelings:
+      {{ toYaml .Values.hub.serviceMonitor.relabelings | nindent 6 }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "kobs.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: hub
+{{- end }}
+{{- end }}

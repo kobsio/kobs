@@ -1,0 +1,27 @@
+{{- if .Values.cluster.enabled }}
+{{- if .Values.cluster.rbac.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "cluster.rbacName" . }}
+  labels:
+    {{- include "kobs.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cluster
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - 'get'
+      - 'watch'
+      - 'list'
+
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - 'get'
+      - 'watch'
+      - 'list'
+{{- end }}
+{{- end }}

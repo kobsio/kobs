@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "satellite.fullname" . }}
-  labels:
-    {{- include "satellite.labels" . | nindent 4 }}
-data:
-  config.yaml: |
-{{ tpl .Values.satellite.config . | indent 4 }}
