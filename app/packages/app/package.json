@@ -33,6 +33,7 @@
     "@kobsio/rss": "*",
     "@kobsio/signalsciences": "*",
     "@kobsio/sonarqube": "*",
+    "@kobsio/sql": "*",
     "@kobsio/techdocs": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.121",

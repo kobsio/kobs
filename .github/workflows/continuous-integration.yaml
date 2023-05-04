@@ -70,6 +70,7 @@ jobs:
           - rss
           - signalsciences
           - sonarqube
+          - sql
           - techdocs
     defaults:
       run:
