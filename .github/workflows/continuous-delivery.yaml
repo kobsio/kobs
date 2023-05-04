@@ -49,5 +49,5 @@ jobs:
           push: true
           context: .
           file: ./cmd/kobs/Dockerfile
-          platforms: linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8
+          platforms: linux/amd64,linux/arm64,linux/arm64/v8
           tags: ghcr.io/${{ github.repository_owner }}/kobs:${{ env.TAG }}
