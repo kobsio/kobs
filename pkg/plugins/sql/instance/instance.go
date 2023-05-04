@@ -7,20 +7,20 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/kobsio/kobs/pkg/instrument/log"
+
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"
-
-	"github.com/kobsio/kobs/pkg/instrument/log"
 )
 
 // Config is the structure of the configuration for a single SQL database instance.
 type Config struct {
 	Driver   string `json:"driver"`
 	Address  string `json:"address"`
-	Database string `json:"databse"`
+	Database string `json:"database"`
 }
 
 type Instance interface {

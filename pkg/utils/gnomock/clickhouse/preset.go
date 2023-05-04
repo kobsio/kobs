@@ -1,4 +1,4 @@
-// Package clickhouse provides a Gnomock Preset for ClickHouse database
+// Package clickhouse provides a Gnomock Preset for a ClickHouse database.
 package clickhouse
 
 import (

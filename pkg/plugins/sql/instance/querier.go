@@ -9,8 +9,9 @@ import (
 	"net/url"
 	"strings"
 
-	"cloud.google.com/go/bigquery"
 	"github.com/kobsio/kobs/pkg/utils"
+
+	"cloud.google.com/go/bigquery"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )

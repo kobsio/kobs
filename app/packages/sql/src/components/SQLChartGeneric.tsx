@@ -1,10 +1,41 @@
-import { getChartColor } from '@kobsio/core';
-import { Box } from '@mui/material';
-import React from 'react';
+import {
+  ChartTooltip,
+  chartTheme,
+  chartTickFormatTime,
+  chartTickFormatValue,
+  formatTime,
+  getChartColor,
+  roundNumber,
+  useDimensions,
+} from '@kobsio/core';
+import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme } from '@mui/material';
+import { FunctionComponent, useRef } from 'react';
+import {
+  createContainer,
+  VictoryArea,
+  VictoryAxis,
+  VictoryBar,
+  VictoryChart,
+  VictoryGroup,
+  VictoryLine,
+  VictoryStack,
+  VictoryVoronoiContainerProps,
+  VictoryCursorContainerProps,
+} from 'victory';
 
-import SQLChartGenericChart from './SQLChartGenericChart';
-import SQLChartGenericLegend from './SQLChartGenericLegend';
-import { IDatum, ILegend, IMetrics, ISQLData, ISQLDataRow } from './types';
+import { ILegend, ISQLData, ISQLDataRow } from '../utils/utils';
+
+interface IMetrics {
+  data: IDatum[];
+  name: string;
+}
+
+interface IDatum {
+  color: string;
+  name: string;
+  x: number | Date;
+  y: number | null;
+}
 
 const getMetricsData = (
   rows: ISQLDataRow[],
@@ -70,7 +101,208 @@ const getMetricsData = (
   return metrics;
 };
 
-interface ISQLChartGenericProps {
+const calcMin = (data: IDatum[], unit: string | undefined): string => {
+  let min = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    const y = data[i].y;
+    if (y) {
+      if (i === 0) {
+        min = y as number;
+      }
+
+      if (y < min) {
+        min = data[i].y as number;
+      }
+    }
+  }
+
+  return `${min} ${unit ? unit : ''}`;
+};
+
+const calcMax = (data: IDatum[], unit: string | undefined): string => {
+  let max = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    const y = data[i].y;
+    if (y) {
+      if (i === 0) {
+        max = y as number;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (y! > max) {
+        max = y as number;
+      }
+    }
+  }
+
+  return `${max} ${unit ? unit : ''}`;
+};
+
+const calcAvg = (data: IDatum[], unit: string | undefined): string => {
+  let count = 0;
+  let sum = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    const y = data[i].y;
+    if (y) {
+      count = count + 1;
+      sum = sum + (y as number);
+    }
+  }
+
+  return `${count > 0 ? roundNumber(sum / count, 2) : 0} ${unit ? unit : ''}`;
+};
+
+const Legend: FunctionComponent<{
+  legend?: ILegend;
+  metrics: IMetrics[];
+  yAxisUnit?: string;
+}> = ({ metrics, yAxisUnit, legend }) => {
+  return (
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Min</TableCell>
+            <TableCell>Max</TableCell>
+            <TableCell>Avg</TableCell>
+            <TableCell>Current</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {metrics.map((metric, i) => (
+            <TableRow key={metric.name}>
+              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Name">
+                <Stack direction="row" alignItems="center">
+                  <Box sx={{ backgroundColor: getChartColor(i), height: '8px', mr: '4px', width: '8px' }} />
+                  {legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
+                </Stack>
+              </TableCell>
+              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Min">
+                {calcMin(metric.data, yAxisUnit)}
+              </TableCell>
+              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Max">
+                {calcMax(metric.data, yAxisUnit)}
+              </TableCell>
+              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Avg">
+                {calcAvg(metric.data, yAxisUnit)}
+              </TableCell>
+              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Current">
+                {metric.data.length > 0
+                  ? `${metric.data[metric.data?.length - 1].y}${yAxisUnit ? ` ${yAxisUnit}` : ''}`
+                  : ''}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
+
+const Chart: FunctionComponent<{
+  legend?: ILegend;
+  metrics: IMetrics[];
+  type: 'area' | 'bar' | 'line';
+  xAxisType?: string;
+  yAxisStacked?: boolean;
+  yAxisUnit?: string;
+}> = ({ metrics, type, xAxisType, yAxisUnit, yAxisStacked, legend }) => {
+  const refChart = useRef<HTMLDivElement>(null);
+  const muiTheme = useTheme();
+  const theme = chartTheme(muiTheme);
+  const chartSize = useDimensions(refChart);
+
+  const chartData = metrics.map((metric) => {
+    if (type === 'area') {
+      return (
+        <VictoryArea
+          key={metric.name}
+          data={metric.data}
+          name={legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
+          interpolation="monotoneX"
+        />
+      );
+    }
+
+    if (type === 'bar') {
+      return (
+        <VictoryBar
+          key={metric.name}
+          data={metric.data}
+          name={legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
+        />
+      );
+    }
+
+    if (type === 'line') {
+      return (
+        <VictoryLine
+          key={metric.name}
+          data={metric.data}
+          name={legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
+          interpolation="monotoneX"
+        />
+      );
+    }
+
+    throw new Error(`unsupported type "${type}"`);
+  });
+
+  const CursorVoronoiContainer = createContainer<VictoryVoronoiContainerProps, VictoryCursorContainerProps>(
+    'voronoi',
+    'cursor',
+  );
+
+  return (
+    <Box style={{ height: '100%', width: '100%' }} ref={refChart}>
+      <VictoryChart
+        containerComponent={
+          <CursorVoronoiContainer
+            cursorDimension="x"
+            labels={() => ' '}
+            labelComponent={
+              <ChartTooltip
+                height={chartSize.height}
+                width={chartSize.width}
+                legendData={({ datum }: { datum: IDatum }) => ({
+                  color: datum.color,
+                  label: datum.name,
+                  title:
+                    xAxisType === 'time'
+                      ? formatTime(datum.x as Date)
+                      : typeof datum.x === 'undefined'
+                      ? undefined
+                      : `${datum.x}`,
+                  unit: yAxisUnit,
+                  value: datum.y ? roundNumber(datum.y, 4) : 'N/A',
+                })}
+              />
+            }
+            mouseFollowTooltips={true}
+            voronoiPadding={0}
+          />
+        }
+        height={chartSize.height}
+        padding={{ bottom: 30, left: yAxisUnit ? 55 : 50, right: 0, top: 0 }}
+        domainPadding={{ x: type === 'bar' ? [20, 20] : [0, 0], y: [0, 30] }}
+        scale={{ x: xAxisType === 'time' ? 'time' : 'linear', y: 'linear' }}
+        theme={theme}
+        width={chartSize.width}
+      >
+        <VictoryAxis dependentAxis={false} tickFormat={xAxisType === 'time' ? chartTickFormatTime : undefined} />
+        <VictoryAxis fixLabelOverlap={true} dependentAxis={true} tickFormat={chartTickFormatValue} label={yAxisUnit} />
+
+        {yAxisStacked ? <VictoryStack>{chartData}</VictoryStack> : <VictoryGroup>{chartData}</VictoryGroup>}
+      </VictoryChart>
+    </Box>
+  );
+};
+
+export const SQLChartGeneric: FunctionComponent<{
   data: ISQLData;
   legend?: ILegend;
   type: 'area' | 'bar' | 'line';
@@ -80,25 +312,13 @@ interface ISQLChartGenericProps {
   yAxisGroup?: string;
   yAxisStacked?: boolean;
   yAxisUnit?: string;
-}
-
-export const SQLChartGeneric: React.FunctionComponent<ISQLChartGenericProps> = ({
-  data,
-  type,
-  xAxisColumn,
-  xAxisType,
-  yAxisColumns,
-  yAxisUnit,
-  yAxisGroup,
-  yAxisStacked,
-  legend,
-}: ISQLChartGenericProps) => {
+}> = ({ data, type, xAxisColumn, xAxisType, yAxisColumns, yAxisUnit, yAxisGroup, yAxisStacked, legend }) => {
   const metrics = data.rows ? getMetricsData(data.rows, xAxisColumn, xAxisType, yAxisColumns, yAxisGroup, legend) : [];
 
   return (
-    <React.Fragment>
+    <>
       <Box style={{ height: 'calc(100% - 80px)' }}>
-        <SQLChartGenericChart
+        <Chart
           metrics={metrics}
           type={type}
           xAxisType={xAxisType}
@@ -109,9 +329,9 @@ export const SQLChartGeneric: React.FunctionComponent<ISQLChartGenericProps> = (
       </Box>
 
       <Box className="pf-u-mt-md kobsio-hide-scrollbar" style={{ height: '60px', overflow: 'auto' }}>
-        <SQLChartGenericLegend metrics={metrics} yAxisUnit={yAxisUnit} legend={legend} />
+        <Legend metrics={metrics} yAxisUnit={yAxisUnit} legend={legend} />
       </Box>
-    </React.Fragment>
+    </>
   );
 };
 

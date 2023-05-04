@@ -1,10 +1,12 @@
+import { SQLDialect } from '@codemirror/lang-sql';
+
 /**
  * list of clickhouse data types, can be exported with:
  * SELECT name
  *   FROM system.data_type_families
  *   FORMAT CSV
  */
-export const ClickhouseTypes = [
+const types = [
   'JSON',
   'Polygon',
   'Ring',
@@ -142,7 +144,7 @@ export const ClickhouseTypes = [
  * list of clickhouse keywords
  * can be found in sql-reference: https://github.com/ClickHouse/ClickHouse/tree/master/docs/en/sql-reference
  */
-export const ClickhouseKeywords = [
+export const keywords = [
   'abs',
   'aggThrowIf',
   'allow_non_metadata_alters',
@@ -5667,3 +5669,15 @@ export const ClickhouseKeywords = [
   'zookeeperSessionUptime',
   'zstd_window_log_max',
 ];
+
+/**
+ * Clickhouse Dialect for autocompletion and highlighting
+ */
+export const Clickhouse = SQLDialect.define({
+  charSetCasts: true,
+  doubleDollarQuotedStrings: true,
+  keywords: keywords.join(' '),
+  operatorChars: '+-*/<>=~!@#%^&|`?',
+  specialVar: '',
+  types: types.filter((keyword) => !keyword.includes(' ')).join(' '),
+});

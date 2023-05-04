@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import SQLPage from './SQLPage';
-import { ISQLMetaInfo, ISQLData } from './types';
 
 describe('SQLPage', () => {
   it('should render SQLPage', async () => {
@@ -20,14 +19,15 @@ describe('SQLPage', () => {
 
     getSpy.mockImplementation(async (path: string) => {
       if (path === '/api/plugins/sql/meta') {
-        return { completions: { bar: ['foo'] }, dialect: 'sql' } as ISQLMetaInfo;
+        return { completions: { bar: ['foo'] }, dialect: 'sql' };
       }
       if (path.startsWith('/api/plugins/sql/query')) {
-        return { columns: ['foo'], rows: [{ foo: 'first item' }, { foo: 'second item' }] } as ISQLData;
+        return { columns: ['foo'], rows: [{ foo: 'first item' }, { foo: 'second item' }] };
       }
 
       throw new Error(`mock was called with ${path}`);
     });
+
     render(
       <MemoryRouter initialEntries={[`/?query=${encodeURIComponent('SELECT * FROM bar;')}`]}>
         <QueryClientProvider>
@@ -37,6 +37,7 @@ describe('SQLPage', () => {
         </QueryClientProvider>
       </MemoryRouter>,
     );
+
     expect(screen.getByText(instance.description)).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByText('first item')).toBeInTheDocument();

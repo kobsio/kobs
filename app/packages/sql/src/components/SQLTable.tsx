@@ -1,17 +1,22 @@
-import { formatTime } from '@kobsio/core';
-import { TableRow, TableCell, Table, TableBody, TableHead, TableContainer } from '@mui/material';
-import { FunctionComponent } from 'react';
+import { APIContext, APIError, IPluginInstance, ITimes, UseQueryWrapper, formatTimeString } from '@kobsio/core';
+import { TableRow, TableCell, Table, TableBody, TableHead, TableContainer, Card } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { FunctionComponent, useContext } from 'react';
 
-import { IColumns, IRow } from './types';
+import { IColumns, ISQLData, ISQLDataRow } from '../utils/utils';
 
 const renderCellValue = (value: string | number | string[] | number[], unit?: string): string => {
   if (Array.isArray(value)) {
-    return `[${value.join(', ')}] ${unit}`;
+    return `[${value.join(', ')}]`;
+  }
+
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
   }
 
   if (unit) {
-    if (unit === 'time') {
-      return formatTime(new Date(value));
+    if (unit === 'time' && typeof value === 'string') {
+      return formatTimeString(value);
     } else {
       return `${value} ${unit}`;
     }
@@ -20,16 +25,11 @@ const renderCellValue = (value: string | number | string[] | number[], unit?: st
   return `${value}`;
 };
 
-interface ISQLRowProps {
+const SQLRow: FunctionComponent<{
   columnOptions?: IColumns;
   columns: string[];
-  row: IRow;
-}
-
-/**
- * SQLRow represents a single row in the table
- */
-const SQLRow: FunctionComponent<ISQLRowProps> = ({ columnOptions, columns, row }) => (
+  row: ISQLDataRow;
+}> = ({ columnOptions, columns, row }) => (
   <>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
       {columns.map((column) => (
@@ -46,37 +46,61 @@ const SQLRow: FunctionComponent<ISQLRowProps> = ({ columnOptions, columns, row }
   </>
 );
 
-interface ISQLTableProps {
+const SQLTable: FunctionComponent<{
   columnOptions?: IColumns;
-  columns: string[];
-  rows: IRow[];
-}
+  instance: IPluginInstance;
+  query: string;
+  times: ITimes;
+}> = ({ columnOptions, instance, query, times }) => {
+  const apiContext = useContext(APIContext);
 
-/**
- * SQLTable renders a table view for the given rows and columns
- */
-const SQLTable: FunctionComponent<ISQLTableProps> = ({ columnOptions, columns, rows }) => {
+  const { isError, isLoading, error, data, refetch } = useQuery<ISQLData, APIError>(
+    ['sql/query', instance, query, times],
+    () => {
+      return apiContext.client.get<ISQLData>(`/api/plugins/sql/query?query=${encodeURIComponent(query)}`, {
+        headers: {
+          'x-kobs-cluster': instance.cluster,
+          'x-kobs-plugin': instance.name,
+        },
+      });
+    },
+  );
+
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <TableCell key={column}>
-                {columnOptions && columnOptions.hasOwnProperty(column) && columnOptions[column].title
-                  ? columnOptions[column].title
-                  : column}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, i) => (
-            <SQLRow key={i} columnOptions={columnOptions} columns={columns} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <UseQueryWrapper
+      error={error}
+      isError={isError}
+      isLoading={isLoading}
+      refetch={refetch}
+      errorTitle="Failed to get data"
+      isNoData={!data || !data.columns || data.columns.length === 0 || !data.rows || data.rows.length === 0}
+      noDataTitle="No data was found"
+    >
+      {data?.columns && data?.rows && (
+        <Card>
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  {data.columns.map((column) => (
+                    <TableCell key={column}>
+                      {columnOptions && columnOptions.hasOwnProperty(column) && columnOptions[column].title
+                        ? columnOptions[column].title
+                        : column}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.rows.map((row, index) => (
+                  <SQLRow key={index} columnOptions={columnOptions} columns={data.columns ?? []} row={row} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
+      )}
+    </UseQueryWrapper>
   );
 };
 

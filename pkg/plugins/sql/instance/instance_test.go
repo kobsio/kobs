@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/kobsio/kobs/pkg/utils/gnomock/clickhouse"
+
 	"github.com/orlangure/gnomock"
 	"github.com/orlangure/gnomock/preset/mysql"
 	"github.com/orlangure/gnomock/preset/postgres"
 	"github.com/stretchr/testify/require"
-
-	"github.com/kobsio/kobs/pkg/plugins/sql/instance/clickhouse"
 )
 
 func TestCompletions(t *testing.T) {

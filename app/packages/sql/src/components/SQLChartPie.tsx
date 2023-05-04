@@ -1,21 +1,15 @@
 import { chartColors, useDimensions } from '@kobsio/core';
 import { Box, darken } from '@mui/material';
-import React, { useRef } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { VictoryPie, VictoryTooltip } from 'victory';
 
-import { ISQLData } from './types';
+import { ISQLData } from '../utils/utils';
 
-interface ISQLChartPieProps {
+export const SQLChartPie: FunctionComponent<{
   data: ISQLData;
   pieLabelColumn: string;
   pieValueColumn: string;
-}
-
-const SQLChartPie: React.FunctionComponent<ISQLChartPieProps> = ({
-  data,
-  pieLabelColumn,
-  pieValueColumn,
-}: ISQLChartPieProps) => {
+}> = ({ data, pieLabelColumn, pieValueColumn }) => {
   const refChart = useRef<HTMLDivElement>(null);
   const chartSize = useDimensions(refChart);
 
@@ -29,7 +23,6 @@ const SQLChartPie: React.FunctionComponent<ISQLChartPieProps> = ({
     : [];
 
   return (
-    // substract 1px, to prevent scrolling behavior inside panel
     <Box sx={{ height: 'calc(100% - 1px)', width: '100%' }} ref={refChart}>
       <VictoryPie
         data={pieData}
@@ -53,5 +46,3 @@ const SQLChartPie: React.FunctionComponent<ISQLChartPieProps> = ({
     </Box>
   );
 };
-
-export default SQLChartPie;

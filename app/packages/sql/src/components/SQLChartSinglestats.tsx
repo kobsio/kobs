@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { FunctionComponent } from 'react';
 
-import { ILegend, ISQLData, IThresholds } from './types';
+import { ILegend, ISQLData, IThresholds } from '../utils/utils';
 
 const hexToRgb = (hex: string): { b: number; g: number; r: number } => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -12,13 +12,13 @@ const hexToRgb = (hex: string): { b: number; g: number; r: number } => {
         r: parseInt(result[1], 16),
       }
     : {
-        b: 204,
-        g: 102,
-        r: 0,
+        b: 230,
+        g: 109,
+        r: 50,
       };
 };
 
-const DEFAULT_COLOR = 'rgba(0, 102, 204, 0.2)';
+const DEFAULT_COLOR = 'rgba(50, 109, 230, 0.2)';
 
 const getBackgroundColor = (value: string | number | string[] | number[], thresholds?: IThresholds): string => {
   if (!thresholds) {
@@ -49,21 +49,13 @@ const getBackgroundColor = (value: string | number | string[] | number[], thresh
   return DEFAULT_COLOR;
 };
 
-interface ISQLChartSinglestatsProps {
+export const SQLChartSinglestats: FunctionComponent<{
   data: ISQLData;
   legend?: ILegend;
   thresholds?: IThresholds;
   yAxisColumns: string[];
   yAxisUnit?: string;
-}
-
-const SQLChartSinglestats: React.FunctionComponent<ISQLChartSinglestatsProps> = ({
-  data,
-  yAxisColumns,
-  yAxisUnit,
-  legend,
-  thresholds,
-}: ISQLChartSinglestatsProps) => {
+}> = ({ data, yAxisColumns, yAxisUnit, legend, thresholds }) => {
   return (
     <Stack direction="row" spacing={4}>
       {data.columns
@@ -90,5 +82,3 @@ const SQLChartSinglestats: React.FunctionComponent<ISQLChartSinglestatsProps> = 
     </Stack>
   );
 };
-
-export default SQLChartSinglestats;
