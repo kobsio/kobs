@@ -566,7 +566,7 @@ func TestGetApplicationsByGroup(t *testing.T) {
 		{ID: "1", Cluster: "test-cluster1", Namespace: "default", Name: "application1", Teams: []string{"team1"}},
 		{ID: "2", Cluster: "test-cluster1", Namespace: "default", Name: "application2", Teams: []string{"team1"}},
 		{ID: "3", Cluster: "test-cluster1", Namespace: "kube-system", Name: "application3", Teams: []string{"team1"}},
-		{ID: "4", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application4", Teams: []string{"team1"}},
+		{ID: "4", Cluster: "test-cluster1", Namespace: "kube-system", Name: "application4", Teams: []string{"team1"}},
 	}
 	applications2 := []applicationv1.ApplicationSpec{
 		{ID: "5", Cluster: "test-cluster2", Namespace: "default", Name: "application1", Teams: []string{"team1"}},
@@ -598,7 +598,7 @@ func TestGetApplicationsByGroup(t *testing.T) {
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application1"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application1", "application1"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application2"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application2", "application2"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application3"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application3", "application3"}, Description: "", Teams: []string{"team1"}},
-			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application4"}, Clusters: []string{"test-cluster2", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application4", "application4"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application4"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application4", "application4"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application5"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application5"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application6"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application6"}, Description: "", Teams: []string{"team1"}},
 		}},
@@ -606,7 +606,7 @@ func TestGetApplicationsByGroup(t *testing.T) {
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application1"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application1", "application1"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "default", Name: "application2"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"default", "default"}, Names: []string{"application2", "application2"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application3"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application3", "application3"}, Description: "", Teams: []string{"team1"}},
-			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application4"}, Clusters: []string{"test-cluster2", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application4", "application4"}, Description: "", Teams: []string{"team1"}},
+			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application4"}, Clusters: []string{"test-cluster1", "test-cluster2"}, Namespaces: []string{"kube-system", "kube-system"}, Names: []string{"application4", "application4"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application5"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application5"}, Description: "", Teams: []string{"team1"}},
 			{ID: ApplicationGroupID{Cluster: "", Namespace: "kube-system", Name: "application6"}, Clusters: []string{"test-cluster2"}, Namespaces: []string{"kube-system"}, Names: []string{"application6"}, Description: "", Teams: []string{"team1"}},
 		}},
