@@ -53,9 +53,6 @@ const CorePanel: FunctionComponent<ICorePanelProps> = ({ cluster, name, title, d
     return <TopologyPanel title={title} description={description} options={options} />;
   }
 
-  if (name === 'insights') {
-  }
-
   if (name === 'teams') {
     return <TeamsPanel title={title} description={description} />;
   }
