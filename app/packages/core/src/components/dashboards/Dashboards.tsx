@@ -292,39 +292,41 @@ export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => 
       {dashboard.hideToolbar === true ? null : (
         <DashboardToolbar variables={data ?? []} setVariables={setVariables} times={times} setTimes={setTimes} />
       )}
-      <Box
-        pt={dashboard.hideToolbar === true ? 0 : 6}
-        sx={(theme) => ({
-          '.react-grid-item.react-grid-placeholder': {
-            backgroundColor: 'background.paper',
-          },
-        })}
-      >
-        {rows
-          ?.filter((row) => !row.if || evaluateCondition(row.if))
-          .map((row, rowIndex) => (
-            <Fragment key={rowIndex}>
-              {row.title ? (
-                <Typography variant="h6" pb={4} pt={rowIndex === 0 ? 0 : 4}>
-                  <Tooltip title={row.description && <span style={{ whiteSpace: 'pre' }}>{row.description}</span>}>
-                    <span>{row.title}</span>
-                  </Tooltip>
-                </Typography>
-              ) : (
-                <Box pb={4}></Box>
-              )}
-              {row.panels && row.panels.length > 0 ? (
-                <GridContextProvider autoHeight={row.autoHeight ?? false}>
-                  {row.autoHeight ? (
-                    <DashboardGridAutoHeight panels={row.panels} times={times} setTimes={setTimes} />
-                  ) : (
-                    <DashboardGrid panels={row.panels} times={times} setTimes={setTimes} />
-                  )}
-                </GridContextProvider>
-              ) : null}
-            </Fragment>
-          ))}
-      </Box>
+      {data && (
+        <Box
+          pt={dashboard.hideToolbar === true ? 0 : 6}
+          sx={(theme) => ({
+            '.react-grid-item.react-grid-placeholder': {
+              backgroundColor: 'background.paper',
+            },
+          })}
+        >
+          {rows
+            ?.filter((row) => !row.if || evaluateCondition(row.if))
+            .map((row, rowIndex) => (
+              <Fragment key={rowIndex}>
+                {row.title ? (
+                  <Typography variant="h6" pb={4} pt={rowIndex === 0 ? 0 : 4}>
+                    <Tooltip title={row.description && <span style={{ whiteSpace: 'pre' }}>{row.description}</span>}>
+                      <span>{row.title}</span>
+                    </Tooltip>
+                  </Typography>
+                ) : (
+                  <Box pb={4}></Box>
+                )}
+                {row.panels && row.panels.length > 0 ? (
+                  <GridContextProvider autoHeight={row.autoHeight ?? false}>
+                    {row.autoHeight ? (
+                      <DashboardGridAutoHeight panels={row.panels} times={times} setTimes={setTimes} />
+                    ) : (
+                      <DashboardGrid panels={row.panels} times={times} setTimes={setTimes} />
+                    )}
+                  </GridContextProvider>
+                ) : null}
+              </Fragment>
+            ))}
+        </Box>
+      )}
     </>
   );
 };
