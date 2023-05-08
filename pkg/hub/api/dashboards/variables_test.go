@@ -18,7 +18,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "placeholder",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type":"string","value":"value1"}`)},
 				},
 			},
@@ -37,7 +37,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "static",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
 				},
 			},
@@ -48,7 +48,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "static",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
 				},
 			},
@@ -63,7 +63,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "placeholder",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type":"string","value":"value1"}`)},
 				},
 			},
@@ -73,7 +73,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "static",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
 				},
 			},
@@ -88,7 +88,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "static",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`["value1"]`)},
 				},
 			},
@@ -103,7 +103,7 @@ func TestAddPlaceholdersAsVariables(t *testing.T) {
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "placeholder",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: []byte(`{"type":"string","value":"default1"}`)},
 				},
 			},
