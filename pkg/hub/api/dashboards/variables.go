@@ -38,7 +38,7 @@ func addPlaceholdersAsVariables(placeholders []dashboardv1.Placeholder, variable
 				Hide:  true,
 				Plugin: dashboardv1.Plugin{
 					Name:    "placeholder",
-					Type:    "app",
+					Type:    "core",
 					Options: &apiextensionsv1.JSON{Raw: options},
 				},
 			})

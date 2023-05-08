@@ -84,8 +84,7 @@ export const getVariableViaPlugin = async (
   times: ITimes,
 ): Promise<IVariableValues> => {
   const result = await apiClient.post<string[]>(
-    '/api/variables',
-    //`/api/plugins/${variable.plugin.type}/variable?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+    `/api/plugins/${variable.plugin.type}/variable?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
     {
       body: JSON.parse(interpolate(JSON.stringify(variable.plugin.options), variables, times)),
       headers: {
