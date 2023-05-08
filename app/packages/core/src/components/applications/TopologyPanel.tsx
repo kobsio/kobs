@@ -6,6 +6,7 @@ import { ApplicationsInsightsWrapper, TopologyGraph } from './Topology';
 import { ITopology } from './utils';
 
 import { APIContext, APIError, IAPIContext } from '../../context/APIContext';
+import { GridContext, IGridContext } from '../../context/GridContext';
 import { PluginPanel, PluginPanelError } from '../utils/PluginPanel';
 import { UseQueryWrapper } from '../utils/UseQueryWrapper';
 
@@ -85,29 +86,37 @@ interface ITopologyPanelProps {
  * an example if an required property is missing.
  */
 const TopologyPanel: FunctionComponent<ITopologyPanelProps> = ({ title, description, options }) => {
-  if (!options || !options.cluster || !options.namespace || !options.name) {
+  const gridContext = useContext<IGridContext>(GridContext);
+
+  if (options && options.cluster && options.namespace && options.name) {
     return (
-      <PluginPanelError
-        title={title}
-        description={description}
-        message="Invalid options for topology plugin"
-        details="One of the required options: cluster, namespace or name is missing"
-        example={`plugin:
+      <PluginPanel title={title} description={description}>
+        {gridContext.autoHeight ? (
+          <Box height="300px">
+            <TopologyPanelInternal cluster={options.cluster} namespace={options.namespace} name={options.name} />
+          </Box>
+        ) : (
+          <TopologyPanelInternal cluster={options.cluster} namespace={options.namespace} name={options.name} />
+        )}
+      </PluginPanel>
+    );
+  }
+
+  return (
+    <PluginPanelError
+      title={title}
+      description={description}
+      message="Invalid options for topology plugin"
+      details="One of the required options: cluster, namespace or name is missing"
+      example={`plugin:
   name: topology
   type: core
   options:
     cluster: "<% $.cluster %>"
     namespace: "<% $.namespace %>"
     name: "<% $.name %>"`}
-        documentation="https://kobs.io/main/plugins/#topology"
-      />
-    );
-  }
-
-  return (
-    <PluginPanel title={title} description={description}>
-      <TopologyPanelInternal cluster={options.cluster} namespace={options.namespace} name={options.name} />
-    </PluginPanel>
+      documentation="https://kobs.io/main/plugins/#topology"
+    />
   );
 };
 
