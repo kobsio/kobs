@@ -986,6 +986,10 @@ func (c *client) GetTags(ctx context.Context) ([]Tag, error) {
 }
 
 func (c *client) GetTopologyByIDs(ctx context.Context, field string, ids []string) ([]Topology, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+
 	_, span := c.tracer.Start(ctx, "db.GetTopologyByIDs")
 	span.SetAttributes(attribute.Key("field").String(field))
 	span.SetAttributes(attribute.Key("ids").StringSlice(ids))
