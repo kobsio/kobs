@@ -80,13 +80,13 @@ const TracesWrapper: FunctionComponent<{
           {activeTab === index && (
             <Traces
               instance={instance}
-              limit={queries[0].limit || '20'}
-              maxDuration={queries[0].maxDuration || ''}
-              minDuration={queries[0].minDuration || ''}
-              operation={queries[0].operation || ''}
-              service={queries[0].service || ''}
+              limit={query.limit || '20'}
+              maxDuration={query.maxDuration || ''}
+              minDuration={query.minDuration || ''}
+              operation={query.operation || ''}
+              service={query.service || ''}
               showChart={showChart || false}
-              tags={queries[0].tags || ''}
+              tags={query.tags || ''}
               times={times}
             />
           )}
