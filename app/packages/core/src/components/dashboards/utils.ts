@@ -22,7 +22,12 @@ export const interpolate = (
     if (variable.plugin.type === 'core' && variable.plugin.name === 'placeholder') {
       if (variable.plugin.options && variable.plugin.options.type && variable.plugin.options.type === 'number') {
         str = str.replaceAll(`"${interpolator[0]} .${variable.name} ${interpolator[1]}"`, variable.value);
-      } else if (variable.plugin.options && variable.plugin.options.type && variable.plugin.options.type === 'object') {
+      } else if (
+        variable.plugin.options &&
+        variable.plugin.options.type &&
+        variable.plugin.options.type === 'object' &&
+        variable.value
+      ) {
         str = str.replaceAll(
           `"${interpolator[0]} .${variable.name} ${interpolator[1]}"`,
           JSON.stringify(yaml.load(variable.value)),
