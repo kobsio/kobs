@@ -249,6 +249,11 @@ func TestParser(t *testing.T) {
 		require.Equal(t, "unsupported query, comparing two symbols isn't supported: namespace = container_name", parser.errors[0].Error())
 	})
 
+	t.Run("handles lowercase _not_", func(t *testing.T) {
+		_, err := defaultParser.Parse("namespace='brain' _and_ app='brain' _and_ container_name='brain' _and_ _NOT_ content_level='debug' _and_ _not_ content_level='info' _and_ _not_ content_level='warn'")
+		require.NoError(t, err)
+	})
+
 	t.Run("should handle brackets", func(t *testing.T) {
 		sqlParser := SQLParser{
 			defaultFields: []string{"namespace"},
