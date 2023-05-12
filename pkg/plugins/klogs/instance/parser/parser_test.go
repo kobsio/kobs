@@ -113,13 +113,13 @@ func TestParser(t *testing.T) {
 	t.Run("NOT", func(t *testing.T) {
 		result, err := defaultParser.Parse("_NOT_ namespace='bookinfo'")
 		require.NoError(t, err)
-		require.Equal(t, "NOT ( namespace = 'bookinfo' )", result)
+		require.Equal(t, "NOT namespace = 'bookinfo'", result)
 	})
 
 	t.Run("NOT after AND", func(t *testing.T) {
 		result, err := defaultParser.Parse("namespace ~ 'foo' _AND_ _NOT_ namespace='bookinfo'")
 		require.NoError(t, err)
-		require.Equal(t, "match(namespace, 'foo') AND NOT ( namespace = 'bookinfo' )", result)
+		require.Equal(t, "match(namespace, 'foo') AND NOT namespace = 'bookinfo'", result)
 	})
 
 	t.Run("EXISTS", func(t *testing.T) {
@@ -254,6 +254,12 @@ func TestParser(t *testing.T) {
 		require.NoError(t, err)
 	})
 
+	t.Run("handles _not_ with subexpression", func(t *testing.T) {
+		result, err := defaultParser.Parse("_not_ (namespace='foo' _and_ namespace='bar')")
+		require.NoError(t, err)
+		require.Equal(t, "NOT ( namespace = 'foo' AND namespace = 'bar' )", result)
+	})
+
 	t.Run("should handle brackets", func(t *testing.T) {
 		sqlParser := SQLParser{
 			defaultFields: []string{"namespace"},
@@ -261,6 +267,16 @@ func TestParser(t *testing.T) {
 		result, err := sqlParser.Parse("namespace='foo' _OR_ (namespace=~'a' _AND_ namespace=~'b')")
 		require.NoError(t, err)
 		require.Equal(t, "namespace = 'foo' OR ( namespace ILIKE 'a' AND namespace ILIKE 'b' )", result)
+	})
+
+	t.Run("handles complex query", func(t *testing.T) {
+		parser := SQLParser{
+			defaultFields: []string{"namespace", "app", "container_name"},
+		}
+
+		result, err := parser.Parse("namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content_upstream_cluster='inbound|3000||' _and_ (content_response_code=0 _or_ content_response_code>=500) _and_ _not_ (content_response_code_details='downstream_remote_disconnect' _and_ content_duration<1000)")
+		require.NoError(t, err)
+		require.Equal(t, "namespace = 'bookinfo' AND app = 'bookinfo' AND container_name = 'istio-proxy' AND fields_string['content_upstream_cluster'] = 'inbound|3000||' AND ( fields_number['content_response_code'] = 0 OR fields_number['content_response_code'] >= 500 ) AND NOT ( fields_string['content_response_code_details'] = 'downstream_remote_disconnect' AND fields_number['content_duration'] < 1000 )", result)
 	})
 }
 

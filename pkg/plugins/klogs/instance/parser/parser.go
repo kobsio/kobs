@@ -35,7 +35,7 @@ type Value struct {
 // Parser
 var (
 	lex = lexer.MustSimple([]lexer.SimpleRule{
-		{Name: `Keyword`, Pattern: `_and_|_AND_|_or_|_OR_`},
+		{Name: `Keyword`, Pattern: `_and_|_AND_|_or_|_OR_|_not_|_NOT_`},
 		{Name: `Ident`, Pattern: `[a-zA-Z_][a-zA-Z0-9_\/]*`},
 		{Name: `Number`, Pattern: `[-+]?\d*\.?\d+([eE][-+]?\d+)?`},
 		{Name: `String`, Pattern: `\'(?:[^\']|\\.)*\'`},
@@ -128,7 +128,7 @@ func (s *SQLParser) parsePredicate(p *Predicate) string {
 	}
 
 	if p.Not != nil {
-		return fmt.Sprintf("NOT ( %s )", s.parsePredicate(p.Not))
+		return fmt.Sprintf("NOT %s", s.parsePredicate(p.Not))
 	}
 
 	if p.Exists != nil {
