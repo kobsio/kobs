@@ -21,7 +21,7 @@ type Predicate struct {
 	Lhs           Value       `parser:"@@"`
 	Op            string      `parser:"@Operators"`
 	Rhs           Value       `parser:"@@"`
-	Not           *Predicate  `parser:"| \"_NOT_\" @@"`
+	Not           *Predicate  `parser:"| (\"_NOT_\"|\"_not_\") @@"`
 	Exists        *string     `parser:"| (\"_EXISTS_\"|\"_exists_\") @Ident"`
 	Subexpression *Expression `parser:"| \"(\" @@ \")\""`
 }
