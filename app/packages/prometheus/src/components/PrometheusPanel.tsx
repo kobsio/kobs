@@ -274,10 +274,10 @@ const PrometheusChart: FunctionComponent<{
           <Box
             height={
               gridContext.autoHeight
-                ? `${350 - 8}px`
+                ? `${350 - 10}px`
                 : legend === 'table'
-                ? dimensions.height - 80 - 8
-                : dimensions.height - 8
+                ? dimensions.height - 80 - 10
+                : dimensions.height - 10
             }
           >
             <Chart
