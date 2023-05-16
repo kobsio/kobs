@@ -70,7 +70,7 @@ export const Layout: FunctionComponent<ILayoutProps> = ({ children }) => {
           display: 'flex',
           flex: 1,
           flexDirection: 'column',
-          maxWidth: '100%',
+          maxWidth: { md: `calc(100% - ${drawerWidth}px)`, xs: '100%' },
         }}
       >
         <Hidden mdUp={true}>
