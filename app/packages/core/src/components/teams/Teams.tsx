@@ -110,11 +110,7 @@ const Teams: FunctionComponent<ITeamsProps> = ({ isPanel, options, setOptions })
         {data?.slice((page - 1) * perPage, page * perPage).map((team, index) => (
           <Fragment key={team.id}>
             <Team team={team} />
-            {isPanel ? (
-              <Divider variant="inset" component="li" />
-            ) : index + 1 !== data?.length ? (
-              <Divider variant="inset" component="li" />
-            ) : null}
+            {index + 1 !== data?.slice((page - 1) * perPage, page * perPage).length && <Divider component="li" />}
           </Fragment>
         ))}
       </List>
