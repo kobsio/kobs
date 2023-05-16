@@ -91,17 +91,19 @@ const ResourceRow: FunctionComponent<IResourceRowProps> = ({ resource, row, dash
         </TableCell>
       </TableRow>
 
-      <ResourceDetails
-        resource={resource}
-        cluster={row.cluster}
-        namespace={row.namespace}
-        name={row.name}
-        manifest={row.manifest}
-        dashboards={dashboards}
-        refetch={refetch}
-        open={open}
-        onClose={() => setOpen(false)}
-      />
+      {open && (
+        <ResourceDetails
+          resource={resource}
+          cluster={row.cluster}
+          namespace={row.namespace}
+          name={row.name}
+          manifest={row.manifest}
+          dashboards={dashboards}
+          refetch={refetch}
+          open={open}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 };

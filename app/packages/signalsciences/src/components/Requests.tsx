@@ -69,7 +69,7 @@ const Details: FunctionComponent<{
 }> = ({ request, onClose, open }) => {
   return (
     <DetailsDrawer size="large" open={open} onClose={onClose} title={request.id || ''}>
-      <Card>
+      <Card sx={{ mb: 6 }}>
         <CardContent>
           <DescriptionList>
             <DescriptionListGroup>
@@ -231,7 +231,7 @@ const Request: FunctionComponent<{ request: IRequest }> = ({ request }) => {
         </TableCell>
       </TableRow>
 
-      <Details request={request} open={open} onClose={() => setOpen(false)} />
+      {open && <Details request={request} open={open} onClose={() => setOpen(false)} />}
     </>
   );
 };

@@ -119,7 +119,7 @@ const Application: FunctionComponent<IApplicationProps> = ({ application }) => {
         />
       </ListItem>
 
-      <ApplicationInsightsDrawer application={application} onClose={hideInsights} open={open} />
+      {open && <ApplicationInsightsDrawer application={application} onClose={hideInsights} open={open} />}
     </>
   );
 };

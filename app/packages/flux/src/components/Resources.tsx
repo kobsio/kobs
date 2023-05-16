@@ -182,19 +182,21 @@ const ResourceRow: FunctionComponent<{
         </TableCell>
       </TableRow>
 
-      <ResourceDetails
-        instance={instance}
-        fluxResource={fluxResource}
-        cluster={row.cells[2]}
-        namespace={row.cells[1]}
-        name={row.cells[0]}
-        manifest={row.manifest}
-        resource={resource}
-        path={path}
-        refetch={refetch}
-        open={open}
-        onClose={() => setOpen(false)}
-      />
+      {open && (
+        <ResourceDetails
+          instance={instance}
+          fluxResource={fluxResource}
+          cluster={row.cells[2]}
+          namespace={row.cells[1]}
+          name={row.cells[0]}
+          manifest={row.manifest}
+          resource={resource}
+          path={path}
+          refetch={refetch}
+          open={open}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 };

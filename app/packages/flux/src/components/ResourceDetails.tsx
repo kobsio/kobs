@@ -89,7 +89,7 @@ const ResourceDetails: FunctionComponent<{
       {fluxResource.type === 'gitrepositories' ||
       fluxResource.type === 'buckets' ||
       fluxResource.type === 'helmrepositories' ? (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Info
@@ -125,7 +125,7 @@ const ResourceDetails: FunctionComponent<{
       ) : null}
 
       {fluxResource.type === 'kustomizations' ? (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Info
@@ -182,7 +182,7 @@ const ResourceDetails: FunctionComponent<{
       ) : null}
 
       {fluxResource.type === 'helmreleases' ? (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Info
@@ -215,7 +215,7 @@ const ResourceDetails: FunctionComponent<{
       manifest.spec.chart &&
       manifest.spec.chart.spec &&
       manifest.spec.chart.spec.sourceRef ? (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Source
@@ -259,7 +259,7 @@ const ResourceDetails: FunctionComponent<{
       ) : null}
 
       {fluxResource.type === 'gitrepositories' ? (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Git Reference
@@ -287,7 +287,7 @@ const ResourceDetails: FunctionComponent<{
       ) : null}
 
       {manifest && manifest.status && manifest.status.artifact ? (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Artifact
@@ -306,7 +306,7 @@ const ResourceDetails: FunctionComponent<{
         </Card>
       ) : null}
 
-      <Card sx={{ mb: 4 }}>
+      <Card sx={{ mb: 6 }}>
         <CardContent>
           <Typography variant="h6" pb={2}>
             Conditions

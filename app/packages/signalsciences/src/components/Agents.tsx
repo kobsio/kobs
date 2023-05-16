@@ -98,7 +98,7 @@ const Details: FunctionComponent<{
       title={agent['agent.name']}
       subtitle={agent['host.remote_addr']}
     >
-      <Card>
+      <Card sx={{ mb: 6 }}>
         <CardContent>
           <DescriptionList>
             <DescriptionListGroup>
@@ -362,7 +362,7 @@ const Agent: FunctionComponent<{ agent: IAgent }> = ({ agent }) => {
         <TableCell sx={{ verticalAlign: 'top' }}>{roundNumber(agent['agent.latency_time_99th'])}ms</TableCell>
       </TableRow>
 
-      <Details agent={agent} open={open} onClose={() => setOpen(false)} />
+      {open && <Details agent={agent} open={open} onClose={() => setOpen(false)} />}
     </>
   );
 };
