@@ -24,7 +24,7 @@ const TeamPage: FunctionComponent = () => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<ITeam, APIError>(
-    ['core/teams/team', params.cluster, params.namespace, params.name],
+    ['core/teams/team', params.id],
     async () => {
       return apiContext.client.get<IApplication>(`/api/teams/team?id=${encodeURIComponent(params.id || '')}`);
     },
