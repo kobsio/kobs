@@ -563,14 +563,16 @@ const Artifact: FunctionComponent<{
         />
       </ListItem>
 
-      <Details
-        instance={instance}
-        projectName={projectName}
-        repositoryName={repositoryName}
-        artifact={artifact}
-        onClose={hideDetails}
-        open={open}
-      />
+      {open && (
+        <Details
+          instance={instance}
+          projectName={projectName}
+          repositoryName={repositoryName}
+          artifact={artifact}
+          onClose={hideDetails}
+          open={open}
+        />
+      )}
     </>
   );
 };

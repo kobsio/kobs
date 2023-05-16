@@ -107,7 +107,7 @@ const Details: FunctionComponent<{
       subtitle={`(${item.feedTitle})`}
       actions={<Actions instance={instance} item={item} />}
     >
-      <Card>
+      <Card sx={{ mb: 6 }}>
         <CardContent>
           {item.published ? (
             <Typography variant="h6" pb={2}>

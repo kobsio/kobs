@@ -125,7 +125,7 @@ const IssueDetails: FunctionComponent<{
         </IconButton>
       }
     >
-      <Card sx={{ mb: 4 }}>
+      <Card sx={{ mb: 6 }}>
         <CardContent>
           <Typography variant="h6" pb={2}>
             Details
@@ -248,7 +248,7 @@ const IssueDetails: FunctionComponent<{
       </Card>
 
       {issue.fields?.subtasks && issue.fields?.subtasks.length > 0 && (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Subtasks
@@ -266,7 +266,7 @@ const IssueDetails: FunctionComponent<{
       )}
 
       {issue.fields?.issuelinks && issue.fields?.issuelinks.length > 0 && (
-        <Card sx={{ mb: 4 }}>
+        <Card sx={{ mb: 6 }}>
           <CardContent>
             <Typography variant="h6" pb={2}>
               Linked Issues

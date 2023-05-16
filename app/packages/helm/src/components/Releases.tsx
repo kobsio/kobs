@@ -44,7 +44,15 @@ const Release: FunctionComponent<{
         <TableCell>{release.chart?.metadata?.appVersion || '-'}</TableCell>
       </TableRow>
 
-      <ReleaseDetails instance={instance} release={release} times={times} open={open} onClose={() => setOpen(false)} />
+      {open && (
+        <ReleaseDetails
+          instance={instance}
+          release={release}
+          times={times}
+          open={open}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 };
