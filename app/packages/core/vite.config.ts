@@ -16,6 +16,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
+        '@codemirror/state',
         '@emotion/react',
         '@emotion/styled',
         '@mui/icons-material',
