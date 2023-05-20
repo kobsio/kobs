@@ -3,7 +3,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import topLevelAwait from 'vite-plugin-top-level-await';
 
 import { resolve } from 'path';
 
@@ -30,20 +29,14 @@ export default defineConfig({
       ],
     },
     sourcemap: false,
+    // For the MongoDB plugin we have to set the target to esnext, because otherwise the build will fail because of the
+    // top level await usage of the 'bson' package, see https://github.com/vitejs/vite/issues/6985
+    target: 'esnext',
   },
   plugins: [
     react(),
     dts({
       insertTypesEntry: true,
-    }),
-    // The topLevelAwait plugin is used to enable top level await. This is needed to avoid the following error caused
-    // by the `bson` package:
-    //
-    // [vite:esbuild-transpile] Transform failed with 1 error:
-    // index.js:1422:26: ERROR: Top-level await is not available in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14" + 2 overrides)
-    topLevelAwait({
-      promiseExportName: '__tla',
-      promiseImportName: (i) => `__tla_${i}`,
     }),
   ],
   test: {
