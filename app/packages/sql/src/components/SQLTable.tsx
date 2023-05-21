@@ -1,7 +1,30 @@
-import { APIContext, APIError, IPluginInstance, ITimes, UseQueryWrapper, formatTimeString } from '@kobsio/core';
-import { TableRow, TableCell, Table, TableBody, TableHead, TableContainer, Card } from '@mui/material';
+import {
+  APIContext,
+  APIError,
+  IPluginInstance,
+  ITimes,
+  PluginPanel,
+  PluginPanelActionButton,
+  UseQueryWrapper,
+  fileDownload,
+  formatTimeString,
+} from '@kobsio/core';
+import { Download } from '@mui/icons-material';
+import {
+  TableRow,
+  TableCell,
+  Table,
+  TableBody,
+  TableHead,
+  TableContainer,
+  Card,
+  Menu,
+  MenuItem,
+  ListItemText,
+  ListItemIcon,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, MouseEvent, useContext, useState } from 'react';
 
 import { IColumns, ISQLData, ISQLDataRow } from '../utils/utils';
 
@@ -46,12 +69,82 @@ const SQLRow: FunctionComponent<{
   </>
 );
 
+const SQLActions: FunctionComponent<{
+  columnOptions?: IColumns;
+  columns: string[];
+  rows: ISQLDataRow[];
+}> = ({ columnOptions, columns, rows }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  /**
+   * `handleOpenMenu` opens the menu, which is used to display the download option.
+   */
+  const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  /**
+   * `handleCloseMenu` closes the menu, wich displays the download option.
+   */
+  const handleCloseMenu = (e: Event) => {
+    setAnchorEl(null);
+  };
+
+  /**
+   * `downloadCSV` lets a user donwload the returned documents as csv file, with the selected fields as columns.
+   */
+  const downloadCSV = () => {
+    let csv = '';
+
+    for (const column of columns) {
+      csv = csv + column + ';';
+    }
+
+    csv = csv + '\r\n';
+
+    for (const row of rows) {
+      for (const column of columns) {
+        csv =
+          csv +
+          (row.hasOwnProperty(column)
+            ? renderCellValue(
+                row[column],
+                columnOptions && columnOptions.hasOwnProperty(column) ? columnOptions[column].unit : undefined,
+              )
+            : '') +
+          ';';
+      }
+
+      csv = csv + '\r\n';
+    }
+
+    fileDownload(csv, 'sql-export.csv');
+  };
+
+  return (
+    <>
+      <PluginPanelActionButton props={{ onClick: handleOpenMenu }} />
+
+      <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
+        <MenuItem onClick={downloadCSV} aria-label="Download CSV">
+          <ListItemIcon>
+            <Download fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Download CSV</ListItemText>
+        </MenuItem>
+      </Menu>
+    </>
+  );
+};
+
 const SQLTable: FunctionComponent<{
   columnOptions?: IColumns;
   instance: IPluginInstance;
+  isPanel: boolean;
   query: string;
   times: ITimes;
-}> = ({ columnOptions, instance, query, times }) => {
+}> = ({ columnOptions, instance, query, isPanel, times }) => {
   const apiContext = useContext(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<ISQLData, APIError>(
@@ -66,6 +159,45 @@ const SQLTable: FunctionComponent<{
     },
   );
 
+  if (isPanel) {
+    return (
+      <UseQueryWrapper
+        error={error}
+        isError={isError}
+        isLoading={isLoading}
+        refetch={refetch}
+        errorTitle="Failed to get data"
+        isNoData={!data || !data.columns || data.columns.length === 0 || !data.rows || data.rows.length === 0}
+        noDataTitle="No data was found"
+      >
+        {data?.columns && data?.rows && (
+          <Card>
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    {data.columns.map((column) => (
+                      <TableCell key={column}>
+                        {columnOptions && columnOptions.hasOwnProperty(column) && columnOptions[column].title
+                          ? columnOptions[column].title
+                          : column}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.rows.map((row, index) => (
+                    <SQLRow key={index} columnOptions={columnOptions} columns={data.columns ?? []} row={row} />
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
+        )}
+      </UseQueryWrapper>
+    );
+  }
+
   return (
     <UseQueryWrapper
       error={error}
@@ -77,7 +209,10 @@ const SQLTable: FunctionComponent<{
       noDataTitle="No data was found"
     >
       {data?.columns && data?.rows && (
-        <Card>
+        <PluginPanel
+          title="Result"
+          actions={<SQLActions columnOptions={columnOptions} columns={data.columns ?? []} rows={data.rows ?? []} />}
+        >
           <TableContainer>
             <Table size="small">
               <TableHead>
@@ -98,7 +233,7 @@ const SQLTable: FunctionComponent<{
               </TableBody>
             </Table>
           </TableContainer>
-        </Card>
+        </PluginPanel>
       )}
     </UseQueryWrapper>
   );

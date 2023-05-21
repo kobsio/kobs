@@ -255,7 +255,7 @@ const SQLPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
           </Card>
         </Grid>
         <Grid xs={12} md={10} item={true}>
-          <SQLTable instance={instance} query={options.query} times={options} />
+          <SQLTable instance={instance} query={options.query} isPanel={false} times={options} />
         </Grid>
       </Grid>
     </Page>
