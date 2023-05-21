@@ -13,6 +13,7 @@ import {
 import { Clear, Search } from '@mui/icons-material';
 import {
   Box,
+  Card,
   Divider,
   IconButton,
   InputAdornment,
@@ -58,32 +59,34 @@ const Dashboards: FunctionComponent<{ instance: IPluginInstance; query: string }
       noDataMessage="No dashboards were found for the provided query"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.map((dashboard, index) => (
-          <Fragment key={dashboard.id}>
-            <ListItem
-              sx={{ color: 'inherit', cursor: 'pointer', textDecoration: 'inherit' }}
-              component={Link}
-              to={`${instance.options?.address}${dashboard.url}`}
-              target="_blank"
-            >
-              <ListItemText
-                primary={
-                  <Typography variant="h6">
-                    {dashboard.title}
-                    {dashboard.folderTitle && (
-                      <Typography pl={2} color="text.secondary" variant="caption">
-                        {dashboard.folderTitle}
-                      </Typography>
-                    )}
-                  </Typography>
-                }
-              />
-            </ListItem>
-            {index + 1 !== data?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.map((dashboard, index) => (
+            <Fragment key={dashboard.id}>
+              <ListItem
+                sx={{ color: 'inherit', cursor: 'pointer', textDecoration: 'inherit' }}
+                component={Link}
+                to={`${instance.options?.address}${dashboard.url}`}
+                target="_blank"
+              >
+                <ListItemText
+                  primary={
+                    <Typography variant="h6">
+                      {dashboard.title}
+                      {dashboard.folderTitle && (
+                        <Typography pl={2} color="text.secondary" variant="caption">
+                          {dashboard.folderTitle}
+                        </Typography>
+                      )}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+              {index + 1 !== data?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
     </UseQueryWrapper>
   );
 };

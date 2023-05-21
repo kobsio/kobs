@@ -7,7 +7,7 @@ import {
   pluginBasePath,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Box, Chip, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Box, Card, Chip, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -87,14 +87,16 @@ const Projects: FunctionComponent<{ instance: IPluginInstance }> = ({ instance }
       noDataTitle="No projects were found"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.projects?.map((project, index) => (
-          <Fragment key={project.project_id}>
-            <Project instance={instance} project={project} />
-            {index + 1 !== data?.projects?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.projects?.map((project, index) => (
+            <Fragment key={project.project_id}>
+              <Project instance={instance} project={project} />
+              {index + 1 !== data?.projects?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
 
       <Pagination
         count={data?.total ?? 0}

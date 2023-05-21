@@ -635,14 +635,16 @@ const Alerts: FunctionComponent<{ instance: IPluginInstance; interval?: number; 
       noDataTitle="No alerts were found"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.map((alert, index) => (
-          <Fragment key={alert.id}>
-            <Alert instance={instance} alert={alert} refetch={refetchWithTimout} />
-            {index + 1 !== data?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.map((alert, index) => (
+            <Fragment key={alert.id}>
+              <Alert instance={instance} alert={alert} refetch={refetchWithTimout} />
+              {index + 1 !== data?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
     </UseQueryWrapper>
   );
 };
