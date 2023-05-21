@@ -37,7 +37,13 @@ const TablePanel: FunctionComponent<{
 
   if (queries.length === 1) {
     return (
-      <SQLTable instance={instance} query={queries[0].query ?? ''} columnOptions={queries[0].columns} times={times} />
+      <SQLTable
+        instance={instance}
+        query={queries[0].query ?? ''}
+        columnOptions={queries[0].columns}
+        isPanel={true}
+        times={times}
+      />
     );
   }
 
@@ -54,7 +60,13 @@ const TablePanel: FunctionComponent<{
       {queries.map((query, index) => (
         <Box key={index} hidden={activeTab !== index} sx={{ pt: 2 }}>
           {activeTab === index && (
-            <SQLTable instance={instance} query={query.query ?? ''} columnOptions={query.columns} times={times} />
+            <SQLTable
+              instance={instance}
+              query={query.query ?? ''}
+              columnOptions={query.columns}
+              isPanel={true}
+              times={times}
+            />
           )}
         </Box>
       ))}
