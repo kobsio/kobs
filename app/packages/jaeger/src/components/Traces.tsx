@@ -82,13 +82,13 @@ const TraceDetails: FunctionComponent<{
           </Typography>
         </span>
 
-        <Box sx={{ bgcolor: 'background.paper', height: 'calc(100vh - 64px - 48px - 8px)', mt: 4, p: 4 }}>
+        <Card sx={{ height: 'calc(100vh - 64px - 48px - 8px)', mt: 4, p: 4 }}>
           {view === 'timeline' ? (
             <Spans instance={instance} colors={colors} trace={trace} />
           ) : (
             <Flamegraph instance={instance} colors={colors} trace={trace} />
           )}
-        </Box>
+        </Card>
       </>
     </DetailsDrawer>
   );
@@ -332,14 +332,16 @@ export const Traces: FunctionComponent<{
         <>
           {showChart && <TracesChart instance={instance} colors={data?.colors} traces={data?.traces ?? []} />}
 
-          <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-            {data?.traces?.map((trace, index) => (
-              <Fragment key={trace.traceID}>
-                <Trace instance={instance} colors={data.colors} trace={trace} />
-                {index + 1 !== data?.traces?.length && <Divider component="li" />}
-              </Fragment>
-            ))}
-          </List>
+          <Card>
+            <List disablePadding={true}>
+              {data?.traces?.map((trace, index) => (
+                <Fragment key={trace.traceID}>
+                  <Trace instance={instance} colors={data.colors} trace={trace} />
+                  {index + 1 !== data?.traces?.length && <Divider component="li" />}
+                </Fragment>
+              ))}
+            </List>
+          </Card>
         </>
       ) : null}
     </UseQueryWrapper>

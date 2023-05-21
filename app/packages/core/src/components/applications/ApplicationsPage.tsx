@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material';
-import { Button, Divider, List } from '@mui/material';
+import { Button, Card, Divider, List } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -70,14 +70,16 @@ const Applications: FunctionComponent<IApplicationsProps> = ({ options, setOptio
       }`}
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.applications?.map((application, index) => (
-          <Fragment key={application.id}>
-            <Application application={application} />
-            {index + 1 !== data?.applications?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.applications?.map((application, index) => (
+            <Fragment key={application.id}>
+              <Application application={application} />
+              {index + 1 !== data?.applications?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
 
       <Pagination
         count={data?.count ?? 0}

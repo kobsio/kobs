@@ -50,7 +50,7 @@ const DashboardsPanel: FunctionComponent<IDashboardsPanelProps> = ({ title, desc
 
   return (
     <PluginPanel title={title} description={description}>
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
+      <List disablePadding={true}>
         {options.map((page) => (
           <Fragment key={page.title}>
             <ListItem

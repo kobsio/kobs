@@ -3,6 +3,7 @@ import { CompareArrows, ContentCopy, MoreVert, OpenInNew, ViewTimeline } from '@
 import {
   Box,
   Button,
+  Card,
   Dialog,
   DialogActions,
   DialogContent,
@@ -258,13 +259,13 @@ const Trace: FunctionComponent<{ colors: Record<string, string>; instance: IPlug
         <Divider role="divider" />
       </Box>
 
-      <Box sx={{ bgcolor: 'background.paper', height: 'calc(100vh - 96px - 74px - 50px)', p: 4 }}>
+      <Card sx={{ height: 'calc(100vh - 96px - 74px - 50px)', p: 4 }}>
         {view === 'timeline' ? (
           <Spans instance={instance} colors={colors} trace={trace} />
         ) : (
           <Flamegraph instance={instance} colors={colors} trace={trace} />
         )}
-      </Box>
+      </Card>
     </Stack>
   );
 };

@@ -1,5 +1,5 @@
 import { APIContext, APIError, IAPIContext, IPluginInstance, UseQueryWrapper, pluginBasePath } from '@kobsio/core';
-import { Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Card, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext } from 'react';
 import { Link } from 'react-router-dom';
@@ -31,28 +31,30 @@ export const Services: FunctionComponent<{ instance: IPluginInstance }> = ({ ins
       noDataTitle="No services were found"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.map((index, i) => (
-          <Fragment key={index.key}>
-            <ListItem
-              component={Link}
-              to={`${pluginBasePath(instance)}/${index.key}`}
-              sx={{ color: 'inherit', textDecoration: 'inherit' }}
-            >
-              <ListItemText
-                primary={<Typography variant="h6">{index.name}</Typography>}
-                secondaryTypographyProps={{ component: 'div' }}
-                secondary={
-                  <Typography color="text.secondary" variant="body1">
-                    {index.description}
-                  </Typography>
-                }
-              />
-            </ListItem>
-            {i + 1 !== data?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.map((index, i) => (
+            <Fragment key={index.key}>
+              <ListItem
+                component={Link}
+                to={`${pluginBasePath(instance)}/${index.key}`}
+                sx={{ color: 'inherit', textDecoration: 'inherit' }}
+              >
+                <ListItemText
+                  primary={<Typography variant="h6">{index.name}</Typography>}
+                  secondaryTypographyProps={{ component: 'div' }}
+                  secondary={
+                    <Typography color="text.secondary" variant="body1">
+                      {index.description}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+              {i + 1 !== data?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
     </UseQueryWrapper>
   );
 };

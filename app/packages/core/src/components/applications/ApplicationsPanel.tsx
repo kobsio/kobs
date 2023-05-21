@@ -52,7 +52,7 @@ const ApplicationsPanel: FunctionComponent<IApplicationsPanelProps> = ({ title, 
         noDataMessage="No applications were found for the provided team."
         refetch={refetch}
       >
-        <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
+        <List disablePadding={true}>
           {data?.applications?.map((application) => (
             <Fragment key={application.id}>
               <Application application={application} />

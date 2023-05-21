@@ -611,19 +611,21 @@ const Artifacts: FunctionComponent<{
       noDataTitle="No artifacts were found"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.artifacts?.map((artifact, index) => (
-          <Fragment key={artifact.id}>
-            <Artifact
-              instance={instance}
-              projectName={projectName}
-              repositoryName={repositoryName}
-              artifact={artifact}
-            />
-            {index + 1 !== data?.artifacts?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.artifacts?.map((artifact, index) => (
+            <Fragment key={artifact.id}>
+              <Artifact
+                instance={instance}
+                projectName={projectName}
+                repositoryName={repositoryName}
+                artifact={artifact}
+              />
+              {index + 1 !== data?.artifacts?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
 
       <Pagination
         count={data?.total ?? 0}

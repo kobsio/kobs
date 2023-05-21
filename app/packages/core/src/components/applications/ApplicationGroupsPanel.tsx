@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   IconButton,
+  Card,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, MouseEvent, useContext, useState } from 'react';
@@ -285,14 +286,16 @@ const ApplicationGroupsPanelInternal: FunctionComponent<IApplicationGroupsPanelI
       noDataMessage="No applications were found for the provided team."
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.map((application, index) => (
-          <Fragment key={`${application?.id?.cluster}-${application?.id?.namespace}-${application?.id?.name}`}>
-            <ApplicationGroup groups={groups} application={application} />
-            {index + 1 !== data?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.map((application, index) => (
+            <Fragment key={`${application?.id?.cluster}-${application?.id?.namespace}-${application?.id?.name}`}>
+              <ApplicationGroup groups={groups} application={application} />
+              {index + 1 !== data?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
     </UseQueryWrapper>
   );
 };

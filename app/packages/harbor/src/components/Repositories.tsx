@@ -8,7 +8,7 @@ import {
   UseQueryWrapper,
   formatTimeString,
 } from '@kobsio/core';
-import { Box, Chip, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Box, Card, Chip, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -91,14 +91,16 @@ const Repositories: FunctionComponent<{
       noDataTitle="No repositories were found"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.repositories?.map((repository, index) => (
-          <Fragment key={repository.id}>
-            <Repository instance={instance} projectName={projectName} repository={repository} />
-            {index + 1 !== data?.repositories?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.repositories?.map((repository, index) => (
+            <Fragment key={repository.id}>
+              <Repository instance={instance} projectName={projectName} repository={repository} />
+              {index + 1 !== data?.repositories?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
 
       <Pagination
         count={data?.total ?? 0}

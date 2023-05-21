@@ -9,7 +9,7 @@ import {
   PluginPanelError,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Card, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, FunctionComponent, useContext } from 'react';
 import { Link } from 'react-router-dom';
@@ -103,34 +103,36 @@ const Dashboards: FunctionComponent<{ dashboardIDs: string[]; instance: IPluginI
       noDataMessage="No dashboards were found for the provided uids"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data
-          ?.filter((dashboard) => dashboard.type !== 'dash-folder')
-          .map((dashboard, index) => (
-            <Fragment key={dashboard.id}>
-              <ListItem
-                sx={{ color: 'inherit', cursor: 'pointer', textDecoration: 'inherit' }}
-                component={Link}
-                to={`${instance.options?.address}${dashboard.url}${getVars(dashboard.uid, dashboardIDs)}`}
-                target="_blank"
-              >
-                <ListItemText
-                  primary={
-                    <Typography variant="h6">
-                      {dashboard.title}
-                      {dashboard.folderTitle && (
-                        <Typography pl={2} color="text.secondary" variant="caption">
-                          {dashboard.folderTitle}
-                        </Typography>
-                      )}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              {index + 1 !== data?.length && <Divider component="li" />}
-            </Fragment>
-          ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data
+            ?.filter((dashboard) => dashboard.type !== 'dash-folder')
+            .map((dashboard, index) => (
+              <Fragment key={dashboard.id}>
+                <ListItem
+                  sx={{ color: 'inherit', cursor: 'pointer', textDecoration: 'inherit' }}
+                  component={Link}
+                  to={`${instance.options?.address}${dashboard.url}${getVars(dashboard.uid, dashboardIDs)}`}
+                  target="_blank"
+                >
+                  <ListItemText
+                    primary={
+                      <Typography variant="h6">
+                        {dashboard.title}
+                        {dashboard.folderTitle && (
+                          <Typography pl={2} color="text.secondary" variant="caption">
+                            {dashboard.folderTitle}
+                          </Typography>
+                        )}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+                {index + 1 !== data?.length && <Divider component="li" />}
+              </Fragment>
+            ))}
+        </List>
+      </Card>
     </UseQueryWrapper>
   );
 };

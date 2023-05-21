@@ -553,14 +553,16 @@ const Incidents: FunctionComponent<{ instance: IPluginInstance; interval?: numbe
       noDataTitle="No incidents were found"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.map((incident, index) => (
-          <Fragment key={incident.id}>
-            <Incident instance={instance} incident={incident} refetch={refetchWithTimout} />
-            {index + 1 !== data?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.map((incident, index) => (
+            <Fragment key={incident.id}>
+              <Incident instance={instance} incident={incident} refetch={refetchWithTimout} />
+              {index + 1 !== data?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
     </UseQueryWrapper>
   );
 };

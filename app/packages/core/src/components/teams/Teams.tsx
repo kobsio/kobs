@@ -2,6 +2,7 @@ import { People } from '@mui/icons-material';
 import {
   Avatar,
   Button,
+  Card,
   darken,
   Divider,
   List,
@@ -106,14 +107,16 @@ const Teams: FunctionComponent<ITeamsProps> = ({ isPanel, options, setOptions })
       }`}
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.slice((page - 1) * perPage, page * perPage).map((team, index) => (
-          <Fragment key={team.id}>
-            <Team team={team} />
-            {index + 1 !== data?.slice((page - 1) * perPage, page * perPage).length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.slice((page - 1) * perPage, page * perPage).map((team, index) => (
+            <Fragment key={team.id}>
+              <Team team={team} />
+              {index + 1 !== data?.slice((page - 1) * perPage, page * perPage).length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
 
       <Pagination
         count={data?.length ?? 0}

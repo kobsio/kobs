@@ -253,7 +253,7 @@ const IssueDetails: FunctionComponent<{
             <Typography variant="h6" pb={2}>
               Subtasks
             </Typography>
-            <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
+            <List disablePadding={true}>
               {issue.fields?.subtasks?.map((childIssue, index) => (
                 <Fragment key={childIssue.id}>
                   <IssueDetailsIssueLink instance={instance} issue={childIssue} />
@@ -271,7 +271,7 @@ const IssueDetails: FunctionComponent<{
             <Typography variant="h6" pb={2}>
               Linked Issues
             </Typography>
-            <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
+            <List disablePadding={true}>
               {issue.fields?.issuelinks?.map((childIssue, index) => (
                 <Fragment key={childIssue.id}>
                   {childIssue.inwardIssue ? (

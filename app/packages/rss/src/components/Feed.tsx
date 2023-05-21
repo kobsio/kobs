@@ -183,14 +183,16 @@ const Feed: FunctionComponent<{ instance: IPluginInstance; sortBy: string; times
       noDataMessage="No RSS feed items were found for the provided RSS feed urls"
       refetch={refetch}
     >
-      <List sx={{ bgcolor: 'background.paper' }} disablePadding={true}>
-        {data?.map((item, index) => (
-          <Fragment key={index}>
-            <Item instance={instance} item={item} />
-            {index + 1 !== data?.length && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
+      <Card>
+        <List disablePadding={true}>
+          {data?.map((item, index) => (
+            <Fragment key={index}>
+              <Item instance={instance} item={item} />
+              {index + 1 !== data?.length && <Divider component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      </Card>
     </UseQueryWrapper>
   );
 };
