@@ -772,21 +772,27 @@ const EditHeaderActions: FunctionComponent<{
 
     try {
       const parsedValue = yaml.load(saveOptions.value);
-      await apiContext.client.post(apiPath, { body: parsedValue });
 
-      setSaveOptions({ ...saveOptions, isLoading: false, message: 'Saved', severity: 'success' });
-      setOptions({ ...options, state: btoa(JSON.stringify(parsedValue)) });
-    } catch (err) {
-      if (err instanceof APIError) {
-        setSaveOptions({
-          ...saveOptions,
-          isLoading: false,
-          message: `Save failed: ${err.message}`,
-          severity: err.statusCode === 405 ? 'warning' : 'error',
-        });
-      } else {
-        setSaveOptions({ ...saveOptions, isLoading: false, message: 'Save failed', severity: 'error' });
+      try {
+        await apiContext.client.post(apiPath, { body: parsedValue });
+
+        setSaveOptions({ ...saveOptions, isLoading: false, message: 'Saved', severity: 'success' });
+        setOptions({ ...options, state: btoa(JSON.stringify(parsedValue)) });
+      } catch (err) {
+        if (err instanceof APIError) {
+          setSaveOptions({
+            ...saveOptions,
+            isLoading: false,
+            message: `Save failed: ${err.message}`,
+            severity: err.statusCode === 405 ? 'warning' : 'error',
+          });
+          setOptions({ ...options, state: btoa(JSON.stringify(parsedValue)) });
+        } else {
+          setSaveOptions({ ...saveOptions, isLoading: false, message: 'Save failed', severity: 'error' });
+        }
       }
+    } catch (err) {
+      setSaveOptions({ ...saveOptions, isLoading: false, message: 'Save failed', severity: 'error' });
     }
   };
 
