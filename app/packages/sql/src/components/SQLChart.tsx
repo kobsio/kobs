@@ -41,7 +41,7 @@ export const SQLChart: FunctionComponent<{ chart: IChart; instance: IPluginInsta
         <SQLChartPie data={data} pieLabelColumn={chart.pieLabelColumn} pieValueColumn={chart.pieValueColumn} />
       )}
 
-      {data && chart.type === 'singlestat' && chart.yAxisColumns && (
+      {data && chart.type === 'singlestats' && chart.yAxisColumns && (
         <SQLChartSinglestats
           data={data}
           yAxisColumns={chart.yAxisColumns}
