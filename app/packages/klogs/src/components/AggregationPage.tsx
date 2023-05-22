@@ -1,4 +1,3 @@
-import { Completion, autocompletion, completeFromList } from '@codemirror/autocomplete';
 import {
   APIContext,
   APIError,
@@ -37,24 +36,7 @@ import { Aggregation } from './Aggregation';
 import { QueryHistory } from './QueryHistory';
 
 import { IAggregationOptions } from '../utils/aggregation';
-import { description } from '../utils/utils';
-
-const defaultCompletions: Completion[] = [
-  { info: 'equals', label: '=', type: 'keyword' },
-  { info: 'not equals', label: '!=', type: 'keyword' },
-  { info: 'smaller', label: '<', type: 'keyword' },
-  { info: 'smaller or equal', label: '<=', type: 'keyword' },
-  { info: 'greater', label: '>', type: 'keyword' },
-  { info: 'greater or equal', label: '>=', type: 'keyword' },
-  { info: 'ILIKE', label: '=~', type: 'keyword' },
-  { info: 'not ILIKE', label: '!~', type: 'keyword' },
-  { info: 'regex match', label: '~', type: 'keyword' },
-
-  { info: 'and statement', label: '_and_', type: 'keyword' },
-  { info: 'or statement', label: '_or_', type: 'keyword' },
-  { info: 'not statement', label: '_not_', type: 'keyword' },
-  { info: 'exists statement', label: '_exists_', type: 'keyword' },
-];
+import { description, defaultCompletions } from '../utils/utils';
 
 const AggregationActions: FunctionComponent<{ instance: IPluginInstance; options: IAggregationOptions }> = ({
   instance,
@@ -103,7 +85,8 @@ const AggregationToolbar: FunctionComponent<{
   const [internalOptions, setInternalOptions] = useState<IAggregationOptions>(options);
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { data } = useQuery<string[], APIError>(['klogs/fields', instance], async () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = useQuery<any[], APIError>(['klogs/fields', instance], async () => {
     try {
       const fields = await apiContext.client.get<string[]>(`/api/plugins/klogs/fields`, {
         headers: {
@@ -111,9 +94,12 @@ const AggregationToolbar: FunctionComponent<{
           'x-kobs-plugin': instance.name,
         },
       });
-      return fields.filter((field) => !field.includes(' '));
+      return [
+        ...defaultCompletions,
+        ...fields.filter((field) => !field.includes(' ')).map((field) => ({ label: field, type: 'keyword' })),
+      ];
     } catch {
-      return [];
+      return defaultCompletions;
     }
   });
 
@@ -147,16 +133,10 @@ const AggregationToolbar: FunctionComponent<{
       <Grid item={true} xs={12} md={10}>
         {data && (
           <Editor
-            language={[
-              autocompletion({
-                override: [
-                  completeFromList([
-                    ...defaultCompletions,
-                    ...data.map((field) => ({ label: field, type: 'keyword' })),
-                  ]),
-                ],
-              }),
-            ]}
+            language="klogs"
+            languageOptions={{
+              completions: data,
+            }}
             minimal={true}
             value={internalOptions.query}
             onChange={(value) => setInternalOptions({ ...internalOptions, query: value })}

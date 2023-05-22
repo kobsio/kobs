@@ -23,7 +23,7 @@ import { OperationFindOneAndDelete } from './OperationFindOneAndDelete';
 import { OperationFindOneAndUpdate } from './OperationFindOneAndUpdate';
 import { OperationUpdateMany } from './OperationUpdateMany';
 
-import { codemirrorExtension, description } from '../utils/utils';
+import { description } from '../utils/utils';
 
 interface IQueryPageOptions {
   filter: string;
@@ -140,7 +140,7 @@ const QueryPageToolbar: FunctionComponent<{
           </Grid>
           <Grid item={true} xs={12} md={10}>
             <Editor
-              language={codemirrorExtension()}
+              language="mongodb"
               minimal={true}
               value={internalOptions.filter}
               onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, filter: value }))}
@@ -165,7 +165,7 @@ const QueryPageToolbar: FunctionComponent<{
           </Grid>
           <Grid item={true} xs={12} md={10}>
             <Editor
-              language={codemirrorExtension()}
+              language="mongodb"
               minimal={true}
               value={internalOptions.sort}
               onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, sort: value }))}
@@ -209,7 +209,7 @@ const QueryPageToolbar: FunctionComponent<{
           </Grid>
           <Grid item={true} xs={12} md={10}>
             <Editor
-              language={codemirrorExtension()}
+              language="mongodb"
               minimal={true}
               value={internalOptions.update}
               onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, update: value }))}
@@ -234,7 +234,7 @@ const QueryPageToolbar: FunctionComponent<{
           </Grid>
           <Grid item={true} xs={12} md={10}>
             <Editor
-              language={codemirrorExtension()}
+              language="mongodb"
               minimal={true}
               value={internalOptions.pipeline}
               onChange={(value) => setInternalOptions((prevOptions) => ({ ...prevOptions, pipeline: value }))}

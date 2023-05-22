@@ -48,8 +48,5 @@
     "vite": "^4.1.0",
     "vite-plugin-dts": "^1.7.2",
     "vitest": "^0.28.4"
-  },
-  "dependencies": {
-    "@codemirror/autocomplete": "^6.4.2"
   }
 }

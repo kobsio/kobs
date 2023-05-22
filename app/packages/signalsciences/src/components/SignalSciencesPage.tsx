@@ -24,7 +24,7 @@ import Overview from './Overview';
 import Requests from './Requests';
 import { SiteSelect } from './SiteSelect';
 
-import { codemirrorExtension, description } from '../utils/utils';
+import { description } from '../utils/utils';
 
 const RequestsHistory: FunctionComponent<{ optionsQuery: string; setQuery: (query: string) => void }> = ({
   optionsQuery,
@@ -125,7 +125,7 @@ const RequestsPageToolbar: FunctionComponent<{
       </ToolbarItem>
       <ToolbarItem grow={true}>
         <Editor
-          language={[codemirrorExtension()]}
+          language="signalsciences"
           minimal={true}
           value={query}
           onChange={(value) => setQuery(value)}

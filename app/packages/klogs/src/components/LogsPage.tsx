@@ -1,4 +1,3 @@
-import { Completion, autocompletion, completeFromList } from '@codemirror/autocomplete';
 import {
   addStateHistoryItem,
   APIContext,
@@ -46,7 +45,7 @@ import { Link } from 'react-router-dom';
 import { Logs } from './Logs';
 import { QueryHistory } from './QueryHistory';
 
-import { description, ILogsData } from '../utils/utils';
+import { defaultCompletions, description, ILogsData } from '../utils/utils';
 
 interface IOptions {
   fields: string[];
@@ -223,24 +222,8 @@ const LogsToolbar: FunctionComponent<{
   const [query, setQuery] = useState<string>(options.query);
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { data } = useQuery<Completion[], APIError>(['klogs/fields', instance], async () => {
-    const defaultCompletions: Completion[] = [
-      { info: 'equals', label: '=', type: 'keyword' },
-      { info: 'not equals', label: '!=', type: 'keyword' },
-      { info: 'smaller', label: '<', type: 'keyword' },
-      { info: 'smaller or equal', label: '<=', type: 'keyword' },
-      { info: 'greater', label: '>', type: 'keyword' },
-      { info: 'greater or equal', label: '>=', type: 'keyword' },
-      { info: 'ILIKE', label: '=~', type: 'keyword' },
-      { info: 'not ILIKE', label: '!~', type: 'keyword' },
-      { info: 'regex match', label: '~', type: 'keyword' },
-
-      { info: 'and statement', label: '_and_', type: 'keyword' },
-      { info: 'or statement', label: '_or_', type: 'keyword' },
-      { info: 'not statement', label: '_not_', type: 'keyword' },
-      { info: 'exists statement', label: '_exists_', type: 'keyword' },
-    ];
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = useQuery<any[], APIError>(['klogs/fields', instance], async () => {
     try {
       const fields = await apiContext.client.get<string[]>(`/api/plugins/klogs/fields`, {
         headers: {
@@ -284,11 +267,10 @@ const LogsToolbar: FunctionComponent<{
       <ToolbarItem grow={true}>
         {data && (
           <Editor
-            language={[
-              autocompletion({
-                override: [completeFromList(data)],
-              }),
-            ]}
+            language="klogs"
+            languageOptions={{
+              completions: data,
+            }}
             minimal={true}
             value={query}
             onChange={(value) => setQuery(value)}
