@@ -17,7 +17,6 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        '@codemirror/state',
         '@emotion/react',
         '@emotion/styled',
         '@kobsio/core',

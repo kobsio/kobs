@@ -1,4 +1,3 @@
-import { sql, MySQL, PostgreSQL, StandardSQL } from '@codemirror/lang-sql';
 import {
   addStateHistoryItem,
   APIContext,
@@ -35,25 +34,11 @@ import { FunctionComponent, MouseEvent, useContext, useEffect, useMemo, useState
 
 import SQLTable from './SQLTable';
 
-import { Clickhouse } from '../utils/clickhouse';
 import { description } from '../utils/utils';
 
 interface IOptions extends ITimes {
   query: string;
 }
-
-const dialectFromString = (v = '') => {
-  switch (v) {
-    case 'postgresql':
-      return PostgreSQL;
-    case 'mysql':
-      return MySQL;
-    case 'clickhouse':
-      return Clickhouse;
-    default:
-      return StandardSQL;
-  }
-};
 
 export const SQLPageQueryHistory: FunctionComponent<{ optionsQuery: string; setQuery: (query: string) => void }> = ({
   optionsQuery,
@@ -167,7 +152,11 @@ const SQLPageToolbar: FunctionComponent<{
       <ToolbarItem grow={true}>
         {data && (
           <Editor
-            language={[sql({ dialect: dialectFromString(data?.dialect), schema: data?.completions })]}
+            language="sql"
+            languageOptions={{
+              completions: data?.completions,
+              dialect: data?.dialect,
+            }}
             minimal={true}
             value={query}
             onChange={(value) => setQuery(value)}

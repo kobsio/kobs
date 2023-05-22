@@ -32,7 +32,6 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { PromQLExtension } from '@prometheus-io/codemirror-promql';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, MouseEvent, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -389,26 +388,8 @@ const PrometheusToolbar: FunctionComponent<{
             }}
           >
             <Editor
-              language={[
-                new PromQLExtension()
-                  .activateCompletion(true)
-                  .activateLinter(true)
-                  .setComplete({
-                    remote: {
-                      fetchFn: (input: RequestInfo, init?: RequestInit): Promise<Response> => {
-                        return fetch(input, {
-                          ...init,
-                          headers: {
-                            'x-kobs-cluster': instance.cluster,
-                            'x-kobs-plugin': instance.name,
-                          },
-                        });
-                      },
-                      url: `/api/plugins/prometheus/proxy`,
-                    },
-                  })
-                  .asExtension(),
-              ]}
+              language="promql"
+              languageOptions={instance}
               minimal={true}
               value={query}
               onChange={(value) => changeQuery(index, value)}

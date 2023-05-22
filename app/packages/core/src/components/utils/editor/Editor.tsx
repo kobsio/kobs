@@ -1,6 +1,13 @@
-import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
+import {
+  autocompletion,
+  closeBrackets,
+  closeBracketsKeymap,
+  completionKeymap,
+  completeFromList,
+} from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { json } from '@codemirror/lang-json';
+import { sql, MySQL, PostgreSQL, StandardSQL } from '@codemirror/lang-sql';
 import { bracketMatching, syntaxHighlighting, foldGutter, StreamLanguage } from '@codemirror/language';
 import { yaml } from '@codemirror/legacy-modes/mode/yaml';
 import { EditorState, Extension, Prec } from '@codemirror/state';
@@ -17,20 +24,71 @@ import {
   keymap,
 } from '@codemirror/view';
 import { InputBaseComponentProps, TextField, useTheme } from '@mui/material';
+import { PromQLExtension } from '@prometheus-io/codemirror-promql';
 import { forwardRef, FunctionComponent, ReactNode, useEffect, useRef } from 'react';
 
+import { Clickhouse } from './languages/clickhouse';
+import { mongodb } from './languages/mongodb';
+import { signalsciences } from './languages/signalsciences';
 import { createHighlighter, createTheme } from './theme';
 
 import { useLatest } from '../../../utils/hooks/useLatest';
+
+const sqlDialectFromString = (v = '') => {
+  switch (v) {
+    case 'postgresql':
+      return PostgreSQL;
+    case 'mysql':
+      return MySQL;
+    case 'clickhouse':
+      return Clickhouse;
+    default:
+      return StandardSQL;
+  }
+};
 
 /**
  * `getLanguageExtensions` returns the extensions for the given language. If the provided language is a list of
  * extensions these extensions are returned. If the provided language is a string the defined extensions are returned.
  */
-const getLanguageExtensions = (language: string | Extension[]): Extension[] => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getLanguageExtensions = (language: string, languageOptions: any): Extension[] => {
   switch (language) {
     case 'json':
       return [json()];
+    case 'klogs':
+      return [
+        autocompletion({
+          override: [completeFromList(languageOptions.completions)],
+        }),
+      ];
+    case 'mongodb':
+      return [mongodb()];
+    case 'promql':
+      return [
+        new PromQLExtension()
+          .activateCompletion(true)
+          .activateLinter(true)
+          .setComplete({
+            remote: {
+              fetchFn: (input: RequestInfo, init?: RequestInit): Promise<Response> => {
+                return fetch(input, {
+                  ...init,
+                  headers: {
+                    'x-kobs-cluster': languageOptions.cluster,
+                    'x-kobs-plugin': languageOptions.name,
+                  },
+                });
+              },
+              url: `/api/plugins/prometheus/proxy`,
+            },
+          })
+          .asExtension(),
+      ];
+    case 'signalsciences':
+      return [signalsciences()];
+    case 'sql':
+      return [sql({ dialect: sqlDialectFromString(languageOptions.dialect), schema: languageOptions.completions })];
     case 'yaml':
       return [StreamLanguage.define(yaml)];
     default:
@@ -44,11 +102,13 @@ const getLanguageExtensions = (language: string | Extension[]): Extension[] => {
  */
 const CodeMirrorEditor: FunctionComponent<{
   handleSubmit?: () => void;
-  language: string | Extension[];
+  language: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  languageOptions?: any;
   minimal: boolean;
   onChange?: (value: string) => void;
   value: string;
-}> = ({ language, minimal, value, onChange, handleSubmit }) => {
+}> = ({ language, languageOptions, minimal, value, onChange, handleSubmit }) => {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -107,7 +167,7 @@ const CodeMirrorEditor: FunctionComponent<{
             ]),
           ),
 
-          ...getLanguageExtensions(language),
+          ...getLanguageExtensions(language, languageOptions),
         ],
       });
 
@@ -146,7 +206,7 @@ const CodeMirrorEditor: FunctionComponent<{
 };
 
 const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function Editor(props, ref) {
-  const { language, minimal, value, onChange, handleSubmit } = props;
+  const { language, languageOptions, minimal, value, onChange, handleSubmit } = props;
 
   const handleOnChange = (value: string | undefined) => {
     if (onChange) {
@@ -159,6 +219,7 @@ const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(fun
   return (
     <CodeMirrorEditor
       language={language}
+      languageOptions={languageOptions}
       minimal={minimal}
       value={value}
       onChange={handleOnChange}
@@ -174,11 +235,13 @@ const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(fun
 export const Editor: FunctionComponent<{
   adornment?: ReactNode;
   handleSubmit?: () => void;
-  language: string | Extension[];
+  language: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  languageOptions?: any;
   minimal?: boolean;
   onChange?: (value: string) => void;
   value: string;
-}> = ({ adornment, language, minimal = false, value, onChange, handleSubmit }) => {
+}> = ({ adornment, language, languageOptions, minimal = false, value, onChange, handleSubmit }) => {
   return (
     <TextField
       sx={{
@@ -198,6 +261,7 @@ export const Editor: FunctionComponent<{
         inputProps: {
           handleSubmit: handleSubmit,
           language: language,
+          languageOptions: languageOptions,
           minimal: minimal,
         },
       }}
