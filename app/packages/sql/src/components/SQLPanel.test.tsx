@@ -51,12 +51,12 @@ describe('SQLPanel', () => {
     });
   });
 
-  it('should render Panel with singlestat chart', async () => {
+  it('should render Panel with singlestats chart', async () => {
     getSpy.mockResolvedValueOnce({
       columns: ['p50', 'p95', 'p99', 'other'],
       rows: [{ other: 16.05, p50: 2.99, p95: 4.31, p99: 16.05 }],
     });
-    render('singlestat chart', {
+    render('singlestats chart', {
       chart: {
         legend: { p50: 'P50', p95: 'P95', p99: 'P99' },
         query: 'SELECT 2.99 AS p50, 4.31 AS p95, 16.05 AS p99, 16.05 AS other;',
@@ -65,13 +65,13 @@ describe('SQLPanel', () => {
           '4': '#F0AB00',
           '6': '#C9190B',
         },
-        type: 'singlestat',
+        type: 'singlestats',
         yAxisColumns: ['p50', 'p95', 'p99'],
         yAxisUnit: 'ms',
       },
       type: 'chart',
     });
-    expect(screen.getByText('singlestat chart')).toBeInTheDocument();
+    expect(screen.getByText('singlestats chart')).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByText('P50')).toBeInTheDocument();
       expect(screen.getByText('P95')).toBeInTheDocument();
