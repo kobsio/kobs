@@ -3,7 +3,7 @@ site_description: Kubernetes Observability Platform
 repo_name: kobsio/kobs
 repo_url: https://github.com/kobsio/kobs
 edit_uri: https://github.com/kobsio/kobs/edit/main/docs/
-copyright: Copyright © 2021 Rico Berger
+copyright: Copyright © 2023 Rico Berger
 
 theme:
   name: material
@@ -17,16 +17,7 @@ theme:
   include_search_page: false
   search_index_only: true
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
+    primary: custom
   features:
     - navigation.tabs
 
@@ -38,12 +29,9 @@ nav:
           - Helm: getting-started/installation/helm.md
           - Kustomize: getting-started/installation/kustomize.md
       - Configuration:
+          - cluster: getting-started/configuration/cluster.md
           - hub: getting-started/configuration/hub.md
-          - satellite: getting-started/configuration/satellite.md
-          - Authentication and Authorization: getting-started/configuration/auth.md
-          - Navigation: getting-started/configuration/navigation.md
-          - Notifications: getting-started/configuration/notifications.md
-      - Demo: getting-started/demo/demo.md
+          - watcher: getting-started/configuration/watcher.md
   - Resources:
       - resources/index.md
       - Kubernetes Resources: resources/kubernetes-resources.md
@@ -53,15 +41,11 @@ nav:
       - Dashboards: resources/dashboards.md
   - Plugins:
       - plugins/index.md
-      - Azure: plugins/azure.md
-      - Datadog: plugins/datadog.md
-      - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md
       - GitHub: plugins/github.md
       - Grafana: plugins/grafana.md
       - Harbor: plugins/harbor.md
       - Helm: plugins/helm.md
-      - Istio: plugins/istio.md
       - Jaeger: plugins/jaeger.md
       - Jira: plugins/jira.md
       - Kiali: plugins/kiali.md
@@ -80,10 +64,7 @@ nav:
       - contributing/index.md
       - Create a Plugin: contributing/create-a-plugin.md
       - Use Custom Plugins: contributing/use-custom-plugins.md
-      - Development using the Demo: contributing/development-using-the-demo.md
       - Release: contributing/release.md
-      - Architecture Decision Records (ADR):
-          - ADR001 - Facilitate Centralized Instance: contributing/adr/001_facilitate_centralized_instance.md
 
 plugins:
   - search
@@ -113,7 +94,7 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/kobsio/kobs
     - icon: fontawesome/brands/docker
-      link: https://hub.docker.com/r/kobsio/kobs
+      link: https://github.com/orgs/kobsio/packages
   version:
     provider: mike
 

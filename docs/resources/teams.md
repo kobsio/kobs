@@ -12,13 +12,12 @@ In the following you can found the specification for the Team CRD.
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| group | string | The group name of the team. This is used to connect the authenticated user with this CR. | Yes |
+| id | string | The id of the team. This value is also used for the refrence in Applications and User CRs. | Yes |
 | description | string | A description for the team. | No |
 | links | [[]Link](#link) | A list of links (e.g. a link to the teams Slack channel, Confluence page, etc.) | No |
 | logo | string | The logo for the team. Must be a path to an image file. | No |
 | permissions | [Permissions](./users.md#permissions) | Permissions for the team when the authentication / authorization middleware is enabled. | No |
 | dashboards | [[]Dashboard](./applications.md#dashboard) | A list of dashboards which will be shown on the team page. | No |
-| notifications | [Notifications](./users.md#notifications) | Overwrite the global notification settings for this team. | No |
 
 ### Link
 
@@ -29,90 +28,116 @@ In the following you can found the specification for the Team CRD.
 
 ## Example
 
-The following CR creates a team with the group `dia@kobs.io`. The details page for the team contains two dashboards, one to display the applications owned by the team and a seconde one to display the status of external services via the RSS plugin.
+The following CR creates a team with the id `product-cloudpunk@kobs.io`. The details page for the team contains a dashboard, which shows the applications owned by the team, the teams open Opsgenie alerts and the team current sprint.
 
-In the CR we also define that every member of the team can view all applications and teams. Every member can also view the Helm charts in the `bookinfo` and `kobs` namespace and can use the Opsgenie plugin. Besides that every member can also list, edit and delete all resources in the `bookinfo` and `kobs` namespace.
+In the CR we also define that every member of the team can view all applications, teams and all resources from the `backend`, `notes`, `mediaserver` and `media-analytics` namespace.
 
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Team
-metadata:
-  name: team-diablo
-  namespace: kobs
-spec:
-  group: dia@kobs.io
-  description: Productpage and Details
-  logo: https://kobs.io/main/installation/assets/team-diablo.png
-  links:
-    - title: Website
-      link: https://kobs.io
-    - title: GitHub
-      link: https://github.com/kobsio/kobs
-  dashboards:
-    - title: Applications
-      inline:
-        rows:
-          - size: -1
-            panels:
-              - title: Applications
-                plugin:
-                  name: applications
-                  type: app
-                  options:
-                    team: dia@kobs.io
-    - title: Status of External Services
-      inline:
-        rows:
-          - size: -1
-            panels:
-              - title: External Services
-                plugin:
-                  name: rss
-                  type: rss
-                  options:
-                    urls:
-                      - https://www.githubstatus.com/history.rss
-                      - https://status.aws.amazon.com/rss/route53.rss
-                      - https://azurestatuscdn.azureedge.net/de-de/status/feed/
-                      - https://www.cloudflarestatus.com/history.atom
-                    sortBy: updated
-  permissions:
-    applications:
-      - type: all
-    teams:
-      - "*"
-    plugins:
-      - satellite: "*"
-        name: helm
-        type: helm
-        permissions:
+??? note "Team"
+
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Team
+    metadata:
+      name: team-cloudpunk
+      namespace: kobs
+    spec:
+      id: product-cloudpunk@kobs.io
+      description: Team Cloudpunk - the media handlers.
+      links:
+        - title: Slack
+          link: https://slack.com
+        - title: GitHub
+          link: https://github.com
+        - title: Confluence
+          link: https://atlassian.net
+
+      dashboards:
+        - namespace: kobs
+          name: overview-team
+          title: Overview
+          placeholders:
+            team: "<% $.id %>"
+            jira: CLP
+            opsgenie: Team Cloudpunk
+
+      permissions:
+        applications:
+          - type: all
+        teams:
+          - "*"
+        plugins:
+          - cluster: "*"
+            name: "*"
+            type: "*"
+        resources:
           - clusters:
               - "*"
             namespaces:
-              - "bookinfo"
-              - "kobs"
-            names:
+              - "backend"
+              - "notes"
+              - "mediaserver"
+              - "media-analytics"
+            resources:
               - "*"
-      - satellite: "*"
-        name: opsgenie
-        type: opsgenie
-        permissions:
-          - acknowledgeAlert
-          - snoozeAlert
-          - closeAlert
-    resources:
-      - satellites:
-          - "*"
-        clusters:
-          - "*"
-        namespaces:
-          - "bookinfo"
-          - "kobs"
-        resources:
-          - "*"
-        verbs:
-          - "*"
-```
+            verbs:
+              - "*"
+    ```
+
+??? note "Dashboard"
+
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Dashboard
+    metadata:
+      name: overview-team
+      namespace: kobs
+    spec:
+      placeholders:
+        - name: team
+        - name: jira
+        - name: opsgenie
+      hideToolbar: true
+      rows:
+        - panels:
+            - title: Applications
+              plugin:
+                type: core
+                name: applications
+                options:
+                  team: "{% .team %}"
+              h: 16
+              w: 6
+              x: 0
+              'y': 0
+            - title: Open Alerts
+              plugin:
+                type: opsgenie
+                cluster: hub
+                name: opsgenie
+                options:
+                  interval: 31536000
+                  queries:
+                    - 'status: open AND responders: "{% .opsgenie %}"'
+                  type: alerts
+              h: 8
+              w: 6
+              x: 6
+              'y': 0
+            - title: Current Sprint
+              plugin:
+                type: jira
+                cluster: hub
+                name: jira
+                options:
+                  jql: >-
+                    project = {% .jira %} and sprint in openSprints() order by
+                    updatedDate
+              h: 8
+              w: 6
+              x: 6
+              'y': 8
+    ```
 
 ![Team Details](assets/teams-details.png)

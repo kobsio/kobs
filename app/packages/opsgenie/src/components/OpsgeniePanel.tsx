@@ -18,7 +18,6 @@ import { example } from '../utils/utils';
 interface IOptions {
   interval?: number;
   queries?: string[];
-  query?: string;
   type?: string;
 }
 

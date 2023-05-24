@@ -8,7 +8,7 @@ The Prometheus plugin can be used to retrieve metrics from a configured Promethe
 
 ## Configuration
 
-To use the Prometheus plugin the following configuration is needed in the satellites configuration file:
+The Prometheus plugin can be used within the `hub` or `cluster`. To use the Prometheus plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -43,7 +43,22 @@ plugins:
 | type | string | The query type to get the values for the variable. At the moment this must be `labelValues` | Yes |
 | label | string | The Prometheus label which should be used to get the values for the variable. | Yes |
 | query | string | The PromQL query. | Yes |
-| allowAll | boolean | If this is set to `true` an additional option for the variable will be added, which contains all other values. | No |
+
+??? note "Example"
+
+    ```yaml
+    variables:
+      - name: var_pod
+        label: Pod
+        includeAllOption: false
+        plugin:
+          name: prometheus
+          type: prometheus
+          options:
+            type: labelValues
+            label: pod
+            query: container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .pod %}", container!="POD", container!=""}
+    ```
 
 ## Panel Options
 
@@ -86,16 +101,9 @@ The following options can be used for a panel with the Prometheus plugin:
 | unit | string | An optional unit for the column values. | No |
 | mappings | map<string, string> | Specify value mappings for the column. **Note:** The value must be provided as string (e.g. `"1": "Green"`). | No |
 
-## Notification Options
-
-!!! note
-    The Prometheus plugin can not be used to get a list of notifications.
-
 ## Usage
 
 The following dashboard, shows the CPU and Memory usage of a selected Pod. When this dashboard is used in via a team or application, it is possible to set the namespace and a regular expression to pre select all the Pods. These values are then used to get the names of all Pods and a user can then select the name of a Pod via the `var_pod` variable.
-
-The dashboard only uses the Prometheus plugin to show the CPU Usage, Memory Usage, the Network Usage and some other information via different charts and tables.
 
 ```yaml
 ---
@@ -108,12 +116,23 @@ spec:
   description: Resources Usage of Pods
   placeholders:
     - name: namespace
-      description: Namespace for the Pods
+      description: |
+        The namespace of the application, e.g.
+            namespace: "<% $.namespace %>"
     - name: pod
-      description: Pod selector
+      description: |
+        A selector for the Pods of the application,
+        must be a valid PromQL selector, e.g.
+            pod: "<% $.name %>-.*"
+    - name: verticalpodautoscaler
+      description: |
+        The identifier for the VerticalPodAutoscaler,
+        must be a valid PromQL selector, e.g.
+            verticalpodautoscaler: "<% $.name %>"
   variables:
     - name: var_pod
       label: Pod
+      includeAllOption: false
       plugin:
         name: prometheus
         type: prometheus
@@ -121,157 +140,226 @@ spec:
           type: labelValues
           label: pod
           query: container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .pod %}", container!="POD", container!=""}
-          allowAll: false
+    - name: var_container
+      label: Container
+      includeAllOption: true
+      plugin:
+        name: prometheus
+        type: prometheus
+        options:
+          type: labelValues
+          label: container
+          query: container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}
   rows:
-    - size: 1
-      panels:
+    - panels:
         - title: CPU Usage
-          colSpan: 4
           plugin:
-            name: prometheus
             type: prometheus
+            name: prometheus
             options:
+              queries:
+                - query: >-
+                    sum(rate(container_cpu_usage_seconds_total{namespace="{%
+                    .namespace %}", image!="", pod=~"{% .var_pod %}",
+                    container!="POD", container!="", container=~"{%
+                    .var_container %}"}[2m]))
               type: sparkline
               unit: Cores
-              queries:
-                - query: sum(rate(container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m]))
+          h: 4
+          w: 4
+          x: 0
+          'y': 0
         - title: Memory Usage
-          colSpan: 4
           plugin:
-            name: prometheus
             type: prometheus
+            name: prometheus
             options:
+              queries:
+                - query: >-
+                    sum(container_memory_working_set_bytes{namespace="{%
+                    .namespace %}", pod=~"{% .var_pod %}", container!="POD",
+                    container!="", container=~"{% .var_container %}"}) /
+                    1024 / 1024
               type: sparkline
               unit: MiB
-              queries:
-                - query: sum(container_memory_working_set_bytes{namespace="{% .namespace %}", pod=~"{% .var_pod %}", container!="POD", container!=""}) / 1024 / 1024
+          h: 4
+          w: 4
+          x: 4
+          'y': 0
         - title: Restarts
-          colSpan: 4
           plugin:
-            name: prometheus
             type: prometheus
+            name: prometheus
             options:
-              type: sparkline
               queries:
-                - query: kube_pod_container_status_restarts_total{namespace="{% .namespace %}", pod=~"{% .var_pod %}"}
-    - size: 3
-      panels:
+                - query: >-
+                    kube_pod_container_status_restarts_total{namespace="{%
+                    .namespace %}", pod=~"{% .var_pod %}", container=~"{%
+                    .var_container %}"}
+              type: sparkline
+          h: 4
+          w: 4
+          x: 8
+          'y': 0
+    - panels:
         - title: CPU Usage
-          colSpan: 6
           plugin:
-            name: prometheus
             type: prometheus
+            name: prometheus
             options:
+              legend: table
+              queries:
+                - label: 'Usage: {% .container %}'
+                  query: >-
+                    sum(rate(container_cpu_usage_seconds_total{namespace="{%
+                    .namespace %}", image!="", pod=~"{% .var_pod %}",
+                    container!="POD", container!="", container=~"{%
+                    .var_container %}"}[2m])) by (container)
+                - label: 'Request: {% .container %}'
+                  query: >-
+                    sum(kube_pod_container_resource_requests{namespace="{%
+                    .namespace %}", resource="cpu", pod=~"{% .var_pod %}",
+                    container!="POD", container!="", container=~"{%
+                    .var_container %}"}) by (container)
               type: line
               unit: Cores
+          h: 9
+          w: 6
+          x: 0
+          'y': 0
+        - title: Memory Usage
+          plugin:
+            type: prometheus
+            name: prometheus
+            options:
               legend: table
               queries:
-                - label: "Usage: {% .container %}"
-                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .var_pod %}", container!="POD", container!=""}[2m])) by (container)
-                - label: "Request: {% .container %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="cpu", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container)
-                - label: "Limits: {% .container %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="cpu", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container)
-        - title: Memory Usage
-          colSpan: 6
-          plugin:
-            name: prometheus
-            type: prometheus
-            options:
+                - label: 'Usage: {% .container %}'
+                  query: >-
+                    sum(container_memory_working_set_bytes{namespace="{%
+                    .namespace %}", pod=~"{% .var_pod %}", container!="POD",
+                    container!="", container=~"{% .var_container %}"}) by
+                    (container) / 1024 / 1024
+                - label: 'Request: {% .container %}'
+                  query: >-
+                    sum(kube_pod_container_resource_requests{namespace="{%
+                    .namespace %}", resource="memory", pod=~"{% .var_pod
+                    %}", container!="POD", container!="", container=~"{%
+                    .var_container %}"}) by (container) / 1024 / 1024
+                - label: 'Limits: {% .container %}'
+                  query: >-
+                    sum(kube_pod_container_resource_limits{namespace="{%
+                    .namespace %}", resource="memory", pod=~"{% .var_pod
+                    %}", container!="POD", container!="", container=~"{%
+                    .var_container %}"}) by (container) / 1024 / 1024
               type: line
               unit: MiB
-              legend: table
+          h: 9
+          w: 6
+          x: 6
+          'y': 0
+    - panels:
+        - title: Ressource Recommendations
+          plugin:
+            type: prometheus
+            name: prometheus
+            options:
+              columns:
+                - name: target_name
+                  title: Target
+                - name: container
+                  title: Container
+                - name: value-1
+                  title: Recommended CPU
+                  unit: m
+                - name: value-2
+                  title: Recommended Memory
+                  unit: Mi
               queries:
-                - label: "Usage: {% .container %}"
-                  query: sum(container_memory_working_set_bytes{namespace="{% .namespace %}", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
-                - label: "Request: {% .container %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="memory", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
-                - label: "Limits: {% .container %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="memory", pod=~"{% .var_pod %}", container!="POD", container!=""}) by (container) / 1024 / 1024
+                - label: '{% .target_name %} - {% .container %}'
+                  query: >-
+                    max(max_over_time(kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{namespace="{%
+                    .namespace %}", container!="POD", container!="", container=~"{% .var_container %}",
+                    resource="cpu", verticalpodautoscaler=~"{%
+                    .verticalpodautoscaler %}"}[7d]) * 1000) by
+                    (target_name, container)
+                - label: '{% .target_name %} - {% .container %}'
+                  query: >-
+                    max(round(max_over_time(kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{namespace="{%
+                    .namespace %}", container!="POD", container!="", container=~"{% .var_container %}",
+                    resource="memory", verticalpodautoscaler=~"{%
+                    .verticalpodautoscaler %}"}[7d]) / 1000 / 1000)) by
+                    (target_name, container)
+              type: table
+          h: 9
+          w: 12
+          x: 0
+          'y': 0
+      autoHeight: true
+      description: ''
+      if: '"{% .verticalpodautoscaler %}" !== ""'
     - title: Network
-      size: 3
       panels:
         - title: Bandwidth
-          colSpan: 12
           plugin:
-            name: prometheus
             type: prometheus
+            name: prometheus
             options:
-              type: area
-              unit: bytes/s
               queries:
                 - label: Received
-                  query: sum(irate(container_network_receive_bytes_total{namespace="{% .namespace %}", pod="{% .var_pod %}"}[2m])) by (pod)
+                  query: >-
+                    sum(irate(container_network_receive_bytes_total{namespace="{%
+                    .namespace %}", pod="{% .var_pod %}"}[2m])) by (pod)
                 - label: Transmitted
-                  query: -sum(irate(container_network_transmit_bytes_total{namespace="{% .namespace %}", pod="{% .var_pod %}"}[2m])) by (pod)
+                  query: >-
+                    -sum(irate(container_network_transmit_bytes_total{namespace="{%
+                    .namespace %}", pod="{% .var_pod %}"}[2m])) by (pod)
+              type: area
+              unit: bytes/s
+          h: 9
+          w: 12
+          x: 0
+          'y': 0
         - title: Rate of Packets
-          colSpan: 6
           plugin:
-            name: prometheus
             type: prometheus
+            name: prometheus
             options:
-              type: area
-              unit: bytes/s
               queries:
                 - label: Received
-                  query: sum(irate(container_network_receive_packets_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+                  query: >-
+                    sum(irate(container_network_receive_packets_total{namespace=~"{%
+                    .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
                 - label: Transmitted
-                  query: -sum(irate(container_network_transmit_packets_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+                  query: >-
+                    -sum(irate(container_network_transmit_packets_total{namespace=~"{%
+                    .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+              type: area
+              unit: p/s
+          h: 9
+          w: 6
+          x: 0
+          'y': 9
         - title: Rate of Packets Dropped
-          colSpan: 6
           plugin:
-            name: prometheus
             type: prometheus
+            name: prometheus
             options:
-              type: area
-              unit: bytes/s
               queries:
                 - label: Received
-                  query: sum(irate(container_network_receive_packets_dropped_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+                  query: >-
+                    sum(irate(container_network_receive_packets_dropped_total{namespace=~"{%
+                    .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
                 - label: Transmitted
-                  query: -sum(irate(container_network_transmit_packets_dropped_total{namespace=~"{% .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
-    - title: "Resource Usage for all Pods"
-      panels:
-        - title: Table
-          plugin:
-            name: prometheus
-            type: prometheus
-            options:
-              type: table
-              queries:
-                - label: "{% .pod %}"
-                  query: sum(rate(container_cpu_usage_seconds_total{namespace="{% .namespace %}", image!="", pod=~"{% .pod %}", container!="POD", container!=""}[2m])) by (pod)
-                - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="cpu", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod)
-                - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="cpu", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod)
-                - label: "{% .pod %}"
-                  query: sum(container_memory_working_set_bytes{namespace="{% .namespace %}", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod) / 1024 / 1024
-                - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_requests{namespace="{% .namespace %}", resource="memory", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod) / 1024 / 1024
-                - label: "{% .pod %}"
-                  query: sum(kube_pod_container_resource_limits{namespace="{% .namespace %}", resource="memory", pod=~"{% .pod %}", container!="POD", container!=""}) by (pod) / 1024 / 1024
-              columns:
-                - name: pod
-                  title: Pod
-                - name: value-1
-                  title: CPU Usage
-                  unit: Cores
-                - name: value-2
-                  title: CPU Requests
-                  unit: Cores
-                - name: value-3
-                  title: CPU Limits
-                  unit: Cores
-                - name: value-4
-                  title: Memory Usage
-                  unit: MiB
-                - name: value-5
-                  title: Memory Requests
-                  unit: MiB
-                - name: value-6
-                  title: Memory Limits
-                  unit: MiB
+                  query: >-
+                    -sum(irate(container_network_transmit_packets_dropped_total{namespace=~"{%
+                    .namespace %}", pod=~"{% .var_pod %}"}[2m])) by (pod)
+              type: area
+              unit: p/s
+          h: 9
+          w: 6
+          x: 6
+          'y': 9
 ```
 
 ![Dashboard](assets/prometheus-dashboard.png)

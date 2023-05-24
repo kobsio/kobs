@@ -2,26 +2,23 @@
 
 The Helm plugin can be used to manage Helm releases within kobs.
 
-![Dashboard](assets/helm-dashboard.png)
+![Overview](assets/helm-overview.png)
 
 ![Details](assets/helm-details.png)
 
 ## Configuration
 
-To use the Helm plugin the following configuration is needed in the satellites configuration file:
+The Helm plugin can only be used within the `hub`. To use the Helm plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | name | string | The name of the Helm plugin instance. | Yes |
 | type | `helm` | The type for the Helm plugin. | Yes |
-| options.permissionsEnabled | string | Enable the permission handling. An example of the permission format can be found in the [usage](#usage) section of this page. | No |
 
 ```yaml
 plugins:
   - name: helm
     type: helm
-    options:
-      permissionsEnabled: true
 ```
 
 ## Insight Options
@@ -45,78 +42,36 @@ The following options can be used for a panel with the Helm plugin:
 | namespaces |[]string | A list of namespaces for which the Helm releases should be shown. | Yes |
 | name | string | The name of the Helm release for whih the history should be shown, when the type is `releasehistory`. | No |
 
-## Notification Options
-
-!!! note
-    The Helm plugin can not be used to get a list of notifications.
-
 ## Usage
 
 ### Permissions
 
-You can define fine grained permissions to access your Helm releases via kobs. The permissions are defined via the `permissions.plugins[].permissions` field of a [User](../resources/users.md) or [Team](../resources/teams.md). The team membership of an user is defined via the values of the `X-Auth-Request-Groups` header.
+A user can only use the Helm plugin when he has the permissions to view all secrets in a cluster / namespace, e.g.
 
-In the following example each member of `team1@kobs.io` will get access to all Helm releases, while members of `team2@kobs.io` can only view the `kobs` Helm release in the `kobs` namespace and the `prometheus` release in the `monitoring` namespace:
-
-??? note "team1"
-
-    ```yaml
-    ---
-    apiVersion: kobs.io/v1
-    kind: Team
-    metadata:
-      name: team1
-    spec:
-      group: team1@kobs.io
-      permissions:
-        plugins:
-          - satellite: "*"
-            name: "*"
-            type: "*"
-          - satellite: "*"
-            name: helm
-            type: helm
-            permissions:
-              - clusters:
-                  - "*"
-                namespaces:
-                  - "*"
-                names:
-                  - "*"
-    ```
-
-??? note "team2"
-
-    ```yaml
-    ---
-    apiVersion: kobs.io/v1
-    kind: Team
-    metadata:
-      name: team2
-    spec:
-      group: team2@kobs.io
-      permissions:
-        plugins:
-          - satellite: "*"
-            name: "*"
-            type: "*"
-          - satellite: "*"
-            name: helm
-            type: helm
-            permissions:
-              - clusters:
-                  - "kobs-demo"
-                namespaces:
-                  - "kobs"
-                names:
-                  - "kobs"
-              - clusters:
-                  - "kobs-demo"
-                namespaces:
-                  - "monitoring"
-                names:
-                  - "prometheus"
-    ```
+```yaml
+---
+apiVersion: kobs.io/v1
+kind: User
+metadata:
+  name: ricoberger
+  namespace: kobs
+spec:
+  # The following permissions are required for the user to use the Helm plugin.
+  permissions:
+    plugins:
+      - cluster: "*"
+        name: "*"
+        type: "*"
+    resources:
+      - clusters:
+          - "*"
+        namespaces:
+          - "*"
+        resources:
+          - "secrets"
+        verbs:
+          - "get"
+```
 
 ### Example Dashboard
 
@@ -125,58 +80,67 @@ The following dashboards shows all Helm releases from the `kobs` and `monitoring
 ```yaml
 ---
 apiVersion: kobs.io/v1
-kind: Dashboard
+kind: Application
+metadata:
+  name: default
+  namespace: default
 spec:
-  rows:
-    - panels:
-        - title: Helm Releases
-          plugin:
-            name: helm
-            type: helm
-            options:
-              type: releases
-              clusters:
-                - "<% .cluster %>"
-              namespaces:
-                - kobs
-                - cert-manager
-                - monitoring
-    - size: 3
-      panels:
-        - title: History of kobs
-          colSpan: 4
-          plugin:
-            name: helm
-            type: helm
-            options:
-              type: releasehistory
-              clusters:
-                - "<% .cluster %>"
-              namespaces:
-                - kobs
-              name: kobs
-        - title: History of cert-manager
-          colSpan: 4
-          plugin:
-            name: helm
-            type: helm
-            options:
-              type: releasehistory
-              clusters:
-                - "<% .cluster %>"
-              namespaces:
-                - cert-manager
-              name: cert-manager
-        - title: History of prometheus-operator
-          colSpan: 4
-          plugin:
-            name: helm
-            type: helm
-            options:
-              type: releasehistory
-              clusters:
-                - "<% .cluster %>"
-              namespaces:
-                - monitoring
-              name: prometheus-operator
+  description: The default application is an application to test all available kobs plugins.
+  dashboards:
+    - title: Helm
+      inline:
+        rows:
+          - autoHeight: true
+            panels:
+              - title: Helm Releases
+                plugin:
+                  name: helm
+                  type: helm
+                  cluster: hub
+                  options:
+                    type: releases
+                    clusters:
+                      - "<% $.cluster %>"
+                    namespaces:
+                      - kobs
+                      - cert-manager
+                      - monitoring
+                h: 6
+                w: 12
+                x: 0
+                'y': 0
+              - title: History of kobs
+                plugin:
+                  name: helm
+                  type: helm
+                  cluster: hub
+                  options:
+                    type: releasehistory
+                    clusters:
+                      - "<% $.cluster %>"
+                    namespaces:
+                      - kobs
+                    name: kobs
+                h: 6
+                w: 6
+                x: 6
+                'y': 6
+              - title: History of cert-manager
+                plugin:
+                  name: helm
+                  type: helm
+                  cluster: hub
+                  options:
+                    type: releasehistory
+                    clusters:
+                      - "<% $.cluster %>"
+                    namespaces:
+                      - cert-manager
+                    name: cert-manager
+                h: 6
+                w: 6
+                x: 0
+                'y': 6
 ```
+
+![Example 1](assets/helm-example-1.png)

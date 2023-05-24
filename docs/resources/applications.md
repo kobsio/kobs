@@ -40,7 +40,6 @@ You can also use the topology page to view the topology graph of your applicatio
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| satellite | string | Satellite of the application, which should be added as dependency. If this field is omitted kobs will look in the same satellite as the application was created in. | No |
 | cluster | string | Cluster of the application, which should be added as dependency. If this field is omitted kobs will look in the same cluster as the application was created in. | No |
 | namespace | string | Namespace of the application, which should be added as dependency. If this field is omitted kobs will look in the same namespace as the application was created in. | No |
 | name | string | Name of the application, which should be added as dependency. | Yes |
@@ -77,249 +76,442 @@ Define the dashboards, which should be used for the application.
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | hideToolbar | boolean | If this is `true` the toolbar will be hidden in the dashboard. | No |
+| defaultTime | boolean | Set the default time interval used for a dashboard. Must be `last12Hours`, `last15Minutes`, `last1Day`, `last1Hour`, `last1Year`, `last2Days`, `last30Days`, `last30Minutes`, `last3Hours`, `last5Minutes`, `last6Hours`, `last6Months`, `last7Days` or `last90Days`. The default value is `last15Minutes`. | No |
 | variables | [[]Variable](./dashboards.md#variable) | A list of variables, where the values are loaded by the specified plugin. | No |
 | rows | [[]Row](./dashboards.md#row) | A list of rows for the dashboard. | Yes |
 
 ## Example
 
-The following Application CR is used in the [demo](../getting-started/demo/demo.md) to display the resources, metrics, logs and traces for the productpage Application of the Bookinfo service.
+The following Application CR defines an kobs Application for Fluent Bit, to display, the resources, metrics and logs for Fluent Bit.
 
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Application
-metadata:
-  name: productpage
-  namespace: bookinfo
-spec:
-  description: The productpage microservice calls the details and reviews microservices to populate the page.
-  tags:
-    - bookinfo
-  links:
-    - title: Website
-      link: https://istio.io/latest/docs/examples/bookinfo/
-    - title: GitHub
-      link: https://github.com/istio/istio/tree/master/samples/bookinfo
-    - title: Application CR
-      link: https://github.com/kobsio/kobs/blob/main/deploy/demo/kobs/base/crs/applications/productpage.yaml
-  teams:
-    - re@kobs.io
-  topology:
-    dependencies:
-      - name: details
-        description: Get book information.
-      - name: reviews
-        description: Get book reviews.
-  insights:
-    - title: Success Rate
-      type: sparkline
-      unit: "%"
-      plugin:
-        name: prometheus
-        type: prometheus
-        options:
-          query: sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_workload_namespace=~"bookinfo",destination_workload=~"productpage-v1"}[5m])) * 100
-    - title: Healthy Replicas
-      type: sparkline
-      unit: "%"
-      plugin:
-        name: prometheus
-        type: prometheus
-        options:
-          query: kube_deployment_status_replicas{namespace="bookinfo", deployment=~"productpage.*"} / kube_deployment_spec_replicas{namespace="bookinfo", deployment=~"productpage.*"} * 100
-  dashboards:
-    - title: Overview
-      inline:
-        rows:
-          - size: 1
-            panels:
-              - title: Desired Replicas
-                colSpan: 3
-                plugin:
-                  name: prometheus
-                  type: prometheus
-                  options:
-                    type: sparkline
-                    queries:
-                      - query: kube_deployment_spec_replicas{namespace="bookinfo", deployment=~"productpage.*"}
-              - title: Current Replicas
-                colSpan: 3
-                plugin:
-                  name: prometheus
-                  type: prometheus
-                  options:
-                    type: sparkline
-                    queries:
-                      - query: kube_deployment_status_replicas{namespace="bookinfo", deployment=~"productpage.*"}
-              - title: Updated Replicas
-                colSpan: 3
-                plugin:
-                  name: prometheus
-                  type: prometheus
-                  options:
-                    type: sparkline
-                    queries:
-                      - query: kube_deployment_status_replicas_updated{namespace="bookinfo", deployment=~"productpage.*"}
-              - title: Available Replicas
-                colSpan: 3
-                plugin:
-                  name: prometheus
-                  type: prometheus
-                  options:
-                    type: sparkline
-                    queries:
-                      - query: kube_deployment_status_replicas_available{namespace="bookinfo", deployment=~"productpage.*"}
-          - size: -1
-            panels:
-              - title: Workloads
-                plugin:
-                  name: resources
-                  type: app
-                  options:
-                    satellites:
-                      - kobs
-                    clusters:
-                      - kobs
-                    namespaces:
-                      - bookinfo
-                    resources:
-                      - pods
-                      - deployments
-                      - services
-                    selector: app=productpage
-          - size: 2
-            panels:
-              - title: Open Alerts
-                colSpan: 6
-                plugin:
-                  name: opsgenie
-                  type: opsgenie
-                  options:
-                    type: alerts
-                    queries:
-                      - 'status: open AND namespace: "bookinfo"'
-                      - 'status: closed AND namespace: "bookinfo"'
-                    interval: 31536000
-              - title: Topology
-                colSpan: 6
-                plugin:
-                  name: topology
-                  type: app
-                  options:
-                    satellite: "<% $.satellite %>"
-                    cluster: "<% $.cluster %>"
-                    namespace: "<% $.namespace %>"
-                    name: "<% $.name %>"
+??? note "Application"
 
-    - name: resource-usage
-      namespace: kobs
-      title: Resource Usage
-      placeholders:
-        namespace: bookinfo
-        pod: "productpage-.*-.*-.*"
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Application
+    metadata:
+      name: fluent-bit
+      namespace: logging
+    spec:
+      description: Fluent Bit is a super fast, lightweight, and highly scalable logging and metrics processor and forwarder. It is the preferred choice for cloud and containerized environments.
+      tags:
+        - core-platform
+        - observability
+        - logging
+      links:
+        - title: GitHub
+          link: https://github.com/fluent/fluent-bit
+        - title: Website
+          link: https://fluentbit.io
+        - title: "GitHub: klogs"
+          link: https://github.com/kobsio/klogs
+      teams:
+        - product-diablo@staffbase.com
+      topology:
+        dependencies:
+          - name: clickhouse-logging
 
-    - name: istio-http
-      namespace: kobs
-      title: Istio HTTP Metrics
-      placeholders:
-        namespace: bookinfo
-        app: productpage
+      insights:
+        - title: "Fluent Bit: No Input"
+          type: sparkline
+          plugin:
+            name: prometheus
+            type: prometheus
+            options:
+              query: count(sum(rate(fluentbit_input_bytes_total{namespace="logging", pod=~"fluent-bit-.*", name="tail.0"}[5m])) by (pod, name) == 0) or vector(0)
+        - title: "Fluent Bit: Output Errors"
+          type: sparkline
+          plugin:
+            name: prometheus
+            type: prometheus
+            options:
+              query: sum(rate(fluentbit_output_errors_total[1m]))
+        - title: "klogs: Errors"
+          type: sparkline
+          plugin:
+            name: prometheus
+            type: prometheus
+            options:
+              query: sum(rate(klogs_errors_total{namespace="logging", pod=~"fluent-bit-.*"}[5m]))
 
-    - title: Logs
-      inline:
-        rows:
-          - size: -1
-            panels:
-              - title: Logs
-                colSpan: 12
-                plugin:
-                  name: elasticsearch
-                  type: elasticsearch
-                  options:
-                    showChart: true
-                    queries:
-                      - name: Pod Logs
-                        query: "kubernetes.namespace: bookinfo AND kubernetes.labels.app: productpage"
-                        fields:
-                          - "kubernetes.container.name"
-                          - "message"
-                      - name: Istio Logs
-                        query: "kubernetes.namespace: bookinfo AND kubernetes.labels.app: productpage AND kubernetes.container.name: istio-proxy AND _exists_: content.method"
-                        fields:
-                          - "kubernetes.pod.name"
-                          - "content.authority"
-                          - "content.route_name"
-                          - "content.protocol"
-                          - "content.method"
-                          - "content.path"
-                          - "content.response_code"
-                          - "content.upstream_service_time"
-                          - "content.bytes_received"
-                          - "content.bytes_sent"
+      dashboards:
+        - namespace: kobs
+          name: overview
+          title: Overview
+          placeholders:
+            cluster: "<% $.cluster %>"
+            namespace: "<% $.namespace %>"
+            name: "<% $.name %>"
+            resources: |
+              - pods
+              - daemonsets
+            param: app=<% $.name %>
+        - namespace: kobs
+          name: resource-usage
+          title: Resource Usage
+          placeholders:
+            namespace: "<% $.namespace %>"
+            pod: "<% $.name %>-.*"
+            verticalpodautoscaler: "<% $.name %>"
+        - title: Metrics
+          inline:
+            rows:
+              - panels:
+                  - title: Fluent Bits
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        queries:
+                          - query: >-
+                              sum(kube_pod_info{namespace="logging",
+                              pod=~"fluent-bit-.*"})
+                        type: sparkline
+                    h: 4
+                    w: 6
+                    x: 0
+                    'y': 0
+                  - title: Ready Nodes
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        queries:
+                          - query: >-
+                              sum(kube_node_status_condition{condition="Ready",status="true"})
+                        type: sparkline
+                    h: 4
+                    w: 6
+                    x: 6
+                    'y': 0
+                  - title: Input / Output Diff
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        queries:
+                          - label: Input / Output Diff
+                            query: >-
+                              abs(sum(rate(fluentbit_input_records_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) -
+                              sum(rate(klogs_batch_size_sum{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])))
+                        stacked: true
+                        type: area
+                    h: 4
+                    w: 12
+                    x: 0
+                    'y': 4
+              - title: Fluent Bit
+                panels:
+                  - title: Input Bytes Processing Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: '{% .name %}'
+                            query: >-
+                              sum(rate(fluentbit_input_bytes_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (name) / 1024 / 1024
+                        stacked: true
+                        type: area
+                        unit: MiB/s
+                    h: 9
+                    w: 6
+                    x: 0
+                    'y': 0
+                  - title: Output Bytes Processing Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: '{% .name %}'
+                            query: >-
+                              sum(rate(fluentbit_output_proc_bytes_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (name) / 1024 / 1024
+                        stacked: true
+                        type: area
+                        unit: MiB/s
+                    h: 9
+                    w: 6
+                    x: 6
+                    'y': 0
+                  - title: Input Records Processing Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: '{% .name %}'
+                            query: >-
+                              sum(rate(fluentbit_input_records_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (name)
+                        stacked: true
+                        type: area
+                        unit: rps
+                    h: 9
+                    w: 6
+                    x: 0
+                    'y': 9
+                  - title: Output Record Processing Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: '{% .name %}'
+                            query: >-
+                              sum(rate(fluentbit_output_proc_records_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (name)
+                        stacked: true
+                        type: area
+                        unit: rps
+                    h: 9
+                    w: 6
+                    x: 6
+                    'y': 9
+                  - title: Output Retry/Failed-Rytry Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: Retries to {% .name %}
+                            query: >-
+                              sum(rate(fluentbit_output_retries_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (name)
+                          - label: Failed Retries to {% .name %}
+                            query: >-
+                              sum(rate(fluentbit_output_retries_failed_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (name)
+                        stacked: true
+                        type: area
+                    h: 9
+                    w: 6
+                    x: 0
+                    'y': 18
+                  - title: Output Error Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: '{% .name %}'
+                            query: >-
+                              sum(rate(fluentbit_output_errors_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (name)
+                        stacked: true
+                        type: area
+                    h: 9
+                    w: 6
+                    x: 6
+                    'y': 18
+              - title: klogs
+                panels:
+                  - title: Input Records Processing Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: Input Rate
+                            query: >-
+                              sum(rate(klogs_input_records_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m]))
+                        stacked: true
+                        type: area
+                        unit: rps
+                    h: 9
+                    w: 6
+                    x: 0
+                    'y': 0
+                  - title: Output Record Processing Rate
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: Output Rate
+                            query: >-
+                              sum(rate(klogs_batch_size_sum{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m]))
+                        stacked: true
+                        type: area
+                        unit: rps
+                    h: 9
+                    w: 6
+                    x: 6
+                    'y': 0
+                  - title: Errors
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: Errors
+                            query: >-
+                              sum(rate(klogs_errors_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m]))
+                        stacked: true
+                        type: area
+                        unit: rps
+                    h: 9
+                    w: 6
+                    x: 0
+                    'y': 9
+                  - title: Avg. Flush Time
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        legend: table
+                        queries:
+                          - label: Flush Time
+                            query: >-
+                              sum(rate(klogs_flush_time_seconds_sum{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) /
+                              sum(rate(klogs_flush_time_seconds_count{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m]))
+                        stacked: true
+                        type: area
+                        unit: s
+                    h: 9
+                    w: 6
+                    x: 6
+                    'y': 9
+              - title: Hosts
+                autoHeight: true
+                panels:
+                  - title: Stats
+                    plugin:
+                      type: prometheus
+                      name: prometheus
+                      options:
+                        columns:
+                          - name: instance
+                            title: Host
+                          - name: value-2
+                            title: Fluent Bit Input Records Processing Rate
+                            unit: rps
+                          - name: value-3
+                            title: Fluent Bit Output Records Processing Rate
+                            unit: rps
+                          - name: value-4
+                            title: Fluent Bit Output Error Rate
+                          - name: value-5
+                            title: klogs Input Records Processing Rate
+                            unit: rps
+                          - name: value-6
+                            title: klogs Output Records Processing Rate
+                            unit: rps
+                          - name: value-7
+                            title: klogs Output Error Rate
+                        queries:
+                          - label: '{% .instance %}'
+                            query: sum(node_exporter_build_info) by (instance)
+                          - label: '{% .instance %}'
+                            query: >-
+                              sum(rate(fluentbit_input_records_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (instance)
+                          - label: '{% .instance %}'
+                            query: >-
+                              sum(rate(fluentbit_output_proc_records_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (instance)
+                          - label: '{% .instance %}'
+                            query: >-
+                              sum(rate(fluentbit_output_errors_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (instance)
+                          - label: '{% .instance %}'
+                            query: >-
+                              sum(rate(klogs_input_records_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (instance)
+                          - label: '{% .instance %}'
+                            query: >-
+                              sum(rate(klogs_batch_size_sum{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (instance)
+                          - label: '{% .instance %}'
+                            query: >-
+                              sum(rate(klogs_errors_total{namespace="logging",
+                              pod=~"fluent-bit-.*"}[5m])) by (instance)
+                        type: table
+                    h: 9
+                    w: 12
+                    x: 0
+                    'y': 0
+              - panels:
+                  - title: Number of Logs
+                    plugin:
+                      type: klogs
+                      name: klogs
+                      options:
+                        aggregation:
+                          chart: bar
+                          horizontalAxisField: host
+                          horizontalAxisLimit: 100
+                          horizontalAxisOperation: top
+                          horizontalAxisOrder: descending
+                          verticalAxisOperation: count
+                          query: namespace!=''
+                        type: aggregation
+                    h: 9
+                    w: 12
+                    x: 0
+                    'y': 0
+        - namespace: kobs
+          name: overview-logs
+          title: Logs
+          placeholders:
+            cluster: "<% $.cluster %>"
+            namespace: "<% $.namespace %>"
+            name: "<% $.name %>"
+            queries: |
+              - name: Fluent Bit Logs
+                query: "namespace='logging' _and_ app='fluent-bit' _and_ container_name='fluent-bit'"
+                fields:
+                  - pod_name
+                  - host
+                  - log
+              - name: klogs Plugin
+                query: "namespace='logging' _and_ app='fluent-bit' _and_ container_name='fluent-bit' _and_ _exists_ content_caller"
+                fields:
+                  - pod_name
+                  - host
+                  - log
+              - name: Fluent Bit Error, Warning and Fatal Logs
+                query: "namespace='logging' _and_ app='fluent-bit' _and_ container_name='fluent-bit' _and_ (log=~'%warn%' _or_ log=~'%error%' _or_ log=~'%fatal%')"
+                fields:
+                  - pod_name
+                  - host
+                  - log
+        - namespace: kobs
+          name: overview-cicd
+          title: CI/CD
+          placeholders:
+            cluster: "<% $.cluster %>"
+            namespace: "<% $.namespace %>"
+            name: "<% $.name %>"
+            container: "<% $.name %>"
+            type: daemonset
+        - namespace: kobs
+          name: kyverno-policies
+          title: Policies
+          placeholders:
+            namespace: <% $.namespace %>
+    ```
 
-    - title: Traces
-      inline:
-        rows:
-          - size: -1
-            panels:
-              - title: Traces
-                colSpan: 12
-                plugin:
-                  name: jaeger
-                  type: jaeger
-                  options:
-                    showChart: true
-                    queries:
-                      - name: All Requests
-                        service: productpage.bookinfo
-                      - name: Slow Requests
-                        service: productpage.bookinfo
-                        minDuration: 100ms
-                      - name: Errors
-                        service: productpage.bookinfo
-                        tags: error=true
-
-    - title: Documentation
-      inline:
-        hideToolbar: true
-        rows:
-          - size: -1
-            panels:
-              - title: Bookinfo Documentation
-                plugin:
-                  name: markdown
-                  type: app
-                  options:
-                    text: |
-                      The application displays information about a
-                      book, similar to a single catalog entry of an online book store. Displayed
-                      on the page is a description of the book, book details (ISBN, number of
-                      pages, and so on), and a few book reviews.
-
-                      The Bookinfo application is broken into four separate microservices:
-
-                      * `productpage`. The `productpage` microservice calls the `details` and `reviews` microservices to populate the page.
-                      * `details`. The `details` microservice contains book information.
-                      * `reviews`. The `reviews` microservice contains book reviews. It also calls the `ratings` microservice.
-                      * `ratings`. The `ratings` microservice contains book ranking information that accompanies a book review.
-
-                      There are 3 versions of the `reviews` microservice:
-
-                      * Version v1 doesn't call the `ratings` service.
-                      * Version v2 calls the `ratings` service, and displays each rating as 1 to 5 black stars.
-                      * Version v3 calls the `ratings` service, and displays each rating as 1 to 5 red stars.
-
-                      The end-to-end architecture of the application is shown below.
-
-                      ![Bookinfo Application without Istio](https://istio.io/latest/docs/examples/bookinfo/noistio.svg)
-
-                      This application is polyglot, i.e., the microservices are written in different languages.
-                      It's worth noting that these services have no dependencies on Istio, but make an interesting
-                      service mesh example, particularly because of the multitude of services, languages and versions
-                      for the `reviews` service.
-```
-
-In the fowlling you can find some screenshots how the above application will look in kobs. The application contains the Deployments and Pods, which are related to the reviews service of the Bookinfo Application. It also uses the Prometheus plugin to display metrics, the Elasticsearch plugin to display the logs and the Jaeger plugin to display the traces for the service.
+In the fowlling you can find some screenshots how the above application will look in kobs. The application contains the DaemonSet and Pods, which are related to Fluent Bit. It also uses the Prometheus plugin to display metrics and the klogs plugin to display the logs.
 
 ### Overview
 
@@ -332,7 +524,3 @@ In the fowlling you can find some screenshots how the above application will loo
 ### Logs
 
 ![Applications Logs](assets/applications-logs.png)
-
-### Traces
-
-![Applications Traces](assets/applications-traces.png)

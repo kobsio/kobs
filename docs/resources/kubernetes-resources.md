@@ -46,15 +46,15 @@ You can use [JSONPath](https://goessner.net/articles/JsonPath/) within the dashb
 !!! note
     We are using the [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) to extract the content from the Kubernetes objects. A list of examples can be found within the documentation of the module.
 
-In the following example we are adding the `istio-http` dashboard to the `productpage-v1` deployment and the `resource-usage` dashboard to the pods of the deployment. We are also using the name of a pod (`<% $.metadata.name %>`) as placeholder in the dashboard.
+In the following example we are adding the `resource-usage` dashboard to the `fluent-bit` daemonset and the `resource-usage` dashboard to the pods of the daemonset. We are also using the name of a pod (`<% $.metadata.name %>`) as placeholder in the dashboard.
 
 ```yaml
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
-  name: productpage-v1
-  namespace: bookinfo
+  name: fluent-bit
+  namespace: logging
   labels:
     app: productpage
     version: v1
@@ -62,26 +62,21 @@ metadata:
     kobs.io/dashboards: |
       [
         {
-          "name": "istio-http",
+          "name": "resource-usage",
           "namespace": "kobs",
-          "title": "Istio HTTP Metrics",
+          "title": "Resource Usage",
           "placeholders": {
-            "namespace": "bookinfo",
-            "app": "productpage"
+            "namespace": "<% $.metadata.namespace %>",
+            "pod": "<% $.metadata.name %>-.*"
           }
-        }
+        },
       ]
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: productpage
-      version: v1
+      app: fluent-bit
   template:
     metadata:
-      labels:
-        app: productpage
-        version: v1
       annotations:
         kobs.io/dashboards: |
           [
@@ -90,28 +85,16 @@ spec:
               "namespace": "kobs",
               "title": "Resource Usage",
               "placeholders": {
-                "namespace": "bookinfo",
+                "namespace": "<% $.metadata.namespace %>",
                 "pod": "<% $.metadata.name %>"
               }
             },
           ]
+      labels:
+        app: fluent-bit
     spec:
-      serviceAccountName: bookinfo-productpage
       containers:
-        - name: productpage
-          image: docker.io/istio/examples-bookinfo-productpage-v1:1.16.2
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 9080
-          resources: {}
-          volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-          securityContext:
-            runAsUser: 1000
-      volumes:
-        - name: tmp
-          emptyDir: {}
+        - name: fluent-bit
 ```
 
 ![Resources Dashboards](assets/resources-dashboards.png)

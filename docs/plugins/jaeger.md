@@ -2,15 +2,19 @@
 
 The Jaeger plugin can be used to retrieve traces from a configured Jaeger instance. You can specify the service, operation and tags for which you want to retrieve traces. You can also view the details of a trace and compare it with another trace.
 
-![Traces](assets/jaeger-traces.png)
+![Traces Overview](assets/jaeger-traces-overview.png)
 
-![Trace](assets/jaeger-trace.png)
+![Traces Preview](assets/jaeger-traces-preview.png)
 
-![Compare Traces](assets/jaeger-compare-traces.png)
+![Traces Details](assets/jaeger-traces-details.png)
+
+![Traces Compare](assets/jaeger-traces-compare.png)
+
+![Service Performance Monitoring](assets/jaeger-spm.png)
 
 ## Configuration
 
-To use the Jaeger plugin the following configuration is needed in the satellites configuration file:
+The Jaeger plugin can be used within the `hub` or `cluster`. To use the Jaeger plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -75,11 +79,6 @@ The following options can be used for a panel with the Jaeger plugin:
 | service | string | The service for which the selected metrics should be displayed. | Yes |
 | spanKinds | string | A list of span kinds for which the selected metrics should be displayed. By default it includes all span kinds: `unspecified`, `internal`, `server`, `client`, `producer` and `consumer`. | No |
 
-## Notification Options
-
-!!! note
-    The Jaeger plugin can not be used to get a list of notifications.
-
 ## Usage
 
 ```yaml
@@ -87,88 +86,69 @@ The following options can be used for a panel with the Jaeger plugin:
 apiVersion: kobs.io/v1
 kind: Application
 metadata:
-  name: example-application
-  namespace: kobs
+  name: default
+  namespace: default
 spec:
+  description: The default application is an application to test all available kobs plugins.
   dashboards:
-    - title: Traces
+    - title: Helm
       inline:
         rows:
-          - size: -1
-            panels:
-              - title: Traces
-                colSpan: 12
-                plugin:
-                  name: jaeger
-                  type: jaeger
-                  options:
-                    showChart: true
-                    queries:
-                      - name: All Requests
-                        service: productpage.bookinfo
-                      - name: Slow Requests
-                        service: productpage.bookinfo
-                        minDuration: 100ms
-                      - name: Errors
-                        service: productpage.bookinfo
-                        tags: error=true
-
-```
-
-![Dashboard](assets/jaeger-dashboard.png)
-
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Application
-metadata:
-  name: satellite
-  namespace: kobs
-spec:
-  dashboards:
-    - title: Service Performance Monitoring
-      inline:
-        rows:
-          - size: 3
-            panels:
+          - panels:
               - title: Latency (ms)
-                colSpan: 4
                 plugin:
                   name: jaeger
                   type: jaeger
                   options:
                     metrics:
                       type: servicelatency
-                      service: satellite
+                      service: hub
+                h: 6
+                w: 4
+                x: 0
+                'y': 0
               - title: Errors (%)
-                colSpan: 4
                 plugin:
                   name: jaeger
                   type: jaeger
                   options:
                     metrics:
                       type: serviceerrors
-                      service: satellite
+                      service: hub
+                h: 6
+                w: 4
+                x: 4
+                'y': 0
               - title: Request Rate (req/s)
-                colSpan: 4
                 plugin:
                   name: jaeger
                   type: jaeger
                   options:
                     metrics:
                       type: servicecalls
-                      service: satellite
-          - size: -1
+                      service: hub
+                h: 6
+                w: 4
+                x: 8
+                'y': 0
+          - autoHeight: true
             panels:
-              - title: Operations
-                colSpan: 4
+              - title: Traces
                 plugin:
                   name: jaeger
                   type: jaeger
                   options:
-                    metrics:
-                      type: operations
-                      service: satellite
+                    showChart: true
+                    queries:
+                      - name: All Traces
+                        service: hub
+                      - name: Error Traces
+                        service: hub
+                        tags: error=true
+                h: 6
+                w: 12
+                x: 0
+                'y': 0
 ```
 
-![Service Performance Monitoring](assets/jaeger-service-performance-monitoring.png)
+![Example 1](assets/jaeger-example-1.png)

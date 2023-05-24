@@ -2,15 +2,13 @@
 
 The Kiali plugin can be used to visualize your Istio service mesh within kobs. You can select a list of namespaces for which the topology graph from [Kiali](https://kiali.io) should be retrieved. When you select a node or edge in the topology graph you can view the detailed metrics for the selected edge or node.
 
-![Kiali Example 1](assets/kiali-example-1.png)
+![Kiali Overview](assets/kiali-overview.png)
 
-![Kiali Example 2](assets/kiali-example-2.png)
-
-![Kiali Example 3](assets/kiali-example-3.png)
+![Kiali Details](assets/kiali-details.png)
 
 ## Configuration
 
-To use the Kiali plugin the following configuration is needed in the satellites configuration file:
+The Kiali plugin can be used within the `hub` or `cluster`. To use the Kiali plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -54,39 +52,36 @@ The following options can be used for a panel with the Kiali plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | namespaces | []string | A list of namespaces for which the topology graph should be shown. | Yes |
-
-## Notification Options
-
-!!! note
-    The Kiali plugin can not be used to get a list of notifications.
+| application | string | The name of an application to show the topology graph only for this application. When an application is provided the `namespaces` property must contain exactly one namespace. | No |
 
 ## Usage
 
-The following example renders the Kiali topology graph for the `bookinfo` namespace on a Kiali dashboard in the example application.
-
-!!! note
-    When you are using the kiali plugin within a panel, an unlimited row size (`size: -1`) is not working.
-
 ```yaml
+---
 apiVersion: kobs.io/v1
 kind: Application
 metadata:
-  name: example-application
-  namespace: kobs
+  name: default
+  namespace: default
 spec:
+  description: The default application is an application to test all available kobs plugins.
   dashboards:
-    - title: Kiali
+    - title: Flux
       inline:
         rows:
-          - size: 2
-            panels:
+          - panels:
               - title: Topology Graph
                 plugin:
                   name: kiali
                   type: kiali
                   options:
                     namespaces:
-                      - bookinfo
+                      - wams
+                    application: wams
+                h: 14
+                w: 12
+                x: 0
+                'y': 0
 ```
 
-![Kiali Dashboard](assets/kiali-dashboard.png)
+![Example 1](assets/kiali-example-1.png)

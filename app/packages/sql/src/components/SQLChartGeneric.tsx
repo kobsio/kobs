@@ -117,7 +117,7 @@ const calcMin = (data: IDatum[], unit: string | undefined): string => {
     }
   }
 
-  return `${min} ${unit ? unit : ''}`;
+  return `${roundNumber(min, 4)} ${unit ? unit : ''}`;
 };
 
 const calcMax = (data: IDatum[], unit: string | undefined): string => {
@@ -137,7 +137,7 @@ const calcMax = (data: IDatum[], unit: string | undefined): string => {
     }
   }
 
-  return `${max} ${unit ? unit : ''}`;
+  return `${roundNumber(max, 4)} ${unit ? unit : ''}`;
 };
 
 const calcAvg = (data: IDatum[], unit: string | undefined): string => {
@@ -162,7 +162,7 @@ const Legend: FunctionComponent<{
 }> = ({ metrics, yAxisUnit, legend }) => {
   return (
     <TableContainer>
-      <Table size="small">
+      <Table size="small" padding="none">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
@@ -174,25 +174,19 @@ const Legend: FunctionComponent<{
         </TableHead>
         <TableBody>
           {metrics.map((metric, i) => (
-            <TableRow key={metric.name}>
-              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Name">
+            <TableRow key={metric.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell aria-label="Name">
                 <Stack direction="row" alignItems="center">
                   <Box sx={{ backgroundColor: getChartColor(i), height: '8px', mr: '4px', width: '8px' }} />
                   {legend && legend.hasOwnProperty(metric.name) ? legend[metric.name] : metric.name}
                 </Stack>
               </TableCell>
-              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Min">
-                {calcMin(metric.data, yAxisUnit)}
-              </TableCell>
-              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Max">
-                {calcMax(metric.data, yAxisUnit)}
-              </TableCell>
-              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Avg">
-                {calcAvg(metric.data, yAxisUnit)}
-              </TableCell>
-              <TableCell style={{ fontSize: '12px', padding: 0 }} aria-label="Current">
+              <TableCell aria-label="Min">{calcMin(metric.data, yAxisUnit)}</TableCell>
+              <TableCell aria-label="Max">{calcMax(metric.data, yAxisUnit)}</TableCell>
+              <TableCell aria-label="Avg">{calcAvg(metric.data, yAxisUnit)}</TableCell>
+              <TableCell aria-label="Current">
                 {metric.data.length > 0
-                  ? `${metric.data[metric.data?.length - 1].y}${yAxisUnit ? ` ${yAxisUnit}` : ''}`
+                  ? `${roundNumber(metric.data[metric.data?.length - 1].y ?? 0, 4)}${yAxisUnit ? ` ${yAxisUnit}` : ''}`
                   : ''}
               </TableCell>
             </TableRow>
@@ -328,7 +322,15 @@ export const SQLChartGeneric: FunctionComponent<{
         />
       </Box>
 
-      <Box className="pf-u-mt-md kobsio-hide-scrollbar" style={{ height: '60px', overflow: 'auto' }}>
+      <Box
+        height={80}
+        sx={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+          overflowY: 'auto',
+        }}
+      >
         <Legend metrics={metrics} yAxisUnit={yAxisUnit} legend={legend} />
       </Box>
     </>

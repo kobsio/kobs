@@ -2,9 +2,13 @@
 
 The RSS plugin can be used to show the latest status updates of third party services, from a list of sepcified RSS feeds.
 
+![Overview](./assets/rss-overview.png)
+
+![Details](./assets/rss-details.png)
+
 ## Configuration
 
-To use the RSS plugin the following configuration is needed in the satellites configuration file:
+The RSS plugin can only be used within the `hub`. To use the RSS plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -36,13 +40,6 @@ The following options can be used for a panel with the RSS plugin:
 | urls | []string | A list of RSS feed URLs. | Yes |
 | sortBy | string | Set the field by which the retrieved feed items should be sorted. This can be `feed`, `title`, `updated` or `published`. The default value is `published`. | No |
 
-## Notification Options
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| urls | []string | A list of RSS feed URLs. | Yes |
-| sortBy | string | Set the field by which the retrieved feed items should be sorted. This can be `feed`, `title`, `updated` or `published`. The default value is `published`. | No |
-
 ## Usage
 
 ```yaml
@@ -50,19 +47,21 @@ The following options can be used for a panel with the RSS plugin:
 apiVersion: kobs.io/v1
 kind: Application
 metadata:
-  name: example-application
-  namespace: kobs
+  name: default
+  namespace: default
 spec:
+  description: The default application is an application to test all available kobs plugins.
   dashboards:
-    - title: Status of External Services
+    - title: Flux
       inline:
         rows:
-          - size: -1
+          - autoHeight: true
             panels:
-              - title: External Services
+              - title: RSS Feeds
                 plugin:
                   name: rss
                   type: rss
+                  cluster: hub
                   options:
                     urls:
                       - https://www.githubstatus.com/history.rss
@@ -70,6 +69,8 @@ spec:
                       - https://azurestatuscdn.azureedge.net/de-de/status/feed/
                       - https://www.cloudflarestatus.com/history.atom
                     sortBy: updated
+                h: 6
+                w: 12
+                x: 0
+                'y': 0
 ```
-
-![RSS Feed](./assets/rss.png)

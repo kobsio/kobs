@@ -6,7 +6,7 @@ The klogs plugin can be used together with the [kobsio/klogs](https://github.com
 
 ## Configuration
 
-To use the klogs plugin the following configuration is needed in the satellites configuration file:
+The klogs plugin can be used within the `hub` or `cluster`. To use the klogs plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -55,6 +55,7 @@ The following options can be used for a panel with the klogs plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | type | string | Set the type which should be used to visualize your logs. This can be `logs` or `aggregation`. | Yes |
+| showChart | boolean | If this is `true` the chart with the distribution of the log lines in the selected time range will be shown. | No |
 | queries | [[]Query](#query) | A list of queries, which can be selected by the user. This is only required for type `logs`. | Yes |
 | aggregation | [Aggregation](#aggregation) | Options for the aggregation. This is only required for type `aggregation`. | Yes |
 
@@ -74,28 +75,17 @@ The following options can be used for a panel with the klogs plugin:
 | ----- | ---- | ----------- | -------- |
 | query | string | The query, which should be used for the aggregation. | Yes |
 | chart | string | The visualization type for the aggregation. This can be `pie`, `bar`, `line` or `area`. | Yes |
-| options | [Aggregation Options](#aggregation-options) | Options for the aggregation. | Yes |
-
-#### Aggregation Options
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
 | sliceBy | string | Field which should be used for slicing in a `pie` chart. | No |
 | sizeByOperation | string | Operation to size the slices. This can be `count`, `min`, `max`, `sum` or `avg`. | No |
 | sizeByField | string | When the sizeByOperation is `min`, `max`, `sum` or `avg`, this must be the name of a field for the sizing of the slices. | No |
 | horizontalAxisOperation | string | The operation for the chart. This must be `time` or `top`. | No |
 | horizontalAxisField | string | The name of the field for the horizontal axis. | No |
 | horizontalAxisOrder | string | The order of the top values. Must be `ascending` or `descending`. | No |
-| horizontalAxisLimit | string | The maximum number of top values, which should be shown. | No |
+| horizontalAxisLimit | number | The maximum number of top values, which should be shown. | No |
 | verticalAxisOperation | string | The operation for the vertical axis. This can be `count`, `min`, `max`, `sum` or `avg`. | No |
 | verticalAxisField | string | When the verticalAxisOperation is `min`, `max`, `sum` or `avg`, this must be the name of a field for the vertical axis. | No |
 | breakDownByFields | []string | A list of field names, which should be used to break down the data. | No |
 | breakDownByFilters | []string | A list of filters, which should be used to break down the data. | No |
-
-## Notification Options
-
-!!! note
-    The klogs plugin can not be used to get a list of notifications.
 
 ## Usage
 
@@ -135,105 +125,128 @@ In the following you can find a list of fields which are available for each log 
 - `host`: The name of the host where the Pod is running on.
 - `log`: The complete log line as it was written by the container.
 
-#### Examples
+### Examples
 
-- `namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content_upstream_cluster~'inbound.*'`: Select all inbound Istio logs from the bookinfo app in the bookinfo namespace.
+??? note "Logs"
 
-### Logs Dashboard
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Application
+    metadata:
+      name: default
+      namespace: default
+    spec:
+      description: The default application is an application to test all available kobs plugins.
+      dashboards:
+        - title: Logs
+          inline:
+            rows:
+              - autoHeight: true
+                panels:
+                  - title: Istio Logs
+                    plugin:
+                      name: klogs
+                      type: klogs
+                      options:
+                        type: logs
+                        showChart: true
+                        queries:
+                          - name: Istio Logs
+                            query: >-
+                              namespace='kobs' _and_ app='hub' _and_
+                              container_name='istio-proxy' _and_
+                              content_upstream_cluster~'inbound.*'
+                            fields:
+                              - pod_name
+                              - content_authority
+                              - content_route_name
+                              - content_protocol
+                              - content_method
+                              - content_path
+                              - content_response_code
+                              - content_upstream_service_time
+                              - content_bytes_received
+                              - content_bytes_sent
+                    h: 6
+                    w: 12
+                    x: 0
+                    'y': 0
+    ```
 
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Dashboard
-spec:
-  rows:
-    - size: -1
-      panels:
-        - title: Istio Logs
-          colSpan: 12
-          plugin:
-            name: klogs
-            type: klogs
-            options:
-              type: logs
-              queries:
-                - name: Istio Logs
-                  query: "namespace='bookinfo' _and_ app='bookinfo' _and_ container_name='istio-proxy' _and_ content_upstream_cluster~'inbound.*'"
-                  fields:
-                    - "pod_name"
-                    - "content_authority"
-                    - "content_route_name"
-                    - "content_protocol"
-                    - "content_method"
-                    - "content_path"
-                    - "content_response_code"
-                    - "content_upstream_service_time"
-                    - "content_bytes_received"
-                    - "content_bytes_sent"
-```
+![Logs](assets/klogs-example-1.png)
 
-### Aggregation Dashboard
+??? note "Aggregations"
 
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Dashboard
-metadata:
-  name: logs
-  namespace: kobs
-spec:
-  title: Logs
-  description: The dashboard shows some examples of aggregation based on logs.
-  rows:
-    - size: 3
-      panels:
-        - title: Number of Logs per App
-          colSpan: 6
-          plugin:
-            name: klogs
-            type: klogs
-            options:
-              type: aggregation
-              aggregation:
-                query: "cluster='kobs-demo'"
-                chart: bar
-                options:
-                  horizontalAxisOperation: top
-                  horizontalAxisField: app
-                  horizontalAxisOrder: descending
-                  horizontalAxisLimit: "10"
-                  verticalAxisOperation: count
-        - title: Log Levels for MyApplication
-          colSpan: 6
-          plugin:
-            name: klogs
-            type: klogs
-            options:
-              type: aggregation
-              aggregation:
-                query: "cluster='kobs-demo' _and_ app='myapplication' _and_ container_name='myapplication'"
-                chart: pie
-                options:
-                  sliceBy: content_level
-                  sizeByOperation: count
-    - size: 3
-      panels:
-        - title: Request Duration for MyApplication by Response Code
-          colSpan: 12
-          plugin:
-            name: klogs
-            type: klogs
-            options:
-              type: aggregation
-              aggregation:
-                query: "cluster='kobs-demo' _and_ app='myapplication' _and_ container_name='istio-proxy' _and_ content_response_code>0"
-                chart: line
-                options:
-                  horizontalAxisOperation: time
-                  verticalAxisOperation: avg
-                  verticalAxisField: content_duration
-                  breakDownByFields:
-                    - content_response_code
-```
+    ```yaml
+    ---
+    apiVersion: kobs.io/v1
+    kind: Application
+    metadata:
+      name: default
+      namespace: default
+    spec:
+      description: The default application is an application to test all available kobs plugins.
+      dashboards:
+        - title: Logs
+          inline:
+            rows:
+              - panels:
+                  - title: Number of Logs per App
+                    plugin:
+                      name: klogs
+                      type: klogs
+                      options:
+                        type: aggregation
+                        aggregation:
+                          query: cluster='dev-de1'
+                          chart: bar
+                          horizontalAxisOperation: top
+                          horizontalAxisField: app
+                          horizontalAxisOrder: descending
+                          horizontalAxisLimit: 10
+                          verticalAxisOperation: count
+                    h: 7
+                    w: 6
+                    x: 0
+                    'y': 0
+                  - title: Log Levels for MyApplication
+                    plugin:
+                      name: klogs
+                      type: klogs
+                      options:
+                        type: aggregation
+                        aggregation:
+                          query: >-
+                            cluster='dev-de1' _and_ app='myapplication' _and_
+                            container_name='myapplication'
+                          chart: pie
+                          sliceBy: content_level
+                          sizeByOperation: count
+                    h: 7
+                    w: 6
+                    x: 6
+                    'y': 0
+                  - title: Request Duration for MyApplication by Response Code
+                    plugin:
+                      name: klogs
+                      type: klogs
+                      options:
+                        type: aggregation
+                        aggregation:
+                          query: >-
+                            cluster='dev-de1' _and_ app='myapplication' _and_
+                            container_name='istio-proxy' _and_ content_response_code>0
+                          chart: line
+                          horizontalAxisOperation: time
+                          verticalAxisOperation: avg
+                          verticalAxisField: content_duration
+                          breakDownByFields:
+                            - content_response_code
+                    h: 7
+                    w: 12
+                    x: 0
+                    'y': 7
+    ```
 
-![Aggregation Example](assets/klogs-aggregation.png)
+![Aggregations](assets/klogs-example-2.png)
