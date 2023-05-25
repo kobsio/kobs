@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { Fragment, FunctionComponent, useContext, useMemo, useState } from 'react';
+import { Fragment, FunctionComponent, useContext, useEffect, useMemo, useState } from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 
 import { getVariableViaPlugin, interpolate, interpolateJSONPath } from './utils';
@@ -246,6 +246,18 @@ export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => 
       };
     }),
   );
+
+  useEffect(() => {
+    setVariables(
+      dashboard.variables?.map((variable) => {
+        return {
+          ...variable,
+          value: '',
+          values: [],
+        };
+      }),
+    );
+  }, [dashboard]);
 
   const { data } = useQuery<IVariableValues[] | null, APIError>(
     ['core/dashboards/variables', dashboard, variables, times],

@@ -61,11 +61,13 @@ const TopologyPanelInternal: FunctionComponent<ITopologyPanelInternalProps> = ({
         />
       </Box>
 
-      <ApplicationsInsightsWrapper
-        id={selectedApplicationID}
-        open={selectedApplicationID !== undefined}
-        onClose={() => setSelectedApplicationID(undefined)}
-      />
+      {selectedApplicationID !== undefined && (
+        <ApplicationsInsightsWrapper
+          id={selectedApplicationID}
+          open={selectedApplicationID !== undefined}
+          onClose={() => setSelectedApplicationID(undefined)}
+        />
+      )}
     </UseQueryWrapper>
   );
 };

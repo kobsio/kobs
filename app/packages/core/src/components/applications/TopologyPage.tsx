@@ -71,11 +71,13 @@ const TopologyInternal: FunctionComponent<ITopologyÜageInternalProps> = ({ opti
     >
       <TopologyGraph edges={data?.edges ?? []} nodes={data?.nodes ?? []} selectApplication={setSelectedApplicationID} />
 
-      <ApplicationsInsightsWrapper
-        id={selectedApplicationID}
-        open={selectedApplicationID !== undefined}
-        onClose={() => setSelectedApplicationID(undefined)}
-      />
+      {selectedApplicationID !== undefined && (
+        <ApplicationsInsightsWrapper
+          id={selectedApplicationID}
+          open={selectedApplicationID !== undefined}
+          onClose={() => setSelectedApplicationID(undefined)}
+        />
+      )}
     </UseQueryWrapper>
   );
 };
