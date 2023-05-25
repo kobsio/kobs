@@ -8,7 +8,18 @@ import {
   useQueryState,
 } from '@kobsio/core';
 import { ManageSearch, Search } from '@mui/icons-material';
-import { Button, Grid, IconButton, InputAdornment, Menu, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { FunctionComponent, MouseEvent, useMemo, useState } from 'react';
 import { Route, Routes, useParams } from 'react-router-dom';
 
@@ -397,10 +408,14 @@ const OverviewPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     >
       <Grid container={true} spacing={4}>
         <Grid item={true} xs={12} lg={7} xl={9}>
-          <Collections instance={instance} title="Collections" />
+          <Box sx={{ display: 'flex' }}>
+            <Collections instance={instance} title="Collections" />
+          </Box>
         </Grid>
         <Grid item={true} xs={12} lg={5} xl={3}>
-          <DBStats instance={instance} title="Database Statistics" />
+          <Box sx={{ display: 'flex' }}>
+            <DBStats instance={instance} title="Database Statistics" />
+          </Box>
         </Grid>
       </Grid>
     </Page>
