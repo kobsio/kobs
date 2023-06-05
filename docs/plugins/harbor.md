@@ -8,7 +8,7 @@ The Harbor plugin can be used to access all your projects, repositories and arti
 
 ## Configuration
 
-To use the Harbor plugin the following configuration is needed in the satellites configuration file:
+The Harbor plugin can only be used within the `hub`. To use the Harbor plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -68,11 +68,6 @@ The following options can be used for a panel with the Harbor plugin:
 | repositoryName | string | The name of the repository in the project, for which the artifacts should be displayed. | Yes |
 | query | string | An optional query to filter the artifacts by their tags. | No |
 
-## Notification Options
-
-!!! note
-    The Harbor plugin can not be used to get a list of notifications.
-
 ## Usage
 
 The following dashboard shows all projects, all repositories from the `public` project and all artifacts from the `kobs` repository in the `public` project, where the tag contains `dev`.
@@ -80,36 +75,55 @@ The following dashboard shows all projects, all repositories from the `public` p
 ```yaml
 ---
 apiVersion: kobs.io/v1
-kind: Dashboard
+kind: Application
 metadata:
-  name: harbor
-  namespace: kobs
+  name: default
+  namespace: default
 spec:
-  title: Harbor
-  rows:
-    - panels:
-        - title: Projects
-          plugin:
-            name: harbor
-            type: harbor
-            options:
-              type: projects
-        - title: Repositories
-          plugin:
-            name: harbor
-            type: harbor
-            options:
-              type: repositories
-              panel:
-                projectName: public
-        - title: Artifacts
-          plugin:
-            name: harbor
-            type: harbor
-            options:
-              type: artifacts
-              panel:
-                projectName: public
-                repositoryName: kobs
-                query: dev
+  description: The default application is an application to test all available kobs plugins.
+  dashboards:
+    - title: Harbor
+      inline:
+        rows:
+          - autoHeight: true
+            panels:
+              - title: Projects
+                plugin:
+                  name: harbor
+                  type: harbor
+                  cluster: hub
+                  options:
+                    type: projects
+                h: 6
+                w: 12
+                x: 0
+                'y': 0
+              - title: Repositories
+                plugin:
+                  name: harbor
+                  type: harbor
+                  cluster: hub
+                  options:
+                    type: repositories
+                    repositories:
+                      projectName: public
+                h: 6
+                w: 6
+                x: 6
+                'y': 6
+              - title: HelmRepositories
+                plugin:
+                  name: harbor
+                  type: harbor
+                  cluster: hub
+                  options:
+                    type: artifacts
+                    artifacts:
+                      projectName: public
+                      repositoryName: kobs
+                      query: dev
+                h: 6
+                w: 6
+                x: 0
+                'y': 6
 ```

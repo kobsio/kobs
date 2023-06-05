@@ -8,7 +8,7 @@ The Opsgenie plugin can be used to retrieve alerts and incidents from Opsgenie.
 
 ## Configuration
 
-To use the Opsgenie plugin the following configuration is needed in the satellites configuration file:
+The Opsgenie plugin can only be used within the `hub`. To use the Opsgenie plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -26,7 +26,6 @@ plugins:
     options:
       apiKey:
       apiUrl:
-      permissionsEnabled:
     frontendOptions:
       url:
 ```
@@ -48,74 +47,10 @@ The following options can be used for a panel with the Opsgenie plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | type | string | Specify if you want to show `alerts` or `incidents`. | Yes |
-| query | string | The Opsgenie query. The documentation for the query language can be found in the [Opsgenie Documentation](https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/). | No |
-| queries | []string | The Opsgenie queries. This can be used instead of the `query` field to display multiple queries within one panel. | No |
+| queries | []string | The Opsgenie queries. The documentation for the query language can be found in the [Opsgenie Documentation](https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/). | Yes |
 | interval | number | An optional interval in seconds, which should be used instead of the selected time range in the Dashboard to get the alerts / incidents for. | No |
-
-## Notification Options
-
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| type | string | Specify if you want to show `alerts` or `incidents`. | Yes |
-| query | string | The Opsgenie query. The documentation for the query language can be found in the [Opsgenie Documentation](https://support.atlassian.com/opsgenie/docs/search-queries-for-alerts/). | Yes |
-| interval | number | An optional interval in seconds, which should be used instead of the default interval of 90 days to get the alerts / incidents for. | No |
-
-## Usage
-
-### Example Dashboard
-
-For example the following dashboard shows all open alerts and incidents.
-
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Dashboard
-spec:
-  rows:
-    - size: -1
-      panels:
-        - title: Alerts
-          colSpan: 6
-          plugin:
-            name: opsgenie
-            options:
-              type: alerts
-              query: "status: open"
-        - title: Incidents
-          colSpan: 6
-          plugin:
-            name: opsgenie
-            options:
-              type: incidents
-              query: "status: open"
-```
 
 !!! note
     kobs automatically adds the `createdAt >= <selected-start-time> AND createdAt <= <selected-end-time>` to all Opsgenie queries, so that only results for the selected time range are shown.
 
     This behaviour can be overwritten with the `interval` property. If the `interval` property is provided, we add `createdAt >= <now - interval> AND createdAt <= <now>`.
-
-### Permissions
-
-When the auth middleware for kobs is enabled, it is possible to set the permissions for a user in the Opsgenie plugin. This way you can control if a user is allowed to use several actions for alerts / incidents, like closing alerts or resolving incidents.
-
-For the Opsgenie plugin the following permissions can be set:  `acknowledgeAlert`, `snoozeAlert`, `closeAlert`, `resolveIncident` and `closeIncident`. The specical value `*` can be used to allow all actions for a user / team.
-
-For example all members of the following team can acknowledge, snooze and close alerts, but they are not allowed to resolve or close incidents.
-
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Team
-spec:
-  group: team1@kobs.io
-  permissions:
-    plugins:
-      - satellite: "*"
-        name: opsgenie
-        type: opsgenie
-        permissions:
-          - acknowledgeAlert
-          - snoozeAlert
-          - closeAlert
-```

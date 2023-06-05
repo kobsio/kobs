@@ -1,21 +1,21 @@
 <div align="center">
-  <img src="docs/assets/images/logo-blue.png" width="200" />
+  <img src="docs/assets/images/logo.png" width="200" />
   <br><br>
 
   kobs is an **application-centric** observability platform for your **Kubernetes and Cloud** workloads, based on Custom Resource Definitions.
 
-  <img src="docs/overrides/assets/applications-overview.png" width="100%" />
+  <img src="docs/assets/images/screenshot.png" width="100%" />
 </div>
 
-kobs brings your metrics, logs, traces and Kubernetes into one place, to provide a better observability for your applications running in your clusters. kobs provides various Custom Resource Definition with which you can describe and group your applications across multiple clusters. You can extend kobs via plugin, to customize it for your needs or you can use one of the available plugins to improve your developer experience.
+kobs brings your metrics, logs, traces and Kubernetes into one place, to provide a better observability for your applications running in your clusters. kobs provides various Custom Resource Definition with which you can use to describe and group your applications across multiple clusters. You can extend kobs via plugins, to customize it for your needs or you can use one of the available plugins to improve your developer experience.
 
 ## Features
 
-- **Multi-Cluster Support:** kobs has built-in multi cluster support. The clusters are configured via the available [providers](https://kobs.io/main/configuration/clusters/#provider).
+- **Multi-Cluster Support:** kobs has built-in multi cluster support.
 - **Manage all your Kubernetes Resources:** All major resources like Deployments, StatefulSets, DaemonSets, Pods, etc. are supported.
 - **Custom Resource Definitions:** View all Custom Resource Definitions and mange Custom Resources.
 - **Modify Resources:** Edit and delete all available resources or scale your Deployments and StatefulSets.
-- **Resource Usage, Logs and Terminal:** View the CPU and Memory usage and logs of your Pods or exec into them.
+- **Resource Usage, Logs and Terminal:** View the CPU and Memory usage of your workloads and logs of your Pods or exec into them.
 - **Topology:** Add your applications, teams and users to kobs via the available Custom Resource Definitions or create dashboards to see how your applications are connected.
 - **Extendible:** Customize your kobs instance via plugins.
 - **Prometheus:** Access your Prometheus directly in kobs next to your Kubernetes resources.

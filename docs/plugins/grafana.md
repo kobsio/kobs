@@ -6,7 +6,7 @@ The Grafana plugin can be used to search through all your Grafana dashboards and
 
 ## Configuration
 
-To use the Grafana plugin the following configuration is needed in the satellites configuration file:
+The Grafana plugin can be used within the `hub` or `cluster`. To use the Grafana plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -59,11 +59,6 @@ The following options can be used for a panel with the Grafana plugin:
 | panelID | string | The id of the panel. | Yes |
 | variables | map<string, string> | A map of variables, with the name of the variable as key and the value of the variable as value. | No |
 
-## Notification Options
-
-!!! note
-    The Grafana plugin can not be used to get a list of notifications.
-
 ## Usage
 
 The following dashboards shows some panels from a Grafana plugin and a list of dashboards from this instance. The dashboard also uses some variables, which are then passed to the panels from Grafana.
@@ -71,137 +66,153 @@ The following dashboards shows some panels from a Grafana plugin and a list of d
 ```yaml
 ---
 apiVersion: kobs.io/v1
-kind: Dashboard
+kind: Application
 metadata:
-  name: istio-overview
-  namespace: kobs
+  name: default
+  namespace: default
 spec:
-  title: Istio Overview
-  variables:
-    - name: var_namespace
-      label: Namespace
-      plugin:
-        name: core
-        options:
-          type: static
-          items:
-            - bookinfo
-    - name: var_workload
-      label: Workload
-      plugin:
-        name: core
-        options:
-          type: static
-          items:
-            - productpage
-            - details
-            - ratings
-            - reviews
-  rows:
-    - size: 1
-      panels:
-        - title: Global Request Volume
-          colSpan: 3
-          plugin:
-            name: grafana
-            options:
-              type: panel
-              panel:
-                dashboardID: G8wLrJIZk
-                panelID: "20"
-        - title: Global Success Rate
-          colSpan: 3
-          plugin:
-            name: grafana
-            options:
-              type: panel
-              panel:
-                dashboardID: G8wLrJIZk
-                panelID: "21"
-        - title: 4xx
-          colSpan: 3
-          plugin:
-            name: grafana
-            options:
-              type: panel
-              panel:
-                dashboardID: G8wLrJIZk
-                panelID: "22"
-        - title: 5xx
-          colSpan: 3
-          plugin:
-            name: grafana
-            options:
-              type: panel
-              panel:
-                dashboardID: G8wLrJIZk
-                panelID: "23"
+  description: The default application is an application to test all available kobs plugins.
+  dashboards:
+    - title: Grafana
+      inline:
+        rows:
+          - autoHeight: true
+            panels:
+              - title: Global Request Volume
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: panel
+                    panel:
+                      dashboardID: G8wLrJIZk
+                      panelID: '20'
+                h: 4
+                w: 3
+                x: 0
+                'y': 0
+              - title: Global Success Rate
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: panel
+                    panel:
+                      dashboardID: G8wLrJIZk
+                      panelID: '21'
+                h: 4
+                w: 3
+                x: 3
+                'y': 0
+              - title: 4xx
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: panel
+                    panel:
+                      dashboardID: G8wLrJIZk
+                      panelID: '22'
+                h: 4
+                w: 3
+                x: 6
+                'y': 0
+              - title: 5xx
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: panel
+                    panel:
+                      dashboardID: G8wLrJIZk
+                      panelID: '23'
+                h: 4
+                w: 3
+                x: 9
+                'y': 0
 
-    - size: 1
-      panels:
-        - title: Incoming Request Volume
-          colSpan: 4
-          plugin:
-            name: grafana
-            options:
-              type: panel
-              panel:
-                dashboardID: UbsSZTDik
-                panelID: "12"
-                variables:
-                  var-datasource: default
-                  var-namespace: "{% .var_namespace %}"
-                  var-workload: "{% .var_workload %}"
-                  var-qrep: destination
-                  var-srcns: All
-                  var-srcwl: All
-                  var-dstsvc: All
-        - title: Incoming Success Rate
-          colSpan: 4
-          plugin:
-            name: grafana
-            options:
-              type: panel
-              panel:
-                dashboardID: UbsSZTDik
-                panelID: "14"
-                variables:
-                  var-datasource: default
-                  var-namespace: "{% .var_namespace %}"
-                  var-workload: "{% .var_workload %}"
-                  var-qrep: destination
-                  var-srcns: All
-                  var-srcwl: All
-                  var-dstsvc: All
-        - title: Request Duration
-          colSpan: 4
-          plugin:
-            name: grafana
-            options:
-              type: panel
-              panel:
-                dashboardID: UbsSZTDik
-                panelID: "87"
-                variables:
-                  var-datasource: default
-                  var-namespace: "{% .var_namespace %}"
-                  var-workload: "{% .var_workload %}"
-                  var-qrep: destination
-                  var-srcns: All
-                  var-srcwl: All
-                  var-dstsvc: All
+          - autoHeight: true
+            panels:
+              - title: Incoming Request Volume
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: panel
+                    panel:
+                      dashboardID: UbsSZTDik
+                      panelID: '12'
+                      variables:
+                        var-datasource: default
+                        var-namespace: backend
+                        var-workload: backend
+                        var-qrep: destination
+                        var-srcns: All
+                        var-srcwl: All
+                        var-dstsvc: All
+                h: 6
+                w: 4
+                x: 0
+                'y': 0
+              - title: Incoming Success Rate
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: panel
+                    panel:
+                      dashboardID: UbsSZTDik
+                      panelID: '14'
+                      variables:
+                        var-datasource: default
+                        var-namespace: backend
+                        var-workload: backend
+                        var-qrep: destination
+                        var-srcns: All
+                        var-srcwl: All
+                        var-dstsvc: All
+                h: 6
+                w: 4
+                x: 4
+                'y': 0
+              - title: Request Duration
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: panel
+                    panel:
+                      dashboardID: UbsSZTDik
+                      panelID: '87'
+                      variables:
+                        var-datasource: default
+                        var-namespace: backend
+                        var-workload: backend
+                        var-qrep: destination
+                        var-srcns: All
+                        var-srcwl: All
+                        var-dstsvc: All
+                h: 6
+                w: 4
+                x: 8
+                'y': 0
 
-    - size: 3
-      panels:
-        - title: Dashboards
-          plugin:
-            name: grafana
-            options:
-              type: dashboards
-              dashboards:
-                - 3--MLVZZk
-                - G8wLrJIZk
-                - vu8e0VWZk
-                - LJ_uJAvmk
-                - UbsSZTDik
+          - autoHeight: true
+            panels:
+              - title: Dashboards
+                plugin:
+                  name: grafana
+                  type: grafana
+                  options:
+                    type: dashboards
+                    dashboards:
+                      - 3--MLVZZk
+                      - G8wLrJIZk
+                      - vu8e0VWZk
+                      - LJ_uJAvmk
+                      - UbsSZTDik
+                h: 6
+                w: 12
+                x: 0
+                'y': 0
 ```

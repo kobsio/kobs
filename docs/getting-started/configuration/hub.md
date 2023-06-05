@@ -1,6 +1,6 @@
 # hub
 
-The hub can be configured using a configuration file in yaml format, command-line arguments and environment variables. The configuration file is mainly used to provide the information about all satellites. The command-line arguments and environment variables are used to customize the log behavior, tracing, authentication, etc.
+The hub can be configured using a configuration file in yaml format, command-line arguments and environment variables.
 
 ## Command-line Arguments and Environment Variables
 
@@ -8,94 +8,167 @@ The following command-line arguments and environment variables are available.
 
 | Command-line Argument | Environment Variable | Description | Default |
 | --------------------- | -------------------- | ----------- | ------- |
-| `--debug.username` | `KOBS_DEBUG_USERNAME` | The username for the debug endpoints. The endpoints are only available when a username is provided. | |
-| `--debug.password` | `KOBS_DEBUG_PASSWORD` | The password for the debug endpoints. The endpoints are only available when a password is provided. | |
-| `--log.format` | `KOBS_LOG_FORMAT` | Set the output format of the logs. Must be `console` or `json`.  | `console` |
-| `--log.level` | `KOBS_LOG_LEVEL` | Set the log level. Must be `debug`, `info`, `warn`, `error`, `fatal` or `panic`.  | `info` |
-| `--trace.enabled` | | Enable / disable tracing.  | `false` |
-| `--trace.service-name` | `KOBS_TRACE_SERVICE_NAME` | The service name which should be used for tracing.  | `kobs` |
-| `--trace.provider` | `KOBS_TRACE_PROVIDER` | et the trace exporter which should be used. Must be `jaeger` or `zipkin`.  | `jaeger` |
-| `--trace.address` | `KOBS_TRACE_ADDRESS` | The service name which should be used for tracing.  | `http://localhost:14268/api/traces` |
-| `--app.address` | `KOBS_APP_ADDRESS` | The address, where the Application server is listen on. | `:15219` |
-| `--app.assets` | `KOBS_APP_ASSETS` | The location of the assets directory. | `app` |
-| `--hub.address` | `KOBS_HUB_ADDRESS` | The address, where the hub is listen on. | `:15220` |
-| `--hub.config` | `KOBS_HUB_CONFIG` | Path to the configuration file for the hub. | `config.yaml` |
-| `--hub.mode` | `KOBS_HUB_MODE` | The mode in which the hub should be started. Must be `default`, `server` or `watcher`. | `default` |
-| `--hub.store.driver` | `KOBS_HUB_STORE_DRIVER` | The database driver, which should be used for the store. Must be `bolt` or `mongodb`. | `bolt` |
-| `--hub.store.uri` | `KOBS_HUB_STORE_URI` | The URI for the store. | `/tmp/kobs.db` |
-| `--hub.watcher.interval` | `KOBS_HUB_WATCHER_INTERVAL` | The interval for the watcher to sync the satellite configuration. | `300s` |
-| `--hub.watcher.worker` | `KOBS_HUB_WATCHER_WORKER` | The number of parallel sync processes for the watcher. | `10` |
-| `--metrics.address` | `KOBS_METRICS_ADDRESS` | The address, where the Prometheus metrics are served. | `:15221` |
+| `--config` | `KOBS_CONFIG` | The path to the configuration file for the hub | `config.yaml` |
+| `--hub.log.format` | `KOBS_HUB_LOG_FORMAT` | Set the output format of the logs. Must be `console` or `json`. | `console` |
+| `--hub.log.level` | `KOBS_HUB_LOG_LEVEL` | Set the log level. Must be `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |
+| `--hub.tracer.enabled` | `KOBS_HUB_TRACER_ENABLED` | Enable tracing. | `false` |
+| `--hub.tracer.service` | `KOBS_HUB_TRACER_SERVICE` | The name of the service which should be used for tracing. | `kobs` |
+| `--hub.tracer.provider` | `KOBS_HUB_TRACER_PROVIDER` | The tracing provider which should be used. Must be `jaeger` or `zipkin`. | `jaeger` |
+| `--hub.tracer.address` | `KOBS_HUB_TRACER_ADDRESS` | The address of the tracing provider instance. | `http://localhost:14268/api/traces` |
+| `--hub.metrics.address` | `KOBS_HUB_METRICS_ADDRESS` | Set the address where the metrics server is listen on. | `:15222` |
+| `--hub.database.uri` | `KOBS_HUB_DATABASE_URI` | The connection uri for MongoDB | `mongodb://localhost:27017` |
+| `--hub.api.address` | `KOBS_HUB_API_ADDRESS` | The address where the hub API should listen on. | `:15220` |
+| `--hub.auth.oidc.enabled` | `KOBS_HUB_AUTH_OIDC_ENABLED` | Enables the OIDC provider, so that uses can sign in via OIDC. | `false` |
+| `--hub.auth.oidc.issuer` | `KOBS_HUB_AUTH_OIDC_ISSUER` | The issuer url for the OIDC provider. | |
+| `--hub.auth.oidc.client-id` | `KOBS_HUB_AUTH_OIDC_CLIENT_ID` | The client id for the OIDC provider. | |
+| `--hub.auth.oidc.client-secret` | `KOBS_HUB_AUTH_OIDC_CLIENT_SECRET` | The client secret for the OIDC provider. | |
+| `--hub.auth.oidc.redirect-url` | `KOBS_HUB_AUTH_OIDC_REDIRECT_URL` | The redirect url for the OIDC provider. | |
+| `--hub.auth.oidc.state` | `KOBS_HUB_AUTH_OIDC_STATE` | The state parameter for the OIDC provider. | |
+| `--hub.auth.oidc.scopes` | `KOBS_HUB_AUTH_OIDC_SCOPES` | The scopes which should be returned by the OIDC provider. | `openid,profile,email,groups` |
+| `--hub.auth.session.token` | `KOBS_HUB_AUTH_SESSION_TOKEN` | The signing token for the session. | |
+| `--hub.auth.session.duration` | `KOBS_HUB_AUTH_SESSION_DURATION` | The duration for how long a user session is valid. | `168h` |
+| `--hub.app.address` | `KOBS_HUB_APP_ADDRESS` | The address where the app server should listen on. | `:15219` |
+| `--hub.app.assets-dir` | `KOBS_HUB_APP_ASSETS_DIR` | The directory for the frontend assets, which should be served via the app server. | `app` |
 
 ## Configuration File
 
-The hub requires a configuration file in yaml format for the satellite configuration. By default kobs will look for a `config.yaml` file in the directory of the kobs binary. To set a custom location of the configuration file your can use the `--hub.config` command-line flag or the `KOBS_HUB_CONFIG` environment variable.
+The hub can also be configured via configuration file. By default kobs will look for a `config.yaml` file in the directory of the kobs binary. To set a custom location of the configuration file your can use the `--config` command-line flag or the `KOBS_CONFIG` environment variable.
 
 ```yaml
-# A list of satellites, which can be accessed via the hub. To access a satellite the address of the satellite is required. The satellite API is protected by a token.
-satellites:
-  - name: dev-de1
-    address: https://kobssatellite-dev-de1.kobs.io
-    token: unsecuretoken
-  - name: stage-de1
-    address: https://kobssatellite-stage-de1.kobs.io
-    token: unsecuretoken
-  - name: prod-de1
-    address: https://kobssatellite-prod-de1.kobs.io
-    token: unsecuretoken
+hub:
+  ## Set the log format and level for the hub.
+  ##
+  log:
+    format: json
+    level: info
 
-# The authentication and authorization configuration for kobs. See https://kobs.io/main/getting-started/configuration/auth/ for all available options.
-auth:
+  ## Set the tracing configuration for the hub.
+  ##
+  tracer:
+    enabled: false
+    service: hub
+    provider: jaeger
+    address: http://localhost:14268/api/traces
 
-# The api configuration is optional.
-api:
-  # It is possible to customize the navigation sidebar of kobs. More details can be found on the "Navigation" page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/navigation/).
-  navigation:
+  ## The connection string for the MongoDB, where all applications, users, teams and dashboards are stored.
+  ##
+  database:
+    uri: mongodb://root:changeme@localhost:27017
 
-  # It is possible to show notifications within kobs from a configured plugin. More details can be found on the "Notifications" page in the configuration section of the docs (https://kobs.io/main/getting-started/configuration/notifications/).
-  notifications:
+  ## The "app" section in the configuration file is used to configure the frontend for kobs.
+  ##
+  app:
+    settings:
+      ## Enable / disable the save options, to controll if modifications to resources made via the frontend can be saved
+      ## by a user or not.
+      ##
+      save:
+        enabled: false
+      ## Set the items which should be displayed in the navigation sidebar. These settings can be overwritten by a user
+      ## via a User CR.
+      ##
+      defaultNavigation:
+        - name: Home
+          items:
+            - name: Home
+              icon: home
+              link: "/"
+            - name: Search
+              icon: search
+              link: "/search"
+        - name: Resources
+          items:
+            - name: Applications
+              icon: apps
+              link: "/applications"
+            - name: Topology
+              icon: topology
+              link: "/topology"
+            - name: Teams
+              icon: team
+              link: "/teams"
+            - name: Kubernetes Resources
+              icon: kubernetes
+              link: "/resources"
+            - name: Plugins
+              icon: plugin
+              link: "/plugins"
+      ## Set the dashboards which should be displayed on the home page. These settings can be overwritten by a user via
+      ## a User CR.
+      ##
+      defaultDashboards: []
 
-  # The resources configuration section can be used to add integrations for Kubernetes Resources. Currently it is possible to add a set of default dashboards for each Kubernetes Resource via the integrations.
-  resources:
-    integrations:
-      dashboards:
-        # In the following example we are adding a dashboard "resource-usage" from the "kobs" namespace to each Pod.
-        # The configuration uses the same syntax as it is used in the "kobs.io/dashboards" annotation for resources. See https://kobs.io/main/resources/kubernetes-resources/#dashboards for more information.
-        # - resource: pods
-        #   dashboard:
-        #     name: resource-usage
-        #     namespace: kobs
-        #     title: Resource Usage
-        #     placeholders:
-        #       namespace: "<% $.metadata.namespace %>"
-        #       pod: "<% $.metadata.name %>"
+      integrations:
+        ## The resources configuration section can be used to add integrations for Kubernetes Resources. Currently it is
+        ## possible to add a list of default dashboards for each Kubernetes Resource via the integrations.
+        ##
+        resources:
+          dashboards:
+            # - resource: pods
+            #   dashboard:
+            #     name: resource-usage
+            #     namespace: kobs
+            #     title: Resource Usage
+            #     placeholders:
+            #       namespace: "<% $.metadata.namespace %>"
+            #       pod: "<% $.metadata.name %>"
 
-  # The users configuration section can be used to show a list of default dashboards on the users profile page, when the user has not configured his profile page.
-  users:
-    defaultDashboards:
-      # When no default dashboards are provided and authentication is enabled, the following dashboards will be shown on the users profile page:
-      # - title: Teams
-      #   inline:
-      #     hideToolbar: true
-      #     rows:
-      #       - size: -1
-      #         panels:
-      #           - title: Teams
-      #             description: The teams you are part of
-      #             plugin:
-      #               type: app
-      #               name: userteams
-      # - title: Applications
-      #   inline:
-      #     hideToolbar: true
-      #     rows:
-      #       - size: -1
-      #         panels:
-      #           - title: Applications
-      #             description: The applications which are owned by your teams
-      #             plugin:
-      #               type: app
-      #               name: userapplications
+  auth:
+    ## OIDC configuration for kobs. OIDC can be used next to the User CRs to authenticate and authorize users. The OIDC
+    ## provider must be enabled explizit. If the configuration is wrong kobs will crash during the startup process.
+    ##
+    oidc:
+      enabled: false
+      ## The issuer (e.g. "https://accounts.google.com"), client id and client secret for your OIDC provider.
+      ##
+      issuer:
+      clientID:
+      clientSecret:
+      ## The url where the OIDC provider redirects a user after login. Must be the URL where your kobs instance is
+      ## running at.
+      ##
+      redirectURL: https://<changeme>/auth/callback
+      ## A random string to mitigate CSRF attacks.
+      ##
+      state:
+      ## The scopes for the OIDC provider. By default we need the "openid", "profile", "email", "groups" scope. If your
+      ## OIDC provider (e.g. Google) does not support the "groups" scope you can also omit it.
+      ##
+      ## The "groups" scope is needed to connect a user with a team, so that you can set the permissions of users in a
+      ## team and not for each single user.
+      ##
+      ## If you are using Google and want to use Google Groups to connect your users with teams, you can use a tool like
+      ## Dex (https://dexidp.io) to get the groups of a user.
+      ##
+      scopes: ["openid", "profile", "email", "groups"]
+    session:
+      ## The token must be a random string which is used to sign the JWT token, which is generated when a user is
+      ## authenticated.
+      ##
+      token: changeme
+      ## The interval defines the lifetime of the generated token. When the token is expired the user must authenticate
+      ## again.
+      ##
+      duration: 168h
+
+  ## A list of plugins, which should be added to the hub. The hub plugins can be used to register plugins which are not
+  ## bound to a specific cluster, e.g. the Helm or Flux plugin.
+  ##
+  plugins: []
+    # - name: helm
+    #   type: helm
+    # - name: flux
+    #   type: flux
+    # - name: rss
+    #   type: rss
+
+  ## A list of clusters, which can be accessed via the hub. To access a cluster the address of the cluster is required.
+  ## The cluster API is protected by a token, which is also required.
+  ##
+  clusters:
+    # - name: mycluster
+    #   address: http://mycluster.kobs.io
+    #   token: changeme
 ```
 
 You can also use environment variables within the configuration file. To use an environment variable you can place the following placeholder in the config file: `${NAME_OF_THE_ENVIRONMENT_VARIABLE}`. When kobs reads the file the placeholder will be replaced, with the value of the environment variable. This allows you to provide confidential data via an environment variable, instead of putting them into the file.

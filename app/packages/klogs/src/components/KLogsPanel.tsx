@@ -32,6 +32,8 @@ interface IOptions {
 interface IOptionsQuery {
   fields?: string[];
   name?: string;
+  order?: string;
+  orderBy?: string;
   query?: string;
 }
 
@@ -48,9 +50,9 @@ const LogsPanelQuery: FunctionComponent<{
   const { isError, isLoading, error, data, refetch } = useQuery<ILogsData, APIError>(
     ['klogs/logs', query.query, times.timeStart, times.timeEnd],
     () => {
-      const path = `/api/plugins/klogs/logs?query=${encodeURIComponent(
-        query.query ?? '',
-      )}&order=descending&orderBy=timestamp&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`;
+      const path = `/api/plugins/klogs/logs?query=${encodeURIComponent(query.query ?? '')}&order=${
+        query.order || 'descending'
+      }&orderBy=${query.orderBy || 'timestamp'}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`;
 
       return apiContext.client.get<ILogsData>(path, {
         headers: {

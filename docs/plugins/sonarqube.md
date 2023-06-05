@@ -2,9 +2,11 @@
 
 The SonarQube plugin can be used to view all projects with the measures from a SonarQube instance or [SonarCloud](https://sonarcloud.io).
 
+![SonarQube](assets/sonarqube.png)
+
 ## Configuration
 
-To use the SonarQube plugin the following configuration is needed in the satellites configuration file:
+The Opsgenie plugin can only be used within the `hub`. To use the Opsgenie plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -49,50 +51,3 @@ The following options can be used for a panel with the SonarQube plugin:
 | ----- | ---- | ----------- | -------- |
 | project | string | The key of the SonarQube project. | Yes |
 | metricKeys | []string | An optional list of metric keys, which should be displayed for the project. If this value is not provided the globally configured default value will be used. A list of all available metrics can be retrieved from the `/api/metrics/search` API endpoint of a SonarQube instance. | No |
-
-## Notification Options
-
-!!! note
-    The SonarQube plugin can not be used to get a list of notifications.
-
-## Usage
-
-```yaml
----
-apiVersion: kobs.io/v1
-kind: Application
-metadata:
-  name: example-application
-  namespace: kobs
-spec:
-  dashboards:
-    - title: SonarQube
-      inline:
-        rows:
-          - size: -1
-            panels:
-              - title: details
-                plugin:
-                  name: sonarqube
-                  type: sonarqube
-                  options:
-                    project: details
-          - size: -1
-            panels:
-              - title: reviews
-                colSpan: 6
-                plugin:
-                  name: sonarqube
-                  type: sonarqube
-                  options:
-                    project: reviews
-              - title: ratings
-                colSpan: 6
-                plugin:
-                  name: sonarqube
-                  type: sonarqube
-                  options:
-                    project: ratings
-```
-
-![SonarQube](assets/sonarqube.png)

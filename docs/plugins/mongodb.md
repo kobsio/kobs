@@ -2,9 +2,11 @@
 
 The MongoDB plugin can be used to access data from a MongoDB instance via kobs.
 
+![Overview](assets/mongodb-overview.png)
+
 ## Configuration
 
-To use the MongoDB plugin the following configuration is needed in the satellites configuration file:
+The MongoDB plugin can be used within the `hub` or `cluster`. To use the MongoDB plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -38,13 +40,19 @@ The following options can be used for a panel with the MongoDB plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| operation | string | The operation which should be run against MongoDB. Must be `dbstats`, `collections`, `find` or `count`. | Yes |
-| collectionName | string | The name of the collection for a `find` or `count` query. | Yes |
-| query | string | The query which should be executed. The default value is `{}`. | No |
+| operation | string | The operation which should be run against MongoDB. Must be `db`, `collections`, `count`, `find`, `findOne` or `aggregate`. | Yes |
+| collectionName | string | The name of the collection for a `count`, `find`, `findOne` or `aggregate` query. | Yes |
+| filter | string | The filter which should be executed. The default value is `{}`. | No |
 | limit | string | The maximum amount of documents which should be returned. The default is `50`. | No |
 | sort | string | The sort order for the returned documents. The default is `{"_id" : -1}`. | No |
+| pipeline | string | The pipeline which should be executed when the operation is `aggregate`. | No |
 
-## Notification Options
+## Usage
 
-!!! note
-    The MongoDB plugin can not be used to get a list of notifications.
+### Tree View
+
+![Tree](assets/mongodb-tree.png)
+
+### BSON View
+
+![BSON](assets/mongodb-bson.png)

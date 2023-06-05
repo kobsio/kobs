@@ -2,6 +2,7 @@ import {
   APIContext,
   APIError,
   Editor,
+  GridContextProvider,
   IAPIContext,
   IOptionsAdditionalFields,
   IPluginInstance,
@@ -16,6 +17,7 @@ import {
 import { MoreVert } from '@mui/icons-material';
 import {
   Autocomplete,
+  Card,
   FilterOptionsState,
   Grid,
   IconButton,
@@ -393,11 +395,15 @@ const AggregationPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       toolbar={<AggregationToolbar instance={instance} options={options} setOptions={setOptions} />}
       actions={<AggregationActions instance={instance} options={options} />}
     >
-      <Aggregation
-        instance={instance}
-        options={options}
-        setTimes={(times: ITimes) => setOptions({ ...options, ...times })}
-      />
+      <Card sx={{ p: 4 }}>
+        <GridContextProvider autoHeight={true}>
+          <Aggregation
+            instance={instance}
+            options={options}
+            setTimes={(times: ITimes) => setOptions({ ...options, ...times })}
+          />
+        </GridContextProvider>
+      </Card>
     </Page>
   );
 };

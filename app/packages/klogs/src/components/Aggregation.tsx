@@ -3,7 +3,6 @@ import {
   APIError,
   ChartTooltip,
   GridContext,
-  GridContextProvider,
   IAPIContext,
   IGridContext,
   IPluginInstance,
@@ -17,7 +16,7 @@ import {
   roundNumber,
   useDimensions,
 } from '@kobsio/core';
-import { Box, Card, darken, useTheme } from '@mui/material';
+import { Box, darken, useTheme } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useRef } from 'react';
 import {
@@ -303,13 +302,7 @@ export const Aggregation: FunctionComponent<{
       noDataTitle="No aggregation data was found"
       noDataMessage="No aggregation data was found for the provided query in the provided time range."
     >
-      {data && (
-        <Card sx={{ p: 4 }}>
-          <GridContextProvider autoHeight={true}>
-            <AggregationChart data={data} options={options} setTimes={setTimes} />
-          </GridContextProvider>
-        </Card>
-      )}
+      {data && <AggregationChart data={data} options={options} setTimes={setTimes} />}
     </UseQueryWrapper>
   );
 };

@@ -6,7 +6,7 @@ The Signal Sciences plugin can be used to view sites, agents and requests from S
 
 ## Configuration
 
-To use the Signal Sciences plugin the following configuration is needed in the satellites configuration file:
+The Signal Sciences plugin can only be used within the `hub`. To use the Signal Sciences plugin the following configuration is needed:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
@@ -43,13 +43,8 @@ The following options can be used for a panel with the Signal Sciences plugin:
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
 | type | string | The type which should be used for the panel. Must be `overview`, `requests` or `agents`. | Yes |
-| siteName | string | If the type is `requests` or `agents` this is the site name for which the requests or agents should be shown. | No |
+| site | string | If the type is `requests` or `agents` this is the site name for which the requests or agents should be shown. | No |
 | query | string | If the type is `requests` this is the query to filter the requests ([Search Syntax](https://docs.fastly.com/faq/search-syntax/)). | No |
-
-## Notification Options
-
-!!! note
-    The Signal Sciences plugin can not be used to get a list of notifications.
 
 ## Usage
 
