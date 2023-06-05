@@ -577,7 +577,16 @@ export const Logs: FunctionComponent<{
   changeOrder,
 }) => {
   return (
-    <Stack direction="column" sx={{ width: '100%' }}>
+    <Stack
+      direction="column"
+      sx={{
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+        overflowX: 'auto',
+        width: '100%',
+      }}
+    >
       {showChart && (
         <Card sx={{ mb: 6 }}>
           <Stack direction="row" justifyContent="space-between" p={4}>
