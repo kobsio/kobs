@@ -286,7 +286,7 @@ export const Options: FunctionComponent<IOptionsProps> = ({
                     {internalAdditionalFields.map((field, index) =>
                       field.type === 'select' ? (
                         <FormControl key={field.name} size="small" fullWidth={true}>
-                          <InputLabel id={field.name}>{field.name}</InputLabel>
+                          <InputLabel id={field.name}>{field.label}</InputLabel>
                           <Select
                             labelId={field.name}
                             label={field.name}

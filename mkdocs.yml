@@ -41,6 +41,7 @@ nav:
       - Dashboards: resources/dashboards.md
   - Plugins:
       - plugins/index.md
+      - Azure: plugins/azure.md
       - Flux: plugins/flux.md
       - GitHub: plugins/github.md
       - Grafana: plugins/grafana.md

@@ -1,3 +1,4 @@
+import Azure from '@kobsio/azure';
 import { App } from '@kobsio/core';
 import Flux from '@kobsio/flux';
 import Github from '@kobsio/github';
@@ -31,6 +32,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
     <App
       plugins={[
+        Azure,
         Flux,
         Github,
         Grafana,
