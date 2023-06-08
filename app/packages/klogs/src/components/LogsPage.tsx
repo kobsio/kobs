@@ -248,6 +248,7 @@ const LogsToolbar: FunctionComponent<{
         ...times,
         order: additionalFields[1].value === 'ascending' ? 'ascending' : 'descending',
         orderBy: additionalFields[0].value,
+        page: 1,
         query: query,
       });
     }
@@ -255,7 +256,7 @@ const LogsToolbar: FunctionComponent<{
 
   const handleSubmit = () => {
     addStateHistoryItem('kobs-klogs-queryhistory', query);
-    setOptions({ ...options, query: query });
+    setOptions({ ...options, page: 1, query: query });
   };
 
   useEffect(() => {
@@ -388,14 +389,14 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
    * `setTimes` changes the users selected time range to the provided `times`.
    */
   const setTimes = (times: ITimes) => {
-    setOptions({ ...options, ...times });
+    setOptions({ ...options, ...times, page: 1 });
   };
 
   /**
    * `addFilter` adds the given filter as string to the query, so that it can be used to filter down an existing query.
    */
   const addFilter = (filter: string) => {
-    setOptions({ ...options, query: `${options.query} ${filter}` });
+    setOptions({ ...options, page: 1, query: `${options.query} ${filter}` });
   };
 
   /**
@@ -403,7 +404,7 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
    */
   const changeOrder = (orderBy: string): void => {
     const isAscending = options.orderBy === orderBy && options.order === 'ascending';
-    setOptions({ ...options, order: isAscending ? 'descending' : 'ascending', orderBy: orderBy });
+    setOptions({ ...options, order: isAscending ? 'descending' : 'ascending', orderBy: orderBy, page: 1 });
   };
 
   return (
