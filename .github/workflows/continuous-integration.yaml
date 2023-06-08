@@ -54,6 +54,7 @@ jobs:
       matrix:
         plugin:
           - app
+          - azure
           - core
           - flux
           - github

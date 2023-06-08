@@ -7,6 +7,7 @@ import (
 	"github.com/kobsio/kobs/cmd/kobs/watcher"
 	"github.com/kobsio/kobs/pkg/plugins"
 
+	"github.com/kobsio/kobs/pkg/plugins/azure"
 	"github.com/kobsio/kobs/pkg/plugins/flux"
 	"github.com/kobsio/kobs/pkg/plugins/github"
 	"github.com/kobsio/kobs/pkg/plugins/grafana"
@@ -39,6 +40,7 @@ func main() {
 	ctx := kong.Parse(&cli)
 
 	registeredPlugins := []plugins.Plugin{
+		azure.New(),
 		flux.New(),
 		github.New(),
 		grafana.New(),
