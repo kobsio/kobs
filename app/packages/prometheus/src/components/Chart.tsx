@@ -132,8 +132,8 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
         scale={{ x: 'time', y: 'linear' }}
         width={chartSize.width}
         domain={{ x: [new Date(times.timeStart * 1000), new Date(times.timeEnd * 1000)] }}
-        maxDomain={max ? { y: max } : undefined}
-        minDomain={min ? { y: min } : undefined}
+        maxDomain={max !== undefined ? { y: max } : undefined}
+        minDomain={min !== undefined ? { y: min } : undefined}
       >
         <VictoryAxis dependentAxis={false} tickFormat={chartTickFormatTime} />
         <VictoryAxis dependentAxis={true} label={unit} tickFormat={chartTickFormatValue} />
