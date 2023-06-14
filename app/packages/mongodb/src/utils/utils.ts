@@ -7,13 +7,13 @@ export const example = `plugin:
   name: mongodb
   type: mongodb
   options:
-    # The type must be
+    # The operation must be
     #   - "db" to show the database statistics
     #   - "collections" to show the database collections and collection statistics
     #   - "count" to show the number of documents in a collection for provided filter
     #   - "find" to show the documents in a collection for provided filter, sort and limit
     #   - "findOne" to show a single document in a collection for the provided filter
-    type: find
+    operation: find
     query:
       collectionName: applications
       filter: '{"namespace": "default"}'
