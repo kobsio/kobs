@@ -6,7 +6,6 @@ import {
   ITimes,
   pluginBasePath,
   PluginPanel,
-  PluginPanelActionLinks,
   UseQueryWrapper,
 } from '@kobsio/core';
 import { useQuery } from '@tanstack/react-query';
@@ -14,6 +13,7 @@ import { Document, EJSON } from 'bson';
 import { FunctionComponent, useContext } from 'react';
 
 import { Documents } from './Documents';
+import { OperationActions } from './OperationActions';
 
 import { toExtendedJson } from '../utils/utils';
 
@@ -76,18 +76,15 @@ export const OperationAggregate: FunctionComponent<{
       title={title}
       description={description}
       actions={
-        showActions && (
-          <PluginPanelActionLinks
-            links={[
-              {
-                link: `${pluginBasePath(
-                  instance,
-                )}/${collectionName}/query?operation=aggregate&pipeline=${encodeURIComponent(pipeline)}`,
-                title: 'Explore',
-              },
-            ]}
-          />
-        )
+        <OperationActions
+          showActions={showActions}
+          instance={instance}
+          collectionName={collectionName}
+          link={`${pluginBasePath(instance)}/${collectionName}/query?operation=aggregate&pipeline=${encodeURIComponent(
+            pipeline,
+          )}`}
+          documents={data}
+        />
       }
     >
       <UseQueryWrapper
