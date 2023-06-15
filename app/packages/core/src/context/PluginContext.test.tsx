@@ -85,7 +85,7 @@ describe('PluginContext', () => {
       expect(getInstance('foo-1')).toBeDefined();
       expect(getPlugin('foo')).toBeDefined();
       expect(getAvailableClusters()).toEqual(['dev', 'prod']);
-      expect(getAvailablePluginTypes()).toEqual(['foo', 'bar']);
+      expect(getAvailablePluginTypes()).toEqual(['bar', 'foo']);
       return <>has been rendered</>;
     };
 
