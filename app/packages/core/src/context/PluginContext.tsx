@@ -141,7 +141,7 @@ export const PluginContextProvider: FunctionComponent<IPluginContextProviderProp
       plugins.add(instance.type);
     }
 
-    return Array.from(plugins);
+    return Array.from(plugins).sort();
   };
 
   /**
