@@ -65,7 +65,7 @@ The following options can be used for a panel with the klogs plugin:
 | ----- | ---- | ----------- | -------- |
 | name | string | A name for the klogs query, which is displayed in the select box. | Yes |
 | query | string | The query which should be run against ClickHouse. See [Query Syntax](#query-syntax) for more information on the syntax. | Yes |
-| fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. This field is only available for the `logs`. | No |
+| fields | []string | A list of fields to display in the results table. If this field is omitted, the whole document is displayed in the results table. | No |
 | order | string | Order for the returned logs. Must be `ascending` or `descending`. The default value for this field is `descending`. | No |
 | orderBy | string | The name of the field, by which the results should be orderd. The default value for this field is `timestamp`. | No |
 
