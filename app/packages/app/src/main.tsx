@@ -1,5 +1,6 @@
 import Azure from '@kobsio/azure';
 import { App } from '@kobsio/core';
+import Datadog from '@kobsio/datadog';
 import Flux from '@kobsio/flux';
 import Github from '@kobsio/github';
 import Grafana from '@kobsio/grafana';
@@ -33,6 +34,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <App
       plugins={[
         Azure,
+        Datadog,
         Flux,
         Github,
         Grafana,

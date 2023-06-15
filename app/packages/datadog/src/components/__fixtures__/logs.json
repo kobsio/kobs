@@ -1,0 +1,208 @@
+{
+  "buckets": [
+      {
+          "by": {},
+          "computes": {
+              "c0": [
+                  {
+                      "time": "2023-06-15T06:53:00.000Z",
+                      "value": 146
+                  },
+                  {
+                      "time": "2023-06-15T06:53:30.000Z",
+                      "value": 860
+                  },
+                  {
+                      "time": "2023-06-15T06:54:00.000Z",
+                      "value": 790
+                  },
+                  {
+                      "time": "2023-06-15T06:54:30.000Z",
+                      "value": 834
+                  },
+                  {
+                      "time": "2023-06-15T06:55:00.000Z",
+                      "value": 867
+                  },
+                  {
+                      "time": "2023-06-15T06:55:30.000Z",
+                      "value": 892
+                  },
+                  {
+                      "time": "2023-06-15T06:56:00.000Z",
+                      "value": 780
+                  },
+                  {
+                      "time": "2023-06-15T06:56:30.000Z",
+                      "value": 883
+                  },
+                  {
+                      "time": "2023-06-15T06:57:00.000Z",
+                      "value": 838
+                  },
+                  {
+                      "time": "2023-06-15T06:57:30.000Z",
+                      "value": 1025
+                  },
+                  {
+                      "time": "2023-06-15T06:58:00.000Z",
+                      "value": 1183
+                  },
+                  {
+                      "time": "2023-06-15T06:58:30.000Z",
+                      "value": 991
+                  },
+                  {
+                      "time": "2023-06-15T06:59:00.000Z",
+                      "value": 937
+                  },
+                  {
+                      "time": "2023-06-15T06:59:30.000Z",
+                      "value": 891
+                  },
+                  {
+                      "time": "2023-06-15T07:00:00.000Z",
+                      "value": 901
+                  },
+                  {
+                      "time": "2023-06-15T07:00:30.000Z",
+                      "value": 951
+                  },
+                  {
+                      "time": "2023-06-15T07:01:00.000Z",
+                      "value": 942
+                  },
+                  {
+                      "time": "2023-06-15T07:01:30.000Z",
+                      "value": 829
+                  },
+                  {
+                      "time": "2023-06-15T07:02:00.000Z",
+                      "value": 891
+                  },
+                  {
+                      "time": "2023-06-15T07:02:30.000Z",
+                      "value": 955
+                  },
+                  {
+                      "time": "2023-06-15T07:03:00.000Z",
+                      "value": 859
+                  },
+                  {
+                      "time": "2023-06-15T07:03:30.000Z",
+                      "value": 926
+                  },
+                  {
+                      "time": "2023-06-15T07:04:00.000Z",
+                      "value": 935
+                  },
+                  {
+                      "time": "2023-06-15T07:04:30.000Z",
+                      "value": 918
+                  },
+                  {
+                      "time": "2023-06-15T07:05:00.000Z",
+                      "value": 881
+                  },
+                  {
+                      "time": "2023-06-15T07:05:30.000Z",
+                      "value": 976
+                  },
+                  {
+                      "time": "2023-06-15T07:06:00.000Z",
+                      "value": 843
+                  },
+                  {
+                      "time": "2023-06-15T07:06:30.000Z",
+                      "value": 865
+                  },
+                  {
+                      "time": "2023-06-15T07:07:00.000Z",
+                      "value": 864
+                  },
+                  {
+                      "time": "2023-06-15T07:07:30.000Z",
+                      "value": 841
+                  },
+                  {
+                      "time": "2023-06-15T07:08:00.000Z",
+                      "value": 342
+                  }
+              ]
+          }
+      }
+  ],
+  "logs": [
+      {
+          "attributes": {
+              "attributes": {
+                  "accept": "image/webp,image/png,image/svg+xml,image/*;q=0.8,video/*;q=0.8,*/*;q=0.5",
+                  "accept-encoding": "gzip, deflate, br",
+                  "accept-language": "nl-NL,nl;q=0.9",
+                  "aws": {
+                      "awslogs": {
+                          "logGroup": "/ecs/fg-production-event-system",
+                          "logStream": "ecs/production-event-system/4da3790f-4483-4620-8810-788453b28ee8",
+                          "owner": "339389476548"
+                      },
+                      "function_version": "$LATEST",
+                      "invoked_function_arn": "arn:aws:lambda:us-west-2:339389476548:function:datadog-ForwarderStack-BWPIV6V8U194-Forwarder-FS1X0ZB7VPOT"
+                  },
+                  "dd": {
+                      "env": "production",
+                      "service": "event-system",
+                      "version": "3.1.1"
+                  },
+                  "host": "s2.bb-1.com",
+                  "hostname": "ip-444-33-22-111.us-west-2.compute.internal",
+                  "id": "37617184536610108141300626544830553356078917063384432686",
+                  "level": 30,
+                  "name": "Event Interface",
+                  "network": {
+                      "ip": {
+                          "attributes": [
+                              {
+                                  "ip": "444.333.222.111",
+                                  "source": [
+                                      "@x-forwarded-for"
+                                  ]
+                              }
+                          ],
+                          "list": [
+                              "444.333.222.111"
+                          ]
+                      }
+                  },
+                  "pid": 7,
+                  "sec-fetch-dest": "image",
+                  "sec-fetch-mode": "no-cors",
+                  "sec-fetch-site": "cross-site",
+                  "service": "cloudwatch",
+                  "time": "2023-06-15T07:08:13.548Z",
+                  "timestamp": 1686812893548,
+                  "user-agent": "Mozilla/5.0",
+                  "v": 0,
+                  "x-amzn-trace-id": "Root=1-648ab86a-36c36a35092bc38c17b1fe66",
+                  "x-forwarded-for": "444.333.222.111",
+                  "x-forwarded-port": "443",
+                  "x-forwarded-proto": "https"
+              },
+              "host": "s2.bb-1.com",
+              "message": "Read time timeout reached",
+              "service": "cloudwatch",
+              "status": "info",
+              "tags": [
+                  "datadog.submission_auth:private_api_key",
+                  "forwarder_memorysize:1024",
+                  "forwarder_version:3.12.0",
+                  "forwardername:datadog-forwarderstack-bwpiv6v8u194-forwarder-fs1x0zb7vwfg",
+                  "source:cloudwatch",
+                  "sourcecategory:aws"
+              ],
+              "timestamp": "2023-06-15T07:08:13.548Z"
+          },
+          "id": "AgAAAYi94iFs2qoQHwAAAAAAAAAYAAAAAEFZaTk0aVktQUFER3UtVTUwSUNMMWdBdQAAACQAAAAAMDE4OGJkZTItMjRiOS00MjIwLWFmZWItODI2NWMzODRkYjQ4",
+          "type": "log"
+      }
+  ]
+}
