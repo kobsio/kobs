@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -63,6 +64,21 @@ func (m *MockInstance) GetLogsAggregation(ctx context.Context, query string, sta
 func (mr *MockInstanceMockRecorder) GetLogsAggregation(ctx, query, startTime, endTime interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLogsAggregation", reflect.TypeOf((*MockInstance)(nil).GetLogsAggregation), ctx, query, startTime, endTime)
+}
+
+// GetMetrics mocks base method.
+func (m *MockInstance) GetMetrics(ctx context.Context, query string, startTime, endTime int64) (*datadogV1.MetricsQueryResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMetrics", ctx, query, startTime, endTime)
+	ret0, _ := ret[0].(*datadogV1.MetricsQueryResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMetrics indicates an expected call of GetMetrics.
+func (mr *MockInstanceMockRecorder) GetMetrics(ctx, query, startTime, endTime interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockInstance)(nil).GetMetrics), ctx, query, startTime, endTime)
 }
 
 // GetName mocks base method.

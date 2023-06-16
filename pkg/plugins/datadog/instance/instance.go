@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/mitchellh/mapstructure"
 )
@@ -22,6 +23,7 @@ type Instance interface {
 	GetName() string
 	GetLogs(ctx context.Context, query string, startTime, endTime int64) ([]datadogV2.Log, error)
 	GetLogsAggregation(ctx context.Context, query string, startTime, endTime int64) ([]datadogV2.LogsAggregateBucket, error)
+	GetMetrics(ctx context.Context, query string, startTime, endTime int64) (*datadogV1.MetricsQueryResponse, error)
 }
 
 type instance struct {
@@ -109,6 +111,18 @@ func (i *instance) GetLogsAggregation(ctx context.Context, query string, startTi
 	}
 
 	return resp.Data.Buckets, nil
+}
+
+func (i *instance) GetMetrics(ctx context.Context, query string, startTime, endTime int64) (*datadogV1.MetricsQueryResponse, error) {
+	ctx = i.getContext(ctx)
+	api := datadogV1.NewMetricsApi(i.apiClient)
+
+	resp, _, err := api.QueryMetrics(ctx, startTime, endTime, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
 }
 
 // New returns a new Datadog instance for the given configuration.

@@ -147,6 +147,88 @@ func TestGetLogs(t *testing.T) {
 	})
 }
 
+func TestGetMetrics(t *testing.T) {
+	var newRouter = func(t *testing.T) (*instance.MockInstance, Router) {
+		ctrl := gomock.NewController(t)
+		mockInstance := instance.NewMockInstance(ctrl)
+		router := Router{chi.NewRouter(), []instance.Instance{mockInstance}}
+
+		return mockInstance, router
+	}
+
+	t.Run("should fail for invalid instance name", func(t *testing.T) {
+		i, router := newRouter(t)
+		i.EXPECT().GetName().Return("datadog")
+
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/metrics", nil)
+		req.Header.Set("x-kobs-plugin", "invalidname")
+		w := httptest.NewRecorder()
+
+		router.getMetrics(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Invalid plugin instance"]}`)
+	})
+
+	t.Run("should fail for invalid timeStart parameter", func(t *testing.T) {
+		i, router := newRouter(t)
+		i.EXPECT().GetName().Return("datadog")
+
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/metrics", nil)
+		req.Header.Set("x-kobs-plugin", "datadog")
+		w := httptest.NewRecorder()
+
+		router.getMetrics(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to parse 'timeStart' parameter"]}`)
+	})
+
+	t.Run("should fail for invalid timeEnd parameter", func(t *testing.T) {
+		i, router := newRouter(t)
+		i.EXPECT().GetName().Return("datadog")
+
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/metrics?timeStart=0", nil)
+		req.Header.Set("x-kobs-plugin", "datadog")
+		w := httptest.NewRecorder()
+
+		router.getMetrics(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusBadRequest)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to parse 'timeEnd' parameter"]}`)
+	})
+
+	t.Run("should fail when instance returns an error for metrics request", func(t *testing.T) {
+		i, router := newRouter(t)
+		i.EXPECT().GetName().Return("datadog")
+		i.EXPECT().GetMetrics(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
+
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/metrics?timeStart=0&timeEnd=0", nil)
+		req.Header.Set("x-kobs-plugin", "datadog")
+		w := httptest.NewRecorder()
+
+		router.getMetrics(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusInternalServerError)
+		utils.AssertJSONEq(t, w, `{"errors": ["Failed to get metrics"]}`)
+	})
+
+	t.Run("should return metrics", func(t *testing.T) {
+		i, router := newRouter(t)
+		i.EXPECT().GetName().Return("datadog")
+		i.EXPECT().GetMetrics(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil)
+
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/metrics?timeStart=0&timeEnd=0", nil)
+		req.Header.Set("x-kobs-plugin", "datadog")
+		w := httptest.NewRecorder()
+
+		router.getMetrics(w, req)
+
+		utils.AssertStatusEq(t, w, http.StatusOK)
+		utils.AssertJSONEq(t, w, `null`)
+	})
+}
+
 func TestMount(t *testing.T) {
 	t.Run("should return error for invalid instance", func(t *testing.T) {
 		router, err := Mount([]plugin.Instance{{Name: "datadog", Options: map[string]any{"address": []string{"localhost"}}}})

@@ -10,13 +10,14 @@ import {
   ITimes,
   Options,
   Page,
+  pluginBasePath,
   Toolbar,
   ToolbarItem,
   TTime,
   useQueryState,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { ArrowDownward, ArrowUpward, ContentCopy, Delete } from '@mui/icons-material';
+import { ArrowDownward, ArrowUpward, ContentCopy, Delete, MoreVert } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -27,6 +28,8 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   TextField,
   Tooltip,
@@ -35,13 +38,14 @@ import {
   useTheme,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { FunctionComponent, useContext, useEffect } from 'react';
+import { FunctionComponent, MouseEvent, useContext, useEffect } from 'react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Logs } from './Logs';
 import { QueryHistory } from './QueryHistory';
 
-import { description, getFields, IBuckets, IDocument, ILogData } from '../utils/utils';
+import { description, IBuckets, IDocument, ILogData } from '../utils/utils';
 
 interface IOptions {
   fields: string[];
@@ -52,6 +56,42 @@ interface IOptions {
   timeEnd: number;
   timeStart: number;
 }
+
+// getFieldsRecursively returns the fields for a single document as a list of string.
+export const getFieldsRecursively = (prefix: string, document: IDocument): string[] => {
+  const fields: string[] = [];
+  for (const field in document) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof (document as Record<string, any>)[field] === 'object') {
+      fields.push(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ...getFieldsRecursively(prefix ? `${prefix}.${field}` : field, (document as Record<string, any>)[field]),
+      );
+    } else {
+      fields.push(prefix ? `${prefix}.${field}` : field);
+    }
+  }
+
+  return fields;
+};
+
+// getFields is used to get all fields as strings for the given documents. To get the fields we are looping over the
+// given documents and adding each field from this document. As a last step we have to remove all duplicated fields.
+export const getFields = (documents: IDocument[]): string[] => {
+  const fields: string[] = [];
+  for (const document of documents) {
+    fields.push(...getFieldsRecursively('', document));
+  }
+
+  const uniqueFields: string[] = [];
+  for (const field of fields) {
+    if (uniqueFields.indexOf(field) === -1) {
+      uniqueFields.push(field);
+    }
+  }
+
+  return uniqueFields;
+};
 
 /**
  * The `LogsFields` component renders a list of all the fields returned by a logs query and a list of fields selected by
@@ -169,6 +209,32 @@ export const LogsFields: FunctionComponent<{
   );
 };
 
+const LogsActions: FunctionComponent<{ instance: IPluginInstance }> = ({ instance }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpen = (e: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <IconButton size="small" onClick={handleOpen} aria-label="open menu">
+        <MoreVert />
+      </IconButton>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem component={Link} to={`${pluginBasePath(instance)}/metrics`}>
+          <ListItemText>Metrics</ListItemText>
+        </MenuItem>
+      </Menu>
+    </>
+  );
+};
+
 /**
  * The `LogsToolbar` renders a text field which can be used by the user to provide a query and the `Options` component
  * where a user can select the time range for the logs which should be returned.
@@ -181,7 +247,7 @@ const LogsToolbar: FunctionComponent<{
   const [query, setQuery] = useState<string>(options.query);
 
   const changeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined) => {
-    addStateHistoryItem('kobs-datadog-queryhistory', query);
+    addStateHistoryItem('kobs-datadog-queryhistory-logs', query);
     setOptions({
       ...options,
       ...times,
@@ -191,7 +257,7 @@ const LogsToolbar: FunctionComponent<{
   };
 
   const handleSubmit = () => {
-    addStateHistoryItem('kobs-datadog-queryhistory', query);
+    addStateHistoryItem('kobs-datadog-queryhistory-logs', query);
     setOptions({ ...options, page: 1, query: query });
   };
 
@@ -210,7 +276,11 @@ const LogsToolbar: FunctionComponent<{
           handleSubmit={handleSubmit}
           adornment={
             <InputAdornment position="end">
-              <QueryHistory optionsQuery={options.query} setQuery={(query) => setQuery(query)} />
+              <QueryHistory
+                historyKey="kobs-datadog-queryhistory-logs"
+                optionsQuery={options.query}
+                setQuery={(query) => setQuery(query)}
+              />
             </InputAdornment>
           }
         />
@@ -319,6 +389,7 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       subtitle={`(${instance.cluster} / ${instance.type})`}
       description={instance.description || description}
       toolbar={<LogsToolbar instance={instance} options={options} setOptions={setOptions} />}
+      actions={<LogsActions instance={instance} />}
     >
       <UseQueryWrapper
         error={error}

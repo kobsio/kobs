@@ -17,11 +17,13 @@ import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useState } from 'react';
 
 import { Logs } from './Logs';
+import { Metrics } from './Metrics';
 
 import { IBuckets, IDocument, ILogData, example } from '../utils/utils';
 
 interface IOptions {
   queries?: IOptionsQuery[];
+  query?: string;
   showChart?: boolean;
   type?: string;
 }
@@ -43,9 +45,9 @@ const LogsPanelQuery: FunctionComponent<{
   const [page, setPage] = useState<{ page: number; perPage: number }>({ page: 1, perPage: 100 });
 
   const { isError, isLoading, error, data, refetch } = useQuery<ILogData, APIError>(
-    ['klogs/logs', query.query, times.timeStart, times.timeEnd],
+    ['datadog/logs', query.query, times.timeStart, times.timeEnd],
     async () => {
-      const path = `/api/plugins/klogs/logs?query=${encodeURIComponent(query.query ?? '')}&timeStart=${
+      const path = `/api/plugins/datadog/logs?query=${encodeURIComponent(query.query ?? '')}&timeStart=${
         times.timeStart
       }&timeEnd=${times.timeEnd}`;
 
@@ -124,7 +126,7 @@ const LogsPanel: FunctionComponent<{
   );
 };
 
-const KLogsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
+const DatadogPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
   title,
   description,
   options,
@@ -161,6 +163,19 @@ const KLogsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
     );
   }
 
+  if (options?.type === 'metrics' && options.query) {
+    return (
+      <Metrics
+        title={title}
+        description={description}
+        instance={instance}
+        query={options.query}
+        times={times}
+        setTimes={setTimes}
+      />
+    );
+  }
+
   return (
     <PluginPanelError
       title={title}
@@ -173,4 +188,4 @@ const KLogsPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
   );
 };
 
-export default KLogsPanel;
+export default DatadogPanel;

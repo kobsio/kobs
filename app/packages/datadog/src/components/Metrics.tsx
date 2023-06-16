@@ -31,37 +31,53 @@ import {
   VictoryBrushContainerProps,
 } from 'victory';
 
-interface IMetric {
-  id: string;
-  name: IMetricName;
-  timeseries: IMetricTimeseries[];
-  type: string;
-  unit: string;
+/**
+ * `IMetricsQueryResponse` is the interface for the data returned from a metrics request.
+ */
+export interface IMetricsQueryResponse {
+  error?: string;
+  from_date?: number;
+  group_by?: string[];
+  message?: string;
+  query?: string;
+  res_type?: string;
+  series?: IMetricsQueryMetadata[];
+  status?: string;
+  to_date?: number;
 }
 
-interface IMetricName {
-  localizedValue: string;
-  value: string;
-}
-
-interface IMetricTimeseries {
-  data: IMetricDatum[];
-}
-
-interface IMetricDatum {
+export interface IMetricsQueryMetadata {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-  timeStamp: string;
+  aggr?: any;
+  display_name?: string;
+  end?: number;
+  expression?: string;
+  interval?: number;
+  length?: number;
+  metric?: string;
+  pointlist?: (number | undefined)[][];
+  query_index?: number;
+  scope?: string;
+  start?: number;
+  tag_set?: string[];
+  unit?: IMetricsQueryUnit[];
+}
+
+export interface IMetricsQueryUnit {
+  family?: string;
+  name?: string;
+  plural?: string;
+  scale_factor?: number;
+  short_name?: string;
 }
 
 const convertMetrics = (
-  metrics: IMetric[],
-  aggregationType: string,
+  metrics: IMetricsQueryMetadata[],
 ): {
   avg: number;
   color: string;
-  current: number;
-  data: { color: string; name: string; unit: string; x: Date; y: number }[];
+  current: number | null;
+  data: { color: string; name: string; unit: string; x: Date; y: number | null }[];
   max: number;
   min: number;
   name: string;
@@ -70,79 +86,84 @@ const convertMetrics = (
   const series: {
     avg: number;
     color: string;
-    current: number;
-    data: { color: string; name: string; unit: string; x: Date; y: number }[];
+    current: number | null;
+    data: { color: string; name: string; unit: string; x: Date; y: number | null }[];
     max: number;
     min: number;
     name: string;
     unit: string;
   }[] = [];
-  let index = 0;
 
   for (let i = 0; i < metrics.length; i++) {
-    for (let j = 0; j < metrics[i].timeseries.length; j++) {
-      const data = [];
-      const color = getChartColor(index);
-      index = index + 1;
+    const name = metrics[i].scope ?? metrics[i].display_name ?? metrics[i].metric ?? '';
+    const unit = '';
+    const color = getChartColor(i);
+    const data: { color: string; name: string; unit: string; x: Date; y: number | null }[] = [];
 
-      let min = 0;
-      let max = 0;
-      let sum = 0;
+    let min = 0;
+    let max = 0;
+    let sum = 0;
 
-      for (let k = 0; k < metrics[i].timeseries[j].data.length; k++) {
-        const datum = metrics[i].timeseries[j].data[k];
-        const y = datum[aggregationType.toLowerCase()] === undefined ? null : datum[aggregationType.toLowerCase()];
+    if (metrics[i].pointlist) {
+      const pointlist = metrics[i].pointlist as (number | undefined)[][];
 
-        if (k === 0) {
-          min = y;
-          max = y;
-        } else {
-          if (y < min) {
-            min = y;
+      for (let j = 0; j < pointlist.length; j++) {
+        const x = pointlist[j][0];
+        const y = pointlist[j][1];
+
+        if (x !== undefined) {
+          if (y !== undefined) {
+            if (j === 0) {
+              min = y;
+              max = y;
+            } else {
+              if (y < min) {
+                min = y;
+              }
+              if (y > max) {
+                max = y;
+              }
+              sum = sum + y;
+            }
           }
-          if (y > max) {
-            max = y;
-          }
-          sum = sum + y;
+
+          data.push({
+            color: color,
+            name: name,
+            unit: unit,
+            x: new Date(x),
+            y: y ?? null,
+          });
         }
-
-        data.push({
-          color: color,
-          name: metrics[i].name.localizedValue,
-          unit: metrics[i].unit,
-          x: new Date(datum.timeStamp),
-          y: y,
-        });
       }
-
-      series.push({
-        avg: sum / data.length,
-        color: color,
-        current: data[data.length - 1].y,
-        data: data,
-        max: max,
-        min: min,
-        name: metrics[i].name.localizedValue,
-        unit: metrics[i].unit,
-      });
     }
+
+    series.push({
+      avg: sum / data.length,
+      color: color,
+      current: data[data.length - 1].y ?? null,
+      data: data,
+      max: max,
+      min: min,
+      name: name,
+      unit: unit,
+    });
   }
 
   return series;
 };
 
 const MetricsChart: FunctionComponent<{
-  aggregationType: string;
-  metrics: IMetric[];
+  metrics: IMetricsQueryMetadata[];
   setTimes: (times: ITimes) => void;
   times: ITimes;
-}> = ({ metrics, aggregationType, times, setTimes }) => {
+}> = ({ metrics, times, setTimes }) => {
   const theme = useTheme();
   const gridContext = useContext<IGridContext>(GridContext);
   const refChart = useRef<HTMLDivElement>(null);
   const chartSize = useDimensions(refChart);
 
-  const data = convertMetrics(metrics, aggregationType);
+  const data = convertMetrics(metrics);
 
   /**
    * The `BrushVoronoiContainer` component is used as container for the charts. It allows us to render a tooltip for the
@@ -158,7 +179,7 @@ const MetricsChart: FunctionComponent<{
       <Box
         sx={{ height: gridContext.autoHeight ? `${500 - 80}px` : 'calc(100% - 80px)', width: '100%' }}
         ref={refChart}
-        data-testid="azure-metrics-chart"
+        data-testid="datadog-metrics-chart"
       >
         <VictoryChart
           theme={chartTheme(theme)}
@@ -179,7 +200,7 @@ const MetricsChart: FunctionComponent<{
                     label: datum.name,
                     title: formatTime(datum.x as Date),
                     unit: datum.unit,
-                    value: datum.y ? roundNumber(datum.y, 4) : 'N/A',
+                    value: datum.y !== null ? roundNumber(datum.y, 4) : 'N/A',
                   })}
                 />
               }
@@ -257,7 +278,8 @@ const MetricsChart: FunctionComponent<{
                     {roundNumber(datum.avg, 4)} {datum.unit}
                   </TableCell>
                   <TableCell>
-                    {roundNumber(datum.current, 4)} {datum.unit}
+                    {datum.current !== null ? roundNumber(datum.current, 4) : 'N/A'}
+                    {datum.current !== null ? ` ${datum.unit}` : ''}
                   </TableCell>
                 </TableRow>
               ))}
@@ -270,35 +292,22 @@ const MetricsChart: FunctionComponent<{
 };
 
 export const Metrics: FunctionComponent<{
-  aggregationType: string;
   description?: string;
   instance: IPluginInstance;
-  interval: string;
-  metric: string;
-  provider: string;
-  resourceGroup: string;
+  query: string;
   setTimes: (times: ITimes) => void;
   times: ITimes;
   title: string;
-}> = ({
-  instance,
-  title,
-  description,
-  resourceGroup,
-  metric,
-  provider,
-  aggregationType,
-  interval,
-  times,
-  setTimes,
-}) => {
+}> = ({ instance, title, description, query, times, setTimes }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  const { isError, isLoading, error, data, refetch } = useQuery<IMetric[], APIError>(
-    ['azure/monitor/metrics', instance, resourceGroup, metric, provider, aggregationType, interval, times],
+  const { isError, isLoading, error, data, refetch } = useQuery<IMetricsQueryMetadata[], APIError>(
+    ['datadog/metrics', instance, query, times],
     async () => {
-      return apiContext.client.get<IMetric[]>(
-        `/api/plugins/azure/monitor/metrics?resourceGroup=${resourceGroup}&provider=${provider}&metric=${metric}&aggregationType=${aggregationType}&interval=${interval}&timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
+      const resp = await apiContext.client.get<IMetricsQueryResponse>(
+        `/api/plugins/datadog/metrics?query=${encodeURIComponent(query)}&timeStart=${times.timeStart}&timeEnd=${
+          times.timeEnd
+        }`,
         {
           headers: {
             'x-kobs-cluster': instance.cluster,
@@ -306,8 +315,16 @@ export const Metrics: FunctionComponent<{
           },
         },
       );
+
+      if (resp.error) {
+        throw new Error(resp.error);
+      }
+
+      return resp.series ?? [];
     },
   );
+
+  console.log(data);
 
   return (
     <PluginPanel title={title} description={description}>
@@ -320,7 +337,7 @@ export const Metrics: FunctionComponent<{
         noDataTitle="No metrics were found"
         refetch={refetch}
       >
-        {data && <MetricsChart metrics={data} aggregationType={aggregationType} times={times} setTimes={setTimes} />}
+        {data && <MetricsChart metrics={data} times={times} setTimes={setTimes} />}
       </UseQueryWrapper>
     </PluginPanel>
   );

@@ -91,6 +91,45 @@ func (router *Router) getLogs(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, data)
 }
 
+func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
+	name := r.Header.Get("x-kobs-plugin")
+	query := r.URL.Query().Get("query")
+	timeStart := r.URL.Query().Get("timeStart")
+	timeEnd := r.URL.Query().Get("timeEnd")
+
+	log.Debug(r.Context(), "Get metrics paramters", zap.String("name", name), zap.String("query", query), zap.String("timeStart", timeStart), zap.String("timeEnd", timeEnd))
+
+	i := router.getInstance(name)
+	if i == nil {
+		log.Error(r.Context(), "Invalid plugin instance", zap.String("name", name))
+		errresponse.Render(w, r, http.StatusBadRequest, "Invalid plugin instance")
+		return
+	}
+
+	parsedTimeStart, err := strconv.ParseInt(timeStart, 10, 64)
+	if err != nil {
+		log.Error(r.Context(), "Failed to parse 'timeStart' parameter", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'timeStart' parameter")
+		return
+	}
+
+	parsedTimeEnd, err := strconv.ParseInt(timeEnd, 10, 64)
+	if err != nil {
+		log.Error(r.Context(), "Failed to parse 'timeEnd' parameter", zap.Error(err))
+		errresponse.Render(w, r, http.StatusBadRequest, "Failed to parse 'timeEnd' parameter")
+		return
+	}
+
+	metrics, err := i.GetMetrics(r.Context(), query, parsedTimeStart, parsedTimeEnd)
+	if err != nil {
+		log.Error(r.Context(), "Failed to get metrics", zap.Error(err))
+		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get metrics")
+		return
+	}
+
+	render.JSON(w, r, metrics)
+}
+
 func Mount(instances []plugin.Instance) (chi.Router, error) {
 	var datadogInstances []instance.Instance
 
@@ -108,6 +147,7 @@ func Mount(instances []plugin.Instance) (chi.Router, error) {
 	}
 
 	router.Get("/logs", router.getLogs)
+	router.Get("/metrics", router.getMetrics)
 
 	return router, nil
 }
