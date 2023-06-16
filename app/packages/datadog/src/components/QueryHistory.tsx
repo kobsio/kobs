@@ -3,10 +3,11 @@ import { ManageSearch } from '@mui/icons-material';
 import { IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import { FunctionComponent, MouseEvent, useMemo, useState } from 'react';
 
-export const QueryHistory: FunctionComponent<{ optionsQuery: string; setQuery: (query: string) => void }> = ({
-  optionsQuery,
-  setQuery,
-}) => {
+export const QueryHistory: FunctionComponent<{
+  historyKey: 'kobs-datadog-queryhistory-logs' | 'kobs-datadog-queryhistory-metrics';
+  optionsQuery: string;
+  setQuery: (query: string) => void;
+}> = ({ historyKey, optionsQuery, setQuery }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -17,7 +18,7 @@ export const QueryHistory: FunctionComponent<{ optionsQuery: string; setQuery: (
    * `getStateHistory` function.
    */
   const queries = useMemo(() => {
-    return getStateHistory('kobs-datadog-queryhistory');
+    return getStateHistory(historyKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionsQuery]);
 

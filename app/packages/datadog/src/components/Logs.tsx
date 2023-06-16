@@ -54,7 +54,7 @@ import {
   createContainer,
 } from 'victory';
 
-import { getKeyValues, getProperty, IBuckets, IDocument, ILogData } from '../utils/utils';
+import { IBuckets, IDocument, ILogData } from '../utils/utils';
 
 /**
  * `chartThemeFromBaseTheme` is a utility function to create a custom theme for the `LogsChart` based on the chart theme
@@ -97,6 +97,27 @@ const getCountFromBuckets = (buckets: IBuckets[]): number => {
   return count;
 };
 
+// getProperty returns the property of an object for a given key.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getProperty = (document: any, key: string): string | number => {
+  return key.split('.').reduce((o, x) => {
+    return typeof o == 'undefined' || o === null ? o : o[x];
+  }, document);
+};
+
+// getKeyValues creates an array with all keys and values of the document.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getKeyValues = (obj: any, prefix = ''): { key: string; value: string }[] => {
+  return Object.keys(obj).reduce((res: { key: string; value: string }[], el) => {
+    if (Array.isArray(obj[el])) {
+      return res;
+    } else if (typeof obj[el] === 'object' && obj[el] !== null) {
+      return [...res, ...getKeyValues(obj[el], prefix + el + '.')];
+    }
+    return [...res, { key: prefix + el, value: obj[el] }];
+  }, []);
+};
+
 /**
  * LogsDownload renders two action items for downloading all rows in either JSON or CSV format
  */
@@ -132,7 +153,11 @@ export const LogsDownload: FunctionComponent<{
       csv = csv + formatTimeString(document?.attributes?.timestamp ?? '');
 
       if (fields.length === 0) {
-        csv = csv + `;${document.attributes?.host};${document.attributes?.service};${document.attributes?.message}`;
+        csv =
+          csv +
+          `;${document.attributes?.host ?? document.attributes?.attributes?.host};${document.attributes?.service};${
+            document.attributes?.message
+          }`;
       } else {
         for (const field of fields) {
           csv = csv + ';' + (getProperty(document, field) ?? '');
@@ -334,7 +359,7 @@ const Document: FunctionComponent<{
 
         {selectedFields.length === 0 ? (
           <>
-            <TableCell>{document.attributes?.host ?? '-'}</TableCell>
+            <TableCell>{document.attributes?.host ?? document.attributes?.attributes?.host ?? '-'}</TableCell>
             <TableCell>{document.attributes?.service ?? '-'}</TableCell>
             <TableCell>{document.attributes?.message ?? '-'}</TableCell>
           </>

@@ -2,7 +2,9 @@
 
 The Datadog plugin can be used to access your logs and metrics from Datadog.
 
-![Datadog](assets/datadog.png)
+![Logs](assets/datadog-logs.png)
+
+![Metrics](assets/datadog-metrics.png)
 
 ## Configuration
 
@@ -42,9 +44,10 @@ The following options can be used for a panel with the Datadog plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| type | string | The panel type. This could be `logs`. | Yes |
+| type | string | The panel type. This could be `logs` or `metrics`. | Yes |
 | showChart | boolean | If this is `true` the chart with the distribution of the log lines in the selected time range will be shown. | No |
 | queries | [[]Query](#query) | A list of queries, which can be selected by the user. This is only required for type `logs`. | Yes |
+| query | string | The Datadog query which is used to get the metrics, e.g. `sum:aws.apigateway.4xxerror{*} by {apiname}.as_count()`. This is only required for type `metrics`. | Yes |
 
 ### Query
 

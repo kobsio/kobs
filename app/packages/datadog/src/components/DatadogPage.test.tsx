@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import fixtureLogs from './__fixtures__/logs.json';
+import fixtureMetrics from './__fixtures__/metrics.json';
 import DatadogPage from './DatadogPage';
 
 import { description } from '../utils/utils';
@@ -17,6 +18,10 @@ describe('DatadogPage', () => {
     getSpy.mockImplementation(async (path: string, _): Promise<any> => {
       if (path.startsWith('/api/plugins/datadog/logs')) {
         return fixtureLogs;
+      }
+
+      if (path.startsWith('/api/plugins/datadog/metrics')) {
+        return fixtureMetrics;
       }
 
       return [];
@@ -66,5 +71,17 @@ describe('DatadogPage', () => {
 
     const jsonTab = screen.getByText('JSON');
     userEvent.click(jsonTab);
+  });
+
+  it('should render metrics', async () => {
+    render('/metrics');
+
+    expect(screen.getByText('datadog')).toBeInTheDocument();
+    expect(screen.getByText('(hub / datadog)')).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
+
+    expect(await waitFor(() => screen.getByTestId('datadog-metrics-chart'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText(/apiname:service1/))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText(/apiname:service2/))).toBeInTheDocument();
   });
 });

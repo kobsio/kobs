@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import fixtureLogs from './__fixtures__/logs.json';
+import fixtureMetrics from './__fixtures__/metrics.json';
 import DatadogPanel from './DatadogPanel';
 
 describe('DatadogPanel', () => {
@@ -12,7 +13,18 @@ describe('DatadogPanel', () => {
   const render = (options: any): RenderResult => {
     const client = new APIClient();
     const getSpy = vi.spyOn(client, 'get');
-    getSpy.mockResolvedValue(fixtureLogs);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getSpy.mockImplementation(async (path: string, _): Promise<any> => {
+      if (path.startsWith('/api/plugins/datadog/logs')) {
+        return fixtureLogs;
+      }
+
+      if (path.startsWith('/api/plugins/datadog/metrics')) {
+        return fixtureMetrics;
+      }
+
+      return [];
+    });
 
     return _render(
       <MemoryRouter>
@@ -69,5 +81,16 @@ describe('DatadogPanel', () => {
     expect(await waitFor(() => screen.getByText('my test query 1'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('my test query 2'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('Read time timeout reached'))).toBeInTheDocument();
+  });
+
+  it('should render metrics', async () => {
+    render({
+      query: 'sum:aws.apigateway.4xxerror{*} by {apiname}.as_count()',
+      type: 'metrics',
+    });
+
+    expect(await waitFor(() => screen.getByTestId('datadog-metrics-chart'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText(/apiname:service1/))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText(/apiname:service2/))).toBeInTheDocument();
   });
 });
