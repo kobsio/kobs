@@ -1255,7 +1255,8 @@
 
 <h1 id="datadog">Datadog</h1>
 <p>The Datadog plugin can be used to access your logs and metrics from Datadog.</p>
-<p><img alt="Datadog" src="../assets/datadog.png" /></p>
+<p><img alt="Logs" src="../assets/datadog-logs.png" /></p>
+<p><img alt="Metrics" src="../assets/datadog-metrics.png" /></p>
 <h2 id="configuration">Configuration</h2>
 <p>The Datadog plugin can only be used within the <code>hub</code>. To use the Datadog plugin the following configuration is needed:</p>
 <table>
@@ -1333,7 +1334,7 @@
 <tr>
 <td>type</td>
 <td>string</td>
-<td>The panel type. This could be <code>logs</code>.</td>
+<td>The panel type. This could be <code>logs</code> or <code>metrics</code>.</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -1346,6 +1347,12 @@
 <td>queries</td>
 <td><a href="#query">[]Query</a></td>
 <td>A list of queries, which can be selected by the user. This is only required for type <code>logs</code>.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>query</td>
+<td>string</td>
+<td>The Datadog query which is used to get the metrics, e.g. <code>sum:aws.apigateway.4xxerror{*} by {apiname}.as_count()</code>. This is only required for type <code>metrics</code>.</td>
 <td>Yes</td>
 </tr>
 </tbody>
