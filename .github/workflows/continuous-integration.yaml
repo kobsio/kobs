@@ -57,6 +57,7 @@ jobs:
           - azure
           - core
           - datadog
+          - elasticsearch
           - flux
           - github
           - grafana

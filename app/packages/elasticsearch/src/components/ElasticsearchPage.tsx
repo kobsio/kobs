@@ -3,15 +3,13 @@ import { FunctionComponent } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import LogsPage from './LogsPage';
-import MetricsPage from './MetricsPage';
 
-const DatadogPage: FunctionComponent<IPluginPageProps> = (props) => {
+const ElasticsearchPage: FunctionComponent<IPluginPageProps> = (props) => {
   return (
     <Routes>
       <Route path="/" element={<LogsPage {...props} />} />
-      <Route path="/metrics" element={<MetricsPage {...props} />} />
     </Routes>
   );
 };
 
-export default DatadogPage;
+export default ElasticsearchPage;

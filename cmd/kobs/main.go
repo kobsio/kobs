@@ -9,6 +9,7 @@ import (
 
 	"github.com/kobsio/kobs/pkg/plugins/azure"
 	"github.com/kobsio/kobs/pkg/plugins/datadog"
+	"github.com/kobsio/kobs/pkg/plugins/elasticsearch"
 	"github.com/kobsio/kobs/pkg/plugins/flux"
 	"github.com/kobsio/kobs/pkg/plugins/github"
 	"github.com/kobsio/kobs/pkg/plugins/grafana"
@@ -43,6 +44,7 @@ func main() {
 	registeredPlugins := []plugins.Plugin{
 		azure.New(),
 		datadog.New(),
+		elasticsearch.New(),
 		flux.New(),
 		github.New(),
 		grafana.New(),

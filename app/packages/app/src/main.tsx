@@ -1,6 +1,7 @@
 import Azure from '@kobsio/azure';
 import { App } from '@kobsio/core';
 import Datadog from '@kobsio/datadog';
+import Elasticsearch from '@kobsio/elasticsearch';
 import Flux from '@kobsio/flux';
 import Github from '@kobsio/github';
 import Grafana from '@kobsio/grafana';
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       plugins={[
         Azure,
         Datadog,
+        Elasticsearch,
         Flux,
         Github,
         Grafana,
