@@ -43,6 +43,7 @@ nav:
       - plugins/index.md
       - Azure: plugins/azure.md
       - Datadog: plugins/datadog.md
+      - Elasticsearch: plugins/elasticsearch.md
       - Flux: plugins/flux.md
       - GitHub: plugins/github.md
       - Grafana: plugins/grafana.md

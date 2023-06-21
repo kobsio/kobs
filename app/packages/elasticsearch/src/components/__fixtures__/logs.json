@@ -1,0 +1,269 @@
+{
+  "took": 52,
+  "hits": 324,
+  "documents": [
+    {
+      "_id": "C7LB3IgBMr83G61l2FSv",
+      "_index": "filebeat-7.13.3-2023.06.21-000001",
+      "_score": null,
+      "_source": {
+        "@timestamp": "2023-06-21T07:01:07.512Z",
+        "agent": {
+          "ephemeral_id": "f4fb04b9-dbb3-4d7b-87ba-98f327ca6c93",
+          "hostname": "kind-control-plane",
+          "id": "9706b84f-8fff-49bb-9f4c-b60d332c5563",
+          "name": "kind-control-plane",
+          "type": "filebeat",
+          "version": "7.13.3"
+        },
+        "container": {
+          "id": "b3e7c1291f259e22b0c243ae410f2ce83d3f352919c48a1fd2a2097f48dc56f9",
+          "image": {
+            "name": "docker.io/kindest/kindnetd:v20230330-48f316cd@sha256:c19d6362a6a928139820761475a38c24c0cf84d507b9ddf414a078cf627497af"
+          },
+          "runtime": "containerd"
+        },
+        "ecs": {
+          "version": "1.8.0"
+        },
+        "host": {
+          "architecture": "aarch64",
+          "containerized": false,
+          "hostname": "kind-control-plane",
+          "id": "c3d7054369f94a08b445e14869f565a9",
+          "ip": [
+            "10.244.0.1",
+            "10.244.0.1",
+            "10.244.0.1",
+            "10.244.0.1",
+            "10.244.0.1",
+            "172.18.0.2",
+            "fc00:f853:ccd:e793::2",
+            "fe80::42:acff:fe12:2"
+          ],
+          "mac": [
+            "86:ac:e2:79:54:55",
+            "12:b3:c3:8d:a8:f7",
+            "5a:fd:3b:51:fa:88",
+            "96:f7:f1:b8:c3:9b",
+            "0a:a9:01:68:66:73",
+            "02:42:ac:12:00:02"
+          ],
+          "name": "kind-control-plane",
+          "os": {
+            "codename": "AltArch",
+            "family": "redhat",
+            "kernel": "5.10.104-linuxkit",
+            "name": "CentOS Linux",
+            "platform": "centos",
+            "type": "linux",
+            "version": "7 (AltArch)"
+          }
+        },
+        "input": {
+          "type": "container"
+        },
+        "kubernetes": {
+          "container": {
+            "name": "kindnet-cni"
+          },
+          "labels": {
+            "app": "kindnet",
+            "controller-revision-hash": "cf7b65fb6",
+            "k8s-app": "kindnet",
+            "pod-template-generation": "1",
+            "tier": "node"
+          },
+          "namespace": "kube-system",
+          "namespace_labels": {
+            "kubernetes_io/metadata_name": "kube-system"
+          },
+          "namespace_uid": "872b2531-97dc-449f-bcc2-7c9dc57bd0e4",
+          "node": {
+            "hostname": "kind-control-plane",
+            "labels": {
+              "beta_kubernetes_io/arch": "arm64",
+              "beta_kubernetes_io/os": "linux",
+              "kubernetes_io/arch": "arm64",
+              "kubernetes_io/hostname": "kind-control-plane",
+              "kubernetes_io/os": "linux",
+              "node-role_kubernetes_io/control-plane": "",
+              "node_kubernetes_io/exclude-from-external-load-balancers": ""
+            },
+            "name": "kind-control-plane",
+            "uid": "98b6b3d9-1bb3-4887-a5bd-6500bcd09ec6"
+          },
+          "pod": {
+            "ip": "172.18.0.2",
+            "name": "kindnet-zncz5",
+            "uid": "7d73bdda-2417-4a5d-9c50-f4d5ebb02afa"
+          }
+        },
+        "log": {
+          "file": {
+            "path": "/var/log/containers/kindnet-zncz5_kube-system_kindnet-cni-b3e7c1291f259e22b0c243ae410f2ce83d3f352919c48a1fd2a2097f48dc56f9.log"
+          },
+          "offset": 30753
+        },
+        "message": "I0621 07:01:07.512220       1 main.go:223] Handling node with IPs: map[172.18.0.2:{}]",
+        "stream": "stderr"
+      },
+      "_type": "_doc",
+      "sort": [
+        1687330867512
+      ]
+    }
+  ],
+  "buckets": [
+    {
+      "key_as_string": "2023-06-21T06:46:16.000Z",
+      "key": 1687329976000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:46:46.000Z",
+      "key": 1687330006000,
+      "doc_count": 23
+    },
+    {
+      "key_as_string": "2023-06-21T06:47:16.000Z",
+      "key": 1687330036000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:47:46.000Z",
+      "key": 1687330066000,
+      "doc_count": 8
+    },
+    {
+      "key_as_string": "2023-06-21T06:48:16.000Z",
+      "key": 1687330096000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:48:46.000Z",
+      "key": 1687330126000,
+      "doc_count": 17
+    },
+    {
+      "key_as_string": "2023-06-21T06:49:16.000Z",
+      "key": 1687330156000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:49:46.000Z",
+      "key": 1687330186000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:50:16.000Z",
+      "key": 1687330216000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:50:46.000Z",
+      "key": 1687330246000,
+      "doc_count": 34
+    },
+    {
+      "key_as_string": "2023-06-21T06:51:16.000Z",
+      "key": 1687330276000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:51:46.000Z",
+      "key": 1687330306000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:52:16.000Z",
+      "key": 1687330336000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:52:46.000Z",
+      "key": 1687330366000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:53:16.000Z",
+      "key": 1687330396000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:53:46.000Z",
+      "key": 1687330426000,
+      "doc_count": 10
+    },
+    {
+      "key_as_string": "2023-06-21T06:54:16.000Z",
+      "key": 1687330456000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:54:46.000Z",
+      "key": 1687330486000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:55:16.000Z",
+      "key": 1687330516000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:55:46.000Z",
+      "key": 1687330546000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:56:16.000Z",
+      "key": 1687330576000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:56:46.000Z",
+      "key": 1687330606000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:57:16.000Z",
+      "key": 1687330636000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T06:57:46.000Z",
+      "key": 1687330666000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:58:16.000Z",
+      "key": 1687330696000,
+      "doc_count": 14
+    },
+    {
+      "key_as_string": "2023-06-21T06:58:46.000Z",
+      "key": 1687330726000,
+      "doc_count": 11
+    },
+    {
+      "key_as_string": "2023-06-21T06:59:16.000Z",
+      "key": 1687330756000,
+      "doc_count": 9
+    },
+    {
+      "key_as_string": "2023-06-21T06:59:46.000Z",
+      "key": 1687330786000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T07:00:16.000Z",
+      "key": 1687330816000,
+      "doc_count": 7
+    },
+    {
+      "key_as_string": "2023-06-21T07:00:46.000Z",
+      "key": 1687330846000,
+      "doc_count": 35
+    }
+  ]
+}
