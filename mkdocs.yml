@@ -57,6 +57,7 @@ nav:
       - Opsgenie: plugins/opsgenie.md
       - Prometheus: plugins/prometheus.md
       - RSS: plugins/rss.md
+      - Runbooks: plugins/runbooks.md
       - Signal Sciences: plugins/signalsciences.md
       - SonarQube: plugins/sonarqube.md
       - SQL: plugins/sql.md

@@ -142,7 +142,7 @@ const Release: FunctionComponent<{
       </Box>
 
       <Box key="values" hidden={activeTab !== 'values'} py={6}>
-        {activeTab === 'values' && <Editor language="yaml" value={yaml.dump(release.config)} />}
+        {activeTab === 'values' && <Editor language="yaml" readOnly={true} value={yaml.dump(release.config)} />}
       </Box>
 
       <Box key="history" hidden={activeTab !== 'history'} py={6}>
@@ -165,7 +165,7 @@ const Release: FunctionComponent<{
                 <Typography>values.yaml</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Editor language="yaml" value={yaml.dump(release.chart?.values)} />
+                <Editor language="yaml" readOnly={true} value={yaml.dump(release.chart?.values)} />
               </AccordionDetails>
             </Accordion>
 
@@ -175,7 +175,7 @@ const Release: FunctionComponent<{
                   <Typography>{template?.name}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Editor language="yaml" value={atob(template?.data ?? '')} />
+                  <Editor language="yaml" readOnly={true} value={atob(template?.data ?? '')} />
                 </AccordionDetails>
               </Accordion>
             ))}

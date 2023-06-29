@@ -85,13 +85,12 @@ export const interpolateJSONPath = (str: string, manifest: any, interpolator: st
 export const getVariableViaPlugin = async (
   apiClient: APIClient,
   variable: IVariableValues,
-  variables: IVariableValues[],
   times: ITimes,
 ): Promise<IVariableValues> => {
   const result = await apiClient.post<string[]>(
     `/api/plugins/${variable.plugin.type}/variable?timeStart=${times.timeStart}&timeEnd=${times.timeEnd}`,
     {
-      body: JSON.parse(interpolate(JSON.stringify(variable.plugin.options), variables, times)),
+      body: variable.plugin.options,
       headers: {
         'x-kobs-cluster': variable.plugin.cluster,
         'x-kobs-plugin': variable.plugin.name,

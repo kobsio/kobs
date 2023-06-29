@@ -241,12 +241,16 @@ const SingleDocumentDetails: FunctionComponent<{
 
       <Box hidden={activeTab !== 'bson'} py={6}>
         {activeTab === 'bson' && (
-          <Editor language="json" value={JSON.stringify(EJSON.serialize(document, { relaxed: true }), null, 2)} />
+          <Editor
+            language="json"
+            readOnly={true}
+            value={JSON.stringify(EJSON.serialize(document, { relaxed: true }), null, 2)}
+          />
         )}
       </Box>
 
       <Box hidden={activeTab !== 'json'} py={6}>
-        {activeTab === 'json' && <Editor language="json" value={JSON.stringify(document, null, 2)} />}
+        {activeTab === 'json' && <Editor language="json" readOnly={true} value={JSON.stringify(document, null, 2)} />}
       </Box>
     </>
   );

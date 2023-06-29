@@ -17,6 +17,7 @@ import (
 	context0 "github.com/kobsio/kobs/pkg/hub/auth/context"
 	plugin "github.com/kobsio/kobs/pkg/plugins/plugin"
 	primitive "go.mongodb.org/mongo-driver/bson/primitive"
+	mongo "go.mongodb.org/mongo-driver/mongo"
 )
 
 // MockClient is a mock of Client interface.
@@ -55,6 +56,20 @@ func (m *MockClient) CreateSession(ctx context.Context, user context0.User) (*Se
 func (mr *MockClientMockRecorder) CreateSession(ctx, user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*MockClient)(nil).CreateSession), ctx, user)
+}
+
+// DB mocks base method.
+func (m *MockClient) DB() *mongo.Client {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DB")
+	ret0, _ := ret[0].(*mongo.Client)
+	return ret0
+}
+
+// DB indicates an expected call of DB.
+func (mr *MockClientMockRecorder) DB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DB", reflect.TypeOf((*MockClient)(nil).DB))
 }
 
 // DeleteSession mocks base method.

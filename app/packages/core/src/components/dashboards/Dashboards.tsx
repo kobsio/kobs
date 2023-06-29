@@ -285,7 +285,11 @@ export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => 
               }
             }
           } else {
-            tmpVariables[i] = await getVariableViaPlugin(apiContext.client, tmpVariables[i], tmpVariables, times);
+            tmpVariables[i] = await getVariableViaPlugin(
+              apiContext.client,
+              JSON.parse(interpolate(JSON.stringify(tmpVariables[i]), tmpVariables, times)),
+              times,
+            );
           }
         }
 

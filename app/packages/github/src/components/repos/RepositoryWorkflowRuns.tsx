@@ -62,7 +62,7 @@ const RepositoryWorkflowRunsDetailsJobsLogs: FunctionComponent<{
 
   return (
     <Box height="300px" pt={4}>
-      <Editor language="plain" value={data} />
+      <Editor language="plain" readOnly={true} value={data} />
     </Box>
   );
 };

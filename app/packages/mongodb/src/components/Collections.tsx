@@ -82,7 +82,7 @@ const CollectionListItemDetailsIndexes: FunctionComponent<{
           noDataTitle="No collection indexes were found"
           refetch={refetch}
         >
-          {data && <Editor language="json" value={JSON.stringify(data, null, 2)} />}
+          {data && <Editor language="json" readOnly={true} value={JSON.stringify(data, null, 2)} />}
         </UseQueryWrapper>
       </CardContent>
     </Card>

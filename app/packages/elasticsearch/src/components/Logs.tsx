@@ -329,7 +329,7 @@ const DocumentDetails: FunctionComponent<{
         </Box>
 
         <Box hidden={activeTab !== 'json'} py={6}>
-          {activeTab === 'json' && <Editor language="json" value={JSON.stringify(document, null, 2)} />}
+          {activeTab === 'json' && <Editor language="json" readOnly={true} value={JSON.stringify(document, null, 2)} />}
         </Box>
       </TableCell>
       <TableCell />

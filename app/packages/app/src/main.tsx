@@ -15,6 +15,7 @@ import MongoDB from '@kobsio/mongodb';
 import Opsgenie from '@kobsio/opsgenie';
 import Prometheus from '@kobsio/prometheus';
 import RSS from '@kobsio/rss';
+import Runbooks from '@kobsio/runbooks';
 import SignalSciences from '@kobsio/signalsciences';
 import SonarQube from '@kobsio/sonarqube';
 import SQL from '@kobsio/sql';
@@ -50,6 +51,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         Opsgenie,
         Prometheus,
         RSS,
+        Runbooks,
         SignalSciences,
         SonarQube,
         SQL,

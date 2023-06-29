@@ -107,8 +107,9 @@ const CodeMirrorEditor: FunctionComponent<{
   languageOptions?: any;
   minimal: boolean;
   onChange?: (value: string) => void;
+  readOnly: boolean;
   value: string;
-}> = ({ language, languageOptions, minimal, value, onChange, handleSubmit }) => {
+}> = ({ language, languageOptions, minimal, readOnly, value, onChange, handleSubmit }) => {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -145,7 +146,7 @@ const CodeMirrorEditor: FunctionComponent<{
               ],
 
           EditorView.lineWrapping,
-          onChange ? EditorState.readOnly.of(false) : EditorState.readOnly.of(true),
+          readOnly ? EditorState.readOnly.of(true) : EditorState.readOnly.of(false),
           EditorView.updateListener.of((update: ViewUpdate): void => {
             if (update.docChanged && onChange) {
               onChange(update.state.doc.toString());
@@ -206,7 +207,7 @@ const CodeMirrorEditor: FunctionComponent<{
 };
 
 const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(function Editor(props, ref) {
-  const { language, languageOptions, minimal, value, onChange, handleSubmit } = props;
+  const { language, languageOptions, minimal, readOnly, value, onChange, handleSubmit } = props;
 
   const handleOnChange = (value: string | undefined) => {
     if (onChange) {
@@ -221,6 +222,7 @@ const InternalEditor = forwardRef<HTMLInputElement, InputBaseComponentProps>(fun
       language={language}
       languageOptions={languageOptions}
       minimal={minimal}
+      readOnly={readOnly}
       value={value}
       onChange={handleOnChange}
       handleSubmit={handleSubmit}
@@ -240,8 +242,9 @@ export const Editor: FunctionComponent<{
   languageOptions?: any;
   minimal?: boolean;
   onChange?: (value: string) => void;
+  readOnly?: boolean;
   value: string;
-}> = ({ adornment, language, languageOptions, minimal = false, value, onChange, handleSubmit }) => {
+}> = ({ adornment, language, languageOptions, minimal = false, readOnly = false, value, onChange, handleSubmit }) => {
   return (
     <TextField
       sx={{
@@ -263,6 +266,7 @@ export const Editor: FunctionComponent<{
           language: language,
           languageOptions: languageOptions,
           minimal: minimal,
+          readOnly: readOnly,
         },
       }}
     />
