@@ -71,6 +71,7 @@ jobs:
           - opsgenie
           - prometheus
           - rss
+          - runbooks
           - signalsciences
           - sonarqube
           - sql

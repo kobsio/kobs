@@ -33,6 +33,7 @@ type Config struct {
 
 // Client is the interface with all the methods to interact with the db.
 type Client interface {
+	DB() *mongo.Client
 	SavePlugins(ctx context.Context, cluster string, plugins []plugin.Instance) error
 	SaveNamespaces(ctx context.Context, cluster string, namespaces []string) error
 	SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error
@@ -119,6 +120,10 @@ func (c *client) save(ctx context.Context, collection string, models []mongo.Wri
 	}
 
 	return nil
+}
+
+func (c *client) DB() *mongo.Client {
+	return c.db
 }
 
 func (c *client) SavePlugins(ctx context.Context, cluster string, plugins []plugin.Instance) error {

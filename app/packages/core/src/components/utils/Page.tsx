@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 interface IPageProps {
   actions?: ReactNode;
   children?: ReactNode;
-  description?: string;
+  description?: string | ReactNode;
   hasTabs?: boolean;
   subtitle?: string;
   title: string;

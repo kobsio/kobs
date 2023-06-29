@@ -34,6 +34,7 @@
     "@kobsio/opsgenie": "*",
     "@kobsio/prometheus": "*",
     "@kobsio/rss": "*",
+    "@kobsio/runbooks": "*",
     "@kobsio/signalsciences": "*",
     "@kobsio/sonarqube": "*",
     "@kobsio/sql": "*",

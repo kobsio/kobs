@@ -23,6 +23,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/opsgenie"
 	"github.com/kobsio/kobs/pkg/plugins/prometheus"
 	"github.com/kobsio/kobs/pkg/plugins/rss"
+	"github.com/kobsio/kobs/pkg/plugins/runbooks"
 	"github.com/kobsio/kobs/pkg/plugins/signalsciences"
 	"github.com/kobsio/kobs/pkg/plugins/sonarqube"
 	"github.com/kobsio/kobs/pkg/plugins/sql"
@@ -58,6 +59,7 @@ func main() {
 		opsgenie.New(),
 		prometheus.New(),
 		rss.New(),
+		runbooks.New(),
 		signalsciences.New(),
 		sonarqube.New(),
 		sql.New(),
