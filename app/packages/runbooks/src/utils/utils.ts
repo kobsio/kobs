@@ -5,6 +5,7 @@ export const example = `plugin:
   name: runbooks
   type: runbooks
   options:
+    type: list
     alert: myalertname
     group: myalertgroup`;
 

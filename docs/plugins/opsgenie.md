@@ -16,8 +16,12 @@ The Opsgenie plugin can only be used within the `hub`. To use the Opsgenie plugi
 | type | `opsgenie` | The type for the Opsgenie plugin. | Yes |
 | options.apiKey | string | API Key for the Opsgenie API. More information can be found at [API key management](https://support.atlassian.com/opsgenie/docs/api-key-management/). | Yes |
 | options.apiUrl | string | API URL for the Opsgenie API. Must be `api.opsgenie.com` or `api.eu.opsgenie.com`. | Yes |
-| options.permissionsEnabled | boolean | Enable / disable the permission handling for the Opsgenie plugin. More information regarding the permission handling can be found in the [permissions](#permissions) section of the documentation. | No |
 | frontendOptions.url | string | The address for the Opsgenie account of your organisation. | No |
+| frontendOptions.integrations.runbook.plugin.cluster | string | The cluster for the runbooks plugin. | No |
+| frontendOptions.integrations.runbook.plugin.name | string | The name of the runbooks plugin. | No |
+| frontendOptions.integrations.runbook.plugin.type | `runbooks` | The type of the runbooks plugin. Must be `runbooks`. | No |
+| frontendOptions.integrations.runbook.options.alertname | string | The details field from an alert, which should be used to select a runbook. | No |
+| frontendOptions.integrations.runbook.options.alertgroup | string | The details field from an alert, which should be used to select a runbook. | No |
 
 ```yaml
 plugins:
@@ -28,6 +32,24 @@ plugins:
       apiUrl:
     frontendOptions:
       url:
+      # The integrations can be used to add a runbook to the Opsgenie alerts in
+      # the UI.
+      #
+      # To use this integration you must also configure a runbooks plugin and
+      # set the plugin which should be used in the "plugin" section.
+      #
+      # To select a runbook from the configured runbooks plugin, you must
+      # configure the details field from an Opsgenie alert which should be used
+      # for the "alertname" and "alertgroup" values of the runbook.
+      integrations:
+        runbook:
+          plugin:
+            cluster: hub
+            name: runbooks
+            type: runbooks
+          options:
+            alertname: "alertname"
+            alertgroup: "alertgroup"
 ```
 
 ## Insight Options

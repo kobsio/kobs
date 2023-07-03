@@ -1,7 +1,8 @@
 import { IPluginPanelProps, PluginPanel, PluginPanelError } from '@kobsio/core';
 import { FunctionComponent, useState } from 'react';
 
-import { Runbooks } from './RunbooksPage';
+import { Runbook } from './DetailsPage';
+import { Runbooks } from './ListPage';
 
 import { example } from '../utils/utils';
 
@@ -9,21 +10,44 @@ interface IOptions {
   alert: string;
   group: string;
   query: string;
+  type: string;
 }
 
-const RunbooksPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({ title, description, options, instance }) => {
+const RunbooksPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
+  title,
+  description,
+  options,
+  instance,
+  times,
+  setTimes,
+}) => {
   const [page, setPage] = useState<{ page: number; perPage: number }>({
     page: 1,
     perPage: 10,
   });
 
-  if (options && (options.query || options.group || options.alert)) {
+  if (options && options.type === 'list' && (options.query || options.group || options.alert)) {
     return (
       <PluginPanel title={title} description={description}>
         <Runbooks
           instance={instance}
           options={{ ...options, ...page }}
           setPage={(page, perPage) => setPage({ page: page, perPage: perPage })}
+        />
+      </PluginPanel>
+    );
+  }
+
+  if (options && options.type === 'details' && options.group && options.alert) {
+    return (
+      <PluginPanel title={title} description={description}>
+        <Runbook
+          instance={instance}
+          alert={options.alert}
+          group={options.group}
+          times={times}
+          setTimes={setTimes}
+          showActions={true}
         />
       </PluginPanel>
     );
