@@ -1344,26 +1344,33 @@
 </thead>
 <tbody>
 <tr>
+<td>type</td>
+<td>string</td>
+<td>The type for the Runbooks panel. This must be <code>list</code> to render a list of runbooks or <code>details</code> to render a single runbook.</td>
+<td>No</td>
+</tr>
+<tr>
 <td>query</td>
 <td>string</td>
-<td></td>
+<td>A search query to render the list of runbooks.</td>
 <td>No</td>
 </tr>
 <tr>
 <td>alert</td>
 <td>string</td>
-<td></td>
+<td>The name of the alert.</td>
 <td>No</td>
 </tr>
 <tr>
 <td>group</td>
 <td>string</td>
-<td></td>
+<td>The groups of the alert.</td>
 <td>No</td>
 </tr>
 </tbody>
 </table>
 <h2 id="usage">Usage</h2>
+<p>The following example shows a <code>VMRule</code> with a runbook:</p>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span>
 <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">operator.victoriametrics.com/v1beta1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VMRule</span>

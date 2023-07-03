@@ -1296,15 +1296,39 @@
 <td>Yes</td>
 </tr>
 <tr>
-<td>options.permissionsEnabled</td>
-<td>boolean</td>
-<td>Enable / disable the permission handling for the Opsgenie plugin. More information regarding the permission handling can be found in the <a href="#permissions">permissions</a> section of the documentation.</td>
-<td>No</td>
-</tr>
-<tr>
 <td>frontendOptions.url</td>
 <td>string</td>
 <td>The address for the Opsgenie account of your organisation.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>frontendOptions.integrations.runbook.plugin.cluster</td>
+<td>string</td>
+<td>The cluster for the runbooks plugin.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>frontendOptions.integrations.runbook.plugin.name</td>
+<td>string</td>
+<td>The name of the runbooks plugin.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>frontendOptions.integrations.runbook.plugin.type</td>
+<td><code>runbooks</code></td>
+<td>The type of the runbooks plugin. Must be <code>runbooks</code>.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>frontendOptions.integrations.runbook.options.alertname</td>
+<td>string</td>
+<td>The details field from an alert, which should be used to select a runbook.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>frontendOptions.integrations.runbook.options.alertgroup</td>
+<td>string</td>
+<td>The details field from an alert, which should be used to select a runbook.</td>
 <td>No</td>
 </tr>
 </tbody>
@@ -1317,6 +1341,24 @@
 <span class="w">      </span><span class="nt">apiUrl</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">frontendOptions</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">url</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># The integrations can be used to add a runbook to the Opsgenie alerts in</span>
+<span class="w">      </span><span class="c1"># the UI.</span>
+<span class="w">      </span><span class="c1">#</span>
+<span class="w">      </span><span class="c1"># To use this integration you must also configure a runbooks plugin and</span>
+<span class="w">      </span><span class="c1"># set the plugin which should be used in the &quot;plugin&quot; section.</span>
+<span class="w">      </span><span class="c1">#</span>
+<span class="w">      </span><span class="c1"># To select a runbook from the configured runbooks plugin, you must</span>
+<span class="w">      </span><span class="c1"># configure the details field from an Opsgenie alert which should be used</span>
+<span class="w">      </span><span class="c1"># for the &quot;alertname&quot; and &quot;alertgroup&quot; values of the runbook.</span>
+<span class="w">      </span><span class="nt">integrations</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">runbook</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hub</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">runbooks</span>
+<span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">runbooks</span>
+<span class="w">          </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">alertname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;alertname&quot;</span>
+<span class="w">            </span><span class="nt">alertgroup</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;alertgroup&quot;</span>
 </code></pre></div>
 <h2 id="insight-options">Insight Options</h2>
 <div class="admonition note">
