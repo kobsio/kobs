@@ -6,6 +6,7 @@ import {
   DescriptionListGroup,
   DescriptionListTerm,
   DetailsDrawer,
+  EmbeddedPanel,
   formatTimeString,
   IAPIContext,
   IPluginInstance,
@@ -484,6 +485,54 @@ const DetailsDetails: FunctionComponent<{ alert: IAlert; instance: IPluginInstan
   );
 };
 
+const DetailsRunbook: FunctionComponent<{ alert: IAlert; instance: IPluginInstance }> = ({ instance, alert }) => {
+  const apiContext = useContext<IAPIContext>(APIContext);
+  const [times, setTimes] = useState<ITimes>({
+    time: 'last15Minutes',
+    timeEnd: Math.floor(Date.now() / 1000),
+    timeStart: Math.floor(Date.now() / 1000) - 900,
+  });
+
+  const { isError, isLoading, error, data, refetch } = useQuery<IAlertDetails, APIError>(
+    ['opsgenie/alerts/details', instance, alert],
+    async () => {
+      return apiContext.client.get<IAlertDetails>(`/api/plugins/opsgenie/alert/details?id=${alert.id}`, {
+        headers: {
+          'x-kobs-cluster': instance.cluster,
+          'x-kobs-plugin': instance.name,
+        },
+      });
+    },
+  );
+
+  return (
+    <UseQueryWrapper
+      error={error}
+      errorTitle="Failed to load alert details"
+      isError={isError}
+      isLoading={isLoading}
+      isNoData={false}
+      refetch={refetch}
+    >
+      {data && data.details ? (
+        <EmbeddedPanel
+          cluster={instance.options?.integrations?.runbook?.plugin?.cluster ?? ''}
+          name={instance.options?.integrations?.runbook?.plugin?.name ?? ''}
+          options={{
+            alert: data.details[instance.options?.integrations?.runbook?.options?.alertname] ?? '',
+            group: data.details[instance.options?.integrations?.runbook?.options?.alertgroup] ?? '',
+            type: 'details',
+          }}
+          title=""
+          type={instance.options?.integrations?.runbook?.plugin?.type ?? ''}
+          times={times}
+          setTimes={setTimes}
+        />
+      ) : null}
+    </UseQueryWrapper>
+  );
+};
+
 const Details: FunctionComponent<{
   alert: IAlert;
   instance: IPluginInstance;
@@ -528,6 +577,16 @@ const Details: FunctionComponent<{
             <Tab label="Details" value="details" />
             <Tab label="Logs" value="logs" />
             <Tab label="Notes" value="notes" />
+            {instance.options &&
+              instance.options.integrations &&
+              instance.options.integrations.runbook &&
+              instance.options.integrations.runbook.plugin &&
+              instance.options.integrations.runbook.plugin.cluster &&
+              instance.options.integrations.runbook.plugin.name &&
+              instance.options.integrations.runbook.plugin.type &&
+              instance.options.integrations.runbook.options &&
+              instance.options.integrations.runbook.options.alertname &&
+              instance.options.integrations.runbook.options.alertgroup && <Tab label="Runbook" value="runbook" />}
           </Tabs>
         </Box>
 
@@ -539,6 +598,9 @@ const Details: FunctionComponent<{
         </Box>
         <Box hidden={activeTab !== 'notes'} sx={{ pt: 6 }}>
           {activeTab === 'notes' && <DetailsNotes instance={instance} alert={alert} />}
+        </Box>
+        <Box hidden={activeTab !== 'runbook'} sx={{ pt: 6 }}>
+          {activeTab === 'runbook' && <DetailsRunbook instance={instance} alert={alert} />}
         </Box>
       </DetailsDrawer>
 

@@ -45,11 +45,14 @@ The following options can be used for a panel with the Runbooks plugin:
 
 | Field | Type | Description | Required |
 | ----- | ---- | ----------- | -------- |
-| query | string |  | No |
-| alert | string |  | No |
-| group | string |  | No |
+| type | string | The type for the Runbooks panel. This must be `list` to render a list of runbooks or `details` to render a single runbook. | No |
+| query | string | A search query to render the list of runbooks. | No |
+| alert | string | The name of the alert. | No |
+| group | string | The groups of the alert. | No |
 
 ## Usage
+
+The following example shows a `VMRule` with a runbook:
 
 ```yaml
 ---
