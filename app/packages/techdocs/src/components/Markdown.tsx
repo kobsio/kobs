@@ -2,6 +2,7 @@ import { ITimes } from '@kobsio/core';
 import { Box, useTheme } from '@mui/material';
 import { FunctionComponent } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { Link } from 'react-router-dom';
 import remarkDirective from 'remark-directive';
 import remarkGfm from 'remark-gfm';
 
@@ -68,6 +69,18 @@ export const Markdown: FunctionComponent<{
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkDirective, admonitionsPlugin]}
         components={{
+          a: ({ href, ...props }) => {
+            const url = (href || '').trim();
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+              return (
+                <a href={href} target="_blank" rel="noreferrer">
+                  {props.children}
+                </a>
+              );
+            }
+
+            return <Link to={href ?? ''}>{props.children}</Link>;
+          },
           code: ({ node, inline, className, children, ...props }) =>
             renderCode({ children, className, inline, node, ...props }, theme, times, setTimes),
           'custom-admonitions': ({ node, children, ...props }) => renderAdmonitions({ children, node, ...props }),
