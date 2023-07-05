@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -36,12 +37,12 @@ type ResponseError struct {
 // Instance is the interface which must be implemented by a single SonarQube instance.
 type Instance interface {
 	GetName() string
-	doRequest(ctx context.Context, url string) (map[string]any, error)
-	GetServices(ctx context.Context) (map[string]any, error)
-	GetOperations(ctx context.Context, service string) (map[string]any, error)
-	GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]any, error)
-	GetTrace(ctx context.Context, traceID string) (map[string]any, error)
-	GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) (map[string]any, error)
+	doRequest(ctx context.Context, url string) ([]byte, error)
+	GetServices(ctx context.Context) ([]byte, error)
+	GetOperations(ctx context.Context, service string) ([]byte, error)
+	GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) ([]byte, error)
+	GetTrace(ctx context.Context, traceID string) ([]byte, error)
+	GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) ([]byte, error)
 }
 
 type instance struct {
@@ -55,7 +56,7 @@ func (i *instance) GetName() string {
 }
 
 // GetProjects returns a list of projects from SonarQube.
-func (i *instance) doRequest(ctx context.Context, url string) (map[string]any, error) {
+func (i *instance) doRequest(ctx context.Context, url string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s%s", i.address, url), nil)
 	if err != nil {
 		return nil, err
@@ -74,14 +75,7 @@ func (i *instance) doRequest(ctx context.Context, url string) (map[string]any, e
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-		var data map[string]any
-
-		err = json.NewDecoder(resp.Body).Decode(&data)
-		if err != nil {
-			return nil, err
-		}
-
-		return data, nil
+		return io.ReadAll(resp.Body)
 	}
 
 	var res ResponseError
@@ -98,23 +92,23 @@ func (i *instance) doRequest(ctx context.Context, url string) (map[string]any, e
 	return nil, fmt.Errorf("%v", res)
 }
 
-func (i *instance) GetServices(ctx context.Context) (map[string]any, error) {
+func (i *instance) GetServices(ctx context.Context) ([]byte, error) {
 	return i.doRequest(ctx, "/api/services")
 }
 
-func (i *instance) GetOperations(ctx context.Context, service string) (map[string]any, error) {
+func (i *instance) GetOperations(ctx context.Context, service string) ([]byte, error) {
 	return i.doRequest(ctx, fmt.Sprintf("/api/operations?service=%s", url.QueryEscape(service)))
 }
 
-func (i *instance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]any, error) {
+func (i *instance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) ([]byte, error) {
 	return i.doRequest(ctx, fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d&tags=%s", timeEnd*1000000, limit, maxDuration, minDuration, url.QueryEscape(operation), url.QueryEscape(service), timeStart*1000000, tags))
 }
 
-func (i *instance) GetTrace(ctx context.Context, traceID string) (map[string]any, error) {
+func (i *instance) GetTrace(ctx context.Context, traceID string) ([]byte, error) {
 	return i.doRequest(ctx, fmt.Sprintf("/api/traces/%s", traceID))
 }
 
-func (i *instance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) (map[string]any, error) {
+func (i *instance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) ([]byte, error) {
 	timeStart = timeStart * 1000
 	timeEnd = timeEnd * 1000
 	lookback := timeEnd - timeStart
