@@ -9,6 +9,7 @@ import (
 	"github.com/kobsio/kobs/pkg/hub/clusters"
 	"github.com/kobsio/kobs/pkg/hub/db"
 	"github.com/kobsio/kobs/pkg/hub/watcher"
+	"github.com/kobsio/kobs/pkg/instrument/debug"
 	"github.com/kobsio/kobs/pkg/instrument/log"
 	"github.com/kobsio/kobs/pkg/instrument/metrics"
 	"github.com/kobsio/kobs/pkg/instrument/tracer"
@@ -22,6 +23,7 @@ type Cmd struct {
 	Config string `env:"KOBS_CONFIG" default:"config.yaml" help:"The path to the configuration file for the watcher."`
 
 	Watcher struct {
+		Debug    debug.Config    `json:"debug" embed:"" prefix:"debug." envprefix:"DEBUG_"`
 		Log      log.Config      `json:"log" embed:"" prefix:"log." envprefix:"LOG_"`
 		Tracer   tracer.Config   `json:"tracer" embed:"" prefix:"tracer." envprefix:"TRACER_"`
 		Metrics  metrics.Config  `json:"metrics" embed:"" prefix:"metrics." envprefix:"METRICS_"`
@@ -55,6 +57,12 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	metricsServer := metrics.New(cfg.Watcher.Metrics)
 	go metricsServer.Start()
 	defer metricsServer.Stop()
+
+	if cfg.Watcher.Debug.Enabled {
+		debugServer := debug.New(cfg.Watcher.Debug)
+		go debugServer.Start()
+		defer debugServer.Stop()
+	}
 
 	clustersClient, err := clusters.NewClient(cfg.Watcher.Clusters)
 	if err != nil {

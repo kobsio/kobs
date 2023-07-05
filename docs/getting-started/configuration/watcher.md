@@ -9,6 +9,8 @@ The following command-line arguments and environment variables are available.
 | Command-line Argument | Environment Variable | Description | Default |
 | --------------------- | -------------------- | ----------- | ------- |
 | `--config` | `KOBS_CONFIG` | The path to the configuration file for the watcher | `config.yaml` |
+| `--watcher.debug.enabled` | `KOBS_WATCHER_DEBUG_ENABLED` | Start the debug server. | `false` |
+| `--watcher.debug.address` | `KOBS_WATCHER_DEBUG_ADDRESS` | The address where the debug server should listen on. | `:15225` |
 | `--watcher.log.format` | `KOBS_WATCHER_LOG_FORMAT` | Set the output format of the logs. Must be `console` or `json`. | `console` |
 | `--watcher.log.level` | `KOBS_WATCHER_LOG_LEVEL` | Set the log level. Must be `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |
 | `--watcher.tracer.enabled` | `KOBS_WATCHER_TRACER_ENABLED` | Enable tracing. | `false` |
