@@ -9,6 +9,8 @@ The following command-line arguments and environment variables are available.
 | Command-line Argument | Environment Variable | Description | Default |
 | --------------------- | -------------------- | ----------- | ------- |
 | `--config` | `KOBS_CONFIG` | The path to the configuration file for the hub | `config.yaml` |
+| `--hub.debug.enabled` | `KOBS_HUB_DEBUG_ENABLED` | Start the debug server. | `false` |
+| `--hub.debug.address` | `KOBS_HUB_DEBUG_ADDRESS` | The address where the debug server should listen on. | `:15225` |
 | `--hub.log.format` | `KOBS_HUB_LOG_FORMAT` | Set the output format of the logs. Must be `console` or `json`. | `console` |
 | `--hub.log.level` | `KOBS_HUB_LOG_LEVEL` | Set the log level. Must be `debug`, `info`, `warn`, `error`, `fatal` or `panic`. | `info` |
 | `--hub.tracer.enabled` | `KOBS_HUB_TRACER_ENABLED` | Enable tracing. | `false` |
