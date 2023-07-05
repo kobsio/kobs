@@ -35,10 +35,10 @@ func (m *MockInstance) EXPECT() *MockInstanceMockRecorder {
 }
 
 // GetMetrics mocks base method.
-func (m *MockInstance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) (map[string]any, error) {
+func (m *MockInstance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) ([]byte, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMetrics", ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -64,10 +64,10 @@ func (mr *MockInstanceMockRecorder) GetName() *gomock.Call {
 }
 
 // GetOperations mocks base method.
-func (m *MockInstance) GetOperations(ctx context.Context, service string) (map[string]any, error) {
+func (m *MockInstance) GetOperations(ctx context.Context, service string) ([]byte, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOperations", ctx, service)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -79,10 +79,10 @@ func (mr *MockInstanceMockRecorder) GetOperations(ctx, service interface{}) *gom
 }
 
 // GetServices mocks base method.
-func (m *MockInstance) GetServices(ctx context.Context) (map[string]any, error) {
+func (m *MockInstance) GetServices(ctx context.Context) ([]byte, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServices", ctx)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -94,10 +94,10 @@ func (mr *MockInstanceMockRecorder) GetServices(ctx interface{}) *gomock.Call {
 }
 
 // GetTrace mocks base method.
-func (m *MockInstance) GetTrace(ctx context.Context, traceID string) (map[string]any, error) {
+func (m *MockInstance) GetTrace(ctx context.Context, traceID string) ([]byte, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTrace", ctx, traceID)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -109,10 +109,10 @@ func (mr *MockInstanceMockRecorder) GetTrace(ctx, traceID interface{}) *gomock.C
 }
 
 // GetTraces mocks base method.
-func (m *MockInstance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) (map[string]any, error) {
+func (m *MockInstance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) ([]byte, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTraces", ctx, limit, maxDuration, minDuration, operation, service, tags, timeStart, timeEnd)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -124,10 +124,10 @@ func (mr *MockInstanceMockRecorder) GetTraces(ctx, limit, maxDuration, minDurati
 }
 
 // doRequest mocks base method.
-func (m *MockInstance) doRequest(ctx context.Context, url string) (map[string]any, error) {
+func (m *MockInstance) doRequest(ctx context.Context, url string) ([]byte, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "doRequest", ctx, url)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

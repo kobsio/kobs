@@ -57,7 +57,8 @@ func (router *Router) getServices(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, body)
+	render.SetContentType(render.ContentTypeJSON)
+	render.Data(w, r, body)
 }
 
 func (router *Router) getOperations(w http.ResponseWriter, r *http.Request) {
@@ -80,7 +81,8 @@ func (router *Router) getOperations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, body)
+	render.SetContentType(render.ContentTypeJSON)
+	render.Data(w, r, body)
 }
 
 func (router *Router) getTraces(w http.ResponseWriter, r *http.Request) {
@@ -124,7 +126,8 @@ func (router *Router) getTraces(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, body)
+	render.SetContentType(render.ContentTypeJSON)
+	render.Data(w, r, body)
 }
 
 func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
@@ -147,7 +150,8 @@ func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, body)
+	render.SetContentType(render.ContentTypeJSON)
+	render.Data(w, r, body)
 }
 
 func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
@@ -192,7 +196,8 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, body)
+	render.SetContentType(render.ContentTypeJSON)
+	render.Data(w, r, body)
 }
 
 func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {

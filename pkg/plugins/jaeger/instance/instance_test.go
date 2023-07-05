@@ -50,20 +50,7 @@ func TestDoRequest(t *testing.T) {
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
 		res, err := i.doRequest(context.Background(), "/")
 		require.NoError(t, err)
-		require.Equal(t, map[string]any{"key": "value"}, res)
-	})
-
-	t.Run("should fail if invalid json is returned", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{"key": "value}`))
-		}))
-		defer ts.Close()
-
-		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		_, err := i.doRequest(context.Background(), "/")
-		require.Error(t, err)
+		require.Equal(t, []byte(`{"key": "value"}`), res)
 	})
 
 	t.Run("should return error", func(t *testing.T) {
@@ -106,7 +93,7 @@ func TestGetServices(t *testing.T) {
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
 		res, err := i.GetServices(context.Background())
 		require.NoError(t, err)
-		require.Equal(t, map[string]any{"key": "value"}, res)
+		require.Equal(t, []byte(`{"key": "value"}`), res)
 	})
 }
 
@@ -122,7 +109,7 @@ func TestGetOperations(t *testing.T) {
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
 		res, err := i.GetOperations(context.Background(), "service")
 		require.NoError(t, err)
-		require.Equal(t, map[string]any{"key": "value"}, res)
+		require.Equal(t, []byte(`{"key": "value"}`), res)
 	})
 }
 
@@ -138,7 +125,7 @@ func TestGetTraces(t *testing.T) {
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
 		res, err := i.GetTraces(context.Background(), "", "", "", "operation", "service", "", 0, 0)
 		require.NoError(t, err)
-		require.Equal(t, map[string]any{"key": "value"}, res)
+		require.Equal(t, []byte(`{"key": "value"}`), res)
 	})
 }
 
@@ -154,7 +141,7 @@ func TestGetTrace(t *testing.T) {
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
 		res, err := i.GetTrace(context.Background(), "")
 		require.NoError(t, err)
-		require.Equal(t, map[string]any{"key": "value"}, res)
+		require.Equal(t, []byte(`{"key": "value"}`), res)
 	})
 }
 
@@ -170,7 +157,7 @@ func TestGetMetrics(t *testing.T) {
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
 		res, err := i.GetMetrics(context.Background(), "", "", "", "", "", "", []string{"kind1", "kind2"}, 0, 0)
 		require.NoError(t, err)
-		require.Equal(t, map[string]any{"key": "value"}, res)
+		require.Equal(t, []byte(`{"key": "value"}`), res)
 	})
 }
 
