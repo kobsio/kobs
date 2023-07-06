@@ -37,12 +37,12 @@ type ResponseError struct {
 // Instance is the interface which must be implemented by a single SonarQube instance.
 type Instance interface {
 	GetName() string
-	doRequest(ctx context.Context, url string) ([]byte, error)
-	GetServices(ctx context.Context) ([]byte, error)
-	GetOperations(ctx context.Context, service string) ([]byte, error)
-	GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) ([]byte, error)
-	GetTrace(ctx context.Context, traceID string) ([]byte, error)
-	GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) ([]byte, error)
+	doRequest(ctx context.Context, w http.ResponseWriter, url string) error
+	GetServices(ctx context.Context, w http.ResponseWriter) error
+	GetOperations(ctx context.Context, w http.ResponseWriter, service string) error
+	GetTraces(ctx context.Context, w http.ResponseWriter, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) error
+	GetTrace(ctx context.Context, w http.ResponseWriter, traceID string) error
+	GetMetrics(ctx context.Context, w http.ResponseWriter, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) error
 }
 
 type instance struct {
@@ -56,10 +56,10 @@ func (i *instance) GetName() string {
 }
 
 // GetProjects returns a list of projects from SonarQube.
-func (i *instance) doRequest(ctx context.Context, url string) ([]byte, error) {
+func (i *instance) doRequest(ctx context.Context, w http.ResponseWriter, url string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s%s", i.address, url), nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
@@ -69,46 +69,49 @@ func (i *instance) doRequest(ctx context.Context, url string) ([]byte, error) {
 
 	resp, err := i.client.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-		return io.ReadAll(resp.Body)
+		_, err = io.Copy(w, resp.Body)
+		if err != nil {
+			return err
+		}
+		return nil
 	}
 
 	var res ResponseError
 
 	err = json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if len(res.Errors) > 0 {
-		return nil, fmt.Errorf(res.Errors[0].Msg)
+		return fmt.Errorf(res.Errors[0].Msg)
 	}
 
-	return nil, fmt.Errorf("%v", res)
+	return fmt.Errorf("%v", res)
 }
 
-func (i *instance) GetServices(ctx context.Context) ([]byte, error) {
-	return i.doRequest(ctx, "/api/services")
+func (i *instance) GetServices(ctx context.Context, w http.ResponseWriter) error {
+	return i.doRequest(ctx, w, "/api/services")
 }
 
-func (i *instance) GetOperations(ctx context.Context, service string) ([]byte, error) {
-	return i.doRequest(ctx, fmt.Sprintf("/api/operations?service=%s", url.QueryEscape(service)))
+func (i *instance) GetOperations(ctx context.Context, w http.ResponseWriter, service string) error {
+	return i.doRequest(ctx, w, fmt.Sprintf("/api/operations?service=%s", url.QueryEscape(service)))
 }
 
-func (i *instance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) ([]byte, error) {
-	return i.doRequest(ctx, fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d&tags=%s", timeEnd*1000000, limit, maxDuration, minDuration, url.QueryEscape(operation), url.QueryEscape(service), timeStart*1000000, tags))
+func (i *instance) GetTraces(ctx context.Context, w http.ResponseWriter, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) error {
+	return i.doRequest(ctx, w, fmt.Sprintf("/api/traces?end=%d&limit=%s&lookback=custom&maxDuration=%s&minDuration=%s&operation=%s&service=%s&start=%d&tags=%s", timeEnd*1000000, limit, maxDuration, minDuration, url.QueryEscape(operation), url.QueryEscape(service), timeStart*1000000, tags))
 }
 
-func (i *instance) GetTrace(ctx context.Context, traceID string) ([]byte, error) {
-	return i.doRequest(ctx, fmt.Sprintf("/api/traces/%s", traceID))
+func (i *instance) GetTrace(ctx context.Context, w http.ResponseWriter, traceID string) error {
+	return i.doRequest(ctx, w, fmt.Sprintf("/api/traces/%s", traceID))
 }
 
-func (i *instance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) ([]byte, error) {
+func (i *instance) GetMetrics(ctx context.Context, w http.ResponseWriter, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) error {
 	timeStart = timeStart * 1000
 	timeEnd = timeEnd * 1000
 	lookback := timeEnd - timeStart
@@ -118,7 +121,7 @@ func (i *instance) GetMetrics(ctx context.Context, metric, service, groupByOpera
 		spanKindsParameters = fmt.Sprintf("%s&spanKind=%s", spanKindsParameters, spanKind)
 	}
 
-	return i.doRequest(ctx, fmt.Sprintf("/api/metrics/%s?service=%s&endTs=%d&lookback=%d&groupByOperation=%s&quantile=%s&ratePer=%s&step=%s%s", metric, service, timeEnd, lookback, groupByOperation, quantile, ratePer, step, spanKindsParameters))
+	return i.doRequest(ctx, w, fmt.Sprintf("/api/metrics/%s?service=%s&endTs=%d&lookback=%d&groupByOperation=%s&quantile=%s&ratePer=%s&step=%s%s", metric, service, timeEnd, lookback, groupByOperation, quantile, ratePer, step, spanKindsParameters))
 }
 
 func New(name string, options map[string]any) (Instance, error) {
