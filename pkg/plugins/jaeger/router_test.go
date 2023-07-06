@@ -74,7 +74,7 @@ func TestGetServices(t *testing.T) {
 	t.Run("should fail when instance returns an error", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetServices(gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
+		i.EXPECT().GetServices(gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/services", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -89,7 +89,7 @@ func TestGetServices(t *testing.T) {
 	t.Run("should return services", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetServices(gomock.Any()).Return([]byte(`{"key": "value"}`), nil)
+		i.EXPECT().GetServices(gomock.Any(), gomock.Any()).Return(nil)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/services", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -98,7 +98,6 @@ func TestGetServices(t *testing.T) {
 		router.getServices(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"key": "value"}`)
 	})
 }
 
@@ -128,7 +127,7 @@ func TestGetOperations(t *testing.T) {
 	t.Run("should fail when instance returns an error", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetOperations(gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
+		i.EXPECT().GetOperations(gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/operations", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -143,7 +142,7 @@ func TestGetOperations(t *testing.T) {
 	t.Run("should return operations", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetOperations(gomock.Any(), gomock.Any()).Return([]byte(`{"key": "value"}`), nil)
+		i.EXPECT().GetOperations(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/operations", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -152,7 +151,6 @@ func TestGetOperations(t *testing.T) {
 		router.getOperations(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"key": "value"}`)
 	})
 }
 
@@ -210,7 +208,7 @@ func TestGetTraces(t *testing.T) {
 	t.Run("should fail when instance returns an error", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetTraces(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
+		i.EXPECT().GetTraces(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/traces?timeStart=0&timeEnd=0", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -225,7 +223,7 @@ func TestGetTraces(t *testing.T) {
 	t.Run("should return traces", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetTraces(gomock.Any(), "", "", "", "myoperation", "myservice", "", int64(0), int64(0)).Return([]byte(`{"data": [{"traceID": "f821489350cd7465fcc727e92e32a237"}]}`), nil)
+		i.EXPECT().GetTraces(gomock.Any(), gomock.Any(), "", "", "", "myoperation", "myservice", "", int64(0), int64(0)).Return(nil)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/traces?operation=myoperation&service=myservice&timeStart=0&timeEnd=0", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -234,7 +232,6 @@ func TestGetTraces(t *testing.T) {
 		router.getTraces(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"data": [{"traceID": "f821489350cd7465fcc727e92e32a237"}]}`)
 	})
 }
 
@@ -264,7 +261,7 @@ func TestGetTrace(t *testing.T) {
 	t.Run("should fail when instance returns an error", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetTrace(gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
+		i.EXPECT().GetTrace(gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/trace", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -279,7 +276,7 @@ func TestGetTrace(t *testing.T) {
 	t.Run("should return trace", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetTrace(gomock.Any(), gomock.Any()).Return([]byte(`{"key": "value"}`), nil)
+		i.EXPECT().GetTrace(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/trace", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -288,7 +285,6 @@ func TestGetTrace(t *testing.T) {
 		router.getTrace(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"key": "value"}`)
 	})
 }
 
@@ -346,7 +342,7 @@ func TestGetMetrics(t *testing.T) {
 	t.Run("should fail when instance returns an error", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetMetrics(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("unexpected error"))
+		i.EXPECT().GetMetrics(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(fmt.Errorf("unexpected error"))
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/metrics?timeStart=0&timeEnd=0", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -361,7 +357,7 @@ func TestGetMetrics(t *testing.T) {
 	t.Run("should return metrics", func(t *testing.T) {
 		i, router := newRouter(t)
 		i.EXPECT().GetName().Return("jaeger")
-		i.EXPECT().GetMetrics(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]byte(`{"key": "value"}`), nil)
+		i.EXPECT().GetMetrics(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 
 		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/metrics?timeStart=0&timeEnd=0", nil)
 		req.Header.Set("x-kobs-plugin", "jaeger")
@@ -370,7 +366,6 @@ func TestGetMetrics(t *testing.T) {
 		router.getMetrics(w, req)
 
 		utils.AssertStatusEq(t, w, http.StatusOK)
-		utils.AssertJSONEq(t, w, `{"key": "value"}`)
 	})
 }
 

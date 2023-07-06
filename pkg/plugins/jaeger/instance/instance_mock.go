@@ -6,6 +6,7 @@ package instance
 
 import (
 	context "context"
+	http "net/http"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,18 +36,17 @@ func (m *MockInstance) EXPECT() *MockInstanceMockRecorder {
 }
 
 // GetMetrics mocks base method.
-func (m *MockInstance) GetMetrics(ctx context.Context, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) ([]byte, error) {
+func (m *MockInstance) GetMetrics(ctx context.Context, w http.ResponseWriter, metric, service, groupByOperation, quantile, ratePer, step string, spanKinds []string, timeStart, timeEnd int64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMetrics", ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "GetMetrics", ctx, w, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // GetMetrics indicates an expected call of GetMetrics.
-func (mr *MockInstanceMockRecorder) GetMetrics(ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) GetMetrics(ctx, w, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockInstance)(nil).GetMetrics), ctx, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockInstance)(nil).GetMetrics), ctx, w, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, timeStart, timeEnd)
 }
 
 // GetName mocks base method.
@@ -64,76 +64,71 @@ func (mr *MockInstanceMockRecorder) GetName() *gomock.Call {
 }
 
 // GetOperations mocks base method.
-func (m *MockInstance) GetOperations(ctx context.Context, service string) ([]byte, error) {
+func (m *MockInstance) GetOperations(ctx context.Context, w http.ResponseWriter, service string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetOperations", ctx, service)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "GetOperations", ctx, w, service)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // GetOperations indicates an expected call of GetOperations.
-func (mr *MockInstanceMockRecorder) GetOperations(ctx, service interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) GetOperations(ctx, w, service interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOperations", reflect.TypeOf((*MockInstance)(nil).GetOperations), ctx, service)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOperations", reflect.TypeOf((*MockInstance)(nil).GetOperations), ctx, w, service)
 }
 
 // GetServices mocks base method.
-func (m *MockInstance) GetServices(ctx context.Context) ([]byte, error) {
+func (m *MockInstance) GetServices(ctx context.Context, w http.ResponseWriter) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetServices", ctx)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "GetServices", ctx, w)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // GetServices indicates an expected call of GetServices.
-func (mr *MockInstanceMockRecorder) GetServices(ctx interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) GetServices(ctx, w interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServices", reflect.TypeOf((*MockInstance)(nil).GetServices), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServices", reflect.TypeOf((*MockInstance)(nil).GetServices), ctx, w)
 }
 
 // GetTrace mocks base method.
-func (m *MockInstance) GetTrace(ctx context.Context, traceID string) ([]byte, error) {
+func (m *MockInstance) GetTrace(ctx context.Context, w http.ResponseWriter, traceID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTrace", ctx, traceID)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "GetTrace", ctx, w, traceID)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // GetTrace indicates an expected call of GetTrace.
-func (mr *MockInstanceMockRecorder) GetTrace(ctx, traceID interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) GetTrace(ctx, w, traceID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTrace", reflect.TypeOf((*MockInstance)(nil).GetTrace), ctx, traceID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTrace", reflect.TypeOf((*MockInstance)(nil).GetTrace), ctx, w, traceID)
 }
 
 // GetTraces mocks base method.
-func (m *MockInstance) GetTraces(ctx context.Context, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) ([]byte, error) {
+func (m *MockInstance) GetTraces(ctx context.Context, w http.ResponseWriter, limit, maxDuration, minDuration, operation, service, tags string, timeStart, timeEnd int64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTraces", ctx, limit, maxDuration, minDuration, operation, service, tags, timeStart, timeEnd)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "GetTraces", ctx, w, limit, maxDuration, minDuration, operation, service, tags, timeStart, timeEnd)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // GetTraces indicates an expected call of GetTraces.
-func (mr *MockInstanceMockRecorder) GetTraces(ctx, limit, maxDuration, minDuration, operation, service, tags, timeStart, timeEnd interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) GetTraces(ctx, w, limit, maxDuration, minDuration, operation, service, tags, timeStart, timeEnd interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTraces", reflect.TypeOf((*MockInstance)(nil).GetTraces), ctx, limit, maxDuration, minDuration, operation, service, tags, timeStart, timeEnd)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTraces", reflect.TypeOf((*MockInstance)(nil).GetTraces), ctx, w, limit, maxDuration, minDuration, operation, service, tags, timeStart, timeEnd)
 }
 
 // doRequest mocks base method.
-func (m *MockInstance) doRequest(ctx context.Context, url string) ([]byte, error) {
+func (m *MockInstance) doRequest(ctx context.Context, w http.ResponseWriter, url string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "doRequest", ctx, url)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "doRequest", ctx, w, url)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // doRequest indicates an expected call of doRequest.
-func (mr *MockInstanceMockRecorder) doRequest(ctx, url interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) doRequest(ctx, w, url interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "doRequest", reflect.TypeOf((*MockInstance)(nil).doRequest), ctx, url)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "doRequest", reflect.TypeOf((*MockInstance)(nil).doRequest), ctx, w, url)
 }

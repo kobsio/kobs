@@ -12,7 +12,6 @@ import (
 	"github.com/kobsio/kobs/pkg/utils/middleware/pluginproxy"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
 	"go.uber.org/zap"
 )
 
@@ -50,15 +49,12 @@ func (router *Router) getServices(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetServices(r.Context())
+	err := i.GetServices(r.Context(), w)
 	if err != nil {
 		log.Error(r.Context(), "Failed to get services", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get services")
 		return
 	}
-
-	render.SetContentType(render.ContentTypeJSON)
-	render.Data(w, r, body)
 }
 
 func (router *Router) getOperations(w http.ResponseWriter, r *http.Request) {
@@ -74,15 +70,12 @@ func (router *Router) getOperations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetOperations(r.Context(), service)
+	err := i.GetOperations(r.Context(), w, service)
 	if err != nil {
 		log.Error(r.Context(), "Failed to get operations", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get operations")
 		return
 	}
-
-	render.SetContentType(render.ContentTypeJSON)
-	render.Data(w, r, body)
 }
 
 func (router *Router) getTraces(w http.ResponseWriter, r *http.Request) {
@@ -119,15 +112,12 @@ func (router *Router) getTraces(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetTraces(r.Context(), limit, maxDuration, minDuration, operation, service, tags, parsedTimeStart, parsedTimeEnd)
+	err = i.GetTraces(r.Context(), w, limit, maxDuration, minDuration, operation, service, tags, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		log.Error(r.Context(), "Failed to get traces", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get traces")
 		return
 	}
-
-	render.SetContentType(render.ContentTypeJSON)
-	render.Data(w, r, body)
 }
 
 func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
@@ -143,15 +133,12 @@ func (router *Router) getTrace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetTrace(r.Context(), traceID)
+	err := i.GetTrace(r.Context(), w, traceID)
 	if err != nil {
 		log.Error(r.Context(), "Failed to get trace", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get trace")
 		return
 	}
-
-	render.SetContentType(render.ContentTypeJSON)
-	render.Data(w, r, body)
 }
 
 func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
@@ -189,15 +176,12 @@ func (router *Router) getMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := i.GetMetrics(r.Context(), metric, service, groupByOperation, quantile, ratePer, step, spanKinds, parsedTimeStart, parsedTimeEnd)
+	err = i.GetMetrics(r.Context(), w, metric, service, groupByOperation, quantile, ratePer, step, spanKinds, parsedTimeStart, parsedTimeEnd)
 	if err != nil {
 		log.Error(r.Context(), "Failed to get metrics", zap.Error(err))
 		errresponse.Render(w, r, http.StatusInternalServerError, "Failed to get metrics")
 		return
 	}
-
-	render.SetContentType(render.ContentTypeJSON)
-	render.Data(w, r, body)
 }
 
 func Mount(instances []plugin.Instance, clustersClient clusters.Client) (chi.Router, error) {

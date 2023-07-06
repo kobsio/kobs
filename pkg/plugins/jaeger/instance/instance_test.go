@@ -26,7 +26,7 @@ func TestDoRequest(t *testing.T) {
 		// This is used to test when no context is passed to the function. This should never happen, but we want to make
 		// sure that the function does not panic.
 		//nolint:staticcheck
-		_, err := i.doRequest(nil, "/")
+		err := i.doRequest(nil, nil, "/")
 		require.Error(t, err)
 	})
 
@@ -35,7 +35,7 @@ func TestDoRequest(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ""}
-		_, err := i.doRequest(context.Background(), "/")
+		err := i.doRequest(context.Background(), nil, "/")
 		require.Error(t, err)
 	})
 
@@ -48,9 +48,10 @@ func TestDoRequest(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		res, err := i.doRequest(context.Background(), "/")
+		w := httptest.NewRecorder()
+		err := i.doRequest(context.Background(), w, "/")
 		require.NoError(t, err)
-		require.Equal(t, []byte(`{"key": "value"}`), res)
+		require.Equal(t, []byte(`{"key": "value"}`), w.Body.Bytes())
 	})
 
 	t.Run("should return error", func(t *testing.T) {
@@ -62,7 +63,7 @@ func TestDoRequest(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		_, err := i.doRequest(context.Background(), "/")
+		err := i.doRequest(context.Background(), nil, "/")
 		require.Error(t, err)
 		require.Equal(t, "error message", err.Error())
 	})
@@ -76,7 +77,7 @@ func TestDoRequest(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		_, err := i.doRequest(context.Background(), "/")
+		err := i.doRequest(context.Background(), nil, "/")
 		require.Error(t, err)
 	})
 }
@@ -91,9 +92,10 @@ func TestGetServices(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		res, err := i.GetServices(context.Background())
+		w := httptest.NewRecorder()
+		err := i.GetServices(context.Background(), w)
 		require.NoError(t, err)
-		require.Equal(t, []byte(`{"key": "value"}`), res)
+		require.Equal(t, []byte(`{"key": "value"}`), w.Body.Bytes())
 	})
 }
 
@@ -107,9 +109,10 @@ func TestGetOperations(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		res, err := i.GetOperations(context.Background(), "service")
+		w := httptest.NewRecorder()
+		err := i.GetOperations(context.Background(), w, "service")
 		require.NoError(t, err)
-		require.Equal(t, []byte(`{"key": "value"}`), res)
+		require.Equal(t, []byte(`{"key": "value"}`), w.Body.Bytes())
 	})
 }
 
@@ -123,9 +126,10 @@ func TestGetTraces(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		res, err := i.GetTraces(context.Background(), "", "", "", "operation", "service", "", 0, 0)
+		w := httptest.NewRecorder()
+		err := i.GetTraces(context.Background(), w, "", "", "", "operation", "service", "", 0, 0)
 		require.NoError(t, err)
-		require.Equal(t, []byte(`{"key": "value"}`), res)
+		require.Equal(t, []byte(`{"key": "value"}`), w.Body.Bytes())
 	})
 }
 
@@ -139,9 +143,10 @@ func TestGetTrace(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		res, err := i.GetTrace(context.Background(), "")
+		w := httptest.NewRecorder()
+		err := i.GetTrace(context.Background(), w, "")
 		require.NoError(t, err)
-		require.Equal(t, []byte(`{"key": "value"}`), res)
+		require.Equal(t, []byte(`{"key": "value"}`), w.Body.Bytes())
 	})
 }
 
@@ -155,9 +160,10 @@ func TestGetMetrics(t *testing.T) {
 		defer ts.Close()
 
 		i := &instance{name: "jaeger", client: ts.Client(), address: ts.URL}
-		res, err := i.GetMetrics(context.Background(), "", "", "", "", "", "", []string{"kind1", "kind2"}, 0, 0)
+		w := httptest.NewRecorder()
+		err := i.GetMetrics(context.Background(), w, "", "", "", "", "", "", []string{"kind1", "kind2"}, 0, 0)
 		require.NoError(t, err)
-		require.Equal(t, []byte(`{"key": "value"}`), res)
+		require.Equal(t, []byte(`{"key": "value"}`), w.Body.Bytes())
 	})
 }
 
