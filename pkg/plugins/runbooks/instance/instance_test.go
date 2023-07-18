@@ -46,6 +46,11 @@ func TestSyncAndGetRunbooks(t *testing.T) {
 	mockClusters.EXPECT().GetClusters().Return([]cluster.Client{mockCluster})
 	mockCluster.EXPECT().Request(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(map[string]any{
 		"items": []map[string]any{{
+			"metadata": map[string]any{
+				"annotations": map[string]any{
+					"kobs.io/test": "Common actions",
+				},
+			},
 			"spec": map[string]any{
 				"groups": []map[string]any{{
 					"name": "test",
@@ -87,6 +92,7 @@ func TestSyncAndGetRunbooks(t *testing.T) {
 	require.Equal(t, "vector(1)", runbooks1[0].Expr)
 	require.Equal(t, "info", runbooks1[0].Severity)
 	require.Equal(t, "Test alert message", runbooks1[0].Message)
+	require.Equal(t, "Common actions", runbooks1[0].Common)
 	require.Equal(t, "Test runbook", runbooks1[0].Runbook)
 
 	runbooks2, err := i.GetRunbooks(context.Background(), "", "test", "test")
@@ -97,6 +103,7 @@ func TestSyncAndGetRunbooks(t *testing.T) {
 	require.Equal(t, "vector(1)", runbooks2[0].Expr)
 	require.Equal(t, "info", runbooks2[0].Severity)
 	require.Equal(t, "Test alert message", runbooks2[0].Message)
+	require.Equal(t, "Common actions", runbooks2[0].Common)
 	require.Equal(t, "Test runbook", runbooks2[0].Runbook)
 
 	runbooks3, err := i.GetRunbooks(context.Background(), "", "", "test")
@@ -107,6 +114,7 @@ func TestSyncAndGetRunbooks(t *testing.T) {
 	require.Equal(t, "vector(1)", runbooks3[0].Expr)
 	require.Equal(t, "info", runbooks3[0].Severity)
 	require.Equal(t, "Test alert message", runbooks3[0].Message)
+	require.Equal(t, "Common actions", runbooks3[0].Common)
 	require.Equal(t, "Test runbook", runbooks3[0].Runbook)
 
 	runbooks4, err := i.GetRunbooks(context.Background(), "test", "", "")
@@ -117,6 +125,7 @@ func TestSyncAndGetRunbooks(t *testing.T) {
 	require.Equal(t, "vector(1)", runbooks4[0].Expr)
 	require.Equal(t, "info", runbooks4[0].Severity)
 	require.Equal(t, "Test alert message", runbooks4[0].Message)
+	require.Equal(t, "Common actions", runbooks4[0].Common)
 	require.Equal(t, "Test runbook", runbooks4[0].Runbook)
 }
 

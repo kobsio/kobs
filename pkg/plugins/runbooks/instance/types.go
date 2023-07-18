@@ -8,6 +8,9 @@ type PrometheusRuleList struct {
 }
 
 type PrometheusRule struct {
+	Metadata struct {
+		Annotations map[string]string `json:"annotations,omitempty"`
+	} `json:"metadata"`
 	Spec PrometheusRuleSpec `json:"spec"`
 }
 
@@ -35,6 +38,7 @@ type Runbook struct {
 	Expr      string `json:"expr" bson:"expr"`
 	Message   string `json:"message" bson:"message"`
 	Severity  string `json:"severity" bson:"severity"`
+	Common    string `json:"common" bson:"common"`
 	Runbook   string `json:"runbook" bson:"runbook"`
 	UpdatedAt int64  `json:"updatedAt" bson:"updatedAt"`
 }

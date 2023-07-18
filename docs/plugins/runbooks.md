@@ -149,3 +149,22 @@ spec:
                           'y': 0
               ```
 ```
+
+To add some common instructions to all alerts in an alert group you can add a `kobs.io/<ALERTGROUP>` annotation, e.g.:
+
+```yaml
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: clickhouse-alert-rules
+  namespace: monitoring
+  aanotation:
+    kobs.io/ClickHouseOperatorRules: |
+      Here you can add some common actions which are visible within all alerts in the ClickHouseOperatorRules alert group.
+spec:
+  groups:
+    - name: ClickHouseOperatorRules
+      rules:
+        - alert: ClickHouseServerDown
+```

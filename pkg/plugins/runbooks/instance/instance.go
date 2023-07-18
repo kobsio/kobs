@@ -90,6 +90,13 @@ func (i *instance) SyncRunbooks(ctx context.Context) error {
 				for _, prometheusRule := range prometheusRuleList.Items {
 					for _, ruleGroup := range prometheusRule.Spec.Groups {
 						for _, rule := range ruleGroup.Rules {
+							var common string
+							if prometheusRule.Metadata.Annotations != nil {
+								if value, ok := prometheusRule.Metadata.Annotations[fmt.Sprintf("kobs.io/%s", ruleGroup.Name)]; ok {
+									common = value
+								}
+							}
+
 							runbook := Runbook{
 								ID:        fmt.Sprintf("/group/%s/alert/%s", ruleGroup.Name, rule.Alert),
 								Alert:     rule.Alert,
@@ -97,6 +104,7 @@ func (i *instance) SyncRunbooks(ctx context.Context) error {
 								Expr:      rule.Expr,
 								Severity:  rule.Labels["severity"],
 								Message:   rule.Annotations["message"],
+								Common:    common,
 								Runbook:   rule.Annotations["runbook"],
 								UpdatedAt: updatedAt,
 							}

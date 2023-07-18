@@ -114,15 +114,29 @@ const RunbookDetails: FunctionComponent<{
         </CardContent>
       </Card>
 
-      <Card sx={{ mb: 6 }}>
-        <CardContent>
-          <Typography variant="h6" pb={2}>
-            Runbook
-          </Typography>
+      {runbook.common && (
+        <Card sx={{ mb: 6 }}>
+          <CardContent>
+            <Typography variant="h6" pb={2}>
+              Common
+            </Typography>
 
-          <TechDocsMarkdown markdown={runbook.runbook} times={times} setTimes={setTimes} />
-        </CardContent>
-      </Card>
+            <TechDocsMarkdown markdown={runbook.common} times={times} setTimes={setTimes} />
+          </CardContent>
+        </Card>
+      )}
+
+      {runbook.runbook && (
+        <Card sx={{ mb: 6 }}>
+          <CardContent>
+            <Typography variant="h6" pb={2}>
+              Runbook
+            </Typography>
+
+            <TechDocsMarkdown markdown={runbook.runbook} times={times} setTimes={setTimes} />
+          </CardContent>
+        </Card>
+      )}
     </DetailsDrawer>
   );
 };

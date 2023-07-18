@@ -11,6 +11,7 @@ export const example = `plugin:
 
 export interface IRunbook {
   alert: string;
+  common: string;
   expr: string;
   group: string;
   id: string;

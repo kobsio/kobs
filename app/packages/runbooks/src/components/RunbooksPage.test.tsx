@@ -28,6 +28,7 @@ describe('RunbooksPage', () => {
       getSpy.mockResolvedValue([
         {
           alert: 'test1',
+          common: 'Comman Actions',
           expr: 'vector(1)',
           group: 'testgroup1',
           id: '/group/test/alert/test1',
@@ -37,6 +38,7 @@ describe('RunbooksPage', () => {
         },
         {
           alert: 'test2',
+          common: 'Comman Actions',
           expr: 'vector(2)',
           group: 'testgroup2',
           id: '/group/test/alert/test2',
@@ -49,6 +51,7 @@ describe('RunbooksPage', () => {
       getSpy.mockResolvedValue([
         {
           alert: 'test1',
+          common: 'Comman Actions',
           expr: 'vector(1)',
           group: 'testgroup1',
           id: '/group/test/alert/test1',
@@ -95,6 +98,7 @@ describe('RunbooksPage', () => {
     expect(await waitFor(() => screen.getByText('Message 2'))).toBeInTheDocument();
 
     await userEvent.click(screen.getByText(/test1/));
+    expect(await waitFor(() => screen.getByText('Comman Actions'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('Runbook 1'))).toBeInTheDocument();
   });
 
@@ -109,6 +113,7 @@ describe('RunbooksPage', () => {
     expect(await waitFor(() => screen.getByText('testgroup1'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('warning'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('Message 1'))).toBeInTheDocument();
+    expect(await waitFor(() => screen.getByText('Comman Actions'))).toBeInTheDocument();
     expect(await waitFor(() => screen.getByText('Runbook 1'))).toBeInTheDocument();
   });
 });
