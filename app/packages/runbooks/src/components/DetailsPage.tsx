@@ -116,15 +116,29 @@ export const Runbook: FunctionComponent<{
             </CardContent>
           </Card>
 
-          <Card sx={{ mb: 6 }}>
-            <CardContent>
-              <Typography variant="h6" pb={2}>
-                Runbook
-              </Typography>
+          {data.common && (
+            <Card sx={{ mb: 6 }}>
+              <CardContent>
+                <Typography variant="h6" pb={2}>
+                  Common
+                </Typography>
 
-              <TechDocsMarkdown markdown={data.runbook} times={times} setTimes={setTimes} />
-            </CardContent>
-          </Card>
+                <TechDocsMarkdown markdown={data.common} times={times} setTimes={setTimes} />
+              </CardContent>
+            </Card>
+          )}
+
+          {data.runbook && (
+            <Card sx={{ mb: 6 }}>
+              <CardContent>
+                <Typography variant="h6" pb={2}>
+                  Runbook
+                </Typography>
+
+                <TechDocsMarkdown markdown={data.runbook} times={times} setTimes={setTimes} />
+              </CardContent>
+            </Card>
+          )}
         </>
       )}
     </UseQueryWrapper>
