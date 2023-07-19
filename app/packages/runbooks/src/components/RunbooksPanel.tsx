@@ -32,6 +32,7 @@ const RunbooksPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
         <Runbooks
           instance={instance}
           options={{ ...options, ...page }}
+          times={times}
           setPage={(page, perPage) => setPage({ page: page, perPage: perPage })}
         />
       </PluginPanel>

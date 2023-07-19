@@ -18,6 +18,7 @@ import {
   ToolbarItem,
   useQueryState,
   UseQueryWrapper,
+  useUpdate,
 } from '@kobsio/core';
 import { TechDocsMarkdown } from '@kobsio/techdocs';
 import { Clear, OpenInNew, Search, Sync } from '@mui/icons-material';
@@ -167,11 +168,12 @@ export const Runbooks: FunctionComponent<{
   instance: IPluginInstance;
   options: IOptions;
   setPage: (page: number, perPage: number) => void;
-}> = ({ instance, options, setPage }) => {
+  times: ITimes;
+}> = ({ instance, options, times, setPage }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
 
   const { isError, isLoading, error, data, refetch } = useQuery<IRunbook[], APIError>(
-    ['runbooks/runbooks', instance, options.query, options.alert, options.group],
+    ['runbooks/runbooks', instance, options.query, options.alert, options.group, times],
     async () => {
       return apiContext.client.get<IRunbook[]>(
         `/api/plugins/runbooks/runbooks?query=${encodeURIComponent(options.query)}&alert=${options.alert}&group=${
@@ -286,7 +288,7 @@ const ListPageToolbar: FunctionComponent<{ options: IOptions; setOptions: (optio
   );
 };
 
-const ListSyncAction: FunctionComponent<{ instance: IPluginInstance }> = ({ instance }) => {
+const ListSyncAction: FunctionComponent<{ instance: IPluginInstance; update: () => void }> = ({ instance, update }) => {
   const apiContext = useContext<IAPIContext>(APIContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -300,6 +302,7 @@ const ListSyncAction: FunctionComponent<{ instance: IPluginInstance }> = ({ inst
           'x-kobs-plugin': instance.name,
         },
       });
+      update();
     } catch (_) {}
 
     setIsLoading(false);
@@ -317,6 +320,7 @@ const ListSyncAction: FunctionComponent<{ instance: IPluginInstance }> = ({ inst
 };
 
 const ListPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
+  const update = useUpdate();
   const [options, setOptions] = useQueryState<IOptions>({
     alert: '',
     group: '',
@@ -324,6 +328,11 @@ const ListPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     perPage: 10,
     query: '',
   });
+  const times: ITimes = {
+    time: 'last15Minutes',
+    timeEnd: Math.floor(Date.now() / 1000),
+    timeStart: Math.floor(Date.now() / 1000) - 900,
+  };
 
   return (
     <Page
@@ -331,11 +340,12 @@ const ListPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       subtitle={`(${instance.cluster} / ${instance.type})`}
       description={instance.description || description}
       toolbar={<ListPageToolbar options={options} setOptions={setOptions} />}
-      actions={<ListSyncAction instance={instance} />}
+      actions={<ListSyncAction instance={instance} update={() => update()} />}
     >
       <Runbooks
         instance={instance}
         options={options}
+        times={times}
         setPage={(page, perPage) => setOptions({ ...options, page: page, perPage: perPage })}
       />
     </Page>

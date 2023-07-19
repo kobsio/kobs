@@ -74,7 +74,7 @@ func (i *instance) GetRunbooks(ctx context.Context, query, alert, group string) 
 }
 
 func (i *instance) SyncRunbooks(ctx context.Context) error {
-	var models []mongo.WriteModel
+	var runbooks []Runbook
 	updatedAt := time.Now().Unix()
 
 	for _, clusterClient := range i.clustersClient.GetClusters() {
@@ -109,12 +109,17 @@ func (i *instance) SyncRunbooks(ctx context.Context) error {
 								UpdatedAt: updatedAt,
 							}
 
-							models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: runbook.ID}}).SetReplacement(runbook).SetUpsert(true))
+							runbooks = appendIfMissing(runbooks, runbook)
 						}
 					}
 				}
 			}
 		}
+	}
+
+	var models []mongo.WriteModel
+	for _, runbook := range runbooks {
+		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: runbook.ID}}).SetReplacement(runbook).SetUpsert(true))
 	}
 
 	_, err := i.dbClient.DB().Database("kobs").Collection("runbooks").BulkWrite(ctx, models)
