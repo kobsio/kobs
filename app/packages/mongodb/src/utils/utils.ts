@@ -14,11 +14,10 @@ export const example = `plugin:
     #   - "find" to show the documents in a collection for provided filter, sort and limit
     #   - "findOne" to show a single document in a collection for the provided filter
     operation: find
-    query:
-      collectionName: applications
-      filter: '{"namespace": "default"}'
-      sort: '{"name": -1}'
-      limit: 10`;
+    collectionName: applications
+    filter: '{"namespace": "default"}'
+    sort: '{"name": -1}'
+    limit: 10`;
 
 export const humanReadableSize = (size: number): string => {
   if (size === 0) return '0 B';
