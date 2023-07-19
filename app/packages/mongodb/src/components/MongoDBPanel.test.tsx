@@ -97,25 +97,25 @@ describe('MongoDBPanel', () => {
   });
 
   it('should render count query', async () => {
-    render({ operation: 'count', query: { collectionName: 'tags', filter: '{}' } });
+    render({ collectionName: 'tags', filter: '{}', operation: 'count' });
 
     expect(await waitFor(() => screen.getByText(/Mocked OperationCount/))).toBeInTheDocument();
   });
 
   it('should render find query', async () => {
-    render({ operation: 'find', query: { collectionName: 'tags', filter: '{}', limit: 50, sort: '{"name": 1}' } });
+    render({ collectionName: 'tags', filter: '{}', limit: 50, operation: 'find', sort: '{"name": 1}' });
 
     expect(await waitFor(() => screen.getByText(/Mocked OperationFind/))).toBeInTheDocument();
   });
 
   it('should render findOne query', async () => {
-    render({ operation: 'findOne', query: { collectionName: 'tags', filter: '{}' } });
+    render({ collectionName: 'tags', filter: '{}', operation: 'findOne' });
 
     expect(await waitFor(() => screen.getByText(/Mocked OperationFindOne/))).toBeInTheDocument();
   });
 
   it('should render aggregate query', async () => {
-    render({ operation: 'aggregate', query: { collectionName: 'tags', pipeline: '{}' } });
+    render({ collectionName: 'tags', operation: 'aggregate', pipeline: '{}' });
 
     expect(await waitFor(() => screen.getByText(/Mocked OperationAggregate/))).toBeInTheDocument();
   });

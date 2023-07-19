@@ -11,14 +11,10 @@ import { OperationFindOne } from './OperationFindOne';
 import { example } from '../utils/utils';
 
 interface IOptions {
-  operation?: string;
-  query?: IQuery;
-}
-
-interface IQuery {
   collectionName?: string;
   filter?: string;
   limit?: number;
+  operation?: string;
   pipeline?: string;
   sort?: string;
 }
@@ -38,20 +34,14 @@ const MongoDBPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
     return <Collections instance={instance} title={title} description={description} />;
   }
 
-  if (
-    options &&
-    options.operation === 'count' &&
-    options.query &&
-    options.query.collectionName &&
-    options.query.filter
-  ) {
+  if (options && options.operation === 'count' && options.collectionName && options.filter) {
     return (
       <OperationCount
         instance={instance}
         title={title}
         description={description}
-        collectionName={options.query.collectionName}
-        filter={options.query.filter}
+        collectionName={options.collectionName}
+        filter={options.filter}
         showActions={true}
         times={times}
       />
@@ -61,61 +51,48 @@ const MongoDBPanel: FunctionComponent<IPluginPanelProps<IOptions>> = ({
   if (
     options &&
     options.operation === 'find' &&
-    options.query &&
-    options.query.collectionName &&
-    options.query.filter &&
-    options.query.sort &&
-    options.query.limit
+    options.collectionName &&
+    options.filter &&
+    options.sort &&
+    options.limit
   ) {
     return (
       <OperationFind
         instance={instance}
         title={title}
         description={description}
-        collectionName={options.query.collectionName}
-        filter={options.query.filter}
-        sort={options.query.sort}
-        limit={options.query.limit}
+        collectionName={options.collectionName}
+        filter={options.filter}
+        sort={options.sort}
+        limit={options.limit}
         showActions={true}
         times={times}
       />
     );
   }
 
-  if (
-    options &&
-    options.operation === 'findOne' &&
-    options.query &&
-    options.query.collectionName &&
-    options.query.filter
-  ) {
+  if (options && options.operation === 'findOne' && options.collectionName && options.filter) {
     return (
       <OperationFindOne
         instance={instance}
         title={title}
         description={description}
-        collectionName={options.query.collectionName}
-        filter={options.query.filter}
+        collectionName={options.collectionName}
+        filter={options.filter}
         showActions={true}
         times={times}
       />
     );
   }
 
-  if (
-    options &&
-    options.operation === 'aggregate' &&
-    options.query &&
-    options.query.collectionName &&
-    options.query.pipeline
-  ) {
+  if (options && options.operation === 'aggregate' && options.collectionName && options.pipeline) {
     return (
       <OperationAggregate
         instance={instance}
         title={title}
         description={description}
-        collectionName={options.query.collectionName}
-        pipeline={options.query.pipeline}
+        collectionName={options.collectionName}
+        pipeline={options.pipeline}
         showActions={true}
         times={times}
       />
