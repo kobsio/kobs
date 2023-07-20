@@ -16,6 +16,7 @@ import {
   getStateHistory,
   addStateHistoryItems,
   Editor,
+  useLatest,
 } from '@kobsio/core';
 import { Add, ManageSearch, Remove } from '@mui/icons-material';
 import {
@@ -321,6 +322,7 @@ const PrometheusToolbar: FunctionComponent<{
   setOptions: (options: IOptions) => void;
 }> = ({ instance, options, setOptions }) => {
   const [queries, setQueries] = useState<string[]>(options.queries);
+  const latestQueries = useLatest(queries);
 
   /**
    * `addQuery` adds a new PromQL query to our list of queries. In the UI we will add a new editor field which can then
@@ -346,7 +348,7 @@ const PrometheusToolbar: FunctionComponent<{
    * `changeQuery` changes the value of the query with the provided `index` to the provided `value`.
    */
   const changeQuery = (index: number, value: string) => {
-    const tmpQueries = [...queries];
+    const tmpQueries = [...latestQueries.current];
     tmpQueries[index] = value;
     setQueries(tmpQueries);
   };
