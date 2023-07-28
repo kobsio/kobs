@@ -20,6 +20,7 @@ The klogs plugin can be used within the `hub` or `cluster`. To use the klogs plu
 | options.connMaxLifetime | string | ClickHouse maximum connection lifetime. The default value is `1h`. | No |
 | options.maxIdleConns | number | ClickHouse maximum number of idle connections. The default value is `5`. | No |
 | options.maxOpenConns | number | ClickHouse maximum number of open connections. The default value is `10`. | No |
+| options.settings | map<string, any> | Additional settings which should be applyed to the ClickHouse connection. | No |
 | options.materializedColumns | []string | A list of materialized columns. See [kobsio/klogs](https://github.com/kobsio/klogs#configuration) for more information. | No |
 
 ```yaml
@@ -35,6 +36,9 @@ plugins:
       connMaxLifetime:
       maxIdleConns:
       maxOpenConns:
+      settings:
+        # e.g.
+        # receive_timeout: 600
       materializedColumns:
 ```
 

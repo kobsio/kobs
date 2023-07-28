@@ -23,15 +23,16 @@ var defaultFieldsSQL = []string{"timestamp", "cluster", "namespace", "app", "pod
 
 // Config is the structure of the configuration for a single klogs instance.
 type Config struct {
-	Address             string   `json:"address"`
-	Database            string   `json:"database"`
-	Username            string   `json:"username"`
-	Password            string   `json:"password"`
-	DialTimeout         string   `json:"dialTimeout"`
-	ConnMaxLifetime     string   `json:"connMaxLifetime"`
-	MaxIdleConns        int      `json:"maxIdleConns"`
-	MaxOpenConns        int      `json:"maxOpenConns"`
-	MaterializedColumns []string `json:"materializedColumns"`
+	Address             string         `json:"address"`
+	Database            string         `json:"database"`
+	Username            string         `json:"username"`
+	Password            string         `json:"password"`
+	DialTimeout         string         `json:"dialTimeout"`
+	ConnMaxLifetime     string         `json:"connMaxLifetime"`
+	MaxIdleConns        int            `json:"maxIdleConns"`
+	MaxOpenConns        int            `json:"maxOpenConns"`
+	MaterializedColumns []string       `json:"materializedColumns"`
+	Settings            map[string]any `json:"settings"`
 }
 
 type Instance interface {
@@ -219,6 +220,7 @@ func newQuerierFromConfig(config Config) Querier {
 			Password: config.Password,
 		},
 		DialTimeout: parsedDialTimeout,
+		Settings:    config.Settings,
 	})
 	client.SetMaxIdleConns(config.MaxIdleConns)
 	client.SetMaxOpenConns(config.MaxOpenConns)
