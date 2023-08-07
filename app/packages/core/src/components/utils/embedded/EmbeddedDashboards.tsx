@@ -51,9 +51,7 @@ export const EmbeddedDashboards: FunctionComponent<{ manifest: unknown; referenc
               value={selectedDashboard ?? data?.[0].title}
               onChange={(_, value) => setSelectedDashboard(value)}
             >
-              {data?.map((dashboard) => (
-                <Tab key={dashboard.title} label={dashboard.title} value={dashboard.title} />
-              ))}
+              {data?.map((dashboard) => <Tab key={dashboard.title} label={dashboard.title} value={dashboard.title} />)}
             </Tabs>
           </Box>
           {data?.map((dashboard) => (

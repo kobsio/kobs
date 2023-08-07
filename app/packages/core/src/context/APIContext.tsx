@@ -14,7 +14,10 @@ type RequestOptions = Omit<RequestInit, 'method' | 'body'> & { body?: unknown };
  * with all the errors returned by the API call and the `statusCode` of the response.
  */
 export class APIError extends Error {
-  constructor(errors: string[], public statusCode?: number) {
+  constructor(
+    errors: string[],
+    public statusCode?: number,
+  ) {
     super(errors.join('\n'));
   }
 }

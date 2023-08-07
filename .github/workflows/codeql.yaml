@@ -55,7 +55,7 @@ jobs:
         uses: github/codeql-action/autobuild@v2
 
       - name: Setup
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         if: ${{ matrix.language == 'go' }}
         with:
           go-version-file: go.mod

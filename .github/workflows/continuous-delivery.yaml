@@ -44,7 +44,7 @@ jobs:
 
       - name: Build and Push Docker Image
         id: docker_build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           context: .
@@ -77,10 +77,10 @@ jobs:
           echo ::set-output name=aliases::${MIKE_ALIASES}
 
       - name: Install Material for MkDocs
-        run: pip install -Iv mkdocs-material==9.1.15
+        run: pip install -Iv mkdocs-material==9.1.21
 
       - name: Install PyMdown Extensions
-        run: pip install -Iv pymdown-extensions==10.0.1
+        run: pip install -Iv pymdown-extensions==10.1
 
       - name: Install mike
         run: pip install -Iv mike==1.1.2

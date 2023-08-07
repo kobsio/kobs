@@ -285,11 +285,7 @@ const Requests: FunctionComponent<{
                 <TableCell>Response</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {data?.requests?.map((request) => (
-                <Request key={request.id} request={request} />
-              ))}
-            </TableBody>
+            <TableBody>{data?.requests?.map((request) => <Request key={request.id} request={request} />)}</TableBody>
           </Table>
         </TableContainer>
       </Card>

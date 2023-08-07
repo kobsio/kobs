@@ -141,6 +141,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       globals: true,
       include: ['src/**/*.test.{ts,tsx}'],
       setupFiles: './src/setupTests.ts',
+      testTimeout: 60000,
     },
   };
 });

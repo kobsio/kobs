@@ -412,11 +412,7 @@ const Agents: FunctionComponent<{ instance: IPluginInstance; site: string; times
                 <TableCell>P99</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {data?.map((agent) => (
-                <Agent key={Agent.name} agent={agent} />
-              ))}
-            </TableBody>
+            <TableBody>{data?.map((agent) => <Agent key={Agent.name} agent={agent} />)}</TableBody>
           </Table>
         </TableContainer>
       </Card>

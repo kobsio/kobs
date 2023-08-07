@@ -10,16 +10,8 @@ import { QueryClientProvider } from '../../../context/QueryClientProvider';
 
 describe('Signin', () => {
   const apiClient: APIClient = new APIClient();
-  const getSpy = vi.spyOn(apiClient, 'get');
-  const signinSpy = vi.spyOn(apiClient, 'signin');
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  const render = async (oidcURL = '/oidc/redirect'): Promise<RenderResult> => {
-    getSpy.mockResolvedValueOnce({ url: oidcURL });
-
+  const render = async (): Promise<RenderResult> => {
     const renderResult = _render(
       <QueryClientProvider>
         <APIContext.Provider value={{ client: apiClient, getUser: apiClient.getUser }}>
@@ -39,6 +31,7 @@ describe('Signin', () => {
   };
 
   it('should be possible to sign in with credentials', async () => {
+    const signinSpy = vi.spyOn(apiClient, 'signin');
     signinSpy.mockResolvedValueOnce({ dashboards: [], id: '', name: '', navigation: [], permissions: {}, teams: [] });
     await render();
 
@@ -83,6 +76,7 @@ describe('Signin', () => {
     const passwordInput = screen.getByLabelText(/Password/);
     await userEvent.type(passwordInput, 'supersecret');
 
+    const signinSpy = vi.spyOn(apiClient, 'signin');
     signinSpy.mockRejectedValue({ error: 'Invalid username or password' });
     await userEvent.click(screen.getByText(/Sign In/));
 
@@ -90,6 +84,9 @@ describe('Signin', () => {
   });
 
   it('should be possible to sign in with OIDC', async () => {
+    const getSpy = vi.spyOn(apiClient, 'get');
+    getSpy.mockResolvedValueOnce({ url: '/oidc/redirect' });
+
     await render();
 
     const signInButton = await waitFor(() => {
@@ -104,7 +101,10 @@ describe('Signin', () => {
   });
 
   it('should disable sign in via OIDC button when not configured', async () => {
-    await render('');
+    const getSpy = vi.spyOn(apiClient, 'get');
+    getSpy.mockResolvedValueOnce({ url: '' });
+
+    await render();
 
     expect(screen.getByText(/Sign in via OIDC/)).toHaveAttribute('aria-disabled', 'true');
   });

@@ -9,7 +9,6 @@ import { QueryClientProvider } from '../../../context/QueryClientProvider';
 
 describe('SigninOIDCCallback', () => {
   const apiClient = new APIClient();
-  const spy = vi.spyOn(apiClient, 'signinOIDC');
 
   const render = (): RenderResult => {
     return _render(
@@ -26,11 +25,8 @@ describe('SigninOIDCCallback', () => {
     );
   };
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it('should redirect user', async () => {
+    const spy = vi.spyOn(apiClient, 'signinOIDC');
     spy.mockResolvedValueOnce({
       url: '/redirect/path',
       user: { dashboards: [], id: '', name: '', navigation: [], permissions: {}, teams: [] },
@@ -42,6 +38,7 @@ describe('SigninOIDCCallback', () => {
   });
 
   it('should show error', async () => {
+    const spy = vi.spyOn(apiClient, 'signinOIDC');
     vi.spyOn(console, 'error').mockImplementationOnce(() => {
       // noop (to supress the error log in test output)
     });

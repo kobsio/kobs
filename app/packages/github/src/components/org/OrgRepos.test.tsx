@@ -1,5 +1,4 @@
 import { QueryClientProvider } from '@kobsio/core';
-import { Octokit } from '@octokit/rest';
 import { render as _render, RenderResult, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
@@ -9,10 +8,14 @@ import { OrgRepos } from './OrgRepos';
 
 import { AuthContext } from '../../context/AuthContext';
 
+const Octokit = vi.fn().mockImplementation(() => ({
+  search: {
+    repos: () => JSON.parse(JSON.stringify({ data: fixtureOrgRepos })),
+  },
+}));
+
 describe('OrgRepos', () => {
   const client = new Octokit();
-  const reposSpy = vi.spyOn(client.search, 'repos');
-  reposSpy.mockResolvedValue(JSON.parse(JSON.stringify({ data: fixtureOrgRepos })));
 
   const render = (title: string): RenderResult => {
     return _render(

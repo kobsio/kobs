@@ -1,5 +1,4 @@
 import { QueryClientProvider } from '@kobsio/core';
-import { Octokit } from '@octokit/rest';
 import { render as _render, RenderResult, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
@@ -9,10 +8,14 @@ import { TeamRepos } from './TeamRepos';
 
 import { AuthContext } from '../../context/AuthContext';
 
+const Octokit = vi.fn().mockImplementation(() => ({
+  teams: {
+    listReposInOrg: () => JSON.parse(JSON.stringify({ data: fixtureTeamRepos })),
+  },
+}));
+
 describe('TeamRepos', () => {
   const client = new Octokit();
-  const listReposInOrgSpy = vi.spyOn(client.teams, 'listReposInOrg');
-  listReposInOrgSpy.mockResolvedValue(JSON.parse(JSON.stringify({ data: fixtureTeamRepos })));
 
   const render = (title: string): RenderResult => {
     return _render(

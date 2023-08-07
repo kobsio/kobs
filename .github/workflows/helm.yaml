@@ -32,7 +32,7 @@ jobs:
 
       - name: Configure SSH
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: webfactory/ssh-agent@v0.5.1
+        uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
