@@ -492,9 +492,7 @@ const Sidebar: FunctionComponent = () => {
         <SidebarHeader />
         <List disablePadding={true}>
           <Box sx={{ py: 2.5 }}>
-            {apiContext.getUser()?.navigation.map((group) => (
-              <SidebarGroup key={group.name} group={group} />
-            ))}
+            {apiContext.getUser()?.navigation.map((group) => <SidebarGroup key={group.name} group={group} />)}
           </Box>
         </List>
       </Box>

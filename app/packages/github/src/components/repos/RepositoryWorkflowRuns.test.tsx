@@ -1,5 +1,4 @@
 import { QueryClientProvider } from '@kobsio/core';
-import { Octokit } from '@octokit/rest';
 import { render as _render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -11,14 +10,16 @@ import { RepositoryWorkflowRuns } from './RepositoryWorkflowRuns';
 
 import { AuthContext } from '../../context/AuthContext';
 
+const Octokit = vi.fn().mockImplementation(() => ({
+  actions: {
+    downloadJobLogsForWorkflowRun: () => JSON.parse(JSON.stringify({ data: 'GitHub Action Logs' })),
+    listJobsForWorkflowRunAttempt: () => JSON.parse(JSON.stringify({ data: fixtureRepoWorkflowRunsJobs })),
+    listWorkflowRunsForRepo: () => JSON.parse(JSON.stringify({ data: fixtureRepoWorkflowRuns })),
+  },
+}));
+
 describe('RepositoryWorkflowRuns', () => {
   const client = new Octokit();
-  const listWorkflowRunsForRepoSpy = vi.spyOn(client.actions, 'listWorkflowRunsForRepo');
-  listWorkflowRunsForRepoSpy.mockResolvedValue(JSON.parse(JSON.stringify({ data: fixtureRepoWorkflowRuns })));
-  const listJobsForWorkflowRunAttemptSpy = vi.spyOn(client.actions, 'listJobsForWorkflowRunAttempt');
-  listJobsForWorkflowRunAttemptSpy.mockResolvedValue(JSON.parse(JSON.stringify({ data: fixtureRepoWorkflowRunsJobs })));
-  const downloadJobLogsForWorkflowRunSpy = vi.spyOn(client.actions, 'downloadJobLogsForWorkflowRun');
-  downloadJobLogsForWorkflowRunSpy.mockResolvedValue(JSON.parse(JSON.stringify({ data: 'GitHub Action Logs' })));
 
   const render = (title: string): RenderResult => {
     return _render(

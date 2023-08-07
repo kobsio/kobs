@@ -237,14 +237,15 @@ export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => 
         : 900),
   });
 
-  const [variables, setVariables] = useState<IVariableValues[] | undefined>(() =>
-    dashboard.variables?.map((variable) => {
-      return {
-        ...variable,
-        value: '',
-        values: [],
-      };
-    }),
+  const [variables, setVariables] = useState<IVariableValues[] | undefined>(
+    () =>
+      dashboard.variables?.map((variable) => {
+        return {
+          ...variable,
+          value: '',
+          values: [],
+        };
+      }),
   );
 
   useEffect(() => {
@@ -407,9 +408,7 @@ export const Dashboards: FunctionComponent<IDashboardsProps> = ({ manifest, refe
               value={selectedDashboard.title ?? data?.[0].title}
               onChange={(_, value) => setSelectedDashboard({ title: value })}
             >
-              {data?.map((dashboard) => (
-                <Tab key={dashboard.title} label={dashboard.title} value={dashboard.title} />
-              ))}
+              {data?.map((dashboard) => <Tab key={dashboard.title} label={dashboard.title} value={dashboard.title} />)}
             </Tabs>
           </Box>
           {data?.map((dashboard) => (

@@ -9,6 +9,8 @@ import {
   LogoGithubIcon,
 } from '@primer/octicons-react';
 
+import type { Octokit as TOctokit } from '@octokit/rest';
+
 export const description = 'Where the world builds software.';
 
 export const example = `plugin:
@@ -18,7 +20,7 @@ export const example = `plugin:
     type: repositorypullrequests
     repository: kobs`;
 
-const octokit = new Octokit();
+const octokit: TOctokit = new Octokit();
 
 export type TSearchIssuesAndPullRequests = GetResponseDataTypeFromEndpointMethod<
   typeof octokit.search.issuesAndPullRequests

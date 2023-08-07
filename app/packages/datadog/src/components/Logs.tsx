@@ -155,9 +155,8 @@ export const LogsDownload: FunctionComponent<{
       if (fields.length === 0) {
         csv =
           csv +
-          `;${document.attributes?.host ?? document.attributes?.attributes?.host};${document.attributes?.service};${
-            document.attributes?.message
-          }`;
+          `;${document.attributes?.host ?? document.attributes?.attributes?.host};${document.attributes
+            ?.service};${document.attributes?.message}`;
       } else {
         for (const field of fields) {
           csv = csv + ';' + (getProperty(document, field) ?? '');

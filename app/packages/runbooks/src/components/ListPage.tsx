@@ -211,9 +211,9 @@ export const Runbooks: FunctionComponent<{
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.slice((options.page - 1) * options.perPage, options.page * options.perPage).map((runbook) => (
-                <Runbook key={runbook.id} instance={instance} runbook={runbook} />
-              ))}
+              {data
+                ?.slice((options.page - 1) * options.perPage, options.page * options.perPage)
+                .map((runbook) => <Runbook key={runbook.id} instance={instance} runbook={runbook} />)}
             </TableBody>
           </Table>
         </TableContainer>
