@@ -87,22 +87,14 @@ const AggregationToolbar: FunctionComponent<{
   const [internalOptions, setInternalOptions] = useState<IAggregationOptions>(options);
   const apiContext = useContext<IAPIContext>(APIContext);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data } = useQuery<any[], APIError>(['klogs/fields', instance], async () => {
-    try {
-      const fields = await apiContext.client.get<string[]>(`/api/plugins/klogs/fields`, {
-        headers: {
-          'x-kobs-cluster': instance.cluster,
-          'x-kobs-plugin': instance.name,
-        },
-      });
-      return [
-        ...defaultCompletions,
-        ...fields.filter((field) => !field.includes(' ')).map((field) => ({ label: field, type: 'keyword' })),
-      ];
-    } catch {
-      return defaultCompletions;
-    }
+  const { data: completions } = useQuery<string[], APIError>(['klogs/fields', instance], async () => {
+    const fields = await apiContext.client.get<string[]>(`/api/plugins/klogs/fields`, {
+      headers: {
+        'x-kobs-cluster': instance.cluster,
+        'x-kobs-plugin': instance.name,
+      },
+    });
+    return fields.filter((field) => !field.includes(' '));
   });
 
   const changeOptions = (times: ITimes, additionalFields: IOptionsAdditionalFields[] | undefined) => {
@@ -133,26 +125,27 @@ const AggregationToolbar: FunctionComponent<{
         Query
       </Grid>
       <Grid item={true} xs={12} md={10}>
-        {data && (
-          <Editor
-            language="klogs"
-            languageOptions={{
-              completions: data,
-            }}
-            minimal={true}
-            value={internalOptions.query}
-            onChange={(value) => setInternalOptions({ ...internalOptions, query: value })}
-            handleSubmit={handleSubmit}
-            adornment={
-              <InputAdornment position="end">
-                <QueryHistory
-                  optionsQuery={options.query}
-                  setQuery={(query) => setInternalOptions({ ...internalOptions, query: query })}
-                />
-              </InputAdornment>
-            }
-          />
-        )}
+        <Editor
+          language="klogs"
+          languageOptions={{
+            completions: [...defaultCompletions, ...(completions || [])].map((field) => ({
+              label: field,
+              type: 'keyword',
+            })),
+          }}
+          minimal={true}
+          value={internalOptions.query}
+          onChange={(value) => setInternalOptions({ ...internalOptions, query: value })}
+          handleSubmit={handleSubmit}
+          adornment={
+            <InputAdornment position="end">
+              <QueryHistory
+                optionsQuery={options.query}
+                setQuery={(query) => setInternalOptions({ ...internalOptions, query: query })}
+              />
+            </InputAdornment>
+          }
+        />
       </Grid>
 
       <Grid item={true} xs={12} md={2}>
@@ -180,9 +173,10 @@ const AggregationToolbar: FunctionComponent<{
           <Grid item={true} xs={12} md={10}>
             <Autocomplete
               size="small"
+              freeSolo={true}
               value={internalOptions.sliceBy}
               onChange={(e, value) => setInternalOptions({ ...internalOptions, sliceBy: value || '' })}
-              options={data || []}
+              options={completions || []}
               filterOptions={filterOptions}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -216,7 +210,7 @@ const AggregationToolbar: FunctionComponent<{
                   size="small"
                   value={internalOptions.sizeByField}
                   onChange={(e, value) => setInternalOptions({ ...internalOptions, sizeByField: value || '' })}
-                  options={data || []}
+                  options={completions || []}
                   filterOptions={filterOptions}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -253,7 +247,7 @@ const AggregationToolbar: FunctionComponent<{
                   size="small"
                   value={internalOptions.horizontalAxisField}
                   onChange={(e, value) => setInternalOptions({ ...internalOptions, horizontalAxisField: value || '' })}
-                  options={data || []}
+                  options={completions || []}
                   filterOptions={filterOptions}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -319,7 +313,7 @@ const AggregationToolbar: FunctionComponent<{
                   size="small"
                   value={internalOptions.verticalAxisField}
                   onChange={(e, value) => setInternalOptions({ ...internalOptions, verticalAxisField: value || '' })}
-                  options={data || []}
+                  options={completions || []}
                   filterOptions={filterOptions}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -336,7 +330,7 @@ const AggregationToolbar: FunctionComponent<{
               multiple={true}
               value={internalOptions.breakDownByFields}
               onChange={(e, value) => setInternalOptions({ ...internalOptions, breakDownByFields: value || [] })}
-              options={data || []}
+              options={completions || []}
               filterOptions={filterOptions}
               renderInput={(params) => <TextField {...params} />}
             />
