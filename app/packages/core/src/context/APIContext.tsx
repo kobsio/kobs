@@ -3,11 +3,16 @@ import { FunctionComponent, createContext, ReactNode } from 'react';
 import { IReference } from '../crds/dashboard';
 import { IPermissions, INavigation } from '../crds/user';
 
+type ResponseBodyFormat = 'json' | 'text';
+
 /**
  * `RequestOptions` defines the type for the options which can be passed to an API call. These can be an object for
  * which is send in the `body` of a request, a set of `headers` and much more.
  */
-type RequestOptions = Omit<RequestInit, 'method' | 'body'> & { body?: unknown };
+type RequestOptions = Omit<RequestInit, 'method' | 'body'> & {
+  body?: unknown;
+  responseBodyFormat?: ResponseBodyFormat;
+};
 
 /**
  * `APIError` is the error which is returned by our `APIClient` when a http request fails. It contains a `error` message
@@ -71,11 +76,16 @@ export class APIClient implements IAPIClient {
         return undefined;
       }
 
-      const json = await res.json();
-
       if (res.status >= 200 && res.status < 300) {
+        if (opts?.responseBodyFormat === 'text') {
+          const text = await res.text();
+          return text;
+        }
+
+        const json = await res.json();
         return json;
       } else {
+        const json = await res.json();
         if (json.errors) {
           throw new APIError(json.errors, res.status);
         } else {

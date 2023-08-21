@@ -20,6 +20,7 @@ import SignalSciences from '@kobsio/signalsciences';
 import SonarQube from '@kobsio/sonarqube';
 import SQL from '@kobsio/sql';
 import TechDocs from '@kobsio/techdocs';
+import Velero from '@kobsio/velero';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -56,6 +57,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         SonarQube,
         SQL,
         TechDocs,
+        Velero,
       ]}
     />
   </StrictMode>,

@@ -62,6 +62,7 @@ nav:
       - SonarQube: plugins/sonarqube.md
       - SQL: plugins/sql.md
       - TechDocs: plugins/techdocs.md
+      - Velero: plugins/velero.md
   - Community Plugins:
       - community-plugins/index.md
   - Contributing:
