@@ -39,6 +39,7 @@
     "@kobsio/sonarqube": "*",
     "@kobsio/sql": "*",
     "@kobsio/techdocs": "*",
+    "@kobsio/velero": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.121",
     "@mui/material": "^5.11.7",

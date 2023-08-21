@@ -76,6 +76,7 @@ jobs:
           - sonarqube
           - sql
           - techdocs
+          - velero
     defaults:
       run:
         working-directory: app

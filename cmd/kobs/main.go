@@ -28,6 +28,7 @@ import (
 	"github.com/kobsio/kobs/pkg/plugins/sonarqube"
 	"github.com/kobsio/kobs/pkg/plugins/sql"
 	"github.com/kobsio/kobs/pkg/plugins/techdocs"
+	"github.com/kobsio/kobs/pkg/plugins/velero"
 
 	"github.com/alecthomas/kong"
 )
@@ -64,6 +65,7 @@ func main() {
 		sonarqube.New(),
 		sql.New(),
 		techdocs.New(),
+		velero.New(),
 	}
 
 	err := ctx.Run(registeredPlugins)
