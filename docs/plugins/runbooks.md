@@ -73,7 +73,6 @@ spec:
             severity: error
           annotations:
             message: "clickhouse-server {{ $labels.exported_namespace }}/{{ $labels.hostname }} possible down"
-            runbook_url: https://backstage.staffbase.com/docs/default/Component/redbook/runbooks/clickhouse-alerts/#ClickHouseServerDown
             runbook: |
               The `metrics-exporter` failed to fetch metrics. The ClickHouse Server might be down.
 
