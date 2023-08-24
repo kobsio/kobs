@@ -8,6 +8,17 @@ import VeleroPage from './VeleroPage';
 
 import { description } from '../utils/utils';
 
+vi.mock('@kobsio/core', async () => {
+  const originalModule = await vi.importActual('@kobsio/core');
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(originalModule as any),
+    Editor: () => {
+      return <>mocked editor</>;
+    },
+  };
+});
+
 describe('VeleroPage', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const render = (path: string, resolve: any): RenderResult => {
@@ -20,7 +31,7 @@ describe('VeleroPage', () => {
       }
 
       if (path.startsWith('/api/plugins/velero/logs')) {
-        return 'Test logs for the selected backup';
+        return '{"backup":"velero/backstage-20230725162831","level":"info","logSource":"pkg/controller/backup_controller.go:612","msg":"Setting up backup temp file","time":"2023-07-25T16:28:31Z"}';
       }
 
       return [];
@@ -210,8 +221,22 @@ describe('VeleroPage', () => {
     const backup = screen.getByText('backstage-20230724142830');
     await userEvent.click(backup);
 
-    const logs = screen.getByText('Logs');
-    await userEvent.click(logs);
-    expect(await waitFor(() => screen.getByText('Test logs for the selected backup'))).toBeInTheDocument();
+    const yaml = screen.getByText('Yaml');
+    await userEvent.click(yaml);
+    expect(await waitFor(() => screen.getByText('mocked editor'))).toBeInTheDocument();
+
+    const logsTable = screen.getByText('Logs');
+    await userEvent.click(logsTable);
+    expect(await waitFor(() => screen.getByText('Setting up backup temp file'))).toBeInTheDocument();
+
+    const logsPlain = screen.getByText('Plain');
+    await userEvent.click(logsPlain);
+    expect(
+      await waitFor(() =>
+        screen.getByText(
+          '{"backup":"velero/backstage-20230725162831","level":"info","logSource":"pkg/controller/backup_controller.go:612","msg":"Setting up backup temp file","time":"2023-07-25T16:28:31Z"}',
+        ),
+      ),
+    ).toBeInTheDocument();
   });
 });
