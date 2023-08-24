@@ -86,8 +86,6 @@ const CostManagementPieChart: FunctionComponent<{ properties: ICostProperties }>
                   height={chartSize.height}
                   width={chartSize.width}
                   legendData={({ datum }: { datum: IPieDatum }) => {
-                    console.log(datum);
-
                     return {
                       color: datum.color,
                       label: datum.x,

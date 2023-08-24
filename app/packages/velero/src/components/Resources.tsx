@@ -7,6 +7,7 @@ import {
   ITimes,
   UseQueryWrapper,
 } from '@kobsio/core';
+import { Square } from '@mui/icons-material';
 import {
   Alert,
   AlertTitle,
@@ -144,6 +145,46 @@ const getErrors = (resource: IResourceResponse): string[] => {
 };
 
 /**
+ * `generateStatusColor` generates the color to identify the status of the Velero resource.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const generateStatusColor = (veleroResource: IVeleroResource, manifest: any): 'error' | 'warning' | 'success' => {
+  if (veleroResource.type === 'backups') {
+    if (manifest?.status?.phase !== 'Completed' || (manifest?.status?.errors && manifest?.status?.errors > 0)) {
+      return 'error';
+    }
+
+    if (manifest?.status?.errors && manifest?.status?.warnings > 0) {
+      return 'warning';
+    }
+
+    return 'success';
+  }
+
+  if (veleroResource.type === 'restores') {
+    if (manifest?.status?.phase !== 'Completed' || (manifest?.status?.errors && manifest?.status?.errors > 0)) {
+      return 'error';
+    }
+
+    if (manifest?.status?.errors && manifest?.status?.warnings > 0) {
+      return 'warning';
+    }
+
+    return 'success';
+  }
+
+  if (veleroResource.type === 'schedules') {
+    if (manifest?.spec?.paused === true) {
+      return 'warning';
+    }
+
+    return 'success';
+  }
+
+  return 'success';
+};
+
+/**
  * The `ResourceRow` component is used to render a single row in the table of resources. When a user clicks on the row
  * we also show a drawer with some details of the resource and mark the corresponding row as selected.
  *
@@ -168,6 +209,9 @@ const ResourceRow: FunctionComponent<{
             {cell}
           </TableCell>
         ))}
+        <TableCell>
+          <Square color={generateStatusColor(veleroResource, row.manifest)} />
+        </TableCell>
       </TableRow>
 
       {open && (
@@ -258,6 +302,7 @@ const Resource: FunctionComponent<{
               {veleroResource.columns.map((column) => (
                 <TableCell key={column.title}>{column.title}</TableCell>
               ))}
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>

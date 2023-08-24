@@ -50,7 +50,7 @@ export const veleroResources: Record<TVeleroType, IVeleroResource> = {
         type: 'number',
       },
       {
-        jsonPath: '$.spec.warnings',
+        jsonPath: '$.status.warnings',
         title: 'Warnings',
         type: 'number',
       },
@@ -145,7 +145,7 @@ export const veleroResources: Record<TVeleroType, IVeleroResource> = {
       },
       {
         jsonPath: '$.spec.paused',
-        title: 'TTL',
+        title: 'Paused',
         type: 'boolean',
       },
     ],

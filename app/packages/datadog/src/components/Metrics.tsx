@@ -324,8 +324,6 @@ export const Metrics: FunctionComponent<{
     },
   );
 
-  console.log(data);
-
   return (
     <PluginPanel title={title} description={description}>
       <UseQueryWrapper
