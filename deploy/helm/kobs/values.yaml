@@ -350,6 +350,10 @@ hub:
 
       timeout: 300s
 
+      ## Set, add or remove headers in the VirtualService.
+      ##
+      headers: {}
+
       ## You can also add your own routes to the VirtualService.
       ##
       additionalRoutes: []
@@ -774,6 +778,10 @@ cluster:
         # - chart-example.local
 
       timeout: 300s
+
+      ## Set, add or remove headers in the VirtualService.
+      ##
+      headers: {}
 
       ## You can also add your own routes to the VirtualService.
       ##

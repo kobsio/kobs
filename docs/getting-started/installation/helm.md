@@ -75,6 +75,7 @@ helm upgrade --install kobs kobs/kobs
 | `hub.istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |
 | `hub.istio.virtualService.hosts` | A list of hosts for the VirtualService. | `[]` |
 | `hub.istio.virtualService.timeout` | Timeout for API requests. | `300s` |
+| `hub.istio.virtualService.headers` | Modify the headers in the VirtualService. | `{}` |
 | `hub.istio.virtualService.additionalRoutes` | A list of additional routes for the VirtualService. | `[]` |
 | `hub.serviceMonitor.enabled` | Create a Service Monitor for kobs. | `false` |
 | `hub.serviceMonitor.interval` | Interval at which metrics should be scraped. Fallback to the Prometheus default unless specified. | |
@@ -143,6 +144,7 @@ helm upgrade --install kobs kobs/kobs
 | `cluster.istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |
 | `cluster.istio.virtualService.hosts` | A list of hosts for the VirtualService. | `[]` |
 | `cluster.istio.virtualService.timeout` | Timeout for API requests. | `300s` |
+| `cluster.istio.virtualService.headers` | Modify the headers in the VirtualService. | `{}` |
 | `cluster.istio.virtualService.additionalRoutes` | A list of additional routes for the VirtualService. | `[]` |
 | `cluster.serviceMonitor.enabled` | Create a Service Monitor for kobs. | `false` |
 | `cluster.serviceMonitor.interval` | Interval at which metrics should be scraped. Fallback to the Prometheus default unless specified. | |
