@@ -35,5 +35,9 @@ spec:
             port:
               number: 15219
       timeout: 60s
+      {{- with .Values.hub.istio.virtualService.headers }}
+      headers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}
 {{- end }}
