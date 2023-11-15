@@ -43,6 +43,20 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
 }
 
+// CreateIndexes mocks base method.
+func (m *MockClient) CreateIndexes(ctx context.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateIndexes", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateIndexes indicates an expected call of CreateIndexes.
+func (mr *MockClientMockRecorder) CreateIndexes(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockClient)(nil).CreateIndexes), ctx)
+}
+
 // CreateSession mocks base method.
 func (m *MockClient) CreateSession(ctx context.Context, user context0.User) (*Session, error) {
 	m.ctrl.T.Helper()

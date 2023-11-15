@@ -34,6 +34,7 @@ type Config struct {
 // Client is the interface with all the methods to interact with the db.
 type Client interface {
 	DB() *mongo.Client
+	CreateIndexes(ctx context.Context) error
 	SavePlugins(ctx context.Context, cluster string, plugins []plugin.Instance) error
 	SaveNamespaces(ctx context.Context, cluster string, namespaces []string) error
 	SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error
@@ -124,6 +125,27 @@ func (c *client) save(ctx context.Context, collection string, models []mongo.Wri
 
 func (c *client) DB() *mongo.Client {
 	return c.db
+}
+
+func (c *client) CreateIndexes(ctx context.Context) error {
+	ctx, span := c.tracer.Start(ctx, "db.CreateIndexes")
+	defer span.End()
+
+	// Create TTL index for sessions collection, which will delete all inactive sessions which are older than 7 days (168h).
+	_, err := c.db.Database("kobs").Collection("sessions").Indexes().CreateOne(
+		ctx,
+		mongo.IndexModel{
+			Keys:    bson.D{{Key: "updatedAt", Value: 1}},
+			Options: options.Index().SetExpireAfterSeconds(int32(time.Duration(168 * time.Hour).Seconds())),
+		})
+
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) SavePlugins(ctx context.Context, cluster string, plugins []plugin.Instance) error {

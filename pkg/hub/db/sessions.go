@@ -15,28 +15,29 @@ import (
 )
 
 var (
-	// ErrSessionNotFound is our custom error which is returned when we are not able to found a session with the
+	// ErrSessionNotFound is our custom error which is returned when we are not able to find a session with the
 	// provided session id.
 	ErrSessionNotFound = fmt.Errorf("session not found")
 )
 
-// Session is the structure of a single session as it is saved in the database. Each session contains an id and the a
+// Session is the structure of a single session as it is saved in the database. Each session contains an id and a
 // user to which the session belongs to. The session also contains a `createdAt` and `updatedAt` field, so that we know
 // when a session was created or used the last time.
 type Session struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id"`
 	User      authContext.User   `json:"user" bson:"user"`
-	CreatedAt int64              `json:"createdAt" bson:"createdAt"`
-	UpdatedAt int64              `json:"updatedAt" bson:"updatedAt"`
+	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
+	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt"`
 }
 
 // CreateSession creates a new session for the provided `user`.
 func (c *client) CreateSession(ctx context.Context, user authContext.User) (*Session, error) {
+	now := time.Now()
 	session := Session{
 		ID:        primitive.NewObjectID(),
 		User:      user,
-		CreatedAt: time.Now().Unix(),
-		UpdatedAt: time.Now().Unix(),
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 
 	ctx, span := c.tracer.Start(ctx, "db.CreateSession")
@@ -86,7 +87,7 @@ func (c *client) GetAndUpdateSession(ctx context.Context, sessionID primitive.Ob
 	span.SetAttributes(attribute.Key("sessionID").String(sessionID.String()))
 	defer span.End()
 
-	res := c.db.Database("kobs").Collection("sessions").FindOneAndUpdate(ctx, bson.D{{Key: "_id", Value: sessionID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "updatedAt", Value: time.Now().Unix()}}}})
+	res := c.db.Database("kobs").Collection("sessions").FindOneAndUpdate(ctx, bson.D{{Key: "_id", Value: sessionID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "updatedAt", Value: time.Now()}}}})
 	if res.Err() != nil {
 		span.RecordError(res.Err())
 		span.SetStatus(codes.Error, res.Err().Error())
