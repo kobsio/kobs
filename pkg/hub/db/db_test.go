@@ -46,6 +46,15 @@ func TestNewClient(t *testing.T) {
 	require.NotEmpty(t, c2)
 }
 
+func TestCreateIndexes(t *testing.T) {
+	uri, container := setupDatabase(t)
+	defer gnomock.Stop(container)
+	c, _ := NewClient(Config{URI: uri})
+
+	err := c.CreateIndexes(context.Background())
+	require.NoError(t, err)
+}
+
 func TestSaveAndGetPlugins(t *testing.T) {
 	plugins := []plugin.Instance{{
 		Name: "test-cluster",

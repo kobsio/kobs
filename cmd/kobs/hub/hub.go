@@ -83,6 +83,12 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 		return err
 	}
 
+	err = dbClient.CreateIndexes(context.Background())
+	if err != nil {
+		log.Error(context.Background(), "Could not create indexes", zap.Error(err))
+		return err
+	}
+
 	pluginsClient, err := hubPlugins.NewClient(plugins, cfg.Hub.Plugins, clustersClient, dbClient)
 	if err != nil {
 		log.Error(context.Background(), "Could not create plugins client", zap.Error(err))
@@ -115,7 +121,7 @@ func (r *Cmd) Run(plugins []plugins.Plugin) error {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 
-	log.Debug(context.Background(), "Start listining for SIGINT and SIGTERM signal")
+	log.Debug(context.Background(), "Start listening for SIGINT and SIGTERM signal")
 	<-done
 	log.Info(context.Background(), "Shutdown kobs hub...")
 

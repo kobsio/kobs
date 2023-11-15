@@ -64,16 +64,16 @@ func (mr *MockInstanceMockRecorder) GetProjectMeasures(ctx, project, metricKeys 
 }
 
 // GetProjects mocks base method.
-func (m *MockInstance) GetProjects(ctx context.Context, query, pageSize, pageNumber string) (*ResponseProjects, error) {
+func (m *MockInstance) GetProjects(ctx context.Context, query, page, perPage string) (*ResponseProjects, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetProjects", ctx, query, pageSize, pageNumber)
+	ret := m.ctrl.Call(m, "GetProjects", ctx, query, page, perPage)
 	ret0, _ := ret[0].(*ResponseProjects)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetProjects indicates an expected call of GetProjects.
-func (mr *MockInstanceMockRecorder) GetProjects(ctx, query, pageSize, pageNumber interface{}) *gomock.Call {
+func (mr *MockInstanceMockRecorder) GetProjects(ctx, query, page, perPage interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjects", reflect.TypeOf((*MockInstance)(nil).GetProjects), ctx, query, pageSize, pageNumber)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjects", reflect.TypeOf((*MockInstance)(nil).GetProjects), ctx, query, page, perPage)
 }

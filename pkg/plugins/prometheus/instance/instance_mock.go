@@ -6,11 +6,10 @@ package instance
 
 import (
 	context "context"
+	http "net/http"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
-	model "github.com/prometheus/common/model"
 )
 
 // MockInstance is a mock of Instance interface.
@@ -51,22 +50,6 @@ func (mr *MockInstanceMockRecorder) GetInstant(ctx, queries, timeEnd interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstant", reflect.TypeOf((*MockInstance)(nil).GetInstant), ctx, queries, timeEnd)
 }
 
-// GetLabels mocks base method.
-func (m *MockInstance) GetLabels(ctx context.Context, matches []string, timeStart, timeEnd int64) ([]string, v1.Warnings, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetLabels", ctx, matches, timeStart, timeEnd)
-	ret0, _ := ret[0].([]string)
-	ret1, _ := ret[1].(v1.Warnings)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// GetLabels indicates an expected call of GetLabels.
-func (mr *MockInstanceMockRecorder) GetLabels(ctx, matches, timeStart, timeEnd interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLabels", reflect.TypeOf((*MockInstance)(nil).GetLabels), ctx, matches, timeStart, timeEnd)
-}
-
 // GetName mocks base method.
 func (m *MockInstance) GetName() string {
 	m.ctrl.T.Helper()
@@ -96,22 +79,6 @@ func (mr *MockInstanceMockRecorder) GetRange(ctx, queries, resolution, timeStart
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRange", reflect.TypeOf((*MockInstance)(nil).GetRange), ctx, queries, resolution, timeStart, timeEnd)
 }
 
-// GetSeries mocks base method.
-func (m *MockInstance) GetSeries(ctx context.Context, matches []string, timeStart, timeEnd int64) ([]model.LabelSet, v1.Warnings, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSeries", ctx, matches, timeStart, timeEnd)
-	ret0, _ := ret[0].([]model.LabelSet)
-	ret1, _ := ret[1].(v1.Warnings)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// GetSeries indicates an expected call of GetSeries.
-func (mr *MockInstanceMockRecorder) GetSeries(ctx, matches, timeStart, timeEnd interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSeries", reflect.TypeOf((*MockInstance)(nil).GetSeries), ctx, matches, timeStart, timeEnd)
-}
-
 // GetVariable mocks base method.
 func (m *MockInstance) GetVariable(ctx context.Context, label, query, queryType string, timeStart, timeEnd int64) ([]string, error) {
 	m.ctrl.T.Helper()
@@ -125,4 +92,16 @@ func (m *MockInstance) GetVariable(ctx context.Context, label, query, queryType 
 func (mr *MockInstanceMockRecorder) GetVariable(ctx, label, query, queryType, timeStart, timeEnd interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVariable", reflect.TypeOf((*MockInstance)(nil).GetVariable), ctx, label, query, queryType, timeStart, timeEnd)
+}
+
+// Proxy mocks base method.
+func (m *MockInstance) Proxy(w http.ResponseWriter, r *http.Request) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Proxy", w, r)
+}
+
+// Proxy indicates an expected call of Proxy.
+func (mr *MockInstanceMockRecorder) Proxy(w, r interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Proxy", reflect.TypeOf((*MockInstance)(nil).Proxy), w, r)
 }
