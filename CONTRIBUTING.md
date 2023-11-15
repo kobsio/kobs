@@ -165,7 +165,11 @@ The frontend lives in the [`plugins/app`](./plugins/app) folder. The shared Reac
 - `yarn workspace @kobsio/app build`: Build the React UI.
 - `yarn workspace @kobsio/app start`: Start development server for the React UI. The development server is served on port `3000`.
 
-We are using [ESLint](https://eslint.org) and [Prettier](https://prettier.io) for linting and automatic code formation. When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the React UI.
+We are using [ESLint](https://eslint.org) and [Prettier](https://prettier.io) for linting and automatic code formation.
+
+When you are using [VS Code](https://code.visualstudio.com) you can also use the `launch.json` file from the `.vscode` folder for debugging the React UI.
+
+For [Intellj](https://www.jetbrains.com/idea/) users the `.run` folder contains shared run configurations.
 
 #### Plugins
 

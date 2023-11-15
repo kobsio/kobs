@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="start all" type="CompoundRunConfigurationType">
+    <toRun name="start cluster" type="GoApplicationRunConfiguration" />
+    <toRun name="hub" type="GoApplicationRunConfiguration" />
+    <toRun name="start watcher" type="GoApplicationRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>
