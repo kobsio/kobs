@@ -31,6 +31,12 @@ type Config struct {
 	URI string `json:"uri" env:"URI" default:"mongodb://localhost:27017" help:"The connection uri for MongoDB"`
 }
 
+type key int
+
+const (
+	kobsDbName key = iota
+)
+
 // Client is the interface with all the methods to interact with the db.
 type Client interface {
 	DB() *mongo.Client
@@ -107,7 +113,7 @@ func NewClient(config Config) (Client, error) {
 // Returns the collection with given name
 // uses specified "kobs.db.name" value from cxt if given  as db or "kobs" as default
 func (c *client) coll(ctx context.Context, collection string) *mongo.Collection {
-	dbName := ctx.Value("kobs.db.name")
+	dbName := ctx.Value(kobsDbName)
 	if dbName == nil {
 		dbName = "kobs"
 	}

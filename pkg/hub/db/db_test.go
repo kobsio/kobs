@@ -35,7 +35,7 @@ func setupDatabase(t *testing.T) (string, *gnomock.Container) {
 
 func ctx(t *testing.T) context.Context {
 	dbName := strings.ReplaceAll(t.Name(), "/", "_")
-	return context.WithValue(context.Background(), "kobs.db.name", dbName)
+	return context.WithValue(context.Background(), kobsDbName, dbName)
 }
 
 func TestDB(t *testing.T) {
