@@ -45,7 +45,7 @@ func (c *client) CreateSession(ctx context.Context, user authContext.User) (*Ses
 	span.SetAttributes(attribute.Key("userID").String(user.ID))
 	defer span.End()
 
-	_, err := c.db.Database("kobs").Collection("sessions").InsertOne(ctx, session)
+	_, err := c.coll(ctx, "sessions").InsertOne(ctx, session)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -61,7 +61,7 @@ func (c *client) GetSession(ctx context.Context, sessionID primitive.ObjectID) (
 	span.SetAttributes(attribute.Key("sessionID").String(sessionID.String()))
 	defer span.End()
 
-	res := c.db.Database("kobs").Collection("sessions").FindOne(ctx, bson.D{{Key: "_id", Value: sessionID}})
+	res := c.coll(ctx, "sessions").FindOne(ctx, bson.D{{Key: "_id", Value: sessionID}})
 	if res.Err() != nil {
 		span.RecordError(res.Err())
 		span.SetStatus(codes.Error, res.Err().Error())
@@ -87,7 +87,7 @@ func (c *client) GetAndUpdateSession(ctx context.Context, sessionID primitive.Ob
 	span.SetAttributes(attribute.Key("sessionID").String(sessionID.String()))
 	defer span.End()
 
-	res := c.db.Database("kobs").Collection("sessions").FindOneAndUpdate(ctx, bson.D{{Key: "_id", Value: sessionID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "updatedAt", Value: time.Now()}}}})
+	res := c.coll(ctx, "sessions").FindOneAndUpdate(ctx, bson.D{{Key: "_id", Value: sessionID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "updatedAt", Value: time.Now()}}}})
 	if res.Err() != nil {
 		span.RecordError(res.Err())
 		span.SetStatus(codes.Error, res.Err().Error())
@@ -113,7 +113,7 @@ func (c *client) DeleteSession(ctx context.Context, sessionID primitive.ObjectID
 	span.SetAttributes(attribute.Key("sessionID").String(sessionID.String()))
 	defer span.End()
 
-	res, err := c.db.Database("kobs").Collection("sessions").DeleteOne(ctx, bson.D{{Key: "_id", Value: sessionID}})
+	res, err := c.coll(ctx, "sessions").DeleteOne(ctx, bson.D{{Key: "_id", Value: sessionID}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())

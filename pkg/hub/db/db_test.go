@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -33,6 +34,11 @@ func setupDatabase(t *testing.T) (string, *gnomock.Container) {
 	return fmt.Sprintf("mongodb://%s", c.DefaultAddress()), c
 }
 
+func ctx(t *testing.T) context.Context {
+	dbName := strings.ReplaceAll(t.Name(), "/", "_")
+	return context.WithValue(context.Background(), "kobs.db.name", dbName)
+}
+
 func TestNewClient(t *testing.T) {
 	c1, err1 := NewClient(Config{URI: ""})
 	require.Error(t, err1)
@@ -51,7 +57,7 @@ func TestCreateIndexes(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.CreateIndexes(context.Background())
+	err := c.CreateIndexes(ctx(t))
 	require.NoError(t, err)
 }
 
@@ -68,19 +74,19 @@ func TestSaveAndGetPlugins(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SavePlugins(context.Background(), "test-cluster", plugins)
+	err := c.SavePlugins(ctx(t), "test-cluster", plugins)
 	require.NoError(t, err)
 
-	storedPlugins1, err := c.GetPlugins(context.Background())
+	storedPlugins1, err := c.GetPlugins(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedPlugins1))
 
 	time.Sleep(2 * time.Second)
 
-	err = c.SavePlugins(context.Background(), "test-cluster", plugins[0:1])
+	err = c.SavePlugins(ctx(t), "test-cluster", plugins[0:1])
 	require.NoError(t, err)
 
-	storedPlugins2, err := c.GetPlugins(context.Background())
+	storedPlugins2, err := c.GetPlugins(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedPlugins2))
 }
@@ -91,20 +97,20 @@ func TestSaveAndGetNamespaces(t *testing.T) {
 	c, _ := NewClient(Config{URI: uri})
 
 	namespaces1 := []string{"default", "kube-system"}
-	err := c.SaveNamespaces(context.Background(), "test-cluster", namespaces1)
+	err := c.SaveNamespaces(ctx(t), "test-cluster", namespaces1)
 	require.NoError(t, err)
 
-	storedNamespaces1, err := c.GetNamespaces(context.Background())
+	storedNamespaces1, err := c.GetNamespaces(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedNamespaces1))
 
 	time.Sleep(2 * time.Second)
 
 	namespaces2 := []string{"default"}
-	err = c.SaveNamespaces(context.Background(), "test-cluster", namespaces2)
+	err = c.SaveNamespaces(ctx(t), "test-cluster", namespaces2)
 	require.NoError(t, err)
 
-	storedNamespaces2, err := c.GetNamespaces(context.Background())
+	storedNamespaces2, err := c.GetNamespaces(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedNamespaces2))
 }
@@ -119,19 +125,19 @@ func TestSaveAndGetCRDs(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveCRDs(context.Background(), crds1)
+	err := c.SaveCRDs(ctx(t), crds1)
 	require.NoError(t, err)
 
-	storedCRDs1, err := c.GetCRDs(context.Background())
+	storedCRDs1, err := c.GetCRDs(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedCRDs1))
 
 	time.Sleep(2 * time.Second)
 
-	err = c.SaveCRDs(context.Background(), crds1[0:1])
+	err = c.SaveCRDs(ctx(t), crds1[0:1])
 	require.NoError(t, err)
 
-	storedCRDs2, err := c.GetCRDs(context.Background())
+	storedCRDs2, err := c.GetCRDs(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedCRDs2))
 }
@@ -153,19 +159,19 @@ func TestSaveAndGetApplications(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveApplications(context.Background(), "test-cluster", applications)
+	err := c.SaveApplications(ctx(t), "test-cluster", applications)
 	require.NoError(t, err)
 
-	storedApplications1, err := c.GetApplications(context.Background())
+	storedApplications1, err := c.GetApplications(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedApplications1))
 
 	time.Sleep(2 * time.Second)
 
-	err = c.SaveApplications(context.Background(), "test-cluster", applications[0:1])
+	err = c.SaveApplications(ctx(t), "test-cluster", applications[0:1])
 	require.NoError(t, err)
 
-	storedApplications2, err := c.GetApplications(context.Background())
+	storedApplications2, err := c.GetApplications(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedApplications2))
 }
@@ -182,10 +188,10 @@ func TestSaveAndGetApplication(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveApplication(context.Background(), &application)
+	err := c.SaveApplication(ctx(t), &application)
 	require.NoError(t, err)
 
-	storedApplication1, err := c.GetApplicationByID(context.Background(), application.ID)
+	storedApplication1, err := c.GetApplicationByID(ctx(t), application.ID)
 	require.NoError(t, err)
 	require.Equal(t, application.ID, storedApplication1.ID)
 	require.Equal(t, application.Cluster, storedApplication1.Cluster)
@@ -195,10 +201,10 @@ func TestSaveAndGetApplication(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	application.Name = "application2"
-	err = c.SaveApplication(context.Background(), &application)
+	err = c.SaveApplication(ctx(t), &application)
 	require.NoError(t, err)
 
-	storedApplication2, err := c.GetApplicationByID(context.Background(), application.ID)
+	storedApplication2, err := c.GetApplicationByID(ctx(t), application.ID)
 	require.NoError(t, err)
 	require.Equal(t, application.ID, storedApplication2.ID)
 	require.Equal(t, application.Cluster, storedApplication2.Cluster)
@@ -223,23 +229,23 @@ func TestSaveAndGetDashboards(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveDashboards(context.Background(), "test-cluster", dashboards)
+	err := c.SaveDashboards(ctx(t), "test-cluster", dashboards)
 	require.NoError(t, err)
 
-	storedDashboards1, err := c.GetDashboards(context.Background(), nil, nil)
+	storedDashboards1, err := c.GetDashboards(ctx(t), nil, nil)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedDashboards1))
 
-	storedDashboards2, err := c.GetDashboards(context.Background(), []string{"test-cluster"}, []string{"default"})
+	storedDashboards2, err := c.GetDashboards(ctx(t), []string{"test-cluster"}, []string{"default"})
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedDashboards2))
 
 	time.Sleep(2 * time.Second)
 
-	err = c.SaveDashboards(context.Background(), "test-cluster", dashboards[0:1])
+	err = c.SaveDashboards(ctx(t), "test-cluster", dashboards[0:1])
 	require.NoError(t, err)
 
-	storedDashboards3, err := c.GetDashboards(context.Background(), nil, nil)
+	storedDashboards3, err := c.GetDashboards(ctx(t), nil, nil)
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedDashboards3))
 }
@@ -261,19 +267,19 @@ func TestSaveAndGetTeams(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveTeams(context.Background(), "test-cluster", teams)
+	err := c.SaveTeams(ctx(t), "test-cluster", teams)
 	require.NoError(t, err)
 
-	storedTeams1, err := c.GetTeams(context.Background(), "")
+	storedTeams1, err := c.GetTeams(ctx(t), "")
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedTeams1))
 
 	time.Sleep(2 * time.Second)
 
-	err = c.SaveTeams(context.Background(), "test-cluster", teams[0:1])
+	err = c.SaveTeams(ctx(t), "test-cluster", teams[0:1])
 	require.NoError(t, err)
 
-	storedTeams2, err := c.GetTeams(context.Background(), "")
+	storedTeams2, err := c.GetTeams(ctx(t), "")
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTeams2))
 }
@@ -290,10 +296,10 @@ func TestSaveAndGetTeam(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveTeam(context.Background(), &team)
+	err := c.SaveTeam(ctx(t), &team)
 	require.NoError(t, err)
 
-	storedTeam1, err := c.GetTeamByID(context.Background(), team.ID)
+	storedTeam1, err := c.GetTeamByID(ctx(t), team.ID)
 	require.NoError(t, err)
 	require.Equal(t, team.ID, storedTeam1.ID)
 	require.Equal(t, team.Cluster, storedTeam1.Cluster)
@@ -303,10 +309,10 @@ func TestSaveAndGetTeam(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	team.Name = "team2"
-	err = c.SaveTeam(context.Background(), &team)
+	err = c.SaveTeam(ctx(t), &team)
 	require.NoError(t, err)
 
-	storedTeam2, err := c.GetTeamByID(context.Background(), team.ID)
+	storedTeam2, err := c.GetTeamByID(ctx(t), team.ID)
 	require.NoError(t, err)
 	require.Equal(t, team.ID, storedTeam2.ID)
 	require.Equal(t, team.Cluster, storedTeam2.Cluster)
@@ -331,19 +337,19 @@ func TestSaveAndGetUsers(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveUsers(context.Background(), "test-cluster", users)
+	err := c.SaveUsers(ctx(t), "test-cluster", users)
 	require.NoError(t, err)
 
-	storedUsers1, err := c.GetUsers(context.Background())
+	storedUsers1, err := c.GetUsers(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedUsers1))
 
 	time.Sleep(2 * time.Second)
 
-	err = c.SaveUsers(context.Background(), "test-cluster", users[0:1])
+	err = c.SaveUsers(ctx(t), "test-cluster", users[0:1])
 	require.NoError(t, err)
 
-	storedUsers2, err := c.GetUsers(context.Background())
+	storedUsers2, err := c.GetUsers(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedUsers2))
 }
@@ -360,10 +366,10 @@ func TestSaveAndGetUser(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveUser(context.Background(), &user)
+	err := c.SaveUser(ctx(t), &user)
 	require.NoError(t, err)
 
-	storedUser1, err := c.GetUserByID(context.Background(), user.ID)
+	storedUser1, err := c.GetUserByID(ctx(t), user.ID)
 	require.NoError(t, err)
 	require.Equal(t, user.ID, storedUser1.ID)
 	require.Equal(t, user.Cluster, storedUser1.Cluster)
@@ -373,10 +379,10 @@ func TestSaveAndGetUser(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	user.Name = "user2"
-	err = c.SaveUser(context.Background(), &user)
+	err = c.SaveUser(ctx(t), &user)
 	require.NoError(t, err)
 
-	storedUser2, err := c.GetUserByID(context.Background(), user.ID)
+	storedUser2, err := c.GetUserByID(ctx(t), user.ID)
 	require.NoError(t, err)
 	require.Equal(t, user.ID, storedUser2.ID)
 	require.Equal(t, user.Cluster, storedUser2.Cluster)
@@ -403,10 +409,10 @@ func TestSaveAndGetTags(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveTags(context.Background(), applications)
+	err := c.SaveTags(ctx(t), applications)
 	require.NoError(t, err)
 
-	storedTags1, err := c.GetTags(context.Background())
+	storedTags1, err := c.GetTags(ctx(t))
 	require.NoError(t, err)
 	require.Equal(t, 5, len(storedTags1))
 }
@@ -433,14 +439,14 @@ func TestSaveAndGetTopology(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveTopology(context.Background(), "test-cluster", applications)
+	err := c.SaveTopology(ctx(t), "test-cluster", applications)
 	require.NoError(t, err)
 
-	storedTopology1, err := c.GetTopologyByIDs(context.Background(), "targetID", []string{"/cluster/test-cluster/namespace/default/name/application2"})
+	storedTopology1, err := c.GetTopologyByIDs(ctx(t), "targetID", []string{"/cluster/test-cluster/namespace/default/name/application2"})
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTopology1))
 
-	storedTopology2, err := c.GetTopologyByIDs(context.Background(), "sourceID", []string{"/cluster/test-cluster/namespace/default/name/application1"})
+	storedTopology2, err := c.GetTopologyByIDs(ctx(t), "sourceID", []string{"/cluster/test-cluster/namespace/default/name/application1"})
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTopology2))
 }
@@ -450,24 +456,24 @@ func TestGetNamespacesByClusters(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveNamespaces(context.Background(), "test-cluster1", []string{"default", "kube-system"})
+	err := c.SaveNamespaces(ctx(t), "test-cluster1", []string{"default", "kube-system"})
 	require.NoError(t, err)
-	err = c.SaveNamespaces(context.Background(), "test-cluster2", []string{"default", "kube-system", "istio-system"})
+	err = c.SaveNamespaces(ctx(t), "test-cluster2", []string{"default", "kube-system", "istio-system"})
 	require.NoError(t, err)
 
-	storedNamespaces1, err := c.GetNamespacesByClusters(context.Background(), []string{"test-cluster1"})
+	storedNamespaces1, err := c.GetNamespacesByClusters(ctx(t), []string{"test-cluster1"})
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedNamespaces1))
 
-	storedNamespaces2, err := c.GetNamespacesByClusters(context.Background(), []string{"test-cluster1", "test-cluster2"})
+	storedNamespaces2, err := c.GetNamespacesByClusters(ctx(t), []string{"test-cluster1", "test-cluster2"})
 	require.NoError(t, err)
 	require.Equal(t, 5, len(storedNamespaces2))
 
-	storedNamespaces3, err := c.GetNamespacesByClusters(context.Background(), []string{})
+	storedNamespaces3, err := c.GetNamespacesByClusters(ctx(t), []string{})
 	require.NoError(t, err)
 	require.Equal(t, 5, len(storedNamespaces3))
 
-	storedNamespaces4, err := c.GetNamespacesByClusters(context.Background(), nil)
+	storedNamespaces4, err := c.GetNamespacesByClusters(ctx(t), nil)
 	require.NoError(t, err)
 	require.Equal(t, 5, len(storedNamespaces4))
 }
@@ -482,14 +488,14 @@ func TestGetCRDByID(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveCRDs(context.Background(), crds)
+	err := c.SaveCRDs(ctx(t), crds)
 	require.NoError(t, err)
 
-	crd1, err := c.GetCRDByID(context.Background(), "resource1.path1/v1")
+	crd1, err := c.GetCRDByID(ctx(t), "resource1.path1/v1")
 	require.NoError(t, err)
 	require.NotNil(t, crd1)
 
-	crd2, err := c.GetCRDByID(context.Background(), "resource3.path3/v3")
+	crd2, err := c.GetCRDByID(ctx(t), "resource3.path3/v3")
 	require.Error(t, err)
 	require.Nil(t, crd2)
 }
@@ -514,9 +520,9 @@ func TestGetApplicationsByFilter(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveApplications(context.Background(), "test-cluster1", applications1)
+	err := c.SaveApplications(ctx(t), "test-cluster1", applications1)
 	require.NoError(t, err)
-	err = c.SaveApplications(context.Background(), "test-cluster2", applications2)
+	err = c.SaveApplications(ctx(t), "test-cluster2", applications2)
 	require.NoError(t, err)
 
 	getApplicationsNames := func(storedApplications []applicationv1.ApplicationSpec) []string {
@@ -527,6 +533,7 @@ func TestGetApplicationsByFilter(t *testing.T) {
 		return names
 	}
 
+	ctx := ctx(t)
 	for _, tt := range []struct {
 		name                 string
 		teams                []string
@@ -551,7 +558,7 @@ func TestGetApplicationsByFilter(t *testing.T) {
 		{name: "filter by tags", teams: nil, clusters: nil, namespaces: nil, tags: []string{"logging"}, searchTerm: "", limit: 100, offset: 0, expectedError: false, expectedApplications: []string{"application10"}, expectedCount: 1},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			storedApplications, err := c.GetApplicationsByFilter(context.Background(), tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm, tt.limit, tt.offset)
+			storedApplications, err := c.GetApplicationsByFilter(ctx, tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm, tt.limit, tt.offset)
 			if tt.expectedError {
 				require.Error(t, err)
 			} else {
@@ -559,7 +566,7 @@ func TestGetApplicationsByFilter(t *testing.T) {
 			}
 			require.Equal(t, tt.expectedApplications, getApplicationsNames(storedApplications))
 
-			count, err := c.GetApplicationsByFilterCount(context.Background(), tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm)
+			count, err := c.GetApplicationsByFilterCount(ctx, tt.teams, tt.clusters, tt.namespaces, tt.tags, tt.searchTerm)
 			if tt.expectedError {
 				require.Error(t, err)
 			} else {
@@ -590,11 +597,12 @@ func TestGetApplicationsByGroup(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveApplications(context.Background(), "test-cluster1", applications1)
+	err := c.SaveApplications(ctx(t), "test-cluster1", applications1)
 	require.NoError(t, err)
-	err = c.SaveApplications(context.Background(), "test-cluster2", applications2)
+	err = c.SaveApplications(ctx(t), "test-cluster2", applications2)
 	require.NoError(t, err)
 
+	ctx := ctx(t)
 	for _, tt := range []struct {
 		name           string
 		teams          []string
@@ -621,7 +629,7 @@ func TestGetApplicationsByGroup(t *testing.T) {
 		}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			storedGroups, err := c.GetApplicationsByGroup(context.Background(), tt.teams, tt.groups)
+			storedGroups, err := c.GetApplicationsByGroup(ctx, tt.teams, tt.groups)
 			require.NoError(t, err)
 			require.Equal(t, tt.expectedGroups, storedGroups)
 		})
@@ -645,14 +653,14 @@ func TestGetApplicationByID(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveApplications(context.Background(), "test-cluster", applications)
+	err := c.SaveApplications(ctx(t), "test-cluster", applications)
 	require.NoError(t, err)
 
-	storedApplication1, err := c.GetApplicationByID(context.Background(), "/cluster/test-cluster/namespace/default/name/application1")
+	storedApplication1, err := c.GetApplicationByID(ctx(t), "/cluster/test-cluster/namespace/default/name/application1")
 	require.NoError(t, err)
 	require.NotNil(t, storedApplication1)
 
-	storedApplication2, err := c.GetApplicationByID(context.Background(), "/cluster/test-cluster/namespace/default/name/application3")
+	storedApplication2, err := c.GetApplicationByID(ctx(t), "/cluster/test-cluster/namespace/default/name/application3")
 	require.Error(t, err)
 	require.Nil(t, storedApplication2)
 }
@@ -674,14 +682,14 @@ func TestGetDashboardByID(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveDashboards(context.Background(), "test-cluster", dashboards)
+	err := c.SaveDashboards(ctx(t), "test-cluster", dashboards)
 	require.NoError(t, err)
 
-	storedDashboard1, err := c.GetDashboardByID(context.Background(), "/cluster/test-cluster/namespace/default/name/dashboard1")
+	storedDashboard1, err := c.GetDashboardByID(ctx(t), "/cluster/test-cluster/namespace/default/name/dashboard1")
 	require.NoError(t, err)
 	require.NotNil(t, storedDashboard1)
 
-	storedDashboard2, err := c.GetDashboardByID(context.Background(), "/cluster/test-cluster/namespace/default/name/dashboard3")
+	storedDashboard2, err := c.GetDashboardByID(ctx(t), "/cluster/test-cluster/namespace/default/name/dashboard3")
 	require.Error(t, err)
 	require.Nil(t, storedDashboard2)
 }
@@ -713,30 +721,30 @@ func TestGetTeamsByIDs(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveTeams(context.Background(), "test-cluster", teams)
+	err := c.SaveTeams(ctx(t), "test-cluster", teams)
 	require.NoError(t, err)
 
-	storedTeams1, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io"}, "")
+	storedTeams1, err := c.GetTeamsByIDs(ctx(t), []string{"team1@kobs.io"}, "")
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTeams1))
 
-	storedTeams2, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io", "team2@kobs.io"}, "")
+	storedTeams2, err := c.GetTeamsByIDs(ctx(t), []string{"team1@kobs.io", "team2@kobs.io"}, "")
 	require.NoError(t, err)
 	require.Equal(t, 2, len(storedTeams2))
 
-	storedTeams3, err := c.GetTeamsByIDs(context.Background(), []string{}, "")
+	storedTeams3, err := c.GetTeamsByIDs(ctx(t), []string{}, "")
 	require.NoError(t, err)
 	require.Equal(t, 0, len(storedTeams3))
 
-	storedTeams4, err := c.GetTeamsByIDs(context.Background(), nil, "")
+	storedTeams4, err := c.GetTeamsByIDs(ctx(t), nil, "")
 	require.NoError(t, err)
 	require.Equal(t, 0, len(storedTeams4))
 
-	storedTeams5, err := c.GetTeamsByIDs(context.Background(), []string{"team3@kobs.io"}, "")
+	storedTeams5, err := c.GetTeamsByIDs(ctx(t), []string{"team3@kobs.io"}, "")
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTeams5))
 
-	storedTeams6, err := c.GetTeamsByIDs(context.Background(), []string{"team1@kobs.io", "team2@kobs.io"}, "team2")
+	storedTeams6, err := c.GetTeamsByIDs(ctx(t), []string{"team1@kobs.io", "team2@kobs.io"}, "team2")
 	require.NoError(t, err)
 	require.Equal(t, 1, len(storedTeams6))
 }
@@ -772,14 +780,14 @@ func TestGetTeamByID(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveTeams(context.Background(), "test-cluster", teams)
+	err := c.SaveTeams(ctx(t), "test-cluster", teams)
 	require.NoError(t, err)
 
-	storedTeam1, err := c.GetTeamByID(context.Background(), "team1@kobs.io")
+	storedTeam1, err := c.GetTeamByID(ctx(t), "team1@kobs.io")
 	require.NoError(t, err)
 	require.NotNil(t, storedTeam1)
 
-	storedTeam2, err := c.GetTeamByID(context.Background(), "team4@kobs.io")
+	storedTeam2, err := c.GetTeamByID(ctx(t), "team4@kobs.io")
 	require.Error(t, err)
 	require.Nil(t, storedTeam2)
 }
@@ -801,14 +809,14 @@ func TestGetGetUserByID(t *testing.T) {
 	defer gnomock.Stop(container)
 	c, _ := NewClient(Config{URI: uri})
 
-	err := c.SaveUsers(context.Background(), "test-cluster", users)
+	err := c.SaveUsers(ctx(t), "test-cluster", users)
 	require.NoError(t, err)
 
-	storedUser1, err := c.GetUserByID(context.Background(), "user1@kobs.io")
+	storedUser1, err := c.GetUserByID(ctx(t), "user1@kobs.io")
 	require.NoError(t, err)
 	require.NotNil(t, storedUser1)
 
-	storedUser2, err := c.GetUserByID(context.Background(), "user4@kobs.io")
+	storedUser2, err := c.GetUserByID(ctx(t), "user4@kobs.io")
 	require.NoError(t, err)
 	require.Nil(t, storedUser2)
 }

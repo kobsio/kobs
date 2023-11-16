@@ -104,8 +104,18 @@ func NewClient(config Config) (Client, error) {
 	}, nil
 }
 
+// Returns the collection with given name
+// uses specified "kobs.db.name" value from cxt if given  as db or "kobs" as default
+func (c *client) coll(ctx context.Context, collection string) *mongo.Collection {
+	dbName := ctx.Value("kobs.db.name")
+	if dbName == nil {
+		dbName = "kobs"
+	}
+	return c.db.Database(dbName.(string)).Collection(collection)
+}
+
 func (c *client) save(ctx context.Context, collection string, models []mongo.WriteModel, cluster string, updatedAt int64) error {
-	_, err := c.db.Database("kobs").Collection(collection).BulkWrite(ctx, models)
+	_, err := c.coll(ctx, collection).BulkWrite(ctx, models)
 	if err != nil {
 		return err
 	}
@@ -115,7 +125,7 @@ func (c *client) save(ctx context.Context, collection string, models []mongo.Wri
 		filter = bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "cluster", Value: bson.D{{Key: "$eq", Value: cluster}}}}, filter}}}
 	}
 
-	_, err = c.db.Database("kobs").Collection(collection).DeleteMany(ctx, filter)
+	_, err = c.coll(ctx, collection).DeleteMany(ctx, filter)
 	if err != nil {
 		return err
 	}
@@ -132,7 +142,7 @@ func (c *client) CreateIndexes(ctx context.Context) error {
 	defer span.End()
 
 	// Create TTL index for sessions collection, which will delete all inactive sessions which are older than 7 days (168h).
-	_, err := c.db.Database("kobs").Collection("sessions").Indexes().CreateOne(
+	_, err := c.coll(ctx, "sessions").Indexes().CreateOne(
 		ctx,
 		mongo.IndexModel{
 			Keys:    bson.D{{Key: "updatedAt", Value: 1}},
@@ -271,7 +281,7 @@ func (c *client) SaveApplication(ctx context.Context, application *applicationv1
 	upsert := true
 	application.UpdatedAt = time.Now().Unix()
 
-	_, err := c.db.Database("kobs").Collection("applications").ReplaceOne(ctx, bson.D{{Key: "_id", Value: application.ID}}, application, &options.ReplaceOptions{Upsert: &upsert})
+	_, err := c.coll(ctx, "applications").ReplaceOne(ctx, bson.D{{Key: "_id", Value: application.ID}}, application, &options.ReplaceOptions{Upsert: &upsert})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -342,7 +352,7 @@ func (c *client) SaveTeam(ctx context.Context, team *teamv1.TeamSpec) error {
 	upsert := true
 	team.UpdatedAt = time.Now().Unix()
 
-	_, err := c.db.Database("kobs").Collection("teams").ReplaceOne(ctx, bson.D{{Key: "_id", Value: team.ID}}, team, &options.ReplaceOptions{Upsert: &upsert})
+	_, err := c.coll(ctx, "teams").ReplaceOne(ctx, bson.D{{Key: "_id", Value: team.ID}}, team, &options.ReplaceOptions{Upsert: &upsert})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -386,7 +396,7 @@ func (c *client) SaveUser(ctx context.Context, user *userv1.UserSpec) error {
 	upsert := true
 	user.UpdatedAt = time.Now().Unix()
 
-	_, err := c.db.Database("kobs").Collection("users").ReplaceOne(ctx, bson.D{{Key: "_id", Value: user.ID}}, user, &options.ReplaceOptions{Upsert: &upsert})
+	_, err := c.coll(ctx, "users").ReplaceOne(ctx, bson.D{{Key: "_id", Value: user.ID}}, user, &options.ReplaceOptions{Upsert: &upsert})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -466,14 +476,14 @@ func (c *client) SaveTopology(ctx context.Context, cluster string, applications 
 		return nil
 	}
 
-	_, err := c.db.Database("kobs").Collection("topology").BulkWrite(ctx, models)
+	_, err := c.coll(ctx, "topology").BulkWrite(ctx, models)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		return err
 	}
 
-	_, err = c.db.Database("kobs").Collection("topology").DeleteMany(ctx, bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "sourceCluster", Value: bson.D{{Key: "$eq", Value: cluster}}}}, bson.D{{Key: "updatedAt", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}}}})
+	_, err = c.coll(ctx, "topology").DeleteMany(ctx, bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "sourceCluster", Value: bson.D{{Key: "$eq", Value: cluster}}}}, bson.D{{Key: "updatedAt", Value: bson.D{{Key: "$lt", Value: updatedAt}}}}}}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -489,7 +499,7 @@ func (c *client) GetPlugins(ctx context.Context) ([]plugin.Instance, error) {
 
 	var plugins []plugin.Instance
 
-	cursor, err := c.db.Database("kobs").Collection("plugins").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "plugins").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -512,7 +522,7 @@ func (c *client) GetNamespaces(ctx context.Context) ([]Namespace, error) {
 
 	var namespaces []Namespace
 
-	cursor, err := c.db.Database("kobs").Collection("namespaces").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "namespaces").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -542,7 +552,7 @@ func (c *client) GetNamespacesByClusters(ctx context.Context, clusters []string)
 
 	var namespaces []Namespace
 
-	cursor, err := c.db.Database("kobs").Collection("namespaces").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "namespaces").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -565,7 +575,7 @@ func (c *client) GetCRDs(ctx context.Context) ([]kubernetes.CRD, error) {
 
 	var crds []kubernetes.CRD
 
-	cursor, err := c.db.Database("kobs").Collection("crds").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "crds").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -589,7 +599,7 @@ func (c *client) GetCRDByID(ctx context.Context, id string) (*kubernetes.CRD, er
 
 	var crd kubernetes.CRD
 
-	result := c.db.Database("kobs").Collection("crds").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
+	result := c.coll(ctx, "crds").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -612,7 +622,7 @@ func (c *client) GetApplications(ctx context.Context) ([]applicationv1.Applicati
 
 	var applications []applicationv1.ApplicationSpec
 
-	cursor, err := c.db.Database("kobs").Collection("applications").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "applications").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -664,7 +674,7 @@ func (c *client) GetApplicationsByFilter(ctx context.Context, teams, clusters, n
 
 	var applications []applicationv1.ApplicationSpec
 
-	cursor, err := c.db.Database("kobs").Collection("applications").Find(ctx, filter, options.Find().SetSort(bson.M{"name": 1}).SetLimit(int64(limit)).SetSkip(int64(offset)))
+	cursor, err := c.coll(ctx, "applications").Find(ctx, filter, options.Find().SetSort(bson.M{"name": 1}).SetLimit(int64(limit)).SetSkip(int64(offset)))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -712,7 +722,7 @@ func (c *client) GetApplicationsByFilterCount(ctx context.Context, teams, cluste
 		filter["tags"] = bson.M{"$in": tags}
 	}
 
-	count, err := c.db.Database("kobs").Collection("applications").CountDocuments(ctx, filter)
+	count, err := c.coll(ctx, "applications").CountDocuments(ctx, filter)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -739,7 +749,7 @@ func (c *client) GetApplicationsByGroup(ctx context.Context, teams, groups []str
 
 	var applications []ApplicationGroup
 
-	cursor, err := c.db.Database("kobs").Collection("applications").Aggregate(ctx, mongo.Pipeline{
+	cursor, err := c.coll(ctx, "applications").Aggregate(ctx, mongo.Pipeline{
 		bson.D{{Key: "$match", Value: bson.D{{Key: "teams", Value: bson.D{{Key: "$in", Value: teams}}}}}},
 		bson.D{
 			{Key: "$group",
@@ -780,7 +790,7 @@ func (c *client) GetApplicationByID(ctx context.Context, id string) (*applicatio
 
 	var application applicationv1.ApplicationSpec
 
-	result := c.db.Database("kobs").Collection("applications").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
+	result := c.coll(ctx, "applications").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -813,7 +823,7 @@ func (c *client) GetDashboards(ctx context.Context, clusters, namespaces []strin
 
 	var dashboards []dashboardv1.DashboardSpec
 
-	cursor, err := c.db.Database("kobs").Collection("dashboards").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "dashboards").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -837,7 +847,7 @@ func (c *client) GetDashboardByID(ctx context.Context, id string) (*dashboardv1.
 
 	var dashboard dashboardv1.DashboardSpec
 
-	result := c.db.Database("kobs").Collection("dashboards").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
+	result := c.coll(ctx, "dashboards").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -865,7 +875,7 @@ func (c *client) GetTeams(ctx context.Context, searchTerm string) ([]teamv1.Team
 		filter = bson.D{{Key: "_id", Value: bson.M{"$regex": primitive.Regex{Pattern: searchTerm, Options: "i"}}}}
 	}
 
-	cursor, err := c.db.Database("kobs").Collection("teams").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "teams").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -898,7 +908,7 @@ func (c *client) GetTeamsByIDs(ctx context.Context, ids []string, searchTerm str
 		filter = bson.D{{Key: "$and", Value: bson.A{bson.D{{Key: "_id", Value: bson.D{{Key: "$in", Value: ids}}}}, bson.D{{Key: "_id", Value: bson.M{"$regex": primitive.Regex{Pattern: searchTerm, Options: "i"}}}}}}}
 	}
 
-	cursor, err := c.db.Database("kobs").Collection("teams").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "teams").Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -922,7 +932,7 @@ func (c *client) GetTeamByID(ctx context.Context, id string) (*teamv1.TeamSpec, 
 
 	var team teamv1.TeamSpec
 
-	result := c.db.Database("kobs").Collection("teams").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
+	result := c.coll(ctx, "teams").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -945,7 +955,7 @@ func (c *client) GetUsers(ctx context.Context) ([]userv1.UserSpec, error) {
 
 	var users []userv1.UserSpec
 
-	cursor, err := c.db.Database("kobs").Collection("users").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
+	cursor, err := c.coll(ctx, "users").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -969,7 +979,7 @@ func (c *client) GetUserByID(ctx context.Context, id string) (*userv1.UserSpec, 
 
 	var user userv1.UserSpec
 
-	result := c.db.Database("kobs").Collection("users").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
+	result := c.coll(ctx, "users").FindOne(ctx, bson.D{{Key: "_id", Value: id}})
 	if err := result.Err(); err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, nil
@@ -995,7 +1005,7 @@ func (c *client) GetTags(ctx context.Context) ([]Tag, error) {
 
 	var tags []Tag
 
-	cursor, err := c.db.Database("kobs").Collection("tags").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "tag", Value: 1}}))
+	cursor, err := c.coll(ctx, "tags").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{Key: "tag", Value: 1}}))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -1024,7 +1034,7 @@ func (c *client) GetTopologyByIDs(ctx context.Context, field string, ids []strin
 
 	var topology []Topology
 
-	cursor, err := c.db.Database("kobs").Collection("topology").Find(ctx, bson.D{{Key: field, Value: bson.D{{Key: "$in", Value: ids}}}})
+	cursor, err := c.coll(ctx, "topology").Find(ctx, bson.D{{Key: field, Value: bson.D{{Key: "$in", Value: ids}}}})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
