@@ -174,7 +174,7 @@ func (c *client) SavePlugins(ctx context.Context, cluster string, plugins []plug
 	defer span.End()
 
 	var models []mongo.WriteModel
-	updatedAt := time.Now().Unix()
+	updatedAt := time.Now().UnixMilli()
 
 	for _, p := range plugins {
 		p.ID = fmt.Sprintf("/cluster/%s/type/%s/name/%s", cluster, p.Type, p.Name)
@@ -203,7 +203,7 @@ func (c *client) SaveNamespaces(ctx context.Context, cluster string, namespaces 
 	defer span.End()
 
 	var models []mongo.WriteModel
-	updatedAt := time.Now().Unix()
+	updatedAt := time.Now().UnixMilli()
 
 	for _, n := range namespaces {
 		namespace := Namespace{
@@ -236,14 +236,14 @@ func (c *client) SaveCRDs(ctx context.Context, crds []kubernetes.CRD) error {
 
 	var models []mongo.WriteModel
 	updatedAtTime := time.Now()
-	updatedAt := updatedAtTime.Unix()
+	updatedAt := updatedAtTime.UnixMilli()
 
 	for _, crd := range crds {
 		crd.UpdatedAt = updatedAt
 		models = append(models, mongo.NewReplaceOneModel().SetFilter(bson.D{{Key: "_id", Value: crd.ID}}).SetReplacement(crd).SetUpsert(true))
 	}
 
-	err := c.save(ctx, "crds", models, "", updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix())
+	err := c.save(ctx, "crds", models, "", updatedAtTime.Add(time.Duration(-72*time.Hour)).UnixMilli())
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -263,7 +263,7 @@ func (c *client) SaveApplications(ctx context.Context, cluster string, applicati
 	defer span.End()
 
 	var models []mongo.WriteModel
-	updatedAt := time.Now().Unix()
+	updatedAt := time.Now().UnixMilli()
 
 	for _, a := range applications {
 		a.UpdatedAt = updatedAt
@@ -285,7 +285,7 @@ func (c *client) SaveApplication(ctx context.Context, application *applicationv1
 	defer span.End()
 
 	upsert := true
-	application.UpdatedAt = time.Now().Unix()
+	application.UpdatedAt = time.Now().UnixMilli()
 
 	_, err := c.coll(ctx, "applications").ReplaceOne(ctx, bson.D{{Key: "_id", Value: application.ID}}, application, &options.ReplaceOptions{Upsert: &upsert})
 	if err != nil {
@@ -307,7 +307,7 @@ func (c *client) SaveDashboards(ctx context.Context, cluster string, dashboards 
 	defer span.End()
 
 	var models []mongo.WriteModel
-	updatedAt := time.Now().Unix()
+	updatedAt := time.Now().UnixMilli()
 
 	for _, d := range dashboards {
 		d.UpdatedAt = updatedAt
@@ -334,7 +334,7 @@ func (c *client) SaveTeams(ctx context.Context, cluster string, teams []teamv1.T
 	defer span.End()
 
 	var models []mongo.WriteModel
-	updatedAt := time.Now().Unix()
+	updatedAt := time.Now().UnixMilli()
 
 	for _, t := range teams {
 		t.UpdatedAt = updatedAt
@@ -356,7 +356,7 @@ func (c *client) SaveTeam(ctx context.Context, team *teamv1.TeamSpec) error {
 	defer span.End()
 
 	upsert := true
-	team.UpdatedAt = time.Now().Unix()
+	team.UpdatedAt = time.Now().UnixMilli()
 
 	_, err := c.coll(ctx, "teams").ReplaceOne(ctx, bson.D{{Key: "_id", Value: team.ID}}, team, &options.ReplaceOptions{Upsert: &upsert})
 	if err != nil {
@@ -378,7 +378,7 @@ func (c *client) SaveUsers(ctx context.Context, cluster string, users []userv1.U
 	defer span.End()
 
 	var models []mongo.WriteModel
-	updatedAt := time.Now().Unix()
+	updatedAt := time.Now().UnixMilli()
 
 	for _, u := range users {
 		u.UpdatedAt = updatedAt
@@ -400,7 +400,7 @@ func (c *client) SaveUser(ctx context.Context, user *userv1.UserSpec) error {
 	defer span.End()
 
 	upsert := true
-	user.UpdatedAt = time.Now().Unix()
+	user.UpdatedAt = time.Now().UnixMilli()
 
 	_, err := c.coll(ctx, "users").ReplaceOne(ctx, bson.D{{Key: "_id", Value: user.ID}}, user, &options.ReplaceOptions{Upsert: &upsert})
 	if err != nil {
@@ -418,7 +418,7 @@ func (c *client) SaveTags(ctx context.Context, applications []applicationv1.Appl
 
 	var models []mongo.WriteModel
 	updatedAtTime := time.Now()
-	updatedAt := updatedAtTime.Unix()
+	updatedAt := updatedAtTime.UnixMilli()
 
 	for _, a := range applications {
 		for _, t := range a.Tags {
@@ -436,7 +436,7 @@ func (c *client) SaveTags(ctx context.Context, applications []applicationv1.Appl
 		return nil
 	}
 
-	err := c.save(ctx, "tags", models, "", updatedAtTime.Add(time.Duration(-72*time.Hour)).Unix())
+	err := c.save(ctx, "tags", models, "", updatedAtTime.Add(time.Duration(-72*time.Hour)).UnixMilli())
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
@@ -452,7 +452,7 @@ func (c *client) SaveTopology(ctx context.Context, cluster string, applications 
 	defer span.End()
 
 	var models []mongo.WriteModel
-	updatedAt := time.Now().Unix()
+	updatedAt := time.Now().UnixMilli()
 
 	for _, a := range applications {
 		for _, dependency := range a.Topology.Dependencies {
