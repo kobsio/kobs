@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/kobsio/kobs/pkg/cluster/kubernetes"
 	applicationv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/application/v1"
@@ -80,8 +79,6 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedPlugins1))
 
-		time.Sleep(1 * time.Second)
-
 		err = c.SavePlugins(ctx(t), "test-cluster", plugins[0:1])
 		require.NoError(t, err)
 
@@ -98,8 +95,6 @@ func TestDB(t *testing.T) {
 		storedNamespaces1, err := c.GetNamespaces(ctx(t))
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedNamespaces1))
-
-		time.Sleep(1 * time.Second)
 
 		namespaces2 := []string{"default"}
 		err = c.SaveNamespaces(ctx(t), "test-cluster", namespaces2)
@@ -122,8 +117,6 @@ func TestDB(t *testing.T) {
 		storedCRDs1, err := c.GetCRDs(ctx(t))
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedCRDs1))
-
-		time.Sleep(1 * time.Second)
 
 		err = c.SaveCRDs(ctx(t), crds1[0:1])
 		require.NoError(t, err)
@@ -153,8 +146,6 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedApplications1))
 
-		time.Sleep(1 * time.Second)
-
 		err = c.SaveApplications(ctx(t), "test-cluster", applications[0:1])
 		require.NoError(t, err)
 
@@ -180,8 +171,6 @@ func TestDB(t *testing.T) {
 		require.Equal(t, application.Cluster, storedApplication1.Cluster)
 		require.Equal(t, application.Namespace, storedApplication1.Namespace)
 		require.Equal(t, application.Name, storedApplication1.Name)
-
-		time.Sleep(1 * time.Second)
 
 		application.Name = "application2"
 		err = c.SaveApplication(ctx(t), &application)
@@ -219,8 +208,6 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 1, len(storedDashboards2))
 
-		time.Sleep(1 * time.Second)
-
 		err = c.SaveDashboards(ctx(t), "test-cluster", dashboards[0:1])
 		require.NoError(t, err)
 
@@ -249,8 +236,6 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedTeams1))
 
-		time.Sleep(1 * time.Second)
-
 		err = c.SaveTeams(ctx(t), "test-cluster", teams[0:1])
 		require.NoError(t, err)
 
@@ -276,8 +261,6 @@ func TestDB(t *testing.T) {
 		require.Equal(t, team.Cluster, storedTeam1.Cluster)
 		require.Equal(t, team.Namespace, storedTeam1.Namespace)
 		require.Equal(t, team.Name, storedTeam1.Name)
-
-		time.Sleep(1 * time.Second)
 
 		team.Name = "team2"
 		err = c.SaveTeam(ctx(t), &team)
@@ -311,8 +294,6 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedUsers1))
 
-		time.Sleep(1 * time.Second)
-
 		err = c.SaveUsers(ctx(t), "test-cluster", users[0:1])
 		require.NoError(t, err)
 
@@ -338,8 +319,6 @@ func TestDB(t *testing.T) {
 		require.Equal(t, user.Cluster, storedUser1.Cluster)
 		require.Equal(t, user.Namespace, storedUser1.Namespace)
 		require.Equal(t, user.Name, storedUser1.Name)
-
-		time.Sleep(1 * time.Second)
 
 		user.Name = "user2"
 		err = c.SaveUser(ctx(t), &user)
@@ -452,9 +431,9 @@ func TestDB(t *testing.T) {
 			{ID: "cluster/test-cluster1/namespace/default/application1", Cluster: "test-cluster1", Namespace: "default", Name: "application1", Teams: []string{"team1"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
 			{ID: "cluster/test-cluster1/namespace/default/application2", Cluster: "test-cluster1", Namespace: "default", Name: "application2", Teams: []string{"team1", "team2"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
 			{ID: "cluster/test-cluster1/namespace/default/application3", Cluster: "test-cluster1", Namespace: "default", Name: "application3", Teams: []string{"team3"}, Tags: []string{}, Topology: applicationv1.Topology{External: true}},
-			{ID: "cluster/test-cluster1/namespace/default/application4", Cluster: "test-cluster2", Namespace: "default", Name: "application4", Teams: []string{"team1", "team2", "team3"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
 		}
 		applications2 := []applicationv1.ApplicationSpec{
+			{ID: "cluster/test-cluster2/namespace/default/application4", Cluster: "test-cluster2", Namespace: "default", Name: "application4", Teams: []string{"team1", "team2", "team3"}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
 			{ID: "cluster/test-cluster2/namespace/default/application5", Cluster: "test-cluster2", Namespace: "default", Name: "application5", Teams: []string{}, Tags: []string{"monitoring", "observability"}, Topology: applicationv1.Topology{External: false}},
 			{ID: "cluster/test-cluster2/namespace/kube-system/application6", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application6", Teams: []string{"team1"}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
 			{ID: "cluster/test-cluster2/namespace/kube-system/application7", Cluster: "test-cluster2", Namespace: "kube-system", Name: "application7", Teams: []string{}, Tags: []string{"core", "provider"}, Topology: applicationv1.Topology{External: false}},
