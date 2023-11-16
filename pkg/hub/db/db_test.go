@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"fmt"
-	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"os"
 	"strings"
 	"testing"
@@ -14,6 +13,7 @@ import (
 	dashboardv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/dashboard/v1"
 	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
+	"github.com/kobsio/kobs/pkg/plugins/plugin"
 	"github.com/orlangure/gnomock"
 	"github.com/orlangure/gnomock/preset/mongo"
 	"github.com/stretchr/testify/require"
@@ -79,7 +79,7 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedPlugins1))
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		err = c.SavePlugins(ctx(t), "test-cluster", plugins[0:1])
 		require.NoError(t, err)
@@ -98,7 +98,7 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedNamespaces1))
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		namespaces2 := []string{"default"}
 		err = c.SaveNamespaces(ctx(t), "test-cluster", namespaces2)
@@ -122,7 +122,7 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedCRDs1))
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		err = c.SaveCRDs(ctx(t), crds1[0:1])
 		require.NoError(t, err)
@@ -152,7 +152,7 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedApplications1))
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		err = c.SaveApplications(ctx(t), "test-cluster", applications[0:1])
 		require.NoError(t, err)
@@ -180,7 +180,7 @@ func TestDB(t *testing.T) {
 		require.Equal(t, application.Namespace, storedApplication1.Namespace)
 		require.Equal(t, application.Name, storedApplication1.Name)
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		application.Name = "application2"
 		err = c.SaveApplication(ctx(t), &application)
@@ -218,7 +218,7 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 1, len(storedDashboards2))
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		err = c.SaveDashboards(ctx(t), "test-cluster", dashboards[0:1])
 		require.NoError(t, err)
@@ -248,7 +248,7 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedTeams1))
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		err = c.SaveTeams(ctx(t), "test-cluster", teams[0:1])
 		require.NoError(t, err)
@@ -276,7 +276,7 @@ func TestDB(t *testing.T) {
 		require.Equal(t, team.Namespace, storedTeam1.Namespace)
 		require.Equal(t, team.Name, storedTeam1.Name)
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		team.Name = "team2"
 		err = c.SaveTeam(ctx(t), &team)
@@ -310,7 +310,7 @@ func TestDB(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, len(storedUsers1))
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		err = c.SaveUsers(ctx(t), "test-cluster", users[0:1])
 		require.NoError(t, err)
@@ -338,7 +338,7 @@ func TestDB(t *testing.T) {
 		require.Equal(t, user.Namespace, storedUser1.Namespace)
 		require.Equal(t, user.Name, storedUser1.Name)
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(550 * time.Millisecond)
 
 		user.Name = "user2"
 		err = c.SaveUser(ctx(t), &user)
