@@ -14,6 +14,7 @@ import (
 	teamv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/team/v1"
 	userv1 "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis/user/v1"
 	"github.com/kobsio/kobs/pkg/plugins/plugin"
+
 	"github.com/orlangure/gnomock"
 	"github.com/orlangure/gnomock/preset/mongo"
 	"github.com/stretchr/testify/require"
