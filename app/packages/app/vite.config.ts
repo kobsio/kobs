@@ -128,7 +128,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://localhost:15220',
+          target: 'http://localhost:3003',
         },
       },
       strictPort: true,
