@@ -526,13 +526,13 @@ const Documents: FunctionComponent<{
                       {field}
                     </TableSortLabel>
                     <IconButton
-                      edge="end"
-                      color="inherit"
-                      size={"small"}
+                      edge='end'
+                      color='inherit'
+                      size={'small'}
                       sx={{ m: 0 }}
                       onClick={() => selectField?.(field)}
                     >
-                      <RemoveCircleOutline fontSize="small"/>
+                      <RemoveCircleOutline fontSize='small' />
                     </IconButton>
                   </TableCell>
                 ))}
