@@ -46,7 +46,7 @@ describe('Logs', () => {
       },
     ];
 
-    const iconName = 'RemoveCircleOutlineIcon';
+    const iconName = 'TableChartIcon';
 
     const setup = (
       documents: Record<string, string>[],

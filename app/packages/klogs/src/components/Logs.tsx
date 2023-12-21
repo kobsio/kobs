@@ -16,7 +16,6 @@ import {
   KeyboardArrowRight,
   ListAlt,
   MoreVert,
-  RemoveCircleOutline,
   SavedSearch,
   TableChart,
   ZoomIn,
@@ -532,7 +531,7 @@ export const Documents: FunctionComponent<{
                       sx={{ m: 0 }}
                       onClick={() => selectField?.(field)}
                     >
-                      <RemoveCircleOutline fontSize="small" />
+                      <TableChart sx={{ fontSize: 16 }} />
                     </IconButton>
                   </TableCell>
                 ))}
