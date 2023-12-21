@@ -529,6 +529,7 @@ export const Documents: FunctionComponent<{
                       color="inherit"
                       size={'small'}
                       sx={{ m: 0 }}
+                      aria-label="toggle field column"
                       onClick={() => selectField?.(field)}
                     >
                       <TableChart sx={{ fontSize: 16 }} />
