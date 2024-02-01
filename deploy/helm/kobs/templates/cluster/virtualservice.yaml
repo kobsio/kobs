@@ -10,7 +10,7 @@ metadata:
     {{- with .Values.cluster.istio.virtualService.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.cluster.virtualService.annotations }}
+  {{- with .Values.cluster.istio.virtualService.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
