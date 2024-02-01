@@ -342,6 +342,9 @@ hub:
     virtualService:
       enabled: false
 
+      annotations: {}
+      labels: {}
+
       gateways: []
         # - gateway
 
@@ -770,6 +773,9 @@ cluster:
     ##
     virtualService:
       enabled: false
+
+      annotations: {}
+      labels: {}
 
       gateways: []
         # - gateway

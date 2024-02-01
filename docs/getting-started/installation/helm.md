@@ -72,6 +72,8 @@ helm upgrade --install kobs kobs/kobs
 | `hub.ingress.hosts` | Hosts to use for the ingress. | `[]` |
 | `hub.ingress.tls` | TLS configuration for the ingress. | `[]` |
 | `hub.istio.virtualService.enabled` | Specifies whether a VirtualService should be created. | `false` |
+| `hub.istio.virtualService.annotations` | Annotations to add to the VirtualService. | `{}` |
+| `hub.istio.virtualService.labels` | Labels to add to the VirtualService. | `{}` |
 | `hub.istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |
 | `hub.istio.virtualService.hosts` | A list of hosts for the VirtualService. | `[]` |
 | `hub.istio.virtualService.timeout` | Timeout for API requests. | `300s` |
@@ -141,6 +143,8 @@ helm upgrade --install kobs kobs/kobs
 | `cluster.ingress.hosts` | Hosts to use for the ingress. | `[]` |
 | `cluster.ingress.tls` | TLS configuration for the ingress. | `[]` |
 | `cluster.istio.virtualService.enabled` | Specifies whether a VirtualService should be created. | `false` |
+| `cluster.istio.virtualService.annotations` | Annotations to add to the VirtualService. | `{}` |
+| `cluster.istio.virtualService.labels` | Labels to add to the VirtualService. | `{}` |
 | `cluster.istio.virtualService.gateways` | A list of gateways for the VirtualService. | `[]` |
 | `cluster.istio.virtualService.hosts` | A list of hosts for the VirtualService. | `[]` |
 | `cluster.istio.virtualService.timeout` | Timeout for API requests. | `300s` |

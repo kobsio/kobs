@@ -7,6 +7,13 @@ metadata:
   labels:
     {{- include "kobs.labels" . | nindent 4 }}
     app.kubernetes.io/component: hub
+    {{- with .Values.hub.istio.virtualService.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.hub.virtualService.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   {{- with .Values.hub.istio.virtualService.hosts }}
   hosts:
@@ -29,6 +36,10 @@ spec:
             port:
               number: 15220
       timeout: {{ .Values.hub.istio.virtualService.timeout }}
+      {{- with .Values.hub.istio.virtualService.headers }}
+      headers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     - route:
         - destination:
             host: {{ include "kobs.fullname" . }}-hub.{{ .Release.Namespace }}.svc.cluster.local
