@@ -7,6 +7,13 @@ metadata:
   labels:
     {{- include "kobs.labels" . | nindent 4 }}
     app.kubernetes.io/component: cluster
+    {{- with .Values.cluster.istio.virtualService.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.cluster.virtualService.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   {{- with .Values.cluster.istio.virtualService.hosts }}
   hosts:
