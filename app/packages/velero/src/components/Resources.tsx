@@ -7,11 +7,12 @@ import {
   ITimes,
   UseQueryWrapper,
 } from '@kobsio/core';
-import { Square } from '@mui/icons-material';
+import { Square, PlayArrow } from '@mui/icons-material';
 import {
   Alert,
   AlertTitle,
   Button,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -20,6 +21,8 @@ import {
   TableRow,
   Box,
   Card,
+  CircularProgress,
+  Snackbar,
 } from '@mui/material';
 import { useQuery, QueryObserverResult } from '@tanstack/react-query';
 import { JSONPath } from 'jsonpath-plus';
@@ -199,7 +202,33 @@ const ResourceRow: FunctionComponent<{
   row: IRow;
   veleroResource: IVeleroResource;
 }> = ({ instance, veleroResource, row, resource, path, refetch }) => {
+  const apiContext = useContext<IAPIContext>(APIContext);
   const [open, setOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<{ message: string; severity: 'success' | 'error' }>();
+
+  const handleCreateBackupFromSchedule = async (): Promise<void> => {
+    setIsLoading(true);
+
+    try {
+      await apiContext.client.post(`/api/plugins/velero/backup`, {
+        body: row.manifest,
+        headers: {
+          'x-kobs-cluster': row.cells[2],
+        },
+      });
+
+      setMessage({ message: 'Backup was created', severity: 'success' });
+    } catch (err) {
+      if (err instanceof APIError) {
+        setMessage({ message: err.message, severity: 'error' });
+      } else {
+        setMessage({ message: 'Failed to create backup', severity: 'error' });
+      }
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -212,6 +241,18 @@ const ResourceRow: FunctionComponent<{
         <TableCell>
           <Square color={generateStatusColor(veleroResource, row.manifest)} />
         </TableCell>
+        {veleroResource.type === 'schedules' && (
+          <TableCell>
+            <IconButton
+              disabled={isLoading}
+              size="small"
+              onClick={handleCreateBackupFromSchedule}
+              aria-label="open menu"
+            >
+              {isLoading ? <CircularProgress color="inherit" size="22px" /> : <PlayArrow />}
+            </IconButton>
+          </TableCell>
+        )}
       </TableRow>
 
       {open && (
@@ -229,6 +270,12 @@ const ResourceRow: FunctionComponent<{
           onClose={() => setOpen(false)}
         />
       )}
+
+      <Snackbar open={message !== undefined} autoHideDuration={5000} onClose={() => setMessage(undefined)}>
+        <Alert onClose={() => setMessage(undefined)} severity={message?.severity} sx={{ width: '100%' }}>
+          {message?.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
@@ -303,6 +350,7 @@ const Resource: FunctionComponent<{
                 <TableCell key={column.title}>{column.title}</TableCell>
               ))}
               <TableCell />
+              {veleroResource.type === 'schedules' && <TableCell />}
             </TableRow>
           </TableHead>
           <TableBody>
