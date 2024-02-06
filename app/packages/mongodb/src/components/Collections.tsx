@@ -254,8 +254,10 @@ const CollectionList: FunctionComponent<{ collections: string[]; instance: IPlug
 
   const handleClear = () => {
     setFilter('');
-    setOptions({ filter: filter, page: 1, perPage: options.perPage });
+    setOptions({ filter: '', page: 1, perPage: options.perPage });
   };
+
+  console.log(options);
 
   return (
     <>
@@ -285,12 +287,15 @@ const CollectionList: FunctionComponent<{ collections: string[]; instance: IPlug
       </Box>
 
       <List disablePadding={true}>
-        {collections.map((collection, index) => (
-          <Fragment key={collection}>
-            <CollectionListItem instance={instance} collection={collection} />
-            {index + 1 !== collections.length && <Divider component="li" />}
-          </Fragment>
-        ))}
+        {collections
+          .filter((collection) => collection.includes(options.filter))
+          .slice((options.page - 1) * options.perPage, options.page * options.perPage)
+          .map((collection, index) => (
+            <Fragment key={collection}>
+              <CollectionListItem instance={instance} collection={collection} />
+              {index + 1 !== collections.length && <Divider component="li" />}
+            </Fragment>
+          ))}
       </List>
 
       <Pagination
@@ -313,12 +318,13 @@ export const Collections: FunctionComponent<{ description?: string; instance: IP
   const { isError, isLoading, error, data, refetch } = useQuery<string[], APIError>(
     ['mongodb/collections', instance],
     async () => {
-      return apiContext.client.get<string[]>(`/api/plugins/mongodb/collections`, {
+      const collections = await apiContext.client.get<string[]>(`/api/plugins/mongodb/collections`, {
         headers: {
           'x-kobs-cluster': instance.cluster,
           'x-kobs-plugin': instance.name,
         },
       });
+      return collections.sort();
     },
   );
 
