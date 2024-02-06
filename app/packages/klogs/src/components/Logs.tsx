@@ -340,11 +340,11 @@ const DocumentDetailsTable: FunctionComponent<{
                         </IconButton>
                       </Tooltip>
 
-                      <Tooltip title={`add filter: _exists_ ${key}`}>
+                      <Tooltip title={`add filter: _and_ _exists_ ${key}`}>
                         <IconButton
                           aria-label="add EXISTS field filter"
                           size="small"
-                          onClick={() => addFilter(`_exists_ ${key}`)}
+                          onClick={() => addFilter(`_and_ _exists_ ${key}`)}
                         >
                           <SavedSearch sx={{ fontSize: 16 }} />
                         </IconButton>
