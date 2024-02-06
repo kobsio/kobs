@@ -77,13 +77,13 @@ jobs:
           echo ::set-output name=aliases::${MIKE_ALIASES}
 
       - name: Install Material for MkDocs
-        run: pip install -Iv mkdocs-material==9.1.21
+        run: pip install -Iv mkdocs-material==9.5.7
 
       - name: Install PyMdown Extensions
-        run: pip install -Iv pymdown-extensions==10.1
+        run: pip install -Iv pymdown-extensions==10.7
 
       - name: Install mike
-        run: pip install -Iv mike==1.1.2
+        run: pip install -Iv mike==2.0.0
 
       - name: Prepare Deployment
         run: |
