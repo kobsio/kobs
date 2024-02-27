@@ -21,8 +21,8 @@ data:
       tracer:
         enabled: false
         service: cluster
-        provider: jaeger
-        address: http://localhost:14268/api/traces
+        provider: otlp
+        address: localhost:4317
 
       kubernetes:
         provider:

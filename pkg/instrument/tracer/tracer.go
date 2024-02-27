@@ -10,12 +10,12 @@ import (
 
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/exporters/zipkin"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 	"go.uber.org/zap"
 )
 
@@ -24,8 +24,8 @@ import (
 type Config struct {
 	Enabled  bool   `json:"enabled" env:"ENABLED" enum:"true,false" default:"false" help:"Enable tracing."`
 	Service  string `json:"service" env:"SERVICE" default:"kobs" help:"The name of the service which should be used for tracing."`
-	Provider string `json:"provider" env:"PROVIDER" enum:"jaeger,zipkin" default:"jaeger" help:"The tracing provider which should be used. Must be \"jaeger\" or \"zipkin\"."`
-	Address  string `json:"address" env:"ADDRESS" default:"http://localhost:14268/api/traces" help:"The address of the tracing provider instance."`
+	Provider string `json:"provider" env:"PROVIDER" enum:"otlp,zipkin" default:"otlp" help:"The tracing provider which should be used. Must be \"otlp\" or \"zipkin\"."`
+	Address  string `json:"address" env:"ADDRESS" default:"localhost:4317" help:"The address of the tracing provider instance."`
 }
 
 // Client is the interface for our tracer. It contains the underlying tracer provider and a Shutdown method to perform a
@@ -74,7 +74,7 @@ func Setup(config Config) (Client, error) {
 	}, nil
 }
 
-// newProvider returns an OpenTelemetry TracerProvider configured to use the Jaeger or Zipkin exporter that will send
+// newProvider returns an OpenTelemetry TracerProvider configured to use the OTLP or Zipkin exporter that will send
 // spans to the provided url. The returned TracerProvider will also use a Resource configured with all the information
 // about the application.
 func newProvider(config Config) (*tracesdk.TracerProvider, error) {
@@ -91,7 +91,7 @@ func newProvider(config Config) (*tracesdk.TracerProvider, error) {
 			return nil, err
 		}
 	} else {
-		exp, err = jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(config.Address)))
+		exp, err = otlptracegrpc.New(context.Background(), otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint(config.Address))
 		if err != nil {
 			return nil, err
 		}
