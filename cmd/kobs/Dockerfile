@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:18.17.0 as app
+FROM --platform=linux/amd64 node:20.11.1 as app
 WORKDIR /kobs
 COPY app /kobs/
 RUN npm config set fetch-timeout 3600000

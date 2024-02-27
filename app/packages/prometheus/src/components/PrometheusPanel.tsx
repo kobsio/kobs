@@ -276,8 +276,8 @@ const PrometheusChart: FunctionComponent<{
               gridContext.autoHeight
                 ? `${350 - 10}px`
                 : legend === 'table'
-                ? dimensions.height - 80 - 10
-                : dimensions.height - 10
+                  ? dimensions.height - 80 - 10
+                  : dimensions.height - 10
             }
           >
             <Chart

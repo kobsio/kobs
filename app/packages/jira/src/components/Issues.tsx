@@ -224,7 +224,7 @@ const IssueDetails: FunctionComponent<{
               <DescriptionListGroup>
                 <DescriptionListTerm>Description</DescriptionListTerm>
                 <DescriptionListDescription>
-                  <ReactMarkdown linkTarget="_blank">{jiraToMarkdown(issue.fields?.description)}</ReactMarkdown>
+                  <ReactMarkdown>{jiraToMarkdown(issue.fields?.description)}</ReactMarkdown>
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}

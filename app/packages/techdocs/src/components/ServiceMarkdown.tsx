@@ -1,7 +1,7 @@
 import { APIContext, APIError, IAPIContext, IPluginInstance, ITimes, UseQueryWrapper } from '@kobsio/core';
 import { Box, Card, CardContent, Grid, useTheme } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, useContext, ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkDirective from 'remark-directive';
 import remarkGfm from 'remark-gfm';
@@ -19,7 +19,7 @@ declare global {
     // this merges with the existing intrinsic elements, adding 'my-custom-tag' and its props
     // eslint-disable-next-line @typescript-eslint/naming-convention
     interface IntrinsicElements {
-      'custom-admonitions': { severity: string; title: string };
+      'custom-admonitions': { children: ReactNode; severity: string; title: string };
     }
   }
 }
@@ -150,11 +150,11 @@ export const ServiceMarkdown: FunctionComponent<{
               >
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm, remarkDirective, admonitionsPlugin]}
-                  transformImageUri={(uri): string => imageTransformer(uri, instance, service, path)}
+                  urlTransform={(uri): string => imageTransformer(uri, instance, service, path)}
                   components={{
                     a: ({ href, ...props }) => renderLink(instance, service, path, { href, ...props }, setPath),
-                    code: ({ node, inline, className, children, ...props }) =>
-                      renderCode({ children, className, inline, node, ...props }, theme, times, setTimes),
+                    code: ({ node, className, children, ...props }) =>
+                      renderCode({ children, className, node, ...props }, theme, times, setTimes),
                     'custom-admonitions': ({ node, children, ...props }) =>
                       renderAdmonitions({ children, node, ...props }),
                     h1: renderHeading,

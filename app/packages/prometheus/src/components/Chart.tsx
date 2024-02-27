@@ -19,8 +19,6 @@ import {
   VictoryAxis,
   VictoryGroup,
   VictoryStack,
-  VictoryVoronoiContainerProps,
-  VictoryBrushContainerProps,
 } from 'victory';
 
 import { IDatum, IMetric } from '../utils/utils';
@@ -87,10 +85,8 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
    * The `BrushVoronoiContainer` component is used as container for the charts. It allows us to render a tooltip for the
    * metrics and to select a new time range via the brush function of the Victory charts package.
    */
-  const BrushVoronoiContainer = createContainer<VictoryVoronoiContainerProps, VictoryBrushContainerProps>(
-    'voronoi',
-    'brush',
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const BrushVoronoiContainer: any = createContainer('voronoi', 'brush');
 
   return (
     <Box height="100%" width="100%" ref={refChart}>
@@ -116,7 +112,8 @@ const Chart: FunctionComponent<IChartProps> = ({ metrics, type, stacked, unit, m
             mouseFollowTooltips={true}
             defaultBrushArea="none"
             brushDomain={{ x: [0, 0] }}
-            onBrushDomainChangeEnd={(domain) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onBrushDomainChangeEnd={(domain: any) => {
               if (domain.x.length === 2) {
                 setTimes({
                   time: 'custom',

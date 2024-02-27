@@ -458,8 +458,8 @@ export const templates: Record<string, ITemplate> = {
                               phase === 'Running' || phase === 'Succeeded'
                                 ? 'success'
                                 : phase === 'Unknown'
-                                ? 'warning'
-                                : 'error'
+                                  ? 'warning'
+                                  : 'error'
                             }
                           />
                         </span>,

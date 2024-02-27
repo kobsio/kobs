@@ -130,8 +130,8 @@ const RepositoryWorkflowRunsDetailsJobs: FunctionComponent<{
                           {step.completed_at && step.started_at
                             ? timeDifference(new Date(step.completed_at).getTime(), new Date(step.started_at).getTime())
                             : step.started_at
-                            ? formatTimeString(step.started_at)
-                            : ''}
+                              ? formatTimeString(step.started_at)
+                              : ''}
                         </TableCell>
                         <TableCell>
                           {step.status === 'queued' ? (
@@ -184,8 +184,8 @@ const RepositoryWorkflowRunDetails: FunctionComponent<{
           {run.event === 'push'
             ? `Commit ${run.head_commit?.id.slice(0, 7)} pushed by ${run.triggering_actor?.login}`
             : run.event === 'schedule'
-            ? `Scheduled`
-            : `by ${run.triggering_actor?.login}`}
+              ? `Scheduled`
+              : `by ${run.triggering_actor?.login}`}
         </>
       }
     >
@@ -237,8 +237,8 @@ const RepositoryWorkflowRun: FunctionComponent<{
               {run.event === 'push'
                 ? `Commit ${run.head_commit?.id.slice(0, 7)} pushed by ${run.triggering_actor?.login}`
                 : run.event === 'schedule'
-                ? `Scheduled`
-                : `by ${run.triggering_actor?.login}`}
+                  ? `Scheduled`
+                  : `by ${run.triggering_actor?.login}`}
             </>
           }
         />

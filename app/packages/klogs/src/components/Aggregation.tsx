@@ -23,13 +23,11 @@ import {
   VictoryArea,
   VictoryAxis,
   VictoryBar,
-  VictoryBrushContainerProps,
   VictoryChart,
   VictoryGroup,
   VictoryLine,
   VictoryPie,
   VictoryTooltip,
-  VictoryVoronoiContainerProps,
   createContainer,
 } from 'victory';
 
@@ -159,10 +157,8 @@ const AggregationChartTimeseries: FunctionComponent<{
     ),
   );
 
-  const BrushVoronoiContainer = createContainer<VictoryVoronoiContainerProps, VictoryBrushContainerProps>(
-    'voronoi',
-    'brush',
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const BrushVoronoiContainer: any = createContainer('voronoi', 'brush');
 
   return (
     <Box style={{ height: '100%', width: '100%' }} ref={refChart} data-testid="klogs-timeseries-chart">
@@ -191,7 +187,8 @@ const AggregationChartTimeseries: FunctionComponent<{
             mouseFollowTooltips={true}
             defaultBrushArea="none"
             brushDomain={{ x: [0, 0] }}
-            onBrushDomainChangeEnd={(domain) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onBrushDomainChangeEnd={(domain: any) => {
               if (domain.x.length === 2) {
                 setTimes({
                   time: 'custom',

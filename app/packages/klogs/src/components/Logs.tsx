@@ -46,15 +46,7 @@ import {
 } from '@mui/material';
 import { FunctionComponent, MouseEvent, useRef } from 'react';
 import { useState } from 'react';
-import {
-  VictoryAxis,
-  VictoryBar,
-  VictoryBrushContainerProps,
-  VictoryChart,
-  VictoryThemeDefinition,
-  VictoryVoronoiContainerProps,
-  createContainer,
-} from 'victory';
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryThemeDefinition, createContainer } from 'victory';
 
 import { ILogsData } from '../utils/utils';
 
@@ -116,10 +108,8 @@ const LogsChart: FunctionComponent<{
     y: bucket.count,
   }));
 
-  const BrushVoronoiContainer = createContainer<VictoryVoronoiContainerProps, VictoryBrushContainerProps>(
-    'voronoi',
-    'brush',
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const BrushVoronoiContainer: any = createContainer('voronoi', 'brush');
 
   return (
     <Box sx={{ height: '100%', width: '100%' }} ref={refChart}>
@@ -144,7 +134,8 @@ const LogsChart: FunctionComponent<{
             defaultBrushArea="none"
             brushDomain={{ x: [0, 0] }}
             voronoiPadding={0}
-            onBrushDomainChangeEnd={(domain) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onBrushDomainChangeEnd={(domain: any) => {
               if (domain.x.length === 2) {
                 setTimes({
                   time: 'custom',

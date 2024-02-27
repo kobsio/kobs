@@ -1,6 +1,6 @@
 import { ITimes } from '@kobsio/core';
 import { Box, useTheme } from '@mui/material';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import remarkDirective from 'remark-directive';
@@ -19,7 +19,7 @@ declare global {
     // this merges with the existing intrinsic elements, adding 'my-custom-tag' and its props
     // eslint-disable-next-line @typescript-eslint/naming-convention
     interface IntrinsicElements {
-      'custom-admonitions': { severity: string; title: string };
+      'custom-admonitions': { children: ReactNode; severity: string; title: string };
     }
   }
 }
@@ -81,8 +81,8 @@ export const Markdown: FunctionComponent<{
 
             return <Link to={href ?? ''}>{props.children}</Link>;
           },
-          code: ({ node, inline, className, children, ...props }) =>
-            renderCode({ children, className, inline, node, ...props }, theme, times, setTimes),
+          code: ({ node, className, children, ...props }) =>
+            renderCode({ children, className, node, ...props }, theme, times, setTimes),
           'custom-admonitions': ({ node, children, ...props }) => renderAdmonitions({ children, node, ...props }),
           h1: renderHeading,
           h2: renderHeading,

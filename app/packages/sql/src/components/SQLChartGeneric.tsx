@@ -19,8 +19,6 @@ import {
   VictoryGroup,
   VictoryLine,
   VictoryStack,
-  VictoryVoronoiContainerProps,
-  VictoryCursorContainerProps,
 } from 'victory';
 
 import { ILegend, ISQLData, ISQLDataRow } from '../utils/utils';
@@ -246,10 +244,8 @@ const Chart: FunctionComponent<{
     throw new Error(`unsupported type "${type}"`);
   });
 
-  const CursorVoronoiContainer = createContainer<VictoryVoronoiContainerProps, VictoryCursorContainerProps>(
-    'voronoi',
-    'cursor',
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const CursorVoronoiContainer: any = createContainer('voronoi', 'cursor');
 
   return (
     <Box style={{ height: '100%', width: '100%' }} ref={refChart}>
@@ -269,8 +265,8 @@ const Chart: FunctionComponent<{
                     xAxisType === 'time'
                       ? formatTime(datum.x as Date)
                       : typeof datum.x === 'undefined'
-                      ? undefined
-                      : `${datum.x}`,
+                        ? undefined
+                        : `${datum.x}`,
                   unit: yAxisUnit,
                   value: datum.y ? roundNumber(datum.y, 4) : 'N/A',
                 })}

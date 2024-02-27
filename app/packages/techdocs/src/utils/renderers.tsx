@@ -84,11 +84,12 @@ export const renderHeading = ({ ...props }: any): ReactElement => {
  */
 export const renderCode = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  { node, inline, className, children, ...props }: any,
+  { node, className, children, ...props }: any,
   theme: Theme,
   times: ITimes,
   setTimes: (times: ITimes) => void,
 ): ReactElement => {
+  const inline = !String(children).includes('\n');
   const match = /language-(\w+)/.exec(className || '');
 
   if (!inline && match && match[1] === 'kobs') {

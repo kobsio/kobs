@@ -91,8 +91,8 @@ const ResourcesPage: FunctionComponent = () => {
                   options.paramName === 'labelSelector'
                     ? 'app=kobs'
                     : options.paramName === 'fieldSelector'
-                    ? 'metadata.namespace=default'
-                    : 'Choose a selector first'
+                      ? 'metadata.namespace=default'
+                      : 'Choose a selector first'
                 }
                 disabled={!options.paramName}
                 value={param}
