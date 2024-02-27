@@ -237,15 +237,14 @@ export const Dashboard: FunctionComponent<IDashboardProps> = ({ dashboard }) => 
         : 900),
   });
 
-  const [variables, setVariables] = useState<IVariableValues[] | undefined>(
-    () =>
-      dashboard.variables?.map((variable) => {
-        return {
-          ...variable,
-          value: '',
-          values: [],
-        };
-      }),
+  const [variables, setVariables] = useState<IVariableValues[] | undefined>(() =>
+    dashboard.variables?.map((variable) => {
+      return {
+        ...variable,
+        value: '',
+        values: [],
+      };
+    }),
   );
 
   useEffect(() => {

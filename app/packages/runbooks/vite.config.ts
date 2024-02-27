@@ -45,7 +45,7 @@ export default defineConfig({
       },
     ],
     coverage: {
-      all: true,
+      provider: 'v8',
     },
     environment: 'jsdom',
     globals: true,

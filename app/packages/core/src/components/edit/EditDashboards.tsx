@@ -153,15 +153,15 @@ const AddDashboard: FunctionComponent<{
                       title: title,
                     })
                 : dashboard
-                ? () =>
-                    addDashboard({
-                      cluster: dashboard.cluster,
-                      name: dashboard.name,
-                      namespace: dashboard.namespace,
-                      placeholders: placeholders,
-                      title: title,
-                    })
-                : undefined
+                  ? () =>
+                      addDashboard({
+                        cluster: dashboard.cluster,
+                        name: dashboard.name,
+                        namespace: dashboard.namespace,
+                        placeholders: placeholders,
+                        title: title,
+                      })
+                  : undefined
               : undefined
           }
         >

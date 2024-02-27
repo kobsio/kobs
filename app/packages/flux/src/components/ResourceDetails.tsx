@@ -101,10 +101,10 @@ const ResourceDetails: FunctionComponent<{
                   {fluxResource.type === 'gitrepositories'
                     ? 'Git'
                     : fluxResource.type === 'helmrepositories'
-                    ? 'Helm'
-                    : fluxResource.type === 'buckets'
-                    ? 'Bucket'
-                    : '-'}
+                      ? 'Helm'
+                      : fluxResource.type === 'buckets'
+                        ? 'Bucket'
+                        : '-'}
                 </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>

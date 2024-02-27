@@ -21,15 +21,7 @@ import { Square } from '@mui/icons-material';
 import { Box, useTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { FunctionComponent, useContext, useRef } from 'react';
-import {
-  createContainer,
-  VictoryArea,
-  VictoryChart,
-  VictoryAxis,
-  VictoryGroup,
-  VictoryVoronoiContainerProps,
-  VictoryBrushContainerProps,
-} from 'victory';
+import { createContainer, VictoryArea, VictoryChart, VictoryAxis, VictoryGroup } from 'victory';
 
 /**
  * `IMetricsQueryResponse` is the interface for the data returned from a metrics request.
@@ -169,10 +161,8 @@ const MetricsChart: FunctionComponent<{
    * The `BrushVoronoiContainer` component is used as container for the charts. It allows us to render a tooltip for the
    * metrics and to select a new time range via the brush function of the Victory charts package.
    */
-  const BrushVoronoiContainer = createContainer<VictoryVoronoiContainerProps, VictoryBrushContainerProps>(
-    'voronoi',
-    'brush',
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const BrushVoronoiContainer: any = createContainer('voronoi', 'brush');
 
   return (
     <Box height={gridContext.autoHeight ? '500px' : '100%'}>
@@ -207,7 +197,8 @@ const MetricsChart: FunctionComponent<{
               mouseFollowTooltips={true}
               defaultBrushArea="none"
               brushDomain={{ x: [0, 0] }}
-              onBrushDomainChangeEnd={(domain) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onBrushDomainChangeEnd={(domain: any) => {
                 if (domain.x.length === 2) {
                   setTimes({
                     time: 'custom',

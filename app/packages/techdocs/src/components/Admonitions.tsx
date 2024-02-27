@@ -18,12 +18,12 @@ export const Admonitions: FunctionComponent<{
         {title === 'success'
           ? 'Success'
           : title === 'info'
-          ? 'Info'
-          : title === 'warning'
-          ? 'Warning'
-          : title === 'error'
-          ? 'Error'
-          : title}
+            ? 'Info'
+            : title === 'warning'
+              ? 'Warning'
+              : title === 'error'
+                ? 'Error'
+                : title}
       </AlertTitle>
       <Collapse in={open} timeout="auto" unmountOnExit={true}>
         {children}

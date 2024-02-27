@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import topLevelAwait from 'vite-plugin-top-level-await';
 
-export default defineConfig(({ command, mode, ssrBuild }) => {
+export default defineConfig(({ command }) => {
   let resolve: unknown = {};
 
   // For development we have to set an alias for all packages, to get hot reloading working. Since we also have to
@@ -135,7 +135,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
     },
     test: {
       coverage: {
-        all: true,
+        provider: 'v8',
       },
       environment: 'jsdom',
       globals: true,
