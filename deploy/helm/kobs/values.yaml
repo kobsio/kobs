@@ -32,8 +32,8 @@ config:
       tracer:
         enabled: false
         service: hub
-        provider: jaeger
-        address: http://localhost:14268/api/traces
+        provider: otlp
+        address: localhost:4317
 
       ## kobs requires a MongoDB database to store the collected data. The following configuration can be used to
       ## install a MongoDB database using the Bitnami Helm chart:
@@ -104,8 +104,8 @@ config:
       tracer:
         enabled: false
         service: watcher
-        provider: jaeger
-        address: http://localhost:14268/api/traces
+        provider: otlp
+        address: localhost:4317
 
       ## kobs requires a MongoDB database to store the collected data. The following configuration can be used to
       ## install a MongoDB database using the Bitnami Helm chart:
@@ -133,8 +133,8 @@ config:
       tracer:
         enabled: false
         service: cluster
-        provider: jaeger
-        address: http://localhost:14268/api/traces
+        provider: otlp
+        address: localhost:4317
 
       kubernetes:
         provider:

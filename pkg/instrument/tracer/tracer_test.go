@@ -7,7 +7,7 @@ import (
 )
 
 func TestShutdown(t *testing.T) {
-	client, err := Setup(Config{Enabled: true, Service: "kobs", Provider: "jaeger", Address: "http://localhost:14268/api/traces"})
+	client, err := Setup(Config{Enabled: true, Service: "kobs", Provider: "otlp", Address: "http://localhost:14268/api/traces"})
 	require.NotNil(t, client)
 	require.NoError(t, err)
 	require.NotPanics(t, client.Shutdown)
@@ -15,19 +15,19 @@ func TestShutdown(t *testing.T) {
 
 func TestSetup(t *testing.T) {
 	t.Run("should return no error if tracing is disabled", func(t *testing.T) {
-		client, err := Setup(Config{Enabled: false, Service: "", Provider: "jaeger", Address: "http://localhost:14268/api/traces"})
+		client, err := Setup(Config{Enabled: false, Service: "", Provider: "otlp", Address: "http://localhost:14268/api/traces"})
 		require.Nil(t, client)
 		require.NoError(t, err)
 	})
 
 	t.Run("should fail when service name is missing", func(t *testing.T) {
-		client, err := Setup(Config{Enabled: true, Service: "", Provider: "jaeger", Address: "http://localhost:14268/api/traces"})
+		client, err := Setup(Config{Enabled: true, Service: "", Provider: "otlp", Address: "http://localhost:14268/api/traces"})
 		require.Nil(t, client)
 		require.Error(t, err)
 	})
 
 	t.Run("should succeeded", func(t *testing.T) {
-		client, err := Setup(Config{Enabled: true, Service: "kobs", Provider: "jaeger", Address: "http://localhost:14268/api/traces"})
+		client, err := Setup(Config{Enabled: true, Service: "kobs", Provider: "otlp", Address: "http://localhost:14268/api/traces"})
 		require.NotNil(t, client)
 		require.NoError(t, err)
 	})
@@ -35,13 +35,13 @@ func TestSetup(t *testing.T) {
 
 func TestNewProvider(t *testing.T) {
 	t.Run("should fail when no service name is provided", func(t *testing.T) {
-		tp, err := newProvider(Config{Service: "", Provider: "jaeger", Address: "http://localhost:14268/api/traces"})
+		tp, err := newProvider(Config{Service: "", Provider: "otlp", Address: "http://localhost:14268/api/traces"})
 		require.Error(t, err)
 		require.Nil(t, tp)
 	})
 
 	t.Run("should fail when no address is provided", func(t *testing.T) {
-		tp, err := newProvider(Config{Service: "kobs", Provider: "jaeger", Address: ""})
+		tp, err := newProvider(Config{Service: "kobs", Provider: "otlp", Address: ""})
 		require.Error(t, err)
 		require.Nil(t, tp)
 	})
@@ -58,8 +58,8 @@ func TestNewProvider(t *testing.T) {
 		require.NotNil(t, tp)
 	})
 
-	t.Run("should create jaeger provider", func(t *testing.T) {
-		tp, err := newProvider(Config{Service: "kobs", Provider: "jaeger", Address: "http://localhost:14268/api/traces"})
+	t.Run("should create otlp provider", func(t *testing.T) {
+		tp, err := newProvider(Config{Service: "kobs", Provider: "otlp", Address: "http://localhost:14268/api/traces"})
 		require.NoError(t, err)
 		require.NotNil(t, tp)
 	})
