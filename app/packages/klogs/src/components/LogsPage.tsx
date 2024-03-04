@@ -333,21 +333,23 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
     timeStart: Math.floor(Date.now() / 1000) - 900,
   });
 
-  const { isError, isLoading, error, data, refetch } = useQuery<ILogsData, APIError>(
-    ['klogs/logs', options.query, options.order, options.orderBy, options.timeStart, options.timeEnd],
-    () => {
-      const path = `/api/plugins/klogs/logs?query=${encodeURIComponent(options.query)}&order=${
-        options.order
-      }&orderBy=${encodeURIComponent(options.orderBy)}&timeStart=${options.timeStart}&timeEnd=${options.timeEnd}`;
+  const data: ILogsData = {/* TODO: provide mock data here */}
 
-      return apiContext.client.get<ILogsData>(path, {
-        headers: {
-          'x-kobs-cluster': instance.cluster,
-          'x-kobs-plugin': instance.name,
-        },
-      });
-    },
-  );
+  // const { isError, isLoading, error, data, refetch } = useQuery<ILogsData, APIError>(
+  //   ['klogs/logs', options.query, options.order, options.orderBy, options.timeStart, options.timeEnd],
+  //   () => {
+  //     const path = `/api/plugins/klogs/logs?query=${encodeURIComponent(options.query)}&order=${
+  //       options.order
+  //     }&orderBy=${encodeURIComponent(options.orderBy)}&timeStart=${options.timeStart}&timeEnd=${options.timeEnd}`;
+  //
+  //     return apiContext.client.get<ILogsData>(path, {
+  //       headers: {
+  //         'x-kobs-cluster': instance.cluster,
+  //         'x-kobs-plugin': instance.name,
+  //       },
+  //     });
+  //   },
+  // );
 
   /**
    * selectField is used to add a field as parameter, when it isn't present and to remove a fields from as parameter,
@@ -416,10 +418,9 @@ const LogsPage: FunctionComponent<IPluginPageProps> = ({ instance }) => {
       actions={<LogsActions instance={instance} options={options} />}
     >
       <UseQueryWrapper
-        error={error}
-        isError={isError}
-        isLoading={isLoading}
-        refetch={refetch}
+        error={null}
+        isError={false}
+        isLoading={false}
         errorTitle="Failed to get logs"
         isNoData={!data || !data.documents || data.documents.length === 0}
         noDataTitle="No logs were found"
