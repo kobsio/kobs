@@ -1,11 +1,11 @@
-FROM --platform=linux/amd64 node:20.11.1 as app
+FROM --platform=linux/amd64 node:21.7.1 as app
 WORKDIR /kobs
 COPY app /kobs/
 RUN npm config set fetch-timeout 3600000
 RUN npm clean-install
 RUN export NODE_OPTIONS=--max-old-space-size=4096 && npm run build
 
-FROM golang:1.22.0 as api
+FROM golang:1.22.1 as api
 WORKDIR /kobs
 COPY go.mod go.sum /kobs/
 RUN go mod download
