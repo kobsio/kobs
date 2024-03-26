@@ -14,19 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           cache: true
           cache-dependency-path: go.sum
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v4
         with:
           args: --config=./.github/golangci.yaml
           skip-cache: true
@@ -37,7 +37,7 @@ jobs:
           cat coverage.out | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/apis" | grep -v "github.com/kobsio/kobs/pkg/cluster/kubernetes/clients" | grep -v "_mock.go" > coverage_modified.out; mv coverage_modified.out coverage.out
 
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: go
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -82,12 +82,12 @@ jobs:
         working-directory: app
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
@@ -106,7 +106,7 @@ jobs:
           npm run test:coverage --workspace=@kobsio/${{ matrix.plugin }}
 
       - name: Upload Coverage "packages/app"
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: node-${{ matrix.plugin }}
           token: ${{ secrets.CODECOV_TOKEN }}
