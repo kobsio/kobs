@@ -43,7 +43,7 @@ require (
 	github.com/prometheus/common v0.51.1
 	github.com/signalsciences/go-sigsci v0.1.20
 	github.com/stretchr/testify v1.9.0
-	github.com/vmware-tanzu/velero v1.13.1
+	github.com/vmware-tanzu/velero v1.11.1
 	go.mongodb.org/mongo-driver v1.14.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0
 	go.opentelemetry.io/contrib/propagators/b3 v1.24.0
@@ -131,6 +131,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
+	github.com/kopia/kopia v0.10.7 // indirect
 	github.com/kubernetes-csi/external-snapshotter/client/v4 v4.2.0 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
