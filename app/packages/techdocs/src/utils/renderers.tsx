@@ -75,7 +75,7 @@ export const renderHeading = ({ ...props }: any): ReactElement => {
   const children = Children.toArray(props.children);
   const text = children.reduce(flatten, '');
   const slug = text.toLowerCase().replace(/\W/g, '-');
-  return createElement('h' + props.level, { id: slug }, props.children);
+  return createElement(props.node.tagName, { id: slug }, props.children);
 };
 
 /**
