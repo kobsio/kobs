@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 import { PluginContext } from '../../context/PluginContext';
+import Klogs from '@kobsio/klogs';
 
 interface IPluginPageParams extends Record<string, string | undefined> {
   cluster?: string;
@@ -25,8 +26,15 @@ const PluginPage: FunctionComponent = () => {
   const type = params['type'];
   const name = params['name'];
 
-  const instance = name ? getInstance(`/cluster/${cluster}/type/${type}/name/${name}`) : undefined;
-  const Page = instance ? getPlugin(instance.type)?.page : undefined;
+  // const instance = name ? getInstance(`/cluster/${cluster}/type/${type}/name/${name}`) : undefined;
+  const instance = {
+    cluster: "dev-de1-fake",
+    id: "id-fake",
+    name: "klogs-fake",
+    type: "type-klogs-fake"
+  }
+  // const Page = instance ? getPlugin(instance.type)?.page : undefined;
+  const Page = Klogs.page
 
   return (
     <ErrorBoundary
