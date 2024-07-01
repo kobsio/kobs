@@ -1,18 +1,18 @@
-FROM --platform=linux/amd64 node:22.0.0 as app
+FROM --platform=linux/amd64 node:22.2.0 as app
 WORKDIR /kobs
 COPY app /kobs/
 RUN npm config set fetch-timeout 3600000
 RUN npm clean-install
 RUN export NODE_OPTIONS=--max-old-space-size=4096 && npm run build
 
-FROM golang:1.22.2 as api
+FROM golang:1.22.3 as api
 WORKDIR /kobs
 COPY go.mod go.sum /kobs/
 RUN go mod download
 COPY . .
 RUN export CGO_ENABLED=0 && make build
 
-FROM alpine:3.19.1
+FROM alpine:3.20.0
 RUN apk update && apk add --no-cache ca-certificates
 RUN mkdir /kobs
 COPY --from=api /kobs/bin/kobs /kobs
