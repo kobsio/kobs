@@ -32,6 +32,7 @@ type Config struct {
 	MaxIdleConns        int            `json:"maxIdleConns"`
 	MaxOpenConns        int            `json:"maxOpenConns"`
 	MaterializedColumns []string       `json:"materializedColumns"`
+	AutocompleteFields  Fields         `json:"autocompleteFields"`
 	Settings            map[string]any `json:"settings"`
 }
 
@@ -66,8 +67,9 @@ type instance struct {
 	database            string
 	querier             Querier
 	materializedColumns []string
-	cachedFields        Fields
 	defaultFields       []string
+	cachedFields        Fields
+	autocompleteFields  Fields
 	sqlParser           parser.SQLParser
 }
 
@@ -152,7 +154,7 @@ func (i *instance) GetFields(filter string, fieldType string) []string {
 	var fields []string
 
 	if fieldType == "string" || fieldType == "" {
-		for _, field := range i.cachedFields.String {
+		for _, field := range i.autocompleteFields.String {
 			if strings.Contains(field, filter) {
 				fields = append(fields, field)
 			}
@@ -162,7 +164,7 @@ func (i *instance) GetFields(filter string, fieldType string) []string {
 	}
 
 	if fieldType == "number" || fieldType == "" {
-		for _, field := range i.cachedFields.Number {
+		for _, field := range i.autocompleteFields.Number {
 			if strings.Contains(field, filter) {
 				fields = append(fields, field)
 			}

@@ -11,7 +11,7 @@ import (
 func TestGetFields(t *testing.T) {
 	t.Run("should be able to fetch cached fields", func(t *testing.T) {
 		instance := instance{
-			cachedFields: Fields{
+			autocompleteFields: Fields{
 				Number: []string{"cached_number_field", "searchable_field"},
 				String: []string{"cached_string_field", "searchable_field"},
 			},
