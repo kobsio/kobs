@@ -11,16 +11,11 @@ import (
 func TestGetFields(t *testing.T) {
 	t.Run("should be able to fetch cached fields", func(t *testing.T) {
 		instance := instance{
-			autocompleteFields: Fields{
-				Number: []string{"cached_number_field", "searchable_field"},
-				String: []string{"cached_string_field", "searchable_field"},
-			},
+			autocompleteFields: []string{"cached_number_field", "cached_string_field", "searchable_field"},
 		}
 
-		require.Equal(t, []string{"cached_string_field", "searchable_field"}, instance.GetFields("", "string"))
-		require.Equal(t, []string{"cached_number_field", "searchable_field"}, instance.GetFields("", "number"))
-		require.Equal(t, []string{"searchable_field"}, instance.GetFields("search", "string"))
-		require.Equal(t, []string{"searchable_field"}, instance.GetFields("search", "number"))
+		require.Equal(t, []string{"cached_number_field", "cached_string_field", "searchable_field"}, instance.GetFields("", ""))
+		require.Equal(t, []string{"searchable_field"}, instance.GetFields("search", ""))
 	})
 }
 
