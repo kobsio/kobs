@@ -32,7 +32,7 @@ type Config struct {
 	MaxIdleConns        int            `json:"maxIdleConns"`
 	MaxOpenConns        int            `json:"maxOpenConns"`
 	MaterializedColumns []string       `json:"materializedColumns"`
-	AutocompleteFields  Fields         `json:"autocompleteFields"`
+	AutocompleteFields  []string       `json:"autocompleteFields"`
 	Settings            map[string]any `json:"settings"`
 }
 
@@ -69,7 +69,7 @@ type instance struct {
 	materializedColumns []string
 	defaultFields       []string
 	cachedFields        Fields
-	autocompleteFields  Fields
+	autocompleteFields  []string
 	sqlParser           parser.SQLParser
 }
 
@@ -153,21 +153,9 @@ func (i *instance) refreshCachedFields() []string {
 func (i *instance) GetFields(filter string, fieldType string) []string {
 	var fields []string
 
-	if fieldType == "string" || fieldType == "" {
-		for _, field := range i.autocompleteFields.String {
-			if strings.Contains(field, filter) {
-				fields = append(fields, field)
-			}
-		}
-
-		fields = append(fields, i.defaultFields...)
-	}
-
-	if fieldType == "number" || fieldType == "" {
-		for _, field := range i.autocompleteFields.Number {
-			if strings.Contains(field, filter) {
-				fields = append(fields, field)
-			}
+	for _, field := range i.autocompleteFields {
+		if strings.Contains(field, filter) {
+			fields = append(fields, field)
 		}
 	}
 
@@ -245,6 +233,7 @@ func New(name string, options map[string]any) (Instance, error) {
 		querier:             newQuerierFromConfig(config),
 		defaultFields:       defaultFields,
 		materializedColumns: config.MaterializedColumns,
+		autocompleteFields:  config.AutocompleteFields,
 		sqlParser:           parser.NewSQLParser(defaultFields, nil),
 	}
 
