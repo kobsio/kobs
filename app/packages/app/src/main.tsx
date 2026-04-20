@@ -7,7 +7,6 @@ import Github from '@kobsio/github';
 import Grafana from '@kobsio/grafana';
 import Harbor from '@kobsio/harbor';
 import Helm from '@kobsio/helm';
-import Jaeger from '@kobsio/jaeger';
 import Jira from '@kobsio/jira';
 import Kiali from '@kobsio/kiali';
 import Klogs from '@kobsio/klogs';
@@ -30,35 +29,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import '@kobsio/core/dist/style.css';
-import '@kobsio/jaeger/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <StrictMode>
-    <App
-      plugins={[
-        Azure,
-        Datadog,
-        Elasticsearch,
-        Flux,
-        Github,
-        Grafana,
-        Harbor,
-        Helm,
-        Jaeger,
-        Jira,
-        Kiali,
-        Klogs,
-        MongoDB,
-        Opsgenie,
-        Prometheus,
-        RSS,
-        Runbooks,
-        SignalSciences,
-        SonarQube,
-        SQL,
-        TechDocs,
-        Velero,
-      ]}
-    />
-  </StrictMode>,
+<App  plugins={[Klogs]}/>
 );
