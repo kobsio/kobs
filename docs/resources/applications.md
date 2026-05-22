@@ -68,7 +68,7 @@ Define the dashboards, which should be used for the application.
 | name | string | Name of the dashboard. **Note:** You have not to provide a name, if you use the **inline** property.  | Yes |
 | title | string | Title for the dashboard | Yes |
 | description | string | The description can be used to explain the content of the dashboard. | No |
-| placeholders | map<string, string> | A map of placeholders, whith the name as key and the value for the placeholder as value. More information for placeholders can be found in the documentation for [Dashboards](./dashboards.md). | No |
+| placeholders | map<string, string> | A map of placeholders, with the name as key and the value for the placeholder as value. More information for placeholders can be found in the documentation for [Dashboards](./dashboards.md). | No |
 | inline | [Inline](#inline) | Specify a complete dashboard within the reference. This can be used if you just use the dashboard within one application. | No |
 
 #### Inline
