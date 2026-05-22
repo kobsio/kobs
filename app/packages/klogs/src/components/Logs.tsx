@@ -471,9 +471,9 @@ const Document: FunctionComponent<{
 /**
  * The `Documents` component is used to render the documents in a table. The table will show the timestamp of each log
  * line and a preview of the most important fields. If the user select a list of fields these fields will be shown
- * insteand of the preview.
+ * instead of the preview.
  */
-const Documents: FunctionComponent<{
+export const Documents: FunctionComponent<{
   addFilter?: (filter: string) => void;
   changeOrder?: (orderBy: string) => void;
   documents: Record<string, string>[];
@@ -515,6 +515,16 @@ const Documents: FunctionComponent<{
                     >
                       {field}
                     </TableSortLabel>
+                    <IconButton
+                      edge="end"
+                      color="inherit"
+                      size={'small'}
+                      sx={{ m: 0 }}
+                      aria-label="toggle field column"
+                      onClick={() => selectField?.(field)}
+                    >
+                      <TableChart sx={{ fontSize: 16 }} />
+                    </IconButton>
                   </TableCell>
                 ))}
               </>
